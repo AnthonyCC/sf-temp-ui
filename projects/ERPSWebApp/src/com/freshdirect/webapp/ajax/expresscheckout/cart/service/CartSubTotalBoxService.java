@@ -93,7 +93,7 @@ public class CartSubTotalBoxService {
         subTotalBox.add(data);
     }
 
-    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri) {
+    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri, boolean hasMultipleStores) {
         CartSubTotalFieldData data = new CartSubTotalFieldData();
         data.setId(TOTALTAX_ID);
         if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {
@@ -103,7 +103,7 @@ public class CartSubTotalBoxService {
         } else {
             double taxValue = cart.getTaxValue();
             if (0 < taxValue) {
-            	if(FDStoreProperties.isETippingEnabled()){
+            	if(FDStoreProperties.isETippingEnabled() && !hasMultipleStores){
             		data.setText(TOTAL_TAX_NAME_ETIP );
             	}else{
             		data.setText(TOTAL_TAX_NAME );

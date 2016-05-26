@@ -706,10 +706,29 @@ public class CartDataService {
         return recentIds;
     }
 
+    private boolean hasMultiplestores(FDCartI cart, String userId){
+    	boolean hasWine = false;
+    	boolean hasFdStore = false;
+    	try {
+    		 List<FDCartLineI> cartLines = this.loadCartOrderLines(userId, cart);
+			for (FDCartLineI cartLine : cartLines) {
+				if(cartLine.isWine()){
+					hasWine = true;
+				}else{
+					hasFdStore = true;
+				}
+			}
+		} catch (HttpErrorResponse e) {
+			e.printStackTrace();
+		}
+    	return (hasWine & hasFdStore);
+    }
+    
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
+    	cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri);
+        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri, hasMultiplestores(cart, user.getUserId()));
         //CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
