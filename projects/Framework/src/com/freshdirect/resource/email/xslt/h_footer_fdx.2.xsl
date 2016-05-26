@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp "&#160;">
     <!ENTITY dot  "&#183;">
@@ -9,7 +8,9 @@
 	<!--<xsl:variable name="border_color" select="'#D8D8D8'" />-->
 
 	<xsl:variable name="sociallink_styles" select="'text-decoration: none; border: none;padding-right:20px;display:inline-block'" />
-	<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 33%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />
+	<!--<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 33%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />-->
+	
+	<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 49%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />
 	<xsl:variable name="whitebutton_styles" select="concat('padding: 8px 5px 6px; margin: 10px;font-size: ', $fontsize_p, ';color: #732484;font-weight: bold;height: 36px;text-decoration: none; ', $fontfamily, 'width:158px;text-align:center; box-sizing: border-box;  white-space: nowrap;')" />
 	
 	<xsl:template name="h_footer_fdx2">
@@ -27,9 +28,10 @@
 						<a href="mailto:sidekicks@foodkick.com" style="{$whitebutton_styles}">Contact Us</a>
 					</td>
 					<td style="padding:0px"> &nbsp; </td>
-					<td style="{$whitebutton_cell_styles}">
+					<!--<td style="{$whitebutton_cell_styles}">
 						<a href="{$site}" style="{$whitebutton_styles}">Go to FoodKick</a>
-					</td>
+					</td>-->
+					<td style="padding:0px"> &nbsp; </td>
 					<td style="padding:0px"> &nbsp; </td>
 					<td style="{$whitebutton_cell_styles}">
 						<a href="{$site}/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a>

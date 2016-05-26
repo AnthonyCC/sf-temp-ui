@@ -30,11 +30,6 @@
 		<head>
 			<title>Congrats! You're In!</title>
 			<link rel="stylesheet" href="{$site}/assets/css/emails.css" />
-			<style>
-				p {
-				font-family: {$fontfamily} !important;
-				}
-			</style>
 		</head>
 		<body bgcolor="{$litegrey}" text="" margin="0" style="background-color:{$litegrey}; margin:0px; color: #333333; {$fontfamily}">
 			<xsl:call-template name="mail_body" />
