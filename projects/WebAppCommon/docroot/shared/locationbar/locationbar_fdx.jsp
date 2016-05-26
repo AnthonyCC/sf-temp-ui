@@ -303,7 +303,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			<style>
 			/* APPBUG-4173 fix */
 			.globalnav_top .nav .searchform { 
-				width: 440px!important; 
+				width: 420px!important; 
 			}
 			</style>
 			<%
