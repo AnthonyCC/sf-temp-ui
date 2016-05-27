@@ -175,13 +175,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			/* reservation logic */
 			if (isEligibleForPreReservation) {
 				userReservervation = user.getReservation();
-				
-				if (userReservervation != null) {
-					reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
-					reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
-					
-					zipAddDisplayString = (reservationDate+" @ "+reservationTime).toUpperCase();
-				}
 			}
 			
 			
@@ -293,6 +286,14 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						/* one last zipAddDisplayString change now that we know selected address type */
 						if (isEligibleForPreReservation && userReservervation == null && "HOME".equals(foundSelectedAddressType)) {
 							zipAddDisplayString = "Make a Reservation";
+						}
+
+					
+						if (userReservervation != null && (userReservervationAddressModel).equals(selectedAddress) ) {
+							reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
+							reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
+							
+							zipAddDisplayString = (reservationDate+" @ "+reservationTime).toUpperCase();
 						}
 					%>
 				</tmpl:put><%
