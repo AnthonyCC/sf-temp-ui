@@ -982,9 +982,14 @@ public class CategoryModel extends ProductContainer {
 	    return false;
 	}
 
-	public boolean isDisplayable() {
-        return (!EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(getLayout()) && getSpecialLayout() != null) || isActive(true);
-	}
+    public boolean isDisplayable() {
+        return checkSpecialLayoutDisplayRules() || isActive(true);
+    }
+
+    private boolean checkSpecialLayoutDisplayRules() {
+        EnumLayoutType layout = getLayout();
+        return !EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(layout) && !EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(layout) && getSpecialLayout() != null;
+    }
 	
 	/**
      * 
