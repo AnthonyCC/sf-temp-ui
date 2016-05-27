@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -251,7 +252,10 @@ public class CartController extends BaseController {
      * @throws FDException 
      */
     private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-        Cart cart = user.getShoppingCart();       
+        Cart cart = user.getShoppingCart();
+        while(ContentFactory.getInstance().getCurrentUserContext().getPricingContext() == null){
+    		continue;
+    	}
         CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");
