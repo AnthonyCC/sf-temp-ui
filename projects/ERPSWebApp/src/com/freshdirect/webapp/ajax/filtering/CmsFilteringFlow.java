@@ -187,7 +187,11 @@ public class CmsFilteringFlow {
         Iterator<ProductData> iterator = hlProdList.iterator();
         while (iterator.hasNext()) {
         	ProductData result = iterator.next();
-        	prodList.add(hlIndex, result);
+        	if (hlIndex > prodList.size()) {
+        		prodList.add(result); //add to end
+        	} else {
+        		prodList.add(hlIndex, result); //insert
+        	}
         	hlIndex += itemsPerRow;
         }
         
