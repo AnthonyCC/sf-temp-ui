@@ -30,36 +30,65 @@ public class ConstraintValidatorTest extends Fixture {
 		validator = ConstraintValidator.defaultValidator();
 	}
 
-	public void testValidateEmptyDataWithEmptyConstraintReturnSuccess() {
+	public void testValidateByDatasEmptyDataWithEmptyConstraintReturnSuccess() {
 		final Map<String, String> datas = createValidatedDatas();
 		final Map<String, Constraint<String>> constraints = createConstraints();
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertTrue(validationErrors.isEmpty());
 	}
+	
+    public void testValidateByConstraintsEmptyDataWithEmptyConstraintReturnSuccess() {
+        final Map<String, String> datas = createValidatedDatas();
+        final Map<String, Constraint<String>> constraints = createConstraints();
 
-	public void testValidateDataWithEmptyConstraintReturnSuccess() {
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertTrue(validationErrors.isEmpty());
+    }
+
+	public void testValidateByDatasDataWithEmptyConstraintReturnSuccess() {
 		final Map<String, String> datas = createValidatedDatas();
 		datas.put(KEY, VALUE);
 		final Map<String, Constraint<String>> constraints = createConstraints();
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertTrue(validationErrors.isEmpty());
 	}
+	
+    public void testValidateByConstraintsDataWithEmptyConstraintReturnSuccess() {
+        final Map<String, String> datas = createValidatedDatas();
+        datas.put(KEY, VALUE);
+        final Map<String, Constraint<String>> constraints = createConstraints();
 
-	public void testValidateEmptyDataWithMultiConstraintReturnSuccess() {
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertTrue(validationErrors.isEmpty());
+    }
+
+	public void testValidateByDatasEmptyDataWithMultiConstraintReturnSuccess() {
 		final Map<String, String> datas = createValidatedDatas();
 		final Map<String, Constraint<String>> constraints = createConstraints();
 		constraints.put(KEY, constraint);
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertTrue(validationErrors.isEmpty());
 	}
+	
+    public void testValidateByConstraintsEmptyDataWithMultiConstraintReturnSuccess() {
+        final Map<String, String> datas = createValidatedDatas();
+        final Map<String, Constraint<String>> constraints = createConstraints();
+        constraints.put(KEY, constraint);
 
-	public void testValidateValidDataWithMatchingConstraintReturnErrorCollectionEmpty() {
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertTrue(validationErrors.isEmpty());
+    }
+
+	public void testValidateByDatasValidDataWithMatchingConstraintReturnErrorCollectionEmpty() {
 		final Map<String, String> datas = createValidatedDatas();
 		datas.put(KEY, VALUE);
 
@@ -68,12 +97,26 @@ public class ConstraintValidatorTest extends Fixture {
 
 		expectConstraintIsValidMethod(VALUE, true);
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertTrue(validationErrors.isEmpty());
 	}
+	
+    public void testValidateByConstraintsValidDataWithMatchingConstraintReturnErrorCollectionEmpty() {
+        final Map<String, String> datas = createValidatedDatas();
+        datas.put(KEY, VALUE);
 
-	public void testValidateNotValidDataWithMatchingConstraintReturnErrorMessage() {
+        final Map<String, Constraint<String>> constraints = createConstraints();
+        constraints.put(KEY, constraint);
+
+        expectConstraintIsValidMethod(VALUE, true);
+
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertTrue(validationErrors.isEmpty());
+    }
+
+	public void testValidateByDatasNotValidDataWithMatchingConstraintReturnErrorMessage() {
 		final Map<String, String> datas = createValidatedDatas();
 		datas.put(KEY, VALUE);
 
@@ -83,14 +126,31 @@ public class ConstraintValidatorTest extends Fixture {
 		expectConstraintIsValidMethod(VALUE, false);
 		expectConstraintGetErrorMessageMethod(ERROR_MESSAGE);
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertEquals(1, validationErrors.size());
 		assertEquals(ERROR_MESSAGE, validationErrors.get(0).getError());
 		assertEquals(KEY, validationErrors.get(0).getName());
 	}
+	
+    public void testValidateByConstraintsNotValidDataWithMatchingConstraintReturnErrorMessage() {
+        final Map<String, String> datas = createValidatedDatas();
+        datas.put(KEY, VALUE);
 
-	public void testValidateValidAndNotValidDataWithMatchingConstraintReturnErrorMessage() {
+        final Map<String, Constraint<String>> constraints = createConstraints();
+        constraints.put(KEY, constraint);
+
+        expectConstraintIsValidMethod(VALUE, false);
+        expectConstraintGetErrorMessageMethod(ERROR_MESSAGE);
+
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertEquals(1, validationErrors.size());
+        assertEquals(ERROR_MESSAGE, validationErrors.get(0).getError());
+        assertEquals(KEY, validationErrors.get(0).getName());
+    }
+
+	public void testValidateByDatasValidAndNotValidDataWithMatchingConstraintReturnErrorMessage() {
 		final Map<String, String> datas = createValidatedDatas();
 		datas.put(KEY, VALUE);
 		datas.put(OTHER_KEY, OTHER_VALUE);
@@ -103,12 +163,32 @@ public class ConstraintValidatorTest extends Fixture {
 		expectConstraintIsValidMethod(OTHER_VALUE, false);
 		expectConstraintGetErrorMessageMethod(ERROR_MESSAGE);
 
-		List<ValidationError> validationErrors = validator.validate(datas, constraints);
+		List<ValidationError> validationErrors = validator.validateByDatas(datas, constraints);
 
 		assertEquals(1, validationErrors.size());
 		assertEquals(ERROR_MESSAGE, validationErrors.get(0).getError());
 		assertEquals(OTHER_KEY, validationErrors.get(0).getName());
 	}
+	
+    public void testValidateByConstraintsValidAndNotValidDataWithMatchingConstraintReturnErrorMessage() {
+        final Map<String, String> datas = createValidatedDatas();
+        datas.put(KEY, VALUE);
+        datas.put(OTHER_KEY, OTHER_VALUE);
+
+        final Map<String, Constraint<String>> constraints = createConstraints();
+        constraints.put(KEY, constraint);
+        constraints.put(OTHER_KEY, constraint);
+
+        expectConstraintIsValidMethod(VALUE, true);
+        expectConstraintIsValidMethod(OTHER_VALUE, false);
+        expectConstraintGetErrorMessageMethod(ERROR_MESSAGE);
+
+        List<ValidationError> validationErrors = validator.validateByConstraints(datas, constraints);
+
+        assertEquals(1, validationErrors.size());
+        assertEquals(ERROR_MESSAGE, validationErrors.get(0).getError());
+        assertEquals(OTHER_KEY, validationErrors.get(0).getName());
+    }
 
 	private Map<String, Constraint<String>> createConstraints() {
 		return new HashMap<String, Constraint<String>>();

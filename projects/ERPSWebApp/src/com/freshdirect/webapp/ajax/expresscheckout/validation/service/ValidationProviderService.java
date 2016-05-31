@@ -23,31 +23,31 @@ public class ValidationProviderService {
 	}
 
 	public List<ValidationError> validateHomeDeliveryAddress(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getHomeDeliveryAddressConstraints(data));
+		return validator.validateByDatas(data, constraintService.getHomeDeliveryAddressConstraints(data));
 	}
 
 	public List<ValidationError> validateOfficeDeliveryAddress(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getOfficeDeliveryAddressConstraints());
+		return validator.validateByDatas(data, constraintService.getOfficeDeliveryAddressConstraints());
 	}
 
 	public List<ValidationError> validateCreditCardPayment(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getCreditCardPaymentConstraints());
+		return validator.validateByDatas(data, constraintService.getCreditCardPaymentConstraints());
 	}
 
 	public List<ValidationError> validateBankPayment(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getBankPaymentConstraints());
+		return validator.validateByDatas(data, constraintService.getBankPaymentConstraints());
 	}
 
 	public List<ValidationError> validateEbtPayment(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getElectronicBenefitTransferPaymentConstraints());
+		return validator.validateByDatas(data, constraintService.getElectronicBenefitTransferPaymentConstraints());
 	}
 
 	public List<ValidationError> validateSmsAlert(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getSmsAlertConstraints(data));
+		return validator.validateByDatas(data, constraintService.getSmsAlertConstraints(data));
 	}
 	
 	public List<ValidationError> validateUnattendedDelivery(final Map<String, String> data) {
-		return validator.validate(data, constraintService.getUnattendedDeliveryAddressConstraints(data));
+		return validator.validateByConstraints(data, constraintService.getUnattendedDeliveryAddressConstraints(data));
 	}
 
 }

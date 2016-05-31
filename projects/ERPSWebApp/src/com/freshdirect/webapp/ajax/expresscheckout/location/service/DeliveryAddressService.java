@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,7 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class DeliveryAddressService {
@@ -644,5 +646,31 @@ public class DeliveryAddressService {
 				addresses.get(0).setSelected(true);
 			}
 		}
-	}  
+	}
+	
+    public Map<String, Boolean> checkUnattendedDelivery(final ErpAddressModel addressModel) {
+        Map<String, Boolean> unattendedDeliveryData = new HashMap<String, Boolean>();
+        unattendedDeliveryData.put(DeliveryAddressValidationConstants.IS_UNATTENDED_DELIVERY, UnattendedDeliveryTag.checkUnattendedDelivery(addressModel));
+        return unattendedDeliveryData;
+    }
+
+    public ErpAddressModel createErpAddressModel(final Map<String, String> formData) {
+        ErpAddressModel addressModel = new ErpAddressModel();
+        addressModel.setAddress1(formData.get(DeliveryAddressValidationConstants.STREET));
+        addressModel.setCity(formData.get(DeliveryAddressValidationConstants.CITY));
+        addressModel.setZipCode(formData.get(DeliveryAddressValidationConstants.ZIP));
+        addressModel.setState(formData.get(DeliveryAddressValidationConstants.STATE));
+        addressModel.setApartment(formData.get(DeliveryAddressValidationConstants.APARTMENT));
+        return addressModel;
+    }
+
+    public ErpAddressModel createErpAddressModel(final LocationData location) {
+        ErpAddressModel addressModel = new ErpAddressModel();
+        addressModel.setAddress1(location.getAddress1());
+        addressModel.setCity(location.getCity());
+        addressModel.setZipCode(location.getZip());
+        addressModel.setState(location.getState());
+        addressModel.setApartment(location.getApartment());
+        return addressModel;
+    }
 }

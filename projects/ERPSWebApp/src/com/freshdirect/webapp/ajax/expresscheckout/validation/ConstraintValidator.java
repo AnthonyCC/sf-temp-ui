@@ -18,22 +18,38 @@ public class ConstraintValidator implements Validator {
 		return INSTANCE;
 	}
 
-	@Override
-	public List<ValidationError> validate(Map<String, String> datas, Map<String, Constraint<String>> constraints) {
-		final List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+    @Override
+    public List<ValidationError> validateByDatas(Map<String, String> datas, Map<String, Constraint<String>> constraints) {
+        final List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 
-		for (Map.Entry<String, String> data : datas.entrySet()) {
-			final String key = data.getKey();
-			final String value = data.getValue();
-			if (constraints.containsKey(key)) {
-				final Constraint<String> constraint = constraints.get(key);
-				boolean valid = constraint.isValid(value);
-				if (!valid) {
-					validationErrors.add(new ValidationError(key, constraint.getErrorMessage()));
-				}
-			}
-		}
-		return validationErrors;
-	}
+        for (Map.Entry<String, String> dataEntry : datas.entrySet()) {
+            final String key = dataEntry.getKey();
+            final String data = dataEntry.getValue();
+            if (constraints.containsKey(key)) {
+                final Constraint<String> constraint = constraints.get(key);
+                if (!constraint.isValid(data)) {
+                    validationErrors.add(new ValidationError(key, constraint.getErrorMessage()));
+                }
+            }
+        }
+        return validationErrors;
+    }
+
+    @Override
+    public List<ValidationError> validateByConstraints(Map<String, String> datas, Map<String, Constraint<String>> constraints) {
+        final List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+
+        for (Map.Entry<String, Constraint<String>> constraintEntry : constraints.entrySet()) {
+            final String key = constraintEntry.getKey();
+            final Constraint<String> constraint = constraintEntry.getValue();
+            if (datas.containsKey(key)) {
+                final String data = datas.get(key);
+                if (!constraint.isValid(data)) {
+                    validationErrors.add(new ValidationError(key, constraint.getErrorMessage()));
+                }
+            }
+        }
+        return validationErrors;
+    }
 
 }

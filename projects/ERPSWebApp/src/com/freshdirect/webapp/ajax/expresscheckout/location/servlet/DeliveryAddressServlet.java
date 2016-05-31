@@ -2,9 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.location.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,8 +23,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.service.DeliveryAddressValidationConstants;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -49,11 +47,11 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                         deliveryAddressResponse.getSubmitForm().getResult()
                                 .put(ADDRESS_BY_ID_KEY, SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId));
-
                         List<LocationData> locations = DeliveryAddressService.defaultService().loadDeliveryAddressById(user, deliveryAddressId);
-
-                        deliveryAddressResponse.getValidationResult().getResult().put("unattendedDeliveryDisplay", setupUnattendedDeliveryMap(locations));
-
+                        if (!locations.isEmpty()) {
+                            ErpAddressModel addressModel = DeliveryAddressService.defaultService().createErpAddressModel(locations.get(0));
+                            validationResult.getResult().put(DeliveryAddressValidationConstants.UNATTENDED_DELIVERY, DeliveryAddressService.defaultService().checkUnattendedDelivery(addressModel));
+                        }
                         break;
                     }
                     case ADD_DELIVERY_ADDRESS_METHOD: {
@@ -142,23 +140,6 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
     @Override
     protected boolean synchronizeOnUser() {
         return false;
-    }
-
-    private Map<String, Object> setupUnattendedDeliveryMap(List<LocationData> locations) {
-
-        ErpAddressModel address = new ErpAddressModel();
-        address.setAddress1(locations.get(0).getAddress1());
-        address.setCity(locations.get(0).getCity());
-        address.setState(locations.get(0).getState());
-        address.setApartment(locations.get(0).getApartment());
-        address.setZipCode(locations.get(0).getZip());
-
-        Map<String, Object> unattendedResult = new HashMap<String, Object>();
-
-        unattendedResult.put("isUnattendedDelivery", UnattendedDeliveryTag.checkUnattendedDelivery(address));
-
-        return unattendedResult;
-
     }
 
 }

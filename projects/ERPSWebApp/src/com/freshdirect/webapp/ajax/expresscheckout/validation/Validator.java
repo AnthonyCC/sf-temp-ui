@@ -8,5 +8,13 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationErr
 
 public interface Validator {
 
-	List<ValidationError> validate(Map<String, String> value, Map<String, Constraint<String>> constraints);
+    /*
+     * validateByDatas - validate all datas if constraint is available.
+     */
+    List<ValidationError> validateByDatas(Map<String, String> datas, Map<String, Constraint<String>> constraints);
+
+    /*
+     * validateByConstraints - validate all constraints if data is available.
+     */
+    List<ValidationError> validateByConstraints(Map<String, String> datas, Map<String, Constraint<String>> constraints);
 }

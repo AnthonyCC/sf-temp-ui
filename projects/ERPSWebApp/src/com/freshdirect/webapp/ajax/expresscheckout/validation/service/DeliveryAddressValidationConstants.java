@@ -36,4 +36,7 @@ public class DeliveryAddressValidationConstants {
 	public static final String BACKUP_DELIVERY_PHONE_EXTENSION = "bd_phone_ext";
 	public static final String BACKUP_DELIVERY_INSTRUCTIONS = "bd_instructions";
 	public static final String COMPANY_NAME = "company_name";
+	
+	public static final String UNATTENDED_DELIVERY = "unattendedDeliveryDisplay";
+	public static final String IS_UNATTENDED_DELIVERY = "isUnattendedDelivery";
 }
