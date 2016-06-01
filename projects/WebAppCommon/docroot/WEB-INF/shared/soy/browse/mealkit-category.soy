@@ -29,7 +29,6 @@
    <div class="mealkit-category-head">{$headerText}</div>
    <ul class="mealkit-products-list">
     {foreach $product in $products}
-     {if $product.available}
       {call .specialMealkitProduct}
       	{param  productZoomImage:$product.productZoomImage /}
       	{param  productDetailImage:$product.productDetailImage /}
@@ -41,8 +40,8 @@
       	{param  catId:$product.catId /}
       	{param  price:$product.price /}
       	{param  utSalesUnit:$product.utSalesUnit /}
+      	{param  available:$product.available /}
       {/call}
-     {/if}
     {/foreach}
    </ul>
   {/if}
@@ -60,10 +59,11 @@
  * @param? catId
  * @param? price
  * @param? utSalesUnit
+ * @param? available
  */
 {template .specialMealkitProduct autoescape="false"}
 <li class="mealkit-products-list-item">
-	<div class="mealkit-products-list-content">
+	<div class="mealkit-products-list-content {$available ? '' : 'unavailable'}">
 		  <div class="mealkit-products-list-item-imagewrapper">
 		    <a href="/pdp.jsp?productId={$productId}&catId={$catId}">
 		      {if $productDetailImage}<img src="{$productDetailImage}" alt="{if $description}{$description}{/if}" class="mealkit-products-list-item-image" />{/if}
@@ -75,8 +75,9 @@
 		  </div>
 		  <p>{if $productQualityNote}{$productQualityNote}{/if}</p>
 	</div>
-  <div class="mealkit-products-list-item-infos">
-	  <p class="mealkit-products-list-item-price">
+	{if $available}
+      <div class="mealkit-products-list-item-infos">
+	    <p class="mealkit-products-list-item-price">
 		  {if $unitPrice}
 		      {call common.price} 
 		        {param price:$unitPrice /}
@@ -91,11 +92,12 @@
 		      {/call}
 		     <span> Per Meal Kit</span>
 		    {/if}
-	   </p>
-	</div>
-   <div class="mealkit-products-list-button">
-   	<a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
-  </div>
+	    </p>
+	  </div>
+      <div class="mealkit-products-list-button">
+   	    <a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
+      </div>
+    {/if}
 </li><!-- /product-large -->
 {/template}
 

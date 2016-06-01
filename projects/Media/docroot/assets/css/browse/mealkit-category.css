@@ -143,3 +143,21 @@
   font-size:16px;
   background: #fcfcfc;
 }
+
+.unavailable .mealkit-products-list-item-image {
+  opacity: .5;
+  filter: alpha(opacity=50);
+}
+
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-header-wrapper:after{
+  content:"Unavailable";
+  display:block;
+  font-weight:bold;
+  font-size:16px;
+  color:#333;
+  opacity:.5;
+  filter: alpha(opacity=50);
+  font-family:Verdana,Geneva,sans-serif;
+  text-align:center;
+  margin:20px 0;
+}
