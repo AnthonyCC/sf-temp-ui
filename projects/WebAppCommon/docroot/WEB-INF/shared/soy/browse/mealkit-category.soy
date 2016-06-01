@@ -29,19 +29,38 @@
    <div class="mealkit-category-head">{$headerText}</div>
    <ul class="mealkit-products-list">
     {foreach $product in $products}
-      {call .specialMealkitProduct}
-      	{param  productZoomImage:$product.productZoomImage /}
-      	{param  productDetailImage:$product.productDetailImage /}
-      	{param  description:$product.description /}
-      	{param  productQualityNote:$product.productQualityNote /}
-      	{param  unitPrice:$product.unitPrice /}
-      	{param  salesUnitDescrPDP:$product.salesUnitDescrPDP /}
-      	{param  productId:$product.productId /}
-      	{param  catId:$product.catId /}
-      	{param  price:$product.price /}
-      	{param  utSalesUnit:$product.utSalesUnit /}
-      	{param  available:$product.available /}
-      {/call}
+      {if $product.available}
+        {call .specialMealkitProduct}
+          {param  productZoomImage:$product.productZoomImage /}
+          {param  productDetailImage:$product.productDetailImage /}
+          {param  description:$product.description /}
+          {param  productQualityNote:$product.productQualityNote /}
+          {param  unitPrice:$product.unitPrice /}
+          {param  salesUnitDescrPDP:$product.salesUnitDescrPDP /}
+          {param  productId:$product.productId /}
+          {param  catId:$product.catId /}
+          {param  price:$product.price /}
+          {param  utSalesUnit:$product.utSalesUnit /}
+          {param  available:$product.available /}
+        {/call}
+      {/if}
+    {/foreach}
+    {foreach $product in $products}
+      {if not $product.available}
+        {call .specialMealkitProduct}
+          {param  productZoomImage:$product.productZoomImage /}
+          {param  productDetailImage:$product.productDetailImage /}
+          {param  description:$product.description /}
+          {param  productQualityNote:$product.productQualityNote /}
+          {param  unitPrice:$product.unitPrice /}
+          {param  salesUnitDescrPDP:$product.salesUnitDescrPDP /}
+          {param  productId:$product.productId /}
+          {param  catId:$product.catId /}
+          {param  price:$product.price /}
+          {param  utSalesUnit:$product.utSalesUnit /}
+          {param  available:$product.available /}
+        {/call}
+      {/if}
     {/foreach}
    </ul>
   {/if}
