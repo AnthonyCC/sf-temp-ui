@@ -21,6 +21,7 @@ public class BrowseDataPagerHelper {
 	private static final String ITEM_COUNT = "itemCount";
 	private static final String LAST_ITEM_INDEX = "lastItemIndex";
 	private static final String FIRST_ITEM_INDEX = "firstItemIndex";
+	private static final String SPACER_COUNT = "spacerCount";
 
 	/**
 	 * Calculates item and page indexes based on context objects.
@@ -41,6 +42,7 @@ public class BrowseDataPagerHelper {
 		//fragmented lines count as full lines at section changes so this value is a multiple of PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD  
 		fetchResults.put(LOGICAL_ITEM_COUNT, 0);
 		fetchResults.put(ITEM_COUNT, 0);
+		fetchResults.put(SPACER_COUNT, 0);
 		
 		fetchResults.put(CURRENT_PAGE_FIRST_ITEM_INDEX, (pagerData.getActivePage() - 1) * pagerData.getPageSize() + 1); 
 		fetchResults.put(CURRENT_PAGE_LAST_ITEM_INDEX, pagerData.getActivePage() * pagerData.getPageSize());
@@ -56,6 +58,11 @@ public class BrowseDataPagerHelper {
 		}
 		
 		pagerData.setItemCount(fetchResults.get(ITEM_COUNT));
+		
+		/* remove spacers from total count */
+		pagerData.setItemCount(fetchResults.get(ITEM_COUNT) - fetchResults.get(SPACER_COUNT));
+		
+		
 		
 		if (pagerData.isAll()) {
 			pagerData.setPageCount(0);
@@ -163,6 +170,20 @@ public class BrowseDataPagerHelper {
 				fetchResults.put(LOGICAL_ITEM_COUNT, entityListSize + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 			}
 			
+			//set the spacer count
+			if (entityListSize > 0) {
+				int spacerCount = 0;
+
+				Iterator<ProductData> entityListIterator = entityList.iterator();
+				while (entityListIterator.hasNext()) {
+					ProductData curEntity = entityListIterator.next();
+					if ( "!_SPACER_!".equals(curEntity.getProductId()) ) { /* this ID is also used in fragments.soy */
+						spacerCount++;
+					}
+				}
+					
+				fetchResults.put(SPACER_COUNT, fetchResults.get(SPACER_COUNT) + spacerCount);
+			}
 		} 
 		
 		return fetchResults;

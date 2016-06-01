@@ -853,6 +853,7 @@ public class FDStoreProperties {
 	
 	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
 	private final static String PROP_HOOK_LOGIC_ORDER_FEED_MINS = "fdstore.hooklogic.orderfeed.minutes";
+    private final static String PROP_HOOK_LOGIC_ALLOW_OWN_ROWS = "fdstore.hooklogic.allow.own.rows";
     
 	// PayPal
 	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
@@ -1699,6 +1700,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
     	defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
     	defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
+    	defaults.put(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS, "true"); //can HL items be on a row by themselves?
         		
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
@@ -4281,6 +4283,10 @@ public class FDStoreProperties {
 	
 	public static boolean isHookLogicEnabled() {
     	return (Boolean.valueOf(get(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
+    }
+	
+	public static boolean getHookLogicAllowOwnRows() {
+    	return (Boolean.valueOf(get(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS))).booleanValue();
     }
  	
 	public static int getHlProductsCount() {

@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.template;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
@@ -1069,37 +1070,51 @@ public class TemplateContext extends BaseTemplateContext{
 		ArrayList<String> methodList = new ArrayList<String>();
 		Method[] methods = classObj.getDeclaredMethods();
 		for (Method method : methods) {
-			/*String methodString = "Name: " + method.getName();
-			String returnString = "Return Type: " + method.getReturnType().getName();
-			String parameterString = "Parameter Types: ";
-			Class[] parameterTypes = method.getParameterTypes();
-			for (Class paramType : parameterTypes) {
-				parameterString += paramType.getName()+" ";
-			}
-			if (parameterTypes.length == 0) {
-				parameterString = "";
-			}*/
-			//methodList.add(methodString + " " + returnString + " " + parameterString + " " + method.toGenericString());
 			methodList.add(method.toGenericString());
         }
 		
-		/*methods = classObj.getMethods();
-		for (Method method : methods) {
-			String methodString = "Name: " + method.getName();
-			String returnString = "Return Type: " + method.getReturnType().getName();
-			String parameterString = "Parameter Types: ";
-			Class[] parameterTypes = method.getParameterTypes();
-			for (Class paramType : parameterTypes) {
-				parameterString += paramType.getName()+" ";
-			}
-			if (parameterTypes.length == 0) {
-				parameterString = "";
-			}
-			//methodList.add(methodString + " " + returnString + " " + parameterString);
-		}*/
-		
 		return methodList;
 	}
+
+	public Field getDeclaredField(Class classObj, String name) {
+		if (classObj == null) { return null; }
+		Field field = null;
+		try {
+			field = classObj.getDeclaredField(name);
+			field.setAccessible(true);
+			return field;
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return field;
+	}
+
+	public ArrayList<String> getDeclaredFieldsFromClass(Class classObj) {
+		ArrayList<String> fieldList = new ArrayList<String>();
+		Field[] fields = classObj.getDeclaredFields();
+		for (Field field : fields) {
+			try {
+				field.setAccessible(true);
+				//field.setAccessible(true);
+            	fieldList.add((String)field.getName()+":"+field.get(null));
+				//fieldList.add((String)field.get(null));
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+        }
+		
+		return fieldList;
+	}
+
+	
 	
 	private static final Map<String, Class<?>> BUILT_IN_MAP = 
 	    new ConcurrentHashMap<String, Class<?>>();

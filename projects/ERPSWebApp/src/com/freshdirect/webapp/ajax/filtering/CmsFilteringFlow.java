@@ -152,7 +152,7 @@ public class CmsFilteringFlow {
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
             
             /* insert HL products into the correct spot(s) in the results */
-            insertHookLogicProductsIntoBrowseData(browseData, user);
+            insertHookLogicProductsIntoBrowseData(browseData, user, FDStoreProperties.getHookLogicAllowOwnRows());
 				
 			// -- PAGING --
 			if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
@@ -179,16 +179,28 @@ public class CmsFilteringFlow {
 	}
 	
 	/* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
-	public void insertHookLogicProductsIntoBrowseData(BrowseData browseData, FDSessionUser user) {
+	/* allowOnlyHLRows will toggle filling in empty rows to display the entire HL list */
+	public void insertHookLogicProductsIntoBrowseData(BrowseData browseData, FDSessionUser user, boolean allowOnlyHLRows) {
         List<ProductData> prodList = browseData.getSections().getSections().get(0).getProducts();
         List<ProductData> hlProdList = browseData.getAdProducts().getProducts();
         int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 : 4;
         int hlIndex = itemsPerRow-1;
+		ProductData pd = new ProductData();
+		pd.setProductId("!_SPACER_!");
+		
         Iterator<ProductData> iterator = hlProdList.iterator();
         while (iterator.hasNext()) {
         	ProductData result = iterator.next();
         	if (hlIndex > prodList.size()) {
+        		while (hlIndex > prodList.size()) {
+            		prodList.add(pd); //add spacer. These count as a "product" so that count needs modification elsewhere
+        		}
         		prodList.add(result); //add to end
+        		
+        		/* break out if we don't want HL-only rows */
+        		if (!allowOnlyHLRows) {
+        			break;
+        		}
         	} else {
         		prodList.add(hlIndex, result); //insert
         	}
