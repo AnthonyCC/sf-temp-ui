@@ -42,7 +42,7 @@ AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHa
 String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
 Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED_ATTR);
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
-boolean hasFdxServices = LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
+boolean hasFdxServices = true;//LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 boolean hasFdServices = LocationHandlerTag.hasFdService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 
 List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
