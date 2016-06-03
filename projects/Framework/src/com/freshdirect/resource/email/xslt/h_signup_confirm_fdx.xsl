@@ -19,6 +19,11 @@
 	<xsl:variable name="border_color" select="'#D8D8D8'" />
 	<xsl:variable name="fontsize_p" select="'1em'" />
 	<xsl:variable name="layout_w" select="'452'" />
+	<xsl:variable name="layout_w_str" select="concat('width:', $layout_w, 'px;')" />
+
+	<xsl:variable name="layout_maxw" select="'80vw'" />
+	<xsl:variable name="layout_maxw_str" select="concat('max-width:', $layout_maxw, ';')" />
+
 	<xsl:variable name="fontfamily" select="'font-family:Arial, Helvetica, sans-serif;'" />
 
 	<xsl:variable name="list_img_tag"><img src="{$img_dir}/check.jpg" style="position:relative;top:5px; margin-right:3px;" /></xsl:variable>
@@ -38,13 +43,18 @@
 	</xsl:template>
 
 	<xsl:template name="mail_body">
-		<table style="text-align:center; background-color: {$purple}; white-space:nowrap; min-height:24px; width:100%;">
+		<table style="text-align:center; background-color: {$purple}; white-space:nowrap; min-height:24px; width:100%; {$layout_maxw_str}">
 			<tr>
 				<td style="padding-right: 23px;">
-					<table width="{$layout_w}" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
+					<!--<table width="{$layout_w}" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">-->
+					<table width="" style="width:{$layout_w}px; {$layout_maxw_str} background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
 						<tr>
-							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">Welcome to FoodKick! + 30 Days of Free Delivery</td>
-							<td align="right" style="text-align:right; {$fontfamily} white-space:nowrap; width:152px">&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a></td>
+							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">
+								Welcome to FoodKick! + 30 Days of Free Delivery
+							</td>
+							<td align="right" style="text-align:right; {$fontfamily} white-space:nowrap; width:152px">
+								&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a>
+							</td>
 						</tr>
 					</table>
 				</td>
@@ -53,15 +63,16 @@
 		
 		<div align="center" style="{$fontfamily} margin: 5px auto; padding: 0px 25px 0px 5px; text-align:center; box-sizing: border-box;">
 			<div style="margin: 10px auto; font-size: {$fontsize_p}; text-align: center;">
-				<table width="{$layout_w}" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px;">
+				<table width="" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px; {$layout_w_str} {$layout_maxw_str}">
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="452"><img src="{$img_dir}/hero.png" /></td>
+						<td width=""><img src="{$img_dir}/hero.png" style="{$layout_maxw_str}" /></td>
 						<td width="33%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="{$layout_w}" align="left" style="text-align:left;">
+						<!--<td width="{$layout_w}" align="left" style="text-align:left;">-->
+						<td width="" align="left" style="text-align:left; {$layout_maxw_str}">
 							<div style="color: {$purple}; font-size: 26px; {$fontfamily} font-weight: bold; margin: 27px 0 1px;">
 								Welcome to Life on FoodKick!
 							</div>
@@ -92,7 +103,8 @@
 								Seriously, even for TP.  Go ahead and place an order now, so you can get back to doing you.
 							</p>
 							
-							<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
+							<!--<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">-->
+							<table width="" align="center" style="width: 276px; max-width:40vw; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
 								<tr>
 									<td style="margin:0px;padding:0px;border:none">
 										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;border:none" />
@@ -106,7 +118,7 @@
 										<a href="{$editorial_dir}/ua_router.html" style=" color: {$white}; text-decoration:none;">
 											<!--<img src="{$img_dir}/button2.png" width="1" height="32" border="0" alt="" />-->
 											
-											<img src="http://i.imgur.com/Y6lnAVB.png" width="277" height="49" border="0" alt="" />
+											<img src="http://i.imgur.com/Y6lnAVB.png" width="277" height="49" border="0" alt="" style="max-width:40vw;" />
 										</a>
 									</td>
 									<td style="margin:0px;padding:0px;border:none;">
@@ -119,9 +131,10 @@
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="{$layout_w}">
+						<!--<td width="{$layout_w}">-->
+						<td width="">
 							<h2 style="color:{$purple};text-align:center;font-size:1.3em; margin-top: 28px; margin-bottom: 45px; {$fontfamily}">Get your first 30 days of delivery FREE!</h2>
-							<img src="{$img_dir}/insta.jpg" />
+							<img src="{$img_dir}/insta.jpg" style="{$layout_maxw_str}" />
 							<p style="font-size: 18px; line-height: 25px; {$fontfamily}">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>
 						</td>
 						<td width="33%">&nbsp;</td>

@@ -15,9 +15,13 @@
 	
 	<xsl:template name="h_footer_fdx2">
 		<div style="margin: 0px auto; text-align: center;">
-			<table cellpadding="0" cellspacing="7" width="490" style="border-collapse: separate; padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
+			<table cellpadding="0" cellspacing="7" width="" style="{$layout_w_str} {$layout_maxw_str} border-collapse: separate; padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
 				<!--<tr>
-					<td width="50%" style="text-align: center; padding: 0 5px 5px 0;"><a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">Check/Change an Order</a></td>
+					<td width="50%" style="text-align: center; padding: 0 5px 5px 0;">
+						<a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">
+							Check/Change an Order
+						</a>
+					</td>
 					<td style="text-align: center; padding: 0 0 5px 5px;"><a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">Contact Us</a></td>
 				</tr>-->
 				<!--<tr>
@@ -55,7 +59,9 @@
 									<a href="https://www.facebook.com/FoodKick/" style="{$sociallink_styles}"><img src="{$img_dir}/logo_facebook.png" alt="Facebook" style="text-decoration: none; border: none;padding-right:30px;" border="0" /></a>
 									<a href="https://twitter.com/foodkick" style="{$sociallink_styles}"><img src="{$img_dir}/logo_twitter.png" alt="Twitter"  style="text-decoration: none; border: none;margin-right:30px;" border="0" /></a>
 									<!-- <img src="{$img_dir}/logo_pinterest.png" alt="Pinterest" /> -->
-									<a href="https://instagram.com/foodkick/" style="{$sociallink_styles}"><img src="{$img_dir}/logo_instagram.png" alt="Instagram" style="text-decoration: none; border: none;" border="0" /></a>
+									<a href="https://instagram.com/foodkick/" style="{$sociallink_styles}">
+										<img src="{$img_dir}/logo_instagram.png" alt="Instagram" style="text-decoration: none; border: none;" border="0" />
+									</a>
 								</td>
 							</tr>
 						</table>
