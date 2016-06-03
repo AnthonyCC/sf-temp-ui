@@ -779,6 +779,11 @@ label[for="dontupdatecartlines"] {
   display: block;
   clear: both;
 }
+.portrait-item.unavailable.productSamplingItem .portrait-item-header:after {
+  content: '';
+  display: none !important; /* hide 'unavailable' text for samples */
+  clear: both;
+}
 
 .productSamplingItem.portrait-item .portrait-item-productimage_wrapper{
   width:114px; /* 124px - 5px padding - 5px padding */
