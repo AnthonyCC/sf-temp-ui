@@ -133,7 +133,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<SELECT name="addressId" id="addressId" CLASS="text12" style="width: 250px;">
 								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
 									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
-										<option value="<%= homeAddress.getPK().getId() %>" <%= ((homeAddress.getPK().getId()).equals(selectedAddress.getPK().getId())) ? "selected=\"selected\"" : "" %>>
+										<option value="<%= homeAddress.getPK().getId() %>" <%= ( (homeAddress.getPK().getId()).equals(pageAddrId) ) ? "selected=\"selected\"" : "" %>>
 											<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
 										</option>
 									</logic:iterate>

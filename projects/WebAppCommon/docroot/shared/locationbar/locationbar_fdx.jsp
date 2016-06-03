@@ -42,8 +42,8 @@ AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHa
 String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
 Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED_ATTR);
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
-boolean hasFdxServices = true;//LocationHandlerTag.hasFdxService(selectedAddress.getZipCode());
-boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCode());
+boolean hasFdxServices = LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
+boolean hasFdServices = LocationHandlerTag.hasFdService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 
 List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
 List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
@@ -202,7 +202,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 
 										//whether this home address has already been selected earlier in a previous page load
-										if( selectedAddress.equals(homeAddress) ){
+										if( homeAddress.equals( ((selectedAddress!=null) ? selectedAddress : null) ) ){
 											ifSel_CheckImg = "url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;)";
 											ifSel_cssClass = "locabar-check-text";
 											ifSelected = " selected=\"selected\"";
@@ -233,7 +233,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 										
 										//whether this home address has already been selected earlier in a previous page load
-										if( selectedAddress.equals(corporateAddress) ){
+										if( corporateAddress.equals( ((selectedAddress!=null) ? selectedAddress : null) ) ){
 											ifSel_CheckImg = "url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;)";
 											ifSel_cssClass = "locabar-check-text";
 											ifSelected = " selected=\"selected\"";
@@ -289,7 +289,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						}
 
 					
-						if (userReservervation != null && (userReservervationAddressModel).equals(selectedAddress) ) {
+						if (userReservervation != null && userReservervationAddressModel != null && (userReservervationAddressModel).equals( ((selectedAddress!=null) ? selectedAddress : null) ) ) {
 							reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
 							reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
 							
@@ -321,7 +321,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			</tmpl:put><%
 			
 
-			String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
+			String shortAddress = LocationHandlerTag.formatAddressShortText( ((selectedAddress!=null) ? selectedAddress : null) );
 			if (hasFdServices) { //non-recognized and in deliverable zip
 				%><tmpl:put name="address">
 					<% if (user == null || user.getLevel() == FDUserI.GUEST) { %>
@@ -344,7 +344,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<div class="text" style="margin-bottom: 1.5em;">Shopping in <%= selectedAddress.getZipCode() %> zip code.</div>
 					 --%>
 					<div class="locabar_addresses-anon-deliverable-change-zip-cont">
-						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-cont">Zip Code: <span class="bold"><%= selectedAddress.getZipCode() %></span> <button type="button" class="cssbutton small green transparent locabar_addresses-anon-deliverable-change-zip-toggle-btn">Change</button></div>
+						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-cont">Zip Code: <span class="bold"><%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></span> <button type="button" class="cssbutton small green transparent locabar_addresses-anon-deliverable-change-zip-toggle-btn">Change</button></div>
 						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-target" style="display:none;">
 							<tmpl:get name="address_change_zip"/>
 						</div>
@@ -355,7 +355,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
 					<div style="display: inline-block;" class="section-warning">
 						<div style="margin: 0 0 1em 10px;">
-							<div class="text13 bold"><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= selectedAddress.getZipCode() %></div>
+							<div class="text13 bold"><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
 							<div>FreshDirect is not available in<br /> this zip code.</div>
 						</div>
 					</div>
@@ -378,7 +378,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<div style="display: inline-block; margin-right: 30px;" class="section-warning">
 								<div style="margin: 0 0 1em 10px; line-height: 14px;" class="text13 bold">
 									<div>FreshDirect is not available in</div>
-									<div><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= selectedAddress.getZipCode() %></div>
+									<div><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
 								</div>
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
@@ -430,7 +430,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							if (user!=null && user.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
 								<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>
 							<% } else { %>
-								<%= selectedAddress.getCity() %> (<%= selectedAddress.getZipCode() %>)
+								<%= selectedAddress.getCity() %> (<%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %>)
 							<% } %>
 						</div>
 
