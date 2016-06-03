@@ -1025,7 +1025,8 @@
 		transition: visibility 0s, opacity 0s linear, transform 0s;
 		visibility: hidden;
 		opacity: 0;
-		transform: translate(0, -20px);
+		transform: translate(0, 0);
+		/*transform: translate(0, -20px); chrome Version 51.0.2704.79 m is now also doing this */
 		-moz-transform: translate(0, 0); /* firefox adds negatives, disable for now */
 	}
 	
