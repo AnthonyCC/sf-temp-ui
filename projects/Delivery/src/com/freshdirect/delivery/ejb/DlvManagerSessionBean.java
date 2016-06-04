@@ -629,10 +629,13 @@ public void queryForMissingFdxOrders() {
 		{
 			ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
 		
-			CreateOrderRequest c=new CreateOrderRequest(orderId, order.getRecentOrderTransaction().getPaymentMethod().getReferencedOrder(),order.getRecentOrderTransaction().getTip(),
-					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId(),
+			CreateOrderRequest c=new CreateOrderRequest(orderId, (order.getRecentOrderTransaction().getPaymentMethod()!=null)?
+					order.getRecentOrderTransaction().getPaymentMethod().getReferencedOrder():null
+					,order.getRecentOrderTransaction().getTip(),
+					(order.getRecentOrderTransaction().getDeliveryInfo()!=null)?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId():null,
 					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getFirstName(),order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getLastName(),
-					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getInstructions(),order.getRecentOrderTransaction().getDeliveryInfo().getServiceType().getName(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getInstructions()
+					,(order.getRecentOrderTransaction().getDeliveryInfo().getServiceType()!=null)?order.getRecentOrderTransaction().getDeliveryInfo().getServiceType().getName():null,
 					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
 					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone():null,
 					order.getSapOrderNumber());
