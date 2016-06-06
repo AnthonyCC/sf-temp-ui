@@ -118,6 +118,9 @@ public class FDDeliveryManager {
 	/** 1 hr cache zoneCode -> List of cutoff-times for next day (FDZoneCutoffInfo)*/
 	private static TimedLruCache<String,List<FDZoneCutoffInfo>> zoneCutoffCache = new TimedLruCache<String,List<FDZoneCutoffInfo>>(200, 60 * 60 * 1000);
 
+	/** 1 hr cache addressInfo -> DlvZoneCapacityInfo */
+	private static TimedLruCache<AddressModel,FDDeliveryZoneInfo> zoneInfoCache = new TimedLruCache<AddressModel,FDDeliveryZoneInfo>(200, 60 * 60 * 1000);
+	
 	/** 5 min cache zoneCode -> remaining Capacity for next day (DlvZoneCapacityInfo)*/
 	private static TimedLruCache<String,DlvZoneCapacityInfo> zoneCapacityCache = new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
 	
@@ -399,16 +402,24 @@ public class FDDeliveryManager {
 		} 
 	}
 
-	public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType) throws FDResourceException, FDInvalidAddressException {
-		try {
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
-			return LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
-		
-		} catch (FDLogisticsServiceException ce) {
-			throw new FDResourceException(ce);
-		} 
-	}
+    public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType)
+            throws FDResourceException, FDInvalidAddressException {
+        FDDeliveryZoneInfo result = zoneInfoCache.get(address);
+
+        try {
+            if (result == null) {
+                ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+                DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
+                result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
+                if (result != null) {
+                    zoneInfoCache.put(address, result);
+                }
+            }
+        } catch (FDLogisticsServiceException ce) {
+            throw new FDResourceException(ce);
+        }
+        return result;
+    }
 	
 	/**
 	 * @param addresses
