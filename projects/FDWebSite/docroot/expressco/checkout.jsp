@@ -112,6 +112,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
             <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
               <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
             </form>
+            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
           </div>
         </div>
 		
