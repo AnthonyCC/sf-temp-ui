@@ -50,7 +50,9 @@ if (toSiteAccess) {
 
 //else just go on to welcome, nothing here down is used.
 //copied blog iframe to welcome.jsp so it gets called still
-response.sendRedirect("/welcome.jsp");
+//response.sendRedirect("/welcome.jsp");
+/* APPBUG-4674 */
+response.sendRedirect("/index.jsp");
 %>
 
 
