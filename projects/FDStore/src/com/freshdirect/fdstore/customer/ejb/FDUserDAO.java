@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -27,7 +26,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
@@ -47,7 +45,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
-import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 
 public class FDUserDAO {
@@ -124,7 +121,6 @@ public class FDUserDAO {
 		user.setZipCode(zipCode);
 		user.setDepotCode(depotCode);
 
-		setAddressbyZipCode(conn, zipCode, user);
 		// no need to create children, a new user doesn't have a cart yet
 		return user;
 	}
@@ -172,18 +168,6 @@ public class FDUserDAO {
 		}
 
 	}
-
-	private static void setAddressbyZipCode(Connection conn,
-			String zipCode, FDUser user) {
-		if(user.getAddress()!=null){
-			StateCounty stateCounty= FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
-			if (stateCounty!=null) {
-				user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.getState()));
-				user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
-			}
-		}
-	}
-
 	
 	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines) throws FDResourceException {
 
@@ -291,7 +275,6 @@ public class FDUserDAO {
 		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setAddressbyZipCode(conn,user.getZipCode(),user);
 		
 		if (!user.isAnonymous()) {
 			loadCart(conn, user, lazy);
@@ -302,7 +285,6 @@ public class FDUserDAO {
 			user.setExternalPromoCampaigns(loadExternalCampaigns(conn, identity.getErpCustomerPK()));
 			
 		}
-		user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		
 		rs.close();
 		ps.close();
@@ -325,15 +307,13 @@ public class FDUserDAO {
 		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setAddressbyZipCode(conn,user.getZipCode(),user);
-
+		
 		if (!user.isAnonymous()) {
 			loadCart(conn, user, false);
 			if(user.getIdentity()!=null)
 				user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 			
 		}
-		user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		rs.close();
 		ps.close();
 
@@ -377,8 +357,7 @@ public class FDUserDAO {
 		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
-		setAddressbyZipCode(conn,user.getZipCode(),user);
-
+		
 		if (!user.isAnonymous()) {
 			loadCart(conn, user, false);
 			//Load GC recipients if any. 
@@ -389,7 +368,6 @@ public class FDUserDAO {
 			if(user.getIdentity()!=null)
 				user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 		}
-		user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		
 		rs.close();
 		ps.close();

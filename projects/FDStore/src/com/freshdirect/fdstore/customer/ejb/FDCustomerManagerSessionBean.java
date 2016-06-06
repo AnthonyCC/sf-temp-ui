@@ -31,6 +31,7 @@ import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -228,6 +229,7 @@ import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
@@ -443,55 +445,64 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createUser(conn, zipCode, serviceType, eStoreId);
-
-			return user;
+			user = FDUserDAO.createUser(conn, zipCode, serviceType, eStoreId);
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+		}
+		return user;
 	}
 
 	public FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = null;
 			if(address != null){
 				user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType, eStoreId);
 			}else{
 				user = FDUserDAO.createUser(conn, serviceType, eStoreId);
 			}
 
-			return user;
-
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+		}
+		return user;
 	}
 
 	public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createDepotUser(conn, depotCode, serviceType, eStoreId);
+			user = FDUserDAO.createDepotUser(conn, depotCode, serviceType, eStoreId);
 
-			return user;
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+		}
+		return user;
 	}
 	
 
@@ -522,10 +533,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy);
+			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -534,28 +546,44 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
-			return user;
-
+			
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
+		
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+		}
+		return user;
 
 	}
+	
+	private static void setAddressbyZipCode(String zipCode, FDUser user) {
+		if(user.getAddress()!=null){
+			StateCounty stateCounty= FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
+			if (stateCounty!=null) {
+				user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.getState()));
+				user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
+			}
+		}
+	}
+
 	
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, false);
+			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, false);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
 			}			
-			return user;
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -563,32 +591,43 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 
+
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+		}
+		return user;
 	}
 
 	public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId)
 			throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithEmail(conn, email, eStoreId);
+			user = FDUserDAO.recognizeWithEmail(conn, email, eStoreId);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
-			// Load Promo Audience Details for this customer.
+			// Load Broom Audience Details for this customer.
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
-			return user;
-
+			
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
 
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+		}
+		return user;
 	}
 
 	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user)
@@ -813,10 +852,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDResourceException {
 
 		Connection conn = null;
+		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.reconnizeWithCookie(conn, cookie, eStoreId);
+			user = FDUserDAO.reconnizeWithCookie(conn, cookie, eStoreId);
 
 			LOGGER.debug("got FDUser via cookie id"+ user.getUserServiceType());
 
@@ -828,13 +868,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
-			return user;
-
+		
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
+
+		if(user!=null){
+			setAddressbyZipCode(user.getZipCode(),user);
+			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+		}
+		return user;
 	}
 	
 	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException {
