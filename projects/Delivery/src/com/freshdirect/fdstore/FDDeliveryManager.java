@@ -15,6 +15,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressI;
@@ -51,6 +52,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdlogistics.model.FDZoneCutoffInfo;
+import com.freshdirect.fdlogistics.model.ZoneInfoByZipAndDateKey;
 import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
@@ -135,6 +137,10 @@ public class FDDeliveryManager {
 	
 	/* State County by Zip cache */
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
+	
+	/** 24 hr cache Zip -> FDDeliveryZoneInfo */
+	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateAndZip = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 24 * 60 * 60 * 1000);
+	
 
 
 	private DlvRestrictionsList dlvRestrictions = null;
@@ -404,6 +410,10 @@ public class FDDeliveryManager {
 
     public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType)
             throws FDResourceException, FDInvalidAddressException {
+    	
+    	if(StringUtils.isEmpty(address.getAddress1()) && StringUtils.isNotBlank(address.getZipCode())){
+    		return getZoneInfoByZip(address, date, orderSize, serviceType);
+    	}
         FDDeliveryZoneInfo result = zoneInfoCache.get(address);
 
         try {
@@ -421,6 +431,29 @@ public class FDDeliveryManager {
         return result;
     }
 	
+	private FDDeliveryZoneInfo getZoneInfoByZip(AddressModel address,
+			Date date, CustomerAvgOrderSize orderSize,
+			EnumRegionServiceType serviceType) throws FDResourceException, FDInvalidAddressException {
+		
+			ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), date);
+		
+		 	FDDeliveryZoneInfo result = zoneInfoByDateAndZip.get(key);
+
+	        try {
+	            if (result == null) {
+	                ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+	                DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
+	                result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
+	                if (result != null) {
+	                	zoneInfoByDateAndZip.put(key, result);
+	                }
+	            }
+	        } catch (FDLogisticsServiceException ce) {
+	            throw new FDResourceException(ce);
+	        }
+	        return result;
+	}
+
 	/**
 	 * @param addresses
 	 * @return
