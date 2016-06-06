@@ -124,7 +124,7 @@ public class AddressModel extends ModelSupport implements AddressI {
 		}
     	return (EnumAddressType.FIRM.equals(addressType) ? EnumServiceType.CORPORATE : EnumServiceType.HOME);
     }
-    
+
     public void setServiceType (EnumServiceType serviceType){
     	this.serviceType = serviceType;
     }
@@ -239,4 +239,83 @@ public class AddressModel extends ModelSupport implements AddressI {
 		
 		return sb.toString();
 	}
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        if (addressInfo != null) {
+            result = prime * result + ((addressInfo == null) ? 0 : addressInfo.hashCode());
+            return result;
+        } else {
+            result = prime * result + ((address1 == null) ? 0 : address1.hashCode());
+            result = prime * result + ((address2 == null) ? 0 : address2.hashCode());
+            result = prime * result + ((apartment == null) ? 0 : apartment.hashCode());
+            result = prime * result + ((city == null) ? 0 : city.hashCode());
+            result = prime * result + ((state == null) ? 0 : state.hashCode());
+            result = prime * result + ((zipCode == null) ? 0 : zipCode.hashCode());
+            return result;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (getClass() != obj.getClass())
+            return false;
+        AddressModel other = (AddressModel) obj;
+        if (addressInfo == null) {
+            if (other.addressInfo != null) {
+                return false;
+            }
+        } else if (!addressInfo.equals(other.addressInfo)) {
+            return false;
+        }
+        if (address1 == null) {
+            if (other.address1 != null) {
+                return false;
+            }
+        } else if (!address1.equals(other.address1)) {
+            return false;
+        }
+        if (address2 == null) {
+            if (other.address2 != null) {
+                return false;
+            }
+        } else if (!address2.equals(other.address2)) {
+            return false;
+        }
+        if (apartment == null) {
+            if (other.apartment != null) {
+                return false;
+            }
+        } else if (!apartment.equals(other.apartment)) {
+            return false;
+        }
+        if (city == null) {
+            if (other.city != null) {
+                return false;
+            }
+        } else if (!city.equals(other.city)) {
+            return false;
+        }
+        if (state == null) {
+            if (other.state != null) {
+                return false;
+            }
+        } else if (!state.equals(other.state)) {
+            return false;
+        }
+        if (zipCode == null) {
+            if (other.zipCode != null) {
+                return false;
+            }
+        } else if (!zipCode.equals(other.zipCode)) {
+            return false;
+        }
+        return true;
+    }
+	
+	
 }

@@ -39,4 +39,5 @@ public class DeliveryAddressValidationConstants {
 	
 	public static final String UNATTENDED_DELIVERY = "unattendedDeliveryDisplay";
 	public static final String IS_UNATTENDED_DELIVERY = "isUnattendedDelivery";
+	public static final String HAS_UNATTENDED_DELIVERY_ALREADY_VALIDATED = "hasUnattendedDeliveryAlreadyValidated";
 }

@@ -16,6 +16,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
@@ -45,13 +46,11 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                 switch (pageAction) {
                     case GET_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
-                        deliveryAddressResponse.getSubmitForm().getResult()
-                                .put(ADDRESS_BY_ID_KEY, SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId));
-                        List<LocationData> locations = DeliveryAddressService.defaultService().loadDeliveryAddressById(user, deliveryAddressId);
-                        if (!locations.isEmpty()) {
-                            ErpAddressModel addressModel = DeliveryAddressService.defaultService().createErpAddressModel(locations.get(0));
-                            validationResult.getResult().put(DeliveryAddressValidationConstants.UNATTENDED_DELIVERY, DeliveryAddressService.defaultService().checkUnattendedDelivery(addressModel));
-                        }
+                        FormLocationData deliveryAddressForm = SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId);
+                        LocationData selectedLocationData = SinglePageCheckoutFacade.defaultFacade().selectedLocationData(deliveryAddressForm);
+                        ErpAddressModel selectedAddressModel = DeliveryAddressService.defaultService().createErpAddressModel(selectedLocationData);
+                        deliveryAddressResponse.getSubmitForm().getResult().put(ADDRESS_BY_ID_KEY, deliveryAddressForm);
+                        deliveryAddressResponse.getSubmitForm().getResult().put(DeliveryAddressValidationConstants.UNATTENDED_DELIVERY, DeliveryAddressService.defaultService().checkUnattendedDelivery(selectedAddressModel));
                         break;
                     }
                     case ADD_DELIVERY_ADDRESS_METHOD: {

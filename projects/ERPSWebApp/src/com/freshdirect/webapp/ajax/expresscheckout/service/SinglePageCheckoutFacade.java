@@ -85,7 +85,7 @@ public class SinglePageCheckoutFacade {
     private static final String CART_DATA_JSON_KEY = "cartData";
     private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
     private static final String FORM_META_DATA_JSON_KEY = "formMetaData";
-    private static final String MASTERPASS_EWALLET_TYPE = "MP";
+    // private static final String MASTERPASS_EWALLET_TYPE = "MP";
     // private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
     // private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
     // private static final String MP_EWALLET_CARD="MP_CARD";
@@ -324,6 +324,22 @@ public class SinglePageCheckoutFacade {
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
         return formLocation;
+    }
+
+    public LocationData selectedLocationData(FormLocationData formLocation) {
+        LocationData address = null;
+        String selectedId = formLocation.getSelected();
+        if (selectedId == null && !formLocation.getAddresses().isEmpty()) {
+            address = formLocation.getAddresses().get(0);
+        } else {
+            for (LocationData location : formLocation.getAddresses()) {
+                if (location.getId().equals(selectedId)) {
+                    address = location;
+                    break;
+                }
+            }
+        }
+        return address;
     }
 
     public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId, HttpSession session) throws FDResourceException, IOException,
