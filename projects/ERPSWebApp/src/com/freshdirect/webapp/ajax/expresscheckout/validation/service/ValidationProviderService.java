@@ -47,7 +47,7 @@ public class ValidationProviderService {
 	}
 	
 	public List<ValidationError> validateUnattendedDelivery(final Map<String, String> data) {
-		return validator.validateByConstraints(data, constraintService.getUnattendedDeliveryAddressConstraints(data));
+		return validator.validateByConstraints(data, constraintService.getUnattendedDeliveryAddressConstraints());
 	}
 
 }

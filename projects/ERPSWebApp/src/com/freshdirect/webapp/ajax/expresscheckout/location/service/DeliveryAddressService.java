@@ -162,7 +162,7 @@ public class DeliveryAddressService {
             }
         } else {
             ErpAddressModel shippingAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
-            locationDatas.add(convertDeliveryAddressModelToLocationData(addressId, shippingAddress, shippingAddress.getServiceType(), isDeliveryZoneUnattended(shippingAddress)));
+            locationDatas.add(convertDeliveryAddressModelToLocationData(addressId, shippingAddress, shippingAddress.getServiceType()));
         }
 
         return locationDatas;
@@ -269,8 +269,7 @@ public class DeliveryAddressService {
                 EnumServiceType serviceType = shippingAddress.getServiceType();
                 if ((EnumServiceType.HOME.equals(serviceType) || EnumServiceType.CORPORATE.equals(serviceType))) {
                     String deliveryAddressId = NVL.apply(shippingAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-                    LocationData deliveryAddress = convertDeliveryAddressModelToLocationData(deliveryAddressId, shippingAddress, serviceType,
-                            isDeliveryZoneUnattended(shippingAddress));
+                    LocationData deliveryAddress = convertDeliveryAddressModelToLocationData(deliveryAddressId, shippingAddress, serviceType);
                     if (deliveryAddress.getId().equals(selectedDeliveryAddressId)) {
                         deliveryAddress.setSelected(true);
                     }
@@ -349,8 +348,7 @@ public class DeliveryAddressService {
             EnumServiceType selectedServiceType = user.getSelectedServiceType();
             if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
                 String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-                LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType,
-                        isDeliveryAddressUnattended(deliveryAddress));
+                LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType);
                 deliveryLocationData.setSelected(true);
                 depotLocationDatas.add(deliveryLocationData);
             }
@@ -406,8 +404,7 @@ public class DeliveryAddressService {
         return EnumUnattendedDeliveryFlag.OPT_IN.equals(deliveryAddress.getUnattendedDeliveryFlag());
     }
 
-    private LocationData convertDeliveryAddressModelToLocationData(String deliveryAddressId, ErpAddressModel deliveryAddress, EnumServiceType serviceType,
-            boolean isBackupDeliveryUnattended) {
+    private LocationData convertDeliveryAddressModelToLocationData(String deliveryAddressId, ErpAddressModel deliveryAddress, EnumServiceType serviceType) throws FDResourceException {
         final DeliveryLocationData deliveryLocationData = new DeliveryLocationData();
         deliveryLocationData.setId(deliveryAddressId);
         deliveryLocationData.setSelected(false);
@@ -464,11 +461,10 @@ public class DeliveryAddressService {
             }
         }
 
-        if (isBackupDeliveryUnattended) {
+        if (isDeliveryZoneUnattended(deliveryAddress)) {
             deliveryLocationData.setBackupDeliveryAuthenticate(DeliveryAddressValidationConstants.BACKUP_DELIVERY_UNATTANDED);
             deliveryLocationData.setBackupDeliveryInstructions(deliveryAddress.getUnattendedDeliveryInstructions());
         }
-
         return deliveryLocationData;
     }
 
@@ -621,7 +617,7 @@ public class DeliveryAddressService {
 			EnumServiceType serviceType = shippingAddress.getServiceType();
 			if ( EnumServiceType.CORPORATE.equals(serviceType)) {
 				String deliveryAddressId = NVL.apply(shippingAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-				LocationData deliveryAddress = convertDeliveryAddressModelToLocationData(deliveryAddressId, shippingAddress, serviceType, isDeliveryZoneUnattended(shippingAddress));
+				LocationData deliveryAddress = convertDeliveryAddressModelToLocationData(deliveryAddressId, shippingAddress, serviceType);
 				//deliveryAddress.setSO3(true);
 				if (deliveryAddress.getId().equals(user.getCurrentStandingOrder().getAddressId())) {
 					deliveryAddress.setSelected(true);

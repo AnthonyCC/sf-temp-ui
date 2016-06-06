@@ -206,7 +206,7 @@ public class ConstraintProviderService {
         return modifyAlertConstraint(data, UNMODIFIED_SMS_ALERT_CONSTRAINTS);
     }
 
-    public Map<String, Constraint<String>> getUnattendedDeliveryAddressConstraints(Map<String, String> data) {
+    public Map<String, Constraint<String>> getUnattendedDeliveryAddressConstraints() {
         return UNMODIFIED_UNATTENDED_DELIVERY_ADDRESS_CONSTRAINTS;
     }
 

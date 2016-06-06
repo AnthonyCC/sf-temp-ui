@@ -47,13 +47,13 @@ public class FormDataService {
 	}
 	
 	public FormDataResponse prepareFormDataResponse(final FormDataRequest formDataRequest, final ValidationResult formValidation) {
-		final FormDataResponse paymentResponse = new FormDataResponse();
+		final FormDataResponse formDataResponse = new FormDataResponse();
 		final SubmitForm submitForm = new SubmitForm();
 		submitForm.setFormId(formDataRequest.getFormId());
 		submitForm.setSuccess(formValidation.getErrors().isEmpty());
-		paymentResponse.setFormSubmit(submitForm);
-		paymentResponse.setValidationResult(formValidation);
+		formDataResponse.setFormSubmit(submitForm);
+		formDataResponse.setValidationResult(formValidation);
 		formValidation.setFdform(formDataRequest.getFormId());
-		return paymentResponse;
+		return formDataResponse;
 	}
 }
