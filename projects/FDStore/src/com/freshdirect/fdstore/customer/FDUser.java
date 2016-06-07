@@ -417,9 +417,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     public void setAddress(AddressModel a) {
-    	 this.address = a;
+    	this.address = a;
         this.invalidateCache();
         this.userContext=null;
+        this.userContext=getUserContext();
+        
     }
 
     
