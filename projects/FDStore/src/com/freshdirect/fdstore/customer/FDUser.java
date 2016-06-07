@@ -414,16 +414,12 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.address = a;
         this.invalidateCache();
         this.userContext=null;
-        this.userContext=getUserContext();
     }
 
     public void setAddress(AddressModel a) {
-    	AddressModel old=this.address;
-        this.address = a;
+    	 this.address = a;
         this.invalidateCache();
         this.userContext=null;
-        this.userContext=getUserContext();
-        
     }
 
     
