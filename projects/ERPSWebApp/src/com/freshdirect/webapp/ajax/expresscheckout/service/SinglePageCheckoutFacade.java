@@ -362,8 +362,9 @@ public class SinglePageCheckoutFacade {
             cart = user.getSoTemplateCart();
         } else if (user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled()) {
             cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
+            String addressId = FDCustomerManager.getParentOrderAddressId(user.getMasqueradeContext().getParentOrderId());
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-            deliveryAddress.setId(NVL.apply(deliveryAddress.getId(), "addressId"));
+            deliveryAddress.setId(NVL.apply(addressId, "addressId"));
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
