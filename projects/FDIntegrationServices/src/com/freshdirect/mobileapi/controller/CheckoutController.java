@@ -420,7 +420,7 @@ public class CheckoutController extends BaseController {
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
-        if((EnumCouponContext.VIEWCART.equals(ctx) && FDStoreProperties.getAvalaraTaxEnabled()) || (EnumCouponContext.CHECKOUT.equals(ctx) && EnumEStoreId.FDX.equals(user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId()))){
+        if((EnumCouponContext.VIEWCART.equals(ctx) || EnumCouponContext.CHECKOUT.equals(ctx)) && FDStoreProperties.getAvalaraTaxEnabled()){
         	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
         	cart.getAvalaraTax(avalaraContext);
         }
