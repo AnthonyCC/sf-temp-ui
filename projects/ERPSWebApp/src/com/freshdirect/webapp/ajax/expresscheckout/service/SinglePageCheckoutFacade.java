@@ -364,7 +364,7 @@ public class SinglePageCheckoutFacade {
             cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
             String addressId = FDCustomerManager.getParentOrderAddressId(user.getMasqueradeContext().getParentOrderId());
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-            deliveryAddress.setId(NVL.apply(addressId, "addressId"));
+            deliveryAddress.setId(NVL.apply(addressId, "addOnAddress"));
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
