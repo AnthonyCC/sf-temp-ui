@@ -302,9 +302,6 @@ public class SinglePageCheckoutFacade {
     }
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {
-    	String addressId = FDCustomerManager.getParentOrderAddressId(user.getMasqueradeContext().getParentOrderId());
-        LOGGER.info("address id in populateCartDataFromParentOrder "+ addressId);
-        
         List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session);
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
@@ -364,10 +361,12 @@ public class SinglePageCheckoutFacade {
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             cart = user.getSoTemplateCart();
         } else if (user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled()) {
-        	cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
+        	LOGGER.info("populateCartDataFromParentOrder "+user.getMasqueradeContext().getParentOrderId());
+            cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
             String addressId = FDCustomerManager.getParentOrderAddressId(user.getMasqueradeContext().getParentOrderId());
+            LOGGER.info("address id in populateCartDataFromParentOrder "+ addressId);
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-            deliveryAddress.setId(NVL.apply(addressId, "addressId"));
+            deliveryAddress.setId(NVL.apply(addressId, "addOnAddress"));
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
