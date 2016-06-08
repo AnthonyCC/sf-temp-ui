@@ -15,7 +15,6 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressI;
@@ -60,6 +59,7 @@ import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -120,9 +120,6 @@ public class FDDeliveryManager {
 	/** 1 hr cache zoneCode -> List of cutoff-times for next day (FDZoneCutoffInfo)*/
 	private static TimedLruCache<String,List<FDZoneCutoffInfo>> zoneCutoffCache = new TimedLruCache<String,List<FDZoneCutoffInfo>>(200, 60 * 60 * 1000);
 
-	/** 1 hr cache addressInfo -> DlvZoneCapacityInfo */
-	private static TimedLruCache<AddressModel,FDDeliveryZoneInfo> zoneInfoCache = new TimedLruCache<AddressModel,FDDeliveryZoneInfo>(200, 60 * 60 * 1000);
-	
 	/** 5 min cache zoneCode -> remaining Capacity for next day (DlvZoneCapacityInfo)*/
 	private static TimedLruCache<String,DlvZoneCapacityInfo> zoneCapacityCache = new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
 	
@@ -138,9 +135,8 @@ public class FDDeliveryManager {
 	/* State County by Zip cache */
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
 	
-	/** 24 hr cache Zip -> FDDeliveryZoneInfo */
-	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateAndZip = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 24 * 60 * 60 * 1000);
-	
+	/** 24 hr cache Zip, Scrubbed address -> FDDeliveryZoneInfo */
+	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 24 * 60 * 60 * 1000);
 
 
 	private DlvRestrictionsList dlvRestrictions = null;
@@ -410,11 +406,9 @@ public class FDDeliveryManager {
 
     public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType)
             throws FDResourceException, FDInvalidAddressException {
-    	
-    	if(StringUtils.isEmpty(address.getAddress1()) && StringUtils.isNotBlank(address.getZipCode())){
-    		return getZoneInfoByZip(address, date, orderSize, serviceType);
-    	}
-        FDDeliveryZoneInfo result = zoneInfoCache.get(address);
+
+        ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), DateUtil.truncate(date), (address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet());
+        FDDeliveryZoneInfo result = zoneInfoByDateZipScrubbedAddress.get(key);
 
         try {
             if (result == null) {
@@ -422,7 +416,7 @@ public class FDDeliveryManager {
                 DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
                 result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
                 if (result != null) {
-                    zoneInfoCache.put(address, result);
+                    zoneInfoByDateZipScrubbedAddress.put(key, result);
                 }
             }
         } catch (FDLogisticsServiceException ce) {
@@ -430,29 +424,6 @@ public class FDDeliveryManager {
         }
         return result;
     }
-	
-	private FDDeliveryZoneInfo getZoneInfoByZip(AddressModel address,
-			Date date, CustomerAvgOrderSize orderSize,
-			EnumRegionServiceType serviceType) throws FDResourceException, FDInvalidAddressException {
-		
-			ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), date);
-		
-		 	FDDeliveryZoneInfo result = zoneInfoByDateAndZip.get(key);
-
-	        try {
-	            if (result == null) {
-	                ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-	                DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
-	                result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
-	                if (result != null) {
-	                	zoneInfoByDateAndZip.put(key, result);
-	                }
-	            }
-	        } catch (FDLogisticsServiceException ce) {
-	            throw new FDResourceException(ce);
-	        }
-	        return result;
-	}
 
 	/**
 	 * @param addresses
