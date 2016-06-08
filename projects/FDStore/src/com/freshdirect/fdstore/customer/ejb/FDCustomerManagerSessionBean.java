@@ -32,6 +32,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -263,7 +264,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final long serialVersionUID = 8227926148253099807L;
 
-	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
+	private static final Category LOGGER  = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
 	public RegistrationResult register(FDActionInfo info,
 			ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
