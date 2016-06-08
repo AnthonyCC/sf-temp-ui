@@ -106,6 +106,8 @@ function addToSoSuccessHandler($contextElem, data) {
 	function soResultsClose() {
 		$soResultsCont.addClass('so-close');
 	}
+	
+	window.setTimeout(soResultsClose, 3000);
 }
 
 function addToSoErrorHandler(data) {

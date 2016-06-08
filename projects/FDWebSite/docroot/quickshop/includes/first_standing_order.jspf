@@ -1,140 +1,23 @@
-<div class="standing-orders-3-first-container">
-	<div class="standing-orders-3-background-container">
-	    <h2>Do nothing, delight everyone.</h2>
-	    <div class="standing-orders-3-header-text">Keep employees smiling with automatic refills of delicious treats.</div>
-	    <div class="standing-orders-3-header-text">Keep office managers smiling with one less thing to worry about.</div>
-	    <div class="standing-orders-3-intro">
-	        <div class="standing-orders-3-container">
-	            <div class="standing-orders-3-intro-images">
-	                <img alt="1-Make_Standing_Order" src="/media_stat/images/template/standing_order/1-Make_Standing_Order.png">
-	            </div>
-	            <div class="standing-orders-3-intro-text">
-	                <div class="standing-orders-3-intro-text-h">
-	                    Make a Standing Order
-	                </div>
-	                <div class="standing-orders-3-intro-text-r">
-	                    Tell us how often you want your order delivered.
-	                    <div class="standing-orders-3-popup-ball">?
-	                        <div style="position: relative;">
-	                            <div class="standing-orders-3-popup">
-	                                <p>Why Use a Standing Order?</p>
-	                                <ul>
-	                                    <li>
-	                                        Standing orders are like shopping lists that shop for you. Add items you need on a regular basis and we'll send them on the schedule you choose.
-	                                    </li>
-	                                    <li>
-	                                        Select weekly, biweekly or monthly delivery at times that are convenient for you.
-	                                    </li>
-	                                    <li>
-	                                        You can make changes or cancel deliveries just like all Fresh Direct orders.
-	                                    </li>
-	                                    <li>
-	                                        Never run out of bananas again!
-	                                    </li>
-	                                </ul>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	        <div class="standing-orders-3-container">
-	            <div class="standing-orders-3-intro-images">
-	                <img alt="2-Add_Products" src="/media_stat/images/template/standing_order/2-Add_Products.png">
-	            </div>
-	            <div class="standing-orders-3-intro-text">
-	                <div class="standing-orders-3-intro-text-h">
-	                    Add Products
-	                </div>
-	                <div class="standing-orders-3-intro-text-r">
-	                    You can change items or stop orders at any time.
-	                    <div class="standing-orders-3-popup-ball">?
-	                        <div style="position: relative;">
-	                            <div class="standing-orders-3-popup">
-	                                <p>Why Use a Standing Order?</p>
-	                                <ul>
-	                                    <li>
-	                                        Standing orders are like shopping lists that shop for you. Add items you need on a regular basis and we'll send them on the schedule you choose.
-	                                    </li>
-	                                    <li>
-	                                        Select weekly, biweekly or monthly delivery at times that are convenient for you.
-	                                    </li>
-	                                    <li>
-	                                        You can make changes or cancel deliveries just like all Fresh Direct orders.
-	                                    </li>
-	                                    <li>
-	                                        Never run out of bananas again!
-	                                    </li>
-	                                </ul>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	        <div class="standing-orders-3-container">
-	            <div class="standing-orders-3-intro-images last-child">
-	                <img alt="3-Activate_Delivery" src="/media_stat/images/template/standing_order/3-Activate_Delivery.png">
-	            </div>
-	            <div class="standing-orders-3-intro-text">
-	                <div class="standing-orders-3-intro-text-h">
-	                    Sit Back and Relax
-	                </div>
-	                <div class="standing-orders-3-intro-text-r">
-	                    We do the rest and orders arrives as scheduled.
-	                    <div class="standing-orders-3-popup-ball">?
-	                        <div style="position: relative;">
-	                            <div class="standing-orders-3-popup">
-	                                <p>Why Use a Standing Order?</p>
-	                                <ul>
-	                                    <li>
-	                                        Standing orders are like shopping lists that shop for you. Add items you need on a regular basis and we'll send them on the schedule you choose.
-	                                    </li>
-	                                    <li>
-	                                        Select weekly, biweekly or monthly delivery at times that are convenient for you.
-	                                    </li>
-	                                    <li>
-	                                        You can make changes or cancel deliveries just like all Fresh Direct orders.
-	                                    </li>
-	                                    <li>
-	                                        Never run out of bananas again!
-	                                    </li>
-	                                </ul>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	
-	    </div>
-	</div>
-	<div class="standing-orders-3-intro-bottom">
-	    <div class="standing-orders-3-intro-h-bottom">
-	        Get started, make a Standing Order now:
-	    </div>
-	    
-	    <fd:CreateStandingOrder result="result">
-	
-	        <form name="standing-order-name" method="POST">
-	            <input type="hidden" name="action" value="create">
-	
-	            <input class="standing-orders-3-first-name-input" type="text" name="soName" placeholder='Name your Standing Order (e.g. "Weekly Meeting")' maxlength="25" autocomplete="off">
-	            <div style="position: relative;">
-	                <div class="standing-orders-3-char-count"></div>
-	            </div>
-	            <button class="standing-orders-3-start-button cssbutton orange cartheader__button" type="button" onclick="document.forms['standing-order-name'].submit();" disabled>Start ></button>
-	
-	            <select name="soFreq" style="display:none;">
+<fd:IncludeMedia name="/media/editorial/site_pages/standing_orders/first_standing_order.html"/>
+<div class="standing-orders-3-first-form-container">
+	<div class="standing-orders-3-first-form">
+		<fd:CreateStandingOrder result="result">
+			<form name="standing-order-name" method="POST">
+				<input type="hidden" name="action" value="create">
+				<input class="standing-orders-3-first-name-input" type="text" name="soName" placeholder='Name your Standing Order (e.g. "Weekly Meeting")' maxlength="25" autocomplete="off">
+				<div style="position: relative;">
+					<div class="standing-orders-3-char-count"></div>
+				</div>
+				<button class="standing-orders-3-start-button cssbutton orange cartheader__button" type="button" onclick="document.forms['standing-order-name'].submit();" disabled>Start ></button>
+				<select name="soFreq" style="display:none;">
 					<% for (EnumStandingOrderFrequency frqItem : EnumStandingOrderFrequency.values()) { %>
 						<option value="<%= frqItem.getFrequency() %>"><%= frqItem.getTitle() %></option>
 					<% } %>
 				</select>
-	
-	        </form>
-	        <fd:ErrorHandler result='<%= result %>' field='<%= new String[]{"SO_NAME", "SO_FREQ"} %>' id='errorMsg'>
-	            <%@ include file="/includes/i_so_error_messages.jspf" %>
-	        </fd:ErrorHandler>
-	    </fd:CreateStandingOrder>
+			</form>
+			<fd:ErrorHandler result='<%= result %>' field='<%= new String[]{"SO_NAME", "SO_FREQ"} %>' id='errorMsg'>
+				<%@ include file="/includes/i_so_error_messages.jspf" %>
+			</fd:ErrorHandler>
+		</fd:CreateStandingOrder>
 	</div>
 </div>

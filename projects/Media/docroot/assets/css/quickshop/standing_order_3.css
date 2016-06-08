@@ -21,62 +21,7 @@
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-name-change{
 	display: inline-block;
 }
-.standing-orders-3-first-container{
-	position: relative;
-	width: 970px;
-    margin: auto;
-}
-.standing-orders-3-background-container {
-    height: 916px;
-    color: #FFFFFF;
-    background-image: url('/media_stat/images/template/standing_order/Background-Image-Build.png');
-    margin-top: 32px;
-}
-.standing-orders-3-background-container h2 {
-    color: #FFFFFF;
-    padding: 70px 0 15px;
-    margin: 0px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 40px;
-    line-height: 40px;
-}
-.standing-orders-3-header-text {
-    text-align: center;
-    font-size: 20px;
-}
-.standing-orders-3-intro {
-    margin: 50px 0 0 100px;
-}
-.standing-orders-3-container {
-    float: left;
-}
-.standing-orders-3-intro-images {
-    height: 230px;
-    width: 228px;
-    margin-right: 44px;
-}
-.standing-orders-3-intro-images.last-child {
-    margin: 0;
-}
-.standing-orders-3-intro-text-h {
-    font-size: 18px;
-    font-weight: bold;
-    padding: 18px 0 5px;
-}
-.standing-orders-3-intro-text-r {
-    width: 228px;
-    font-size: 16px;
-}
-.standing-orders-3-intro-h-bottom {
-    clear: both;
-    padding: 84px 0 28px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #FFFFFF;
-}
-.standing-orders-3-name-input,
- .standing-orders-3-first-name-input{
+.standing-orders-3-name-input{
     float: left;
     height: 44px;
     width: 410px;
@@ -85,10 +30,6 @@
     padding: 0 115px 0 20px;
     color: #666;
     border: 1px solid #aaa;    
-}
-.standing-orders-3-first-name-input{
-	width: 475px;
-    padding: 0 50px 0 20px;
 }
 .standing-orders-3-name-input-change{
 	position: relative;
@@ -111,23 +52,6 @@
     text-align: center;
     text-decoration: none;
 }
-.standing-orders-3-intro-bottom {
-    position: absolute;
-    top: 618px;
-    width: 870px;
-    left: 100px;
-}
-.standing-orders-3-start-button {
-    margin-left: 26px;
-    height: 46px;
-    width: 186px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 5px;
-}
-.standing-orders-3-start-button:disabled{
-    cursor: default;
-}
 .standing-orders-3-char-count {
     position: absolute;
     font-size: 14px;
@@ -136,51 +60,6 @@
     top: 13px;
     text-align: right;
     width: 42px;
-}
-.standing-orders-3-first-container .standing-orders-3-char-count{
-	display: none;
-	left: 495px;
-}
-.standing-orders-3-popup-ball {
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-    background: rgba(255, 255, 255, .4);
-    border-radius: 24px;
-    color: #222;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: default;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-}
-.standing-orders-3-popup-ball .standing-orders-3-popup {
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s linear 0.5s, opacity 0.5s linear;
-    width: 392px;
-    position: absolute;
-    bottom: 0px;
-    left: -252px;
-    padding: 28px;
-    margin-bottom: 38px;
-    color: #000;
-    background: #f9f8f7;
-    border: solid 1px #aaa;
-    -moz-user-select: text;
-    -khtml-user-select: text;
-    -webkit-user-select: text;
-    -o-user-select: text;
-    user-select: text;
-}
-.standing-orders-3-popup-ball:hover .standing-orders-3-popup {
-    visibility: visible;
-    opacity: 1;
-    transition-delay: 0.3s;
 }
 .standing-orders-3 #legendCheckout .so-timeslot-legend-first-next{
 	display: block;
@@ -610,7 +489,7 @@
     background-color: #1d1d1d;
 }
 .standing-orders-3-so-settings {
-    padding: 82px 0 90px;
+    padding: 40px 0 90px;
 }
 .standing-orders-3-edit-build-new {
     float: right;

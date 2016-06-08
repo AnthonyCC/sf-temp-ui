@@ -34,38 +34,6 @@ $jq( document ).ready(function() {
 		}
 	}
 
-	//first_standing_order
-	$jq('input.standing-orders-3-first-name-input').on('keyup', function(){
-	    if ($jq(this).val().length != '' && $jq(this).val().length > 0){
-	    	$jq(".standing-orders-3-char-count").css("display", "block");
-	        $jq("button.standing-orders-3-start-button").prop("disabled", false);
-	        $jq("input.standing-orders-3-first-name-input").css("border", "1px solid #aaa");
-	        $jq(".standing-orders-3-background-container").stop().fadeTo(500, 0.1);
-	        $jq(".standing-orders-3-intro-h-bottom").stop().animate({
-	            "color": "#464646"
-	        }, 500);
-	    } else {
-	    	$jq(".standing-orders-3-char-count").css("display", "none");
-	        $jq("button.standing-orders-3-start-button").prop("disabled", true);
-	        $jq(".standing-orders-3-background-container").stop().fadeTo(500, 1);
-	        $jq(".standing-orders-3-intro-h-bottom").stop().animate({
-	            "color": "#ffffff"
-	        }, 500);
-	        if ($jq("#so-error-message").length) {
-	            $jq("#so-error-message").css("display", "none");
-	        }
-	    }
-	    $jq(".standing-orders-3-char-count").text($jq(this).val().length + "/25");
-	});
-
-	if ($jq("#so-error-message").length){
-	    $jq("button.standing-orders-3-start-button").prop("disabled", false);
-	    $jq(".standing-orders-3-background-container").fadeTo(500, 0.1);
-	    $jq(".standing-orders-3-intro-h-bottom").css("color", "#464646");
-	    $jq("input.standing-orders-3-first-name-input").css("border", "1px solid #c30");
-	    $jq(".standing-orders-3-first-name-input").focus();
-	}
-
 	// manage_standing_orders
 	if(typeof $jq.QueryString["soid"] !== "undefined"){
 		openSOSettings($jq.QueryString["soid"]);

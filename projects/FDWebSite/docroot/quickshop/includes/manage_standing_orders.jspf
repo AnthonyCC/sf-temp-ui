@@ -64,23 +64,21 @@ user.setSoTemplateCart(new FDCartModel());
 	FreshDirect.standingorder.currentPage = "manage";
 </script>
 
-<% if(soList!=null && !soList.isEmpty()) { %>
+<% if(false && soList!=null && !soList.isEmpty()) { %>
 	<div class="standing-orders-3-upcoming-deliveries">
 		<div class="standing-orders-3-edit-header">
-		    Upcoming Deliveries
-		    <div class="standing-orders-3-create-text">
-		        Review your delivery details and make changes if needed.
-		    </div>
+			Upcoming Deliveries
+			<div class="standing-orders-3-create-text">
+				Review your delivery details and make changes if needed.
+			</div>
 		</div>
-	
-		
 		<div class="standing-orders-3-edit-upcoming-deliveries">
 			<soy:render template="standingorder.standingOrdersUpcomingDeliveries" data="<%=upComingDataMap%>"/>
 		</div>
-	
 		<div style="clear:both;"></div>
-	</div>	
-<% } %> 
+	</div>
+<% } %>
+
 <div class="standing-orders-3-so-settings">
 	<div class="standing-orders-3-settings-header">
 		<div class="standing-orders-3-edit-header">
