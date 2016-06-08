@@ -361,8 +361,10 @@ public class SinglePageCheckoutFacade {
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             cart = user.getSoTemplateCart();
         } else if (user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled()) {
+        	LOGGER.info("populateCartDataFromParentOrder "+user.getMasqueradeContext().getParentOrderId());
             cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
             String addressId = FDCustomerManager.getParentOrderAddressId(user.getMasqueradeContext().getParentOrderId());
+            LOGGER.info("address id in populateCartDataFromParentOrder "+ addressId);
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
             deliveryAddress.setId(NVL.apply(addressId, "addOnAddress"));
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
