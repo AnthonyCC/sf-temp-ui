@@ -8090,7 +8090,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public String getParentOrderAddressId(String parentOrderId)throws FDResourceException{
-		LOGGER.info("getParentOrderAddressId... "+parentOrderId);
+		LOGGER.debug("getParentOrderAddressId... "+parentOrderId);
 		Connection conn = null;
 		String parentOrderAddressId=null;
 		try {
@@ -8100,34 +8100,34 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			
 			deliveryAddressModel= this.getLastOrderAddress(parentOrderId);
-			LOGGER.info("Parent Order Id "+parentOrderId+" has address as "+deliveryAddressModel.getAddress1());
+			LOGGER.debug("Parent Order Id "+parentOrderId+" has address as "+deliveryAddressModel.getAddress1());
 			
 			Collection<ErpAddressModel> addressList=FDUserDAO.getParentAddresscheck(conn, deliveryAddressModel);
 			
 			for ( ErpAddressModel address : addressList ) {
-				LOGGER.info("Parent Order Id "+parentOrderId+" has parent address check as "+address.getAddress1());
+				LOGGER.debug("Parent Order Id "+parentOrderId+" has parent address check as "+address.getAddress1());
 				if(((deliveryAddressModel.getScrubbedStreet()==null || address.getScrubbedStreet()==null))|| 
 							(deliveryAddressModel.getScrubbedStreet()!=null || deliveryAddressModel.getScrubbedStreet().equalsIgnoreCase(address.getScrubbedStreet())))
 				{
-					LOGGER.info("Testing logging parent order in Fd CustomermanagerBean inside first loop");
-					LOGGER.info("deliveryAddressModel.getScrubbedStreet() "+deliveryAddressModel.getScrubbedStreet());
-					LOGGER.info("address.getScrubbedStreet() "+address.getScrubbedStreet());
+					LOGGER.debug("Testing logging parent order in Fd CustomermanagerBean inside first loop");
+					LOGGER.debug("deliveryAddressModel.getScrubbedStreet() "+deliveryAddressModel.getScrubbedStreet());
+					LOGGER.debug("address.getScrubbedStreet() "+address.getScrubbedStreet());
 					
 					if(((deliveryAddressModel.getAddress1()==null || address.getAddress1()==null)) || 
 						(deliveryAddressModel.getAddress1()!=null && deliveryAddressModel.getAddress1().equalsIgnoreCase(address.getAddress1())))
 					{
-						LOGGER.info("Testing logging parent order in Fd CustomermanagerBean inside second loop");
-						LOGGER.info("deliveryAddressModel.getAddress1() "+deliveryAddressModel.getAddress1());
-						LOGGER.info("address.getAddress1() "+address.getAddress1());
+						LOGGER.debug("Testing logging parent order in Fd CustomermanagerBean inside second loop");
+						LOGGER.debug("deliveryAddressModel.getAddress1() "+deliveryAddressModel.getAddress1());
+						LOGGER.debug("address.getAddress1() "+address.getAddress1());
 						
 							if ((deliveryAddressModel.getApartment()==null && address.getApartment()==null) || 
 									(deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment())))
 							{
-								LOGGER.info("Testing logging parent order in Fd CustomermanagerBean inside third loop");
-								LOGGER.info("deliveryAddressModel.getApartment() "+deliveryAddressModel.getApartment());
-								LOGGER.info("address.getApartment() "+address.getApartment());
+								LOGGER.debug("Testing logging parent order in Fd CustomermanagerBean inside third loop");
+								LOGGER.debug("deliveryAddressModel.getApartment() "+deliveryAddressModel.getApartment());
+								LOGGER.debug("address.getApartment() "+address.getApartment());
 								parentOrderAddressId= address.getId();
-								LOGGER.info("paren order id  "+parentOrderId+" has address id as "+address.getId());
+								LOGGER.debug("paren order id  "+parentOrderId+" has address id as "+address.getId());
 						}
 					}
 				 }	

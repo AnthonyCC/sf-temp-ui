@@ -4703,6 +4703,7 @@ public class FDCustomerManager {
 		String parentOrderAddressId=null;
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
+			LOGGER.debug("IN FD Customer Manager Parent id is "+parentOrderId);
 			parentOrderAddressId =sb.getParentOrderAddressId(parentOrderId);
 
 		} catch (CreateException ce) {
