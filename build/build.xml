@@ -2609,6 +2609,12 @@
             <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
+			
+			<zipfileset src="${work.dir}/ehcache-core-2.5.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/jackson-core-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/jackson-databind-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/jackson-annotations-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/commons-codec-1.9.jar"  excludes="META-INF/*"/>
 
 			<!-- Tools -->
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
