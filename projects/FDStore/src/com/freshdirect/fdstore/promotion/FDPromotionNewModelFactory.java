@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,7 +69,7 @@ public class FDPromotionNewModelFactory {
 		return INSTANCE;
 	}
 	
-	private void loadAllPromotions(){
+	/*private void loadAllPromotions(){
 		try {
 			List<FDPromotionNewModel> promoList = FDPromotionNewManager.getPromotions();
 			for ( FDPromotionNewModel promo : promoList ) {
@@ -84,6 +85,35 @@ public class FDPromotionNewModelFactory {
 				this.fdPromotionModelMap.put(promo.getPromotionCode(), promo);
 			}
 		} catch (FDResourceException ex) {
+			LOGGER.error("Failed to load promotions", ex);
+		}
+	}*/
+	
+	private void loadAllPromotions(){
+		//Load promotions incrementally, by year.
+		Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		List<FDPromotionNewModel> promoList = null;
+		try {
+			for(int year = 2002; year <= currentYear; year++){
+				LOGGER.info("Loading promotions for year: "+year);
+				promoList = FDPromotionNewManager.getPromotionsByYear(year);					
+				if(null != promoList){
+					LOGGER.info(promoList.size()+" promotions loaded for year: "+year);
+					for ( FDPromotionNewModel promo : promoList ) {
+						Date promoModifyDate = promo.getModifiedDate();
+						if(promoModifyDate == null) {
+							//ignore as Promotion setup is incorrect
+							continue;
+						}
+						Date now = new Date();
+						if(this.maxLastModified == null || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
+							this.maxLastModified = new Date(promoModifyDate.getTime());
+						}
+						this.fdPromotionModelMap.put(promo.getPromotionCode(), promo);
+					}
+				}
+			}
+		}catch (FDResourceException ex) {
 			LOGGER.error("Failed to load promotions", ex);
 		}
 	}

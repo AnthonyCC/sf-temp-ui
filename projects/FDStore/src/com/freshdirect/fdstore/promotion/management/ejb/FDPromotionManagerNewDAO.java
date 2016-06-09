@@ -409,6 +409,31 @@ public class FDPromotionManagerNewDAO {
 		
 		return promoList;
 	}
+	
+	public static List<FDPromotionNewModel> getPromotionsByYear(Connection conn, Integer modifiedYear) throws SQLException {
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;		
+		List<FDPromotionNewModel> promoList = new ArrayList<FDPromotionNewModel>();
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION_NEW WHERE modify_date is not null and TO_CHAR(modify_date, 'YYYY')=?");
+			ps.setInt(1, modifiedYear);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				FDPromotionNewModel promotion = populate(conn, rs);
+				promoList.add(promotion);
+			}
+		} finally{
+			if(rs!=null){
+				rs.close();
+			}
+			if(ps!=null){
+				ps.close();
+			}
+		}
+		
+		return promoList;
+	}
 
 	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date asc";
 	

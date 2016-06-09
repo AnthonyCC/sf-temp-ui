@@ -1089,4 +1089,19 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}	
 
+	public List<FDPromotionNewModel> getPromotionsByYear(Integer modifiedYear) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			List<FDPromotionNewModel> promoList = FDPromotionManagerNewDAO.getPromotionsByYear(conn,modifiedYear);
+
+			return promoList;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+		    close(conn);
+		}
+	}
 }

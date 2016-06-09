@@ -139,6 +139,8 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public String createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException,RemoteException;
 	
 	public List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException , RemoteException;
+	
+	public List<FDPromotionNewModel> getPromotionsByYear(Integer modifiedYear) throws FDResourceException, RemoteException;
 
 }
 
