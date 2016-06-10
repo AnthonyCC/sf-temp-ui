@@ -578,99 +578,132 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	
 	
-public void queryForMissingFdxOrders() {
-		
-		
-		Connection con = null;
+	public void queryForMissingFdxOrders() {
+
 		try {
-			con = getConnection();
-			List<CreateOrderRequest> list = this.queryForFdxSales(con, QUERY_ORDERS_MISSING_IN_LOGISTICS);	
-			if(list.size()>0)
-			sendOrdersToLogistics(con,list);
+			List<CreateOrderRequest> list = this
+					.queryForFdxSales(QUERY_ORDERS_MISSING_IN_LOGISTICS);
+			if (list.size() > 0)
+				sendOrdersToLogistics(list);
 		} catch (Exception e) {
 			LOGGER.warn(e);
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
 		}
 	}
-	public void sendOrdersToLogistics(Connection con,List<CreateOrderRequest> list) throws FDResourceException  {
-		for(CreateOrderRequest command:list){
-		FDDeliveryManager.getInstance().submitOrder(command.getOrderId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),
-				command.getErpOrderId());
-		updateStatusOfOrder(con,command);
-		}    	
+
+	public void sendOrdersToLogistics(List<CreateOrderRequest> list)
+			throws FDResourceException {
+		for (CreateOrderRequest command : list) {
+			FDDeliveryManager.getInstance().submitOrder(command.getOrderId(),
+					command.getParentOrderId(), command.getTip(),
+					command.getReservationId(), command.getFirstName(),
+					command.getLastName(), command.getDeliveryInstructions(),
+					command.getServiceType(), command.getUnattendedInstr(),
+					command.getOrderMobileNumber(), command.getErpOrderId());
+			updateStatusOfOrder(command);
+		}
 	}
 	
-	private List<CreateOrderRequest> queryForFdxSales(Connection conn, String query) throws FDResourceException {
+	private List<CreateOrderRequest> queryForFdxSales(String query)
+			throws FDResourceException {
 		List<CreateOrderRequest> ordersList = new ArrayList<CreateOrderRequest>();
 		List<String> list = new ArrayList<String>();
-		PreparedStatement ps;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
+			conn = getConnection();
 			ps = conn.prepareStatement(query);
-		
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			list.add(rs.getString("ORDER_ID"));
-		}
-		LOGGER.info(list);
-		rs.close();
-		ps.close();
-		ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-		
-		for(String orderId:list)
-		{
-			ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
-		
-			CreateOrderRequest c=new CreateOrderRequest(orderId, (order.getRecentOrderTransaction().getPaymentMethod()!=null)?
-					order.getRecentOrderTransaction().getPaymentMethod().getReferencedOrder():null
-					,order.getRecentOrderTransaction().getTip(),
-					(order.getRecentOrderTransaction().getDeliveryInfo()!=null)?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId():null,
-					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getFirstName(),order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getLastName(),
-					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getInstructions()
-					,(order.getRecentOrderTransaction().getDeliveryInfo().getServiceType()!=null)?order.getRecentOrderTransaction().getDeliveryInfo().getServiceType().getName():null,
-					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
-					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone():null,
-					order.getSapOrderNumber());
-			ordersList.add(c);
-		}
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				list.add(rs.getString("ORDER_ID"));
+			}
+
+			LOGGER.info(list);
+
+			close(rs);
+			close(ps);
+			close(conn);
+
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+
+			for (String orderId : list) {
+				ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
+
+				CreateOrderRequest c = new CreateOrderRequest(
+						orderId,
+						(order.getRecentOrderTransaction().getPaymentMethod() != null) ? order
+								.getRecentOrderTransaction().getPaymentMethod()
+								.getReferencedOrder()
+								: null,
+						order.getRecentOrderTransaction().getTip(),
+						(order.getRecentOrderTransaction().getDeliveryInfo() != null) ? order
+								.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryReservationId()
+								: null,
+						order.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryAddress().getFirstName(),
+						order.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryAddress().getLastName(),
+						order.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryAddress().getInstructions(),
+						(order.getRecentOrderTransaction().getDeliveryInfo()
+								.getServiceType() != null) ? order
+								.getRecentOrderTransaction().getDeliveryInfo()
+								.getServiceType().getName() : null,
+						order.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryAddress().getAltDelivery() != null ? order
+								.getRecentOrderTransaction().getDeliveryInfo()
+								.getDeliveryAddress().getAltDelivery()
+								.getName()
+								: "none",
+						order.getRecentOrderTransaction().getDeliveryInfo()
+								.getOrderMobileNumber() != null ? order
+								.getRecentOrderTransaction().getDeliveryInfo()
+								.getOrderMobileNumber().getPhone() : null,
+						order.getSapOrderNumber());
+				ordersList.add(c);
+			}
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
-		}catch (RemoteException e) {
+		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			throw new FDResourceException(e);
-		}catch (CreateException e) {
+		} catch (CreateException e) {
 			// TODO Auto-generated catch block
 			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 		return ordersList;
 	}
 	
-	public void updateStatusOfOrder(Connection con,CreateOrderRequest order)  {
-		
+	public void updateStatusOfOrder(CreateOrderRequest order) {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
 
 		try {
-			PreparedStatement ps = con.prepareStatement(UPDATE_STATUS_OF_SENT_ORDERS);
-			
-			ps.setString(1,order.getOrderId());
-			 ps.executeUpdate();
-			ps.close();
+			conn = this.getConnection();
+			ps = conn.prepareStatement(UPDATE_STATUS_OF_SENT_ORDERS);
+
+			ps.setString(1, order.getOrderId());
+			ps.executeUpdate();
+
+			close(ps);
+			close(conn);
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			close(ps);
+			close(conn);
 		}
-		finally{
-		
-		}
-		
-		}
+
+	}
 			
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
