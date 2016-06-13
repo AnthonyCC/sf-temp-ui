@@ -42,6 +42,12 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	private static final String  HOOKLOGIC_ORDERID="orderid";
 	private static final String HOOKLOGIC_QUANTITY="quantity";
 	private static final String HOOKLOGIC_CUSERID="cuserid";
+	private static final String HOOKLOGIC_CREATIVE="creative";
+	private static final String HOOKLOGIC_ALLOWMARKETPLACE="allowMarketplace";
+	private static final String HOOKLOGIC_MINMES="minmes";
+	private static final String HOOKLOGIC_MAXMES="maxmes";
+	private static final String HOOKLOGIC_PGN="pgn";
+	
 	
 	private BrandProductAdConfigProvider hlAdConfigProvider = HLBrandProductAdConfigProvider.getInstance();
 	
@@ -68,6 +74,30 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_MEDIASOURCE, hlAdConfigProvider.getBrandProductAdProviderMediaSource());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHlpt());
 		urlParameters.put(HOOKLOGIC_STRATEGY, hlAdConfigProvider.getBrandProductAdProviderStrategy());
+		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
+		String jsonResponse = sendGetRequest(urlToCall);
+		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
+		return response;
+		
+	}
+	
+public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException {
+		
+		LOGGER.info("while making a call to Hook Logic Category Productslist from Hook Loogic: "+hLRequestData.getCategoryId());
+		
+		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderCategoryURL());
+		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
+		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
+		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
+		urlParameters.put(HOOKLOGIC_CUSERID, hLRequestData.getCustomerId()==null?"":hLRequestData.getCustomerId());
+		urlParameters.put(HOOKLOGIC_TAXONOMY, hLRequestData.getCategoryId());
+		urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
+		urlParameters.put(HOOKLOGIC_ALLOWMARKETPLACE, hlAdConfigProvider.getBrandProductAdProviderAallowMarketplace());
+		urlParameters.put(HOOKLOGIC_MINMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());
+		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());
+		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
+		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderCategoryHlpt());
+		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderCreative());
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);

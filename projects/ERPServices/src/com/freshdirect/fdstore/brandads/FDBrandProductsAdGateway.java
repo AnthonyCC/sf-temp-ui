@@ -55,6 +55,19 @@ public class FDBrandProductsAdGateway {
 		
 		return hlBrandProductAdResponse;		
 	}
+	
+public static HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException{
+		
+		HLBrandProductAdResponse hlBrandProductAdResponse=null;
+		
+		try {
+			hlBrandProductAdResponse =getService().getCategoryProducts(hLRequestData);
+		} catch (BrandProductAdServiceException e) {
+			LOG.error("Exception while getting HLBrandProductAd metadata:"+e.getMessage());
+		}
+		
+		return hlBrandProductAdResponse;		
+	}
 
 	public static void submittedOrderdDetailsToHL(HLOrderFeedDataModel hLOrderFeedDataModel) throws BrandProductAdServiceException{
 		

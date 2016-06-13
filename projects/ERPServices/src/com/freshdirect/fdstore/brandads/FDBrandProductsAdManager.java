@@ -43,6 +43,24 @@ public class FDBrandProductsAdManager {
 		}
 		
 	}
+	
+	public static HLBrandProductAdResponse getHLCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException{
+		lookupManagerHome();
+		
+		try {
+			FDBrandProductsAdManagerSB sb = managerHome.create();
+			return sb.getCategoryProducts(hLRequestData);
+			
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+		
+	}
+	
 	private static void invalidateManagerHome() {
 		managerHome = null;
 	}

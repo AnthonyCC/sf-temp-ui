@@ -59,5 +59,45 @@ public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvi
 		return ErpServicesProperties.getBrandProductAdProviderConformationHlpt();
 	}
 	
+	public  String getBrandProductAdProviderCategoryURL(){
+		return ErpServicesProperties.getBrandProductAdProviderCategoryURL();
+	}
+	
+	public  String getBrandProductAdProviderCreative(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderCreative();
+	}
+	
+	public  String getBrandProductAdProviderAallowMarketplace(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderAllowMarketplace();
+	}
+	
+	public  String getBrandProductAdProviderCategoryHlpt(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderCategoryHlpt();
+	}
+	
+	public  String getBrandProductAdProviderCategoryPlatform(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderCategoryPlatform();
+	}
+	
+	public  String getBrandProductAdProviderMinmes(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderMinmes();
+	}
+	
+	public  String getBrandProductAdProviderMaxmes(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderMaxmes();
+	}
+	
+	public  String getBrandProductAdProviderPgn(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderPgn();
+	}
+	
+	
 	
 }

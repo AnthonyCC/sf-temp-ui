@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
@@ -320,10 +321,26 @@ public class BrowseData implements Serializable {
 		}
 	}
 	public static class HLBrandAdProducts implements Serializable {
+	
+		private static final long serialVersionUID = -4153578565069486053L;
 		
-		private static final long serialVersionUID = -5076065046727187803L;
+		
 		private List<ProductData> products = new ArrayList<ProductData>();
-		private String pageBeacon = null;;
+		private String pageBeacon = null;
+		
+		
+		private Map<String, List<ProductData>> hlSelectionOfProductList = new HashMap<String, List<ProductData>>();
+		
+		private Map<String, String> hlSelectionsPageBeacons = new HashMap<String, String>();
+		
+		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
+			return hlSelectionOfProductList;
+		}
+
+		public void setHlSelectionOfProductList(
+				Map<String, List<ProductData>> hlSelectionOfProductList) {
+			this.hlSelectionOfProductList = hlSelectionOfProductList;
+		}
 
 		public List<ProductData> getProducts() {
 			return products;
@@ -340,8 +357,15 @@ public class BrowseData implements Serializable {
 		public void setPageBeacon(String pageBeacon) {
 			this.pageBeacon = pageBeacon;
 		}
-			
-		
+
+		public Map<String, String> getHlSelectionsPageBeacons() {
+			return hlSelectionsPageBeacons;
+		}
+
+		public void setHlSelectionsPageBeacons(
+				Map<String, String> hlSelectionsPageBeacons) {
+			this.hlSelectionsPageBeacons = hlSelectionsPageBeacons;
+		}
 	}
 		
 	public static class SearchParams implements Serializable {

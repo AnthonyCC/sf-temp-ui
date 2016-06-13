@@ -20,6 +20,8 @@ public interface FDBrandProductsAdManagerSB extends EJBObject{
 	public void submittedOrderdDetailsToHL(Date productsOrderFeedDate) throws FDResourceException, BrandProductAdServiceException, RemoteException;
 	public void submittedOrderdDetailsToHL(List<String> orders) throws FDResourceException, BrandProductAdServiceException, RemoteException;
 	public Date getLastSentFeedOrderTime() throws FDResourceException, RemoteException;
+	public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException, RemoteException;
+	
 	
 	
 	

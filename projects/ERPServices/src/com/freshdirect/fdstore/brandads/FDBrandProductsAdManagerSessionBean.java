@@ -34,8 +34,16 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 	public HLBrandProductAdResponse getSearchbykeyword(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException {
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
 		if(FDStoreProperties.isHookLogicEnabled()){
-			LOGGER.debug("HookLogic Enable.");
 			hlBrandProductAdResponse = FDBrandProductsAdGateway.getSearchbykeyword(hLRequestData);
+			return hlBrandProductAdResponse;
+		}
+		return null;
+	}
+	
+	public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException {
+		HLBrandProductAdResponse hlBrandProductAdResponse=null;
+		if(FDStoreProperties.isHookLogicEnabled()){
+			hlBrandProductAdResponse = FDBrandProductsAdGateway.getCategoryProducts(hLRequestData);
 			return hlBrandProductAdResponse;
 		}
 		return null;

@@ -28,4 +28,22 @@ public interface BrandProductAdConfigProvider {
 	
 	public  String getBrandProductAdProviderConformationHlpt() ;
 	
+	public  String getBrandProductAdProviderCategoryURL();
+	
+	public  String getBrandProductAdProviderCreative() ;
+	
+	public  String getBrandProductAdProviderAallowMarketplace() ;
+	
+	public  String getBrandProductAdProviderCategoryHlpt() ;
+	
+	public  String getBrandProductAdProviderCategoryPlatform() ;
+	
+	public  String getBrandProductAdProviderMinmes() ;
+	
+	public  String getBrandProductAdProviderMaxmes() ;
+	
+	public  String getBrandProductAdProviderPgn() ;
+	
+	
+	
 }

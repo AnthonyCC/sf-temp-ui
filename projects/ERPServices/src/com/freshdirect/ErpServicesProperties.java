@@ -250,8 +250,23 @@ public class ErpServicesProperties {
 	
 	public final static String PROP_HOOK_LOGIC_CONFIRMAITON_HLPT="fdstore.erp.hl.confirmaiton.hlpt";
 	
+	public final static String PROP_HOOK_LOGIC_CREATIVE="fdstore.erp.hl.creative";
+	
+	public final static String PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE="fdstore.erp.hl.allow.market.place";
+	
+	public final static String PROP_HOOK_LOGIC_CATEGORY_HLPT="fdstore.erp.hl.category.hlpt";
+	
+	public final static String PROP_HOOK_LOGIC_CATEGORY_PLATFORM="fdstore.erp.hl.category.platform";
+	
+	public final static String PROP_HOOK_LOGIC_CATEGORY_MINMES="fdstore.erp.hl.category.minmes";
+	
+	public final static String PROP_HOOK_LOGIC_MAXMES="fdstore.erp.hl.maxmes";
+	
+	public final static String PROP_HOOK_LOGIC_PGN="fdstore.erp.hl.pgn";
 	
 	public final static String PROP_HOOK_LOGIC_STRATEGY="fdstore.erp.hl.strategy";
+	
+	public final static String  PROP_HOOK_LOGIC_CATEGORY_URL="fdstore.erp.hooklogic.category.url";
 	
 	static {
 		Properties defaults = new Properties();
@@ -441,8 +456,14 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HOOK_LOGIC_HLPT, "S");
 		defaults.put(PROP_HOOK_LOGIC_CONFIRMAITON_HLPT, "C");
 		defaults.put(PROP_HOOK_LOGIC_STRATEGY, "inmarket");
-		
-		
+		defaults.put(PROP_HOOK_LOGIC_CREATIVE, "790x260_T-R-IG_TI_1-4_CategoryGrid1");
+		defaults.put(PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE, "o");
+		defaults.put(PROP_HOOK_LOGIC_CATEGORY_HLPT, "B");
+		defaults.put(PROP_HOOK_LOGIC_CATEGORY_PLATFORM, "web");
+		defaults.put(PROP_HOOK_LOGIC_CATEGORY_MINMES, "1");
+		defaults.put(PROP_HOOK_LOGIC_MAXMES, "5");
+		defaults.put(PROP_HOOK_LOGIC_PGN, "1");
+		defaults.put(PROP_HOOK_LOGIC_CATEGORY_URL, "http://uat1.hlserve.com/delivery/api/taxonomy?");
 		
 		
 		defaults.put(PROP_PP_SETTLEMENT_STL_EVENTCODES, "T0006, T0003");
@@ -1126,5 +1147,38 @@ public class ErpServicesProperties {
 	public static String getHLClientId() {
 		return config.getProperty(PROP_HL_CLIENT_ID);
 	}
+	
+	public static String getBrandProductAdProviderCategoryURL() {
+		return config.getProperty(PROP_HOOK_LOGIC_CATEGORY_URL);
+	}
+	
+	public static  String getBrandProductAdProviderCreative(){
+		return config.getProperty(PROP_HOOK_LOGIC_CREATIVE);
+	}
+	
+	public static  String getBrandProductAdProviderAllowMarketplace(){
+		return config.getProperty(PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE);
+	}
+	
+	public static String getBrandProductAdProviderCategoryHlpt(){
+		return config.getProperty(PROP_HOOK_LOGIC_CATEGORY_HLPT);
+	}
+	
+	public static  String getBrandProductAdProviderCategoryPlatform(){
+		return config.getProperty(PROP_HOOK_LOGIC_CATEGORY_PLATFORM);
+	}
+	
+	public static  String getBrandProductAdProviderMinmes(){
+		return config.getProperty(PROP_HOOK_LOGIC_CATEGORY_MINMES);
+	}
+	
+	public static  String getBrandProductAdProviderMaxmes(){
+		return config.getProperty(PROP_HOOK_LOGIC_MAXMES);
+	}
+	
+	public static String getBrandProductAdProviderPgn(){
+		return config.getProperty(PROP_HOOK_LOGIC_PGN);
+	}
+	
 	
 }
