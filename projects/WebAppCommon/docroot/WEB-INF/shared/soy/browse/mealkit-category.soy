@@ -92,7 +92,7 @@
 			  <p class="mealkit-products-list-item-head">{if $description}{$description}{/if}</p>
 			  <p class="mealkit-products-list-item-subhead">{if $salesUnitDescrPDP}{$salesUnitDescrPDP}{/if}</p>
 		  </div>
-		  <p>{if $productQualityNote}{$productQualityNote}{/if}</p>
+		  <p>{if $productQualityNote and $available}{$productQualityNote}{/if}</p>
 	</div>
 	{if $available}
       <div class="mealkit-products-list-item-infos">
