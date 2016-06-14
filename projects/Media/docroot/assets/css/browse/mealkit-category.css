@@ -149,6 +149,15 @@
   filter: alpha(opacity=50);
 }
 
+.mealkit-products-list-content.unavailable {
+  color:#333;
+}
+
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-head,
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-subhead {
+  color:#999;
+}
+
 .mealkit-products-list-content.unavailable .mealkit-products-list-item-header-wrapper:after{
   content:"Unavailable";
   display:block;
