@@ -1154,7 +1154,7 @@ public class ProductDetailPopulator {
 						if (n > 0 && d > 0) {
 							final double p = (item.getPrice() * n) / d;
 							item.setPricePerDefaultSalesUnit(UnitPriceUtil.formatDecimalToString(p));
-							item.setDispDefaultSalesUnit((double)n/d+" "+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
+							item.setDispDefaultSalesUnit((double)n/d+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
 						}
 					}
 				}
