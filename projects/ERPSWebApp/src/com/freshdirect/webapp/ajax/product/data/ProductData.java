@@ -116,6 +116,10 @@ public class ProductData extends BasicProductData implements SkuData {
     // APPDEV-3438
     private String utPrice;
     private String utSalesUnit;
+    
+    //APPDEV-4357
+    private String pricePerDefaultSalesUnit;
+    private String dispDefaultSalesUnit;
 
     // TODO ???
     protected double wasPrice;
@@ -843,6 +847,22 @@ public class ProductData extends BasicProductData implements SkuData {
 
 	public void setImageBeacon(String imageBeacon) {
 		this.imageBeacon = imageBeacon;
+	}
+
+	public String getPricePerDefaultSalesUnit() {
+		return pricePerDefaultSalesUnit;
+	}
+
+	public String getDispDefaultSalesUnit() {
+		return dispDefaultSalesUnit;
+	}
+
+	public void setPricePerDefaultSalesUnit(String pricePerDefaultSalesUnit) {
+		this.pricePerDefaultSalesUnit = pricePerDefaultSalesUnit;
+	}
+
+	public void setDispDefaultSalesUnit(String dispDefaultSalesUnit) {
+		this.dispDefaultSalesUnit = dispDefaultSalesUnit;
 	}
     
     

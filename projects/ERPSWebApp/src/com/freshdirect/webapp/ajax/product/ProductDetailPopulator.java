@@ -1141,6 +1141,23 @@ public class ProductDetailPopulator {
 			if ( zpi != null ) {
 				item.setPrice( zpi.getDefaultPrice(/*priceCalculator.getPricingContext().getZoneInfo().getPricingIndicator()*/) );
 				item.setScaleUnit( productInfo.getDisplayableDefaultPriceUnit().toLowerCase() );
+				
+				//APPDEV-4357 -Price display by default sales unit.
+				if("lb".equalsIgnoreCase(item.getScaleUnit())){
+					FDSalesUnit su = fdProduct.getDefaultSalesUnit();
+					if(null == su){
+						su = fdProduct.getSalesUnits()[0];
+					}
+					if(null != su){
+						final int n = su.getNumerator();
+						final int d = su.getDenominator();
+						if (n > 0 && d > 0) {
+							final double p = (item.getPrice() * n) / d;
+							item.setPricePerDefaultSalesUnit(UnitPriceUtil.formatDecimalToString(p));
+							item.setDispDefaultSalesUnit((double)n/d+" "+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
+						}
+					}
+				}
 			}
 		} catch ( FDSkuNotFoundException e ) {
 			// No sku (cannot happen) - don't even try the pricing
