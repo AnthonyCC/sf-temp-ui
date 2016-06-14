@@ -27,15 +27,21 @@
 	  </div>
 	  
 	</div>
-	<div id="mealkit-product-right">
-	  <div class="mealkit-product-addtocart" data-addtocart-functionality>
-	    <div class="center-content<%= (user.isEligibleForStandingOrders()) ? " " : "" %>" data-component="product" data-cmeventsource="pdp_main">
-	      <soy:render template="pdp.productData" data="${productPotato}" />
-	      <soy:render template="pdp.mealkitProductAddToCart" data="${productPotato}"/>
-	    </div>
-	  </div>
-	</div>
-	
+    <div id="mealkit-product-right">
+      <c:if test="${productPotato.available}">
+        <div class="mealkit-product-addtocart" data-addtocart-functionality>
+          <div class="center-content<%= (user.isEligibleForStandingOrders()) ? " " : "" %>" data-component="product" data-cmeventsource="pdp_main">
+            <soy:render template="pdp.productData" data="${productPotato}" />
+            <soy:render template="pdp.mealkitProductAddToCart" data="${productPotato}"/>
+          </div>
+        </div>
+      </c:if>
+      <c:if test="${not productPotato.available }">
+        <soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
+        <soy:render template="pdp.productRequest"/>
+      </c:if>
+    </div>
+
 	 <div class="mealkit-recommendations transactional" data-cmeventsource="tgrec">
       	<soy:render template="pdp.mealkitProductRecommendation" data="${productPotato}"/>
   	  </div>
