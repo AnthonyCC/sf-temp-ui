@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -739,7 +740,6 @@ public class CmsFilteringFlow {
     public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
 		
 		BrowseDataContext browseDataContext = null;
-		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();
 		
 		String id = nav.getId();
 		ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
@@ -758,54 +758,17 @@ public class CmsFilteringFlow {
 		// filtering and grouping
 		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user, nav);
 		
-		//browseDataContext.getSectionContexts().get(0).getSectionContexts().get(1).getProductItems().get(0).getProductModel().getSku(0).getSkuCode();
-		
 	
 		
  if(FDStoreProperties.isHookLogicEnabled()){	
-			
-	hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
-	hLBrandProductAdRequest.setCategoryId(nav.getId());
-	
-	Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
-	Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
-	List<ProductData> hlProductlist=new ArrayList<ProductData>();
-	List<ProductModel> adPrducts = new ArrayList<ProductModel>();
-		try {
-			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
-			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getProductAd();
-			
-			 if(null ==hlBrandAdProductsMeta){
-				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
-					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
-					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-					browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-					
-					try {
-						ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
-						if(null !=productModel){
-							ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
-								adPrducts.add(pm);
-						}
-						
-					} catch (FDSkuNotFoundException e) {
-						LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
-					}
-					
-				}
-			 }
-			List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
-			if(null !=adPrducts){
-				for (ProductModel productModel : adPrducts) {
-					FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(productModel);
-					productResults.add(item);
-				}
-			}
-			buildHLCategoryLevelProducts(browseDataContext, navigationModel, hlSelectionsofProductsList, hlProductlist, adPrducts, user,  nav);
-			buildHlCategoriesPageBeacon(hlSelectionsofProductsList, productResults, nav, browseDataContext, hlSelectionsofPageBeacons, navigationModel);
-		 
-		} catch (Exception e) {
-		LOG.info("FDSkuNotFoundException while populating HookLogic filters products : ", e);
+	if(null != browseDataContext){
+		String catId = nav.getId();
+		Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
+		Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
+		List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
+		getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext);
+		browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
+		browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
 	}
 	
  }
@@ -848,6 +811,71 @@ public class CmsFilteringFlow {
         browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
 
 		return browseDataContext;
+	}
+
+	private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId,	Map<String, List<ProductData>> hlSelectionsofProductsList, 
+										Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext) throws FDResourceException {
+		if(null !=sectionContexts){
+			for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
+				 SectionContext categorySectionsContext  = (SectionContext) iterator.next();
+				  if(categorySectionsContext.getCatId()!=null){
+					getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
+				}
+				getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,categorySectionsContext.getSectionContexts(), browseDataContext);
+			 }
+		}else{
+			getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
+		}
+	}
+
+	private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId,	Map<String, List<ProductData>> hlSelectionsofProductsList, 
+											Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext)throws FDResourceException {
+		
+		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();	
+		hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
+		hLBrandProductAdRequest.setCustomerId(user.getUser().getPK().getId());
+		hLBrandProductAdRequest.setCategoryId(catId);
+		try {
+			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
+			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getProductAd();
+			List<ProductModel> adPrducts = new ArrayList<ProductModel>();
+			if(hlBrandAdProductsMeta!=null){
+			for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
+				HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
+				hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+				browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+				
+				try {
+					ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+					if(null !=productModel){
+						ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
+							adPrducts.add(pm);
+					}
+					
+				} catch (FDSkuNotFoundException e) {
+					LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
+				}
+				
+			}
+	  }
+			
+			List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
+			if(null !=adPrducts){
+				for (ProductModel productModel : adPrducts) {
+					FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(productModel);
+					productResults.add(item);
+				}
+			}
+			List<ProductData> hlAvailableProductDataList=getProductDataList(user, productResults,navigationModel);			
+			hlSelectionsofProductsList.put(catId, hlAvailableProductDataList);
+			buildHlCategoriesPageBeacon(hlSelectionsofPageBeacons, browseDataContext, user, productResults, catId);
+		} catch (BrandProductAdServiceException e) {
+			// TODO Auto-generated catch block
+			LOG.warn("Exception while populating HookLogic Product for Categorypages: ", e);
+		}
+		catch (Exception e) {
+			LOG.warn("Exception while populating HookLogic Product for Categorypages: ", e);
+		}
 	}
 
     /**
@@ -1000,135 +1028,79 @@ public class CmsFilteringFlow {
 		return null;
 	}
 
- private void buildHLCategoryLevelProducts(BrowseDataContext browseDataContext, NavigationModel navigationModel, Map<String, List<ProductData>> hlSelectionsofProductsList,
-		 						List<ProductData> hlProductDataList, List<ProductModel> adPrducts, FDSessionUser user, CmsFilteringNavigator nav){
+ private void buildHlCategoriesPageBeacon(Map<String, String> hlSelectionsofPageBeacon, BrowseDataContext browseDataContext,
+		 									FDSessionUser user, List<FilteringSortingItem<ProductModel>> productResults, String catId ){
 	try{
-		FilteringProductItem categoryLevelProducts=null;
-		List<ProductData> hlAvailableProductDataList= new ArrayList<ProductData>();
+		List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(productResults);
 		
-		 for (Iterator<SectionContext> iterator = browseDataContext.getSectionContexts().iterator(); iterator.hasNext();) {
-			SectionContext categorySectionsContext  = (SectionContext) iterator.next();//categorySectionsContext
-			
-			if(categorySectionsContext.getSectionContexts()!=null){
-				for (Iterator<SectionContext> sectionContextIterator = categorySectionsContext.getSectionContexts().iterator(); sectionContextIterator.hasNext();) {
-					SectionContext subCategorySectionsContext  = (SectionContext) sectionContextIterator.next();
-					
-					for (Iterator<FilteringProductItem> subCategorySections = subCategorySectionsContext.getProductItems().iterator(); subCategorySections.hasNext(); ) {
-								categoryLevelProducts  = (FilteringProductItem) subCategorySections.next();//Retreiving categoryLevelProducts 
-							
-								for (Iterator<ProductModel> hlProduModelctList = adPrducts.iterator(); hlProduModelctList.hasNext();) {
-									ProductModel hlProducModel  = (ProductModel) hlProduModelctList.next();
-									
-									if(hlProducModel.getSkuCodes().get(0).equals(categoryLevelProducts.getProductModel().getSkuCodes().get(0)) ){
-										FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(hlProducModel);
-										ProductData productData = null;
-										try {
-											  productData = ProductDetailPopulator.createProductData(user, item.getModel());
-												} catch (FDResourceException e) {
-													LOG.warn("Exception while populating HookLogic returned product: ", e);
-											e.printStackTrace();
-												} catch (FDSkuNotFoundException e) {
-													LOG.warn("Exception while populating HookLogic returned product: ", e);
-											e.printStackTrace();
-												} catch (HttpErrorResponse e) {
-													LOG.warn("Exception while populating HookLogic returned product: ", e);
-											e.printStackTrace();
-												}
-											if(hlSelectionsofProductsList.containsKey(subCategorySectionsContext.getCatId())){ //subCategorySectionsContext
-												hlProductDataList = (ArrayList<ProductData>) hlSelectionsofProductsList.get(subCategorySectionsContext.getCatId());
-													}else{
-														hlProductDataList = new ArrayList<ProductData>();
-														hlSelectionsofProductsList.put(subCategorySectionsContext.getCatId(), hlProductDataList);
-															}
-													if(hlProductDataList.size()<=FDStoreProperties.getHlProductsCount()){
-															hlProductDataList.add(productData);
-															hlSelectionsofProductsList.put(subCategorySectionsContext.getCatId(), hlProductDataList);
-														}
-											}
-								}
-						}
-				}
-			}
-			else{
-				hlAvailableProductDataList=getProductDataList(adPrducts, user);
-				if(hlAvailableProductDataList.size()!=0){
-					hlSelectionsofProductsList.put(nav.getId(), hlAvailableProductDataList);
-				}
-			}
-			
-		 }
-		 
-			browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
-				
-	}catch (Exception e) {
-		LOG.warn("Exception while populating CategoryLevel HookLogic products: ", e);
-	}
- }
-
- private void buildHlCategoriesPageBeacon(Map<String, List<ProductData>> hlSelectionsofProductsList,List<FilteringSortingItem<ProductModel>> hlItems, CmsFilteringNavigator nav,
-		 BrowseDataContext browseDataContext, Map<String, String>hlSelectionsofPageBeacons, NavigationModel navigationModel ){
-	 
-	 List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(hlItems);
-	 StringBuffer updatedPageBeacon;
-	 StringBuffer categoryId=null;
-	try{
-		if(items!=null)
-			items = ProductItemFilterUtil.getFilteredProducts(items, navigationModel.getActiveFilters(), true, true);
-	    for (FilteringProductItem product : items) {	
-				for (Entry<String, List<ProductData>> entry : hlSelectionsofProductsList.entrySet()) {
-					updatedPageBeacon=categoryId=new StringBuffer(entry.getKey());
-					updatedPageBeacon= new StringBuffer("&aShown=");
-					for (ProductData productData :  entry.getValue()) {
+		StringBuffer updatedPageBeacon= new StringBuffer("&aShown=");
+		  if(null !=items){
+				for (FilteringProductItem product : items) {
 						if(product.getProductModel()!=null && !product.getProductModel().isUnavailable()) {
+							ProductData productData = null;
+							try {
+								productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
+							} catch (FDResourceException e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							} catch (FDSkuNotFoundException e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							} catch (HttpErrorResponse e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							}
+							catch (Exception e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							}
 							if(null != productData && null != productData.getSkuCode()){
 								updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
 								productData.setFeatured(true);
 								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
 								productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());
+									
+								} 
 							}
-					     else{
-							 updatedPageBeacon.append("&aShown=none");
 						}
-					if(null!=browseDataContext.getAdProducts() && browseDataContext.getAdProducts().getPageBeacon()!=null){
-						StringBuffer PageBeacon=new StringBuffer(browseDataContext.getAdProducts().getPageBeacon());
-						hlSelectionsofPageBeacons.put(categoryId.toString(), PageBeacon.append(updatedPageBeacon).toString());
-						}
+					
+				}else{
+					updatedPageBeacon.append("none");
+				  }
+				if(null!=browseDataContext.getAdProducts().getPageBeacon()){
+					StringBuffer PageBeacon=new StringBuffer(browseDataContext.getAdProducts().getPageBeacon());
+					  PageBeacon.append(updatedPageBeacon).toString();
+					  hlSelectionsofPageBeacon.put(catId, PageBeacon.toString());
 					}
-				}
-			}
-		 }
-		 browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
-	}catch (Exception e) {
-		LOG.warn("Exception while populating Hook Logic Category PageBeacons: ", e);
-	  } 
- }
-
-private List<ProductData> getProductDataList(List<ProductModel> adPrducts, FDSessionUser user){
+		}catch (Exception e) {
+			LOG.warn("Exception while populating HookLogic products: ", e);
+		}
+ 	}
+ 
+private List<ProductData> getProductDataList(FDSessionUser user, List<FilteringSortingItem<ProductModel>> hlItems, NavigationModel navigationModel){
 	
-	List<ProductData> hlProductDataList = new ArrayList<ProductData>();
-	
-	for (Iterator<ProductModel> hlProduModelctList = adPrducts.iterator(); hlProduModelctList.hasNext();) {
-		ProductModel hlProducModel  = (ProductModel) hlProduModelctList.next();
-		FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(hlProducModel);
-		ProductData productData = null;
-	try {
-		  productData = ProductDetailPopulator.createProductData(user, item.getModel());
-			} catch (FDResourceException e) {
-				LOG.warn("Exception while populating HookLogic returned product: ", e);
-		e.printStackTrace();
-			} catch (FDSkuNotFoundException e) {
-				LOG.warn("Exception while populating HookLogic returned product: ", e);
-			} catch (HttpErrorResponse e) {
-				LOG.warn("Exception while populating HookLogic returned product: ", e);
-		e.printStackTrace();
+	List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(hlItems);
+	ProductData productData = null;
+	 	List<ProductData> hlProductDataList = new ArrayList<ProductData>();
+	 	items = ProductItemFilterUtil.getFilteredProducts(items, navigationModel.getActiveFilters(), true, true);
+	 		for (FilteringProductItem product : items) {
+	 			if(product.getProductModel()!=null && !product.getProductModel().isUnavailable()){
+	 	      try { 
+					productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
+					} catch (FDResourceException e) {
+						LOG.warn("Exception while populating HookLogic returned product: ", e);
+				e.printStackTrace();
+					} catch (FDSkuNotFoundException e) {
+						LOG.warn("Exception while populating HookLogic returned product: ", e);
+					} catch (HttpErrorResponse e) {
+						LOG.warn("Exception while populating HookLogic returned product: ", e);
+				e.printStackTrace();
+					}
+					catch (Exception e) {
+						LOG.warn("Exception while populating Hook Logic ProductData: ", e);
+					}
+	 	     hlProductDataList.add(productData);
 			}
-			catch (Exception e) {
-				LOG.warn("Exception while populating Hook Logic ProductData: ", e);
-			}
-	  	hlProductDataList.add(productData);
+	  	
 		if(hlProductDataList.size()>=FDStoreProperties.getHlProductsCount())
 			break;
 		}
 	 return hlProductDataList;
-  }
+ }
 }
