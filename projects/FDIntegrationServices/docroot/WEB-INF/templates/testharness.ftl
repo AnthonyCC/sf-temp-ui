@@ -569,7 +569,7 @@ function loadStuff() {
   	
   } else if (loaddata == "QuickShopEveryItemEverOrderedEX") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverorderedEX/");
-  	$("#payload").val('{"page" : "1"}');
+  	$("#payload").val('{"page" : "1" , "max" : "20000"}');
   	
   } else if (loaddata == "RemoveMultipleItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
