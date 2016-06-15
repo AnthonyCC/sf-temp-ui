@@ -33,7 +33,7 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 	private static final Logger LOGGER = LoggerFactory.getInstance(FDBrandProductsAdManagerSessionBean.class);
 	public HLBrandProductAdResponse getSearchbykeyword(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException {
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
-		if(FDStoreProperties.isHookLogicEnabled()){
+		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
 			hlBrandProductAdResponse = FDBrandProductsAdGateway.getSearchbykeyword(hLRequestData);
 			return hlBrandProductAdResponse;
 		}
@@ -42,7 +42,7 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 	
 	public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException {
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
-		if(FDStoreProperties.isHookLogicEnabled()){
+		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
 			hlBrandProductAdResponse = FDBrandProductsAdGateway.getCategoryProducts(hLRequestData);
 			return hlBrandProductAdResponse;
 		}

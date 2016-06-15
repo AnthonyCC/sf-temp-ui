@@ -851,7 +851,8 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_ACCOUNT_NUMBER ="fdstore.tax.avalara.account.number";
 	private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";    
 	
-	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
+	private final static String PROP_HOOK_LOGIC_BLACKHOLE_ENABLE = "fdstore.hooklogic.blackhole.enabled";
+	private final static String PROP_HOOK_LOGIC_CATEGORY_ENABLE = "fdstore.hooklogic.category.enabled";
 	private final static String PROP_HOOK_LOGIC_ORDER_FEED_MINS = "fdstore.hooklogic.orderfeed.minutes";
     private final static String PROP_HOOK_LOGIC_ALLOW_OWN_ROWS = "fdstore.hooklogic.allow.own.rows";
     
@@ -1698,7 +1699,8 @@ public class FDStoreProperties {
         
         defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
-    	defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
+    	defaults.put(PROP_HOOK_LOGIC_BLACKHOLE_ENABLE, "false");
+    	defaults.put(PROP_HOOK_LOGIC_CATEGORY_ENABLE, "true");
     	defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
     	defaults.put(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS, "true"); //can HL items be on a row by themselves?
         		
@@ -4281,8 +4283,12 @@ public class FDStoreProperties {
         return get(PROP_ERPSYLINK_STOREFRONT_FDX);
     }
 	
-	public static boolean isHookLogicEnabled() {
-    	return (Boolean.valueOf(get(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
+	public static boolean isHookLogicBlackHoleEnabled() {
+    	return (Boolean.valueOf(get(PROP_HOOK_LOGIC_BLACKHOLE_ENABLE))).booleanValue();
+    }
+	
+	public static boolean isHookLogicForCategoriesEnabled() {
+    	return (Boolean.valueOf(get(PROP_HOOK_LOGIC_CATEGORY_ENABLE))).booleanValue();
     }
 	
 	public static boolean getHookLogicAllowOwnRows() {

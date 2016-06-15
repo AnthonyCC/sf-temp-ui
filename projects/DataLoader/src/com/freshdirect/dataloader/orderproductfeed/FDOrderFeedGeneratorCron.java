@@ -35,7 +35,7 @@ public class FDOrderFeedGeneratorCron {
 		Date orderFeedDateFrom=null;
 		Context ctx = null;
 		List<String> ordersList = null;
-		if(FDStoreProperties.isHookLogicEnabled()){
+		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
 			try {
 				LOGGER.info("FDOrderFeedGeneratorCron Started.");
 				ctx = getInitialContext();

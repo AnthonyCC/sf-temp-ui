@@ -15,7 +15,8 @@ public enum EnumRolloutFeature {
     gridlayoutcolumn4_0("gridlayoutcolumn", "4_0"),
     gridlayoutcolumn5_0(gridlayoutcolumn4_0, "gridlayoutcolumn", "5_0"),
     standingorder3_0("standingorder", "3_0"),
-    browseaggregatedcategories1_0("browseaggregatedcategories", "1_0") // browse category page with aggregated sub-categories
+    browseaggregatedcategories1_0("browseaggregatedcategories", "1_0"), // browse category page with aggregated sub-categories
+    hooklogic2016("hooklogic","2016");
     ;
 
     private final EnumRolloutFeature child;

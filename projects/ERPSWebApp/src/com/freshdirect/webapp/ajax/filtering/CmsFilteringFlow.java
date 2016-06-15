@@ -306,7 +306,7 @@ public class CmsFilteringFlow {
 					}
 				}
 				searchResults = ContentSearch.getInstance().searchProducts(searchParams);
-				if(FDStoreProperties.isHookLogicEnabled()){
+				if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){				//if(FDStoreProperties.isHookLogicEnabled()){
 				   SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);	
 				}
 				collectSearchRelevancyScores(searchResults);
@@ -515,7 +515,7 @@ public class CmsFilteringFlow {
 		}
 
 		//set HookLogic adProducts for 'search like' pages.
-		if(FDStoreProperties.isHookLogicEnabled()){
+		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){	//if(FDStoreProperties.isHookLogicEnabled()){
 			  StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
 			try{
 			  if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
@@ -760,18 +760,18 @@ public class CmsFilteringFlow {
 		
 	
 		
- if(FDStoreProperties.isHookLogicEnabled()){	
-	if(null != browseDataContext){
-		String catId = nav.getId();
-		Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
-		Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
-		List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
-		getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext);
-		browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
-		browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
-	}
-	
- }
+		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled()){		 //if(FDStoreProperties.isHookLogicEnabled()){	
+			if(null != browseDataContext){
+				String catId = nav.getId();
+				Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
+				Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
+				List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
+				getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext);
+				browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
+				browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
+			}			
+		}
+    
 		// inject references
 		browseDataContext.setNavigationModel(navigationModel);
 		browseDataContext.setCurrentContainer(contentNodeModel);
