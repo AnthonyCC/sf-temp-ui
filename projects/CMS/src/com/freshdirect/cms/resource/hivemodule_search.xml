@@ -63,10 +63,20 @@ Symbols:
 		<AttributeIndex contentType="FAQ" attributeName="FULL_NAME"/>
 		<AttributeIndex contentType="FAQ" attributeName="KEYWORDS" text="true"/>
 		<AttributeIndex contentType="FAQ" attributeName="PRIORITY_LIST" text="true"/>
-		<!--
-		<AttributeIndex contentType="Html" attributeName="path"/>
-		<AttributeIndex contentType="Image" attributeName="path"/>
-		-->
+		
+		<AttributeIndex contentType="ImageBanner" attributeName="Name" text="true"/>
+		<AttributeIndex contentType="ImageBanner" attributeName="Description" text="true"/>
+		<AttributeIndex contentType="Section" attributeName="name" text="true"/>
+		<AttributeIndex contentType="WebPage" attributeName="PAGE_TITLE" text="true"/>
+		<ContentIndex contentType="Banner"/>
+		<AttributeIndex contentType="DarkStore" attributeName="name" text="true"/>
+		<AttributeIndex contentType="Domain" attributeName="NAME" text="true"/>
+		<AttributeIndex contentType="Domain" attributeName="Label" text="true"/>
+		<AttributeIndex contentType="ProductFilter" attributeName="name" text="true"/>
+		<AttributeIndex contentType="ProductFilterGroup" attributeName="name" text="true"/>
+		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level1Name" text="true"/>
+		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level2Name" text="true"/>
+		<AttributeIndex contentType="Tag" attributeName="name" text="true"/>
 	</contribution>
 
 </module>
