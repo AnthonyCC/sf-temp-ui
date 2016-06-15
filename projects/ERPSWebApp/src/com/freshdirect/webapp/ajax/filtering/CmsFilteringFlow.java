@@ -818,12 +818,8 @@ public class CmsFilteringFlow {
 		if(null !=sectionContexts){
 			for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
 				 SectionContext categorySectionsContext  = (SectionContext) iterator.next();
-				  if(categorySectionsContext.getCatId()!=null){
-					getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
-				}
 				getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,categorySectionsContext.getSectionContexts(), browseDataContext);
 			 }
-		}else{
 			getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
 		}
 	}
