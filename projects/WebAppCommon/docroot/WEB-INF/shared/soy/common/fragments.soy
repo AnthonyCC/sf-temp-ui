@@ -7,7 +7,7 @@
 	{if $price - floor($price) == 0}
 		${floor($price)}.00
 	{elseif $price * 10 - floor($price * 10) == 0}
-		{$price}0
+		${$price}0
 	{else}
 		${$price}
 	{/if}
