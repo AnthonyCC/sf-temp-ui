@@ -190,6 +190,7 @@ public class OrderController extends BaseController {
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
+            requestMessage.setMax(20000);
             model = getEveryItemEverOrderedEX(model, user, requestMessage, request);
         }
 
