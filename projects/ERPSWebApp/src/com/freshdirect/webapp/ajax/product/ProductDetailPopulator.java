@@ -1154,7 +1154,7 @@ public class ProductDetailPopulator {
 						if (n > 0 && d > 0) {
 							final double p = (item.getPrice() * n) / d;
 							item.setPricePerDefaultSalesUnit(UnitPriceUtil.formatDecimalToString(p));
-							item.setDispDefaultSalesUnit((double)n/d+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
+							item.setDispDefaultSalesUnit(UnitPriceUtil.formatDecimalToString((double)n/d)+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
 						}
 					}
 				}
@@ -1309,13 +1309,13 @@ public class ProductDetailPopulator {
 			// Regular deal
 			String scaleString = priceCalculator.getTieredPrice( 0, null );
 			if ( scaleString != null ) {
-				buf.append( "Save! " );
+//				buf.append( "Save! " );
 				buf.append( scaleString );
-			} else if ( priceCalculator.isOnSale() ) {
+			} /*else if ( priceCalculator.isOnSale() ) {
 				buf.append( "Save " );
 				buf.append( priceCalculator.getDealPercentage() );
 				buf.append( "%" );
-			} else {
+			}*/ else {
 				// no sales, do nothing
 			}
 		}
