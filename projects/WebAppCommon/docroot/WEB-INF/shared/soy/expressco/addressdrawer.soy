@@ -21,7 +21,7 @@
     {/if}
   {/foreach}
 {else}
-  {if length($addresses)}
+  {if $addresses and isNonnull($addresses) and length($addresses)}
     {let $address: $addresses[0] /}
     {if $address.service_type == 'pickup'}
       <div class='drawer__previewitem'>
@@ -51,32 +51,34 @@
  * @param addresses
  */
 {template .addresscontent autoescape="false"}
-<form class="drawer__content" action="#" fdform="address" fdform-endpoint-submit="/api/expresscheckout/deliveryaddress" data-item-count="{length($addresses)}">
-  <input type="hidden" name="action" value="selectDeliveryAddressMethod" />
-  <div class="drawer__header">
-    <b>IMPORTANT:</b> Changing delivery address may require selection of a new delivery date/time <button class="cssbutton orange" data-component="addresschangebutton">Done<span class="offscreen">with Delivery Address</button>
-  </div>
-  <div fdform-error-container></div>
-  {foreach $address in $addresses}
-    {if $address.service_type == 'corporate'}
-      {call .address_office data="$address" /}
-    {/if}
-    {if $address.service_type == 'depot'}
-      {call .address_office data="$address" /}
-    {/if}
-    {if $address.service_type == 'home'}
-      {call .address_home data="$address" /}
-    {/if}
-    {if $address.service_type == 'pickup'}
-      {call .address_pickup data="$address" /}
-    {/if}
-  {/foreach}
-  <div class="drawer__item drawer__item-addaction">
-    <div class="addaction__center">
-      <button aria-haspopup="true" class="cssbutton green icon-add-drawer-before xc-addaction addaddressbutton" data-component="addaddressbutton">Add <span class="offscreen">Delivery</span>Address</button>
-    </div>
-   </div>
-</form>
+{if $addresses and isNonnull($addresses)}
+	<form class="drawer__content" action="#" fdform="address" fdform-endpoint-submit="/api/expresscheckout/deliveryaddress" data-item-count="{length($addresses)}">
+	  <input type="hidden" name="action" value="selectDeliveryAddressMethod" />
+	  <div class="drawer__header">
+		<b>IMPORTANT:</b> Changing delivery address may require selection of a new delivery date/time <button class="cssbutton orange" data-component="addresschangebutton">Done<span class="offscreen">with Delivery Address</button>
+	  </div>
+	  <div fdform-error-container></div>
+	  {foreach $address in $addresses}
+		{if $address.service_type == 'corporate'}
+		  {call .address_office data="$address" /}
+		{/if}
+		{if $address.service_type == 'depot'}
+		  {call .address_office data="$address" /}
+		{/if}
+		{if $address.service_type == 'home'}
+		  {call .address_home data="$address" /}
+		{/if}
+		{if $address.service_type == 'pickup'}
+		  {call .address_pickup data="$address" /}
+		{/if}
+	  {/foreach}
+	  <div class="drawer__item drawer__item-addaction">
+		<div class="addaction__center">
+		  <button aria-haspopup="true" class="cssbutton green icon-add-drawer-before xc-addaction addaddressbutton" data-component="addaddressbutton">Add <span class="offscreen">Delivery</span>Address</button>
+		</div>
+	   </div>
+	</form>
+{/if}
 {/template}
 
 /**
