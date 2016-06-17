@@ -4,34 +4,36 @@
  * @param drawers
  */
 {template .drawer autoescape="false"}
-<div data-component="drawer" data-drawer-columns="{length($drawers)}">
-  <nav class="drawer-header" role="tablist">
-    {foreach $drawer in $drawers}
-      {call .drawerheader}
-        {param title: $drawer.title /}
-        {param id: $drawer.id /}
-        {param enabled: $drawer.enabled /}
-        {param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
-      {/call}
-    {/foreach}
-  </nav>
-  <div class="drawer-content">
-    <ul data-drawer-default>
-      {foreach $drawer in $drawers}
-        {call .drawerpreview}
-          {param preview: $drawer.preview /}
-          {param id: $drawer.id /}
-        {/call}
-      {/foreach}
-    </ul>
-    {foreach $drawer in $drawers}
-      {call .drawercontent}
-        {param content: $drawer.content /}
-        {param id: $drawer.id /}
-      {/call}
-    {/foreach}
-  </div>
-</div>
+{if $drawers and isNonnull($drawers)}
+	<div data-component="drawer" data-drawer-columns="{length($drawers)}">
+	  <nav class="drawer-header" role="tablist">
+		{foreach $drawer in $drawers}
+		  {call .drawerheader}
+			{param title: $drawer.title /}
+			{param id: $drawer.id /}
+			{param enabled: $drawer.enabled /}
+			{param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
+		  {/call}
+		{/foreach}
+	  </nav>
+	  <div class="drawer-content">
+		<ul data-drawer-default>
+		  {foreach $drawer in $drawers}
+			{call .drawerpreview}
+			  {param preview: $drawer.preview /}
+			  {param id: $drawer.id /}
+			{/call}
+		  {/foreach}
+		</ul>
+		{foreach $drawer in $drawers}
+		  {call .drawercontent}
+			{param content: $drawer.content /}
+			{param id: $drawer.id /}
+		  {/call}
+		{/foreach}
+	  </div>
+	</div>
+{/if}
 {/template}
 
 /**
