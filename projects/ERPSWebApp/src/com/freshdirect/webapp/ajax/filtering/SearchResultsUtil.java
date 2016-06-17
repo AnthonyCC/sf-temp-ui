@@ -130,7 +130,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		try {
 			
 			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
-			hLBrandProductAdRequest.setSearchKeyWord(nav.getSearchParams());
+			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();
