@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -62,14 +64,18 @@ import com.freshdirect.logistics.controller.data.response.DiscountTimeslots;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.OrderIds;
 import com.freshdirect.logistics.controller.data.response.OrdersETAWList;
+import com.freshdirect.logistics.delivery.dto.Address;
+import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.DeliveryConfirmOrders;
 import com.freshdirect.logistics.delivery.dto.OrderDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
+import com.freshdirect.logistics.delivery.dto.ReservationsDTO;
 import com.freshdirect.logistics.delivery.model.ActionError;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.ReservationInfo;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
@@ -92,17 +98,18 @@ public class OMSController extends BaseController  {
 	OrdersDTO getOrderById(@PathVariable("orderId") String orderId) {
 
 		OrdersDTO orders = new OrdersDTO();
+		OrderDTO order = new OrderDTO();
+		FDOrderI fdorder = null;
 		try {
-			OrderDTO order = new OrderDTO();
-			order = orderService.getOrderById(orderId);
-			orders.getOrders().add(order);
-			orders.setSuccessMessage("orders retrieved successfully");
-			
-		} catch (FDLogisticsServiceException e) {
-			orders.setStatus(Result.STATUS_FAILED);
-			orders.addErrorMessages(new ActionError("technical_difficulty",
-					SystemMessageList.MSG_TECHNICAL_ERROR));
-		} 
+			fdorder = FDCustomerManager.getOrder(orderId);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		order=convertToOrderDTOModel(fdorder,order);
+		//order = orderService.getOrderById(orderId);
+		orders.getOrders().add(order);
+		orders.setSuccessMessage("orders retrieved successfully"); 
 	
 		return orders;
 	}
@@ -245,6 +252,63 @@ public class OMSController extends BaseController  {
 			return Result.createFailureMessage("failed to cancel order.");
 		}
 	}
+	
+	private OrderDTO convertToOrderDTOModel(FDOrderI f, OrderDTO o)
+	{
+		OrderDTO order=new OrderDTO();
+		Customer custModel = new Customer();
+		custModel.setFirstName((f.getDeliveryAddress()!=null)?f.getDeliveryAddress().getFirstName():"");
+		custModel.setLastName((f.getDeliveryAddress()!=null)?f.getDeliveryAddress().getLastName():"");
+		custModel.setCustomerId(f.getCustomerId());
+		custModel.setHomePhone((f.getDeliveryInfo().getDeliveryAddress().getPhone()!=null)?f.getDeliveryInfo().getDeliveryAddress().getPhone().toString():"");
+		order.setOrderNumber(f.getErpSalesId());
+		order.setErpOrderNumber(f.getSapOrderId());
+		if(f.getDeliveryInfo()!=null)
+		{
+		order.setArea(f.getDeliveryInfo().getDeliveryZone());
+		order.setStartTime(f.getDeliveryInfo().getDeliveryStartTime());
+		order.setEndTime(f.getDeliveryInfo().getDeliveryEndTime());
+		order.setCutOffTime(f.getDeliveryInfo().getDeliveryCutoffTime());
+		order.setReservationId(f.getDeliveryInfo().getDeliveryReservationId());
+		}
+		Address address = new Address();						
+		order.setAddress(address);
+		order.setCustomer(custModel);
+		if(f.getDeliveryInfo().getDeliveryAddress()!=null)
+		{
+		address.setAddress1(f.getDeliveryInfo().getDeliveryAddress().getAddress1());
+		address.setAddress2(f.getDeliveryInfo().getDeliveryAddress().getAddress2());
+		address.setApartment(f.getDeliveryInfo().getDeliveryAddress().getApartment());
+		address.setCity(f.getDeliveryInfo().getDeliveryAddress().getCity());
+		address.setState(f.getDeliveryInfo().getDeliveryAddress().getState());
+		address.setZipCode(f.getDeliveryInfo().getDeliveryAddress().getZipCode());
+		address.setDeliveryInstructions(f.getDeliveryInstructions());
+		address.setUnattendedInstructions(f.getDeliveryInfo().getDeliveryAddress().getUnattendedDeliveryInstructions());
+		String altDest=f.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName();
+		if(altDest.equalsIgnoreCase(EnumDeliverySetting.NEIGHBOR.getName()))
+		{
+		String altDeliveryInst=f.getDeliveryInfo().getDeliveryAddress().getAltFirstName()
+				+" "+f.getDeliveryInfo().getDeliveryAddress().getAltFirstName()+","+
+		((f.getDeliveryInfo().getDeliveryAddress().getAltApartment()!=null)?(" "+f.getDeliveryInfo().getDeliveryAddress().getAltApartment()):"")
+		+",Contact at:"+f.getDeliveryInfo().getDeliveryAddress().getAltPhone();
+		address.setAltDeliveryInstructions(altDeliveryInst);
+		}
+		else
+			address.setAltDeliveryInstructions(altDest);
+		}				
+		DlvSaleInfo saleInfo = null;
+		try {
+			saleInfo = DlvPaymentManager.getInstance().getSaleInfo(f.getErpSalesId());
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErpSaleNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		order.setOrderStatus(saleInfo.getStatus().getName());
+		return order;
+	}
 
 	@RequestMapping(value = "/cancel", method = {RequestMethod.POST, RequestMethod.GET})
 	public @ResponseBody
@@ -311,7 +375,7 @@ public class OMSController extends BaseController  {
 		}
 		return result;
 	}
-
+		
 	@RequestMapping(value = "/delivery/unconfirm/", method = RequestMethod.POST)
 	public @ResponseBody
 	OrdersDTO unconfirmOrder(@PathVariable("companycode") String companycode, @RequestBody DeliveryConfirmOrders request) {
@@ -358,7 +422,8 @@ public class OMSController extends BaseController  {
 				if (EnumSaleStatus.ENROUTE.equals(saleInfo.getStatus())
 						|| EnumSaleStatus.REDELIVERY.equals(saleInfo
 								.getStatus())
-						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())) {
+						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())
+						|| EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())) {
 
 					LOGGER.debug("Going to create a Return");
 					DlvPaymentManager.getInstance().addReturn(orderId,
