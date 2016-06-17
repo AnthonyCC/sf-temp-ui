@@ -30,7 +30,7 @@ public class FDPricingEngine {
 			discountValue = 0;
 
 		} else {
-			if (EnumDiscountType.SAMPLE.equals(discount.getDiscountType())) {
+			if (EnumDiscountType.SAMPLE.equals(discount.getDiscountType()) || EnumDiscountType.FREE.equals(discount.getDiscountType())) {
 				// samples are corrected to a base price of zero, it's not an amount off...
 				price = 0;
 				discountValue = 0;
