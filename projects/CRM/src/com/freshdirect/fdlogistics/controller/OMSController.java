@@ -423,6 +423,7 @@ public class OMSController extends BaseController  {
 						|| EnumSaleStatus.REDELIVERY.equals(saleInfo
 								.getStatus())
 						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())
+						|| EnumSaleStatus.REFUSED_ORDER.equals(saleInfo.getStatus())
 						|| EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())) {
 
 					LOGGER.debug("Going to create a Return");
