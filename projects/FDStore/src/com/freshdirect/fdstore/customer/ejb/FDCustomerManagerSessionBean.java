@@ -2693,8 +2693,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType()) &&
-					order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL) &&
-					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus())) {
+				order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL) &&
+					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus()) &&
+					EnumTransactionSource.SYSTEM.equals(info.getInitiator())&& !"Could not get AUTHORIZATION".equals(info.getNote())
+					) {
 				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
 			}
 			
@@ -2712,16 +2714,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private void reversePPAuths(ErpSaleModel sale) throws ErpTransactionException {
      	List<ErpAuthorizationModel> auths = sale.getPPAuthorizations();
+     	if((auths==null)||(auths!=null && auths.isEmpty()))
+     		return ;
+     	
     	for (ErpAuthorizationModel auth : auths) {
-    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
-    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
-    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
-    		Response response = gateway.reverseAuthorize(request);
-    		if (!response.isApproved()) {
-    			LOGGER.warn("Reverse auth failed for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
-    		} else {
-    			LOGGER.info("Auth voided for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
-    		}
+    		if((auth.getAmount()!=0d) && auth.isApproved()) {
+	    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
+	    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
+	    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
+	    		Response response = gateway.reverseAuthorize(request);
+	    		if (!response.isApproved()) {
+	    			LOGGER.warn("Reverse auth failed for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+	    		} else {
+	    			LOGGER.info("Auth voided for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+	    		}
+	    	}
     	}
 	}
 	
