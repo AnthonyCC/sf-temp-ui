@@ -422,18 +422,22 @@ public class OMSController extends BaseController  {
 				if (EnumSaleStatus.ENROUTE.equals(saleInfo.getStatus())
 						|| EnumSaleStatus.REDELIVERY.equals(saleInfo
 								.getStatus())
-						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())
-						|| EnumSaleStatus.REFUSED_ORDER.equals(saleInfo.getStatus())
-						|| EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())) {
+						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())) {
 
 					LOGGER.debug("Going to create a Return");
 					DlvPaymentManager.getInstance().addReturn(orderId,
 							fullReturn, !fullReturn);
 					order.setException("");
-				} else {
-					order.setException("Order is not in correct status to confirm");
-					partialCount++;
-				}
+				} 
+				else
+					if ( EnumSaleStatus.REFUSED_ORDER.equals(saleInfo.getStatus())
+							|| EnumSaleStatus.SETTLED.equals(saleInfo.getStatus())) { 
+					order.setException("");
+					}
+					else {
+						order.setException("Order is not in correct status to return");
+						partialCount++;
+					}
 			} catch (FDResourceException e) {
 				order.setException("technical failure");
 			} catch (ErpSaleNotFoundException e) {
