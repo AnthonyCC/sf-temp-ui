@@ -866,68 +866,25 @@ public class CmsFilteringFlow {
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getProductAd();
 			List<ProductModel> adPrducts = new ArrayList<ProductModel>();
-			//if(hlBrandAdProductsMeta!=null)
-			if(false){
-			for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
-				HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
-				hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-				browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-				
-				try {
-					ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
-					if(null !=productModel){
-						ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
-							adPrducts.add(pm);
-					}
-					
-				} catch (FDSkuNotFoundException e) {
-					LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
-				}
-				
-			}
-	  }else{
-			try {
-				ProductModel pm = ContentFactory.getInstance().getProduct("DAI0008844");//hlBrandProductAdMetaInfo.getParentSKU());
-				ProductModel p = ContentFactory.getInstance().getProduct("DAI0057989");
-				ProductModel p3 = ContentFactory.getInstance().getProduct("VEG0070518");///pdp.jsp?productId=asp_asp_bch&catId=asp
-				ProductModel p1 = ContentFactory.getInstance().getProduct("DAI0057989");//hlBrandProductAdMetaInfo.getParentSKU());
-				ProductModel p2 = ContentFactory.getInstance().getProduct("DAI0057989");//hlBrandProductAdMetaInfo.getParentSKU());
-				ProductModel p4 = ContentFactory.getInstance().getProduct("FRU0068432");//Apple4pack
-				ProductModel p5 = ContentFactory.getInstance().getProduct("FRU2210127");//Apple bag
-				ProductModel p6 = ContentFactory.getInstance().getProduct("FRU0030512");//Apple Case
-				ProductModel p7 = ContentFactory.getInstance().getProduct("FRU2210220");//Apple other product -- life style for local
-				ProductModel p8 = ContentFactory.getInstance().getProduct("VEG2301634");//juice product -- life style for local-organicGRO4008079
-				ProductModel p9 = ContentFactory.getInstance().getProduct("GRO4008079");//juice product -- life style for local-organic
-				
-				ProductModelBrandAdsAdapter H0 = new ProductModelBrandAdsAdapter(pm, "testClick", "testIMP");
-				
-				ProductModelBrandAdsAdapter H1 = new ProductModelBrandAdsAdapter(p, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H2 = new ProductModelBrandAdsAdapter(p1, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H3 = new ProductModelBrandAdsAdapter(p2, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H4 = new ProductModelBrandAdsAdapter(p3, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H5= new ProductModelBrandAdsAdapter(p4, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H6 = new ProductModelBrandAdsAdapter(p5, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H7 = new ProductModelBrandAdsAdapter(p6, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H8= new ProductModelBrandAdsAdapter(p7, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H9= new ProductModelBrandAdsAdapter(p8, "testClick", "testIMP");
-				ProductModelBrandAdsAdapter H10= new ProductModelBrandAdsAdapter(p9, "testClick", "testIMP");
-					adPrducts.add(H0);
-					adPrducts.add(H1);
-					adPrducts.add(H2);
-					adPrducts.add(H3);
-					adPrducts.add(H4);
-					adPrducts.add(H5);
-					adPrducts.add(H6);
-					adPrducts.add(H7);
-					adPrducts.add(H8);
-					adPrducts.add(H9);
-					adPrducts.add(H10);
-					browseDataContext.getAdProducts().setPageBeacon("testing");
-			} catch (Exception e) {
-				LOG.info("FDSkuNotFoundException while populating HookLogicproduct : ", e);
-			}
-	  }
 			
+			if(hlBrandAdProductsMeta!=null){
+				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
+					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
+					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+					browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+				
+					try {
+						ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+						if(null !=productModel){
+							ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
+								adPrducts.add(pm);
+						}
+					
+					} catch (FDSkuNotFoundException e) {
+						LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
+					}
+			}
+		  }
 			List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 			if(null !=adPrducts){
 				for (ProductModel productModel : adPrducts) {
