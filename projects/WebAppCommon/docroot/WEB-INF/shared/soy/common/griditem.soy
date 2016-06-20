@@ -129,6 +129,8 @@
   {param soData:$item.soData /}
   {param hookLogicBeaconClick:$item.clickBeacon /}
   {param hookLogicBeaconImpression:$item.imageBeacon /}
+  {param pricePerDefaultSalesUnit:$item.pricePerDefaultSalesUnit /}
+  {param dispDefaultSalesUnit:$item.dispDefaultSalesUnit /}
 {/call}
 {/template}
 
@@ -305,6 +307,8 @@
  * @param? soData standing order data
  * @param? hookLogicBeaconClick
  * @param? hookLogicBeaconImpression
+ * @param? pricePerDefaultSalesUnit
+ * @param? dispDefaultSalesUnit
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -358,32 +362,64 @@
 	{if $freeSamplePromoProduct and $cmEventSource=='ps_caraousal'}
 		<div class="portrait-item-price product-sample-free">FREE</div>
 	{else}
-		<div class="portrait-item-price">
-			{call common.price}
-				{param wasPrice:$wasPrice /}
-				{param price:$price /}
-				{param scaleUnit:$scaleUnit /}
-				{param aboutPriceText:$aboutPriceText /}
-			{/call}
-			{if $dealInfo}
-				{if $grpLink}
-				<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-				{else}
-				<div class="portrait-item-price-deal">{$dealInfo}</div>
+		{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
+			<div class="portrait-item-price display-default-sales-unit-container">
+				<span class="display-default-sales-unit">{$dispDefaultSalesUnit} |</span>
+				{if $dealInfo}
+					{if $grpLink}
+						<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+					{else}
+						<div class="portrait-item-price-deal">{$dealInfo}</div>
+					{/if}
 				{/if}
-			{/if}
-			{if $savingString}
-				{if $grpLink}
-				<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
-				{else}
-				<div class="portrait-item-price-deal">{$savingString}</div>
+				{call common.price}
+					{param wasPrice:$wasPrice /}
+					{param price:$price /}
+					{param scaleUnit:$scaleUnit /}
+					{param aboutPriceText:$aboutPriceText /}
+				{/call}
+				<div class="price-per-default-sales-unit">
+					 ${$pricePerDefaultSalesUnit}
+				</div>
+				{if $savingString}
+					{if $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+					{else}
+					<div class="portrait-item-price-deal">{$savingString}</div>
+					{/if}
 				{/if}
-			{/if}
-			{if $utPrice}
-				<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-			{/if}
-			{if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
-		</div>
+				{if $utPrice}
+					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+				{/if}				
+			</div>
+		{else}
+			<div class="portrait-item-price">			
+				{call common.price}
+					{param wasPrice:$wasPrice /}
+					{param price:$price /}
+					{param scaleUnit:$scaleUnit /}
+					{param aboutPriceText:$aboutPriceText /}
+				{/call}
+				{if $dealInfo}
+					{if $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+					{else}
+					<div class="portrait-item-price-deal">{$dealInfo}</div>
+					{/if}
+				{/if}
+				{if $savingString}
+					{if $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+					{else}
+					<div class="portrait-item-price-deal">{$savingString}</div>
+					{/if}
+				{/if}
+				{if $utPrice}
+					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+				{/if}
+				{if $mixNMatch}{/if}
+			</div>
+		{/if}		
 	{/if}
 	{if $showConfig}
 		<div class="portrait-item-configuration">
