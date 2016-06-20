@@ -1077,7 +1077,7 @@ public class CmsFilteringFlow {
 								LOG.warn("Exception while populating HookLogic returned product: ", e);
 							}
 							if(null != productData && null != productData.getSkuCode()){
-								updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
+								//updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
 								productData.setFeatured(true);
 								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
 								productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());
