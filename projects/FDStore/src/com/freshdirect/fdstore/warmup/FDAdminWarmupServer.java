@@ -20,7 +20,7 @@ public class FDAdminWarmupServer extends ApplicationLifecycleListener {
 	public void postStart(ApplicationLifecycleEvent evt) {
 		Logger logger = LoggingHelper.getServerLogger();
 		logger.info("inside FDAdminWarmup ");
-		if (FDStoreProperties.performStorePreLoad()) {
+		if (FDStoreProperties.performPromotionsPreLoad()) {
 			try {
 				logger.info("initiating warmup using FDAdminWarmup ");
 				FDAdminWarmup warmup = new FDAdminWarmup();

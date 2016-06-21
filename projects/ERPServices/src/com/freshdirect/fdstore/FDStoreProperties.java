@@ -113,6 +113,7 @@ public class FDStoreProperties {
     private final static String PROP_GRP_CACHE_SIZE = "fdstore.grp.cache.size";
     private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
     private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
+    private final static String PROP_PRELOAD_PROMOTIONS = "fdstore.preLoad.promotions";
     private final static String PROP_WARMUP_CLASS = "fdstore.preLoad.class";
     private final static String PROP_PRELOAD_NEWNESS = "fdstore.preLoad.newness";
     private final static String PROP_PRELOAD_REINTRODUCED = "fdstore.preLoad.reintroduced";
@@ -1002,6 +1003,7 @@ public class FDStoreProperties {
         defaults.put(PROP_DLV_PROMO_EXP_DATE, "2004-01-01");
 
         defaults.put(PROP_PRELOAD_STORE, "true");
+        defaults.put(PROP_PRELOAD_PROMOTIONS, "true");
         // No default for PROP_WARMUP_CLASS
         defaults.put(PROP_PRELOAD_NEWNESS, "true");
         defaults.put(PROP_PRELOAD_REINTRODUCED, "true");
@@ -2039,6 +2041,10 @@ public class FDStoreProperties {
 
     public static boolean performStorePreLoad() {
         return Boolean.valueOf(get(PROP_PRELOAD_STORE)).booleanValue();
+    }
+    
+    public static boolean performPromotionsPreLoad() {
+        return Boolean.valueOf(get(PROP_PRELOAD_PROMOTIONS)).booleanValue();
     }
 
     public static boolean isPreloadAutocompletions() {

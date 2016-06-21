@@ -22,7 +22,19 @@ public class FDAdminWarmup implements Serializable{
 
 	public void init(){
 		// Get instance loads up all the Promotions
-		FDPromotionNewModelFactory.getInstance();
+//		FDPromotionNewModelFactory.getInstance();
+		
+		new Thread("FDAdminWarmup-Thread-1") {
+			public void run() {
+				LOGGER.info("FDAdminWarmup-Thread-1 started");
+				try {
+					FDPromotionNewModelFactory.getInstance();
+				} catch (Exception e) {
+					LOGGER.warn("Exception loading promotions in FDAdminWarmup-Thread-1: "+e);
+				}
+				LOGGER.info("FDAdminWarmup-Thread-1 completed");
+			}
+		}.start();
 
 	}
 
