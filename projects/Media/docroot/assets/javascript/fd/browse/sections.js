@@ -91,29 +91,45 @@ var FreshDirect = FreshDirect || {};
 			var hlSkusStr = '';
 			
 			$('[data-hooklogic-beacon-impress]').each(function(i,e) {
-				hlSkus.push($(this).attr('data-hooklogic-beacon-impress'));
+				//find sku
+				hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
+				//fire impression
+				if ($('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
+					console.log('firing impression', $(this), $('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')));
+					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+				}
 			});
 			
 			hlSkusStr = hlSkus.join(',');
 			
-			/* add page beacon (if it doesn't already exist) */
+			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(FreshDirect.browse.data.pager.activePage == 1){
 				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
-					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + '&'+hlSkusStr + '&random=' + new Date().getTime() + '" />');
+					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + '&aShown='+ hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		} else {
 			//prob NOT search
-			/* this uses a marker class on the beacon image to determine if it needs to be fired
-			 * again, since it can be on any page, not just the first one. */
+			/* this uses a marker class on the page beacon image to determine if it needs to be fired again,
+			 * since it can be on any page, not just the first one. */
 			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionOfProductList) {
+				//get sku code in HL items for cat
 				var hlSkus = [], hlSkusStr = '';
+				
 				$('.sectionContent[data-section-catid="'+cur+'"]>ul [data-hooklogic-beacon-impress]').each(function(i,e) {
-					hlSkus.push($(this).attr('data-hooklogic-beacon-impress'));
+					//find sku and hold it
+					hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
+					//fire impression
+					if ($('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
+						console.log('firing impression', $(this), $('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')));
+						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+					}
 				});
+				
+				//now, page beacon
 				hlSkusStr = hlSkus.join(',');
 				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur).length === 0) {
-					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + '&aShown='+ hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		}
