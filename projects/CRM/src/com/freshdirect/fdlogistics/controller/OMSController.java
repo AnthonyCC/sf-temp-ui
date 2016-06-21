@@ -284,7 +284,9 @@ public class OMSController extends BaseController  {
 		address.setZipCode(f.getDeliveryInfo().getDeliveryAddress().getZipCode());
 		address.setDeliveryInstructions(f.getDeliveryInstructions());
 		address.setUnattendedInstructions(f.getDeliveryInfo().getDeliveryAddress().getUnattendedDeliveryInstructions());
-		String altDest=f.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName();
+		String altDest=(f.getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null)?f.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null;
+		if(altDest!=null)
+		{
 		if(altDest.equalsIgnoreCase(EnumDeliverySetting.NEIGHBOR.getName()))
 		{
 		String altDeliveryInst=f.getDeliveryInfo().getDeliveryAddress().getAltFirstName()
@@ -295,7 +297,8 @@ public class OMSController extends BaseController  {
 		}
 		else
 			address.setAltDeliveryInstructions(altDest);
-		}				
+		}
+		}
 		DlvSaleInfo saleInfo = null;
 		try {
 			saleInfo = DlvPaymentManager.getInstance().getSaleInfo(f.getErpSalesId());
