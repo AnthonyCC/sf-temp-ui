@@ -95,7 +95,7 @@
 			{if $section.headerImage}<img src="{$section.headerImage}">{/if}
 			{if $section.media}<div class="media">{$section.media}</div>{/if}
     
-			<div class="sectionContent">
+			<div class="sectionContent" {if $section.catId}data-section-catid="{$section.catId}"{/if}>
 				{if $section.sections}
 					{foreach $subSection in $section.sections}
 						{call browse.section}

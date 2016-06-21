@@ -59,6 +59,66 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+
+	var adProductSection = Object.create(WIDGET,{
+		signal:{
+			value:'adProducts'
+		},
+		template:{
+			value:common.simpleFixedProductList
+		},
+		placeholder:{
+			value:'.browse-adproducts'
+		}
+	});
+
+	adProductSection.fixThoseHooklogicDisplayHeights = function(){
+		/* make all items in row the same min height (the height of the tallest elem in row) */
+		$('ul.products.transactional').each(function (i,e) {
+			var $children = $(this).children('li.browseTransactionalProduct');
+			$children.css('min-height', Math.max.apply(null, 
+				$children.map(function() {
+					return $jq(this).outerHeight(true);
+				})
+			)+'px');
+		});
+		
+		//fetch all skus for page beacons
+		if (window.srch) {
+			//prob search
+			
+			var hlSkus = [];
+			var hlSkusStr = '';
+			
+			$('[data-hooklogic-beacon-impress]').each(function(i,e) {
+				hlSkus.push($(this).attr('data-hooklogic-beacon-impress'));
+			});
+			
+			hlSkusStr = hlSkus.join(',');
+			
+			/* add page beacon (if it doesn't already exist) */
+			if(FreshDirect.browse.data.pager.activePage == 1){
+				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
+					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + '&'+hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				}
+			}
+		} else {
+			//prob NOT search
+			/* this uses a marker class on the beacon image to determine if it needs to be fired
+			 * again, since it can be on any page, not just the first one. */
+			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionOfProductList) {
+				var hlSkus = [], hlSkusStr = '';
+				$('.sectionContent[data-section-catid="'+cur+'"]>ul [data-hooklogic-beacon-impress]').each(function(i,e) {
+					hlSkus.push($(this).attr('data-hooklogic-beacon-impress'));
+				});
+				hlSkusStr = hlSkus.join(',');
+				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur).length === 0) {
+					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				}
+			}
+		}
+	}//end adProductSection.fixThoseHooklogicDisplayHeights
+	
 	if(window.srch){
 		var topSections = Object.create(WIDGET,{
 			signal:{
@@ -84,36 +144,6 @@ var FreshDirect = FreshDirect || {};
 			}
 		});
     
-		var adProductSection = Object.create(WIDGET,{
-			signal:{
-				value:'adProducts'
-			},
-			template:{
-				value:common.simpleFixedProductList
-			},
-			placeholder:{
-				value:'.browse-adproducts'
-			}
-		});
-    
-		adProductSection.fixThoseHooklogicDisplayHeights = function(){
-			/* make all items in row the same min height (the height of the tallest elem in row) */
-			$('ul.products.transactional').each(function (i,e) {
-				var $children = $(this).children('li.browseTransactionalProduct');
-				$children.css('min-height', Math.max.apply(null, 
-					$children.map(function() {
-						return $jq(this).outerHeight(true);
-					})
-				)+'px');
-			});
-			
-			/* add page beacon (if it doesn't already exist) */
-			if(FreshDirect.browse.data.pager.activePage == 1){
-				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
-					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + new Date().getTime() + "' />");
-				}
-			}
-		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
 		topSections.listen();
 		bottomSections.listen();
@@ -121,9 +151,11 @@ var FreshDirect = FreshDirect || {};
 		//new for HookLogic
 		adProductSection.listen();
     
-		//needed?
-		adProductSection.fixThoseHooklogicDisplayHeights();
 	}//end if(window.srch)
+	
+
+	//needed?
+	adProductSection.fixThoseHooklogicDisplayHeights();
 	
 	window.isHLchangable = false;
 
@@ -164,9 +196,6 @@ var FreshDirect = FreshDirect || {};
 
 	//this always fires upon each set of products load success
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
-		
-		//console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
-		
 		//update the page beacon url
 		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
 		xhr.responseJSON.adProducts.pageBeacon !== undefined &&  xhr.responseJSON.adProducts.pageBeacon != null &&
