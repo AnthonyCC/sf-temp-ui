@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpFraudException;
@@ -24,12 +25,15 @@ import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -198,7 +202,14 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 			try {
 				CustomerRatingAdaptor cra = new CustomerRatingAdaptor(currentUser.getFDCustomer().getProfile(),currentUser.isCorporateUser(),currentUser.getAdjustedValidOrderCount());
 				FDCartModel cart=(FDCartModel)session.getAttribute("SUBSCRIPTION_CART");
-				String orderID= FDCustomerManager.placeSubscriptionOrder(AccountActivityUtil.getActionInfo(session), cart, null, false, cra, null);
+				FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+				if(FDStoreProperties.getAvalaraTaxEnabled()){
+					AvalaraContext context = new AvalaraContext(cart);
+					context.setCommit(false);
+					cart.getAvalaraTaxValue(context);
+					info.setTaxationType(EnumNotificationType.AVALARA);
+					}
+				String orderID= FDCustomerManager.placeSubscriptionOrder(info, cart, null, false, cra, null);
 				session.removeAttribute("SUBSCRIPTION_CART");
 				return orderID;
 			} catch (FDResourceException ex) {
