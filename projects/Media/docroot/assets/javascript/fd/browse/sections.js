@@ -127,7 +127,7 @@ var FreshDirect = FreshDirect || {};
 				//now, page beacon
 				hlSkusStr = hlSkus.join(',');
 				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur).length === 0) {
-					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		}
