@@ -622,6 +622,11 @@ span.cssbutton.annotation:hover {
 	vertical-align:top;
 }
 
+#evenBetterPopup .pdp-evenbetter-image .portrait-item-burst_wrapper,
+.pdp .pdp-evenbetter-image .portrait-item-burst_wrapper {
+	height:85px;
+}
+
 #evenBetterPopup .pdp-evenbetter-image img,
 .pdp .pdp-evenbetter-image img {
 	max-height:85px;
