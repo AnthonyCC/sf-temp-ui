@@ -95,7 +95,6 @@ var FreshDirect = FreshDirect || {};
 				hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 				//fire impression
 				if ($('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-					console.log('firing impression', $(this), $('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')));
 					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 				}
 			});
@@ -104,8 +103,8 @@ var FreshDirect = FreshDirect || {};
 			
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(FreshDirect.browse.data.pager.activePage == 1){
-				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
-					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				if ($(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
+					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		} else {
@@ -121,7 +120,6 @@ var FreshDirect = FreshDirect || {};
 					hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 					//fire impression
 					if ($('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-						console.log('firing impression', $(this), $('.browseContent .HLpageBeaconImg.impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')));
 						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+FreshDirect.browse.data.pager.activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 					}
 				});
