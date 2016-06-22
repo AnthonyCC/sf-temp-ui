@@ -206,4 +206,6 @@ public interface FDOrderI extends FDCartI {
 	public ErpDeliveryInfoModel getDeliveryInfo();
 	public String getStandingOrderName();
 	public String getSODeliveryDate();
+	public String getIn_modify();
+	public Date getLock_timestamp();
 }

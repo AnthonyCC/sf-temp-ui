@@ -58,6 +58,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
 	private EnumEStoreId eStoreId;
 	private String standingOrderName=null;
+	private String in_modify;
+	private Date lock_timestamp;
 	/**
 	 * @return Returns the deliveryPassId.
 	 */
@@ -108,9 +110,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param dlvPassId
 	 * @param type
 	 * @param standingOrderId ID of StandingOrder that created this sale
+	 * @param lock_timestamp 
+	 * @param in_modify 
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List<ErpTransactionModel> transactions, List<ErpComplaintModel> complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId,String standingOrderName) {
+		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId,String standingOrderName, String in_modify, Date lock_timestamp) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -126,6 +130,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.hasSignature = hasSignature;
 		this.eStoreId = eStoreId;
 		this.standingOrderName=standingOrderName;
+		this.in_modify = in_modify;
+		this.lock_timestamp = lock_timestamp;
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -1902,6 +1908,22 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 		}
 		return lastAuths;
+	}
+
+	public String getIn_modify() {
+		return in_modify;
+	}
+
+	public void setIn_modify(String in_modify) {
+		this.in_modify = in_modify;
+	}
+
+	public Date getLock_timestamp() {
+		return lock_timestamp;
+	}
+
+	public void setLock_timestamp(Date lock_timestamp) {
+		this.lock_timestamp = lock_timestamp;
 	}
 	
 }

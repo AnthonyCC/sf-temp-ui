@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.customer.CCOrderSummaryI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.fdstore.EnumEStoreId;
 /**
  *
  * @version $Revision:8$
@@ -75,6 +76,14 @@ public class OrderSummaryTag extends com.freshdirect.framework.webapp.BodyTagSup
 			return order.getDatePlaced();
 		}
 
+		public String getInModify() {
+			return order.getIn_modify();
+		}
+
+		public Date getLock_timestamp() {
+			return order.getLock_timestamp();
+		}
+
 		public String getCreatedBy() {
 		
 			return order.getOrderSource().equals(EnumTransactionSource.CUSTOMER_REP) 
@@ -109,9 +118,14 @@ public class OrderSummaryTag extends com.freshdirect.framework.webapp.BodyTagSup
 			return (order.hasCreditIssued() > 0) ? ((order.hasCreditIssued() == 1) ? "YES" : "PENDING" ) : "NO";
 		}
 		
+		public EnumEStoreId getEStoreId(){
+			return order.getEStoreId();
+		}
+		
 		public EnumSaleType getOrderType(){
 			return order.getOrderType();
 		}
+		
 	}
 	
 	public static class TagEI extends TagExtraInfo {

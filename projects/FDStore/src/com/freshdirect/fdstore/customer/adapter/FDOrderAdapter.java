@@ -1678,4 +1678,12 @@ public class FDOrderAdapter implements FDOrderI {
      return null;
 	}
 	
+	public String getIn_modify() {
+		return getSale().getIn_modify();
+	}
+	
+	public Date getLock_timestamp() {
+		return getSale().getLock_timestamp();
+	}
+	
 }

@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null,null);
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null, null, null, null);
 		complaints = new ErpComplaintList();
 	}
 
@@ -513,7 +514,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID,NVL(E_STORE,'FreshDirect') E_STORE  FROM CUST.SALE WHERE ID=?");
+			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID,NVL(E_STORE,'FreshDirect') E_STORE, IN_MODIFY, LOCK_TIMESTAMP FROM CUST.SALE WHERE ID=?");
 		ps.setString(1, getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -532,6 +533,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			saleType=EnumSaleType.getSaleType(_saleType);
 		}
 		String eStoreKey = rs.getString("E_STORE");
+		
+		String in_modify = "X".equalsIgnoreCase(rs.getString("IN_MODIFY"))?"YES":"NO";
+		Date lock_timestamp = rs.getTimestamp("LOCK_TIMESTAMP");
 		EnumEStoreId eStoreId = (null ==eStoreKey||"".equals(eStoreKey))?EnumEStoreId.FD:EnumEStoreId.valueOfContentId(eStoreKey);
 		rs.close();
 		ps.close();
@@ -593,7 +597,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId,soName);
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, 
+				cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId, soName, in_modify, lock_timestamp);
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);
