@@ -63,6 +63,9 @@ public class ErpGrpInfoDAO {
             " AND g.version=(SELECT MAX(version) version FROM ERPS.GRP_SCALE_MASTER WHERE sap_id=G.SAP_ID) "+
             " AND ACTIVE='X'      and gp.grp_id=g.id ";
 
+	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW="SELECT DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+
+	       " (select grp_id,version from erps.material_grp mg where mat_id=?) A, ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
+	       " WHERE A.grp_id=g.id and a.version=g.version and g.id=GP.GRP_ID and g.version=(select max(version) from ERPS.GRP_SCALE_MASTER WHERE sap_id=g.sap_id) and g.active='X' and g.version=gp.version ";
 
 	public static Map<String,FDGroup> getGroupIdentityForMaterial(Connection conn,String matId) throws SQLException{
 		FDGroup group=null;
@@ -72,7 +75,7 @@ public class ErpGrpInfoDAO {
 	   Map<String,FDGroup> groups=new HashMap<String,FDGroup>();
 	   String key="";
 		try {	    	   	    	   	    	   
-			ps = conn.prepareStatement(GRP_PRICING_SELECT_MAT_SQL);
+			ps = conn.prepareStatement(GRP_PRICING_SELECT_MAT_SQL_NEW);
 			ps.setString(1,matId);
 			//ps.setString(2,matId);
 			rs = ps.executeQuery();	 
