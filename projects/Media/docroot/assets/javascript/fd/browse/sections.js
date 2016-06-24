@@ -111,6 +111,7 @@ var FreshDirect = FreshDirect || {};
 			//prob NOT search
 			/* this uses a marker class on the page beacon image to determine if it needs to be fired again,
 			 * since it can be on any page, not just the first one. */
+			
 			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionOfProductList) {
 				//get sku code in HL items for cat
 				var hlSkus = [], hlSkusStr = '';
@@ -210,12 +211,17 @@ var FreshDirect = FreshDirect || {};
 
 	//this always fires upon each set of products load success
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
+		//update display data
+		if (xhr && xhr.hasOwnProperty('responseJSON') && $.isPlainObject(xhr.responseJSON)) {
+			$.extend(window.FreshDirect.browse.data, xhr.responseJSON);
+		}
+		
 		//update the page beacon url
-		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
+		/*if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
 		xhr.responseJSON.adProducts.pageBeacon !== undefined &&  xhr.responseJSON.adProducts.pageBeacon != null &&
 		xhr.responseJSON.adProducts.pageBeacon.length > 3 ){
 			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
-		}
+		}*/
 		
 		if( (adProductSection && adProductSection.hasOwnProperty('fixThoseHooklogicDisplayHeights')) && (window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) || (settings.url.indexOf("cartdata?change=") != -1 )) ){
 			adProductSection.fixThoseHooklogicDisplayHeights();
