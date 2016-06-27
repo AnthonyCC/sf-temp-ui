@@ -53,15 +53,15 @@ public class PreviewLinkProvider {
 
 				ContentKey homeKey = PrimaryHomeUtil.pickPrimaryHomeForStore(key, storeKey, svc);
 				if (homeKey != null) {
-					uri = "/product.jsp?catId=" + homeKey.getId() + "&productId=" + id;
+					uri = "/pdp.jsp?catId=" + homeKey.getId() + "&productId=" + id;
 				}
 			}
 			
 		} else if (FDContentTypes.CATEGORY.equals(type)) {
-			uri = "/category.jsp?catId=" + id;
+			uri = "/browse.jsp?id=" + id;
 
 		} else if (FDContentTypes.DEPARTMENT.equals(type)) {
-			uri = "/department.jsp?deptId=" + id;
+			uri = "/browse.jsp?id=" + id;
 
 		} else if (FDContentTypes.RECIPE.equals(type)) {
 			uri = "/recipe.jsp?recipeId=" + id;
