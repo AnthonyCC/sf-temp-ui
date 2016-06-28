@@ -38,7 +38,7 @@
         <td><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>Manual<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>Automatic<%} else if(EnumSaleType.GIFTCARD.equals(summary.getOrderType())){%>Gift Card<% } else if(EnumSaleType.DONATION.equals(summary.getOrderType())){%>Robin Hood Donation<% } %></td>
 		<td><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%><%}else{%>--<%}%></td>
 		<% if(EnumEStoreId.FDX.equals(summary.getEStoreId())){%><td align="center"><%=summary.getInModify()%></td>
-		<td><%=CCFormatter.formatDateTime(summary.getLock_timestamp())%></td><%}%>
+		<td><%=(summary.getLock_timestamp()!=null)?CCFormatter.formatDateTime(summary.getLock_timestamp()):""%></td><%}%>
 		
 		<td><b><%=summary.getOrderStatus()%></b></td>
 		<td><%=JspMethods.formatPrice(summary.getOrderTotal())%></td>
