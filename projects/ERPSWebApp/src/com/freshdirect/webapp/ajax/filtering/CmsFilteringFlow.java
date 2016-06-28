@@ -89,8 +89,8 @@ public class CmsFilteringFlow {
 	private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 	
 	@SuppressWarnings("deprecation")
-    public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
 		BrowseData browseData = null;
+	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
 		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
 		if (nav.getPageType() == FilteringFlowType.BROWSE) {
 			
@@ -131,17 +131,46 @@ public class CmsFilteringFlow {
 		            		FDStoreProperties.getHookLogicAllowOwnRows()
 		            );
 				} else { /* multiple sub cats */
-			        Iterator<SectionData> iterator = browseData.getSections().getSections().get(0).getSections().iterator();
-			        while (iterator.hasNext()) {
-						SectionData section = iterator.next();
-				        insertHookLogicProductsIntoBrowseData(
-				        		section.getProducts(), 
-			            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
-			            		user,
-			            		FDStoreProperties.getHookLogicAllowOwnRows()
-			            );
-			        	
-			        }
+					//skip out if not on show all or first page
+					if (nav.getActivePage() <= 1) {
+						int runningTotal = 0;
+				        Iterator<SectionData> iterator = browseData.getSections().getSections().get(0).getSections().iterator();
+				        while (iterator.hasNext()) {
+							SectionData section = iterator.next();
+							
+							int curSectionSize = section.getProducts().size();
+							
+							int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
+					        	(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
+							
+				        	//calc how many HL will be inserted...
+				        	double calcd = Math.min(
+				        			Math.ceil( curSectionSize / itemsPerRow), 
+				        			browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size()
+				        	);
+				        	//...and cover lower-end
+				        	if (curSectionSize < itemsPerRow) {
+				        		calcd = 1;
+				        	}
+				        	
+				        	//check if we have room, it's the first cat, or it's show all
+				        	//nav.isAll() doesn't work here, it's always true for cats that display subcats
+				        	//pageNum is 0, using that for 'all'
+				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || runningTotal + (curSectionSize+calcd) < nav.getPageSize())) {
+						        insertHookLogicProductsIntoBrowseData(
+						        		section.getProducts(), 
+					            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
+					            		user,
+					            		FDStoreProperties.getHookLogicAllowOwnRows()
+					            );
+				        	}
+							runningTotal += curSectionSize+calcd; //incr total
+							//break if we're done inserting
+							if (runningTotal > nav.getPageSize() && nav.getActivePage() != 0) {
+								break;
+							}
+				        }
+					}
 				}
 				
 				// -- PAGING --
