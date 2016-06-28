@@ -36,7 +36,9 @@
   {if $selected}
     {foreach $payment in $payments}
       {if $payment.selected}
-        {call .paymentmethodpreviewitem data="$payment"}{/call}
+        {call .paymentmethodpreviewitem data="$payment"}
+        {param metadata: 'true' /}
+        {/call}
       {/if}
     {/foreach}
  
@@ -286,7 +288,7 @@
 /**
  * @param? payments
  * @param? coveredByGiftCard
- * @param? metadata
+ *
  */
 {template .paymentmethodcontent autoescape="false"}
 {if $payments}
@@ -302,11 +304,6 @@
     <div class="drawer__item drawer__item-addaction">
       <div class="addaction__center">
         <button aria-haspopup="true" class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add <span class="offscreen">Payment </span>Method</button>
-        {if $metadata and $metadata.paymentPromoOAS}
-        <p class="addaction__desc">
-          <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
-        </p>
-        {/if}
       </div>
     </div>
   </form>
@@ -447,6 +444,7 @@
 * @param? eWalletID
 * @param? mpLogoURL
 * @param? emailID
+* @param metadata
 */
 {template .paymentmethodpreviewitem autoescape="false"}
 <div class='drawer__previewitem'>
@@ -491,6 +489,11 @@
   </div>
   {/if}
 </div>
+{if $metadata}
+<div>
+ 	<button class="change cssbutton orange transparent small" aria-haspopup="true" id="eCheckButton" data-component="addpaymentmethodbutton">SAVE 5$ with eCheck</button>
+ </div>
+ {/if}
 {/template}
 
 
@@ -514,7 +517,8 @@
   {if $selected}
     {foreach $payment in $payments}
       {if $payment.selected}
-        {call .paymentmethodpreviewitemNew data="$payment"}{/call}
+        {call .paymentmethodpreviewitemNew data="$payment"}
+         {/call}
       {/if}
     {/foreach}
   {/if}
