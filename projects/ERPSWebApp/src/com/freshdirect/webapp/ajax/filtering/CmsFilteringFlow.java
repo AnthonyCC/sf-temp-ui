@@ -145,11 +145,11 @@ public class CmsFilteringFlow {
 							
 				        	//calc how many HL will be inserted...
 				        	double calcd = Math.min(
-				        			Math.ceil( curSectionSize / itemsPerRow), 
+				        			Math.ceil( ((double)curSectionSize / itemsPerRow)), 
 				        			browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size()
 				        	);
 				        	//...and cover lower-end
-				        	if (curSectionSize < itemsPerRow) {
+				        	if (calcd > 0 && curSectionSize < itemsPerRow) {
 				        		calcd = 1;
 				        	}
 				        	
