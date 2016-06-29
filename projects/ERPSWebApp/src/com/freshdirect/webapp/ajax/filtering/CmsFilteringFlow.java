@@ -160,7 +160,7 @@ public class CmsFilteringFlow {
 				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
 						        insertHookLogicProductsIntoBrowseData(
 						        		section.getProducts(), 
-						        		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd), 
+						        		null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null, 
 					            		user,
 					            		FDStoreProperties.getHookLogicAllowOwnRows()
 					            );
