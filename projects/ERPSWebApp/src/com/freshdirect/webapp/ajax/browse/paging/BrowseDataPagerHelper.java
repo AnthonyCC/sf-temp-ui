@@ -69,7 +69,7 @@ public class BrowseDataPagerHelper {
 			pagerData.setFirstItemIndex(1);
 			pagerData.setLastItemIndex(pagerData.getItemCount());
 		} else {
-			pagerData.setPageCount(Math.max(0, fetchResults.get(LOGICAL_ITEM_COUNT) - 1) / pagerData.getPageSize() + 1);
+			pagerData.setPageCount(Math.max(0, fetchResults.get(LOGICAL_ITEM_COUNT) - 1 - fetchResults.get(SPACER_COUNT)) / pagerData.getPageSize() + 1);
 			pagerData.setLastItemIndex(fetchResults.get(LAST_ITEM_INDEX));
 			pagerData.setFirstItemIndex(fetchResults.get(FIRST_ITEM_INDEX));
 		}
@@ -143,9 +143,24 @@ public class BrowseDataPagerHelper {
 			fetchResults.put(FIRST_ITEM_INDEX, fetchResults.get(FIRST_ITEM_INDEX) + entityListSize);
 			fetchResults.put(LAST_ITEM_INDEX, fetchResults.get(LAST_ITEM_INDEX) + entityListSize);
 
+			//set the spacer count
+			int spacerCount = 0;
+			if (entityListSize > 0) {
+
+				Iterator<ProductData> entityListIterator = entityList.iterator();
+				while (entityListIterator.hasNext()) {
+					ProductData curEntity = entityListIterator.next();
+					if ( "!_SPACER_!".equals(curEntity.getProductId()) ) { /* this ID is also used in fragments.soy */
+						spacerCount++;
+					}
+				}
+					
+				fetchResults.put(SPACER_COUNT, fetchResults.get(SPACER_COUNT) + spacerCount);
+			}
 			
 			//Overlapping section, remove entities from 'previous page'
 			int itemNumberToBeDropped = fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX) - 1 - fetchResults.get(LOGICAL_ITEM_COUNT);
+			
 			for (int i = 0; i < itemNumberToBeDropped; i++) {
 				if (!all) {
 					entityList.remove(0);
@@ -156,6 +171,9 @@ public class BrowseDataPagerHelper {
 			
 			//Overlapping section, remove entities from 'next page'
 			itemNumberToBeDropped = fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX) - 1 + (Math.max(fetchResults.get(LOGICAL_ITEM_COUNT), fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX) - 1) - fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX) + 1) + entityList.size() - fetchResults.get(CURRENT_PAGE_LAST_ITEM_INDEX);
+			
+			itemNumberToBeDropped -= spacerCount; //account for spacers
+			
 			for (int i = 0; i < itemNumberToBeDropped; i++) {
 				if (!all) {
 					entityList.remove(entityList.size() - 1);
@@ -168,21 +186,6 @@ public class BrowseDataPagerHelper {
 			if (entityListSize > 0) {
 //				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityListSize - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 				fetchResults.put(LOGICAL_ITEM_COUNT, entityListSize + fetchResults.get(LOGICAL_ITEM_COUNT)); 
-			}
-			
-			//set the spacer count
-			if (entityListSize > 0) {
-				int spacerCount = 0;
-
-				Iterator<ProductData> entityListIterator = entityList.iterator();
-				while (entityListIterator.hasNext()) {
-					ProductData curEntity = entityListIterator.next();
-					if ( "!_SPACER_!".equals(curEntity.getProductId()) ) { /* this ID is also used in fragments.soy */
-						spacerCount++;
-					}
-				}
-					
-				fetchResults.put(SPACER_COUNT, fetchResults.get(SPACER_COUNT) + spacerCount);
 			}
 		} 
 		

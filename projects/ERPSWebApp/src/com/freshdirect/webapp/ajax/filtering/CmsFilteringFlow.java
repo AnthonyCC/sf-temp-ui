@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -159,7 +160,7 @@ public class CmsFilteringFlow {
 				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
 						        insertHookLogicProductsIntoBrowseData(
 						        		section.getProducts(), 
-					            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
+						        		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd), 
 					            		user,
 					            		FDStoreProperties.getHookLogicAllowOwnRows()
 					            );
