@@ -146,7 +146,7 @@ public class CmsFilteringFlow {
 				        	//calc how many HL will be inserted...
 				        	double calcd = Math.min(
 				        			Math.ceil( ((double)curSectionSize / itemsPerRow)), 
-				        			browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size()
+				        			null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
 				        	);
 				        	//...and cover lower-end
 				        	if (calcd > 0 && curSectionSize < itemsPerRow) {
@@ -156,7 +156,7 @@ public class CmsFilteringFlow {
 				        	//check if we have room, it's the first cat, or it's show all
 				        	//nav.isAll() doesn't work here, it's always true for cats that display subcats
 				        	//pageNum is 0, using that for 'all'
-				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || runningTotal + (curSectionSize+calcd) <= nav.getPageSize())) {
+				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
 						        insertHookLogicProductsIntoBrowseData(
 						        		section.getProducts(), 
 					            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
