@@ -249,7 +249,7 @@ public class CmsFilteringFlow {
 	/* allowOnlyHLRows will toggle filling in empty rows to display the entire HL list */
 	public void insertHookLogicProductsIntoBrowseData(List<ProductData> prodList, List<ProductData> hlProdList, FDSessionUser user, boolean allowOnlyHLRows) {
 		/* skip out if hlProds passed in are invalid or empty */
-		if (hlProdList == null || hlProdList.size() == 0) { return; }
+		if (hlProdList == null || hlProdList.size() == 0 || prodList == null || prodList.size() == 0) { return; }
 		
         int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
         	(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
