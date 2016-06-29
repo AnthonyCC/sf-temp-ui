@@ -139,7 +139,7 @@ public class CmsFilteringFlow {
 				        while (iterator.hasNext()) {
 							SectionData section = iterator.next();
 							
-							int curSectionSize = section.getProducts().size();
+							int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
 							
 							int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
 					        	(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
