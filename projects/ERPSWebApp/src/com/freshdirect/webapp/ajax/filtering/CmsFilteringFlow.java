@@ -1146,21 +1146,14 @@ private List<ProductData> getProductDataList(FDSessionUser user, List<FilteringS
 	 			if(product.getProductModel()!=null && !product.getProductModel().isUnavailable()){
 	 	      try { 
 					productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
-					productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
-					productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());
-					} catch (FDResourceException e) {
-						LOG.warn("Exception while populating HookLogic returned product: ", e);
-				e.printStackTrace();
-					} catch (FDSkuNotFoundException e) {
-						LOG.warn("Exception while populating HookLogic returned product: ", e);
-					} catch (HttpErrorResponse e) {
-						LOG.warn("Exception while populating HookLogic returned product: ", e);
-				e.printStackTrace();
+					if(null !=productData){
+						productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
+						productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());					
+						hlProductDataList.add(productData);
 					}
-					catch (Exception e) {
-						LOG.warn("Exception while populating Hook Logic ProductData: ", e);
-					}
-	 	     hlProductDataList.add(productData);
+	 	      	} catch (Exception e) {
+					LOG.warn("Exception while populating Hook Logic ProductData: ", e);
+				}
 			}
 	  	
 		if(hlProductDataList.size()>=FDStoreProperties.getHlProductsCount())
