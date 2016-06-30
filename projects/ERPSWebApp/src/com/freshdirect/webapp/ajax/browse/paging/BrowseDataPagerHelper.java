@@ -150,7 +150,7 @@ public class BrowseDataPagerHelper {
 				Iterator<ProductData> entityListIterator = entityList.iterator();
 				while (entityListIterator.hasNext()) {
 					ProductData curEntity = entityListIterator.next();
-					if ( "!_SPACER_!".equals(curEntity.getProductId()) ) { /* this ID is also used in fragments.soy */
+					if (curEntity != null && "!_SPACER_!".equals(curEntity.getProductId()) ) { /* this ID is also used in fragments.soy */
 						spacerCount++;
 					}
 				}
