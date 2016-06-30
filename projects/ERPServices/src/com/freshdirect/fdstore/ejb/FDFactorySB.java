@@ -131,5 +131,15 @@ public interface FDFactorySB extends EJBObject {
 
 	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;
 	public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	
+	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException, FDResourceException;
+	/**
+	 * Method to get all groups modified after lastModified time
+	 * @param lastModified
+	 * @return
+	 * @throws FDResourceException
+	 * @throws RemoteException
+	 */
+	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
 }
 

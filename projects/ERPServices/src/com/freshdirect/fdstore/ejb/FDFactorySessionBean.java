@@ -670,4 +670,38 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		// create FDProductInfo
 		return this.productHelper.getFDProductInfoNew(erpProdInfo);//::FDX::
 	}
+	
+	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws FDResourceException {
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		
+		try {								
+			ErpGrpInfoSB infoSB = grpHome.create();		
+			return infoSB.getGroupIdentityForMaterial(matId);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException{
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		
+		try {								
+			ErpGrpInfoSB infoSB = grpHome.create();		
+			return infoSB.getModifiedOnlyGroups(lastModified);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+	}
 }

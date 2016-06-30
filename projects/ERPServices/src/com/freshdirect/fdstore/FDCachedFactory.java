@@ -593,4 +593,12 @@ public class FDCachedFactory {
 			productInfoCache.put(sku, SKU_NOT_FOUND);					
 		}
 	}
+	
+	public static void loadMaterialGroupCache(){
+		FDMaterialGroupCache.loadMaterialGroups();
+	}
+	
+	public static Map<String,FDGroup> getGroupsByMaterial(String material) {
+		return FDMaterialGroupCache.getGroupsByMaterial(material);
+	}
 }

@@ -105,6 +105,7 @@ public class FDStoreProperties {
     private final static String PROP_WINBACK_ROOT = "fdstore.winbackRoot";
     private final static String PROP_MARKETING_PROMO_ROOT = "fdstore.marketingPromoRoot";
     private final static String PROP_REFRESHSECS_PRODUCTINFO = "fdstore.refreshSecs.productInfo";
+    private final static String PROP_REFRESHSECS_GROUPSCALE = "fdstore.refreshSecs.groupscale";
     private final static String PROP_REFRESHSECS_UPCPRODUCTINFO = "fdstore.refreshSecs.upcProductInfo";
     private final static String PROP_REFRESHSECS_PRODUCT = "fdstore.refreshSecs.product";
     private final static String PROP_REFRESHSECS_ZONE = "fdstore.refreshSecs.zone";
@@ -977,6 +978,7 @@ public class FDStoreProperties {
             "freshdirect.payment.RestrictedPaymentMethod");
 
         defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+        defaults.put(PROP_REFRESHSECS_GROUPSCALE, "600");
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
@@ -1988,6 +1990,10 @@ public class FDStoreProperties {
 
     public static int getRefreshSecsProductInfo() {
         return Integer.parseInt(get(PROP_REFRESHSECS_PRODUCTINFO));
+    }
+    
+    public static int getRefreshSecsGroupScaleInfo() {
+        return Integer.parseInt(get(PROP_REFRESHSECS_GROUPSCALE));
     }
 
     public static int getRefreshSecsUPCProductInfo() {

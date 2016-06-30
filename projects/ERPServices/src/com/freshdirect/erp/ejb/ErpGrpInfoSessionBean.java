@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -253,4 +254,26 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 		return group;
 	}
 	
+	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws RemoteException{
+		Connection conn = null;
+		Map<String,List<String>> groupMaterials = null;
+		
+		try {
+			conn = getConnection();
+			groupMaterials = ErpGrpInfoDAO.getModifiedOnlyGroups(conn, lastModified);
+			
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to getModifiedOnlyGroups for lastModified: "+ lastModified, sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}
+		return groupMaterials;
+	}
 }

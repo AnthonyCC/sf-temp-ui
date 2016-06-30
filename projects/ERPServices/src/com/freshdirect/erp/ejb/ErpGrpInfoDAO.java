@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -475,5 +477,50 @@ public class ErpGrpInfoDAO {
 				ps.close();
 		}
 		return _group;
+	}
+	
+	
+	public static final String GET_LATEST_GROUPS_MATERIALS_MODIFIED =" select gsm.sap_id,gsm.version,GH.DATE_CREATED,mg.mat_id from ERPS.GRP_SCALE_MASTER gsm,ERPS.MATERIAL_GRP mg, (select gh.version,gh.date_created from ERPS.GRP_HISTORY gh where GH.DATE_CREATED > ?)gh"
+              +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID and gsm1.version=gh.version)"
+              +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
+	
+	public static final String GET_ALL_GROUPS_MATERIALS =" select gsm.sap_id,gsm.version,GH.DATE_CREATED,mg.mat_id from ERPS.GRP_SCALE_MASTER gsm,ERPS.MATERIAL_GRP mg, ERPS.GRP_HISTORY gh"
+            +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID and gsm1.version=gh.version)"
+            +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
+	
+	public static Map<String,List<String>> getModifiedOnlyGroups(Connection con,Date lastModified) throws SQLException{
+		Connection conn = con;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<String,List<String>> map = new HashMap<String,List<String>>();
+		
+		try {
+			if(null != lastModified){
+				ps = conn.prepareStatement(GET_LATEST_GROUPS_MATERIALS_MODIFIED);
+				ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+			}else{
+				ps = conn.prepareStatement(GET_ALL_GROUPS_MATERIALS);
+			}
+			
+			rs = ps.executeQuery();
+			while (rs.next()) {
+//					FDGroup group=new FDGroup( rs.getString("SAP_ID"),rs.getInt("VERSION"),rs.getTime("DATE_CREATED"));
+				String groupId = rs.getString("SAP_ID");
+				List<String> grpMaterials = map.get(groupId);
+				if(null == grpMaterials){
+					grpMaterials = new ArrayList<String>();
+					map.put(groupId, grpMaterials);
+				}
+				grpMaterials.add(rs.getString("MAT_ID"));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
+		return map;
 	}
 }

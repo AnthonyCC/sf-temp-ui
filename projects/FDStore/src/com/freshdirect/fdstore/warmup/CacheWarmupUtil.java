@@ -152,5 +152,12 @@ public class CacheWarmupUtil {
 		final Collection<GroupScalePricing> grpInfos = (Collection<GroupScalePricing>) FDCachedFactory.getGrpInfos((FDGroup[]) grpInfoList.toArray(new FDGroup[0]));
 		LOGGER.info("Lightweight grp data loaded size is :"+grpInfos.size());
 	}
+	
+	
+	public static void warmupMaterialGroups() throws FDResourceException {
+		LOGGER.info("Loading Group Materials Data");
+		FDCachedFactory.loadMaterialGroupCache();
+		LOGGER.info("Loaded Group Materials Data");
+	}
 
 }

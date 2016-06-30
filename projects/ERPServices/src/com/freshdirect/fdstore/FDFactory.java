@@ -355,7 +355,6 @@ public class FDFactory {
 		try {
 			FDFactorySB sb = factoryHome.create();
 			Collection pinfos = sb.getProductInfos(skus);
-
             if (FDStoreProperties.getPreviewMode()) {
             	
             	Set foundSkus = new HashSet();
@@ -881,6 +880,40 @@ public class FDFactory {
 		try {
 			FDFactorySB sb = factoryHome.create();
           return sb.getLatestActiveGroup(groupId);
+         
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws FDResourceException{
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+          return sb.getGroupIdentityForMaterial(matId);
+         
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException{
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			return sb.getModifiedOnlyGroups(lastModified);
          
 		} catch (CreateException ce) {
 			factoryHome=null;

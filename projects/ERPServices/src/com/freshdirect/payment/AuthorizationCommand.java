@@ -42,7 +42,7 @@ public class AuthorizationCommand {
 				ErpAuthorizationModel auth = this.authorize(info);
 				auth.setAffiliate(info.getAffiliate());
 				auth.setIsChargePayment(info.isAdditionalCharge());
-				LOGGER.info("Authorizing sale " + info.getSaleId() + " - response code " + auth.getResponseCode() + " - merchant " + info.getMerchantId());
+				LOGGER.info("Authorizing sale " + info.getSaleId() + " - response code " + auth.getResponseCode() + " - merchant " + info.getMerchantId()+", for $"+info.getAmount());
 				this.auths.add(auth);
 				if(!auth.isApproved()) {
 					break;

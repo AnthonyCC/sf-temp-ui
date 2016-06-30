@@ -94,6 +94,7 @@ public class Warmup {
 
 					// Warmup
 					CacheWarmupUtil.warmupZones();
+					CacheWarmupUtil.warmupMaterialGroups();
 					CacheWarmupUtil.warmupProducts(skuCodes, ctx);
 					if (FDStoreProperties.isPreloadAutocompletions()) {
 						ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");

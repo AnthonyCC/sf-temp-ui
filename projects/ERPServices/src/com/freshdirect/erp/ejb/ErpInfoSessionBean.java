@@ -1661,4 +1661,42 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 		
 	}
+	
+	private final static String QUERY_PRODUCTS_BY_LAST_MODIFIED =
+			/*"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date, "
+			+ " p.unavailability_reason,m.description, m.atp_rule,p.rating, mp.price,"
+		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
+			+ " p.days_fresh, p.days_in_house,p.sustainability_rating, m.upc  "
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id " +
+					" and (m.upc = ? or '0' || M.UPC = ?)"
+		    + " and m.version = (select max(version) from erps.material where upc = ? or '0' || upc = ?)";*/
+				
+				"select m.skucode, m.version, m.sap_id, ms.unavailability_status, ms.unavailability_date, "
+				+ " ms.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
+			        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
+				+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
+		        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT   "
+				+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms,erps.history h "
+				+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id"						
+			    + " and m.version = (select max(m1.version) from erps.material m1 where m1.version=h.version and m1.sap_id=m.sap_id)"
+				+ " h.date_created > ?";
+	
+	public Collection<ErpProductInfoModel> findProductsByLastModified(Date lastModifiedTime) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_LAST_MODIFIED);
+			ps.setTimestamp(1, new Timestamp(lastModifiedTime.getTime()));		
+			
+			return queryProductInfoModel(ps);
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find product by last modified: " + lastModifiedTime, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
 }
