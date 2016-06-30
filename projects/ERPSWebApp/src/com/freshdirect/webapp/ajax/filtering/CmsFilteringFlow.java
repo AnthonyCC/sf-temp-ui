@@ -122,55 +122,62 @@ public class CmsFilteringFlow {
 			if(!nav.isPdp()){
 
 				/* loop through sectionContexts, and insert from HL list */
-				List <SectionData> tempList = browseData.getSections().getSections().get(0).getSections();
+				List <SectionData> tempList = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty())?browseData.getSections().getSections().get(0).getSections():null;
 				if (tempList == null || tempList.size() == 0) { /* single cat */
-					SectionData section = browseData.getSections().getSections().get(0);
-			        insertHookLogicProductsIntoBrowseData(
-			        		section.getProducts(), 
-		            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
-		            		user,
-		            		FDStoreProperties.getHookLogicAllowOwnRows()
-		            );
+					SectionData section = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? browseData.getSections().getSections().get(0): null;
+					if(null !=section){
+				        insertHookLogicProductsIntoBrowseData(
+				        		section.getProducts(), 
+			            		browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
+			            		user,
+			            		FDStoreProperties.getHookLogicAllowOwnRows()
+			            );
+					}
 				} else { /* multiple sub cats */
 					//skip out if not on show all or first page
 					if (nav.getActivePage() <= 1) {
 						int runningTotal = 0;
-				        Iterator<SectionData> iterator = browseData.getSections().getSections().get(0).getSections().iterator();
-				        while (iterator.hasNext()) {
-							SectionData section = iterator.next();
-							
-							int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
-							
-							int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
-					        	(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
-							
-				        	//calc how many HL will be inserted...
-				        	double calcd = Math.min(
-				        			Math.ceil( ((double)curSectionSize / itemsPerRow)), 
-				        			null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
-				        	);
-				        	//...and cover lower-end
-				        	if (calcd > 0 && curSectionSize < itemsPerRow) {
-				        		calcd = 1;
-				        	}
-				        	
-				        	//check if we have room, it's the first cat, or it's show all
-				        	//nav.isAll() doesn't work here, it's always true for cats that display subcats
-				        	//pageNum is 0, using that for 'all'
-				        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
-						        insertHookLogicProductsIntoBrowseData(
-						        		section.getProducts(), 
-						        		null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null, 
-					            		user,
-					            		FDStoreProperties.getHookLogicAllowOwnRows()
-					            );
-				        	}
-							runningTotal += curSectionSize+calcd; //incr total
-							//break if we're done inserting
-							if (runningTotal > nav.getPageSize() && nav.getActivePage() != 0) {
-								break;
+						if(null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()){
+							SectionData lSection = browseData.getSections().getSections().get(0);
+							if(null !=lSection && null !=lSection.getSections() && !lSection.getSections().isEmpty()){
+						        Iterator<SectionData> iterator = lSection.getSections().iterator();
+						        while (iterator.hasNext()) {
+									SectionData section = iterator.next();
+									
+									int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
+									
+									int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
+							        	(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
+									
+						        	//calc how many HL will be inserted...
+						        	double calcd = Math.min(
+						        			Math.ceil( ((double)curSectionSize / itemsPerRow)), 
+						        			null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
+						        	);
+						        	//...and cover lower-end
+						        	if (calcd > 0 && curSectionSize < itemsPerRow) {
+						        		calcd = 1;
+						        	}
+						        	
+						        	//check if we have room, it's the first cat, or it's show all
+						        	//nav.isAll() doesn't work here, it's always true for cats that display subcats
+						        	//pageNum is 0, using that for 'all'
+						        	if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
+								        insertHookLogicProductsIntoBrowseData(
+								        		section.getProducts(), 
+								        		null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null, 
+							            		user,
+							            		FDStoreProperties.getHookLogicAllowOwnRows()
+							            );
+						        	}
+									runningTotal += curSectionSize+calcd; //incr total
+									//break if we're done inserting
+									if (runningTotal > nav.getPageSize() && nav.getActivePage() != 0) {
+										break;
+									}
+						        }
 							}
-				        }
+						}
 					}
 				}
 				
@@ -215,7 +222,7 @@ public class CmsFilteringFlow {
             
             /* insert HL products into the correct spot(s) in the results */
             insertHookLogicProductsIntoBrowseData(
-            		browseData.getSections().getSections().get(0).getProducts(), 
+            		(null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? (null !=browseData.getSections().getSections().get(0) ? browseData.getSections().getSections().get(0).getProducts():null): null,/*browseData.getSections().getSections().get(0).getProducts(),*/ 
             		browseData.getAdProducts().getProducts(), 
             		user,
             		FDStoreProperties.getHookLogicAllowOwnRows()
