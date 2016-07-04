@@ -1,60 +1,29 @@
 package com.freshdirect.cms;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.xml.transform.TransformerException;
 
-import com.freshdirect.DbTestCaseSupport;
 import com.freshdirect.framework.conf.ResourceUtil;
 import com.freshdirect.framework.xml.XSLTransformer;
 
-public class XmlToDbContentTypeDefTest extends DbTestCaseSupport {
+import junit.framework.TestCase;
 
-	private static String XSLT_RESOURCE= "com/freshdirect/cms/resource/XmlToDbDataDef.xsl";
-	
-	private static String XML_DATA_DEF_RESOURCE = "classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml";
-	
-	private XSLTransformer	xslTransformer;
-	
-	public XmlToDbContentTypeDefTest(String name) {
-		super(name);
-	}
+public class XmlToDbContentTypeDefTest extends TestCase {
 
-	public void setUp() throws Exception {
-		super.setUp();
-
-		xslTransformer = new XSLTransformer();
-	}
+	private static final String XSLT_RESOURCE= "com/freshdirect/cms/resource/XmlToDbDataDef.xsl";
 	
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-		
+	private static final String XML_DATA_DEF_RESOURCE = "classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml";
+	
 	/**
 	 *  Test the XSLT transformation, and if the result can be loaded into the database.
 	 */
-	public void testLoadIntoDatabase() throws IOException, TransformerException, SQLException  {
-		String    xmlDataDefPath;
-		String    dbDataDef  = null;
-		
-		xmlDataDefPath = ResourceUtil.readResource(XML_DATA_DEF_RESOURCE);
-		dbDataDef = xslTransformer.transform(xmlDataDefPath, XSLT_RESOURCE);
+	public void testLoadIntoDatabase() throws IOException, TransformerException  {
+		final String          xmlDataDefPath = ResourceUtil.readResource(XML_DATA_DEF_RESOURCE);
+        final XSLTransformer  xslTransformer = new XSLTransformer();
+
+		final String          dbDataDef = xslTransformer.transform(xmlDataDefPath, XSLT_RESOURCE);
+
 		System.out.println(dbDataDef);
-		//executeSqlScript(dbDataDef);
-	}
-
-	protected String getSchema() {
-		return "CMS";
-	}
-
-	protected String[] getAffectedTables() {
-		return new String[] { "cms.contenttype",
-				   			  "cms.lookuptype",
-				 			  "cms.lookup",
-			     			  "cms.relationshipdefinition",
-			     			  "cms.relationshipdestination",
-				 			  "cms.attributedefinition"
-			   				};
 	}
 }

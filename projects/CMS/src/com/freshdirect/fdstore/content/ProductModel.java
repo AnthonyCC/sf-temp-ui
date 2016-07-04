@@ -1104,4 +1104,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public String getPairItText();
 	
 	public void setParentNode(ContentNodeModel parentNode);
+	
+	/* Time to Complete value for MealKit items */
+	public int getTimeToComplete();
 }

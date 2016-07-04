@@ -49,11 +49,9 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
@@ -97,8 +95,8 @@ import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.VarIte
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.Variation;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.SkuData;
-import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
+import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -220,7 +218,7 @@ public class ProductDetailPopulator {
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
 		FDProductInfo productInfo = sku.getProductInfo();
@@ -262,8 +260,9 @@ public class ProductDetailPopulator {
 		
 		// Populate sku-level data for the default sku only
 		populateSkuData( data, user, product, sku, fdProduct );
-		
-        data.setProductQualityNote(MealkitService.defaultService().populateProductQualityNote(product));
+
+		// Populate MealKit specific properties
+		MealkitService.defaultService().populateData(data, product);
 
 		// Populate transient-data
 		postProcessPopulate( user, data, sku.getSkuCode(), showCouponStatus, lineData );
@@ -294,7 +293,7 @@ public class ProductDetailPopulator {
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
 		FDProductInfo productInfo = sku.getProductInfo();
@@ -389,7 +388,7 @@ public class ProductDetailPopulator {
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
 		if (PopulatorUtil.isProductIncomplete(product)) {
@@ -526,9 +525,9 @@ public class ProductDetailPopulator {
 		data.setCMSKey( product.getContentKey().getEncoded() );
 		
 		// Product & brand name - we need to separate them if applicable
-        String fullName = product.getFullName();
-        String productNameNoBrand = fullName;
-        String brandName = product.getPrimaryBrandName();
+		String fullName = product.getFullName();
+		String productNameNoBrand = fullName;
+		String brandName = product.getPrimaryBrandName();
 		if (	brandName != null && 
 				brandName.length() > 0 && 
 				fullName.length() >= brandName.length() && 
@@ -571,29 +570,8 @@ public class ProductDetailPopulator {
 		}
 		
 		// bazaar-voice flag
-		if ( FDStoreProperties.isBazaarvoiceEnabled() ) {
-			List<String> BV_FREE_DEPTS = FDStoreProperties.getBazaarvoiceExcludedDepts();
-			
-			boolean showReviews = true;
-			DepartmentModel dept = null;
-			
-			// First check primary home's dept
-			CategoryModel prHome = product.getPrimaryHome();
-			if ( prHome != null )
-				dept = prHome.getDepartment();
-			
-			// Fall back to product's dept if there is no primary home set
-			if ( dept == null )
-				dept = product.getDepartment();
-			
-			if ( dept == null || BV_FREE_DEPTS.contains( dept.getContentKey().getId() ) ) {
-				// Disable if dept is missing or is in the exclude list
-				showReviews = false;
-			}
-			
-			data.setBazaarVoice( showReviews );
-		}
-					
+		data.setBazaarVoice( false );
+
 		return data;
 	}
 
@@ -1420,20 +1398,7 @@ public class ProductDetailPopulator {
 			LOG.warn("Salesunit missing for "+ fdProduct.getSkuCode() +" version:" + fdProduct.getVersion());
 		}
 		String salesUnit = su != null ? su.getName() : "unknown salesunit";
-		
-		/*//APPDEV-4124
-		LOG.debug("Product Details - sku - "+fdProduct.getSkuCode());
-		LOG.debug("Product Details - version - "+fdProduct.getVersion());
-		LOG.debug("Product Details - FDSalesUnit - name - "+su.getName());
-		LOG.debug("Product Details - FDSalesUnit - description - "+su.getDescription());
-		LOG.debug("Product Details - FDSalesUnit - numerator - "+su.getNumerator());
-		LOG.debug("Product Details - FDSalesUnit - denominator - "+su.getDenominator());
-		LOG.debug("Product Details - FDSalesUnit - baseUnit - "+su.getBaseUnit());
-		LOG.debug("Product Details - FDSalesUnit - unitPriceNumerator - "+su.getUnitPriceNumerator());
-		LOG.debug("Product Details - FDSalesUnit - unitPriceDenominator - "+su.getUnitPriceDenominator());
-		LOG.debug("Product Details - FDSalesUnit - unitPriceUOM - "+su.getUnitPriceUOM());
-		LOG.debug("Product Details - FDSalesUnit - unitPriceDescription - "+su.getUnitPriceDescription());*/
-		
+
 		return salesUnit;
 	}
 
@@ -1595,7 +1560,7 @@ public class ProductDetailPopulator {
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 
 		PriceCalculator priceCalculator = product.getPriceCalculator();		
@@ -1645,7 +1610,7 @@ public class ProductDetailPopulator {
 		StringWriter out = new StringWriter();
 				
 		MediaUtils.render(mediaPath, out, parameters, false, 
-				user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
 
 		String outString = out.toString();
 		

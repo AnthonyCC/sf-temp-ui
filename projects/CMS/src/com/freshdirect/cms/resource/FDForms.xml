@@ -671,7 +671,9 @@
 							<CmsField><attribute>AKA</attribute></CmsField>
 							<CmsField><attribute>ALSO_SOLD_AS_NAME</attribute></CmsField>
 							<CmsField><attribute>ALT_TEXT</attribute></CmsField>
-							<CmsField><attribute>PRODUCT_BOTTOM_MEDIA</attribute></CmsField>                                                        
+							<CmsField><attribute>PRODUCT_BOTTOM_MEDIA</attribute></CmsField>
+							<!-- Time to complete field for MealKit items -->
+							<CmsField><attribute>TIME_TO_COMPLETE</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

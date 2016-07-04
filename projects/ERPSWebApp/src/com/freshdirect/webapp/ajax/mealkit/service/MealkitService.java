@@ -6,6 +6,7 @@ import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class MealkitService {
@@ -27,12 +28,17 @@ public class MealkitService {
         return categoryMedia;
     }
 
-    public String populateProductQualityNote(ProductModel productModel) {
+    public void populateData(ProductData data, ProductModel productModel) {
+        // product quality note
         String productQualityNote = null;
         if (productModel != null && productModel.getProductQualityNote() != null) {
             productQualityNote = MediaUtils.renderHtmlToString(productModel.getProductQualityNote(), null);
         }
-        return productQualityNote;
+        data.setProductQualityNote(productQualityNote);
+
+        // time to complete field
+        final int value = productModel.getTimeToComplete();
+        data.setTimeToComplete( value > 0 ? value : 0);
     }
 
     public boolean isProductModelLayoutTypeMealkit(ProductModel productModel){

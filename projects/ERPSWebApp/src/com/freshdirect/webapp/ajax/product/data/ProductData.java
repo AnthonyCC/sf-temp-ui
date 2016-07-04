@@ -6,7 +6,6 @@ import java.util.Map;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.SalesUnitRatio;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleContainer;
@@ -116,8 +115,8 @@ public class ProductData extends BasicProductData implements SkuData {
     // APPDEV-3438
     private String utPrice;
     private String utSalesUnit;
-    
-    //APPDEV-4357
+
+    // APPDEV-4357
     private String pricePerDefaultSalesUnit;
     private String dispDefaultSalesUnit;
 
@@ -188,6 +187,27 @@ public class ProductData extends BasicProductData implements SkuData {
 
     private String productQualityNote;
 
+    /**
+     * standing order data
+     */
+    protected Map<String, Object> soData;
+
+    /* staff picks */
+    protected String erpCategory;
+    protected int erpCatPosition;
+    protected int priority;
+
+    // Required for HookLogic
+    private String clickBeacon;
+    private String imageBeacon;
+
+    /**
+     * Time to Complete field for MealKit items
+     * 
+     * Note, only positive values are valid, 0 means no-value
+     */
+    private int timeToComplete = 0;
+    
     public String getProductQualityNote() {
         return productQualityNote;
     }
@@ -196,53 +216,40 @@ public class ProductData extends BasicProductData implements SkuData {
         this.productQualityNote = productQualityNote;
     }
 
-	/*
-	 * standing order data
-	 */
-	protected Map<String, Object> soData;
-	
-	/* staff picks */
-	protected String erpCategory;
-	protected int erpCatPosition;
-	protected int priority;
-	
-	public String getErpCategory() {
-		return erpCategory;
-	}
+    public String getErpCategory() {
+        return erpCategory;
+    }
 
-	public void setErpCategory(String erpCategory) {
-		this.erpCategory = erpCategory;
-	}
+    public void setErpCategory(String erpCategory) {
+        this.erpCategory = erpCategory;
+    }
 
-	public int getErpCatPosition() {
-		return erpCatPosition;
-	}
+    public int getErpCatPosition() {
+        return erpCatPosition;
+    }
 
-	public void setErpCatPosition(int erpPosition) {
-		this.erpCatPosition = erpPosition;
-	}
+    public void setErpCatPosition(int erpPosition) {
+        this.erpCatPosition = erpPosition;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
-	//Required for HookLogic
-	private String clickBeacon;
-	private String imageBeacon; 
-	
-	public Map<String, Object> getSoData() {
-		return soData;
-	}
+    @Override
+    public Map<String, Object> getSoData() {
+        return soData;
+    }
 
-	@Override
-	public void setSoData(Map<String, Object> soData) {
-		this.soData = soData;
-	}
-	
+    @Override
+    public void setSoData(Map<String, Object> soData) {
+        this.soData = soData;
+    }
+
     public boolean isFeatured() {
         return isFeatured;
     }
@@ -828,42 +835,49 @@ public class ProductData extends BasicProductData implements SkuData {
     }
 
     public Double getUnitPrice() {
-        if(null != utPrice && !"".equals(utPrice)){
+        if (null != utPrice && !"".equals(utPrice)) {
             return Double.parseDouble(utPrice);
         }
         return null;
     }
-	public String getClickBeacon() {
-		return clickBeacon;
-	}
 
-	public void setClickBeacon(String clickBeacon) {
-		this.clickBeacon = clickBeacon;
-	}
+    public String getClickBeacon() {
+        return clickBeacon;
+    }
 
-	public String getImageBeacon() {
-		return imageBeacon;
-	}
+    public void setClickBeacon(String clickBeacon) {
+        this.clickBeacon = clickBeacon;
+    }
 
-	public void setImageBeacon(String imageBeacon) {
-		this.imageBeacon = imageBeacon;
-	}
+    public String getImageBeacon() {
+        return imageBeacon;
+    }
 
-	public String getPricePerDefaultSalesUnit() {
-		return pricePerDefaultSalesUnit;
-	}
+    public void setImageBeacon(String imageBeacon) {
+        this.imageBeacon = imageBeacon;
+    }
 
-	public String getDispDefaultSalesUnit() {
-		return dispDefaultSalesUnit;
-	}
+    public String getPricePerDefaultSalesUnit() {
+        return pricePerDefaultSalesUnit;
+    }
 
-	public void setPricePerDefaultSalesUnit(String pricePerDefaultSalesUnit) {
-		this.pricePerDefaultSalesUnit = pricePerDefaultSalesUnit;
-	}
+    public String getDispDefaultSalesUnit() {
+        return dispDefaultSalesUnit;
+    }
 
-	public void setDispDefaultSalesUnit(String dispDefaultSalesUnit) {
-		this.dispDefaultSalesUnit = dispDefaultSalesUnit;
-	}
+    public void setPricePerDefaultSalesUnit(String pricePerDefaultSalesUnit) {
+        this.pricePerDefaultSalesUnit = pricePerDefaultSalesUnit;
+    }
+
+    public void setDispDefaultSalesUnit(String dispDefaultSalesUnit) {
+        this.dispDefaultSalesUnit = dispDefaultSalesUnit;
+    }
+
+    public int getTimeToComplete() {
+        return timeToComplete;
+    }
     
-    
+    public void setTimeToComplete(int timeToComplete) {
+        this.timeToComplete = timeToComplete;
+    }
 }

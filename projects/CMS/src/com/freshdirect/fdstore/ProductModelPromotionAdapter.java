@@ -11,7 +11,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -47,7 +46,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	private boolean isFeatured;
 	private String featuredHeader;
 	private String ppSkuCode;
-    private ErpProductInfoModel erpProductInfoModel;
 	private boolean isPreview;
 	private FDProductInfo fdProdInfo;
 	private FDProduct fdProduct;
@@ -111,6 +109,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+    @Deprecated
 	public String getAboutPriceFormatted(double savingsPercentage) {
 		return productModel.getAboutPriceFormatted(savingsPercentage);
 	}
@@ -242,16 +241,19 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+    @Deprecated
 	public int getDealPercentage() {		 
 		return productModel.getDealPercentage();
 	}
 
 	@Override
+    @Deprecated
 	public int getDealPercentage(String skuCode) {		 
 		return productModel.getDealPercentage();
 	}
 
 	@Override
+    @Deprecated
 	public String getDefaultPrice() {		 
 		return productModel.getDefaultPrice();
 	}
@@ -787,16 +789,19 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	@Deprecated
 	public int getTieredDealPercentage() {		 
 		return productModel.getTieredDealPercentage();
 	}
 
 	@Override
+    @Deprecated
 	public int getTieredDealPercentage(String skuCode) {		 
 		return productModel.getTieredDealPercentage();
 	}
 
 	@Override
+    @Deprecated
 	public String getTieredPrice(double savingsPercentage) {		 
 		return productModel.getTieredPrice(savingsPercentage);
 	}
@@ -1473,6 +1478,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public String getPairItText() {
 		return productModel.getPairItText();
+	}
+
+	@Override
+	public int getTimeToComplete() {
+	    return productModel.getTimeToComplete();
 	}
 
     @Override

@@ -42,6 +42,7 @@
           {param  price:$product.price /}
           {param  utSalesUnit:$product.utSalesUnit /}
           {param  available:$product.available /}
+          {param  timeToComplete:$product.timeToComplete /}
         {/call}
       {/if}
     {/foreach}
@@ -59,6 +60,7 @@
           {param  price:$product.price /}
           {param  utSalesUnit:$product.utSalesUnit /}
           {param  available:$product.available /}
+          {param  timeToComplete:$product.timeToComplete /}
         {/call}
       {/if}
     {/foreach}
@@ -79,6 +81,7 @@
  * @param? price
  * @param? utSalesUnit
  * @param? available
+ * @param? timeToComplete
  */
 {template .specialMealkitProduct autoescape="false"}
 <li class="mealkit-products-list-item">
@@ -92,9 +95,12 @@
 			  <p class="mealkit-products-list-item-head">{if $description}{$description}{/if}</p>
 			  <p class="mealkit-products-list-item-subhead">{if $salesUnitDescrPDP}{$salesUnitDescrPDP}{/if}</p>
 		  </div>
-		  <p>{if $productQualityNote and $available}{$productQualityNote}{/if}</p>
+		  <div class="product-list-qualitynote">
+		  	<p>{if $productQualityNote and $available}{$productQualityNote}{/if}</p>
+		  </div>
 	</div>
 	{if $available}
+	<div class="product-list-item-bottom">
       <div class="mealkit-products-list-item-infos">
 	    <p class="mealkit-products-list-item-price">
 		  {if $unitPrice}
@@ -116,7 +122,12 @@
       <div class="mealkit-products-list-button">
    	    <a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
       </div>
+      <div class="mealkit-product-list-time icon-clock2-before">
+      	<span>{if $timeToComplete}{$timeToComplete}{/if} minutes</span>
+      </div>
+     </div>
     {/if}
+     
 </li><!-- /product-large -->
 {/template}
 

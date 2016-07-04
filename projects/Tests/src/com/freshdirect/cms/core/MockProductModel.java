@@ -2123,6 +2123,11 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	@Override
+	public int getTimeToComplete() {
+	    return 0;
+	}
+	
+	@Override
 	public void setParentNode(ContentNodeModel parentNode) {
 	}
 }

@@ -2151,8 +2151,13 @@ inner:
 	public String getPairItText() {
 		return getAttribute("PAIR_IT_TEXT", "");
 	}
-	
-	@Override
+
+    @Override
+    public int getTimeToComplete() {
+        return getAttribute("TIME_TO_COMPLETE", 0);
+    }
+
+    @Override
 	public void setParentNode(ContentNodeModel parentNode) {
 	    super.setParentNode(parentNode);
 	}

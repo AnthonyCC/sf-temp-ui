@@ -32,14 +32,14 @@
 }
 
 .mealkit-products-list-item {
-  padding:20px 15px 20px 15px;
-  width:278px;
+  padding-top:20px;
+  width: 308px;
   position:relative;
   margin-right:20px;
   margin-bottom:20px;
   border:1px solid #e1e1e1;
-  display: inline-block;
   vertical-align: top;
+  
 }
 
 .mealkit-products-list-item:nth-child(3n){
@@ -56,6 +56,8 @@
 
 .mealkit-products-list-item-imagewrapper{
   text-align:center;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .mealkit-products-list-item-imagewrapper a,
@@ -70,13 +72,13 @@
 }
 
 .mealkit-products-list-item-head{
-  margin:10px 0 0 0;
+  margin: 0;
   font-weight:bold;
   color:#333;
 }
 
 .mealkit-products-list-item-subhead{
-  margin:0 0 26px 0;
+  margin:0;
 }
 
 .recipes-title {
@@ -85,19 +87,19 @@
 }
 
 .mealkit-products-list-content {
-	margin-bottom: 130px;
+	margin-bottom: 145px;
 }
 
 .mealkit-products-list-item-header-wrapper {
-	height: 110px;
+	padding-left: 15px;
+  	padding-right: 15px;
 }
 
 .mealkit-products-list-item-infos {
 	line-height: 30px;
-	margin-bottom: 30px;
-	position: absolute;
-	bottom:56px;
-	left: 20px;
+	margin-bottom: 15px;
+	padding-left: 15px;
+  	padding-right: 15px;
 }
 .mealkit-products-list-item-price {
  text-align: left;
@@ -112,16 +114,13 @@
 }
 
 .mealkit-products-list-button {
-	margin: 20px auto 0;
+	margin: 15px auto;
 	text-align: center;
 	height:36px;
 }
 
 .mealkit-products-list-button button {
   width:100px;
-  position: absolute;
-  bottom: 20px;
-  left: 100px;
 }
 
 .mealkit-category-head {
@@ -130,8 +129,30 @@
   margin-bottom:20px;
   font-size:22px;
   font-weight:bold;
-  color:#333;
-  
+  color:#333; 
+}
+
+.product-list-qualitynote {
+	padding: 0 15px;
+	margin-bottom: 15px;
+}
+
+.product-list-item-bottom {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.mealkit-product-list-time {
+	text-align: left;
+	padding: 10px 20px;
+	background: #F0F5E1;
+	margin-top: 15px;
+}
+
+.mealkit-product-list-time span {
+	padding-left: 15px;
 }
 
 /* styles */

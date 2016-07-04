@@ -1551,6 +1551,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public int getTimeToComplete() {
+	    return prodModel.getTimeToComplete();
+	}
+
+	@Override
 	public void setParentNode(ContentNodeModel parentNode) {
 	    prodModel.setParentNode(parentNode);
 	}

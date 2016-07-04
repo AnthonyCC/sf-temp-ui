@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -90,8 +89,8 @@ public class CmsFilteringFlow {
 	private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 	
 	@SuppressWarnings("deprecation")
-		BrowseData browseData = null;
 	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
+        BrowseData browseData = null;
 		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
 		if (nav.getPageType() == FilteringFlowType.BROWSE) {
 			
@@ -232,16 +231,7 @@ public class CmsFilteringFlow {
 			if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
 				BrowseDataPagerHelper.createPagerContext(browseData, nav);
 			}
-	
-			//Update product hit counts
-//			for (BrowseData.SearchParams.Tab tab : browseData.getSearchParams().getTabs()) {
-//				if (SearchPageType.PRODUCT.name.equalsIgnoreCase(nav.getActiveTab())) {
-//					int hits = browseData.getPager().getItemCount();
-//					tab.setHits(hits);
-//					tab.setFilteredHits(filteredHits);
-//				}
-//			}
-			
+
 			BrowseDataBuilderFactory.getInstance().appendSearchLikeCarousel(browseData, user, nav.getPageType(), nav.getActiveTab());
 			
 			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
@@ -281,10 +271,7 @@ public class CmsFilteringFlow {
         		prodList.add(hlIndex, result); //insert
         	}
         	hlIndex += itemsPerRow;
-        }
-        
-        /* leave the items, so they can be inserted on ajax filtering */
-        //browseData.getAdProducts().setProducts(new ArrayList<ProductData>()); //remove list so it's not sent to page
+        }        
 	}
 
 	private boolean isCarouselsBottomAndOnLastPage(BrowseData browseData, PagerData pagerData) {
@@ -515,45 +502,6 @@ public class CmsFilteringFlow {
 			browseDataContext.getSearchParams().setNumberOfNewProducts(searchResults.getProducts().size());
 		}
 
-		//set ddpp products for 'search like' pages
-		/* if we need to populate the normal products into the assortProducts browseData
-		 * uncomment this section */
-		/* UNCOMMENT START */
-//		if (FilteringFlowType.STAFF_PICKS.equals(nav.getPageType())) {
-//			for (FilteringSortingItem<ProductModel> item : searchResults.getProducts()) {
-//				ProductModel prodModel = item.getModel();
-//				try {
-//					ProductData productData = ProductDetailPopulator.createProductData(user, prodModel);
-//					productData.setFeatured(((ProductModelPromotionAdapter)prodModel).isFeatured());
-//					productData.setFeaturedHeader(((ProductModelPromotionAdapter)prodModel).getFeaturedHeader());
-//					
-//					String curCat = ((ProductModelPromotionAdapter) prodModel).getErpCategory();
-//					if (curCat == null || curCat.trim() == "") {
-//						curCat = "<!-- ERROR -->"; //lump all the bad products together. remember, cat gets displayed by front end
-//					}
-//					productData.setErpCategory(curCat);
-//					productData.setErpCatPosition(((ProductModelPromotionAdapter)prodModel).getErpCatPosition());
-//					productData.setPriority(((ProductModelPromotionAdapter)prodModel).getPriority());
-//					
-//					
-//					browseDataContext.getAssortProducts().addProdDataToCat(curCat, productData);
-//					//.getProducts(curCat).add(productData);
-//					
-//				} catch (FDResourceException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (FDSkuNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (HttpErrorResponse e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				
-//				
-//			}
-//		}
-		/* UNCOMMENT END */
 		for (ProductModel product : searchResults.getDDPPProducts()) {
 			try {
 				ProductData productData = ProductDetailPopulator.createProductData(user, product);
@@ -885,7 +833,7 @@ public class CmsFilteringFlow {
 										Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext) throws FDResourceException {
 		if(null !=sectionContexts){
 			for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
-				 SectionContext categorySectionsContext  = (SectionContext) iterator.next();
+				 SectionContext categorySectionsContext  = iterator.next();
 				getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,categorySectionsContext.getSectionContexts(), browseDataContext);
 			 }
 			getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
@@ -906,7 +854,7 @@ public class CmsFilteringFlow {
 			
 			if(hlBrandAdProductsMeta!=null){
 				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
-					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
+					HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
 					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 					browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 				
@@ -1091,50 +1039,49 @@ public class CmsFilteringFlow {
 		return null;
 	}
 
- private void buildHlCategoriesPageBeacon(Map<String, String> hlSelectionsofPageBeacon, BrowseDataContext browseDataContext,
-		 									FDSessionUser user, List<FilteringSortingItem<ProductModel>> productResults, String catId ){
-	try{
-		List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(productResults);
-		
-		StringBuffer updatedPageBeacon= new StringBuffer("&aShown=");
-		  if(null !=items){
-				for (FilteringProductItem product : items) {
-						if(product.getProductModel()!=null && !product.getProductModel().isUnavailable()) {
-							ProductData productData = null;
-							try {
-								productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
-							} catch (FDResourceException e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							} catch (FDSkuNotFoundException e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							} catch (HttpErrorResponse e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							}
-							catch (Exception e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							}
-							if(null != productData && null != productData.getSkuCode()){
-								//updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
-								productData.setFeatured(true);
-								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
-								productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());
-									
-								} 
-							}
-						}
-					
-				}else{
-					updatedPageBeacon.append("none");
-				  }
-				if(null!=browseDataContext.getAdProducts().getPageBeacon()){
-					StringBuffer PageBeacon=new StringBuffer(browseDataContext.getAdProducts().getPageBeacon());
-					  PageBeacon.append(updatedPageBeacon).toString();
-					  hlSelectionsofPageBeacon.put(catId, PageBeacon.toString());
-					}
-		}catch (Exception e) {
-			LOG.warn("Exception while populating HookLogic products: ", e);
-		}
- 	}
+    private void buildHlCategoriesPageBeacon(Map<String, String> hlSelectionsofPageBeacon, BrowseDataContext browseDataContext, FDSessionUser user,
+            List<FilteringSortingItem<ProductModel>> productResults, String catId) {
+        try {
+            List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(productResults);
+
+            StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
+            if (null != items) {
+                for (FilteringProductItem product : items) {
+                    if (product.getProductModel() != null && !product.getProductModel().isUnavailable()) {
+                        ProductData productData = null;
+                        try {
+                            productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
+                        } catch (FDResourceException e) {
+                            LOG.warn("Exception while populating HookLogic returned product: ", e);
+                        } catch (FDSkuNotFoundException e) {
+                            LOG.warn("Exception while populating HookLogic returned product: ", e);
+                        } catch (HttpErrorResponse e) {
+                            LOG.warn("Exception while populating HookLogic returned product: ", e);
+                        } catch (Exception e) {
+                            LOG.warn("Exception while populating HookLogic returned product: ", e);
+                        }
+                        if (null != productData && null != productData.getSkuCode()) {
+                            // updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
+                            productData.setFeatured(true);
+                            productData.setClickBeacon(((ProductModelBrandAdsAdapter) product.getProductModel()).getClickBeacon());
+                            productData.setImageBeacon(((ProductModelBrandAdsAdapter) product.getProductModel()).getImpBeacon());
+
+                        }
+                    }
+                }
+
+            } else {
+                updatedPageBeacon.append("none");
+            }
+            if (null != browseDataContext.getAdProducts().getPageBeacon()) {
+                StringBuffer PageBeacon = new StringBuffer(browseDataContext.getAdProducts().getPageBeacon());
+                PageBeacon.append(updatedPageBeacon).toString();
+                hlSelectionsofPageBeacon.put(catId, PageBeacon.toString());
+            }
+        } catch (Exception e) {
+            LOG.warn("Exception while populating HookLogic products: ", e);
+        }
+    }
  
 private List<ProductData> getProductDataList(FDSessionUser user, List<FilteringSortingItem<ProductModel>> hlItems, NavigationModel navigationModel){
 	

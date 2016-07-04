@@ -11,7 +11,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -44,12 +43,12 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 		Cloneable, PrioritizedI {
 	
-	private ProductModel productModel;
+    private static final long serialVersionUID = 419851320286916075L;
+
+    private ProductModel productModel;
 	private boolean isFeatured;
 	private String featuredHeader;
-	private ErpProductInfoModel erpProductInfoModel;
 
-	
 	public ProductModel getProductModel() {
 		return productModel;
 	}
@@ -1380,6 +1379,11 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 		return productModel.getPairItText();
 	}
 
+	@Override
+	public int getTimeToComplete() {
+	    return productModel.getTimeToComplete();
+	}
+	
     @Override
     public void setParentNode(ContentNodeModel parentNode) {
         productModel.setParentNode(parentNode);

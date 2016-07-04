@@ -20,8 +20,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
-public class ProductModelBrandAdsAdapter implements ProductModel, Serializable,
-Cloneable, PrioritizedI {
+public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, Cloneable, PrioritizedI {
 
 	/**
 	 * 
@@ -46,1172 +45,1366 @@ Cloneable, PrioritizedI {
 	
 		
 	
-	public boolean enforceQuantityMax() {
+	@Override
+    public boolean enforceQuantityMax() {
 		 return productModel.enforceQuantityMax();
 	}
 
 	
-	public String getAboutPriceFormatted(double savingsPercentage) {
+	@Override
+    public String getAboutPriceFormatted(double savingsPercentage) {
 		return productModel.getAboutPriceFormatted(savingsPercentage);
 	}
 
 	
-	public YmalSet getActiveYmalSet() {
+	@Override
+    public YmalSet getActiveYmalSet() {
 		return productModel.getActiveYmalSet();
 	}
 
 	
-	public double getAge() {
+	@Override
+    public double getAge() {
 		return productModel.getAge();
 	}
 
 	
-	public String getAka() {		 
+	@Override
+    public String getAka() {		 
 		return productModel.getAka();
 	}
 
 	
-	public ProductModel getAlsoSoldAs(int idx) {
+	@Override
+    public ProductModel getAlsoSoldAs(int idx) {
 		return productModel.getAlsoSoldAs(idx);
 	}
 
 	
-	public List<ProductModel> getAlsoSoldAs() {
+	@Override
+    public List<ProductModel> getAlsoSoldAs() {
 		return productModel.getAlsoSoldAs();
 	}
 
 	
-	public String getAlsoSoldAsName() {		 
+	@Override
+    public String getAlsoSoldAsName() {		 
 		return productModel.getAlsoSoldAsName();
 	}
 
 	
-	public List<ProductModel> getAlsoSoldAsRefs() {		 
+	@Override
+    public List<ProductModel> getAlsoSoldAsRefs() {		 
 		return productModel.getAlsoSoldAsRefs();
 	}
 
 	
-	public String getAltText() {		 
+	@Override
+    public String getAltText() {		 
 		return productModel.getAltText();
 	}
 
 	
-	public Image getAlternateImage() {		 
+	@Override
+    public Image getAlternateImage() {		 
 		return productModel.getAlternateImage();
 	}
 
 	
-	public Image getAlternateProductImage() {		 
+	@Override
+    public Image getAlternateProductImage() {		 
 		return productModel.getAlternateProductImage();
 	}
 
 	
-	public FDConfigurableI getAutoconfiguration() {		 
+	@Override
+    public FDConfigurableI getAutoconfiguration() {		 
 		return productModel.getAutoconfiguration();
 	}
 
 	
-	public double getBackInStockAge() {		 
+	@Override
+    public double getBackInStockAge() {		 
 		return productModel.getBackInStockAge();
 	}
 
 	
-	public Date getBackInStockDate() {		 
+	@Override
+    public Date getBackInStockDate() {		 
 		return productModel.getBackInStockDate();
 	}
 
 	
-	public DayOfWeekSet getBlockedDays() {		 
+	@Override
+    public DayOfWeekSet getBlockedDays() {		 
 		return productModel.getBlockedDays();
 	}
 
 	
-	public String getBlurb() {		 
+	@Override
+    public String getBlurb() {		 
 		return productModel.getBlurb();
 	}
 
 	
-	public List<BrandModel> getBrands() {		 
+	@Override
+    public List<BrandModel> getBrands() {		 
 		return productModel.getBrands();
 	}
 
 	
-	public CategoryModel getCategory() {		 
+	@Override
+    public CategoryModel getCategory() {		 
 		return productModel.getCategory();
 	}
 
 	
-	public Image getCategoryImage() {		 
+	@Override
+    public Image getCategoryImage() {		 
 		return productModel.getCategoryImage();
 	}
 
 	
-	public Set getCommonNutritionInfo(ErpNutritionInfoType type)
+	@Override
+    public Set getCommonNutritionInfo(ErpNutritionInfoType type)
 			throws FDResourceException {		 
 		return productModel.getCommonNutritionInfo(type);
 	}
 
 	
-	public List<ComponentGroupModel> getComponentGroups() {		 
+	@Override
+    public List<ComponentGroupModel> getComponentGroups() {		 
 		return productModel.getComponentGroups();
 	}
 
 	
-	public Image getConfirmImage() {		 
+	@Override
+    public Image getConfirmImage() {		 
 		return productModel.getConfirmImage();
 	}
 
 	
-	public Double getContainerWeightHalfPint() {		 
+	@Override
+    public Double getContainerWeightHalfPint() {		 
 		return productModel.getContainerWeightHalfPint();
 	}
 
 	
-	public Double getContainerWeightPint() {		 
+	@Override
+    public Double getContainerWeightPint() {		 
 		return productModel.getContainerWeightPint();
 	}
 
 	
-	public Double getContainerWeightQuart() {		 
+	@Override
+    public Double getContainerWeightQuart() {		 
 		return productModel.getContainerWeightQuart();
 	}
 
 	
-	public List<String> getCountryOfOrigin() throws FDResourceException {		 
+	@Override
+    public List<String> getCountryOfOrigin() throws FDResourceException {		 
 		return productModel.getCountryOfOrigin();
 	}
 
 	
-	public int getDealPercentage() {		 
+	@Override
+    public int getDealPercentage() {		 
 		return productModel.getDealPercentage();
 	}
 
 	
-	public int getDealPercentage(String skuCode) {		 
+	@Override
+    public int getDealPercentage(String skuCode) {		 
 		return productModel.getDealPercentage();
 	}
 
 	
-	public String getDefaultPrice() {		 
+	@Override
+    public String getDefaultPrice() {		 
 		return productModel.getDefaultPrice();
 	}
 
 	
-	public SkuModel getDefaultSku() {		 
+	@Override
+    public SkuModel getDefaultSku() {		 
 		return productModel.getDefaultSku();
 	}
 
 	
-	public SkuModel getDefaultSku(PricingContext context) {		 
+	@Override
+    public SkuModel getDefaultSku(PricingContext context) {		 
 		return productModel.getDefaultSku(context);
 	}
 	
 	
-	public SkuModel getDefaultTemporaryUnavSku() {
+	@Override
+    public SkuModel getDefaultTemporaryUnavSku() {
 		return productModel.getDefaultTemporaryUnavSku();
 	}
 
 	
-	public String getDefaultSkuCode() {		 
+	@Override
+    public String getDefaultSkuCode() {		 
 		return productModel.getDefaultSkuCode();
 	}
 
 	
-	public DepartmentModel getDepartment() {		 
+	@Override
+    public DepartmentModel getDepartment() {		 
 		return productModel.getDepartment();
 	}
 
 	
-	public Image getDescriptiveImage() {		 
+	@Override
+    public Image getDescriptiveImage() {		 
 		return productModel.getDescriptiveImage();
 	}
 
 	
-	public Image getDetailImage() {		 
+	@Override
+    public Image getDetailImage() {		 
 		return productModel.getDetailImage();
 	}
 
 	
-	public List getDisplayableBrands() {		 
+	@Override
+    public List getDisplayableBrands() {		 
 		return productModel.getDisplayableBrands();
 	}
 
 	
-	public List getDisplayableBrands(int numberOfBrands) {		 
+	@Override
+    public List getDisplayableBrands(int numberOfBrands) {		 
 		return productModel.getDisplayableBrands(numberOfBrands);
 	}
 
 	
-	public List<Html> getDonenessGuide() {		 
+	@Override
+    public List<Html> getDonenessGuide() {		 
 		return productModel.getDonenessGuide();
 	}
 
 	
-	public int getExpertWeight() {		 
+	@Override
+    public int getExpertWeight() {		 
 		return productModel.getExpertWeight();
 	}
 
 	
-	public FDGroup getFDGroup() throws FDResourceException {		 
+	@Override
+    public FDGroup getFDGroup() throws FDResourceException {		 
 		return productModel.getFDGroup();
 	}
 
 	
-	public Html getFddefFrenching() {		 
+	@Override
+    public Html getFddefFrenching() {		 
 		return productModel.getFddefFrenching();
 	}
 
 	
-	public Html getFddefGrade() {		 
+	@Override
+    public Html getFddefGrade() {		 
 		return productModel.getFddefGrade();
 	}
 
 	
-	public Html getFddefRipeness() {		 
+	@Override
+    public Html getFddefRipeness() {		 
 		return productModel.getFddefRipeness();
 	}
 
 	
-	public Html getFddefSource() {		 
+	@Override
+    public Html getFddefSource() {		 
 		return productModel.getFddefSource();
 	}
 
 	
-	public Image getFeatureImage() {		 
+	@Override
+    public Image getFeatureImage() {		 
 		return productModel.getFeatureImage();
 	}
 
 	
-	public Html getFreshTips() {		 
+	@Override
+    public Html getFreshTips() {		 
 		return productModel.getFreshTips();
 	}
 
 	
-	public String getFreshnessGuaranteed() throws FDResourceException {		 
+	@Override
+    public String getFreshnessGuaranteed() throws FDResourceException {		 
 		return productModel.getFreshnessGuaranteed();
 	}
 
 	
-	public String getFullName() {		 
+	@Override
+    public String getFullName() {		 
 		return productModel.getFullName();
 	}
 
 	
-	public List getGiftcardType() {		 
+	@Override
+    public List getGiftcardType() {		 
 		return productModel.getGiftcardType();
 	}
 
 	
-	public String getGlanceName() {		 
+	@Override
+    public String getGlanceName() {		 
 		return productModel.getGlanceName();
 	}
 
 	
-	public String getHideUrl() {		 
+	@Override
+    public String getHideUrl() {		 
 		return productModel.getHideUrl();
 	}
 
 	
-	public int getHighestDealPercentage() {		 
+	@Override
+    public int getHighestDealPercentage() {		 
 		return productModel.getHighestDealPercentage();
 	}
 
 	
-	public int getHighestDealPercentage(String skuCode) {		 
+	@Override
+    public int getHighestDealPercentage(String skuCode) {		 
 		return productModel.getHighestDealPercentage(skuCode);
 	}
 
 	
-	public List<CategoryModel> getHowtoCookitFolders() {		 
+	@Override
+    public List<CategoryModel> getHowtoCookitFolders() {		 
 		return productModel.getHowtoCookitFolders();
 	}
 
 	
-	public String getKeywords() {		 
+	@Override
+    public String getKeywords() {		 
 		return productModel.getKeywords();
 	}
 
 	
-	public EnumLayoutType getLayout() {		 
+	@Override
+    public EnumLayoutType getLayout() {		 
 		return productModel.getLayout();
 	}
 
 	
-	public MediaI getMedia(String name) {		 
+	@Override
+    public MediaI getMedia(String name) {		 
 		return productModel.getMedia(name);
 	}
 
 	
-	public String getNavName() {		 
+	@Override
+    public String getNavName() {		 
 		return productModel.getNavName();
 	}
 
 	
-	public double getNewAge() {		 
+	@Override
+    public double getNewAge() {		 
 		return productModel.getNewAge();
 	}
 
 	
-	public Date getNewDate() {		 
+	@Override
+    public Date getNewDate() {		 
 		return productModel.getNewDate();
 	}
 
 	
-	public List<DomainValue> getNewWineRegion() {		 
+	@Override
+    public List<DomainValue> getNewWineRegion() {		 
 		return productModel.getNewWineRegion();
 	}
 
 	
-	public List<DomainValue> getNewWineType() {		 
+	@Override
+    public List<DomainValue> getNewWineType() {		 
 		return productModel.getNewWineType();
 	}
 
 	
-	public String getPackageDescription() {		 
+	@Override
+    public String getPackageDescription() {		 
 		return productModel.getPackageDescription();
 	}
 
 	
-	public Html getPartallyFrozen() {		 
+	@Override
+    public Html getPartallyFrozen() {		 
 		return productModel.getPartallyFrozen();
 	}
 
 	
-	public CategoryModel getPerfectPair() {		 
+	@Override
+    public CategoryModel getPerfectPair() {		 
 		return productModel.getPerfectPair();
 	}
 
 	
-	public SkuModel getPreferredSku() {		 
+	@Override
+    public SkuModel getPreferredSku() {		 
 		return productModel.getPreferredSku();
 	}
 
 	
-	public double getPrice(double savingsPercentage) {		 
+	@Override
+    public double getPrice(double savingsPercentage) {		 
 		return productModel.getPrice(savingsPercentage);
 	}
 
 	
-	public PriceCalculator getPriceCalculator() {
+	@Override
+    public PriceCalculator getPriceCalculator() {
 		return productModel.getPriceCalculator();
 	}
 
 	
-	public PriceCalculator getPriceCalculator(String skuCode) {
+	@Override
+    public PriceCalculator getPriceCalculator(String skuCode) {
 			return productModel.getPriceCalculator(skuCode);
 	}
 
 	
-	public PriceCalculator getPriceCalculator(SkuModel sku) {	
+	@Override
+    public PriceCalculator getPriceCalculator(SkuModel sku) {	
 		return productModel.getPriceCalculator(sku);
 	}
 
 	
-	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
+	@Override
+    public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
 		return productModel.getPriceCalculator(pricingContext);
 	}
 
 	
-	public PriceCalculator getPriceCalculator(String skuCode,
+	@Override
+    public PriceCalculator getPriceCalculator(String skuCode,
 			PricingContext pricingContext) {		 
 		return productModel.getPriceCalculator(skuCode, pricingContext);
 	}
 
 	
-	public PriceCalculator getPriceCalculator(SkuModel sku,
+	@Override
+    public PriceCalculator getPriceCalculator(SkuModel sku,
 			PricingContext pricingContext) {		 
 		return productModel.getPriceCalculator(sku, pricingContext);
 	}
 
 	
-	public String getPriceFormatted(double savingsPercentage) {		 
+	@Override
+    public String getPriceFormatted(double savingsPercentage) {		 
 		return productModel.getPriceFormatted(savingsPercentage);
 	}
 
 	
-	public String getPriceFormatted(double savingsPercentage, String skuCode) {		 
+	@Override
+    public String getPriceFormatted(double savingsPercentage, String skuCode) {		 
 		return productModel.getPriceFormatted(savingsPercentage, skuCode);
 	}
 
 	
-	public UserContext getUserContext() {	
+	@Override
+    public UserContext getUserContext() {	
 		
 			return productModel.getUserContext();
 	}
 
 	
-	public String getPrimaryBrandName() {		 
+	@Override
+    public String getPrimaryBrandName() {		 
 		return productModel.getPrimaryBrandName();
 	}
 
 	
-	public String getPrimaryBrandName(String productName) {		 
+	@Override
+    public String getPrimaryBrandName(String productName) {		 
 		return productModel.getPrimaryBrandName(productName);
 	}
 
 	
-	public CategoryModel getPrimaryHome() {		 
+	@Override
+    public CategoryModel getPrimaryHome() {		 
 		return productModel.getPrimaryHome();
 	}
 
 	
-	public ProductModel getPrimaryProductModel() {
+	@Override
+    public ProductModel getPrimaryProductModel() {
 		return productModel.getPrimaryProductModel();
 	}
 
 	
-	public List<SkuModel> getPrimarySkus() {		 
+	@Override
+    public List<SkuModel> getPrimarySkus() {		 
 		return productModel.getPrimarySkus();
 	}
 
 	
-	public Image getProdImage() {		 
+	@Override
+    public Image getProdImage() {		 
 		return productModel.getProdImage();
 	}
 
 	
-	public String getProdPageRatings() {		 
+	@Override
+    public String getProdPageRatings() {		 
 		return productModel.getProdPageRatings();
 	}
 
 	
-	public String getProdPageTextRatings() {		 
+	@Override
+    public String getProdPageTextRatings() {		 
 		return productModel.getProdPageTextRatings();
 	}
 
 	
-	public Html getProductAbout() {		 
+	@Override
+    public Html getProductAbout() {		 
 		return productModel.getProductAbout();
 	}
 
 	
-	public Html getProductBottomMedia() {		 
+	@Override
+    public Html getProductBottomMedia() {		 
 		return productModel.getProductBottomMedia();
 	}
 
 	
-	public List<ProductModel> getProductBundle() {		 
+	@Override
+    public List<ProductModel> getProductBundle() {		 
 		return productModel.getProductBundle();
 	}
 
 	
-	public Html getProductDescription() {		 
+	@Override
+    public Html getProductDescription() {		 
 		return productModel.getProductDescription();
 	}
 
 	
-	public Html getProductDescriptionNote() {		 
+	@Override
+    public Html getProductDescriptionNote() {		 
 		return productModel.getProductDescriptionNote();
 	}
 
 	
-	public EnumProductLayout getProductLayout() {		 
+	@Override
+    public EnumProductLayout getProductLayout() {		 
 		return productModel.getProductLayout();
 	}
 
 	
-	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {		 
+	@Override
+    public EnumProductLayout getProductLayout(EnumProductLayout defValue) {		 
 		return productModel.getProductLayout(defValue);
 	}
 
 	
-	public Html getProductQualityNote() {		 
+	@Override
+    public Html getProductQualityNote() {		 
 		return productModel.getProductQualityNote();
 	}
 
 	
-	public String getProductRating() throws FDResourceException {		 
+	@Override
+    public String getProductRating() throws FDResourceException {		 
 		return productModel.getProductRating();
 	}
 
 	
-	public String getProductRating(String skuCode) throws FDResourceException {		 
+	@Override
+    public String getProductRating(String skuCode) throws FDResourceException {		 
 		return productModel.getProductRating(skuCode);
 	}
 
 	
-	public EnumOrderLineRating getProductRatingEnum()
+	@Override
+    public EnumOrderLineRating getProductRatingEnum()
 			throws FDResourceException {		 
 		return productModel.getProductRatingEnum();
 	}
 
 	
-	public Html getProductTerms() {		 
+	@Override
+    public Html getProductTerms() {		 
 		return productModel.getProductTerms();
 	}
 
 	
-	public Html getProductTermsMedia() {		 
+	@Override
+    public Html getProductTermsMedia() {		 
 		return productModel.getProductTermsMedia();
 	}
 
 	
-	public float getQuantityIncrement() {		 
+	@Override
+    public float getQuantityIncrement() {		 
 		return productModel.getQuantityIncrement();
 	}
 
 	
-	public float getQuantityMaximum() {	 
+	@Override
+    public float getQuantityMaximum() {	 
 		return productModel.getQuantityMaximum();
 	}
 
 	
-	public float getQuantityMinimum() {		 
+	@Override
+    public float getQuantityMinimum() {		 
 		return productModel.getQuantityMinimum();
 	}
 
 	
-	public String getQuantityText() {		 
+	@Override
+    public String getQuantityText() {		 
 		return productModel.getQuantityText();
 	}
 
 	
-	public String getQuantityTextSecondary() {		 
+	@Override
+    public String getQuantityTextSecondary() {		 
 		return productModel.getQuantityTextSecondary();
 	}
 
 	
-	public List<DomainValue> getRating() {		 
+	@Override
+    public List<DomainValue> getRating() {		 
 		return productModel.getRating();
 	}
 
 	
-	public String getRatingProdName() {		 
+	@Override
+    public String getRatingProdName() {		 
 		return productModel.getRatingProdName();
 	}
 
 	
-	public Image getRatingRelatedImage() {		 
+	@Override
+    public Image getRatingRelatedImage() {		 
 		return productModel.getRatingRelatedImage();
 	}
 
 	
-	public Html getRecommendTable() {		 
+	@Override
+    public Html getRecommendTable() {		 
 		return productModel.getRecommendTable();
 	}
 
 	
-	public List<ContentNodeModel> getRecommendedAlternatives() {		 
+	@Override
+    public List<ContentNodeModel> getRecommendedAlternatives() {		 
 		return productModel.getRecommendedAlternatives();
 	}
 
 	
-	public String getRedirectUrl() {		 
+	@Override
+    public String getRedirectUrl() {		 
 		return productModel.getRedirectUrl();
 	}
 
 	
-	public List<Recipe> getRelatedRecipes() {		 
+	@Override
+    public List<Recipe> getRelatedRecipes() {		 
 		return productModel.getRelatedRecipes();
 	}
 
 	
-	public Image getRolloverImage() {		 
+	@Override
+    public Image getRolloverImage() {		 
 		return productModel.getRolloverImage();
 	}
 
 	
-	public Html getSalesUnitDescription() {		 
+	@Override
+    public Html getSalesUnitDescription() {		 
 		return productModel.getSalesUnitDescription();
 	}
 
 	
-	public String getSalesUnitLabel() {		 
+	@Override
+    public String getSalesUnitLabel() {		 
 		return productModel.getSalesUnitLabel();
 	}
 
 	
-	public String getSeafoodOrigin() {		 
+	@Override
+    public String getSeafoodOrigin() {		 
 		return productModel.getSeafoodOrigin();
 	}
 
 	
-	public String getSeasonText() {		 
+	@Override
+    public String getSeasonText() {		 
 		return productModel.getSeasonText();
 	}
 
 	
-	public String getSellBySalesunit() {	 
+	@Override
+    public String getSellBySalesunit() {	 
 		return productModel.getSellBySalesunit();
 	}
 
 	
-	public String getServingSuggestion() {		 
+	@Override
+    public String getServingSuggestion() {		 
 		return productModel.getServingSuggestion();
 	}
 
 	
-	public SkuModel getSku(int idx) {		 
+	@Override
+    public SkuModel getSku(int idx) {		 
 		return productModel.getSku(idx);
 	}
 
 	
-	public SkuModel getSku(String skuCode) {		 
+	@Override
+    public SkuModel getSku(String skuCode) {		 
 		return productModel.getSku(skuCode);
 	}
 
 	
-	public List<String> getSkuCodes() {		 
+	@Override
+    public List<String> getSkuCodes() {		 
 		return productModel.getSkuCodes();
 	}
 
 	
-	public List<SkuModel> getSkus() {		 
+	@Override
+    public List<SkuModel> getSkus() {		 
 		return productModel.getSkus();
 	}
 
 	
-	public ProductModel getSourceProduct() {		 
+	@Override
+    public ProductModel getSourceProduct() {		 
 		return productModel.getSourceProduct();
 	}
 
 	
-	public String getSubtitle() {		 
+	@Override
+    public String getSubtitle() {		 
 		return productModel.getSubtitle();
 	}
 
 	
-	public String getSustainabilityRating() throws FDResourceException {		 
+	@Override
+    public String getSustainabilityRating() throws FDResourceException {		 
 		return productModel.getSustainabilityRating();
 	}
 
 	
-	public String getSustainabilityRating(String skuCode)
+	@Override
+    public String getSustainabilityRating(String skuCode)
 			throws FDResourceException {		 
 		return productModel.getSustainabilityRating(skuCode);
 	}
 
 	
-	public EnumSustainabilityRating getSustainabilityRatingEnum()
+	@Override
+    public EnumSustainabilityRating getSustainabilityRatingEnum()
 			throws FDResourceException {		 
 		return productModel.getSustainabilityRatingEnum();
 	}
 
 	
-	public EnumTemplateType getTemplateType() {		 
+	@Override
+    public EnumTemplateType getTemplateType() {		 
 		return productModel.getTemplateType();
 	}
 
 	
-	public int getTemplateType(int defaultValue) {		 
+	@Override
+    public int getTemplateType(int defaultValue) {		 
 		return productModel.getTemplateType(defaultValue);
 	}
 
 	
-	public Image getThumbnailImage() {		 
+	@Override
+    public Image getThumbnailImage() {		 
 		return productModel.getThumbnailImage();
 	}
 
 	
-	public int getTieredDealPercentage() {		 
+	@Override
+    public int getTieredDealPercentage() {		 
 		return productModel.getTieredDealPercentage();
 	}
 
 	
-	public int getTieredDealPercentage(String skuCode) {		 
+	@Override
+    public int getTieredDealPercentage(String skuCode) {		 
 		return productModel.getTieredDealPercentage();
 	}
 
 	
-	public String getTieredPrice(double savingsPercentage) {		 
+	@Override
+    public String getTieredPrice(double savingsPercentage) {		 
 		return productModel.getTieredPrice(savingsPercentage);
 	}
 
 	
-	public DomainValue getUnitOfMeasure() {		 
+	@Override
+    public DomainValue getUnitOfMeasure() {		 
 		return productModel.getUnitOfMeasure();
 	}
 
 	
-	public List<Domain> getUsageList() {		 
+	@Override
+    public List<Domain> getUsageList() {		 
 		return productModel.getUsageList();
 	}
 
 	
-	public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {		 
+	@Override
+    public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {		 
 		return productModel.getValidSkuCode(ctx, skuCode);
 	}
 
 	
-	public List<Domain> getVariationMatrix() {		 
+	@Override
+    public List<Domain> getVariationMatrix() {		 
 		return productModel.getVariationMatrix();
 	}
 
 	
-	public List<Domain> getVariationOptions() {		 
+	@Override
+    public List<Domain> getVariationOptions() {		 
 		return productModel.getVariationOptions();
 	}
 
 	
-	public String getWasPriceFormatted(double savingsPercentage) {		 
+	@Override
+    public String getWasPriceFormatted(double savingsPercentage) {		 
 		return productModel.getWasPriceFormatted(savingsPercentage);
 	}
 
 	
-	public List<ProductModel> getWeRecommendImage() {		 
+	@Override
+    public List<ProductModel> getWeRecommendImage() {		 
 		return productModel.getWeRecommendImage();
 	}
 
 	
-	public List<ProductModel> getWeRecommendText() {		 
+	@Override
+    public List<ProductModel> getWeRecommendText() {		 
 		return productModel.getWeRecommendText();
 	}
 
 	
-	public String getWineAging() {		 
+	@Override
+    public String getWineAging() {		 
 		return productModel.getWineAging();
 	}
 
 	
-	public String getWineAlchoholContent() {		 
+	@Override
+    public String getWineAlchoholContent() {		 
 		return productModel.getWineAlchoholContent();
 	}
 
 	
-	public String getWineCity() {		 
+	@Override
+    public String getWineCity() {		 
 		return productModel.getWineCity();
 	}
 
 	
-	public String getWineClassification() {		 
+	@Override
+    public String getWineClassification() {		 
 		return productModel.getWineClassification();
 	}
 
 	
-	public List getWineClassifications() {		 
+	@Override
+    public List getWineClassifications() {		 
 		return productModel.getWineClassifications();
 	}
 
 	
-	public DomainValue getWineCountry() {		 
+	@Override
+    public DomainValue getWineCountry() {		 
 		return productModel.getWineCountry();
 	}
 
 	
-	public ContentKey getWineCountryKey() {		 
+	@Override
+    public ContentKey getWineCountryKey() {		 
 		return productModel.getWineCountryKey();
 	}
 
 	
-	public Set<DomainValue> getWineDomainValues() {		 
+	@Override
+    public Set<DomainValue> getWineDomainValues() {		 
 		return productModel.getWineDomainValues();
 	}
 
 	
-	public String getWineFyi() {		 
+	@Override
+    public String getWineFyi() {		 
 		return productModel.getWineFyi();
 	}
 
 	
-	public String getWineImporter() {		 
+	@Override
+    public String getWineImporter() {		 
 		return productModel.getWineImporter();
 	}
 
 	
-	public List<DomainValue> getWineRating1() {		 
+	@Override
+    public List<DomainValue> getWineRating1() {		 
 		return productModel.getWineRating1();
 	}
 
 	
-	public List<DomainValue> getWineRating2() {		 
+	@Override
+    public List<DomainValue> getWineRating2() {		 
 		return productModel.getWineRating2();
 	}
 
 	
-	public List<DomainValue> getWineRating3() {		 
+	@Override
+    public List<DomainValue> getWineRating3() {		 
 		return productModel.getWineRating3();
 	}
 
 	
-	public DomainValue getWineRatingValue1() {		 
+	@Override
+    public DomainValue getWineRatingValue1() {		 
 		return productModel.getWineRatingValue1();
 	}
 
 	
-	public DomainValue getWineRatingValue2() {		 
+	@Override
+    public DomainValue getWineRatingValue2() {		 
 		return productModel.getWineRatingValue2();
 	}
 
 	
-	public DomainValue getWineRatingValue3() {		 
+	@Override
+    public DomainValue getWineRatingValue3() {		 
 		return productModel.getWineRatingValue3();
 	}
 
 	
-	public String getWineRegion() {		 
+	@Override
+    public String getWineRegion() {		 
 		return productModel.getWineRegion();
 	}
 
 	
-	public Html getWineReview1() {		 
+	@Override
+    public Html getWineReview1() {		 
 		return productModel.getWineReview1();
 	}
 
 	
-	public Html getWineReview2() {		 
+	@Override
+    public Html getWineReview2() {		 
 		return productModel.getWineReview2();
 	}
 
 	
-	public Html getWineReview3() {		 
+	@Override
+    public Html getWineReview3() {		 
 		return productModel.getWineReview3();
 	}
 
 	
-	public String getWineType() {		 
+	@Override
+    public String getWineType() {		 
 		return productModel.getWineType();
 	}
 
 	
-	public List<DomainValue> getWineVarietal() {		 
+	@Override
+    public List<DomainValue> getWineVarietal() {		 
 		return productModel.getWineVarietal();
 	}
 
 	
-	public List<DomainValue> getWineVintage() {		 
+	@Override
+    public List<DomainValue> getWineVintage() {		 
 		return productModel.getWineVintage();
 	}
 
 	
-	public List<CategoryModel> getYmalCategories() {		 
+	@Override
+    public List<CategoryModel> getYmalCategories() {		 
 		return productModel.getYmalCategories();
 	}
 
 	
-	public List<ProductModel> getYmalProducts() {		 
+	@Override
+    public List<ProductModel> getYmalProducts() {		 
 		return productModel.getYmalProducts();
 	}
 
 	
-	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {		 
+	@Override
+    public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {		 
 		return productModel.getYmalProducts(removeSkus);
 	}
 
 	
-	public List<Recipe> getYmalRecipes() {		 
+	@Override
+    public List<Recipe> getYmalRecipes() {		 
 		return productModel.getYmalRecipes();
 	}
 
 	
-	public List<ContentNodeModel> getYmals() {		 
+	@Override
+    public List<ContentNodeModel> getYmals() {		 
 		return productModel.getYmals();
 	}
 
 	
-	public Image getZoomImage() {		 
+	@Override
+    public Image getZoomImage() {		 
 		return productModel.getZoomImage();
 	}
 
 	
-	public boolean hasComponentGroups() {		 
+	@Override
+    public boolean hasComponentGroups() {		 
 		return productModel.hasComponentGroups();
 	}
 
 	
-	public boolean hasTerms() {		 
+	@Override
+    public boolean hasTerms() {		 
 		return productModel.hasTerms();
 	}
 
 	
-	public boolean hasWineOtherRatings() {		 
+	@Override
+    public boolean hasWineOtherRatings() {		 
 		return productModel.hasWineOtherRatings();
 	}
 
 	
-	public boolean isAutoconfigurable() {		 
+	@Override
+    public boolean isAutoconfigurable() {		 
 		return productModel.isAutoconfigurable();
 	}
 
 	
-	public boolean isBackInStock() {		 
+	@Override
+    public boolean isBackInStock() {		 
 		return productModel.isBackInStock();
 	}
 
 	
-	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {		 
+	@Override
+    public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {		 
 		return productModel.isCharacteristicsComponentsAvailable(config);
 	}
 
 	
-	public boolean isDisplayableBasedOnCms() {		 
+	@Override
+    public boolean isDisplayableBasedOnCms() {		 
 		return productModel.isDisplayableBasedOnCms();
 	}
 
 	
-	public boolean isExcludedRecommendation() {		 
+	@Override
+    public boolean isExcludedRecommendation() {		 
 		return productModel.isExcludedRecommendation();
 	}
 
 	
-	public boolean isFrozen() {		 
+	@Override
+    public boolean isFrozen() {		 
 		return productModel.isFrozen();
 	}
 
 	
-	public boolean isFullyAvailable() {		 
+	@Override
+    public boolean isFullyAvailable() {		 
 		return productModel.isFullyAvailable();
 	}
 
 	
-	public boolean isGrocery() {		 
+	@Override
+    public boolean isGrocery() {		 
 		return productModel.isGrocery();
 	}
 
 	
-	public boolean isHasPartiallyFrozen() {		 
+	@Override
+    public boolean isHasPartiallyFrozen() {		 
 		return productModel.isHasPartiallyFrozen();
 	}
 
 	
-	public boolean isHasSalesUnitDescription() {		 
+	@Override
+    public boolean isHasSalesUnitDescription() {		 
 		return productModel.isHasSalesUnitDescription();
 	}
 
 	
-	public boolean isHideIphone() {		 
+	@Override
+    public boolean isHideIphone() {		 
 		return productModel.isHideIphone();
 	}
 
 	
-	public boolean isHideWineRatingPricing() {		 
+	@Override
+    public boolean isHideWineRatingPricing() {		 
 		return productModel.isHideWineRatingPricing();
 	}
 
 	
-	public boolean isInPrimaryHome() {		 
+	@Override
+    public boolean isInPrimaryHome() {		 
 		return productModel.isInPrimaryHome();
 	}
 
 	
-	public boolean isIncrementMaxEnforce() {		 
+	@Override
+    public boolean isIncrementMaxEnforce() {		 
 		return productModel.isIncrementMaxEnforce();
 	}
 
 	
-	public boolean isInvisible() {		 
+	@Override
+    public boolean isInvisible() {		 
 		return productModel.isInvisible();
 	}
 
 	
-	public boolean isNew() {		 
+	@Override
+    public boolean isNew() {		 
 		return productModel.isNew();
 	}
 
 	
-	public boolean isNotSearchable() {		 
+	@Override
+    public boolean isNotSearchable() {		 
 		return productModel.isNotSearchable();
 	}
 
 	
-	public boolean isNutritionMultiple() {		 
+	@Override
+    public boolean isNutritionMultiple() {		 
 		return productModel.isNutritionMultiple();
 	}
 
 	
-	public boolean isPerishable() {		 
+	@Override
+    public boolean isPerishable() {		 
 		return productModel.isPerishable();
 	}
 
 	
-	public boolean isPlatter() {		 
+	@Override
+    public boolean isPlatter() {		 
 		return productModel.isPlatter();
 	}
 
 	
-	public boolean isPreconfigured() {		 
+	@Override
+    public boolean isPreconfigured() {		 
 		return productModel.isPreconfigured();
 	}
 
-	
+	@Override
 	public boolean isQualifiedForPromotions() throws FDResourceException {		 
 		return productModel.isQualifiedForPromotions();
 	}
 
-	
+	@Override
 	public boolean isShowSalesUnitImage() {		 
 		return productModel.isShowSalesUnitImage();
 	}
 
-	
+	@Override
 	public boolean isShowTopTenImage() {		 
 		return productModel.isShowTopTenImage();
 	}
 
-	
+	@Override
 	public boolean isShowWineRatings() {		 
 		return productModel.isShowWineRatings();
 	}
 
-	
+	@Override
 	public boolean isSoldBySalesUnits() {		 
 		return productModel.isSoldBySalesUnits();
 	}
 
-	
+	@Override
 	public boolean isTemporaryUnavailableOrAvailable() {		 
 		return productModel.isTemporaryUnavailableOrAvailable();
 	}
 
-	
+	@Override
 	public boolean showDefaultSustainabilityRating() {		 
 		return productModel.showDefaultSustainabilityRating();
 	}
 
-	
+	@Override
 	public Date getEarliestAvailability() {		 
 		return productModel.getEarliestAvailability();
 	}
 
 	
 
-	
+	@Override
 	public boolean isAvailableWithin(int days) {		 
 		return productModel.isAvailableWithin(days);
 	}
 
-	
+	@Override
 	public boolean isDiscontinued() {		 
 		return productModel.isDiscontinued();
 	}
 
-	
+	@Override
 	public boolean isOutOfSeason() {		 
 		return productModel.isOutOfSeason();
 	}
 
-	
+	@Override
 	public boolean isTempUnavailable() {		 
 		return productModel.isTempUnavailable();
 	}
 
-	
+	@Override
 	public boolean isUnavailable() {		 
 		return productModel.isUnavailable();
 	}
 
-	
+	@Override
 	public List<ProductModel> getRelatedProducts() {		 
 		return productModel.getRelatedProducts();
 	}
 
-	
+	@Override
 	public String getYmalHeader() {		 
 		return productModel.getYmalHeader();
 	}
 
-	
+	@Override
 	public void resetActiveYmalSetSession() {		 
 		productModel.resetActiveYmalSetSession();
 	}
 
-	
+	@Override
 	public AttributeDefI getAttributeDef(String name) {		 
 		return productModel.getAttributeDef(name);
 	}
 
-	
+	@Override
 	public Object getCmsAttributeValue(String name) {		 
 		return productModel.getCmsAttributeValue(name);
 	}
 
-	
+	@Override
 	public ContentKey getContentKey() {		 
 		return productModel.getContentKey();
 	}
 
-	
+	@Override
 	public String getContentName() {		 
 		return productModel.getContentName();
 	}
 
-	
+	@Override
 	public String getContentType() {		 
 		return productModel.getContentType();
 	}
 
-	
+	@Override
 	public Html getEditorial() {		 
 		return productModel.getEditorial();
 	}
 
-	
+	@Override
 	public String getEditorialTitle() {		 
 		return productModel.getEditorialTitle();
 	}
 
-	
+	@Override
 	public Object getNotInheritedAttributeValue(String name) {		 
 		return productModel.getNotInheritedAttributeValue(name);
 	}
 
-	
+	@Override
 	public String getParentId() {
 		return productModel.getParentId();
 	}
 
-	
+	@Override
 	public Collection<ContentKey> getParentKeys() {		 
 		return productModel.getParentKeys();
 	}
 
-	
+	@Override
 	public ContentNodeModel getParentNode() {		 
 		return productModel.getParentNode();
 	}
 
-	
+	@Override
 	public String getPath() {		 
 		return productModel.getPath();
 	}
 
-	
+	@Override
 	public Image getSideNavImage() {		 
 		return productModel.getSideNavImage();
 	}
 
-	
+	@Override
 	public boolean hasParentWithName(String[] contentNames) {		 
 		return productModel.hasParentWithName(contentNames);
 	}
 
-	
+	@Override
 	public boolean isHidden() {		 
 		return productModel.isHidden();
 	}
 
-	
+	@Override
 	public boolean isOrphan() {
 		return productModel.isOrphan();
 	}
 
-	
+	@Override
 	public boolean isSearchable() {		 
 		return productModel.isSearchable();
 	}
 
-	
+	@Override
 	public int getPriority() {		 
 		return productModel.getPriority();
 	}
 
-	
+	@Override
 	public YmalSetSource getParentYmalSetSource() {		 
 		return productModel.getParentYmalSetSource();
 	}
 
-	
+	@Override
 	public List<YmalSet> getYmalSets() {		 
 		return productModel.getYmalSets();
 	}
 
-	
+	@Override
 	public boolean hasActiveYmalSets() {		 
 		return productModel.hasActiveYmalSets();
 	}
 
 	
 
-	
+	@Override
     public Object clone() {		
 		try {
 			ProductModelPromotionAdapter pm= (ProductModelPromotionAdapter)super.clone();
@@ -1224,55 +1417,55 @@ Cloneable, PrioritizedI {
 		
 	}
 
-	
+    @Override
 	public String toString() {		
 		return productModel.toString();
 	}
 	
-	
+	@Override
     public boolean isExcludedForEBTPayment(){
 		return productModel.isExcludedForEBTPayment();
 	}
 
-	
+    @Override
 	public boolean isDisabledRecommendations() {
 		return productModel.isDisabledRecommendations();
 	}
 
-	
+	@Override
 	public boolean isRetainOriginalSkuOrder() {
 		return productModel.isRetainOriginalSkuOrder();
 	}
 
-	
+	@Override
 	public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
 		return productModel.getProductRatingEnum(skuCode);
 	}
 
-	
+	@Override
 	public Image getPackageImage() {
 		return productModel.getPackageImage();
 	}
 
-	
+	@Override
 	public List<TagModel> getTags() {
 		return productModel.getTags();
 	}
 
-	
+	@Override
 	public Set<TagModel> getAllTags() {
 		return productModel.getAllTags();
 	}
 
 	
-	
+	@Override
 	public Set<DomainValue> getAllDomainValues() {
 		return productModel.getAllDomainValues();
 	}
 	/**
 	 * @see {@link ProductModel#getUpSellProducts()}
 	 */
-	
+	@Override
 	public List<ProductModel> getUpSellProducts() {
 		return productModel.getUpSellProducts();
 	}
@@ -1280,12 +1473,12 @@ Cloneable, PrioritizedI {
 	/**
 	 * @see {@link ProductModel#getCrossSellProducts()}
 	 */
-	
+	@Override
 	public List<ProductModel> getCrossSellProducts() {
 		return productModel.getCrossSellProducts();
 	}
 
-	
+	@Override
 	public String getBrowseRecommenderType(){
 		return productModel.getBrowseRecommenderType();
 	}
@@ -1293,67 +1486,73 @@ Cloneable, PrioritizedI {
 	/**
 	 * @see {@link ProductModel#getHeatRating()}
 	 */
-	
+	@Override
 	public int getHeatRating() {
 		return productModel.getHeatRating();
 	}
 
-	
+	@Override
 	public Image getJumboImage() {
 		return productModel.getJumboImage();
 	}
 
-	
+	@Override
 	public Image getItemImage() {
 		return productModel.getItemImage();
 	}
 
-	
+	@Override
 	public Image getExtraImage() {
 		return productModel.getExtraImage();
 	}
 	
-	
+	@Override
 	public boolean isDisableAtpFailureRecommendation(){
 		return productModel.isDisableAtpFailureRecommendation();
 	}
 
-	
+	@Override
 	public EnumProductLayout getSpecialLayout() {
 		return productModel.getSpecialLayout();
 	}
 	
-	
+	@Override
 	public List<ProductModel> getCompleteTheMeal() {
 		return productModel.getCompleteTheMeal();
 	}
 
     
+    @Override
     public List<ProductModel> getIncludeProducts() {
         return productModel.getIncludeProducts();
     }
 
-	
+    @Override
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}
 
-	
+	@Override
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
 	}
 
-	
+	@Override
 	public String getPairItHeading() {
 		return productModel.getPairItHeading();
 	}
 
-	
+	@Override
 	public String getPairItText() {
 		return productModel.getPairItText();
 	}
 
-    
+    @Override
+    public int getTimeToComplete() {
+        return productModel.getTimeToComplete();
+    }
+
+    @Override
     public void setParentNode(ContentNodeModel parentNode) {
         productModel.setParentNode(parentNode);
     }
@@ -1373,4 +1572,5 @@ Cloneable, PrioritizedI {
 	public void setImpBeacon(String impBeacon) {
 		this.impBeacon = impBeacon;
 	}
+
 }

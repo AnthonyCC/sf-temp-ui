@@ -568,13 +568,16 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 
 	@Override
 	public String getPairItHeading() {
-		// TODO Auto-generated method stub
 		return getProduct().getPairItHeading();
 	}
 
 	@Override
 	public String getPairItText() {
-		// TODO Auto-generated method stub
 		return getProduct().getPairItText();
+	}
+	
+	@Override
+	public int getTimeToComplete() {
+	    return getProduct().getTimeToComplete();
 	}
 }

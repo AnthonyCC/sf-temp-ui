@@ -1039,8 +1039,11 @@
 			
 			<AttributeDef type="S" name="PAIR_IT_HEADING" label="PAIR IT - HEADING"/>
 			<AttributeDef type="S" name="PAIR_IT_TEXT" label="PAIR IT - TEXT"/>
+			
+			<!-- [APPDEV-5266] Time to Complete field for MealKit items -->
+			<AttributeDef type="I" name="TIME_TO_COMPLETE" label="Time To Complete" inheritable="false" required="false"/>
 		</AttributeDefs>
-		
+
 		
 		<RelationshipDefs>
 			<RelationshipDef name="skus" cardinality="Many" navigable="true">
