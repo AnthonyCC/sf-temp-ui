@@ -694,9 +694,9 @@ public class BrowseUtil {
 	    		Category cat = buildCategoryData(model);
 	    		categories.add(cat);
 	    	}
-	    	if(!isFDX){
-	    		sortByName(categories);
-	    	}
+//	    	if(!isFDX){
+//	    		sortByName(categories);
+//	    	}
 	    	long endTime   = System.currentTimeMillis();
         	long totalTime = endTime - startTime;
         	LOG.debug("Time to construct  categories :" +totalTime);
