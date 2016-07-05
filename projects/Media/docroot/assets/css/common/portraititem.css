@@ -364,31 +364,6 @@
   text-decoration: line-through;
 }
 
-.display-default-sales-unit-container{
-	font-size: 10px;
-	font-weight: normal;
-}
-
-.display-default-sales-unit-container .price-per-default-sales-unit {
-	font-size: 12px;
-	font-weight: bold;
-}
-
-.display-default-sales-unit-container .display-default-sales-unit{
-	float: left;
-	padding-right: 4px;
-}
-
-.portrait-item .display-default-sales-unit-container s{
-	float: left;
-}
-
-.portrait-item .display-default-sales-unit-container .save-price{
-	font-size: 10px;
-	font-weight: normal;
-	padding-left: 4px;
-}
-
 .portrait-item-controls {
   background:url(/media_stat/images/layout/1x1_80p_trans.png);
   background:rgba(255,255,255,0.8);

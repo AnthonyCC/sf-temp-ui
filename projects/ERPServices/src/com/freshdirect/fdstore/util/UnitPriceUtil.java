@@ -64,7 +64,7 @@ public class UnitPriceUtil {
 		return unitPrice;
 	}
 	
-	public static String formatDecimalToString(double number) {
+	private static String formatDecimalToString(double number) {
 		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
 		String strNumber = decimalFormat.format(number);
 		strNumber = strNumber.replaceAll(",", ".");

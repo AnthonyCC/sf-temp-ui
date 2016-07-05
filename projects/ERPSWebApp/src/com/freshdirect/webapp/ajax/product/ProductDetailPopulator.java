@@ -1119,23 +1119,6 @@ public class ProductDetailPopulator {
 			if ( zpi != null ) {
 				item.setPrice( zpi.getDefaultPrice(/*priceCalculator.getPricingContext().getZoneInfo().getPricingIndicator()*/) );
 				item.setScaleUnit( productInfo.getDisplayableDefaultPriceUnit().toLowerCase() );
-				
-				//APPDEV-4357 -Price display by default sales unit.
-				if("lb".equalsIgnoreCase(item.getScaleUnit())){
-					FDSalesUnit su = fdProduct.getDefaultSalesUnit();
-					if(null == su){
-						su = fdProduct.getSalesUnits()[0];
-					}
-					if(null != su){
-						final int n = su.getNumerator();
-						final int d = su.getDenominator();
-						if (n > 0 && d > 0) {
-							final double p = (item.getPrice() * n) / d;
-							item.setPricePerDefaultSalesUnit(UnitPriceUtil.formatDecimalToString(p));
-							item.setDispDefaultSalesUnit(UnitPriceUtil.formatDecimalToString((double)n/d)+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
-						}
-					}
-				}
 			}
 		} catch ( FDSkuNotFoundException e ) {
 			// No sku (cannot happen) - don't even try the pricing
@@ -1287,13 +1270,13 @@ public class ProductDetailPopulator {
 			// Regular deal
 			String scaleString = priceCalculator.getTieredPrice( 0, null );
 			if ( scaleString != null ) {
-//				buf.append( "Save! " );
+				buf.append( "Save! " );
 				buf.append( scaleString );
-			} /*else if ( priceCalculator.isOnSale() ) {
+			} else if ( priceCalculator.isOnSale() ) {
 				buf.append( "Save " );
 				buf.append( priceCalculator.getDealPercentage() );
 				buf.append( "%" );
-			}*/ else {
+			} else {
 				// no sales, do nothing
 			}
 		}
