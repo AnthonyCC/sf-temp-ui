@@ -23,7 +23,7 @@ public class OpeningHourConstants {
 			add(new OpeningHourData(MONDAY, OPENING_HOUR_ON_WEEK_DAY));
 			add(new OpeningHourData(TUESDAY, OPENING_HOUR_ON_WEEK_DAY));
 			add(new OpeningHourData(WEDNESDAY, CLOSED));
-			add(new OpeningHourData(THURSDAY, OPENING_HOUR_ON_WEEK_DAY));
+			add(new OpeningHourData(THURSDAY, CLOSED));
 			add(new OpeningHourData(FRIDAY, OPENING_HOUR_ON_WEEK_DAY));
 			add(new OpeningHourData(SATURDAY, OPENING_HOUR_ON_WEEKEND_DAY));
 			add(new OpeningHourData(SUNDAY, OPENING_HOUR_ON_WEEKEND_DAY));
