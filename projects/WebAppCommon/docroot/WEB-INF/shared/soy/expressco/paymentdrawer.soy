@@ -489,11 +489,11 @@
   </div>
   {/if}
 </div>
-{if $metadata}
-<div>
- 	<button class="change cssbutton orange transparent small" aria-haspopup="true" id="eCheckButton" data-component="addpaymentmethodbutton">SAVE 5$ with eCheck</button>
- </div>
- {/if}
+{if true or $metadata and $metadata.enableECheck and $metadata.paymentPromoOAS}
+  <div id="eCheckButton" data-component="addpaymentmethodbutton" aria-haspopup="true">
+    <iframe width="162" height="38" src="/OASonly.jsp?listPos=FirstECheckButton&sitePage={$metadata.paymentPromoOAS}"></iframe>
+  </div>
+{/if}
 {/template}
 
 
