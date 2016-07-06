@@ -77,6 +77,10 @@ Symbols:
 		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level1Name" text="true"/>
 		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level2Name" text="true"/>
 		<AttributeIndex contentType="Tag" attributeName="name" text="true"/>
+		<AttributeIndex contentType="Section" attributeName="headlineText" text="true"/>
+		<AttributeIndex contentType="DomainValue" attributeName="Label" text="true"/>
+		<AttributeIndex contentType="DomainValue" attributeName="VALUE" text="true"/>
+		
 	</contribution>
 
 </module>
