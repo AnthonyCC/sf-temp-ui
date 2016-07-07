@@ -302,7 +302,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_LOST_PASSWORD_PAGE_FDX, "https://www.freshdirect.com/login/retrieve_password.jsp"); //this will be a different page
 
 		defaults.put(PROP_SEND_EMAIL, "true");
-		defaults.put(PROP_MAILER_HOST, "nj01devintmail01.nj01");
+		defaults.put(PROP_MAILER_HOST, "storesmtp.nyc2.freshdirect.com");
 		defaults.put(PROP_MAILER_PROTOCOL, "smtp");
 		defaults.put(PROP_MAILER_FROM, "orders@freshdirect.com");
 		defaults.put(PROP_FD_EMAIL, "customerservice@freshdirect.com");

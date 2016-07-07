@@ -25,7 +25,6 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 
@@ -154,13 +153,6 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException, ReservationException {
 		FDReservation rsv = FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
 		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-		final FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)? user.getSoTemplateCart():user.getShoppingCart();
-		cart.setDeliveryReservation(rsv);
-		if(StandingOrderHelper.isSO3StandingOrder(user)) {
-			user.setSoTemplateCart(cart);
-		}else{
-			user.setShoppingCart(cart);
-		}
 		user.setReservation(rsv);
 	}
 	
