@@ -4,6 +4,7 @@
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromotionNewModel"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel"%>
+<%@ page import="com.freshdirect.customer.EnumDeliveryType" %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
 

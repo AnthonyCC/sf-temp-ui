@@ -11,6 +11,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
+<%@ page import="com.freshdirect.customer.EnumDeliveryType" %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
