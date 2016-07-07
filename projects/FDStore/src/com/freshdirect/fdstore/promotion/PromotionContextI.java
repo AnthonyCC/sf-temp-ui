@@ -9,6 +9,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -43,6 +44,8 @@ public interface PromotionContextI {
 	public String getSubscribedSignupPromotionCode();
 
 	public int getAdjustedValidOrderCount();
+	
+	public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType);
 
 	public int getPromotionUsageCount(String promotionCode);
 

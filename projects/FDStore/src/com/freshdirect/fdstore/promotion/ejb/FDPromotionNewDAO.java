@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
@@ -1150,13 +1151,13 @@ public class FDPromotionNewDAO {
 	
 	/** @return Map of promotionPK -> CustomerStrategy */
 	private final static String GET_CUST_PROMO_STRATEGY = "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
+														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx,order_range_delivery_types " +
 														   "from cust.promo_cust_strategy cs, " +
 														   "(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 														   "or expiration_date is null) and redemption_code is null) p where p.ID = cs.PROMOTION_ID";
 
 	private final static String GET_MODIFIED_CUST_PROMO_STRATEGY  =  "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
+																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, order_range_delivery_types " +
 																	 "from cust.promo_cust_strategy cs, " +
 																	 "(SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = cs.PROMOTION_ID";
 	
@@ -1189,7 +1190,7 @@ public class FDPromotionNewDAO {
 	protected static PromotionStrategyI loadCustomerStrategy(Connection conn, String promoId) throws SQLException {
 		CustomerStrategy strategy = null;
 		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, fdx_tier_type " +
+													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, fdx_tier_type,order_range_delivery_types " +
 													 "from cust.promo_cust_strategy cs, cust.promotion_new p " +
 													 "where p.ID = cs.PROMOTION_ID and cs.promotion_id = ?");
 		ps.setString(1, promoId);
@@ -1258,7 +1259,18 @@ public class FDPromotionNewDAO {
 			orderTypes.add(EnumOrderType.FDX);
 		}			
 		
-		strategy.setAllowedOrderTypes(orderTypes);					
+		strategy.setAllowedOrderTypes(orderTypes);		
+		
+		if(null !=rs.getString("ORDER_RANGE_DELIVERY_TYPES")){
+			String[] orderRangeDeliveryType = rs.getString("ORDER_RANGE_DELIVERY_TYPES").split(",");
+			if(null !=orderRangeDeliveryType && orderRangeDeliveryType.length > 0){
+				List<EnumDeliveryType> orderRangeDeliveryTypes = new ArrayList<EnumDeliveryType>();
+				for (int i = 0; i < orderRangeDeliveryType.length; i++) {
+					orderRangeDeliveryTypes.add(EnumDeliveryType.getDeliveryType(orderRangeDeliveryType[i]));
+				}
+				strategy.setOrderRangeDeliveryTypes(orderRangeDeliveryTypes);
+			}
+		}
 	}
 	
 	

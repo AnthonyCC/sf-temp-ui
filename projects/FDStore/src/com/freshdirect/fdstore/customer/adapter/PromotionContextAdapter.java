@@ -15,6 +15,7 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -211,6 +212,14 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public int getAdjustedValidOrderCount() {
 		try {
 			return this.user.getAdjustedValidOrderCount();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException();
+		}
+	}
+	
+	public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) {
+		try {
+			return this.user.getAdjustedValidOrderCount(deliveryType);
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException();
 		}

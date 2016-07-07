@@ -3,6 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus" %>
+<%@ page import="com.freshdirect.customer.EnumDeliveryType" %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 	<tmpl:put name='title' direct='true'>Promotion Edit</tmpl:put>

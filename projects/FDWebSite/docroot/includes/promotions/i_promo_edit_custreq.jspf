@@ -39,7 +39,20 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Order instance:</td>
-					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm != null && csm.getOrderRangeStart()!=null && csm.getOrderRangeStart() > 0) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null && csm.getOrderRangeEnd()!=null && csm.getOrderRangeEnd() > 0) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (First order == 1, current order count based on placed/settled order) </span></td>
+					<td class="alignL vTop padL8R16">
+						<input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm != null && csm.getOrderRangeStart()!=null && csm.getOrderRangeStart() > 0) ? csm.getOrderRangeStart():""%>" />
+						<span class="gray"> to </span>
+						<input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null && csm.getOrderRangeEnd()!=null && csm.getOrderRangeEnd() > 0) ? csm.getOrderRangeEnd():""%>" />
+						<span class="grayIta8pt"> (First order == 1, current order count based on placed/settled order) </span>
+					</td>
+					<td class="promo_detail_label"> Include delivery types for current order count(cumulative):</td>
+					<td><table ><tr>
+								<td><input type="checkbox" id="residential" name="residential" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.HOME))?"checked":"" %>/> Residential</td>
+								<td><input type="checkbox" id="commerical" name="commerical" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.CORPORATE))?"checked":"" %>/> Commercial</td>
+								<td><input type="checkbox" id="pickup" name="pickup" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.PICKUP))?"checked":"" %>/> Pickup</td>
+								<td><input type="checkbox" id="isFdx" name="isFdx" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.FDX))?"checked":"" %>/> FDX</td>
+							</tr>
+							</table></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>

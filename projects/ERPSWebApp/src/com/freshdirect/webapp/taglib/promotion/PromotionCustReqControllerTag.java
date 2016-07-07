@@ -17,7 +17,9 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.delivery.EnumComparisionType;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -61,6 +63,25 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			if("promoCustReq".equalsIgnoreCase(this.getActionName())){
 				String orderRangeStart = NVL.apply(request.getParameter("orderRangeStart"),"").trim();
 				String orderRangeEnd = NVL.apply(request.getParameter("orderRangeEnd"),"").trim();
+				String residential = NVL.apply(request.getParameter("residential"),"").trim();
+				String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
+				String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
+				String isFdx = NVL.apply(request.getParameter("isFdx"),"").trim();
+//				StringBuilder orderRangeDeliveryTypes = new StringBuilder();
+				List<EnumDeliveryType> orderRangeDeliveryTypes=new ArrayList<EnumDeliveryType>();
+				if(!"".equalsIgnoreCase(residential)){
+					orderRangeDeliveryTypes.add(EnumDeliveryType.HOME);
+				}
+				if(!"".equalsIgnoreCase(commerical)){
+					orderRangeDeliveryTypes.add(EnumDeliveryType.CORPORATE);
+				}
+				if(!"".equalsIgnoreCase(pickup)){
+					orderRangeDeliveryTypes.add(EnumDeliveryType.PICKUP);
+				}
+				if(!"".equalsIgnoreCase(isFdx)){
+					orderRangeDeliveryTypes.add(EnumDeliveryType.FDX);
+				}
+				
 				String[] cohorts = request.getParameterValues("cohorts");
 				String[] dpTypes = request.getParameterValues("dpTypes");
 				String dpStatus = NVL.apply(request.getParameter("dpStatus"),"").trim();
@@ -82,6 +103,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				model.setCohorts(cohorts);
 				model.setDpTypes(dpTypes);
 				model.setDpStatus(dpStatus);
+				model.setOrderRangeDeliveryTypes(orderRangeDeliveryTypes);
 				validateCustReq(actionResult, orderRangeStart, orderRangeEnd,
 						dpExpStartDate, dpExpEndDate, model);
 				
@@ -455,6 +477,9 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		}
 		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && model.getOrderRangeEnd()<model.getOrderRangeStart()){
 			actionResult.addError(true, "orderRanges", " Order instance start value must be less than or equal to end value.");
+		}
+		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && (null == model.getOrderRangeDeliveryTypes() || model.getOrderRangeDeliveryTypes().isEmpty())){
+			actionResult.addError(true, "orderRangeDeliveryTypes", "One of the delivery service types must be selected, when order instance ranges are specified.");
 		}
 		/*if(!"".equals(orderRangeStart)){
 			if( !isInteger(orderRangeStart)){

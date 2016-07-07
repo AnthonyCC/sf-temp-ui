@@ -24,6 +24,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -589,6 +590,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     	return this.user.getAdjustedValidOrderCount();
     }
 
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+    	return this.user.getAdjustedValidOrderCount(deliveryType);
+    }
+    
     public int getDeliveredOrderCount() throws FDResourceException {
     	return this.user.getDeliveredOrderCount();
     }

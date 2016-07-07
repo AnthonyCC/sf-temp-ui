@@ -1,8 +1,11 @@
 package com.freshdirect.fdstore.promotion.management;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
@@ -29,6 +32,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private boolean excludeSameDayDlv;
 	private EnumDeliveryOption deliveryDayType;
 	private EnumComparisionType echeckMatchType;
+	private List<EnumDeliveryType> orderRangeDeliveryTypes;
 	
 
 	public FDPromoCustStrategyModel() {
@@ -187,7 +191,21 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	public void setFdxTierType(EnumPromoFDXTierType fdxTierType) {
 		this.fdxTierType = fdxTierType;
 	}
+	public List<EnumDeliveryType> getOrderRangeDeliveryTypes() {
+		return orderRangeDeliveryTypes;
+	}
+	public void setOrderRangeDeliveryTypes(
+			List<EnumDeliveryType> orderRangeDeliveryTypes) {
+		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
+	}
 	
+	public boolean isDeliveryTypeForOrderRange(EnumDeliveryType deliveryType){
+		boolean isDeliveryTypeForOrderRange = false;
+		if(null != orderRangeDeliveryTypes){
+			isDeliveryTypeForOrderRange = orderRangeDeliveryTypes.contains(deliveryType);
+		}
+		return isDeliveryTypeForOrderRange;
+	}
 	
 	
 }

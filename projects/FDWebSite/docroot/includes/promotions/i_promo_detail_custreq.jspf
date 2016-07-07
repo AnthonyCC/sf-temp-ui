@@ -139,7 +139,33 @@ String userId = request.getParameter("userId");
 							<td class="alignL">Range <span class="gray">order # </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeStart() : "" %> <span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeEnd() : "" %> <span class="grayIta8pt">(first order == 1)</span></td>
 						</tr>
 					<% } %>
-					
+					<% if ( csm != null && (null !=promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes() && !promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().isEmpty()) ) { %>
+						<tr>
+							<td class="promo_detail_label">Included delivery types for current order count(cumulative):</td>
+							<td class="alignL">
+							<% StringBuilder orderRangeDeliveryTypes = new StringBuilder();
+							String orderRangeDeliveryTypesStr ="";
+							for (Iterator<EnumDeliveryType> iterator = promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
+								EnumDeliveryType deliveryType = iterator.next();
+								if(null != deliveryType){
+									if(EnumDeliveryType.HOME.equals(deliveryType)){
+										orderRangeDeliveryTypes.append("Residential").append(", ");	
+									} else if(EnumDeliveryType.CORPORATE.equals(deliveryType)){
+										orderRangeDeliveryTypes.append("Corporate").append(", ");	
+									} else if(EnumDeliveryType.PICKUP.equals(deliveryType)){
+										orderRangeDeliveryTypes.append("Pickup").append(", ");	
+									} else if(EnumDeliveryType.FDX.equals(deliveryType)){
+										orderRangeDeliveryTypes.append("FDX").append(", ");	
+									}
+									orderRangeDeliveryTypesStr = orderRangeDeliveryTypes.toString() ;
+									if(orderRangeDeliveryTypesStr.endsWith(", ")){
+										orderRangeDeliveryTypesStr = orderRangeDeliveryTypesStr.substring(0,orderRangeDeliveryTypesStr.length() - 2);
+									}
+								}
+													
+							} %><%= orderRangeDeliveryTypesStr %></td>
+						</tr>
+					<% } %>
 					<% if ( !"".equals(cohortsString) ) { %>
 						<tr>
 							<td class="promo_detail_label">Smart Store cohort(s):</td>

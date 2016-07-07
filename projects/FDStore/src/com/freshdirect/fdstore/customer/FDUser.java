@@ -807,6 +807,18 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return orderCount;
     }
+    
+    /**
+     * @return number of valid orders, corrected in modify order mode
+     */
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+    	int orderCount = this.getOrderHistory().getValidOrderCount(deliveryType);
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
 
     /**
      * @return number of valid ECheck orders, corrected in modify order mode

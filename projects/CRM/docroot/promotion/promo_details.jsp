@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionNewManager"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.customer.EnumDeliveryType"%> 
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>

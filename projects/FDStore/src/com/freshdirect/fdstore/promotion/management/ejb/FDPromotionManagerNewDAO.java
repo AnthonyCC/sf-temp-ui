@@ -28,6 +28,7 @@ import oracle.sql.ArrayDescriptor;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
@@ -1265,11 +1266,11 @@ public class FDPromotionManagerNewDAO {
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
 			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type, ordertype_fdx, fdx_tier_type)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type, ordertype_fdx, fdx_tier_type,order_range_delivery_types)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=?,ordertype_fdx=?,fdx_tier_type=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=?,ordertype_fdx=?,fdx_tier_type=?,order_range_delivery_types=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1375,7 +1376,20 @@ public class FDPromotionManagerNewDAO {
 					ps.setNull(index++, Types.VARCHAR);
 				}
 				ps.setString(index++, model.isOrderTypeFDX() ? "X" : " ");
+				
 				ps.setString(index++, null !=model.getFdxTierType()?model.getFdxTierType().getName():null);
+				
+				if(null !=model.getOrderRangeDeliveryTypes() && !model.getOrderRangeDeliveryTypes().isEmpty()){
+					StringBuilder orderRangeDeliveryTypes = new StringBuilder();
+					for (Iterator<EnumDeliveryType> iterator = model.getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
+						EnumDeliveryType enumDeliveryType = iterator.next();
+						orderRangeDeliveryTypes.append(enumDeliveryType.getCode()).append(",");						
+					}
+					
+					ps.setString(index++,orderRangeDeliveryTypes.toString());
+				}else{
+					ps.setNull(index++, Types.VARCHAR);
+				}
 				if (null !=model.getId()) {
 					ps.setString(index++, promotionId);
 				}
@@ -1635,6 +1649,17 @@ public class FDPromotionManagerNewDAO {
 			promoCustStrategyModel.setEcheckMatchType(EnumComparisionType.getEnum(rs.getString("ECHECK_MATCH_TYPE")));
 			promoCustStrategyModel.setPromotionId(promotionId);
 			promoCustStrategyModel.setFdxTierType(EnumPromoFDXTierType.getEnum(rs.getString("FDX_TIER_TYPE")));
+			if(null !=rs.getString("ORDER_RANGE_DELIVERY_TYPES")){
+				String[] orderRangeDeliveryType = rs.getString("ORDER_RANGE_DELIVERY_TYPES").split(",");
+				if(null !=orderRangeDeliveryType && orderRangeDeliveryType.length > 0){
+					List<EnumDeliveryType> orderRangeDeliveryTypes = new ArrayList<EnumDeliveryType>();
+					for (int i = 0; i < orderRangeDeliveryType.length; i++) {
+						orderRangeDeliveryTypes.add(EnumDeliveryType.getDeliveryType(orderRangeDeliveryType[i]));
+					}
+					promoCustStrategyModel.setOrderRangeDeliveryTypes(orderRangeDeliveryTypes);
+				}
+			}
+						
 			list.add(promoCustStrategyModel);
 		}
 	
@@ -3796,8 +3821,8 @@ public class FDPromotionManagerNewDAO {
 	
 	private static String INSERT_PROMO_CUST_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cust_strategy " +
 		"(id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-			"ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type) " + 
-		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,? from cust.promotion_new where batch_id = ?";
+			"ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type,order_range_delivery_types) " + 
+		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,? from cust.promotion_new where batch_id = ?";
 	
 	private static void storeCustomerStrategyForBatch(Connection conn, String batchId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -3884,8 +3909,18 @@ public class FDPromotionManagerNewDAO {
 				}else{
 					ps.setNull(15, Types.VARCHAR);
 				}
-				
-				ps.setString(16, promotion.getBatchId());			
+				if(null !=model.getOrderRangeDeliveryTypes() && !model.getOrderRangeDeliveryTypes().isEmpty()){
+					StringBuilder orderRangeDeliveryTypes = new StringBuilder();
+					for (Iterator<EnumDeliveryType> iterator = model.getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
+						EnumDeliveryType enumDeliveryType = iterator.next();
+						orderRangeDeliveryTypes.append(enumDeliveryType.getCode()).append(",");						
+					}
+					
+					ps.setString(16,orderRangeDeliveryTypes.toString());
+				}else{
+					ps.setNull(16, Types.VARCHAR);
+				}
+				ps.setString(17, promotion.getBatchId());			
 	
 				ps.execute();
 			}

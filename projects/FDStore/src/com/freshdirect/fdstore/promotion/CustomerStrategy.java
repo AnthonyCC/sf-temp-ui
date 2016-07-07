@@ -3,12 +3,14 @@ package com.freshdirect.fdstore.promotion;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.EnumComparisionType;
@@ -44,6 +46,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	private int priorEcheckUse;
 	private Set<EnumOrderType> allowedOrderTypes;
 	private EnumComparisionType eCheckMatchType;
+	private List<EnumDeliveryType> orderRangeDeliveryTypes;
 	
 	public CustomerStrategy() {
 		
@@ -65,7 +68,15 @@ public class CustomerStrategy implements PromotionStrategyI {
 		//Evaluate Order Range. range is not defined properly. DENY
 		if((orderRangeStart > 0 && orderRangeEnd <= 0) || (orderRangeStart <= 0 && orderRangeEnd > 0)) return DENY;
 		if(orderRangeStart > 0 && orderRangeEnd > 0){
-			int currentOrder = context.getAdjustedValidOrderCount() + 1;
+			int currentOrder = 1;//current order
+			if(null ==orderRangeDeliveryTypes || orderRangeDeliveryTypes.isEmpty()){
+				currentOrder = currentOrder + context.getAdjustedValidOrderCount();				
+			}else{				
+				for (Iterator<EnumDeliveryType> iterator = orderRangeDeliveryTypes.iterator(); iterator.hasNext();) {
+					EnumDeliveryType deliveryType = iterator.next();
+					currentOrder = currentOrder + context.getAdjustedValidOrderCount(deliveryType);
+				}
+			}
 			if(currentOrder  < orderRangeStart || currentOrder > orderRangeEnd) return DENY;
 		}
 		
@@ -457,5 +468,14 @@ public class CustomerStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+	public List<EnumDeliveryType> getOrderRangeDeliveryTypes() {
+		return orderRangeDeliveryTypes;
+	}
+
+	public void setOrderRangeDeliveryTypes(
+			List<EnumDeliveryType> orderRangeDeliveryTypes) {
+		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
 	}
 }

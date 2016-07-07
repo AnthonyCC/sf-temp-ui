@@ -36,6 +36,11 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_MASTERPASS_ORDER_COUNT = "validMasterPassOrderCount";
 	private static final String FIRST_ORDER_DATE_FOR_FD = "firstOrderDateForFD";
 	private static final String FIRST_ORDER_DATE_FOR_FDX = "firstOrderDateForFDX";
+	private static final String VALID_ORDER_COUNT_FD_HOME = "validOrderCountForFDHome";
+	private static final String VALID_ORDER_COUNT_FD_CORP = "validOrderCountForFDCorp";
+	private static final String VALID_ORDER_COUNT_FD_PICKUP = "validOrderCountForFDPickUp";
+	private static final String VALID_ORDER_COUNT_FDX = "validOrderCountForFDX";
+	
 	/**
 	 * 
 	 * @param erpSaleInfos
@@ -62,6 +67,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(SETTLED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(VALID_MASTERPASS_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpSaleInfos)));
+		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_HOME, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.HOME)));
+		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_CORP, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.CORPORATE)));
+		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_PICKUP, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.PICKUP)));
+		orderHistoryInfo.put(VALID_ORDER_COUNT_FDX, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.FDX)));
 	}
 
 	public int getDeliveredOrderCount(){
@@ -117,6 +126,22 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	}
 
 	public int getValidOrderCount(){
+//		return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT)).intValue();
+		return getValidOrderCount(null);
+	}
+	
+	public int getValidOrderCount(EnumDeliveryType deliveryType){
+		if(null != deliveryType){
+			if(EnumDeliveryType.HOME.equals(deliveryType)){
+				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FD_HOME)).intValue();
+			} else if(EnumDeliveryType.CORPORATE.equals(deliveryType)){
+				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FD_CORP)).intValue();
+			} else if(EnumDeliveryType.PICKUP.equals(deliveryType)){
+				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FD_PICKUP)).intValue();
+			} else if(EnumDeliveryType.FDX.equals(deliveryType)){
+				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FDX)).intValue();
+			}
+		}
 		return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT)).intValue();
 	}
 

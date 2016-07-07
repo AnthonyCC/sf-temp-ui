@@ -99,6 +99,10 @@ public class ErpOrderHistory implements OrderHistoryI {
 	public int getValidOrderCount(){
 		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos);
 	}
+	
+	public int getValidOrderCount(EnumDeliveryType deliveryType){
+		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos,deliveryType);
+	}
 
 	public int getValidPhoneOrderCount(){
 		return ErpOrderHistoryUtil.getValidPhoneOrderCount(erpRegSaleInfos);

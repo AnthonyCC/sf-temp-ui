@@ -118,10 +118,28 @@ public class ErpOrderHistoryUtil {
 	 * @param erpSaleInfos
 	 */
 	public static int getValidOrderCount(Collection erpSaleInfos){
-		int ret = 0;
+		/*int ret = 0;
 		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
 			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
 			if (!saleInfo.getStatus().isCanceled()) {
+				ret++;
+			}
+		}
+		return ret;*/
+		return getValidOrderCount(erpSaleInfos, null);
+	}
+	
+	/**
+	 * 
+	 * @param erpSaleInfos
+	 * @param deliveryType
+	 * @return count
+	 */
+	public static int getValidOrderCount(Collection erpSaleInfos, EnumDeliveryType deliveryType){
+		int ret = 0;
+		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
+			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+			if ((null == deliveryType || deliveryType.equals(saleInfo.getDeliveryType())) && !saleInfo.getStatus().isCanceled()) {
 				ret++;
 			}
 		}

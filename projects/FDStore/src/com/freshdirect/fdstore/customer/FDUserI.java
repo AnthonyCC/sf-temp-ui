@@ -12,6 +12,7 @@ import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -171,6 +172,8 @@ public interface FDUserI extends java.io.Serializable {
 	public String getEndChefsTableQualifyingDate() throws FDResourceException;
 
     public int getAdjustedValidOrderCount() throws FDResourceException;
+    
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException;
 
     public int getValidPhoneOrderCount() throws FDResourceException;
 
