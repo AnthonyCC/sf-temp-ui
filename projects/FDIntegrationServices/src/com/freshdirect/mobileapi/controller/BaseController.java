@@ -357,15 +357,16 @@ public abstract class BaseController extends AbstractController implements Messa
     
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
-            try {
+           // try {
             	if (user != null && user.isLoggedIn() && !isFakeUser()) {
-            		responseMessage.addNoticeMessages(oasService.getMessages(user));
+            	//	responseMessage.addNoticeMessages(oasService.getMessages(user));
             	} else {
-                    responseMessage.addNoticeMessages(oasService.getMessages());
+                  //  responseMessage.addNoticeMessages(oasService.getMessages());
             	}
-            } catch (ServiceException e) {
+           // }
+            	/* catch (ServiceException e) {
                 LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
-            }
+            }*/
             model.addObject("data", getJsonString(responseMessage));
 
         } catch (JsonGenerationException e) {
