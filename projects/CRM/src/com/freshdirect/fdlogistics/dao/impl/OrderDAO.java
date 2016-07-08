@@ -45,9 +45,9 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 
 	// START HANDOFF QUERIES
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-			+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
+			+ "ci.cell_phone, fde.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, handofftime "
-			+ "from cust.customer c, cust.fdcustomer fdc "
+			+ "from cust.customer c, cust.fdcustomer fdc, cust.fdcustomer_estore fde  "
 			+ ", cust.customerinfo ci "
 			+ ", cust.sale s, cust.salesaction sa "
 			+ ", cust.deliveryinfo di "
@@ -55,7 +55,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 			+ "and s.type ='REG' "
 			+ "and s.status <> 'CAN' "
-			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X'";
+			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X' and FDE.E_STORE = 'FreshDirect' and FDC.ID =FDE.FDCUSTOMER_ID";
 
 	private static String GET_ORDER_BYID = "SELECT s.id, s.sap_number, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, "
@@ -67,18 +67,18 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ "and sa.id = di.salesaction_id and s.id =?";
 
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-			+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
+			+ "ci.cell_phone, fde.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id "
 			+ " "
 			+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc "
-			+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci "
+			+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci, cust.fdcustomer_estore@DBSTOSBY.NYC.FRESHDIRECT.COM fde "
 			+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa "
 			+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di "
 			+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id "
 			+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 			+ "and s.type ='REG' "
 			+ "and s.status <> 'CAN' "
-			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X'";
+			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X' and FDE.E_STORE = 'FreshDirect' and FDC.ID =FDE.FDCUSTOMER_ID";
 
 	private static String GET_ORDERSTATSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ s.status, count(*) as order_count "
 			+ "from cust.customer c, cust.fdcustomer fdc "
