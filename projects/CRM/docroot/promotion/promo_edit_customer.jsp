@@ -60,6 +60,9 @@
 						<fd:ErrorHandler result="<%=result%>" name="orderRanges" id="errorMsg">
 							<%@ include file="/includes/i_error_messages.jspf" %>   
 						</fd:ErrorHandler>
+						<fd:ErrorHandler result="<%=result%>" name="orderRangeDeliveryTypes" id="errorMsg">
+							<%@ include file="/includes/i_error_messages.jspf" %>   
+						</fd:ErrorHandler>
 						<fd:ErrorHandler result="<%=result%>" name="dpStartDateFormat" id="errorMsg">
 							<%@ include file="/includes/i_error_messages.jspf" %>   
 						</fd:ErrorHandler>
