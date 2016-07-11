@@ -457,7 +457,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HOOK_LOGIC_CONFIRMAITON_HLPT, "C");
 		defaults.put(PROP_HOOK_LOGIC_STRATEGY, "inmarket");
 		defaults.put(PROP_HOOK_LOGIC_CREATIVE, "790x260_T-R-IG_TI_1-4_CategoryGrid1");
-		defaults.put(PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE, "o");
+		defaults.put(PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE, "0");
 		defaults.put(PROP_HOOK_LOGIC_CATEGORY_HLPT, "B");
 		defaults.put(PROP_HOOK_LOGIC_CATEGORY_PLATFORM, "web");
 		defaults.put(PROP_HOOK_LOGIC_CATEGORY_MINMES, "1");
