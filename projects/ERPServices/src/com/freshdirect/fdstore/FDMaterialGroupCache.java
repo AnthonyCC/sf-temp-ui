@@ -36,7 +36,7 @@ public class FDMaterialGroupCache {
 				populateMaterialGroupsCache(grpMaterialsLastModified, latestGroups);
 				lastExecuted = currDate;				
 				grpMaterialsLastModified.putAll(latestGroups);
-				LOGGER.info("REFRESHED GROUP MAP FOR ANY CHANGES.");
+				LOGGER.info("REFRESHED GROUP MAP FOR ANY CHANGES: "+(null !=latestGroups?latestGroups.size():"0")+" groups changed");
 				return latestGroups;
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
