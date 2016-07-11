@@ -383,7 +383,7 @@ public class FDProductHelper {
 				e1.printStackTrace();
 				throw new FDResourceException( e1 );
 			}*/	
-			FDCachedFactory.getGroupsByMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			groups = FDCachedFactory.getGroupsByMaterial(erpProductInfo.getMaterialSapIds()[0]);
 		}
 		
 		return new FDProductInfo(
