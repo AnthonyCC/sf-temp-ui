@@ -133,24 +133,3 @@ h2#account_address_title {
 { display: block; }
 
 
-.selector-decoration {
-	border-top: 10px solid #4fa157;
-}
-
-.selector-decoration > .tabs {
-	margin-top: 0;
-}
-
-.selector-decoration > label[for="addpaymentmethod_bank_selector"] {
-	position: relative;
-}
-
-.selector-decoration > label[for="addpaymentmethod_bank_selector"]:before {
-	content:"\A";
-    border-style: solid;
-    border-width: 20px 20px 0 20px;
-    border-color:  #4fa157 transparent transparent transparent;
-    position: absolute;
-    top: 0;
-    left: 80px;	
-}
