@@ -368,22 +368,25 @@ public class FDProductHelper {
 		//Get Group Identify if applicable.
 			 Map<String,FDGroup> groups = null;
 		if(FDStoreProperties.isGroupScaleEnabled()) {//otherwise group will not be associated with the product.
-			/*ErpGrpInfoSB remote;
-			try {
-				if (this.grpHome ==null) {
-					this.lookupGroupPriceHome();
-				}
-				remote = this.grpHome.create();
-				groups = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
-				System.out.println("**************Group Scale Query: "+erpProductInfo.getMaterialSapIds()[0]);
-			} catch (RemoteException e1) {
-				e1.printStackTrace();
-				throw new FDResourceException( e1 );
-			} catch (CreateException e1) {
-				e1.printStackTrace();
-				throw new FDResourceException( e1 );
-			}*/	
-			groups = FDCachedFactory.getGroupsByMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			if(!FDStoreProperties.isGroupScalePerfImproveEnabled()){
+				ErpGrpInfoSB remote;
+				try {
+					if (this.grpHome ==null) {
+						this.lookupGroupPriceHome();
+					}
+					remote = this.grpHome.create();
+					groups = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+					System.out.println("**************Group Scale Query: "+erpProductInfo.getMaterialSapIds()[0]);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+					throw new FDResourceException( e1 );
+				} catch (CreateException e1) {
+					e1.printStackTrace();
+					throw new FDResourceException( e1 );
+				}	
+			}else{
+				groups = FDCachedFactory.getGroupsByMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			}
 		}
 		
 		return new FDProductInfo(

@@ -485,7 +485,7 @@ public class ErpGrpInfoDAO {
               +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
 	
 	public static final String GET_ALL_GROUPS_MATERIALS =" select gsm.sap_id,gsm.version,GH.DATE_CREATED,mg.mat_id from ERPS.GRP_SCALE_MASTER gsm,ERPS.MATERIAL_GRP mg, ERPS.GRP_HISTORY gh"
-            +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID and gsm1.version=gh.version)"
+            +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID) and gsm.active='X' "
             +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
 	
 	public static Map<String,List<String>> getModifiedOnlyGroups(Connection con,Date lastModified) throws SQLException{

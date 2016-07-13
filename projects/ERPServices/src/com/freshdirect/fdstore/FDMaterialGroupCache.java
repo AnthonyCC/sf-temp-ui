@@ -62,7 +62,9 @@ public class FDMaterialGroupCache {
 			for (Iterator<String> iterator = materials.iterator(); iterator.hasNext();) {
 				String material = (String) iterator.next();
 				try {
+					LOGGER.info("Fetching groups for material: "+material);
 					Map<String,FDGroup> groupsForMaterial = FDFactory.getGroupIdentityForMaterial(material);
+					LOGGER.info("Fetched groups for material: "+material);
 					materialGroupsCache.remove(material);
 					if(null !=groupsForMaterial && !groupsForMaterial.isEmpty()){
 						materialGroupsCache.put(material,groupsForMaterial);

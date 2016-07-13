@@ -872,6 +872,8 @@ public class FDStoreProperties {
 	private static final String PROP_ADDRESS_MISMATCH_ENABLED = "fdstore.address.mismatch.enabled";
 
     private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
+    
+    private static final String PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED ="fdstore.group.scale.perf.improve.enabled";
 
     static {      	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1715,6 +1717,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
+        defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "false");
         
 		refresh();
     }
@@ -4330,4 +4333,7 @@ public class FDStoreProperties {
         return result;
     }
 
+    public static boolean isGroupScalePerfImproveEnabled() {
+    	return (Boolean.valueOf(get(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED))).booleanValue();
+    }
 }

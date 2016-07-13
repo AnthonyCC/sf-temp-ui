@@ -155,9 +155,11 @@ public class CacheWarmupUtil {
 	
 	
 	public static void warmupMaterialGroups() throws FDResourceException {
-		LOGGER.info("Loading Group Materials Data");
-		FDCachedFactory.loadMaterialGroupCache();
-		LOGGER.info("Loaded Group Materials Data");
+		if(FDStoreProperties.isGroupScalePerfImproveEnabled()){
+			LOGGER.info("Loading Group Materials Data");
+			FDCachedFactory.loadMaterialGroupCache();
+			LOGGER.info("Loaded Group Materials Data");
+		}
 	}
 
 }
