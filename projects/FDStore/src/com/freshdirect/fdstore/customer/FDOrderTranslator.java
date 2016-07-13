@@ -13,6 +13,7 @@ import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
@@ -99,10 +100,18 @@ public class FDOrderTranslator {
 			}
 			if(deliveryReservation!=null)
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
-			if(cart.getDeliveryAddress()!=null) {
-				deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
-				order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
+			
+			
+		if (cart.getDeliveryAddress() != null) {
+			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
+			if (!cart.getZoneInfo().isUnattended()) {
+				deliveryInfo.getDeliveryAddress().setUnattendedDeliveryInstructions(null);
+				deliveryInfo.getDeliveryAddress().setUnattendedDeliveryFlag(null);
 			}
+			
+			order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
+
+		}
 			
 		 	   deliveryInfo.setOrderMobileNumber(cart.getOrderMobileNumber());
 			
