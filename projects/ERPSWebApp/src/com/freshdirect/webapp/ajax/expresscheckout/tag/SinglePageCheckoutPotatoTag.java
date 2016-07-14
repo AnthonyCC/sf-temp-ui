@@ -65,7 +65,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	        StandingOrderHelper.clearSO3Context(user, request, standingOrder);
 
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-			if(FDStoreProperties.getAvalaraTaxEnabled()){
+			if(FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()){
 			CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
 			}
 			// Check whether EWallet Card used for order 
