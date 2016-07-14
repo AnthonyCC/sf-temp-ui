@@ -122,9 +122,15 @@
       <div class="mealkit-products-list-button">
    	    <a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
       </div>
+      {if $timeToComplete and $timeToComplete>0}
       <div class="mealkit-product-list-time icon-clock2-before">
-      	<span>{if $timeToComplete}{$timeToComplete}{/if} minutes</span>
+      	<span>{$timeToComplete} minutes</span>
       </div>
+      {else}
+      <div class="mealkit-product-list-time">
+        <span></span>
+      </div>
+      {/if}
      </div>
     {/if}
      
