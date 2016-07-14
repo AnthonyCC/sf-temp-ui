@@ -114,6 +114,7 @@ public class FDStoreProperties {
     private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
     private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
     private final static String PROP_PRELOAD_PROMOTIONS = "fdstore.preLoad.promotions";
+    private final static String PROP_PRELOAD_GROUPS = "fdstore.preLoad.groupscale";
     private final static String PROP_WARMUP_CLASS = "fdstore.preLoad.class";
     private final static String PROP_PRELOAD_NEWNESS = "fdstore.preLoad.newness";
     private final static String PROP_PRELOAD_REINTRODUCED = "fdstore.preLoad.reintroduced";
@@ -870,6 +871,8 @@ public class FDStoreProperties {
     private static final String PROP_ADDRESS_MISMATCH_ENABLED = "fdstore.address.mismatch.enabled";
 
     private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
+    
+    private static final String PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED ="fdstore.group.scale.perf.improve.enabled";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -986,6 +989,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_PRELOAD_STORE, "true");
         defaults.put(PROP_PRELOAD_PROMOTIONS, "true");
+        defaults.put(PROP_PRELOAD_GROUPS, "true");
         // No default for PROP_WARMUP_CLASS
         defaults.put(PROP_PRELOAD_NEWNESS, "true");
         defaults.put(PROP_PRELOAD_REINTRODUCED, "true");
@@ -1650,6 +1654,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
+        defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
 
         refresh();
     }
@@ -1984,6 +1989,10 @@ public class FDStoreProperties {
 
     public static boolean performPromotionsPreLoad() {
         return Boolean.valueOf(get(PROP_PRELOAD_PROMOTIONS)).booleanValue();
+    }
+
+    public static boolean performGroupScalePreLoad() {
+        return Boolean.valueOf(get(PROP_PRELOAD_GROUPS)).booleanValue();
     }
 
     public static boolean isPreloadAutocompletions() {
@@ -4272,4 +4281,7 @@ public class FDStoreProperties {
         return result;
     }
 
+    public static boolean isGroupScalePerfImproveEnabled() {
+        return (Boolean.valueOf(get(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED))).booleanValue();
+    }
 }
