@@ -4,6 +4,9 @@
   <listener>
     <listener-class>com.freshdirect.fdstore.warmup.FDAdminWarmupServer</listener-class>
   </listener>
+   <listener>
+    <listener-class>com.freshdirect.fdstore.warmup.GroupScaleWarmupServer</listener-class>
+  </listener>
   <prefer-application-packages>
     <package-name>antlr.*</package-name>
     <package-name>com.sun.jmx.*</package-name>

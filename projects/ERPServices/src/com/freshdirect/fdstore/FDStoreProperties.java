@@ -115,6 +115,7 @@ public class FDStoreProperties {
     private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
     private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
     private final static String PROP_PRELOAD_PROMOTIONS = "fdstore.preLoad.promotions";
+    private final static String PROP_PRELOAD_GROUPS = "fdstore.preLoad.groupscale";
     private final static String PROP_WARMUP_CLASS = "fdstore.preLoad.class";
     private final static String PROP_PRELOAD_NEWNESS = "fdstore.preLoad.newness";
     private final static String PROP_PRELOAD_REINTRODUCED = "fdstore.preLoad.reintroduced";
@@ -1008,6 +1009,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_PRELOAD_STORE, "true");
         defaults.put(PROP_PRELOAD_PROMOTIONS, "true");
+        defaults.put(PROP_PRELOAD_GROUPS, "true");
         // No default for PROP_WARMUP_CLASS
         defaults.put(PROP_PRELOAD_NEWNESS, "true");
         defaults.put(PROP_PRELOAD_REINTRODUCED, "true");
@@ -1717,7 +1719,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
-        defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "false");
+        defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
         
 		refresh();
     }
@@ -2056,6 +2058,10 @@ public class FDStoreProperties {
         return Boolean.valueOf(get(PROP_PRELOAD_PROMOTIONS)).booleanValue();
     }
 
+    public static boolean performGroupScalePreLoad() {
+        return Boolean.valueOf(get(PROP_PRELOAD_GROUPS)).booleanValue();
+    }
+    
     public static boolean isPreloadAutocompletions() {
         return Boolean.valueOf(get(PROP_PRELOAD_AUTOCOMPLETIONS)).booleanValue();
     }

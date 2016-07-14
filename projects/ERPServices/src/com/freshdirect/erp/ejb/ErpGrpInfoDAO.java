@@ -482,11 +482,11 @@ public class ErpGrpInfoDAO {
 	
 	public static final String GET_LATEST_GROUPS_MATERIALS_MODIFIED =" select gsm.sap_id,gsm.version,GH.DATE_CREATED,mg.mat_id from ERPS.GRP_SCALE_MASTER gsm,ERPS.MATERIAL_GRP mg, (select gh.version,gh.date_created from ERPS.GRP_HISTORY gh where GH.DATE_CREATED > ?)gh"
               +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID and gsm1.version=gh.version)"
-              +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
+              +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id,mg.mat_id ";
 	
 	public static final String GET_ALL_GROUPS_MATERIALS =" select gsm.sap_id,gsm.version,GH.DATE_CREATED,mg.mat_id from ERPS.GRP_SCALE_MASTER gsm,ERPS.MATERIAL_GRP mg, ERPS.GRP_HISTORY gh"
             +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID) and gsm.active='X' "
-            +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id ";
+            +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id,mg.mat_id ";
 	
 	public static Map<String,List<String>> getModifiedOnlyGroups(Connection con,Date lastModified) throws SQLException{
 		Connection conn = con;
@@ -506,12 +506,15 @@ public class ErpGrpInfoDAO {
 			while (rs.next()) {
 //					FDGroup group=new FDGroup( rs.getString("SAP_ID"),rs.getInt("VERSION"),rs.getTime("DATE_CREATED"));
 				String groupId = rs.getString("SAP_ID");
+				String material = rs.getString("MAT_ID");
 				List<String> grpMaterials = map.get(groupId);
 				if(null == grpMaterials){
 					grpMaterials = new ArrayList<String>();
 					map.put(groupId, grpMaterials);
 				}
-				grpMaterials.add(rs.getString("MAT_ID"));
+				if(!grpMaterials.contains(material)){
+					grpMaterials.add(material);
+				}
 			}
 		} catch (SQLException e) {
 			throw e;
