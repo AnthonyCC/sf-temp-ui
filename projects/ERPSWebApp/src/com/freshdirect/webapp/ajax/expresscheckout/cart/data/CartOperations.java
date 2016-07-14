@@ -772,7 +772,7 @@ public class CartOperations {
 			return null;
 		}
 		
-		errorMessage = validateConfiguration(product,item.getConfiguration());
+		errorMessage = validateConfiguration(product,item);
 
 		if (errorMessage != null) {
 			responseItem.setStatus( Status.ERROR );
@@ -995,12 +995,21 @@ public class CartOperations {
 	 * Salvaged from FDShoppingCartControllerTag.
 	 * 
 	 */
-	public static String validateConfiguration( FDProduct product, Map<String,String> varMap ) {
+	public static String validateConfiguration( FDProduct product, AddToCartItem item ) {
 		//
 		// walk through the variations to see what's been set and try to build a
 		// variation map
 		//
+		if(null==item){
+			return null;
+		}
+		
+		Map<String,String> varMap = item.getConfiguration();
 		FDVariation[] variations = product.getVariations();
+		if((null == variations || variations.length <=0) && (null != varMap && !varMap.isEmpty())){
+			item.setConfiguration(Collections.EMPTY_MAP);//clear the configuration from the item, if the product doesn't have any configuration options.
+		}
+		
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation variation = variations[i];
 			FDVariationOption[] options = variation.getVariationOptions();

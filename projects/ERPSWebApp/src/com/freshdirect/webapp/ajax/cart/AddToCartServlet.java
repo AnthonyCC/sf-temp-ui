@@ -180,7 +180,7 @@ public class AddToCartServlet extends BaseJsonServlet {
                     continue;
                 }
 
-                boolean simpleAtcItem = CartOperations.validateConfiguration(product, item.getConfiguration()) == null;
+                boolean simpleAtcItem = CartOperations.validateConfiguration(product, item) == null;
 
                 AddToCartResponseDataItem responseItem = processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
                 if (responseItem.getStatus() != AddToCartResponseDataItem.Status.SUCCESS) { // only return errors
