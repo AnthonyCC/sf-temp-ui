@@ -27,6 +27,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -150,6 +151,7 @@ public class DeliveryPassRenewalCron {
 			AvalaraContext context = new AvalaraContext(cart);
 			context.setCommit(false);
 			cart.getAvalaraTaxValue(context);
+			actionInfo.setTaxationType(EnumNotificationType.AVALARA);
 			}
 			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, false, cra, null);
 		}  catch (FDResourceException e) {

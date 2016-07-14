@@ -61,6 +61,9 @@ public class FDTaxUtil {
 		} catch(IOException e){
 			LOGGER.error(e);
 		}
+		finally{
+			postMethod.releaseConnection();
+		}
 		return response;
 	}
 	

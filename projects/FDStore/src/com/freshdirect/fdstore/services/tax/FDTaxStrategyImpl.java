@@ -22,9 +22,11 @@ public class FDTaxStrategyImpl implements TaxStrategy{
 		LOGGER.info("FD_TRADITIONAL_TAX is selected ");
 		MunicipalityInfo municipalityInfo = FDTaxUtil.getMunicipalityInformation(cart);
 		for (FDCartLineI line: cart.getOrderLines()) {
+			if(line.hasTax()){
 			line.setTaxRate(municipalityInfo.getTaxRate());
 			line.setDepositValue(municipalityInfo.getBottleDeposit());
 			line.setTaxationType(municipalityInfo.getTaxationType());
+			}
 		}
 		return avalaraContext;
 	}

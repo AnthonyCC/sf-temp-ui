@@ -1,14 +1,8 @@
 package com.freshdirect.dataloader.payment.notification;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -20,17 +14,11 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.EnumNotificationType;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.payment.ejb.PostSettlementNotifyHome;
 import com.freshdirect.dataloader.payment.ejb.PostSettlementNotifySB;
 import com.freshdirect.erp.model.NotificationModel;
-import com.freshdirect.framework.core.DataSourceLocator;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.ejb.PostSettlementNotificationEB;
-import com.freshdirect.payment.ejb.PostSettlementNotificationHome;
 
 public abstract class PostSettlementNotificationProcessor implements
 		IPostSettlementNotification {

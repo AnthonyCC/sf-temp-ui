@@ -24,6 +24,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -118,6 +119,8 @@ public class FDOrderAdapter implements FDOrderI {
 	private FDReservation deliveryReservation;
 	protected List<FDCartonInfo> cartonInfo;
 	protected Map<String, Integer> cartonMetrics;
+
+	private EnumNotificationType taxationtype;
 	
 	public FDOrderAdapter() {
 		orderLines = new ArrayList<FDCartLineI>();
@@ -1686,4 +1689,11 @@ public class FDOrderAdapter implements FDOrderI {
 		return getSale().getLock_timestamp();
 	}
 	
+	public EnumNotificationType getTaxationType(){
+		return this.taxationtype;
+	}
+	
+	public void setTaxationType(EnumNotificationType taxationType){
+		this.taxationtype = taxationType;
+	}
 }

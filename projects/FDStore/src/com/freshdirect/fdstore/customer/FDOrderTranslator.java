@@ -73,6 +73,7 @@ public class FDOrderTranslator {
 
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 //		try {
+			order.setTaxationType(cart.getTaxationType());
 		    order.seteStoreId(cart.getEStoreId());
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);

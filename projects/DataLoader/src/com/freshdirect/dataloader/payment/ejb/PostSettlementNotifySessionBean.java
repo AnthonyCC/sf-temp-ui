@@ -29,6 +29,7 @@ import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
+import com.freshdirect.fdstore.services.tax.data.CommonResponse.Message;
 import com.freshdirect.framework.core.DataSourceLocator;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -81,7 +82,15 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 		AvalaraContext avalaraContext = new AvalaraContext(fdOrder);
 		avalaraContext.setCommit(true);
 		fdOrder.getAvalaraTaxValue(avalaraContext);
-		if(null != avalaraContext.getDocCode() && !"".equals(avalaraContext.getDocCode())){
+		Message[] messages = avalaraContext.getMessages();
+		boolean isAlreadySubmitted = false;
+		for(Message message : messages){
+			if(message.getDetails().equals("Expected Saved|Posted")){
+				isAlreadySubmitted = true;
+				break;
+			}
+		}
+		if((null != avalaraContext.getDocCode() && !"".equals(avalaraContext.getDocCode())) || isAlreadySubmitted){
 			return true;
 		}
 		return false;

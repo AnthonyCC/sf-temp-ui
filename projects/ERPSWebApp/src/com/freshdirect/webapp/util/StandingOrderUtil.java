@@ -25,6 +25,7 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -83,6 +84,7 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -622,6 +624,16 @@ public class StandingOrderUtil {
 				return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT_MINORDER,  msg );
 			}
 
+			AvalaraContext avalaraContext = null;
+			
+			if(FDStoreProperties.getAvalaraTaxEnabled()){
+				avalaraContext = new AvalaraContext(cart);
+				avalaraContext.setCommit(false);
+				avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
+			}
+			if(null != avalaraContext && avalaraContext.isAvalaraTaxed()){
+				orderActionInfo.setTaxationType(EnumNotificationType.AVALARA);
+			}
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null ,false);
 			

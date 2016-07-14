@@ -30,6 +30,7 @@ public class AvalaraTaxResponseConverter {
 		FDCartI cart = avalaraContext.getCart();
 		
 		Message[] messages = result.getMessages();
+		avalaraContext.setMessages(messages);
 		if(messages != null){
 			for(Message msg: messages){
 				Priority priority = Level.DEBUG;

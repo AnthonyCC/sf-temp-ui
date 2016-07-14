@@ -32,6 +32,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
@@ -283,6 +284,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private boolean isCustomTip;
 	private boolean isTipApplied = false;
+	private EnumNotificationType taxationtype;
 
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -2095,6 +2097,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.isTipApplied = isTipApplied;
 	}
 
-
+	public EnumNotificationType getTaxationType(){
+		return this.taxationtype;
+	}
+	
+	public void setTaxationType(EnumNotificationType taxationType){
+		this.taxationtype = taxationType;
+	}
 	
 }

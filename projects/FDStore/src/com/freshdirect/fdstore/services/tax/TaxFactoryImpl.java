@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -29,6 +30,7 @@ public class TaxFactoryImpl implements TaxFactory {
 		try{
 			AvalaraContext response = taxStrategy.getTaxResponse(avalaraContext);
 			response.setAvalaraTaxed(true);
+			avalaraContext.getCart().setTaxationType(EnumNotificationType.AVALARA);
 			return response;
 		} catch(FDException e){
 			LOGGER.error("Error in AValara Tax Calculation - Defaults to traditional tax");

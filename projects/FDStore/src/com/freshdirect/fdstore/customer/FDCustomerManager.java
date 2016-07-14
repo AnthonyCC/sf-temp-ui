@@ -1669,7 +1669,7 @@ public class FDCustomerManager {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
-			createOrder.setTaxationType(info.getTaxationType());
+			//createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
@@ -1760,7 +1760,7 @@ public class FDCustomerManager {
 			}
 
 			ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
-			order.setTaxationType(info.getTaxationType());
+			//order.setTaxationType(info.getTaxationType());
 			order.setTransactionSource(info.getSource());
 			order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 			EnumSaleType type = cart.getOriginalOrder().getOrderType();
@@ -3025,7 +3025,7 @@ public class FDCustomerManager {
 		    }
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
 			createOrder.setTransactionSource(info.getSource());
-			createOrder.setTaxationType(info.getTaxationType());
+			//createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
 			FDCustomerManagerSB sb = managerHome.create();

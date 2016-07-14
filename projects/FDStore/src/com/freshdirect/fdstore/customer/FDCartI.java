@@ -6,14 +6,15 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
@@ -164,6 +165,7 @@ public interface FDCartI extends java.io.Serializable {
 	public void setTipApplied(boolean tipApplied);
 	
 	double getAvalaraTaxValue(AvalaraContext avalaraContext);
-
+	public EnumNotificationType getTaxationType();
+	public void setTaxationType(EnumNotificationType taxationType);
 
 }

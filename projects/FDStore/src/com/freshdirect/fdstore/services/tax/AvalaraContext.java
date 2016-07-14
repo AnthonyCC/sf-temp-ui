@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.services.tax;
 
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.services.tax.data.CommonResponse.Message;
 
 public class AvalaraContext {
 	
@@ -9,6 +10,7 @@ public class AvalaraContext {
 	private String docCode;
 	private Double returnTaxValue;
 	private boolean isAvalaraTaxed = false;
+	Message[] messages;
 
 	public AvalaraContext(FDCartI cart){
 		this.cart = cart;
@@ -52,6 +54,14 @@ public class AvalaraContext {
 
 	public void setAvalaraTaxed(boolean isAvalaraTaxed) {
 		this.isAvalaraTaxed = isAvalaraTaxed;
+	}
+
+	public Message[] getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Message[] messages) {
+		this.messages = messages;
 	}
 		
 }
