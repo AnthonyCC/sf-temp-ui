@@ -31,7 +31,7 @@ public class AvalaraTaxStrategyImpl implements TaxStrategy{
 		if(result == null){
 			throw new FDException();
 		}
-		
+		avalaraContext.setAvalaraTaxed(true);
 		return responseConverter.convert(result,avalaraContext);
 	}
 

@@ -29,7 +29,7 @@ public class TaxFactoryImpl implements TaxFactory {
 
 		try{
 			AvalaraContext response = taxStrategy.getTaxResponse(avalaraContext);
-			response.setAvalaraTaxed(true);
+			if(response.isAvalaraTaxed())
 			avalaraContext.getCart().setTaxationType(EnumNotificationType.AVALARA);
 			return response;
 		} catch(FDException e){

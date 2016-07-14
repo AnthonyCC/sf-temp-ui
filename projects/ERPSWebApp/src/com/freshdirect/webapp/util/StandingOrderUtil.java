@@ -630,10 +630,11 @@ public class StandingOrderUtil {
 				avalaraContext = new AvalaraContext(cart);
 				avalaraContext.setCommit(false);
 				avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
+				if(avalaraContext.isAvalaraTaxed()){
+					orderActionInfo.setTaxationType(EnumNotificationType.AVALARA);
+				}
 			}
-			if(null != avalaraContext && avalaraContext.isAvalaraTaxed()){
-				orderActionInfo.setTaxationType(EnumNotificationType.AVALARA);
-			}
+			
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null ,false);
 			
