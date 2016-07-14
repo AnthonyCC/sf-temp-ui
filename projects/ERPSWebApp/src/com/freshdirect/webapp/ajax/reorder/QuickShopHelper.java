@@ -201,7 +201,7 @@ public class QuickShopHelper {
 		//ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true, true);
 		ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, false, true);
 
-		ProductDetailPopulator.populatePricing(item, latestFdProduct, latestFdProductInfo, priceCalculator);
+		ProductDetailPopulator.populatePricing(item, latestFdProduct, latestFdProductInfo, priceCalculator, user);
 
 		populateOrderLineData(item, productSelection);
 
@@ -251,7 +251,7 @@ public class QuickShopHelper {
 
 			ProductDetailPopulator.populateBasicProductData(item, user, productModel);
 			ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst, true);
-			ProductDetailPopulator.populatePricing(item, fdProduct, productInfo, priceCalculator);
+			ProductDetailPopulator.populatePricing(item, fdProduct, productInfo, priceCalculator, user);
 
 			try {
 				ProductDetailPopulator.populateSkuData(item, user, productModel, skuModel, fdProduct);

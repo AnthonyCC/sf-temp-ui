@@ -873,6 +873,10 @@ public class FDStoreProperties {
     private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
     
     private static final String PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED ="fdstore.group.scale.perf.improve.enabled";
+    
+    private static final String PROP_PRICE_CONFIG_CONVERSION_LIMIT = "fdstore.price.config.conversion.limit";
+    private static final String PROP_PRICE_CONFIG_DEPARTMENTS = "fdstore.price.config.deparments.cms.ids";
+    
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1655,6 +1659,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
         defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
+        defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.5");
 
         refresh();
     }
@@ -4283,5 +4288,13 @@ public class FDStoreProperties {
 
     public static boolean isGroupScalePerfImproveEnabled() {
         return (Boolean.valueOf(get(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED))).booleanValue();
+    }
+    
+    public static double getPriceConfigConversionLimit() {
+        return Double.parseDouble(get(PROP_PRICE_CONFIG_CONVERSION_LIMIT));
+    }
+    
+    public static String getPriceConfigDepartments(){
+    	return get(PROP_PRICE_CONFIG_DEPARTMENTS);
     }
 }

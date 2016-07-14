@@ -869,7 +869,7 @@ public class ProductExtraDataPopulator {
 									
 							ProductDetailPopulator.populateBasicProductData( pd, user, curPm );
 							ProductDetailPopulator.populateProductData( pd, user, curPm, skuModel, fdProduct, priceCalculator, null, true, true );
-							ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator );
+							ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator,user );
 									
 							try {
 								ProductDetailPopulator.populateSkuData( pd, user, curPm, skuModel, fdProduct );
@@ -1003,7 +1003,7 @@ public class ProductExtraDataPopulator {
 							productModel, skuModel, fdProduct, priceCalculator,
 							null, true, true);
 					ProductDetailPopulator.populatePricing(pd, fdProduct,
-							productInfo_fam, priceCalculator);
+							productInfo_fam, priceCalculator, user);
 
 					try {
 						ProductDetailPopulator.populateSkuData(pd, user,

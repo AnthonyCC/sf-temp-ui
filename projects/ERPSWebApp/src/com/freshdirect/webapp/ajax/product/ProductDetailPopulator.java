@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -256,7 +257,7 @@ public class ProductDetailPopulator {
 		populateProductData( data, user, product, sku, fdProduct, priceCalculator, lineData, true, false );
 		
 		// Populate pricing data
-		populatePricing( data, fdProduct, productInfo, priceCalculator );
+		populatePricing( data, fdProduct, productInfo, priceCalculator, user );
 		
 		// Populate sku-level data for the default sku only
 		populateSkuData( data, user, product, sku, fdProduct );
@@ -331,7 +332,7 @@ public class ProductDetailPopulator {
 		populateProductData( data, user, product, sku, fdProduct, priceCalculator, lineData, false, false );
 		
 		// Populate pricing data
-		populatePricing( data, fdProduct, productInfo, priceCalculator );
+		populatePricing( data, fdProduct, productInfo, priceCalculator, user );
 		
 		// Populate sku-level data for the default sku only
 		populateSkuData( data, user, product, sku, fdProduct );
@@ -592,6 +593,7 @@ public class ProductDetailPopulator {
 	 */
 	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
 		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
+		item.setDepartmentId(usePrimaryHome ? productModel.getPrimaryHome().getDepartment().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId()  );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
@@ -1110,6 +1112,9 @@ public class ProductDetailPopulator {
 	}
 	
 	public static void populatePricing( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
+		populatePricing(item, fdProduct, productInfo, priceCalculator, null );
+	}
+	public static void populatePricing( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator, FDUserI user ) throws FDResourceException {
 	
 		ZonePriceInfoModel zpi;
 		try {
@@ -1119,6 +1124,12 @@ public class ProductDetailPopulator {
 			if ( zpi != null ) {
 				item.setPrice( zpi.getDefaultPrice(/*priceCalculator.getPricingContext().getZoneInfo().getPricingIndicator()*/) );
 				item.setScaleUnit( productInfo.getDisplayableDefaultPriceUnit().toLowerCase() );
+				
+				//APPDEV-4357 -Price display by default sales unit.
+				boolean isPriceConfigConversionRequired = isPriceConfigConversionRequired(item, user);
+				if(isPriceConfigConversionRequired){
+					populateConvertedPriceByDefaultSalesUnit(item, fdProduct, productInfo);
+				}
 			}
 		} catch ( FDSkuNotFoundException e ) {
 			// No sku (cannot happen) - don't even try the pricing
@@ -1159,6 +1170,43 @@ public class ProductDetailPopulator {
 				}
 			}
 		}
+	}
+
+	private static void populateConvertedPriceByDefaultSalesUnit(
+			ProductData item, FDProduct fdProduct, FDProductInfo productInfo) {
+		FDSalesUnit su = fdProduct.getDefaultSalesUnit();
+		if(null == su){
+			su = fdProduct.getSalesUnits()[0];
+		}
+		if(null != su){
+			final int n = su.getNumerator();
+			final int d = su.getDenominator();
+			if (n > 0 && d > 0 && ((double)n)/d <= FDStoreProperties.getPriceConfigConversionLimit()) {
+				final double p = (item.getPrice() * n) / d;
+				item.setPricePerDefaultSalesUnit(UnitPriceUtil.formatDecimalToString(p));
+				item.setDispDefaultSalesUnit(UnitPriceUtil.formatDecimalToString((double)n/d)+productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
+			}
+		}
+	}
+
+	private static boolean isPriceConfigConversionRequired(ProductData item,	FDUserI user) {
+		boolean doPriceConfigConversion = false;	
+		if(null !=user && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.priceconfigdisplay2016, user) && "lb".equalsIgnoreCase(item.getScaleUnit()) && null !=item.getDepartmentId()){					
+			String deparmentIds = FDStoreProperties.getPriceConfigDepartments();
+			if(null !=deparmentIds){
+				StringTokenizer st = new StringTokenizer(deparmentIds, ",");					
+				while(st.hasMoreElements()){
+					String departmentId = st.nextToken();
+					if(item.getDepartmentId().equalsIgnoreCase(departmentId)){
+						doPriceConfigConversion =true;
+						break;
+					}
+				}
+			}else{
+				doPriceConfigConversion =true;
+			}
+		}
+		return doPriceConfigConversion;
 	}
 
 	private static void populateSubtotalInfo( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
@@ -1270,13 +1318,13 @@ public class ProductDetailPopulator {
 			// Regular deal
 			String scaleString = priceCalculator.getTieredPrice( 0, null );
 			if ( scaleString != null ) {
-				buf.append( "Save! " );
+//				buf.append( "Save! " );
 				buf.append( scaleString );
-			} else if ( priceCalculator.isOnSale() ) {
+			} /*else if ( priceCalculator.isOnSale() ) {
 				buf.append( "Save " );
 				buf.append( priceCalculator.getDealPercentage() );
 				buf.append( "%" );
-			} else {
+			}*/ else {
 				// no sales, do nothing
 			}
 		}

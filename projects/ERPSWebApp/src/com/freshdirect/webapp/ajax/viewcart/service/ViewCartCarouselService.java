@@ -260,7 +260,7 @@ public class ViewCartCarouselService {
                     PriceCalculator priceCalculator = productModel.getPriceCalculator();
                     ProductDetailPopulator.populateBasicProductData(pd, user, productModel);
                     ProductDetailPopulator.populateProductData(pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true);
-                    ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator);
+                    ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator, user);
                     try {
                         ProductDetailPopulator.populateSkuData(pd, user, productModel, skuModel, fdProduct);
                     } catch (FDSkuNotFoundException e) {

@@ -24,6 +24,11 @@ public class ProductData extends BasicProductData implements SkuData {
      * Category content-ID
      */
     protected String catId;
+    
+    /**
+     * Department content-ID
+     */
+    protected String departmentId;
 
     /**
      * Does it need a customize button with a product config popup?
@@ -880,4 +885,12 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setTimeToComplete(int timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
 }
