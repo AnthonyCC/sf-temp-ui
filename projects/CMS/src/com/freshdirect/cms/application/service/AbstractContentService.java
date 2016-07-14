@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
@@ -57,10 +58,11 @@ public abstract class AbstractContentService implements ContentServiceI, Seriali
 		}
 
 	}
-		
-	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
-		Set<ContentKey> keys = this.getContentKeysByType(type);
-		Map<ContentKey, ContentNodeI> nodes = this.getContentNodes(keys);
+	
+	@Override
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria, DraftContext draftContext) {
+		Set<ContentKey> keys = this.getContentKeysByType(type, draftContext);
+		Map<ContentKey, ContentNodeI> nodes = this.getContentNodes(keys, draftContext);
 		CollectionUtils.filter(nodes.values(), criteria);
 		return nodes;
 	}

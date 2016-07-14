@@ -1,5 +1,8 @@
 package com.freshdirect.cms.search.spell;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,14 +21,9 @@ package com.freshdirect.cms.search.spell;
  */
 
 import org.apache.lucene.index.IndexReader;
-
-import java.util.Iterator;
-
-import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.util.StringHelper;
-
-import java.io.*;
 
 /**
  * Lucene Dictionary: terms taken from the given field of a Lucene index.

@@ -16,6 +16,8 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.application.CmsRequestI.Source;
 import com.freshdirect.cms.fdstore.recipes.RecipeBulkLoader;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -60,7 +62,7 @@ public class RecipeLoaderServlet extends FileUploadServlet {
     private ContentKey load(HttpServletRequest request, Reader reader, String recipeId, int type) throws IOException, InvalidContentKeyException {
 
         List<ContentNodeI> list;
-        RecipeBulkLoader loader = new RecipeBulkLoader(CmsManager.getInstance(), reader, recipeId, type);
+        RecipeBulkLoader loader = new RecipeBulkLoader(CmsManager.getInstance(), DraftContext.MAIN, reader, recipeId, type);
 
         // parse the input
         loader.parse();
@@ -70,7 +72,7 @@ public class RecipeLoaderServlet extends FileUploadServlet {
 
         // create a new request with all nodes, and add it to the content
         // service
-        CmsRequest cmsRequest = new CmsRequest(ContentServiceImpl.getCmsUserFromRequest(request));
+        CmsRequest cmsRequest = new CmsRequest(ContentServiceImpl.getCmsUserFromRequest(request), Source.RECIPE_LOADER);
 
         for (Iterator<ContentNodeI> it = list.iterator(); it.hasNext();) {
             ContentNodeI node = (ContentNodeI) it.next();

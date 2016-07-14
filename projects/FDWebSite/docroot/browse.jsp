@@ -13,6 +13,7 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
+<fd:CheckDraftContextTag/>
 <fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.PRES_PICKS%>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
@@ -124,10 +125,13 @@
       window.FreshDirect = window.FreshDirect || {};
       window.FreshDirect.browse = window.FreshDirect.browse || {};
       window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
+      window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
 
       window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
       window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
       window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
+      window.FreshDirect.activeDraft = "${activeDraft}"
+      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
     </script>
     <script type="text/javascript">
 	    $jq(document).ready(function() {

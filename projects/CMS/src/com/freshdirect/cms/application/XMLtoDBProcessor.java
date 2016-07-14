@@ -25,6 +25,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
+import com.freshdirect.cms.application.CmsRequestI.Source;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
@@ -219,7 +220,7 @@ public class XMLtoDBProcessor {
 			}
 			/* END SAVE DEFS */
 
-			List workKeys = new ArrayList(repository.getContentKeys());
+			List workKeys = new ArrayList(repository.getContentKeys(DraftContext.MAIN));
 			//while (workKeys.size() > 100) {
 			//    workKeys.remove(0);
 			//}
@@ -232,7 +233,7 @@ public class XMLtoDBProcessor {
 				ContentKey nextKey = (ContentKey) i.next();
 				System.out.println("BEG " + new java.util.Date() + " " + j++ + ": " + nextKey);
 				ContentNodeI n = CmsManager.getInstance().getContentNode(nextKey);
-				CmsRequest req = new CmsRequest(new CmsUser("sys"));
+				CmsRequest req = new CmsRequest(new CmsUser("sys"), Source.ELSE);
 				req.addNode(n);
 				dbContent.handle(req);
 				System.out.println("END " + new java.util.Date());

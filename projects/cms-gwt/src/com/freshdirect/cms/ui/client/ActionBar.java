@@ -75,7 +75,7 @@ public class ActionBar extends LayoutContainer {
 	}
 	
 	public void addLink(Anchor anchor, Margins m) {
-		anchor.setStyleAttribute("wihte-space", "nowrap");
+		anchor.setStyleAttribute("white-space", "nowrap");
 		linkBar.add(anchor,new HBoxLayoutData(m));
 	}
 	

@@ -12,6 +12,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -111,13 +112,13 @@ public class ContextWalkerTest extends TestCase {
 	 * @throws InvalidContentKeyException 
 	 */
 	public void testOrphanedCategory() throws InvalidContentKeyException {
-		ContentNodeI prd1 = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_1"));
+		ContentNodeI prd1 = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_1"), DraftContext.MAIN);
 
-		List ctxs = new ArrayList(svc.getAllContextsOf(prd1.getKey()));
+		List ctxs = new ArrayList(svc.getAllContextsOf(prd1.getKey(), DraftContext.MAIN));
 		assertContexts(ctxs, new String[]{"cat_1","cat_2"});
 		
 		// sort out orphaned categories.
-		NodeWalker.filterOrphanedParents(ctxs.iterator(), svc);
+		NodeWalker.filterOrphanedParents(ctxs.iterator(), svc, DraftContext.MAIN);
 
 		assertContexts(ctxs, new String[]{"cat_2"});
 	}
@@ -128,10 +129,10 @@ public class ContextWalkerTest extends TestCase {
 	 * @throws InvalidContentKeyException
 	 */
 	public void testNewProduct() throws InvalidContentKeyException {
-		ContentNodeI prd1 = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "new_prd"));
+		ContentNodeI prd1 = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "new_prd"), DraftContext.MAIN);
 		assertNotNull(prd1);
 
-		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd1.getKey()));
+		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd1.getKey(), DraftContext.MAIN));
 		/*
 		 * All contexts of a product without parents should be a set with just one root context
 		 * (context without parent context)
@@ -142,7 +143,7 @@ public class ContextWalkerTest extends TestCase {
 		assertNull( ((Context)ctxs.get(0)).getParentContext() );
 
 		// NOTE: will crash if unfixed (MNT-380)
-		List parentKeys = PHSWalker.getVisibleParents(ctxs.iterator(), ContextService.getInstance());
+		List parentKeys = PHSWalker.getVisibleParents(ctxs.iterator(), ContextService.getInstance(), DraftContext.MAIN);
 
 		assertEquals(parentKeys.size(), 0);
 		
@@ -151,35 +152,35 @@ public class ContextWalkerTest extends TestCase {
 	
 	
 	public void testInvalidPrimaryHome() throws InvalidContentKeyException {
-		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_2"));
+		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_2"), DraftContext.MAIN);
 		assertNotNull(prd);
 
-		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey()));
+		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey(), DraftContext.MAIN));
 		assertContexts(ctxs, new String[]{"cat_2","cat_hdn"});
 
-		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc);
+		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc, DraftContext.MAIN);
 		assertContexts(possibleParents, new String[]{"cat_2"});
 	}
 
 	public void testInvalidPrimaryHome2() throws InvalidContentKeyException {
-		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_3"));
+		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_3"), DraftContext.MAIN);
 		assertNotNull(prd);
 
-		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey()));
+		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey(), DraftContext.MAIN));
 		assertContexts(ctxs, new String[]{"cat_nosearch","cat_2"});
 
-		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc);
+		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc, DraftContext.MAIN);
 		assertContexts(possibleParents, new String[]{"cat_2"});
 	}
 
 	public void testInvalidPrimaryHome3() throws InvalidContentKeyException {
-		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_4"));
+		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_4"), DraftContext.MAIN);
 		assertNotNull(prd);
 
-		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey()));
+		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey(), DraftContext.MAIN));
 		assertContexts(ctxs, new String[]{"cat_hdn_nosearch","cat_2"});
 
-		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc);
+		List possibleParents = NodeWalker.getVisibleParents(ctxs.iterator(), svc, DraftContext.MAIN);
 		// negative test - 'not searchable' flag itself does not affect visibility
 		assertContexts(possibleParents, new String[]{"cat_hdn_nosearch","cat_2"});
 	}
@@ -191,17 +192,17 @@ public class ContextWalkerTest extends TestCase {
 	 * 
 	 */
 	public void testRanking() throws InvalidContentKeyException {
-		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_r"));
+		ContentNodeI prd = content.getContentNode(ContentKey.create(FDContentTypes.PRODUCT, "prd_r"), DraftContext.MAIN);
 		assertNotNull(prd);
 		
-		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey()));
+		List ctxs = new ArrayList(this.svc.getAllContextsOf(prd.getKey(), DraftContext.MAIN));
 		assertContexts(ctxs, new String[]{"cat_g_invalid","cat_g_valid","cat_a_valid","cat_a_invalid"});
 
-		List deptKeys = new ArrayList(content.getContentKeysByType(FDContentTypes.DEPARTMENT));
+		List deptKeys = new ArrayList(content.getContentKeysByType(FDContentTypes.DEPARTMENT, DraftContext.MAIN));
 		
 
 		// order entries by their rank
-		Collections.sort(ctxs, NodeWalker.getRankedComparator(svc, deptKeys));
+		Collections.sort(ctxs, NodeWalker.getRankedComparator(svc, DraftContext.MAIN, deptKeys));
 		assertContexts(ctxs, new String[]{"cat_a_valid","cat_g_valid","cat_a_invalid","cat_g_invalid"});
 	}
 }

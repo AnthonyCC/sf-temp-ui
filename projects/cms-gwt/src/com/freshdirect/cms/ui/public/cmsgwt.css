@@ -33,6 +33,11 @@
 	font-weight: bold;
 }
 
+.appHeaderDraft .appHeader {
+	background-color: red;
+}
+
+
 /* command links in the header  */
 .commandLink,.logoutLink {
 	text-align: center;

@@ -19,90 +19,88 @@ import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.util.FDURLUtil;
 
-public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
-	
-	private static final Logger LOGGER = LoggerFactory.getInstance( BrowsePartialRolloutRedirectorTag.class );
-	private static final String	BROWSE_PAGE_FS		= "/browse.jsp?id=%s";
-	private static final String	OLD_DEPARTMENT_PAGE_FS	= "/department.jsp?deptId=%s";
-	private static final String	OLD_CATEGORY_PAGE_FS	= "/category.jsp?catId=%s";
-	private static final String	FALLBACK_PAGE = "/";
-	
-	private String id;
-	private boolean oldToNewDirection;
-	private FDUserI user;
+public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport {
 
-	public void doTag() throws JspException, IOException {
-		final PageContext ctx = (PageContext) getJspContext();
-		final HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-		final boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
-		if (!disabledPartialRolloutRedirector && FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
+    private static final Logger LOGGER = LoggerFactory.getInstance(BrowsePartialRolloutRedirectorTag.class);
 
-			String redirectUrl = null;
-			boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
-	
-			// figure out the redirect url
-			if (shouldBeOnNew && oldToNewDirection) {
-				redirectUrl = String.format(BROWSE_PAGE_FS, id);
-	
-			} else if (!shouldBeOnNew && !oldToNewDirection){
-				ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
-				
-				if (node instanceof DepartmentModel || node instanceof RecipeDepartment){
-					redirectUrl = String.format(OLD_DEPARTMENT_PAGE_FS, id);
-				
-				} else if (node instanceof CategoryModel){
-					redirectUrl = String.format(OLD_CATEGORY_PAGE_FS, id);
-				
-				} else { //null or other type due to error
-					redirectUrl = FALLBACK_PAGE;
-				}
-			}
-	
+    private static final String BROWSE_PAGE_FS = "/browse.jsp?id=%s";
+    private static final String OLD_DEPARTMENT_PAGE_FS = "/department.jsp?deptId=%s";
+    private static final String OLD_CATEGORY_PAGE_FS = "/category.jsp?catId=%s";
+    private static final String FALLBACK_PAGE = "/";
 
-			if (redirectUrl != null) {
-				final String originalUrl = request.getRequestURI();
+    private String id;
+    private boolean oldToNewDirection;
+    private FDUserI user;
 
-				redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
+    @Override
+    public void doTag() throws JspException, IOException {
+        final PageContext ctx = (PageContext) getJspContext();
+        final HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+        final boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
+        if (!disabledPartialRolloutRedirector && FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
 
-	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
+            String redirectUrl = null;
+            boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
 
-	        	//To ensure that https requests get redirect to https correctly
-	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
-				HttpServletResponse httpServletResponse = (HttpServletResponse)ctx.getResponse();
-				httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-				httpServletResponse.setHeader("Location", redirectUrl);
-			}
-		}
-	}
+            // figure out the redirect url
+            if (shouldBeOnNew && oldToNewDirection) {
+                redirectUrl = String.format(BROWSE_PAGE_FS, id);
+            } else if (!shouldBeOnNew && !oldToNewDirection) {
+                ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
 
+                if (node instanceof DepartmentModel || node instanceof RecipeDepartment) {
+                    redirectUrl = String.format(OLD_DEPARTMENT_PAGE_FS, id);
 
-	public String getId() {
-		return id;
-	}
+                } else if (node instanceof CategoryModel) {
+                    redirectUrl = String.format(OLD_CATEGORY_PAGE_FS, id);
 
-	public void setId(String id) {
-		this.id = id;
-	}
+                } else { // null or other type due to error
+                    redirectUrl = FALLBACK_PAGE;
+                }
+            }
 
-	public FDUserI getUser() {
-		return user;
-	}
-	
-	public void setUser( FDUserI user ) {
-		this.user = user;
-	}
+            if (redirectUrl != null) {
+                final String originalUrl = request.getRequestURI();
 
-	public boolean isOldToNewDirection() {
-		return oldToNewDirection;
-	}
+                redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
 
-	public void setOldToNewDirection(boolean oldToNewDirection) {
-		this.oldToNewDirection = oldToNewDirection;
-	}
-	
+                LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
+
+                // To ensure that https requests get redirect to https correctly
+                redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
+                HttpServletResponse httpServletResponse = (HttpServletResponse) ctx.getResponse();
+                httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                httpServletResponse.setHeader("Location", redirectUrl);
+            }
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public FDUserI getUser() {
+        return user;
+    }
+
+    public void setUser(FDUserI user) {
+        this.user = user;
+    }
+
+    public boolean isOldToNewDirection() {
+        return oldToNewDirection;
+    }
+
+    public void setOldToNewDirection(boolean oldToNewDirection) {
+        this.oldToNewDirection = oldToNewDirection;
+    }
+
 }

@@ -12,14 +12,15 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
@@ -146,12 +147,13 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
     
     
     @SuppressWarnings("unchecked")
-	public VariationMatrixField(String attrKey, Set<String> allowedTypes, boolean readonly, GwtContentNode node) {
+	public VariationMatrixField(String attrKey, Set<String> allowedTypes, GwtNodePermission permission, GwtContentNode node) {
         super();
         this.attributeKey = attrKey;
         this.allowedTypes = allowedTypes;
         this.navigable = true;
         this.parentType = node.getKey();
+        this.permission = permission;
 
         this.node = node;
         ContentNodeAttributeI attribute2 = this.node.getOriginalAttribute(ATTR_DOMAIN_LIST);
@@ -179,7 +181,7 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         
         initialize();
 
-        setReadOnly(readonly);
+        setReadOnly( permission.isReadonly() );
         grid.setHideHeaders( false );
     }
 

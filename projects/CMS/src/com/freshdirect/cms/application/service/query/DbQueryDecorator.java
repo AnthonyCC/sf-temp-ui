@@ -25,6 +25,8 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.ITable;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ContentDecoratorI;
 import com.freshdirect.cms.meta.AttributeDef;
 import com.freshdirect.cms.node.AttributeMappedNode;
@@ -62,7 +64,8 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 		this.dataSource = dataSource;
 	}
 
-	public ContentNodeI decorateNode(ContentNodeI node) {
+	@Override
+	public ContentNodeI decorateNode(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		ContentType type = node.getKey().getType();
 		if (!(type.equals(CmsQueryTypes.QUERY) || type.equals(CmsQueryTypes.REPORT))) {
 			return null;

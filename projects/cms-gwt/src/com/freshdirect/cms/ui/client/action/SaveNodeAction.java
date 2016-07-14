@@ -11,27 +11,25 @@ import com.freshdirect.cms.ui.model.publish.GwtValidationError;
 import com.google.gwt.user.client.History;
 
 public class SaveNodeAction extends BasicAction<GwtSaveResponse> {
-	public SaveNodeAction() {
 
-		final GwtNodeData nodeData = ManageStoreView.getInstance().getCurrentNode();
-		
-    	startSaveProgress("Saving changes.", "Saving ..." );
+    public SaveNodeAction() {
+        final GwtNodeData nodeData = ManageStoreView.getInstance().getCurrentNode();
 
-		
-        if ( nodeData != null ) {
-        	// add this node
-            WorkingSet.add( nodeData.getNode() );
-            
-            // add any nodes that were changed because of VariationMatrix or CustomGrid components 
+        startSaveProgress("Saving changes.", "Saving ...");
+
+        if (nodeData != null) {
+            // add this node
+            WorkingSet.add(nodeData.getNode());
+
+            // add any nodes that were changed because of VariationMatrix or CustomGrid components
             nodeData.collectValuesFromFields();
-            
+
             // TODO check this functionality : collectValuesFromFields does change the currentnode, and has some side effects ...
             // important thing is : adds changed nodes to the workingset!
         }
+    }
 
-	}
-
-
+    @Override
     public void onSuccess(GwtSaveResponse result) {
         final ManageStoreView ml = ManageStoreView.getInstance();
 
@@ -41,28 +39,23 @@ public class SaveNodeAction extends BasicAction<GwtSaveResponse> {
             History.newItem(null);
 
             // display changeset of save operation
-            ml.setupChangesetLayout( result.getChangeSet() );
-            
-            //nodeTree.getSelectionModel().deselectAll();
-            stopProgress( "Saved succesfully. changeset-id = " + result.getChangesetId() );
+            ml.setupChangesetLayout(result.getChangeSet());
+
+            // nodeTree.getSelectionModel().deselectAll();
+            stopProgress();
             ContentTreePopUp.setForceReload(true);
 
             ml.getMainTree().invalidate();
-            
         } else {
-        	
-            StringBuilder s = new StringBuilder("Error:");
+            StringBuilder errorMessage = new StringBuilder("Error:");
             for (GwtValidationError g : result.getValidationMessages()) {
-                s.append(g.getHumanReadable());
+                errorMessage.append(g.getHumanReadable());
             }
-            stopProgress( "Save failed : validation errors." );
 
-            MessageBox.alert("Validation Errors", s.toString(), null);
+            stopProgress();
+
+            MessageBox.alert("Validation Errors", errorMessage.toString(), null);
         }
     }
 
-    @Override
-    public void errorOccured(Throwable error) {
-        stopProgress( "Save failed." );
-    }
 }

@@ -10,7 +10,8 @@ import com.freshdirect.cms.CmsRuntimeException;
  */
 public class ContentValidationException extends CmsRuntimeException {
 
-	private final ContentValidationDelegate delegate;
+    private static final long serialVersionUID = -8870891797271792358L;
+    private final ContentValidationDelegate delegate;
 
 	public ContentValidationException(ContentValidationDelegate delegate) {
 		super();

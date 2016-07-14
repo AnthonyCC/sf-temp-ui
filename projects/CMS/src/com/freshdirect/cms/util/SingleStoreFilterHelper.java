@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -38,9 +38,7 @@ public class SingleStoreFilterHelper {
 	 * @param storeId ID of Store node (like "FreshDirect" or "FDX")
 	 * @param nodes Initial set of content nodes that will be filtered
 	 */
-	public static List<ContentNodeI> filterContentNodes(final String storeId, Collection<ContentNodeI> nodes) {
-		final ContentServiceI svc = CmsManager.getInstance();
-		
+	public static List<ContentNodeI> filterContentNodes(final String storeId, Collection<ContentNodeI> nodes, ContentServiceI svc, DraftContext draftContext) {
 		Iterator<ContentNodeI> it = nodes.iterator();
 		
 		final ContentKey _storeKey = ContentKey.decode(FDContentTypes.STORE + ":" + storeId);
@@ -65,7 +63,7 @@ public class SingleStoreFilterHelper {
 
 			} else if (FDContentTypes.PRODUCT.equals(t)) {
 
-				processProduct(node, _storeKey, result, svc );
+				processProduct(node, _storeKey, result, svc, draftContext );
 
 				continue loop;
 			} else {
@@ -76,7 +74,7 @@ public class SingleStoreFilterHelper {
 
 					if (treeType.equals(t)) {
 						// type matched!
-						if (isMemberOfStore(node, storeId, svc)) {
+						if (isMemberOfStore(node, storeId, svc, draftContext)) {
 							result.add(node);
 						} else {
 							LOG.debug(".. dropping node ('not part of actual store tree') " + key);
@@ -105,10 +103,10 @@ public class SingleStoreFilterHelper {
 	 * @param out result set. Add node to it that qualifies.
 	 * @param svc
 	 */
-	private static void processProduct(final ContentNodeI node, final ContentKey storeKey, Collection<ContentNodeI> out, ContentServiceI svc) {
+	private static void processProduct(final ContentNodeI node, final ContentKey storeKey, Collection<ContentNodeI> out, ContentServiceI svc, DraftContext draftContext) {
 		final ContentKey key = node.getKey();
 
-		Set<ContentKey> fixedHomes = PrimaryHomeUtil.fixPrimaryHomes(node, svc, storeKey);
+		Set<ContentKey> fixedHomes = PrimaryHomeUtil.fixPrimaryHomes(node, svc, draftContext, storeKey);
 		if (fixedHomes == null) {
 			LOG.error("Error occurred while fixing primary homes of product " + key);
 
@@ -141,7 +139,7 @@ public class SingleStoreFilterHelper {
 
 
 
-	private static boolean isMemberOfStore(ContentNodeI node, final String storeId, final ContentServiceI svc) {
+	private static boolean isMemberOfStore(ContentNodeI node, final String storeId, final ContentServiceI svc, DraftContext draftContext) {
 		if (node == null || storeId == null) {
 			return false;
 		}
@@ -151,14 +149,14 @@ public class SingleStoreFilterHelper {
 		}
 		
 		// climb up the tree
-		final Set<ContentKey> parentKeys = svc.getParentKeys(node.getKey());
+		final Set<ContentKey> parentKeys = svc.getParentKeys(node.getKey(), draftContext);
 		if (parentKeys == null || parentKeys.size() == 0) {
 			return false;
 		}
 
 		for (ContentKey parentKey : parentKeys) {
-			ContentNodeI pNode = svc.getContentNode(parentKey);
-			if (isMemberOfStore(pNode, storeId, svc)) {
+			ContentNodeI pNode = svc.getContentNode(parentKey, draftContext);
+			if (isMemberOfStore(pNode, storeId, svc, draftContext)) {
 				return true;
 			}
 		}

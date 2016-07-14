@@ -12,16 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javassist.CannotCompileException;
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.CtNewMethod;
-import javassist.NotFoundException;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
@@ -37,9 +27,19 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.RelationshipI;
-import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
+
+import javassist.CannotCompileException;
+import javassist.ClassClassPath;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.NotFoundException;
 
 public class ContentNodeGenerator implements NodeGeneratorI {
 
@@ -305,10 +305,11 @@ public class ContentNodeGenerator implements NodeGeneratorI {
         return gcn;
     }
 
-    public ContentNodeI createNode(ContentKey key) {
+    public ContentNodeI createNode(ContentKey key, DraftContext draftContext) {
         GeneratedContentNode node = (GeneratedContentNode) createNodeImpl(key.getType());
         node.initAttributes();
         node.setKey(key);
+        node.setDraftContext(draftContext);
         return node;
     }
 
@@ -351,7 +352,7 @@ public class ContentNodeGenerator implements NodeGeneratorI {
         
         {
             // String getLabel()
-            CtMethod method = CtNewMethod.make("public String getLabel() {\n" + "return com.freshdirect.cms.node.ContentNodeUtil.getLabel(this);\n" + "}",
+            CtMethod method = CtNewMethod.make("public String getLabel() {\n" + "return com.freshdirect.cms.node.ContentNodeUtil.getLabel(this, draftContext);\n" + "}",
                     class1);
             class1.addMethod(method);
         }

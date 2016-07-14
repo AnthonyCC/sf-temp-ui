@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.LuceneIndexerTask;
@@ -47,7 +48,7 @@ public class StorePublishTest {
 
         final ContentServiceI svc = CmsManager.getInstance();
 
-        Set<ContentKey> storeKeys = svc.getContentKeysByType(FDContentTypes.STORE);
+        Set<ContentKey> storeKeys = svc.getContentKeysByType(FDContentTypes.STORE, DraftContext.MAIN);
         
         for (ContentKey key : storeKeys) {
         	doPublish(basePath, key.getId(), publish, svc);

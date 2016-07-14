@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.fields.OneToOneRelationField;
 import com.freshdirect.cms.ui.client.views.ChangeSetQueryView;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 
 
@@ -61,7 +62,7 @@ public class ChangeSetQueryForm extends ContentPanel {
 		endDateField.addPlugin(new FieldClearPlugin());
 		add( endDateField );
 
-		nodeField = new OneToOneRelationField(null,false);
+		nodeField = new OneToOneRelationField(null,GwtNodePermission.FULL_PERMISSION);
 		nodeField.setFieldLabel( "Content node" );
 		nodeField.setEmptyText( "enter contentkey here" );
 		add( nodeField );

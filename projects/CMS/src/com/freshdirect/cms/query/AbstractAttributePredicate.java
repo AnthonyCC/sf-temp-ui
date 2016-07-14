@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.collections.Predicate;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
 
 /**

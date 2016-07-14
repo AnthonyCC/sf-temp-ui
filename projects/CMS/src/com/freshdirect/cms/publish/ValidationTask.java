@@ -7,22 +7,22 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A PublishTask to perform validation on the nodes to be published.
@@ -55,9 +55,9 @@ public class ValidationTask implements PublishTask {
 	 * @throws ContentValidationException on content validation problems.
 	 */
 	private void validate(Publish publish) throws ContentValidationException {
-				
-		Set                         keys     = contentService.getContentKeys();
-		Collection                  nodes    = contentService.getContentNodes(keys).values();
+	    final DraftContext                draftContext = DraftContext.MAIN;
+		Set                         keys     = contentService.getContentKeys(draftContext);
+		Collection                  nodes    = contentService.getContentNodes(keys, draftContext).values();
 		final ContentValidationDelegate delegate = new ContentValidationDelegate();
 		
 		ExecutorService service = Executors.newFixedThreadPool(validators.size());
@@ -73,7 +73,7 @@ public class ValidationTask implements PublishTask {
 				service.execute(new Runnable() {
 					public void run() {
 						try {
-							validator.validate(delegate, contentService, node, null, null);
+							validator.validate(delegate, contentService, draftContext, node, null, null);
 						} catch (Exception e) {
 							LOGGER.warn("Exception in validator", e);
 							delegate.record(node.getKey(), e.getMessage());

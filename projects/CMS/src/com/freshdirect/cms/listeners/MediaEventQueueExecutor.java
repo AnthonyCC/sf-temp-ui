@@ -1,16 +1,16 @@
 package com.freshdirect.cms.listeners;
 
-import org.apache.log4j.Logger;
-
-import com.freshdirect.framework.conf.FDRegistry;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class MediaEventQueueExecutor implements MediaEventHandlerI {
 	protected static class CopyTask implements Runnable {

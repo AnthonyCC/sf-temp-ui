@@ -24,7 +24,6 @@ import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
-import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -159,13 +158,14 @@ public class ManageStoreView extends LayoutContainer {
     }
     
     protected boolean isFormChanged() {
-        return (currentNode != null) && !currentNode.isReadonly() && currentNode.isChanged();
+        return (currentNode != null) && currentNode.getPermission().isEditable() && currentNode.isChanged();
     }
 
 	public void nodeSelected( final String key, final ContentNodeModel parent, boolean dirtyWarning ) {
 		if ( key != null ) {
             if ( dirtyWarning && ( !WorkingSet.isEmpty() || isFormChanged() ) ) {
                 MessageBox.confirm("Discard changes", "You have unsaved changes. Do you want to discard them?", new Listener<MessageBoxEvent>() {
+                    @Override
                     public void handleEvent(MessageBoxEvent be) {
                         if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {
                             openNode(key, parent);
@@ -181,7 +181,7 @@ public class ManageStoreView extends LayoutContainer {
 	/**
 	 * Determines whether node is already edited / changed
 	 * 
-	 * @return the state of dirtyness
+	 * @return the state of dirtiness
 	 */
 	public boolean isNodeEditorDirty() {
 		return !WorkingSet.isEmpty() || isFormChanged();
@@ -284,7 +284,8 @@ public class ManageStoreView extends LayoutContainer {
 		masked = false;
 	}
 
-	public boolean isMasked() {		
+	@Override
+    public boolean isMasked() {		
 		return masked;
 	}
 /*

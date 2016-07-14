@@ -24,6 +24,7 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
 import com.freshdirect.cms.util.SingleStoreFilterHelper;
 import com.freshdirect.framework.util.QuickDateFormat;
@@ -49,6 +50,7 @@ public class PublishXmlTask implements PublishTask {
 	public final static String NS_DC = "http://purl.org/dc/elements/1.1";
 
 	private final ContentServiceI contentService;
+	private final DraftContext draftContext = DraftContext.MAIN;
 	
 	private final String storeFilePath;
 
@@ -69,7 +71,7 @@ public class PublishXmlTask implements PublishTask {
 	}
 
 	public void execute(Publish publish) {
-		Map<ContentKey, ContentNodeI> nodes = contentService.getContentNodes(contentService.getContentKeys());
+		Map<ContentKey, ContentNodeI> nodes = contentService.getContentNodes(contentService.getContentKeys(draftContext), draftContext);
 
 		ContentNodeSerializer serializer = new ContentNodeSerializer();
 		List<ContentNodeI> l = new ArrayList<ContentNodeI>(nodes.values());
@@ -79,7 +81,7 @@ public class PublishXmlTask implements PublishTask {
 			final int n0 = l.size();
 			LOG.info("Filtering " + l.size() + " nodes ..");
 
-			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l);
+			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l, contentService, draftContext);
 
 			final int n1 = l.size();
 			final double perc = ((double)(n0-n1)*100)/((double)n0);

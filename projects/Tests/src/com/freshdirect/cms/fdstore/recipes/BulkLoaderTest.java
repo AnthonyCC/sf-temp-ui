@@ -16,6 +16,7 @@ import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.conf.ResourceUtil;
@@ -57,6 +58,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 			loader = new RecipeBulkLoader(service,
+		                                                DraftContext.MAIN,
 														reader,
 														"fruitRecipe",
 														RecipeBulkLoader.RECIPE);
@@ -107,6 +109,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 			loader = new RecipeBulkLoader(service,
+		                                                DraftContext.MAIN,
 														reader,
 														"simpleGroup",
 														RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
@@ -167,6 +170,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 loader = new RecipeBulkLoader(service,
+		                                    DraftContext.MAIN,
 											 reader,
 											 "twoSectionRecipe",
 											 RecipeBulkLoader.RECIPE);
@@ -268,6 +272,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
+		                                        DraftContext.MAIN,
 												reader,
 												"simpleGroup",
 												RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
@@ -341,6 +346,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
+		                                        DraftContext.MAIN,
 												reader,
 												"fruitRecipe",
 												RecipeBulkLoader.RECIPE);
@@ -450,6 +456,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
+		                                        DraftContext.MAIN,
 												reader,
 												"pate",
 												RecipeBulkLoader.RECIPE);
@@ -541,6 +548,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
+		                                        DraftContext.MAIN,
 												reader,
 												"twoSectionRecipe",
 												RecipeBulkLoader.RECIPE);
@@ -703,7 +711,7 @@ public class BulkLoaderTest extends TestCase {
 			          int    type) {
 		
 		List			list;
-		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service, reader, recipeId, type);
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service, DraftContext.MAIN, reader, recipeId, type);
 		
 		// parse the input
 		try {
@@ -757,7 +765,7 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 
-		Set contentKeys = service.getContentKeys();
+		Set contentKeys = service.getContentKeys(DraftContext.MAIN);
 		
 		// the total number of expected nodes is 38, including all
 		// section nodes, recipe nodes, configured product nodes, variants
@@ -798,7 +806,7 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 
-		Set contentKeys = service.getContentKeys();
+		Set contentKeys = service.getContentKeys(DraftContext.MAIN);
 		
 		// the total number of expected nodes is 24, including all
 		// section nodes, recipe nodes, configured product nodes, variants
@@ -820,12 +828,12 @@ public class BulkLoaderTest extends TestCase {
 		
 		request         = new CmsRequest(user);
 		newbornKey      = new ContentKey(FDContentTypes.FDFOLDER, "NewbornRecipes");
-		newbornFolder   = service.createPrototypeContentNode(newbornKey);
+		newbornFolder   = service.createPrototypeContentNode(newbornKey, DraftContext.MAIN);
 		
 		request.addNode(newbornFolder);
 		service.handle(request);
 		
-		newbornFolder = service.getContentNode(newbornKey);
+		newbornFolder = service.getContentNode(newbornKey, DraftContext.MAIN);
 		newbornChildren = (List) newbornFolder.getAttributeValue("children");
 		
 		assertNull(newbornChildren);
@@ -853,12 +861,12 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		newbornFolder   = service.getContentNode(newbornKey);
+		newbornFolder   = service.getContentNode(newbornKey, DraftContext.MAIN);
 		newbornChildren = (List) newbornFolder.getAttributeValue("children");
 		
 		assertEquals(3, newbornChildren.size());
 
-		Set contentKeys = service.getContentKeys();
+		Set contentKeys = service.getContentKeys(DraftContext.MAIN);
 		
 		// the total number of expected nodes is 38, including all
 		// section nodes, recipe nodes, configured product nodes, variants
@@ -884,7 +892,7 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 
-		Set contentKeys = service.getContentKeys();
+		Set contentKeys = service.getContentKeys(DraftContext.MAIN);
 		
 		// the total number of expected nodes is 38, including all
 		// section nodes, recipe nodes, configured product nodes, variants

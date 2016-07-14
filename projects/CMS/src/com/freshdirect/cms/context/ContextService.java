@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Provides services to contextualize content nodes of an
@@ -40,14 +41,14 @@ public class ContextService {
 	 * @param key content key, never null
 	 * @return Collection of {@link Context}, never null
 	 */
-	public Collection<Context> getAllContextsOf( ContentKey key ) {
+	public Collection<Context> getAllContextsOf( ContentKey key, DraftContext draftContext ) {
 		List<Context> contexts = new ArrayList<Context>();
-		Set<ContentKey> parentKeys = contentService.getParentKeys( key );
+		Set<ContentKey> parentKeys = contentService.getParentKeys( key, draftContext );
 		if ( parentKeys.isEmpty() ) {
 			contexts.add( new Context( null, key ) );
 		} else {
 			for ( ContentKey parentKey : parentKeys ) {
-				Collection<Context> parentContexts = getAllContextsOf( parentKey );
+				Collection<Context> parentContexts = getAllContextsOf( parentKey, draftContext );
 				for ( Context ctx : parentContexts ) {
 					contexts.add( new Context( ctx, key ) );
 				}
@@ -61,7 +62,7 @@ public class ContextService {
 	 * 
 	 * @throws IllegalArgumentException if the context path is not valid
 	 */
-	public ContextualContentNodeI getContextualizedContentNode(String path) throws IllegalArgumentException {
+	public ContextualContentNodeI getContextualizedContentNode(String path, DraftContext draftContext) throws IllegalArgumentException {
 		ContextualContentNode lastNode = null;
 		StringTokenizer stoke = new StringTokenizer(path, "/");
 		while (stoke.hasMoreTokens()) {
@@ -84,7 +85,7 @@ public class ContextService {
 			//
 			// end validation chunk
 			//
-			ContentNodeI node = contentService.getContentNode(key);
+			ContentNodeI node = contentService.getContentNode(key, draftContext);
 			if (node == null) {
 				return null;
 			}
@@ -94,7 +95,7 @@ public class ContextService {
 	}
 
 	// convenience method
-	public ContextualContentNodeI getContextualizedContentNode(Context ctx) throws IllegalArgumentException {
-		return getContextualizedContentNode(ctx.getPath());
+	public ContextualContentNodeI getContextualizedContentNode(Context ctx, DraftContext draftContext) throws IllegalArgumentException {
+		return getContextualizedContentNode(ctx.getPath(), draftContext);
 	}
 }

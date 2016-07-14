@@ -6,28 +6,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
 
 public class PDPRedirector extends BodyTagSupport {
 
-	private static final long	serialVersionUID	= -8276493946678531129L;
+    private static final long	serialVersionUID	= -8276493946678531129L;
 
-	private static final Logger LOG = LoggerFactory.getInstance( PDPRedirector.class );
-	
 	public static final String	PDP_PAGE_URL		= "/pdp.jsp";
 	public static final String	OLD_CATEGORY_PAGE	= "/category.jsp";
 	public static final String	OLD_PRODUCT_PAGE	= "/product.jsp";
+
 	private boolean redirected = false;
 	private FDUserI user;
 	
@@ -68,7 +63,6 @@ public class PDPRedirector extends BodyTagSupport {
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
 					if(productNode!=null){
-						EnumProductLayout prodLayout = productNode.getProductLayout(); 
 						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;						
 					}
 				}
@@ -134,6 +128,7 @@ public class PDPRedirector extends BodyTagSupport {
         }
     }
     
+    @Override
     public int doEndTag() throws JspException {
     	 if (this.redirected) {
              return SKIP_PAGE;

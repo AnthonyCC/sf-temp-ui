@@ -6,7 +6,8 @@ import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 
 /**
@@ -15,16 +16,17 @@ import com.freshdirect.cms.labels.ILabelProvider;
  */
 public class DomainValueLabelProvider implements ILabelProvider {
 
-	public String getLabel(ContentNodeI node) {
+    @Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		if (!FDContentTypes.DOMAINVALUE.equals(node.getKey().getType())) {
 			return null;
 		}
 
 		StringBuffer sb = new StringBuffer();
-		Set parentKeys = CmsManager.getInstance().getParentKeys(node.getKey());
+		Set parentKeys = contentService.getParentKeys(node.getKey(), draftContext);
 		if (!parentKeys.isEmpty()) {
 			ContentKey parentKey = (ContentKey) parentKeys.iterator().next();
-			ContentNodeI parentNode = CmsManager.getInstance().getContentNode(parentKey);
+			ContentNodeI parentNode = contentService.getContentNode(parentKey, draftContext);
 			sb.append(getLabelAttr(parentNode)).append(": ");
 		}
 		

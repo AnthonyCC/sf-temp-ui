@@ -1,5 +1,6 @@
 package com.freshdirect.cms.search;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -18,8 +19,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.draft.service.DraftService;
 import com.freshdirect.cms.core.CmsDaoFactory;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.merge.MergeResult;
+import com.freshdirect.cms.merge.MergeTask;
+import com.freshdirect.cms.merge.ValidationResult;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishDao;
@@ -32,7 +37,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class BackgroundProcessorImpl implements IBackgroundProcessor {
     
-    static abstract class CallableWithNotifications<X> implements Callable<X> {
+    private static abstract class CallableWithNotifications<X> implements Callable<X> {
     	private final static Logger LOG = LoggerFactory.getInstance(CallableWithNotifications.class);
 
         BackgroundStatus status;
@@ -69,6 +74,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
     private ContentSearchServiceI searchService;
     private BackgroundStatus procStatus = new BackgroundStatus();
     private List<PublishTask> publishTasks;
+    private MergeTask mergeTask;
     
     public BackgroundProcessorImpl () {
     }
@@ -92,8 +98,12 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
     public List<PublishTask> getPublishTasks() {
             return publishTasks;
     }
-    
-    
+
+    @Override
+    public void setMergeTask(MergeTask mergeTask) {
+        this.mergeTask = mergeTask;
+    }
+
     PublishDao getPublishDao() {
         return CmsDaoFactory.getInstance().getPublishDao();
     }
@@ -269,14 +279,59 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
         return procStatus.clone();
     }
 
-    /**
-     * @return
-     * 
-     */
-    synchronized ExecutorService initThreads() {
+    private synchronized ExecutorService initThreads() {
         if (reindexer == null) {
             reindexer = Executors.newSingleThreadExecutor();
         }
         return reindexer;
     }
+
+
+    @Override
+    public Future<ValidationResult> validateDraft(final ValidationResult merge) {
+        return initThreads().submit(new CallableWithNotifications<ValidationResult>(procStatus) {
+            @Override
+            ValidationResult doCall() throws Exception {
+                status.setStatus(MessageFormat.format("start validating {0} draft.", merge.getCmsRequest().getDraftContext().getDraftName()));
+                mergeTask.execute(merge);
+                return merge;
+            }
+
+            @Override
+            public void callFinished(ValidationResult result) {
+                status.setElapsedTime(System.currentTimeMillis() - status.getStarted());
+                status.setStatus(MessageFormat.format("validate of {0} draft was {1}.", merge.getCmsRequest().getDraftContext().getDraftName(), result.isSuccess() ? "successed" : "failed"));
+                status.setLastReindexResult("validate has been finished in " + (status.getElapsedTime() / 1000) + " ms.");
+            }
+
+        });
+    }
+
+    @Override
+    public Future<MergeResult> mergeDraft(final MergeResult merge) {
+        return initThreads().submit(new CallableWithNotifications<MergeResult>(procStatus) {
+            @Override
+            MergeResult doCall() throws Exception {
+                status.setStatus(MessageFormat.format("start merging {0} draft.", merge.getCmsRequest().getDraftContext().getDraftName()));
+                mergeTask.execute(merge);
+                if (merge.isSuccess()){
+                   DraftService.defaultService().updateDraftStatusForDraft(merge.getCmsRequest().getDraftContext().getDraftId(),"MERGED");
+                }
+                else
+                {
+                   DraftService.defaultService().updateDraftStatusForDraft(merge.getCmsRequest().getDraftContext().getDraftId(),"FAILED");
+                }
+                return merge;
+            }
+
+            @Override
+            public void callFinished(MergeResult result) {
+                status.setElapsedTime(System.currentTimeMillis() - status.getStarted());
+                status.setStatus(MessageFormat.format("merge of {0} draft was {1}.", merge.getCmsRequest().getDraftContext().getDraftName(), result.isSuccess() ? "successed" : "failed"));
+                status.setLastReindexResult("merge has been finished in " + (status.getElapsedTime() / 1000) + " ms.");
+            }
+            
+        });
+    }
+
 }

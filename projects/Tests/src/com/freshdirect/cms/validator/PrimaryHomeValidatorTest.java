@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
@@ -15,6 +13,7 @@ import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -25,10 +24,13 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.fdstore.PrimaryHomeValidator;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 
-public class PrimaryHomeValidatorTest extends TestCase {
-	ContentServiceI content;
-	ContextService	svc;
+import junit.framework.TestCase;
 
+public class PrimaryHomeValidatorTest extends TestCase {
+	ContentServiceI contentService;
+	ContextService	contextService;
+	DraftContext    draftContext = DraftContext.MAIN;
+	
 	@Deprecated
 	ContentValidationDelegate delegate;
 	
@@ -55,19 +57,19 @@ public class PrimaryHomeValidatorTest extends TestCase {
 
 		final XmlContentService xmlService = createService(typeService);
 		((AbstractContentService) xmlService).setName("com.freshdirect.cms.StoreDef");
-		this.content = xmlService;
+		this.contentService = xmlService;
 
 		// this.content = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.test.CloneContentService", ContentServiceI.class);
 		// ((AbstractContentService) content).setName("whatever");
 		
-		this.svc = new ContextService(this.content);
+		this.contextService = new ContextService(this.contentService);
 
 
-		CmsManager.setInstance(new CmsManager(content, null));
+		CmsManager.setInstance(new CmsManager(contentService, null));
 		this.mgr = CmsManager.getInstance();
 		
     	delegate = null /* new ContentValidationDelegate() */;
-    	request = new CmsRequest(new CmsUser("vubul") );
+    	request = new CmsRequest(new CmsUser("vubul"), CmsRequestI.Source.ELSE, draftContext );
 	}
 
     protected XmlContentService createService(ContentTypeServiceI typeService) {
@@ -88,7 +90,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	
     	ContentNodeI node = mgr.getContentNode(prdKey);
     	
-    	v.validate(delegate, content, node, null, null);
+    	v.validate(delegate, contentService, draftContext, node, null, null);
     	
     	assertTrue("Nothing should be changed", request.getNodes().isEmpty());
     }
@@ -103,7 +105,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	
     	ContentNodeI node = mgr.getContentNode(prdKey);
     	
-    	v.validate(delegate, content, node, request, null);
+    	v.validate(delegate, contentService, draftContext, node, request, null);
     	
     	assertTrue("Product must be fixed!", !request.getNodes().isEmpty());
     	
@@ -124,7 +126,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
 
     	ContentNodeI node = mgr.getContentNode(prdKey);
 
-    	v.validate(delegate, content, node, request, null);
+    	v.validate(delegate, contentService, draftContext, node, request, null);
     	
     	assertTrue("Product must be fixed by the validator!", !request.getNodes().isEmpty());
 
@@ -152,7 +154,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	final Set<ContentKey> _parKeys = mgr.getParentKeys(new ContentKey(FDContentTypes.CATEGORY, "OrphanCat"));
 		assertEquals("Orphan category should not be a member of any parent node", 0, _parKeys.size());
     	
-    	v.validate(delegate, content, node, request, null);
+    	v.validate(delegate, contentService, draftContext, node, request, null);
 
     	assertTrue("Product must be fixed by the validator!", !request.getNodes().isEmpty());
 

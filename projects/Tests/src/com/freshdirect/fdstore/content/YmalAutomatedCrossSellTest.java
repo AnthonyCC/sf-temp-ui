@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.functors.AndPredicate;
@@ -28,6 +24,7 @@ import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -37,10 +34,8 @@ import com.freshdirect.cms.query.AttributeEqualsPredicate;
 import com.freshdirect.cms.query.RelationshipAnyPredicate;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -49,12 +44,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductAspect;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
@@ -135,7 +125,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		requiredAttrDef = cpDef.getAttributeDef("REQUIRED");
 		predicate       = new AttributeEqualsPredicate(requiredAttrDef, Boolean.TRUE);
 		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT,
-												    predicate); 
+												    predicate, DraftContext.MAIN); 
 
 		assertTrue(results.containsKey(new ContentKey(
 				FDContentTypes.CONFIGURED_PRODUCT, "cp_required")));
@@ -159,7 +149,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		predicate       = new AttributeEqualsPredicate(skuRelDef,
 							new ContentKey(FDContentTypes.SKU, "MEA0004568"));
 		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT,
-												    predicate); 
+												    predicate, DraftContext.MAIN); 
 
 		// this product contains the above SKU
 		assertTrue(results.containsKey(new ContentKey(
@@ -196,7 +186,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		predicate = new AndPredicate(requiredPredicate, skuPredicate);
 		
 		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT,
-												    predicate); 
+												    predicate, DraftContext.MAIN); 
 
 		// a required configured product with the specified sku
 		assertTrue(results.containsKey(new ContentKey(
@@ -259,7 +249,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		predicate = new AndPredicate(requiredPredicate, itemsPredicate);
 		
 		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT_GROUP,
-												    predicate); 
+												    predicate, DraftContext.MAIN); 
 
 		// a required configured product with the specified sku
 		assertTrue(results.containsKey(new ContentKey(
@@ -300,7 +290,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		predicate = new RelationshipAnyPredicate(variantsRelDef, namePredicate);
 		
 		results         = service.queryContentNodes(FDContentTypes.RECIPE,
-												    predicate); 
+												    predicate, DraftContext.MAIN); 
 
 		// basically all recipes contain a variant named 'main'
 		// just check for one of them as a sanity-check
@@ -358,7 +348,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 				                                        variantPredicate);
 
 		results         = service.queryContentNodes(FDContentTypes.RECIPE,
-												    variantPredicate); 
+												    variantPredicate, DraftContext.MAIN); 
 
 		// check that the recipe with a required ingredient shows up
 		assertTrue(results.containsKey(new ContentKey(
@@ -430,7 +420,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 				                                        variantPredicate);
 
 		results         = service.queryContentNodes(FDContentTypes.RECIPE,
-												    variantPredicate); 
+												    variantPredicate, DraftContext.MAIN); 
 
 		// check that the recipe with a required ingredient and the
 		// specified SKU shows up

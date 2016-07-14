@@ -11,7 +11,6 @@ set JUNCTION=util\bin\windows\junction.exe
 
 
 %JUNCTION% projects\DlvAdmin\docroot\WEB-INF\shared        projects\WebAppCommon\docroot\WEB-INF\shared
-%JUNCTION% projects\RefAdmin\docroot\WEB-INF\shared        projects\WebAppCommon\docroot\WEB-INF\shared
 %JUNCTION% projects\FDWebSite\docroot\WEB-INF\shared       projects\WebAppCommon\docroot\WEB-INF\shared
 %JUNCTION% projects\DlvConfirm\docroot\WEB-INF\shared      projects\WebAppCommon\docroot\WEB-INF\shared
 %JUNCTION% projects\CRM\docroot\WEB-INF\shared             projects\WebAppCommon\docroot\WEB-INF\shared

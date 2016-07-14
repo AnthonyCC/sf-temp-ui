@@ -33,6 +33,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 
 <fd:CheckLoginStatus guestAllowed="true" />
 <%FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+<fd:CheckDraftContextTag/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.deptId}"/>
 
 <fd:Department id='department' departmentId='<%= deptId %>'/>

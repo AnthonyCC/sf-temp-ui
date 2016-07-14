@@ -8,6 +8,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
@@ -18,33 +19,34 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  */
 public class RecipeChildNodeValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+    @Override
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 
 		ContentType type = node.getKey().getType();
-		if (FDContentTypes.RECIPE.equals(type)) {
-			addDefaultVariantToRecipe(delegate, service, node, request);
+        if (FDContentTypes.RECIPE.equals(type)) {
+			addDefaultVariantToRecipe(delegate, service, draftContext, node, request);
 		} else if (FDContentTypes.RECIPE_VARIANT.equals(type)) {
-			addMainSectionToVariant(delegate, service, node, request);			
+			addMainSectionToVariant(delegate, service, draftContext, node, request);			
 		}
 	}
 
-	private void addDefaultVariantToRecipe(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	private void addDefaultVariantToRecipe(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request) {
 		
 		ContentKey variantKey = new ContentKey(FDContentTypes.RECIPE_VARIANT, node.getKey().getId() + "_default");
 		
-		ContentNodeI variantNode = checkForChild(delegate, service, node, "variants", variantKey, request);
+		ContentNodeI variantNode = checkForChild(delegate, service, draftContext, node, "variants", variantKey, request);
 		if (variantNode!=null) {
 			variantNode.getAttribute("name").setValue("default");
 			request.addNode(variantNode);
-			addMainSectionToVariant(delegate, service, variantNode, request);
+			addMainSectionToVariant(delegate, service, draftContext, variantNode, request);
 		}
 	}
 	
-	private void addMainSectionToVariant(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	private void addMainSectionToVariant(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request) {
 		
 		ContentKey sectionKey = new ContentKey(FDContentTypes.RECIPE_SECTION, node.getKey().getId() + "_main");
 		
-		ContentNodeI sectionNode = checkForChild(delegate, service, node, "sections", sectionKey, request);
+		ContentNodeI sectionNode = checkForChild(delegate, service, draftContext, node, "sections", sectionKey, request);
 		if (sectionNode != null) {
 			sectionNode.getAttribute("name").setValue("main");
 			request.addNode(sectionNode);
@@ -65,7 +67,7 @@ public class RecipeChildNodeValidator implements ContentValidatorI {
 	 *  @return null, or the child node created
 	 */
 	private ContentNodeI checkForChild(ContentValidationDelegate delegate,
-			ContentServiceI service, ContentNodeI node,
+			ContentServiceI service, DraftContext draftContext,  ContentNodeI node,
 			String relationshipName, ContentKey childKey, CmsRequestI request) {
 		
 		RelationshipI rel = (RelationshipI) node.getAttribute(relationshipName);
@@ -79,9 +81,9 @@ public class RecipeChildNodeValidator implements ContentValidatorI {
 		}
 
 		// create a new recipe variant
-		ContentNodeI childNode = service.getContentNode(childKey);
+		ContentNodeI childNode = service.getContentNode(childKey, draftContext);
 		if (childNode == null) {
-			childNode = service.createPrototypeContentNode(childKey);
+			childNode = service.createPrototypeContentNode(childKey, draftContext);
 		}
 
 		ContentNodeUtil.addRelationshipKey(rel, childNode.getKey());

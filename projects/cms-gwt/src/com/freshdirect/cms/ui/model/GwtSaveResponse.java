@@ -10,11 +10,16 @@ public class GwtSaveResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	String						changesetId;
-	GwtChangeSet				changeSet;
-	List<GwtValidationError>	validationMessages;
+    private String changesetId;
+    private String errorMessage;
+    private GwtChangeSet changeSet;
+    private List<GwtValidationError> validationMessages;
 
     public GwtSaveResponse() {
+    }
+
+    public GwtSaveResponse(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public GwtSaveResponse(String changesetId, GwtChangeSet changeSet) {
@@ -33,13 +38,17 @@ public class GwtSaveResponse implements Serializable {
     public List<GwtValidationError> getValidationMessages() {
         return validationMessages;
     }
-    
+
     public boolean isOk() {
-        return validationMessages==null;
+        return validationMessages == null;
     }
-    
+
     public GwtChangeSet getChangeSet() {
         return changeSet;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
 }

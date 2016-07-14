@@ -15,6 +15,7 @@ import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Proxy pattern base class for all content services that proxy to another.
@@ -33,42 +34,52 @@ public class ProxyContentService implements ContentServiceI {
 		this.service = service;
 	}
 
-	public Set<ContentKey> getContentKeys() {
-		return getProxiedService().getContentKeys();
+	@Override
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
+		return getProxiedService().getContentKeys(draftContext);
 	}
 
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
-		return getProxiedService().getContentKeysByType(type);
+	@Override
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
+		return getProxiedService().getContentKeysByType(type, draftContext);
 	}
 
-	public Set<ContentKey> getParentKeys(ContentKey key) {
-		return getProxiedService().getParentKeys(key);
+	@Override
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
+		return getProxiedService().getParentKeys(key, draftContext);
 	}
 
-	public ContentNodeI getContentNode(ContentKey key) {
-		return getProxiedService().getContentNode(key);
+	@Override
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
+		return getProxiedService().getContentNode(key, draftContext);
 	}
 
-	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys) {
-		return getProxiedService().getContentNodes(keys);
+	@Override
+	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
+		return getProxiedService().getContentNodes(keys, draftContext);
 	}
 	
-	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
-		return getProxiedService().queryContentNodes(type, criteria);
+	@Override
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria, DraftContext draftContext) {
+		return getProxiedService().queryContentNodes(type, criteria, draftContext);
 	}
 
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
-		return getProxiedService().createPrototypeContentNode(key);
+	@Override
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
+		return getProxiedService().createPrototypeContentNode(key, draftContext);
 	}
 
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
 		return getProxiedService().handle(request);
 	}
 
+	@Override
 	public ContentTypeServiceI getTypeService() {
 		return getProxiedService().getTypeService();
 	}
 
+	@Override
 	public String getName() {
 		return getProxiedService().getName();
 	}
@@ -86,8 +97,9 @@ public class ProxyContentService implements ContentServiceI {
 		return this;
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
-		return getProxiedService().getRealContentNode(key);
+	@Override
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
+		return getProxiedService().getRealContentNode(key, draftContext);
 	}
 	
 }

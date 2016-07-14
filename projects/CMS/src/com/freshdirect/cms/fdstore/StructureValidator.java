@@ -8,6 +8,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 
@@ -53,9 +54,9 @@ public class StructureValidator implements ContentValidatorI {
 		IGNORABLE_TYPES.add(FDContentTypes.DARKSTORE);
 	}
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
 		if(TYPES.contains(node.getKey().getType())){
-			Set<ContentKey> parentKeys = service.getParentKeys( node.getKey() );
+            Set<ContentKey> parentKeys = service.getParentKeys( node.getKey(), draftContext );
 			Set<ContentKey> nonIgnorableKeys = new HashSet<ContentKey>();
 			for(ContentKey contenkey:parentKeys){
 				if(!IGNORABLE_TYPES.contains(contenkey.getType())){

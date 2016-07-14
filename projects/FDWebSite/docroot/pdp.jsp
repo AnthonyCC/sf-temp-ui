@@ -30,6 +30,7 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
 <fd:CheckLoginStatus id="user"/>
+<fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>" />
 
 <%
@@ -230,8 +231,11 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
     <script>
       window.FreshDirect = window.FreshDirect || {};
       window.FreshDirect.browse = window.FreshDirect.browse || {};
+      window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
 
       window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+      window.FreshDirect.activeDraft = "${activeDraft}"
+      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
     </script>
 	</tmpl:put>
 	

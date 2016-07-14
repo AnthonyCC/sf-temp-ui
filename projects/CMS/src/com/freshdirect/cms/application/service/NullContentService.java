@@ -17,6 +17,7 @@ import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -104,42 +105,42 @@ public class NullContentService implements ContentServiceI {
 	}
 
 	@Override
-	public Set<ContentKey> getContentKeys() {
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		LOGGER.info("getContentKeys() called");
 		
 		return Collections.emptySet();
 	}
 
 	@Override
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		LOGGER.info("getContentKeysByType("+type+") called");
 
 		return Collections.emptySet();
 	}
 
 	@Override
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		LOGGER.info("getParentKeys("+key+") called");
 
 		return Collections.emptySet();
 	}
 
 	@Override
-	public ContentNodeI getContentNode(ContentKey key) {
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
 		LOGGER.info("getContentNode("+key+") called");
 
 		return null;
 	}
 
 	@Override
-	public ContentNodeI getRealContentNode(ContentKey key) {
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
 		LOGGER.info("getRealContentNode("+key+") called");
 
 		return null;
 	}
 
 	@Override
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
 		LOGGER.info("getContentNodes(...) called");
 
 		return Collections.emptyMap();
@@ -147,14 +148,14 @@ public class NullContentService implements ContentServiceI {
 
 	@Override
 	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type,
-			Predicate criteria) {
+			Predicate criteria, DraftContext draftContext) {
 
 		LOGGER.info("queryContentNodes("+type+") called");
 		return Collections.emptyMap();
 	}
 
 	@Override
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
 		LOGGER.info("createPrototypeContentNode("+key+") called");
 
 		return null;

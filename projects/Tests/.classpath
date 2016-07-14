@@ -32,5 +32,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FDLogisticsIntegration"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/mockito-all-1.10.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

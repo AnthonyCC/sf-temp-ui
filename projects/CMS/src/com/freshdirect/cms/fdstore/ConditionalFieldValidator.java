@@ -9,6 +9,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.fdstore.content.ProductFilterModel;
@@ -75,8 +76,8 @@ public class ConditionalFieldValidator implements ContentValidatorI {
 	public static FieldRules PRODUCT_FILTER_RANGE 			= new FieldRules(PRODUCT_FILTER_BINARY).addRequiredGroup(ProductFilterModel.FROM_VALUE, ProductFilterModel.TO_VALUE);
 	public static FieldRules PRODUCT_FILTER_RANGE_NUTRITION = new FieldRules(PRODUCT_FILTER_RANGE).addRequired(ProductFilterModel.NUTRITION_CODE);
 	
-	
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+	@Override
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		ContentType t = node.getKey().getType();
 
 		if (FDContentTypes.PRODUCT_FILTER.equals(t)) {

@@ -11,6 +11,8 @@ import com.freshdirect.cms.ui.service.BulkLoaderService;
 import com.freshdirect.cms.ui.service.BulkLoaderServiceAsync;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
+import com.freshdirect.cms.ui.service.GwtDraftService;
+import com.freshdirect.cms.ui.service.GwtDraftServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Maps;
@@ -29,6 +31,7 @@ public class CmsGwt implements EntryPoint {
     private static GwtUser currentUser;
     private static ContentServiceAsync contentService;
     private static BulkLoaderServiceAsync bulkLoaderService;
+    private static GwtDraftServiceAsync draftService;
     
     private static Map<String, NavigableRelationInfo> navigableInfo;
     
@@ -37,6 +40,8 @@ public class CmsGwt implements EntryPoint {
     public CmsGwt() {
     	contentService = (ContentServiceAsync) GWT.create(ContentService.class);
         bulkLoaderService = (BulkLoaderServiceAsync) GWT.create(BulkLoaderService.class);
+        draftService = (GwtDraftServiceAsync) GWT.create(GwtDraftService.class);
+
         navigableInfo = new HashMap<String, NavigableRelationInfo>();        
 	}
     
@@ -92,6 +97,10 @@ public class CmsGwt implements EntryPoint {
     public static BulkLoaderServiceAsync getBulkLoaderService() {
 		return bulkLoaderService;
 	}
+    
+    public static GwtDraftServiceAsync getDraftService() {
+        return draftService;
+    }
 
 	public static MainLayout getMainLayout() {
 		return mainLayout;

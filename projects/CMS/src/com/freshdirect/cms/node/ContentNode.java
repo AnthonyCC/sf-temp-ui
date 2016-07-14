@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +19,7 @@ import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.reverse.BackReference;
 import com.freshdirect.cms.reverse.BidirectionalReference;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
@@ -36,6 +36,9 @@ public class ContentNode implements ContentNodeI {
 
 	/** originating content service */
 	private final ContentServiceI contentService;
+	
+	/** */
+	private final DraftContext draftContext;
 
 	/** content key of the node */ 
 	private final ContentKey key;
@@ -47,46 +50,55 @@ public class ContentNode implements ContentNodeI {
 	 * @param contentService the {@link ContentServiceI} originating this node (never null)
 	 * @param key content key of this node (never null)
 	 */
-	public ContentNode(ContentServiceI contentService, ContentKey key) {
+	public ContentNode(ContentServiceI contentService, DraftContext draftContext, ContentKey key) {
 		if (key == null) {
 			throw new IllegalArgumentException("ContentKey cannot be null");
 		}
 		this.key = key;
 		this.contentService = contentService;
+		this.draftContext = draftContext;
 		this.initializeAttributes(contentService.getTypeService());
 	}
 
-	private void initializeAttributes(ContentTypeServiceI typeService) {
-		ContentTypeDefI def = typeService.getContentTypeDefinition(key.getType());
-		if (def == null) {
-			throw new IllegalArgumentException("No type definition for " + key + " in " + typeService);
-		}
-		for ( String atrName : def.getAttributeNames() ) {
-			AttributeDefI atrDef = def.getAttributeDef(atrName);
-			AttributeI atr;
-			if (atrDef instanceof RelationshipDefI) {
-			    if (atrDef instanceof BidirectionalRelationshipDefI) {
-			        BidirectionalRelationshipDefI br = (BidirectionalRelationshipDefI) atrDef;
-			        BidirectionalReferenceHandler handler = typeService.getReferenceHandler(br.getSourceType(), br.getName());
-			        atr = new BidirectionalReference(this, handler);
-			    } else if (atrDef instanceof BackReferenceDefI){
-			        final RelationshipDefI mainRelationship = ((BackReferenceDefI) atrDef).getMainRelationship();
-                                atr = new BackReference(this, typeService.getReferenceHandler(mainRelationship.getSourceType(), mainRelationship.getName()));
-			    } else {
-				atr = new Relationship(this, (RelationshipDefI) atrDef);
-			    }
-			} else {
-				atr = new Attribute(this, atrDef);
-			}
-			attributes.put(atrName, atr);
-		}
-	}
+    public ContentNode(ContentServiceI contentService, ContentKey key) {
+        this(contentService, DraftContext.MAIN, key);
+    }
 
-	public ContentKey getKey() {
+    private void initializeAttributes(ContentTypeServiceI typeService) {
+        if (!ContentKey.NULL_KEY.equals(key)) {
+            ContentTypeDefI def = typeService.getContentTypeDefinition(key.getType());
+            if (def == null) {
+                throw new IllegalArgumentException("No type definition for " + key + " in " + typeService);
+            }
+            for (String atrName : def.getAttributeNames()) {
+                AttributeDefI atrDef = def.getAttributeDef(atrName);
+                AttributeI atr;
+                if (atrDef instanceof RelationshipDefI) {
+                    if (atrDef instanceof BidirectionalRelationshipDefI) {
+                        BidirectionalRelationshipDefI br = (BidirectionalRelationshipDefI) atrDef;
+                        BidirectionalReferenceHandler handler = typeService.getReferenceHandler(br.getSourceType(), br.getName());
+                        atr = new BidirectionalReference(this, handler);
+                    } else if (atrDef instanceof BackReferenceDefI) {
+                        final RelationshipDefI mainRelationship = ((BackReferenceDefI) atrDef).getMainRelationship();
+                        atr = new BackReference(this, typeService.getReferenceHandler(mainRelationship.getSourceType(), mainRelationship.getName()));
+                    } else {
+                        atr = new Relationship(this, (RelationshipDefI) atrDef);
+                    }
+                } else {
+                    atr = new Attribute(this, atrDef);
+                }
+                attributes.put(atrName, atr);
+            }
+        }
+    }
+
+	@Override
+    public ContentKey getKey() {
 		return key;
 	}
 
-	public ContentTypeDefI getDefinition() {
+	@Override
+    public ContentTypeDefI getDefinition() {
 		return contentService.getTypeService().getContentTypeDefinition(getKey().getType());
 	}
 
@@ -94,19 +106,22 @@ public class ContentNode implements ContentNodeI {
 	// convenience
 	//
 
-	public Set<ContentKey> getChildKeys() {
+	@Override
+    public Set<ContentKey> getChildKeys() {
 		return ContentNodeUtil.getChildKeys(this);
 	}
 
-	public String getLabel() {
-		return ContentNodeUtil.getLabel(this);
+	@Override
+    public String getLabel() {
+		return ContentNodeUtil.getLabel(this, draftContext);
 	}
 
 	//
 	// attributes
 	//
 
-	public AttributeI getAttribute(String name) {
+	@Override
+    public AttributeI getAttribute(String name) {
 		return attributes.get(name);
 	}
 	
@@ -128,7 +143,8 @@ public class ContentNode implements ContentNodeI {
         return false;
     }
         
-	public Map<String, AttributeI> getAttributes() {
+	@Override
+    public Map<String, AttributeI> getAttributes() {
 		return this.attributes;
 	}
 
@@ -146,7 +162,8 @@ public class ContentNode implements ContentNodeI {
 		return delete;
 	}
 
-	public ContentNodeI copy() {
+	@Override
+    public ContentNodeI copy() {
         // do a serialization / de-serialization cycle as a trick
         // against explicit deep cloning
 

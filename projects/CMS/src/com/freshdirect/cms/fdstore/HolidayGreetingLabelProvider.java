@@ -6,13 +6,15 @@ import java.util.Date;
 
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 
 public class HolidayGreetingLabelProvider implements ILabelProvider {
 	private static final DateFormat MONTH_DAY = new SimpleDateFormat("MM/dd");
 
 	@Override
-	public String getLabel(ContentNodeI node) {
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		ContentType type = node.getKey().getType();
 
 		if (FDContentTypes.HOLIDAY_GREETING.equals(type)) {

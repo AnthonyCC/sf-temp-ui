@@ -3,12 +3,15 @@ package com.freshdirect.cms.fdstore;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
 public class SearchRelevancyLabelProvider implements ILabelProvider {
 
-	public String getLabel(ContentNodeI node) {
+    @Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		ContentType type = node.getKey().getType();
 
 		if (FDContentTypes.SEARCH_RELEVANCY_LIST.equals(type)) {

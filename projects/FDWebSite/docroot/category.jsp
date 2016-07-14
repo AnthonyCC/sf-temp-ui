@@ -12,6 +12,7 @@
 %><%@ taglib uri='oscache' prefix='oscache' 
 %>
 <fd:CheckLoginStatus id = "user"/>
+<fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.catId}"/>
 

@@ -7,6 +7,7 @@ import java.util.Random;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeContentService;
 import com.freshdirect.cms.application.service.CompositeContentServiceTest;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -48,7 +49,7 @@ public class ClassGeneratorContentServiceTest extends CompositeContentServiceTes
     
     @SuppressWarnings("deprecation")
     public void testAttribEquals() {
-        ContentNodeI barNode = service.getContentNode(BAR_KEY);
+        ContentNodeI barNode = service.getContentNode(BAR_KEY, DraftContext.MAIN);
         assertEquals(2, barNode.getDefinition().getAttributeNames().size());
         assertEquals("barValue", barNode.getAttributeValue("BAR"));
         assertEquals("bazValue", barNode.getAttributeValue("BAZ"));

@@ -11,10 +11,9 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.term.Term;
-import com.freshdirect.cms.util.MultiStoreProperties;
-import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class SearchUtils {
@@ -23,6 +22,7 @@ public class SearchUtils {
 
 	public static List<Term> collectValues(ContentNodeI node, AttributeIndex index, boolean keywordsEnabled,
 			boolean primaryHomeKeywordsEnabled, boolean parentRecursionEnabled) {
+        final DraftContext draftContext = DraftContext.MAIN;
 		List<Term> values = new ArrayList<Term>();
 
 		String attributeName = index.getAttributeName();
@@ -43,13 +43,13 @@ public class SearchUtils {
 				&& relationshipAttributeName != null) {
 			if (attribute.getDefinition().getCardinality().equals(EnumCardinality.ONE)) {
 				ContentKey key = (ContentKey) attributeValue;
-				ContentNodeI relNode = CmsManager.getInstance().getContentNode(key);
+				ContentNodeI relNode = CmsManager.getInstance().getContentNode(key, draftContext);
 				if (relNode != null) {
 					Object relValue = relNode.getAttributeValue(relationshipAttributeName);
 					if (relValue != null)
 						addValues(values, relValue.toString(), isKeyword);
 					if (parentRecursionEnabled && index.isRecurseParent())
-						collectParentValues(values, relNode, relationshipAttributeName, isKeyword);
+						collectParentValues(values, relNode, relationshipAttributeName, isKeyword, draftContext);
 				}
 			} else { // EnumCardinality.MANY
 				@SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public class SearchUtils {
 		} else {
 			addValues(values, attributeValue.toString(), isKeyword);
 			if (parentRecursionEnabled && index.isRecurseParent())
-				collectParentValues(values, node, attributeName, isKeyword);
+				collectParentValues(values, node, attributeName, isKeyword, draftContext);
 		}
 		return values;
 	}
@@ -79,13 +79,13 @@ public class SearchUtils {
 			values.add(new Term(value));
 	}
 
-	private static void collectParentValues(List<Term> values, ContentNodeI node, String attributeName, boolean isKeyword) {
+	private static void collectParentValues(List<Term> values, ContentNodeI node, String attributeName, boolean isKeyword, DraftContext draftContext) {
 		if (!FDStoreProperties.isSearchRecurseParentAttributesEnabled())
 			return;
 		ContentKey key = node.getKey();
 		ContentKey parentKey = null;
-		while ((parentKey = getParentKey(key)) != null) {
-			ContentNodeI parentNode = CmsManager.getInstance().getContentNode(parentKey);
+		while ((parentKey = getParentKey(key, draftContext)) != null) {
+			ContentNodeI parentNode = CmsManager.getInstance().getContentNode(parentKey, draftContext);
 			if (parentNode != null) {
 				Object parentValue = parentNode.getAttributeValue(attributeName);
 				if (parentValue != null)
@@ -97,16 +97,18 @@ public class SearchUtils {
 	}
 
 	public static boolean isSearchable(ContentNodeI node) {
-		if (isOrphan(node))
+	    final DraftContext draftContext = DraftContext.MAIN;
+	    
+		if (isOrphan(node, draftContext))
 			return false;
 		if (node.getAttributeValue("HIDE_URL") != null && !FDStoreProperties.getPreviewMode())
 			return false;
 		Object notSearchable = node.getAttributeValue("NOT_SEARCHABLE");
 		while (notSearchable == null) {
-			ContentKey parentKey = getParentKey(node.getKey());
+			ContentKey parentKey = getParentKey(node.getKey(), draftContext);
 			if (parentKey == null)
 				return true;
-			node = CmsManager.getInstance().getContentNode(parentKey);
+			node = CmsManager.getInstance().getContentNode(parentKey, draftContext);
 			if (node == null)
 				return true;
 			notSearchable = node.getAttributeValue("NOT_SEARCHABLE");
@@ -116,16 +118,16 @@ public class SearchUtils {
 		return false;
 	}
 
-	private static boolean isOrphan(ContentNodeI node) {
+	private static boolean isOrphan(ContentNodeI node, DraftContext draftContext) {
 		ContentKey key = node.getKey();
 		while ((key != null)
 				&& !(key.getType().equals(FDContentTypes.STORE) || RECIPE_ROOT_FOLDER.equals(key) || FAQ_ROOT_FOLDER.equals(key))) {
-			key = getParentKey(key);
+			key = getParentKey(key, draftContext);
 		}
 		return key == null;
 	}
 
-	private static ContentKey getParentKey(ContentKey key) {
+	private static ContentKey getParentKey(ContentKey key, DraftContext draftContext) {
 		if (FDContentTypes.STORE.equals(key.getType())) {
 			return null;
 		}
@@ -133,11 +135,11 @@ public class SearchUtils {
 		ContentKey parentKey = null;
 
 		if (FDContentTypes.PRODUCT.equals(key.getType())) {
-			parentKey = CmsManager.getInstance().getPrimaryHomeKey(key);
+			parentKey = CmsManager.getInstance().getPrimaryHomeKey(key, draftContext);
 		}
 
 		if (parentKey == null) {
-			Set<ContentKey> keys = CmsManager.getInstance().getParentKeys(key);
+			Set<ContentKey> keys = CmsManager.getInstance().getParentKeys(key, draftContext);
 			if (keys.size() == 0) {
 				return null;
 			}

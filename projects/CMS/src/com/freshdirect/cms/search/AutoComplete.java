@@ -2,7 +2,6 @@ package com.freshdirect.cms.search;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutoComplete {

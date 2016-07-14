@@ -19,6 +19,7 @@ import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -58,8 +59,8 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
     
     CustomFieldDefinition customFields;
     
-    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly, String parentType ) {
-        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly, parentType);
+    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, GwtNodePermission permission, String parentType ) {
+        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), permission, parentType);
         this.customFields = customFields;
         grid.setHideHeaders( false );
     }

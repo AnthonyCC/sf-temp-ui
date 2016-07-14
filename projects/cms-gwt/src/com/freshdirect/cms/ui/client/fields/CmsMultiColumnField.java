@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,8 +44,8 @@ public class CmsMultiColumnField extends OneToManyRelationField implements SaveL
     
     CustomFieldDefinition customFields;
     
-    public CmsMultiColumnField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly, String parentType ) {
-        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly, parentType);
+    public CmsMultiColumnField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, GwtNodePermission permission, String parentType ) {
+        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), permission, parentType);
         this.customFields = customFields;
         grid.setHideHeaders( false );
     }

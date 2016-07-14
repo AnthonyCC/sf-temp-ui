@@ -9,10 +9,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumAttributeType;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ContentDecoratorI;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.node.AttributeMappedNode;
@@ -27,24 +30,25 @@ import com.freshdirect.cms.node.AttributeMappedNode;
  */
 public class ConfiguredProductDecorator implements ContentDecoratorI {
 
-	public ContentNodeI decorateNode(ContentNodeI node) {
+    @Override
+	public ContentNodeI decorateNode(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		if (!FDContentTypes.CONFIGURED_PRODUCT.equals(node.getKey().getType())) {
 			return null;
 		}
 
-		Map mapDefinition = new HashMap();
+		Map<String, AttributeDefI> mapDefinition = new HashMap<String, AttributeDefI>();
 
 		ContentKey skuKey = (ContentKey) node.getAttribute("SKU").getValue();
 		if (skuKey != null) {
-			Set charKeys = new HashSet();
-			collectReachable(charKeys, FDContentTypes.ERP_CHARACTERISTIC, skuKey.getContentNode());
-			for (Iterator chi = charKeys.iterator(); chi.hasNext();) {
-				ContentNodeI charNode = ((ContentKey) chi.next()).getContentNode();
+			Set<ContentKey> charKeys = new HashSet<ContentKey>();
+			collectReachable(charKeys, FDContentTypes.ERP_CHARACTERISTIC, contentService.getContentNode(skuKey, draftContext), contentService, draftContext );
+			for (final ContentKey cKey : charKeys) {
+				ContentNodeI charNode = contentService.getContentNode(cKey, draftContext);
 				String charName = (String) charNode.getAttribute("name").getValue();
-				Map values = new HashMap();
-				Set cvKeys = charNode.getChildKeys();
-				for (Iterator cvi = cvKeys.iterator(); cvi.hasNext();) {
-					ContentNodeI cvNode = ((ContentKey) cvi.next()).getContentNode();
+				Map<Object, String> values = new HashMap<Object, String>();
+				Set<ContentKey> cvKeys = charNode.getChildKeys();
+				for (Iterator<ContentKey> cvi = cvKeys.iterator(); cvi.hasNext();) {
+					ContentNodeI cvNode = contentService.getContentNode((ContentKey) cvi.next(), draftContext);
 					String cvName = (String) cvNode.getAttribute("name").getValue();
 					String label = cvNode.getLabel();
 					values.put(cvName, label);
@@ -58,15 +62,14 @@ public class ConfiguredProductDecorator implements ContentDecoratorI {
 		return n;
 	}
 
-	private static void collectReachable(Set collectedKeys, ContentType targetType, ContentNodeI root) {
-		Set children = root.getChildKeys();
-		for (Iterator i = children.iterator(); i.hasNext();) {
-			ContentKey k = (ContentKey) i.next();
+	private static void collectReachable(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root, ContentServiceI contentService, DraftContext draftContext) {
+		Set<ContentKey> children = root.getChildKeys();
+		for (final ContentKey k : children) {
 			if (targetType.equals(k.getType())) {
 				collectedKeys.add(k);
 				continue;
 			}
-			collectReachable(collectedKeys, targetType, k.getContentNode());
+			collectReachable(collectedKeys, targetType, contentService.getContentNode(k, draftContext), contentService, draftContext);
 		}
 	}
 

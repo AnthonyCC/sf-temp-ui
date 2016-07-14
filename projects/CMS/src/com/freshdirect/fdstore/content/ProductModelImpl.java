@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
@@ -1277,7 +1276,7 @@ inner:
 	@Override
     public CategoryModel getPrimaryHome() {
 		if (primaryHome == null) {
-			ContentKey phKey = CmsManager.getInstance().getPrimaryHomeKey(getContentKey());
+			ContentKey phKey = ContentFactory.getInstance().getPrimaryHomeKey(getContentKey());
 			
 			if (phKey != null) {
 				// cache value

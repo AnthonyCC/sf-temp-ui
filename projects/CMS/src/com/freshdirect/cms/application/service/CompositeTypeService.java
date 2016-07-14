@@ -14,7 +14,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
-import com.freshdirect.cms.meta.AttributeDef;
 import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.util.log.LoggerFactory;

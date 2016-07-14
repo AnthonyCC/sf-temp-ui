@@ -17,6 +17,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -206,7 +207,7 @@ public class FreshDirectDictionaryTest extends TestCase {
 			synonyms.addSynonyms(whiskey, factory);
 		}
 
-		List<ContentNodeI> nodes = new ArrayList<ContentNodeI>(content.getContentNodes(content.getContentKeys()).values());
+		List<ContentNodeI> nodes = new ArrayList<ContentNodeI>(content.getContentNodes(content.getContentKeys(DraftContext.MAIN), DraftContext.MAIN).values());
 		Collections.sort(nodes, new Comparator<ContentNodeI>() {
 			@Override
 			public int compare(ContentNodeI o1, ContentNodeI o2) {

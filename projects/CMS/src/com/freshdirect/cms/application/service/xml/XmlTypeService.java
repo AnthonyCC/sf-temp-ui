@@ -1,5 +1,7 @@
 package com.freshdirect.cms.application.service.xml;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,6 +32,51 @@ public class XmlTypeService extends AbstractTypeService implements ContentTypeSe
 		try {
 			stream = ResourceUtil.openResource(location);
 
+			initFromStream(stream);
+			
+		} catch (IOException ioe) {
+			throw new CmsRuntimeException(ioe);
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				throw new CmsRuntimeException(ex);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Convenience method to open XML definiton files directly from file
+	 * Also this method avoids using Hivemind.
+	 * 
+	 * @param defFile
+	 */
+	public XmlTypeService(final File defFile) {
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(defFile);
+
+			initFromStream(stream);
+
+		} catch (IOException ioe) {
+			throw new CmsRuntimeException(ioe);
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				throw new CmsRuntimeException(ex);
+			}
+		}
+	}
+	
+	
+	protected void initFromStream(InputStream stream) throws CmsRuntimeException {
+		try {
 			ContentTypeContentHandler typeHandler = new ContentTypeContentHandler(this);
 			
 			SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -42,7 +89,6 @@ public class XmlTypeService extends AbstractTypeService implements ContentTypeSe
 			parser.parse(dataInputSource, typeHandler);
 
 			setContentTypes(typeHandler.getContentTypes());
-			
 		} catch (IOException ioe) {
 			throw new CmsRuntimeException(ioe);
 		} catch (SAXException se) {
@@ -59,6 +105,4 @@ public class XmlTypeService extends AbstractTypeService implements ContentTypeSe
 			}
 		}
 	}
-	
-
 }

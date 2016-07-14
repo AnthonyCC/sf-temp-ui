@@ -4,6 +4,8 @@
 package com.freshdirect.cms.application.service;
 
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Interface for decorating {@link com.freshdirect.cms.ContentNodeI}
@@ -20,6 +22,6 @@ public interface ContentDecoratorI {
 	 * @param node ContentNodeI to decorate (never null)
 	 * @return decorated node, or null if no decoration was done 
 	 */
-	public ContentNodeI decorateNode(ContentNodeI node);
+	public ContentNodeI decorateNode(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext);
 
 }

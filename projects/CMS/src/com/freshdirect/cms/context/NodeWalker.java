@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
 /**
@@ -84,10 +85,10 @@ public class NodeWalker extends ContextWalker {
 	 * @param svc	ContextService instance.
 	 * @exception UnsupportedOperationException Thrown if iterator cannot remove from the set it belongs to 
 	 */
-	public static void filterOrphanedParents(Iterator<Context> it, ContextService svc) throws UnsupportedOperationException {
+	public static void filterOrphanedParents(Iterator<Context> it, ContextService svc, DraftContext draftContext) throws UnsupportedOperationException {
 		while (it.hasNext()) {
 			Context ctx = (Context) it.next();
-			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx)).walkWithMe();
+			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx, draftContext)).walkWithMe();
 			if (nw1.getTerminalNode() == null) {
 				it.remove();
 			}
@@ -102,12 +103,12 @@ public class NodeWalker extends ContextWalker {
 	 * @param svc	ContextService instance.
 	 * @return	UnsupportedOperationException Thrown if iterator cannot remove from the set it belongs to 
 	 */
-	public static List<Context> getVisibleParents(Iterator<Context> it, ContextService svc) {
+	public static List<Context> getVisibleParents(Iterator<Context> it, ContextService svc, DraftContext draftContext) {
 		List<Context> ctxs = new ArrayList<Context>();
 		
 		while (it.hasNext()) {
 			Context ctx = it.next();
-			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx)).walkWithMe();
+			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx, draftContext)).walkWithMe();
 			if (!nw1.getTestResult()) {
 				ctxs.add(ctx);
 			}
@@ -117,8 +118,8 @@ public class NodeWalker extends ContextWalker {
 	}
 
 
-	public static Comparator<Context> getRankedComparator(ContextService service, List<ContentKey> deptKeys) {
-		return new RankedContextComparator<Context>(service, deptKeys);
+	public static Comparator<Context> getRankedComparator(ContextService service, DraftContext draftContext, List<ContentKey> deptKeys) {
+		return new RankedContextComparator<Context>(service, draftContext, deptKeys);
 	}
 }
 
@@ -127,17 +128,19 @@ public class NodeWalker extends ContextWalker {
 
 class RankedContextComparator<T> implements Comparator<Context> {
 	ContextService	svc;
+	DraftContext draftContext;
 	List<ContentKey>			deptKeys;
 	
-	public RankedContextComparator(ContextService service, List<ContentKey> deptKeys) {
+	public RankedContextComparator(ContextService service, DraftContext draftContext, List<ContentKey> deptKeys) {
 		this.svc = service;
+		this.draftContext = draftContext;
 		this.deptKeys = deptKeys;
 	}
 	
 	
 	public int compare(Context c1, Context c2) {
-		NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(c1)).walkWithMe();
-		NodeWalker nw2 = new NodeWalker(svc.getContextualizedContentNode(c2)).walkWithMe();
+		NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(c1, draftContext)).walkWithMe();
+		NodeWalker nw2 = new NodeWalker(svc.getContextualizedContentNode(c2, draftContext)).walkWithMe();
 
 		int v1 = nw1.getRank(deptKeys);
 		int v2 = nw2.getRank(deptKeys);

@@ -22,6 +22,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus id="user" />
+<fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>
 <%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);

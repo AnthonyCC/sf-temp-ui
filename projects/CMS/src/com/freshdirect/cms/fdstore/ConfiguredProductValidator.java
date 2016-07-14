@@ -16,9 +16,9 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumAttributeType;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
@@ -49,7 +49,8 @@ import com.freshdirect.customer.ejb.ErpOrderLineUtil;
  */
 public class ConfiguredProductValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+    @Override
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		if (!FDContentTypes.CONFIGURED_PRODUCT.equals(node.getKey().getType())) {
 			return;
 		}
@@ -59,7 +60,7 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 			delegate.record(node.getKey(), "SKU", "No SKU specified");
 			return;
 		}
-		ContentNodeI sku = skuKey.getContentNode();
+        ContentNodeI sku = service.getContentNode( skuKey, draftContext );
 		if (sku == null) {
 			delegate.record(node.getKey(), "SKU", skuKey.getEncoded() + " not found");
 			return;
@@ -74,7 +75,7 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 
 		// validate sales unit
 
-		Map<String,ContentNodeI> salesUnits = getSalesUnits(sku);
+		Map<String,ContentNodeI> salesUnits = getSalesUnits(sku, service, draftContext);
 		String su = (String) node.getAttribute("SALES_UNIT").getValue();
 		if (su == null) {
 			delegate.record(node.getKey(), "SALES_UNIT", "No sales unit specified");
@@ -91,7 +92,7 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 
 		// validate characteristic values
 
-		Map<String,EnumDef> definitions = getDefinitionMap(sku);
+		Map<String,EnumDef> definitions = getDefinitionMap(sku, service, draftContext);
 		Map<String,String> options = getConfigurationOptions(node);
 
 		for ( Map.Entry<String,EnumDef> e : definitions.entrySet() ) {
@@ -134,7 +135,7 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 		//		}
 		
 		// validate parent counts
-		Set<ContentKey> parentKeys = service.getParentKeys(node.getKey());
+		Set<ContentKey> parentKeys = service.getParentKeys(node.getKey(), draftContext);
 		int catCount = 0;
 		int confPrdCount = 0;
 		int recSecCount = 0;
@@ -183,16 +184,16 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 	 * @param sku Sku node
 	 * @return Map of String (characteristic name) -> {@link EnumDef} (char. values)
 	 */
-	public static Map<String,EnumDef> getDefinitionMap(ContentNodeI sku) {
+	public static Map<String,EnumDef> getDefinitionMap(ContentNodeI sku, ContentServiceI contentService, DraftContext draftContext) {
 		Map<String,EnumDef> mapDefinition = new HashMap<String,EnumDef>();
-		Set<ContentKey> charKeys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_CHARACTERISTIC);
+		Set<ContentKey> charKeys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_CHARACTERISTIC, contentService, draftContext);
 		for ( ContentKey charKey : charKeys ) {
-			ContentNodeI charNode = charKey.getContentNode();
+			ContentNodeI charNode = contentService.getContentNode(charKey, draftContext);
 			String charName = (String) charNode.getAttribute("name").getValue();
 			Map<Object,String> values = new HashMap<Object,String>();
 			Set<ContentKey> cvKeys = charNode.getChildKeys();
 			for ( ContentKey cvKey : cvKeys ) {
-				ContentNodeI cvNode = cvKey.getContentNode();
+				ContentNodeI cvNode = contentService.getContentNode(cvKey, draftContext);
 				String cvName = (String) cvNode.getAttribute("name").getValue();
 				String label = cvNode.getLabel();
 				values.put(cvName, label);
@@ -208,10 +209,9 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 	 * @param sku
 	 * @return Map of String (sales unit) -> {@link ContentNodeI} of type <code>ErpSalesUnit</code>
 	 */
-	public static Map<String,ContentNodeI> getSalesUnits(ContentNodeI sku) {
-		
-		Set<ContentKey> keys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_SALES_UNIT);
-		Map<ContentKey, ContentNodeI> m = CmsManager.getInstance().getContentNodes(keys);
+	public static Map<String,ContentNodeI> getSalesUnits(ContentNodeI sku, ContentServiceI contentService, DraftContext draftContext) {
+		Set<ContentKey> keys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_SALES_UNIT, contentService, draftContext);
+		Map<ContentKey, ContentNodeI> m = contentService.getContentNodes(keys, draftContext);
 		Map<String,ContentNodeI> su = new HashMap<String,ContentNodeI>(m.size());
 		
 		for ( Map.Entry<ContentKey, ContentNodeI> e : m.entrySet() ) {

@@ -19,6 +19,7 @@ Symbols:
 			<construct class="com.freshdirect.cms.search.BackgroundProcessorImpl">
 				<set-service property="searchService" service-id="com.freshdirect.cms.search.SearchService" />
 				<set-object property="publishTasks" value="configuration:com.freshdirect.cms.publish.publishTasks"/>
+				<set-service property="mergeTask" service-id="DraftMergeTask"/>
 			</construct>		
 		</invoke-factory>
 	</service-point>
@@ -236,6 +237,18 @@ because otherwise the external modifications of the slide database won't get pic
 		</interceptor>
 	</service-point>
 
+    <!--
+        CMS DRAFTS 
+    -->
+
+    <service-point id="DraftService" interface="com.freshdirect.cms.application.ContentServiceI">
+        <invoke-factory>
+            <construct class="com.freshdirect.cms.application.service.DraftHandlingContentService">
+                <service>StoreContent</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+
 	<!--
 		CMS EXTRAS
 	-->
@@ -299,7 +312,7 @@ because otherwise the external modifications of the slide database won't get pic
 	
 	<configuration-point id="composedServices" schema-id="serviceList"/>
 	<contribution configuration-id="composedServices">
-		<service name="StoreContent"/>
+		<service name="DraftService"/>
 		<service name="MediaService"/>
 		<service name="FormContent"/>
 		<service name="CmsQueries"/>
@@ -391,6 +404,12 @@ because otherwise the external modifications of the slide database won't get pic
 			<construct class="com.freshdirect.cms.application.service.WebDavService">
 				<set property="repositoryUrl" value="${cms.publish.repositoryUrl}" />
 			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="DraftMergeTask" interface="com.freshdirect.cms.merge.MergeTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.merge.DraftMergeTask"/>
 		</invoke-factory>
 	</service-point>
 

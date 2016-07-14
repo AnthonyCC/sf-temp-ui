@@ -1,27 +1,25 @@
 package com.freshdirect.cms;
 
-import org.apache.commons.lang.enums.Enum;
-
 /**
  * Enumeration of all attribute types.
  */
-public class EnumAttributeType extends Enum {
-	private static final long serialVersionUID = 636327470114226135L;
-
-	public static final EnumAttributeType BOOLEAN = new EnumAttributeType("B", "Boolean", Boolean.FALSE);
-	public static final EnumAttributeType INTEGER = new EnumAttributeType("I", "Integer", new Integer(0));
-	public static final EnumAttributeType DOUBLE = new EnumAttributeType("D", "Double", new Double(0));
-	public static final EnumAttributeType STRING = new EnumAttributeType("S", "String", "");
-    public static final EnumAttributeType LONG_TEXT = new EnumAttributeType("TXT", "Text", "");
-	public static final EnumAttributeType RELATIONSHIP = new EnumAttributeType("R", "Relationship", null);
-	public static final EnumAttributeType TABLE = new EnumAttributeType("T", "Table", null);
-	public static final EnumAttributeType ENUM = new EnumAttributeType("E", "Enumeration", null);
-	public static final EnumAttributeType DATE = new EnumAttributeType("DT", "Date", null);
-	public static final EnumAttributeType WYSIWYG = new EnumAttributeType("WY", "String", "");
-	public static final EnumAttributeType TIME = new EnumAttributeType("TS", "Time", null);
-
-	private final String label;
-	private final Object emptyValue;
+public enum EnumAttributeType {
+    BOOLEAN("B", "Boolean", Boolean.FALSE),
+    INTEGER("I", "Integer", Integer.valueOf(0)),
+    DOUBLE("D", "Double", Double.valueOf(0)),
+    STRING("S", "String", ""),
+    LONG_TEXT("TXT", "Text", ""),
+    RELATIONSHIP("R", "Relationship", null),
+    TABLE("T", "Table", null),
+    ENUM("E", "Enumeration", null),
+    DATE("DT", "Date", null),
+    WYSIWYG("WY", "String", ""),
+    TIME("TS", "Time", null)
+    ;
+    
+    final String name;
+    final String label;
+    final Object emptyValue;
 
 	/**
 	 * Constructor.
@@ -30,11 +28,16 @@ public class EnumAttributeType extends Enum {
 	 * @param label a human-readble name of the value
 	 * @param emptyValue a value that the enum takes if it is considered to be empty.
 	 */
-	private EnumAttributeType(String name, String label, Object emptyValue) {
-		super(name);
+	EnumAttributeType(String name, String label, Object emptyValue) {
+	    this.name = name;
 		this.label = label;
 		this.emptyValue = emptyValue;
 	}
+
+	
+    public String getName() {
+        return name;
+    }
 
 	public String getLabel() {
 		return label;
@@ -44,7 +47,17 @@ public class EnumAttributeType extends Enum {
 		return emptyValue;
 	}
 
-	public static EnumAttributeType getEnum(String name) {
-		return (EnumAttributeType) getEnum(EnumAttributeType.class, name);
-	}
+
+	@Deprecated
+    public static EnumAttributeType getEnum(String name) {
+        if (name == null)
+            return null;
+
+        for (EnumAttributeType e : values()) {
+            if (e.getName().equalsIgnoreCase(name)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

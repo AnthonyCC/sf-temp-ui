@@ -11,7 +11,9 @@ import com.freshdirect.cms.ContentKey;
  */
 public class ContentValidationMessage implements Serializable {
 
-	private final ContentKey contentKey;
+    private static final long serialVersionUID = -4878387409967882408L;
+
+    private final ContentKey contentKey;
 	private final String attribute;
 	private final String message;
 

@@ -8,7 +8,9 @@ package com.freshdirect.cms;
  */
 public class CmsRuntimeException extends RuntimeException {
 
-	public CmsRuntimeException() {
+    private static final long serialVersionUID = -5966114054463425031L;
+
+    public CmsRuntimeException() {
 		super();
 	}
 

@@ -3,8 +3,6 @@ package com.freshdirect.cms.dbmapping;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,12 +13,10 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import com.freshdirect.cms.CmsRuntimeException;
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.BaseContentTypeService;
-import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.CollectionUtil;
 
 /**

@@ -7,6 +7,12 @@ package com.freshdirect.cms.listeners;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +22,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
+import com.freshdirect.cms.application.CmsRequestI.Source;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.service.DbService;
 import com.freshdirect.cms.changecontrol.ChangeLogServiceI;
@@ -26,13 +33,6 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 	private static final Logger LOGGER = LoggerFactory.getInstance(MediaEventHandler.class);
@@ -87,7 +87,7 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 				return;
 			}
 			
-			ContentNodeI assocNode = assoc.getContentKey().lookupContentNode();
+			ContentNodeI assocNode = CmsManager.getInstance().getContentNode(assoc.getContentKey());
 			if (assocNode == null) {
 		    	LOGGER.debug("<--associate() no content node found");
 				return;
@@ -105,7 +105,7 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 			}
 			ContentNodeUtil.addRelationshipKey((RelationshipI) attrib, media.getContentKey());
 			
-			CmsRequest req = new CmsRequest(new CmsUser(userId));
+			CmsRequest req = new CmsRequest(new CmsUser(userId), Source.AUTO_ASSOCIATE);
 			req.addNode(assocNode);
 	    	LOGGER.debug("---associate()-->CmsManager.handle() start");
 			CmsManager.getInstance().handle(req);

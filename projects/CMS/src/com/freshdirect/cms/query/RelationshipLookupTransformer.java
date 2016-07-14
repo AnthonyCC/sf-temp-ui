@@ -4,9 +4,9 @@ import org.apache.commons.collections.Transformer;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.RelationshipDefI;
+import com.freshdirect.cms.application.CmsManager;
 
 /**
  * {@link org.apache.commons.collections.Transformer} that returns the
@@ -24,11 +24,12 @@ public class RelationshipLookupTransformer implements Transformer {
 		}
 	}
 
+	@Override
 	public Object transform(Object o) {
-		ContentNodeI node = (ContentNodeI) o;
+	    ContentNodeI node = (ContentNodeI) o;
 		ContentKey k = (ContentKey) node.getAttribute(relDef.getName())
 				.getValue();
-		return k == null ? null : k.lookupContentNode();
+		return k == null ? null : CmsManager.getInstance().getContentNode(k);
 	}
 
 }

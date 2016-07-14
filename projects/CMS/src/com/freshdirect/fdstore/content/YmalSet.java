@@ -24,6 +24,7 @@ import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.query.AttributeEqualsPredicate;
 import com.freshdirect.cms.query.AttributeInPredicate;
@@ -396,7 +397,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		variantPredicate = new RelationshipAnyPredicate(variantsRelDef,
 				                                        variantPredicate);
 
-		results = contentService.queryContentNodes( FDContentTypes.RECIPE, variantPredicate );
+		results = contentService.queryContentNodes( FDContentTypes.RECIPE, variantPredicate, DraftContext.MAIN );
 		
 		// present the results as a list of Recipe objects
 		recipes = new ArrayList<Recipe>();

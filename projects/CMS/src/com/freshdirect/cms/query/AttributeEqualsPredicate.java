@@ -1,6 +1,7 @@
 package com.freshdirect.cms.query;
 
 import com.freshdirect.cms.AttributeDefI;
+import com.freshdirect.cms.ContentNodeI;
 
 /**
  * {@link org.apache.commons.collections.Predicate} to check for equality of an

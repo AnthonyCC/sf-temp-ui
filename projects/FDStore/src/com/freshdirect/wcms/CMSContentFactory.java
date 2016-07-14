@@ -30,6 +30,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.fdstore.FDResourceException;
@@ -57,6 +58,8 @@ public class CMSContentFactory {
 	private static CMSContentFactory instance = null;
 	Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
 	private static final Category LOG = LoggerFactory.getInstance(CMSContentFactory.class);
+	
+	private DraftContext draftContext = DraftContext.MAIN;
 	
 	public static CMSContentFactory getInstance(){
 		if(instance == null){
@@ -127,8 +130,8 @@ public class CMSContentFactory {
 	
 	public final List<CMSPickListItemModel> getPickListByParameter(CMSPageRequest request){
 		List<CMSPickListItemModel> pickLists = new ArrayList<CMSPickListItemModel>();
-		Set<ContentKey> contentKeys = getContentService().getContentKeysByType(ContentType.get("PickList"));
-		Map<ContentKey,ContentNodeI> contentNodes = getContentService().getContentNodes(contentKeys);
+		Set<ContentKey> contentKeys = getContentService().getContentKeysByType(ContentType.get("PickList"), draftContext);
+		Map<ContentKey,ContentNodeI> contentNodes = getContentService().getContentNodes(contentKeys, draftContext);
 		for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
 			ContentNodeI contentNode = contentNodeEntry.getValue();
 			CMSPickListItemModel pickList = createPickList(contentNode, request);
@@ -142,8 +145,8 @@ public class CMSContentFactory {
 		Map<ContentKey,ContentNodeI> contentNodes = new HashMap<ContentKey,ContentNodeI>();
 		//if preview load from cms db, else read from erps feed table.
 		if(pageRequest.isPreview()){
-			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"));
-			contentNodesMap = getContentService().getContentNodes(keys);
+			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"), draftContext);
+			contentNodesMap = getContentService().getContentNodes(keys, draftContext);
 		} else {
 			String data = getFeedContent();
 			if(StringUtils.isNotBlank(data)){
@@ -529,7 +532,7 @@ public class CMSContentFactory {
 		ContentNodeI contentNodeI = null;
 		try {
 			if (request.isPreview() || (key!=null && key.getType()!=null && key.getType().toString().equals("Image"))) {
-				contentNodeI = getContentService().getContentNode(key);
+				contentNodeI = getContentService().getContentNode(key, draftContext);
 			} else {
 				if (contentNodesMap != null && !contentNodesMap.isEmpty()) {
 					for (Entry<ContentKey, ContentNodeI> contentNodeEntry : contentNodesMap

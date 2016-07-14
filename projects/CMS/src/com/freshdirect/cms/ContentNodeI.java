@@ -83,10 +83,6 @@ public interface ContentNodeI extends Serializable {
 	// infrastructure
 	//
 
-	public void setDelete(boolean b);
-
-	public boolean isDelete();
-
 	/**
 	 * @return a deep copy of the node
 	 */

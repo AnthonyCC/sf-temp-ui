@@ -17,6 +17,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -99,7 +100,7 @@ public class ClassGeneratorTool {
         ContentNodeGenerator c = new ContentNodeGenerator(contentService);
 
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.PRODUCT, "prod"));
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -140,7 +141,7 @@ public class ClassGeneratorTool {
             
         }
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.IMAGE, "image"));
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.IMAGE, "image"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -157,7 +158,7 @@ public class ClassGeneratorTool {
              */
         }
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.DEPARTMENT, "depart"));
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.DEPARTMENT, "depart"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -186,7 +187,7 @@ public class ClassGeneratorTool {
 
     @SuppressWarnings("deprecation")
     public static long benchmark(ContentServiceI service, int count, ContentKey contentKey) {
-        ContentNodeI node = service.getContentNode(contentKey);
+        ContentNodeI node = service.getContentNode(contentKey, DraftContext.MAIN);
         Set names = node.getDefinition().getAttributeNames();
         long time = System.currentTimeMillis();
         int inc = 0;

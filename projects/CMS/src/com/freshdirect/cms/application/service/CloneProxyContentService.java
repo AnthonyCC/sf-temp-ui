@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * A proxy content service, that makes sure each node returned by the
@@ -23,18 +24,20 @@ public class CloneProxyContentService extends ProxyContentService implements Con
 		super(service);
 	}
 
-	public ContentNodeI getContentNode(ContentKey key) {
-		ContentNodeI node = super.getContentNode(key);
+	@Override
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
+		ContentNodeI node = super.getContentNode(key, draftContext);
 		
 		return node == null ? null : node.copy();
 	}
 
-	public Map getContentNodes(Set keys) {
-		Map nodes       = super.getContentNodes(keys);
-		Map copiedNodes = new HashMap();
+	@Override
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
+		Map<ContentKey, ContentNodeI> nodes       = super.getContentNodes(keys, draftContext);
+		Map<ContentKey, ContentNodeI> copiedNodes = new HashMap<ContentKey, ContentNodeI>();
 		
-		for (Iterator it = nodes.entrySet().iterator(); it.hasNext();) {
-			Map.Entry    entry = (Map.Entry) it.next();
+		for (Iterator<Map.Entry<ContentKey, ContentNodeI>> it = nodes.entrySet().iterator(); it.hasNext();) {
+			Map.Entry<ContentKey, ContentNodeI>    entry = (Map.Entry<ContentKey, ContentNodeI>) it.next();
 			ContentNodeI node  = (ContentNodeI) entry.getValue();
 			
 			copiedNodes.put(entry.getKey(), node.copy());

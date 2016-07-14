@@ -7,16 +7,9 @@ package com.freshdirect.fdstore.attributes.cms;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.EnumCardinality;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.util.MultiStoreProperties;
-import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.fdstore.attributes.FDAttributeBuilderI;
 
 /**
@@ -26,28 +19,8 @@ import com.freshdirect.fdstore.attributes.FDAttributeBuilderI;
 public abstract class AbstractAttributeBuilder implements FDAttributeBuilderI {
     
     public abstract Object buildValue(AttributeDefI aDef, Object value);
-    /*
-    public Attribute build(AttributeDefI cmsAttrDef, Object value) {
-
-        Attribute attr = null;
-
-        if (!EnumCardinality.MANY.equals(cmsAttrDef.getCardinality())) {
-            attr = new Attribute(getFDAttributeType(), cmsAttrDef.getName(), cmsAttrDef.isInheritable());
-            //
-            // need to unwrap improperly created relationships
-            //
-            if (value instanceof List) {
-                value = ((List) value).get(0);
-            }
-            attr.setValue(buildValue(cmsAttrDef, value));
-        } else {
-            throw new RuntimeException("MultiAttribute support is removed, this is an illegal usage of the API " +
-            		"(calling getAttribute('"+cmsAttrDef.getName()+"')");
-        }
-
-        return attr;
-    }*/
     
+    @Override
     public Object constructValue(AttributeDefI cmsAttrDef, Object value) {
         if (!EnumCardinality.MANY.equals(cmsAttrDef.getCardinality())) {
             if (value instanceof List) {
@@ -70,22 +43,4 @@ public abstract class AbstractAttributeBuilder implements FDAttributeBuilderI {
         }
         return vals;
     }
-    
-    protected ContentNodeI findBestParent(ContentNodeI childNode) {
-
-		if (FDContentTypes.PRODUCT.equals(childNode.getKey().getType())) {
-			ContentKey key = CmsManager.getInstance().getPrimaryHomeKey(childNode.getKey());
-			if (key != null) {
-				return CmsManager.getInstance().getContentNode(key);
-			}
-		}
-
-		Set<ContentKey> parents = CmsManager.getInstance().getParentKeys(childNode.getKey());
-		if (!parents.isEmpty()) {
-			List<ContentKey> parentList = new ArrayList<ContentKey>(parents);
-			return parentList.get(0).lookupContentNode();
-		}
-		System.out.println("no parent found for " + childNode.getKey());
-		return null;
-	}  
 }

@@ -5,16 +5,18 @@ import java.util.Map;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentTypeDefI;
+import com.freshdirect.cms.application.DraftContext;
 
 public abstract class GeneratedContentNode implements ContentNodeI {
 
     protected ContentKey key;
+    protected DraftContext draftContext = DraftContext.MAIN;
     private boolean delete;    
 
     public GeneratedContentNode() {
     }
     
+    @Override
     public ContentKey getKey() {
         return key;
     }
@@ -23,7 +25,15 @@ public abstract class GeneratedContentNode implements ContentNodeI {
         this.key = key;
     }
 
-
+    
+    public DraftContext getDraftContext() {
+        return draftContext;
+    }
+    
+    public void setDraftContext(DraftContext draftContext) {
+        this.draftContext = draftContext;
+    }
+    
     public boolean isDelete() {
         return delete;
     }
@@ -50,9 +60,10 @@ public abstract class GeneratedContentNode implements ContentNodeI {
     
     public abstract void setContentNodeGenerator(NodeGeneratorI generator);
     
-
+    @Override
     public abstract Object getAttributeValue(String name);
     
+    @Override
     public abstract boolean setAttributeValue(String name, Object value);
 
     public AttributeDefI getAttributeDef(String name) {

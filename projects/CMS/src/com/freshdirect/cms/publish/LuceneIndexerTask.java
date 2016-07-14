@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.util.SingleStoreFilterHelper;
@@ -26,6 +27,7 @@ public class LuceneIndexerTask implements PublishTask {
     private final static Logger LOGGER = LoggerFactory.getInstance(LuceneIndexerTask.class);
 
     private final ContentServiceI contentService;
+    private final DraftContext draftContext = DraftContext.MAIN;
     @SuppressWarnings("unused")
 	private final ContentSearchServiceI searchService;
 
@@ -64,14 +66,14 @@ public class LuceneIndexerTask implements PublishTask {
 
 
         LOGGER.info("loading keys");
-        Set<ContentKey> keys = contentService.getContentKeys();
+        Set<ContentKey> keys = contentService.getContentKeys(draftContext);
         LOGGER.info("loading nodes:"+keys.size());
-        Map<ContentKey, ContentNodeI> nodesMap = contentService.getContentNodes(keys);
+        Map<ContentKey, ContentNodeI> nodesMap = contentService.getContentNodes(keys, draftContext);
         
         Collection<ContentNodeI> _nodes = nodesMap.values();
         
         LOGGER.info("filtering nodes:"+_nodes.size());
-        _nodes = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), _nodes);
+        _nodes = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), _nodes, contentService, draftContext);
         LOGGER.info("  ... stripped down to :"+_nodes.size());
         
         LOGGER.info("indexing nodes:"+_nodes.size());

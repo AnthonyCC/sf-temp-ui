@@ -16,6 +16,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.term.LowercaseCoder;
@@ -82,19 +83,20 @@ public class SearchRelevancyList {
         Map<String, SearchRelevancyList> result = new HashMap<String, SearchRelevancyList>();
 
         CmsManager instance = CmsManager.getInstance();
-
+        DraftContext draftContext = DraftContext.MAIN;
+        
         // find out root content key of search relevancy list
         
         final boolean isFDX = instance.getSingleStoreKey().getId().equals(EnumEStoreId.FDX.getContentId());
         final ContentKey listKey = isFDX ? ContentKey.decode(SEARCH_RELEVANCY_KEY_FDX) : ContentKey.decode(SEARCH_RELEVANCY_KEY);
         
         
-        ContentNodeI searchRelRootNode = instance.getContentNode( listKey );
+        ContentNodeI searchRelRootNode = instance.getContentNode( listKey, draftContext );
         if (searchRelRootNode!=null) {
             LOGGER.info("SearchRelevancyList:: " + searchRelRootNode + " located.");
             
-            Set<ContentKey> searchRelKeys = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.SEARCH_RELEVANCY_LIST);
-            Map<ContentKey, ContentNodeI> searchRelNodes = instance.getContentNodes(searchRelKeys);
+            Set<ContentKey> searchRelKeys = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.SEARCH_RELEVANCY_LIST, instance, draftContext);
+            Map<ContentKey, ContentNodeI> searchRelNodes = instance.getContentNodes(searchRelKeys, draftContext);
             LOGGER.info("found " + searchRelNodes.size() + " nodes.");
             for (Iterator<ContentNodeI> contentNodeIterator = searchRelNodes.values().iterator(); contentNodeIterator.hasNext();) {
                 ContentNodeI node = contentNodeIterator.next();
@@ -107,7 +109,7 @@ public class SearchRelevancyList {
                         Map<ContentKey, Integer> scores = new HashMap<ContentKey, Integer>();
                         for (int i = 0; i < hints.size(); i++) {
                             ContentKey key = hints.get(i);
-                            ContentNodeI hint = instance.getContentNode(key);
+                            ContentNodeI hint = instance.getContentNode(key, draftContext);
                             
                             Integer score = ContentNodeUtil.getIntegerAttribute(hint, SCORE);
                             ContentKey categoryKey = ContentNodeUtil.getContentKeyAttribute(hint, CATEGORY);

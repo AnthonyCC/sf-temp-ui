@@ -3,6 +3,7 @@ package com.freshdirect.cms.validation;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Content-node validator interface.
@@ -24,6 +25,6 @@ public interface ContentValidatorI {
 
 	 */
 	public void validate(ContentValidationDelegate delegate,
-			ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode);
+			ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode);
 
 }

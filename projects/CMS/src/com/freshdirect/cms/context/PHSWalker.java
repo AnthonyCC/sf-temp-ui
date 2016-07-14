@@ -3,11 +3,10 @@ package com.freshdirect.cms.context;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * PHSWalker helps {@link com.freshdirect.cms.ui.tapestry.component.PrimaryHomeSelection} component
@@ -64,7 +63,7 @@ public class PHSWalker extends ContextWalker {
 	 * @param svc	Instance of ContextService
 	 * @return List<ContentKey> of content keys
 	 */
-	public static List getVisibleParents(Iterator it, ContextService svc) {
+	public static List getVisibleParents(Iterator it, ContextService svc, DraftContext draftContext) {
 		List parentKeys = new ArrayList();
 		while (it.hasNext()) {
 			Context ctx = (Context) it.next();
@@ -72,7 +71,7 @@ public class PHSWalker extends ContextWalker {
 			if (ctx.isRoot()) // [MNT-380] avoid crash with NPE
 				continue;
 			
-			PHSWalker walker = new PHSWalker(svc.getContextualizedContentNode(ctx));
+			PHSWalker walker = new PHSWalker(svc.getContextualizedContentNode(ctx, draftContext));
 			if (walker.walkAndTest()) {
 				ContentKey homeKey = walker.getHomeKey();
 				if (homeKey != null)

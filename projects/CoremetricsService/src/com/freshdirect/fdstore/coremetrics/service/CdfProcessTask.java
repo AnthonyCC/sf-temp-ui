@@ -23,6 +23,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -269,7 +270,7 @@ public class CdfProcessTask {
 
 
 	private void processCmsNode(ContentKey aKey, ContentKey parentKey, ContentServiceI svc) {
-		ContentNodeI node = svc.getContentNode(aKey);
+		ContentNodeI node = svc.getContentNode(aKey, DraftContext.MAIN);
 		if (node == null)
 			return;
 

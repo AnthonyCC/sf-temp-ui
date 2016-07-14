@@ -26,8 +26,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
     int loadedPosition;
 
     String lastOrder;
-    
-    
+
     List<ContentNodeModel> alreadyLoaded = new ArrayList<ContentNodeModel>();
 
     public ChangeSetLoader(ChangeSetQueryResponse response) {
@@ -38,11 +37,10 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
     }
 
     @Override
-    public void load(DataReader<PagingLoadResult<? extends ModelData>> reader, Object loadConfig,
-            final AsyncCallback<PagingLoadResult<? extends ModelData>> callback) {
+    public void load(DataReader<PagingLoadResult<? extends ModelData>> reader, Object loadConfig, final AsyncCallback<PagingLoadResult<? extends ModelData>> callback) {
         final PagingLoadConfig config = (PagingLoadConfig) loadConfig;
-        String newSortOrder = config.getSortDir().name() +'-'+config.getSortField();
-        if (lastOrder != null) { 
+        String newSortOrder = config.getSortDir().name() + '-' + config.getSortField();
+        if (lastOrder != null) {
             if (!lastOrder.equals(newSortOrder)) {
                 alreadyLoaded.clear();
                 loadedPosition = 0;
@@ -50,7 +48,6 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
         } else {
             lastOrder = newSortOrder;
         }
-        
 
         if (config.getOffset() + config.getLimit() > alreadyLoaded.size()) {
             // we have to load other objects
@@ -59,6 +56,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
                 response.getQuery().setSortType(config.getSortField());
                 response.getQuery().setDirection(config.getSortDir());
                 CmsGwt.getContentService().getChangeSets(response.getQuery(), new BaseCallback<ChangeSetQueryResponse>() {
+
                     @Override
                     public void errorOccured(Throwable error) {
                         callback.onFailure(error);
@@ -96,36 +94,40 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
         for (GwtChangeSet changeSet : response.getChanges()) {
             for (GwtNodeChange nodeChange : changeSet.getNodeChanges()) {
                 if (nodeChange.getChangeDetails().size() == 0) {
-                	
-                    ContentNodeModel b = new ContentNodeModel(nodeChange.getType(), nodeChange.getLabel(), nodeChange.getKey() );
+
+                    ContentNodeModel b = new ContentNodeModel(nodeChange.getType(), nodeChange.getLabel(), nodeChange.getKey());
 
                     b.set("changeType", nodeChange.getChangeType());
 
                     b.set("user", changeSet.getUserId());
                     b.set("note", changeSet.getNote());
                     b.set("date", changeSet.getModifiedDate());
-                    
-                    b.set("previewLink", nodeChange.getPreviewLink() );
-                    
+
+                    b.set("previewLink", nodeChange.getPreviewLink());
+
                     alreadyLoaded.add(b);
 
                 } else {
                     for (GwtChangeDetail detail : nodeChange.getChangeDetails()) {
-                    	
+
                         ContentNodeModel b = new ContentNodeModel(nodeChange.getType(), nodeChange.getLabel(), nodeChange.getKey());
-                        
-                        b.set("old", detail.getOldValue());
+
+                        if (detail.getOldValue() != null) {
+                            b.set("old", detail.getOldValue());
+                        }
                         b.set("new", detail.getNewValue());
                         b.set("attribute", detail.getAttributeName());
 
+                        if (nodeChange.getChangeType() !=null){
                         b.set("changeType", nodeChange.getChangeType());
+                        }
 
                         b.set("user", changeSet.getUserId());
                         b.set("note", changeSet.getNote());
                         b.set("date", changeSet.getModifiedDate());
 
-                        b.set("previewLink", nodeChange.getPreviewLink() );
-                        
+                        b.set("previewLink", nodeChange.getPreviewLink());
+
                         alreadyLoaded.add(b);
                     }
                 }

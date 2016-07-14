@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Composite content node that merges the attributes of multiple nodes.
@@ -177,24 +178,13 @@ public class CompositeContentNode implements ContentNodeI {
 
 	@Override
 	public String getLabel() {
-		return ContentNodeUtil.getLabel(this);
+	    // FIXME
+		return ContentNodeUtil.getLabel(this, DraftContext.MAIN);
 	}
 
 	//
 	// infrastructure
 	//
-
-	private boolean delete = true;
-
-	@Override
-	public void setDelete(boolean b) {
-		delete = b;
-	}
-
-	@Override
-	public boolean isDelete() {
-		return delete;
-	}
 
 	@Override
 	public ContentNodeI copy() {

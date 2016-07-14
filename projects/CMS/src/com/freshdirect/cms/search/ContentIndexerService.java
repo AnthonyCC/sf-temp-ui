@@ -6,6 +6,7 @@ package com.freshdirect.cms.search;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ProxyContentService;
 
 /**
@@ -29,13 +30,14 @@ public class ContentIndexerService extends ProxyContentService {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.application.ContentServiceI#handle(com.freshdirect.cms.application.CmsRequestI)
 	 */
-	public CmsResponseI handle(CmsRequestI request) {
-		CmsResponseI response = super.handle(request);
+    public CmsResponseI handle(CmsRequestI request) {
+        CmsResponseI response = super.handle(request);
 
-		searchService.index(request.getNodes(), false);
-		searchService.indexSpelling(request.getNodes());
-
-		return response;
-	}
+        if (DraftContext.MAIN == request.getDraftContext()) {
+            searchService.index(request.getNodes(), false);
+            searchService.indexSpelling(request.getNodes());
+        }
+        return response;
+    }
 
 }

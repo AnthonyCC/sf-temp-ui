@@ -1,10 +1,11 @@
 package com.freshdirect.cms.fdstore;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 
 /**
@@ -13,7 +14,8 @@ import com.freshdirect.cms.labels.ILabelProvider;
  */
 public class SkuLabelProvider implements ILabelProvider {
 
-	public String getLabel(ContentNodeI node) {
+    @Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		if (!FDContentTypes.SKU.equals(node.getKey().getType())) {
 			return null;
 		}
@@ -29,11 +31,10 @@ public class SkuLabelProvider implements ILabelProvider {
 		}
 
 		// variation matrix
-		List l = (List) node.getAttributeValue("VARIATION_MATRIX");
+		List<ContentKey> l = (List<ContentKey>) node.getAttributeValue("VARIATION_MATRIX");
 		if (l != null && !l.isEmpty()) {
-			for (Iterator i = l.iterator(); i.hasNext();) {
-				ContentKey dvKey = (ContentKey) i.next();
-				ContentNodeI domainValue = dvKey.getContentNode();
+		    for (final ContentKey dvKey : l) {
+				ContentNodeI domainValue = contentService.getContentNode(dvKey, draftContext);
 
 				String dvLabel = LabelProviderUtil.getAttribute(domainValue,
 						"Label", "");

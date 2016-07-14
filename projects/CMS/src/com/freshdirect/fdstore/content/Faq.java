@@ -1,8 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.freshdirect.cms.ContentKey;
 
 /**

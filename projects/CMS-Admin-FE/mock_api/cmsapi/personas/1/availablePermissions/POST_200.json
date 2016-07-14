@@ -1,0 +1,12 @@
+{
+  "permissions": [
+    {
+      "id": 1,
+      "name": "Mock permission"
+    },
+    {
+      "id": 2,
+      "name": "Another mock permission"
+    }
+  ]
+}

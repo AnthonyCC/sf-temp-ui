@@ -1014,6 +1014,36 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 	vertical-align: middle;
 }
 
+.draftIndicator {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px;
+    font-size: 12px;
+    background: red;
+    color: #fff;
+    z-index: 2000;
+    pointer-events: none;
+    opacity: .7;
+}
+
+.draftIndicator[draft-name="main"],
+.draftIndicator[draft-name="Main"],
+.draftIndicator[draft-name="MAIN"] {
+    background: black;
+}
+
+.draftIndicator a:link,
+.draftIndicator a:hover,
+.draftIndicator a:visited,
+.draftIndicator a:focus,
+.draftIndicator a {
+    font-size: 12px;
+    color: #fff;
+    text-decoration: underline;
+    pointer-events: auto;
+}
+
 .wallet-error-msg{
 	padding-bottom: 4px;
 }

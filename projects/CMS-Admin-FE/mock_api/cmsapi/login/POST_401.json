@@ -1,0 +1,6 @@
+{
+  "errors": {
+    "username": "Username not valid",
+    "password": "Too simple"
+  }
+}

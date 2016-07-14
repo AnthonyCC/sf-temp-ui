@@ -18,7 +18,9 @@ import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
+import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.ConfiguredProductLabelProvider;
 import com.freshdirect.cms.fdstore.DomainValueLabelProvider;
 import com.freshdirect.cms.fdstore.ErpMaterialLabelProvider;
@@ -66,27 +68,21 @@ public class ContentNodeUtil {
 	 * @param node content node (never null)
 	 * @return human readable label
 	 */
-	public static String getLabel(ContentNodeI node) {
-		return LABEL_PROVIDER.getLabel(node);
+	public static String getLabel(ContentNodeI node, DraftContext draftContext) {
+	    ContentServiceI svc = CmsManager.getInstance();
+	    return ContentNodeUtil.getLabel(node, svc, draftContext);
 	}
 
 	/**
-	 * Get a content node while traversing navigable nodes as well.
-	 * 
-	 * @FIXME eagerFetch is to pre-warm caches with related nodes as well
-	 * 
-	 * @param key
-	 * @param navigableOnly
+	 * This method variant is retained for label providers only
+	 * @param node
+	 * @param contentService
+	 * @param draftContext
 	 * @return
 	 */
-	public static ContentNodeI eagerFetch(ContentKey key, boolean navigableOnly) {
-		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-		if (node != null) {
-			Set<ContentKey> relKeys = collectRelatedKeys(node, navigableOnly);
-			CmsManager.getInstance().getContentNodes(relKeys);
-		}
-		return node;
-	}
+    public static String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
+        return LABEL_PROVIDER.getLabel(node, contentService, draftContext);
+    }
 
 	/**
 	 * Get all navigable keys of a node.
@@ -105,17 +101,17 @@ public class ContentNodeUtil {
 	 * @param type content type to search (null for all types)
 	 * @return Set of {@link ContentKey} (never null)
 	 */
-	public static Set<ContentKey> collectReachableKeys(ContentNodeI node, ContentType type) {
+	public static Set<ContentKey> collectReachableKeys(ContentNodeI node, ContentType type, ContentServiceI contentService, DraftContext draftContext) {
 		Set<ContentKey> s = new HashSet<ContentKey>();
-		collectReachableKeys(s, type, node);
+		collectReachableKeys(s, type, node, contentService, draftContext);
 		return s;
 	}
 
-	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root) {
+	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root, ContentServiceI contentService, DraftContext draftContext) {
 		if (root == null)
 			return;
 		Set<ContentKey> children = root.getChildKeys();
-		ContentTypeServiceI ts = CmsManager.getInstance().getTypeService();		
+		ContentTypeServiceI ts = contentService.getTypeService();		
 		for ( ContentKey k : children ) {
 			if (targetType == null || targetType.equals(k.getType())) {
 				collectedKeys.add(k);
@@ -124,7 +120,7 @@ public class ContentNodeUtil {
 			ContentTypeDefI def = ts.getContentTypeDefinition(k.getType());
 			Set<ContentType> reachableTypes = ContentTypeUtil.getReachableContentTypes(ts, def);
 			if (reachableTypes.contains(targetType)) {
-				collectReachableKeys(collectedKeys, targetType, k.getContentNode());
+				collectReachableKeys(collectedKeys, targetType, contentService.getContentNode(k, draftContext), contentService, draftContext);
 			}
 		}
 	}
@@ -214,35 +210,10 @@ public class ContentNodeUtil {
 		return parentsByKey;
 	}
 
-	/*
-	 public static boolean equalNodes(ContentNode node, Object obj) {
-	 if (obj == this) {
-	 return true;
-	 }
-	 if (obj instanceof ContentNodeI) {
-	 if (!key.equals(((ContentNodeI) obj).getKey()))
-	 return false;
-
-	 ContentNodeI node = (ContentNodeI) obj;
-
-	 Map attrs = getAttributes();
-	 for (Iterator i = attrs.values().iterator(); i.hasNext();) {
-	 AttributeI myAttr = (AttributeI) i.next();
-	 AttributeI newAttr = node.getAttribute(myAttr.getName());
-	 if (!newAttr.equals(myAttr))
-	 return true;
-	 }
-	 return false;
-	 }
-	 return false;
-	 }
-	 */
-	
-	
-	public static void createNode(ContentKey key, CmsRequest request, AttributeI attr){
-        ContentNodeI node = key.lookupContentNode();
+	public static void createNode(ContentKey key, CmsRequest request, AttributeI attr, ContentServiceI contentService, DraftContext draftContext){
+        ContentNodeI node = contentService.getContentNode(key, draftContext);
         if(node == null){
-        	node = CmsManager.getInstance().createPrototypeContentNode(key);
+        	node = contentService.createPrototypeContentNode(key, draftContext);
             request.addNode(node);
         }
         

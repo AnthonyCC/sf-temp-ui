@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <fd:CheckLoginStatus id="user" />
-
+<fd:CheckDraftContextTag/>
 <potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}'
   version='${param.version}' />
 <potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}' />
@@ -50,9 +50,13 @@
 <script>
     window.FreshDirect = window.FreshDirect || {};
     window.FreshDirect.browse = window.FreshDirect.browse || {};
+    window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+
     window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
     window.FreshDirect.pdp = {};
     window.FreshDirect.pdp.data = <fd:ToJSON object="${productPotato}" noHeaders="true" />
     window.FreshDirect.pdp.extraData = <fd:ToJSON object="${productExtraPotato}" noHeaders="true" />
     window.FreshDirect.pdp.images = <fd:ToJSON object="${imagePotato}" noHeaders="true" />
+    window.FreshDirect.activeDraft = "${activeDraft}"
+    window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
 </script>

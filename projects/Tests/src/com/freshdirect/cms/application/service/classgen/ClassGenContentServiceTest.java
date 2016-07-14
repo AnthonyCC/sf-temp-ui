@@ -9,6 +9,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -32,17 +33,17 @@ public class ClassGenContentServiceTest extends TestCase {
                 new FlexContentHandler(),
                 "classpath:/com/freshdirect/cms/application/service/TestContent1.xml,classpath:/com/freshdirect/cms/application/service/TestContent2.xml,classpath:/com/freshdirect/cms/application/service/TestContent3.xml");
 
-        ContentNodeI fooNode = service.getContentNode(FOO_KEY);
+        ContentNodeI fooNode = service.getContentNode(FOO_KEY, DraftContext.MAIN);
         assertEquals(2, fooNode.getAttributes().size());
         assertEquals("fooValue", fooNode.getAttributeValue("FOO"));
         assertEquals("bazValue", fooNode.getAttributeValue("BAZ"));
 
-        ContentNodeI barNode = service.getContentNode(BAR_KEY);
+        ContentNodeI barNode = service.getContentNode(BAR_KEY, DraftContext.MAIN);
         assertEquals(2, barNode.getAttributes().size());
         assertEquals("barValue", barNode.getAttributeValue("BAR"));
         assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
 
-        assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent")));
+        assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent"), DraftContext.MAIN));
     }
 
     private final static ContentType FOO_TYPE             = ContentType.get("Foo");
@@ -66,12 +67,12 @@ public class ClassGenContentServiceTest extends TestCase {
         service = new ClassGeneratorContentService("ClassGenContentServiceTest_2", typeService, new FlexContentHandler(),
                 "classpath:/com/freshdirect/cms/application/service/TestIdGeneration.xml");
 
-        node = service.getContentNode(FOO_DEFAULT_KEY);
+        node = service.getContentNode(FOO_DEFAULT_KEY, DraftContext.MAIN);
         assertNotNull(node);
 
         // test that the generated key is really unique
         key = typeService.generateUniqueContentKey(FOO_GENERATE_ID_TYPE);
-        node = service.getContentNode(key);
+        node = service.getContentNode(key, DraftContext.MAIN);
         assertNull(node);
     }
     

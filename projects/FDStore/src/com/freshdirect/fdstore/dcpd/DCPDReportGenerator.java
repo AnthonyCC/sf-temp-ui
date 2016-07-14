@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -97,7 +99,7 @@ public class DCPDReportGenerator {
 
 
 
-	public void generate(List nodes) throws IOException, FDResourceException, FDSkuNotFoundException {
+	public void generate(List<ContentNodeModel> nodes) throws IOException, FDResourceException, FDSkuNotFoundException {
 		if (ctx.isRenderCSV()) {
 		    // write header
 	        if (ctx.isProductsOnlyView()) {
@@ -115,7 +117,7 @@ public class DCPDReportGenerator {
 
 
 		// output found items	    
-		Iterator it=nodes.iterator();
+		Iterator<ContentNodeModel> it=nodes.iterator();
 	    while(it.hasNext()) {
 	        ContentNodeModel rootNode = (ContentNodeModel) it.next();
 	        
@@ -164,7 +166,7 @@ public class DCPDReportGenerator {
 		++level;
 
 		// II. ITERATE CATEGORIES
-		Iterator cit = deptNode.getCategories().iterator();
+		Iterator<CategoryModel> cit = deptNode.getCategories().iterator();
 		while(cit.hasNext()) {
 			CategoryModel catNode = (CategoryModel) cit.next();
 			renderCategoryNode(catNode, level);
@@ -176,7 +178,7 @@ public class DCPDReportGenerator {
 	public void renderCategoryNode(CategoryModel catNode, int level) throws IOException, FDResourceException, FDSkuNotFoundException {
 		// II. ITERATE SUBCATEGORIES
 		// I. RENDER DEPARTMENT
-		ContentKey alias = catNode.getAliasAttributeValue();
+	    ContentKey alias = catNode.getAliasAttributeValue();
 		
 	    if (!ctx.isProductsOnlyView()) {
 			if (ctx.isRenderCSV()) {
@@ -203,7 +205,7 @@ public class DCPDReportGenerator {
 		
 	    // RENDER ALIAS GROUP
 	    if (alias != null) {
-	        com.freshdirect.cms.ContentNodeI ct = alias.getContentNode();
+	        ContentNodeI ct = CmsManager.getInstance().getContentNode(alias);
 	        if (!ctx.isProductsOnlyView()) {
 		        if (ctx.isRenderCSV()) {
 					printToCSV(new Object[]{
@@ -227,17 +229,15 @@ public class DCPDReportGenerator {
 	    }
 
 		// I/a. RENDER PRODUCTS
-		Iterator pit = catNode.getPrivateProducts().iterator();
-		while(pit.hasNext()) {
-			ProductModel prodNode = (ProductModel) pit.next();
+		for (ProductModel prodNode : catNode.getPrivateProducts()) {
 			renderSKUs( UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))),prodNode.getSkus(), prodNode.getContentName(), level, null);
 		}
 		
 
 		// RENDER VIRTUAL GROUP ITEMS
-	    List virtualGroup = catNode.getVirtualGroupRefs();
+	    List<CategoryModel> virtualGroup = catNode.getVirtualGroupRefs();
 	    if (virtualGroup != null) {
-	    	Iterator vit = virtualGroup.iterator();
+	    	Iterator<CategoryModel> vit = virtualGroup.iterator();
 	    	while(vit.hasNext()) {
 	    		CategoryModel vcatNode = (CategoryModel) vit.next();
 
@@ -266,7 +266,7 @@ public class DCPDReportGenerator {
 		
 
 	    // RENDER SUBCATEGORIES
-		Iterator cit = catNode.getSubcategories().iterator();
+		Iterator<CategoryModel> cit = catNode.getSubcategories().iterator();
 		while(cit.hasNext()) {
 			CategoryModel subCatNode = (CategoryModel) cit.next();
 			renderCategoryNode(subCatNode, level);
@@ -276,8 +276,8 @@ public class DCPDReportGenerator {
 
 
 
-	public void renderSKUs(UserContext userCtx,List skuNodes, String parentCName, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
-	    Iterator sit = skuNodes.iterator();
+	public void renderSKUs(UserContext userCtx,List<SkuModel> skuNodes, String parentCName, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+	    Iterator<SkuModel> sit = skuNodes.iterator();
 	    while(sit.hasNext()) {
 	        SkuModel skuNode = (SkuModel) sit.next();
 	        boolean isUna = skuNode.isUnavailable();
@@ -304,10 +304,10 @@ public class DCPDReportGenerator {
 	        
 	        //Test for DCPD Promo Eligiblity.
 			ProductModel prodModel = skuNode.getProductModel();
-			boolean result = OrderPromotionHelper.evaluateProductForDCPDPromo(prodModel, new HashSet(ctx.getGoodKeys()));
+			boolean result = OrderPromotionHelper.evaluateProductForDCPDPromo(prodModel, new HashSet<ContentKey>(ctx.getGoodKeys()));
 			if (!result && recipeSourceId != null) {
 				//This SKU is part of a Recipe. Evaluate Recipe.
-				result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet(ctx.getGoodKeys()));
+				result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet<ContentKey>(ctx.getGoodKeys()));
 			}
 			String eligible = result ? "Yes" : "No";
 		EnumOrderLineRating rating;
@@ -418,7 +418,7 @@ public class DCPDReportGenerator {
 	    ++level;
 
 	    // II. ITERATE VARIANTS
-	    Iterator cit = recipeNode.getVariants().iterator();
+	    Iterator<RecipeVariant> cit = recipeNode.getVariants().iterator();
 	    while(cit.hasNext()) {
 	    	RecipeVariant vNode = (RecipeVariant) cit.next();
 	        renderVariantNode(userCtx,vNode, level, recipeNode.getContentName());
@@ -452,7 +452,7 @@ public class DCPDReportGenerator {
 	    ++level;
 
 	    // II. ITERATE SECTIONS
-	    Iterator cit = vNode.getSections().iterator();
+	    Iterator<RecipeSection> cit = vNode.getSections().iterator();
 	    while(cit.hasNext()) {
 	    	RecipeSection sNode = (RecipeSection) cit.next();
 	        renderSectionNode(userCtx,sNode, level, recipeSourceId);
@@ -486,7 +486,7 @@ public class DCPDReportGenerator {
 	    ++level;
 
 	    // II. ITERATE SKUs
-	    Iterator cit = rNode.getIngredients().iterator();
+	    Iterator<ConfiguredProduct> cit = rNode.getIngredients().iterator();
 	    while(cit.hasNext()) {
 	        ConfiguredProduct cpNode = (ConfiguredProduct) cit.next();
 	        if (cpNode.isUnavailable()) {

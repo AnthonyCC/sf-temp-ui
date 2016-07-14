@@ -7,12 +7,11 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class BackgroundStatus implements Cloneable {
     private final static Logger LOG = LoggerFactory.getInstance(BackgroundStatus.class);
     
-    String current;
-    String lastReindexResult;
-    boolean running;
-    
-    long started;
-    long elapsedTime;
+    private String current;
+    private String lastReindexResult;
+    private boolean running;
+    private long started;
+    private long elapsedTime;
 
     public String getCurrent() {
         return current;
@@ -59,8 +58,6 @@ public class BackgroundStatus implements Cloneable {
         }
     }
     
-    
-    
     public void notifyStart() {
         LOG.info("start");
         setRunning(true);
@@ -85,7 +82,5 @@ public class BackgroundStatus implements Cloneable {
         this.lastReindexResult = "see logs for details";
         LOG.error("error during task execution:" + e.getMessage(), e);
     }
-    
-    
 
 }

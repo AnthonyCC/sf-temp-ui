@@ -3,6 +3,7 @@ package com.freshdirect.cms.classgenerator;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ResourceInfoServiceI;
 import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -38,10 +39,11 @@ public class ClassGeneratorContentService extends XmlContentService {
         init(nodeHandler, resourceFiles, resourceInfoService);
     }
 
-    public ContentNodeI createPrototypeContentNode(ContentKey key) {
+    @Override
+    public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
         if (!getTypeService().getContentTypes().contains(key.getType())) {
             return null;
         }
-        return generator.createNode(key);
+        return generator.createNode(key, draftContext);
     }
 }

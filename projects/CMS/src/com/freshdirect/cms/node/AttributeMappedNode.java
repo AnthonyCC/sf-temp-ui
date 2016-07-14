@@ -97,14 +97,17 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		return separator;
 	}
 
+	@Override
 	public ContentKey getKey() {
 		return this.node.getKey();
 	}
 
+    @Override
 	public ContentTypeDefI getDefinition() {
 		return definition;
 	}
 
+    @Override
 	public AttributeI getAttribute(String name) {
 		return (AttributeI) this.attributes.get(name);
 	}
@@ -125,26 +128,22 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
             return false;
         }
 
+    @Override
 	public Map<String,AttributeI> getAttributes() {
 		return this.attributes;
 	}
 
+    @Override
 	public Set<ContentKey> getChildKeys() {
 		return node.getChildKeys();
 	}
 
+    @Override
 	public String getLabel() {
 		return node.getLabel();
 	}
 
-	public void setDelete(boolean b) {
-		node.setDelete(b);
-	}
-
-	public boolean isDelete() {
-		return node.isDelete();
-	}
-
+    @Override
 	public ContentNodeI copy() {
 	    // it seems to be strange, but CompositeContentNode with DbDecorator cannot be cloned... 
 	    return this;

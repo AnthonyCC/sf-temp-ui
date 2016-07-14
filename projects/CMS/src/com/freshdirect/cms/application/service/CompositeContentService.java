@@ -20,6 +20,8 @@ import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.node.ChangedContentNode;
 import com.freshdirect.cms.node.CompositeContentNode;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -71,7 +73,7 @@ public class CompositeContentService extends AbstractContentService implements C
 	}
 	
 	@Override
-	public ContentNodeI getContentNode(ContentKey cKey) {
+	public ContentNodeI getContentNode(ContentKey cKey, DraftContext draftContext) {
 		Map<String, ContentNodeI> nodes = new LinkedHashMap<String, ContentNodeI>();
 		boolean found = false;
 		for (int i = 0; i < contentServices.size(); i++) {
@@ -79,9 +81,9 @@ public class CompositeContentService extends AbstractContentService implements C
 			if (service.getTypeService().getContentTypeDefinition(cKey.getType()) == null) {
 				continue;
 			}
-			ContentNodeI node = service.getContentNode(cKey);
+			ContentNodeI node = service.getContentNode(cKey, draftContext);
 			if (node == null) {
-				node = service.createPrototypeContentNode(cKey);
+				node = service.createPrototypeContentNode(cKey, draftContext);
 			} else {
 				found = true;
 			}
@@ -96,7 +98,7 @@ public class CompositeContentService extends AbstractContentService implements C
 	}
 
 	@Override
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
 
 		Set<ContentKey> foundKeys = new HashSet<ContentKey>(keys.size());
 
@@ -107,7 +109,7 @@ public class CompositeContentService extends AbstractContentService implements C
 
 			long t = System.currentTimeMillis();
 
-			Map<ContentKey, ContentNodeI> serviceNodes = service.getContentNodes(keys);
+			Map<ContentKey, ContentNodeI> serviceNodes = service.getContentNodes(keys, draftContext);
 
 			t = System.currentTimeMillis() - t;
 			LOGGER.debug("getContentNodes() " + service.getName() + " " + keys.size() + " took " + t);
@@ -116,7 +118,7 @@ public class CompositeContentService extends AbstractContentService implements C
 				ContentKey key = (ContentKey) k.next();
 				ContentNodeI node = (ContentNodeI) serviceNodes.get(key);
 				if (node == null) {
-					node = service.createPrototypeContentNode(key);
+					node = service.createPrototypeContentNode(key, draftContext);
 				} else {
 					foundKeys.add(key);
 				}
@@ -145,11 +147,11 @@ public class CompositeContentService extends AbstractContentService implements C
 	}
 
 	@Override
-	public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
+	public ContentNodeI createPrototypeContentNode(ContentKey cKey, DraftContext draftContext) {
 		Map<String, ContentNodeI> nodes = new HashMap<String, ContentNodeI>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
-			ContentNodeI newNode = service.createPrototypeContentNode(cKey);
+			ContentNodeI newNode = service.createPrototypeContentNode(cKey, draftContext);
 			if (newNode != null)
 				nodes.put(service.getName(), newNode);
 		}
@@ -160,31 +162,31 @@ public class CompositeContentService extends AbstractContentService implements C
 	}
 
 	@Override
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		Set<ContentKey> set = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
-			set.addAll(service.getContentKeysByType(type));
+			set.addAll(service.getContentKeysByType(type, draftContext));
 		}
 		return set;
 	}
 
 	@Override
-	public Set<ContentKey> getContentKeys() {
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		Set<ContentKey> set = new HashSet<ContentKey>();
 		for (Iterator<ContentServiceI> i = contentServices.iterator(); i.hasNext();) {
 			ContentServiceI service =  i.next();
-			set.addAll(service.getContentKeys());
+			set.addAll(service.getContentKeys(draftContext));
 		}
 		return set;
 	}
 
 	@Override
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		Set<ContentKey> keySet = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
-			Set<ContentKey> keys = service.getParentKeys(key);
+			Set<ContentKey> keys = service.getParentKeys(key, draftContext);
 
 			keySet.addAll(keys);
 		}
@@ -213,34 +215,103 @@ public class CompositeContentService extends AbstractContentService implements C
 	/**
 	 * @return Map of String (serviceName) -> CmsRequest
 	 */
-	private Map<String, CmsRequest> decomposeRequest(CmsRequestI request) {
-		Map<String, CmsRequest> reqByService = new HashMap<String, CmsRequest>();
+    private Map<String, CmsRequest> decomposeRequest(CmsRequestI request) {
+        Map<String, CmsRequest> reqByService = new HashMap<String, CmsRequest>();
 
-		// decompose request with composite nodes
-		for (ContentNodeI node : request.getNodes()) {
-			if (!(node instanceof CompositeContentNode)) {
-				throw new IllegalArgumentException("Node " + node + " is not a composite");
-			}
-			Map<String, ContentNodeI> nodes = ((CompositeContentNode) node).getNodes();
-			for (Iterator<Map.Entry<String, ContentNodeI>> j = nodes.entrySet().iterator(); j.hasNext();) {
-				Map.Entry<String, ContentNodeI> e = j.next();
-				String serviceName = (String) e.getKey();
-				ContentNodeI serviceNode = (ContentNodeI) e.getValue();
+        // decompose request with composite nodes
+        for (ContentNodeI node : request.getNodes()) {
+            if (node instanceof ChangedContentNode) {
+                decomposeChangedContentNode((ChangedContentNode) node, request, reqByService);
+            } else if (node instanceof CompositeContentNode) {
+                decomposeNode((CompositeContentNode) node, request, reqByService);
+            } else {
+                throw new IllegalArgumentException("Node " + node + " is not a composite");
+            }
+        }
+        return reqByService;
+    }
 
-				CmsRequest serviceReq = (CmsRequest) reqByService.get(serviceName);
-				if (serviceReq == null) {
-					serviceReq = new CmsRequest(request.getUser());
-					reqByService.put(serviceName, serviceReq);
-				}
-				serviceReq.addNode(serviceNode);
-			}
-		}
+    private CmsRequest createServiceSpecificCmsRequest(final CmsRequestI originalRequest, final String serviceName, Map<String, CmsRequest> reqByService) {
+        CmsRequest serviceReq = (CmsRequest) reqByService.get(serviceName);
+        if (serviceReq == null) {
+            serviceReq = new CmsRequest(originalRequest.getUser(), originalRequest.getSource(), originalRequest.getDraftContext(), originalRequest.getRunMode());
+            reqByService.put(serviceName, serviceReq);
+        }
+        return serviceReq;
+    }
+    
+    /**
+     * Break down a composite content node to single content nodes
+     * 
+     * @param compositeNode
+     * @param request original CMS request
+     * @param reqByService map of service names and CMS requests
+     */
+    private void decomposeNode(CompositeContentNode compositeNode, CmsRequestI request, Map<String, CmsRequest> reqByService) {
+        for (Map.Entry<String, ContentNodeI> e : compositeNode.getNodes().entrySet()) {
+            String serviceName = (String) e.getKey();
+            ContentNodeI serviceNode = (ContentNodeI) e.getValue();
 
-		return reqByService;
-	}
+            final CmsRequest serviceReq = createServiceSpecificCmsRequest(request, serviceName, reqByService);
 
+            serviceReq.addNode(serviceNode);
+        }
+
+    }    
+    
+    /**
+     * Break down a changed composite content node to single content nodes
+     * 
+     * @param compositeNode
+     * @param request original CMS request
+     * @param reqByService map of service names and CMS requests
+     */
+    private void decomposeChangedContentNode(ChangedContentNode changedNode, CmsRequestI request, Map<String, CmsRequest> reqByService) throws IllegalArgumentException {
+        Map<String, Object> changedAttributes = changedNode.getChanges();
+
+        ContentNodeI node = changedNode.getWrappedNode();
+        if (!(node instanceof CompositeContentNode)) {
+            throw new IllegalArgumentException("Changed Node " + node + " is not a composite");
+        }
+        
+        final CompositeContentNode compositeNode = (CompositeContentNode) node;
+
+        for (Map.Entry<String, ContentNodeI> e : compositeNode.getNodes().entrySet()) {
+            final String serviceName = (String) e.getKey();
+            final ContentNodeI serviceNode = (ContentNodeI) e.getValue();
+
+            // create a service specific CMS request
+            final CmsRequest serviceReq = createServiceSpecificCmsRequest(request, serviceName, reqByService);
+
+            Set<String> attrNames = new HashSet<String>();
+            attrNames.addAll(changedAttributes.keySet());
+            attrNames.retainAll(serviceNode.getDefinition().getAttributeNames());
+
+            if (attrNames.isEmpty()) {
+                // no change can be applied to the decomposed node
+                serviceReq.addNode(serviceNode);
+            } else {
+                // transfer applicable changed values
+                Map<String,Object> serviceSpecificChanges = new HashMap<String,Object>();
+                for (final String name : attrNames) {
+                    serviceSpecificChanges.put(name, changedAttributes.get(name));
+                }
+
+                if (serviceSpecificChanges.isEmpty()) {
+                    serviceReq.addNode( serviceNode );
+                } else {
+                    // re-wrap single node
+                    ChangedContentNode cNode = new ChangedContentNode(serviceNode, serviceSpecificChanges );
+                    serviceReq.addNode( cNode );
+                }
+                
+            }
+        }
+
+    }
+    
 	@Override
-	public ContentNodeI getRealContentNode(ContentKey key) {
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
 		Map<String, ContentNodeI> nodes = new LinkedHashMap<String, ContentNodeI>();
 		boolean found = false;
 		for (int i = 0; i < contentServices.size(); i++) {
@@ -248,9 +319,9 @@ public class CompositeContentService extends AbstractContentService implements C
 			if (service.getTypeService().getContentTypeDefinition(key.getType()) == null) {
 				continue;
 			}
-			ContentNodeI node = service.getRealContentNode(key);
+			ContentNodeI node = service.getRealContentNode(key, draftContext);
 			if (node == null) {
-				node = service.createPrototypeContentNode(key);
+				node = service.createPrototypeContentNode(key, draftContext);
 			} else {
 				found = true;
 			}

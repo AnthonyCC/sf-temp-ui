@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 
 /**
@@ -22,7 +24,8 @@ public class MediaLabelProvider implements ILabelProvider {
 
 	private final static String ROOT_LABEL = "Media";
 
-	public String getLabel(ContentNodeI node) {
+	@Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		if (!MEDIA_TYPES.contains(node.getKey().getType())) {
 			return null;
 		}

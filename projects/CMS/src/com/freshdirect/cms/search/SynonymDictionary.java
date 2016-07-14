@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.term.IdentityConvFactory;
@@ -219,11 +220,10 @@ public class SynonymDictionary {
 	public static SynonymDictionary createFromCms(TermCoderFactory factory) {
 		SynonymDictionary dict = new SynonymDictionary();
 		CmsManager instance = CmsManager.getInstance();
-
 		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SYNONYM_LIST_KEY));
 		if (synRootNode == null)
 			return dict;
-		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SYNONYM);
+		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SYNONYM, instance, DraftContext.MAIN);
 		Map<ContentKey, ContentNodeI> synonymNodes = instance.getContentNodes(synonymKeys);
 		for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
 			ContentNodeI node = contentNodeIterator.next();
@@ -255,7 +255,7 @@ public class SynonymDictionary {
 		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SPELLING_SYNONYM_LIST_KEY));
 		if (synRootNode == null)
 			return dict;
-		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SPELLING_SYNONYM);
+		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SPELLING_SYNONYM, instance, DraftContext.MAIN);
 		Map<ContentKey, ContentNodeI> synonymNodes = instance.getContentNodes(synonymKeys);
 		for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
 			ContentNodeI node = contentNodeIterator.next();

@@ -15,6 +15,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -65,7 +66,7 @@ public class LuceneSearchServiceTest extends TestCase {
 
 		// update
 		ContentKey k = new ContentKey(ContentType.get("Foo"), "foo1");
-		ContentNodeI foo1 = content.getContentNode(k);
+		ContentNodeI foo1 = content.getContentNode(k, DraftContext.MAIN);
 		foo1.setAttributeValue("name", "mutatis mutandis");
 		List<ContentNodeI> nodes = new ArrayList<ContentNodeI>();
 		nodes.add(foo1);
@@ -135,7 +136,7 @@ public class LuceneSearchServiceTest extends TestCase {
 	}
 
 	private void indexContent(ContentSearchServiceI search) {
-		Map<ContentKey, ContentNodeI> contentNodes = content.getContentNodes(content.getContentKeys());
+		Map<ContentKey, ContentNodeI> contentNodes = content.getContentNodes(content.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
 		search.index(contentNodes.values(), true);
 	}
 

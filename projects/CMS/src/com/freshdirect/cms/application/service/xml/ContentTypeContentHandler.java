@@ -3,9 +3,7 @@
  */
 package com.freshdirect.cms.application.service.xml;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -100,7 +98,7 @@ public class ContentTypeContentHandler extends DefaultHandler {
 	
 	// private Collection<ContentReference> bidirectional = new HashSet<ContentReference>();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Stack stack = new Stack();
 	
 	public ContentTypeContentHandler(ContentTypeServiceI typeService) {

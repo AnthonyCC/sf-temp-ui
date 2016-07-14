@@ -13,6 +13,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <fd:CheckLoginStatus id="user"/>
+<fd:CheckDraftContextTag/>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 <%
 	final String tgAction = "addToCart";
@@ -155,6 +156,10 @@ FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=cor
 				setFrameHeight(frameId, 20);
 				// re-center panel
 				window.parent.document.quickbuyPanel.center();
+
+				window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+				window.FreshDirect.activeDraft = "${activeDraft}"
+				window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
 			});
 		</script>
 	<% } %>

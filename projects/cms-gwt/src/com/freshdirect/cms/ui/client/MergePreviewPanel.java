@@ -163,7 +163,7 @@ public class MergePreviewPanel extends LayoutContainer {
 		title.setText(compareUtil.getComparedNode().getNode().getLabel());
 		setTop(hs.getPosition(false).y );
 		setLeft(hs.getPosition(true).x );
-		if(attributeKey.equals("PRIMARY_HOME") || attributeKey.equals("skus") || compareUtil.getEditedNode().isReadonly()) {
+		if(attributeKey.equals("PRIMARY_HOME") || attributeKey.equals("skus") || !compareUtil.getEditedNode().getPermission().isEditable()) {
 			mergeButton.hide();
 		}
 		else {

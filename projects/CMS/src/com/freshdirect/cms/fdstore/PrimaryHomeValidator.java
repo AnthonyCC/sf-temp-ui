@@ -9,6 +9,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
@@ -19,7 +20,8 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  */
 public class PrimaryHomeValidator implements ContentValidatorI {
 	
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+    @Override
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		final boolean isPublish = (request == null);
 		
 		if (!FDContentTypes.PRODUCT.equals( node.getKey().getType()) || isPublish) {
@@ -35,7 +37,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 			homes = Collections.EMPTY_LIST;
 		}
 
-		Set<ContentKey> validHomeKeys = PrimaryHomeUtil.fixPrimaryHomes(node, service, null);
+		Set<ContentKey> validHomeKeys = PrimaryHomeUtil.fixPrimaryHomes(node, service, draftContext, null);
 		if (validHomeKeys == null) {
 			// internal error occurred, abort the validation now.
 			return;

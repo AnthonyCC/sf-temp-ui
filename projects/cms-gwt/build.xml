@@ -99,6 +99,7 @@
   	  			<include name="*.html"/>
   	  			<include name="*.jsp"/>
   	  			<include name="**/*.css"/>
+  	  			<include name="**/*.js"/>
   	  		</fileset>
   	  	</copy>
   		<copy todir="${weblogic.deploy.dir}/WEB-INF" overwrite="true">
@@ -144,6 +145,6 @@
   </target>
 
   	
-  <target name="dev-compile" depends="build,copy" description="Build the project for running in the DevServer"/>
+  <target name="dev-compile" depends="clean,build,copy" description="Build the project for running in the DevServer"/>
 
 </project>

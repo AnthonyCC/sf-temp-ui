@@ -32,14 +32,17 @@ class ContextualContentNode implements ContextualContentNodeI {
 		this.node = node;
 	}
 
+	@Override
 	public boolean isRoot() {
 		return this.parent == null;
 	}
 
+	@Override
 	public ContextualContentNodeI getParentNode() {
 		return this.parent;
 	}
 
+	@Override
 	public String getPath() {
 		return getPath("");
 	}
@@ -52,6 +55,7 @@ class ContextualContentNode implements ContextualContentNodeI {
 		return ((ContextualContentNode) this.parent).getPath(path);
 	}
 
+	@Override
 	public AttributeI getAttribute(String name) {
 		AttributeI attr = node.getAttribute(name);
 		if (attr != null && attr.getValue() == null && !this.isRoot() && attr.getDefinition().isInheritable()) {
@@ -76,12 +80,14 @@ class ContextualContentNode implements ContextualContentNodeI {
             return false;
         }
         
-	public ContentKey getKey() {
+    @Override
+    public ContentKey getKey() {
 		return node.getKey();
 	}
 
-	public Map getAttributes() {
-		Map inherited = getInheritedAttributes();
+    @Override
+	public Map<String, AttributeI> getAttributes() {
+		Map<String, AttributeI> inherited = getInheritedAttributes();
 		inherited.putAll(node.getAttributes());
 		return inherited;
 	}
@@ -89,14 +95,17 @@ class ContextualContentNode implements ContextualContentNodeI {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.ContentNodeI#getDefinition()
 	 */
+	@Override
 	public ContentTypeDefI getDefinition() {
 		return node.getDefinition();
 	}
 	
-	public Map getParentInheritedAttributes() {
-		return parent != null ? parent.getInheritedAttributes() : new HashMap();
+	@Override
+	public Map<String, AttributeI> getParentInheritedAttributes() {
+		return parent != null ? parent.getInheritedAttributes() : new HashMap<String, AttributeI>();
 	}
 
+	@Override
 	public Map<String, AttributeI> getInheritedAttributes() {
 		Map<String, AttributeI> inherited = parent != null ? parent.getInheritedAttributes() : new HashMap();
 		Map<String, AttributeI> self = node.getAttributes();
@@ -121,22 +130,17 @@ class ContextualContentNode implements ContextualContentNodeI {
         return inherited;
     }
 
-	public Set getChildKeys() {
+    @Override
+	public Set<ContentKey> getChildKeys() {
 		return node.getChildKeys();
 	}
 
+    @Override
 	public String getLabel() {
 		return node.getLabel();
 	}
 
-	public void setDelete(boolean b) {
-		node.setDelete(b);
-	}
-
-	public boolean isDelete() {
-		return node.isDelete();
-	}
-
+    @Override
 	public ContentNodeI copy() {
 		// unmutable
 		return this;

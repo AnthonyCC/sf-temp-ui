@@ -19,6 +19,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.util.CollectionUtil;
 
@@ -45,7 +46,8 @@ public class DbMappingContentService extends AbstractContentService implements D
 		this.typeService = new DbMappingTypeService(dataSource, mappings);
 	}
 
-	public Set getContentKeys() {
+	@Override
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		Connection conn = null;
 		try {
 			conn = dataSource.getConnection();
@@ -71,7 +73,8 @@ public class DbMappingContentService extends AbstractContentService implements D
 		}
 	}
 
-	public Set getContentKeysByType(ContentType type) {
+	@Override
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		DbContentTypeDef def = (DbContentTypeDef) typeService.getContentTypeDefinition(type);
 		if (def == null) {
 			return Collections.EMPTY_SET;
@@ -93,21 +96,24 @@ public class DbMappingContentService extends AbstractContentService implements D
 		}
 	}
 
-	public Set getParentKeys(ContentKey key) {
+	@Override
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		return Collections.EMPTY_SET;
 	}
 
-	public ContentNodeI getContentNode(ContentKey key) {
-		Set s = new HashSet();
+	@Override
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
+		Set<ContentKey> s = new HashSet<ContentKey>();
 		s.add(key);
-		return (ContentNodeI) getContentNodes(s).get(key);
+		return (ContentNodeI) getContentNodes(s, draftContext).get(key);
 	}
 
-	public Map getContentNodes(Set keys) {
+	@Override
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
 
 		/** Map of ContentType -> Set of ContentKey */
-		Map keysByType = new HashMap();
-		for (Iterator i = keys.iterator(); i.hasNext();) {
+		Map<ContentType, Set<ContentKey>> keysByType = new HashMap<ContentType, Set<ContentKey>>();
+		for (Iterator<ContentKey> i = keys.iterator(); i.hasNext();) {
 			ContentKey key = (ContentKey) i.next();
 			CollectionUtil.addToMapOfSets(keysByType, key.getType(), key);
 		}
@@ -143,23 +149,28 @@ public class DbMappingContentService extends AbstractContentService implements D
 		}
 	}
 
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
+	@Override
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
 		return null;
 	}
 
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
 		return null;
 	}
 
+	@Override
 	public ContentTypeServiceI getTypeService() {
 		return this.typeService;
 	}
 
+	@Override
 	public DataSource getDataSource() {
 		return this.dataSource;
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
+	@Override
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
 		return null;
 	}
 

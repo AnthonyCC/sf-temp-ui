@@ -25,6 +25,7 @@ import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -89,7 +90,7 @@ public class ContentFilterTool {
         ContentServiceI contentService = createContentService();
 
         LOG.info("write content keys:"+contentKeys.size());
-        Map nodes = contentService.getContentNodes(contentKeys);
+        Map nodes = contentService.getContentNodes(contentKeys, DraftContext.MAIN);
 
         ContentNodeSerializer serializer = new ContentNodeSerializer() {
             protected boolean filter(ContentTypeDefI typeDef, String name) {

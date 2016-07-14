@@ -1,19 +1,18 @@
 package com.freshdirect.fdstore.content.test;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.collections.Predicate;
+
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
-
-import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.cms.ContentType;
-
-import org.apache.commons.collections.Predicate;
-
-import java.util.List;
-import java.util.Iterator;
 
 
 /**

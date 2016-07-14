@@ -43,6 +43,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
 import com.freshdirect.webapp.globalnav.GlobalNavContextUtil;
 
 public class NavigationUtil {
@@ -460,11 +461,11 @@ public class NavigationUtil {
 	public static boolean isCategoryDisplayableCached(CategoryModel cat){
 		String key = cat.getContentName();
 		if (CmsManager.getInstance().isReadOnlyContent()){
-			Boolean displayable = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key);
+			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key);
 			
 			if (displayable == null) {
 				displayable = cat.isDisplayable(); //do the recursive check
-				EhCacheUtil.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key, displayable);
+				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key, displayable);
 			}
 			
 			return displayable;

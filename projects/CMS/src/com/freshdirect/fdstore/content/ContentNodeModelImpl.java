@@ -5,25 +5,26 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable {
+public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneable {
+
+    private static final long serialVersionUID = -1228043164570842323L;
 
     public interface ContentNodeModelAttributeFinder {
+
         /**
          * should return true if the finder found the needed information, and no more traversal needed.
-         *  
+         * 
          * @param model
          * @param attribute
          * @return
          */
         public boolean check(ContentNodeModel model, Object attributeValue);
-        
+
     }
 
     private final ContentKey key;
@@ -38,18 +39,18 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
             throw new IllegalArgumentException("ContentKey must not be null");
         }
         this.key = key;
-        this.contentType = ContentNodeModelUtil.CONTENT_TO_TYPE_MAP.get(key.getType().getName());
-    }	
-
+        this.contentType = ContentNodeModelUtil.getCachedContentType(key.getType().getName());
+    }
 
     //
     // core
     //
 
     protected ContentNodeI getCMSNode() {
-        return CmsManager.getInstance().getContentNode(key);
+        return ContentFactory.getInstance().getContentNode(key);
     }
 
+    @Override
     public ContentKey getContentKey() {
         return key;
     }
@@ -58,10 +59,12 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
      * 
      * @return the id of the content node
      */
+    @Override
     public String getContentName() {
         return this.getContentKey().getId();
     }
 
+    @Override
     public String getContentType() {
         return this.contentType;
     }
@@ -70,15 +73,17 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     // attributes
     //
 
-    
     /**
-     * Return the primitive values, lists, content key values for the given attributum. 
+     * Return the primitive values, lists, content key values for the given attributum.
+     * 
      * @param name
      * @return
      */
+    @Override
     public Object getCmsAttributeValue(String name) {
         ContentNodeI node = this.getCMSNode();
-        if (node == null) return null;
+        if (node == null)
+            return null;
 
         Object value = node.getAttributeValue(name);
         if (value != null) {
@@ -106,10 +111,11 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         ContentNodeModel parent = getParentNode();
         return parent == null ? null : parent.getCmsAttributeValue(name);
     }
-    
+
     /**
      * @deprecated
      */
+    @Deprecated
     protected boolean hasAttribute(String key) {
         return getCmsAttributeValue(key) != null;
     }
@@ -141,12 +147,14 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     /**
      * @return Returns the priority.
      */
+    @Override
     public int getPriority() {
         return priority;
     }
 
     /**
-     * @param priority The priority to set.
+     * @param priority
+     *            The priority to set.
      */
     protected void setPriority(int priority) {
         this.priority = priority;
@@ -154,14 +162,13 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 
     public void setParentNode(ContentNodeModel parentNode) {
         if (!fresh && this.parentNode != parentNode) {
-                throw new IllegalStateException("Cannot reparent node " + key
-                                + " from " + this.parentNode + " to " + parentNode
-                                + ". Object has to be reconstructed or cloned.");
+            throw new IllegalStateException("Cannot reparent node " + key + " from " + this.parentNode + " to " + parentNode + ". Object has to be reconstructed or cloned.");
         }
         this.parentNode = parentNode;
         fresh = false;
     }
 
+    @Override
     public ContentNodeModel getParentNode() {
         if (parentNode == null) {
             parentNode = ContentNodeModelUtil.findDefaultParent(getContentKey());
@@ -170,30 +177,22 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         return parentNode;
     }
 
+    @Override
     public Collection<ContentKey> getParentKeys() {
-        return CmsManager.getInstance().getParentKeys(key);
+        return ContentFactory.getInstance().getParentKeys(key);
     }
-    
-    /**
-     * Recursively find the first parent node of specified type.
-     *
-     * @return null if not found
-     */
-//      protected ContentNodeModel getParentNode(String contentType) {
-//              ContentNodeModel p = this.getParentNode();
-//              return p == null ? null : (p.getContentType().equals(contentType) ? p : p.getParentNode(contentType));
-//      }
 
+    @Override
     public boolean hasParentWithName(String[] contentNames) {
         ContentNodeModel p = this.getParentNode();
         if (p == null) {
-                return false;
+            return false;
         }
         final String parentName = p.getContentName();
         for (int i = contentNames.length; --i >= 0;) {
-                if (parentName.equals(contentNames[i])) {
-                        return true;
-                }
+            if (parentName.equals(contentNames[i])) {
+                return true;
+            }
         }
         return p.hasParentWithName(contentNames);
     }
@@ -202,8 +201,9 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     // infrastructure
     //
 
+    @Override
     public Object clone() {
-        try {                   
+        try {
             ContentNodeModelImpl clone = (ContentNodeModelImpl) super.clone();
             clone.fresh = true;
             return clone;
@@ -212,9 +212,10 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         }
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
-        	return true;
+            return true;
         }
         if (o instanceof ContentNodeModel) {
             return key.equals(((ContentNodeModel) o).getContentKey());
@@ -222,10 +223,12 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         return false;
     }
 
+    @Override
     public int hashCode() {
-    	return key.hashCode();
+        return key.hashCode();
     }
 
+    @Override
     public Object getNotInheritedAttributeValue(String name) {
         ContentNodeI node = this.getCMSNode();
         if (node == null) {
@@ -234,39 +237,43 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         return node.getAttributeValue(name);
     }
 
-        
     /**
      * Very conveniently returns contentName.
      */
+    @Override
     public String toString() {
         return this.getContentName();
     }
 
-	
-	
-	// TODO: Remove major, monster, stupid hack to make new-style
-	//       store look like old-style.  In old-style, everything returns null by default
-	//       AFTER store validates, change back to defaulting "" rather than null.
-	public String getAltText(){
-		return this.getAttribute("ALT_TEXT", null);
-	}
-	
-	public String getBlurb(){
-		return this.getAttribute("BLURB", null);
-	}
-	
-	public Html getEditorial(){
+    // TODO: Remove major, monster, stupid hack to make new-style
+    // store look like old-style. In old-style, everything returns null by default
+    // AFTER store validates, change back to defaulting "" rather than null.
+    @Override
+    public String getAltText() {
+        return this.getAttribute("ALT_TEXT", null);
+    }
+
+    @Override
+    public String getBlurb() {
+        return this.getAttribute("BLURB", null);
+    }
+
+    @Override
+    public Html getEditorial() {
         return FDAttributeFactory.constructHtml(this, "EDITORIAL");
-	}
-	
-	public String getEditorialTitle(){
-		return this.getAttribute("EDITORIAL_TITLE", null);
-	}
-	
-	public String getFullName(){
-		return this.getAttribute("FULL_NAME", null);
-	}
-	
+    }
+
+    @Override
+    public String getEditorialTitle() {
+        return this.getAttribute("EDITORIAL_TITLE", null);
+    }
+
+    @Override
+    public String getFullName() {
+        return this.getAttribute("FULL_NAME", null);
+    }
+
+   
 	public String getPrimaryText(){
 		return this.getAttribute("PrimaryText", null);
 	}
@@ -275,129 +282,130 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 		return this.getAttribute("SecondaryText", null);
 	}
 	
-	public String getGlanceName(){
-		return this.getAttribute("GLANCE_NAME", null);
-	}
-	
-	public String getNavName(){
-		return this.getAttribute("NAV_NAME", null);
-	}
-	
-	public String getKeywords() {
-		return this.getAttribute("KEYWORDS", null);
-	}
-	
-	private static ContentNodeModelAttributeFinder FIND_TRUE_VALUE = new ContentNodeModelAttributeFinder() {
-	    public boolean check(ContentNodeModel model, Object value) {
-	        return Boolean.TRUE.equals(value);
-	    }
-	};
-	
-	public boolean isSearchable() {	    
-	    Object attributeI = find("NOT_SEARCHABLE", FIND_TRUE_VALUE);
-	    return attributeI==null;
-	}
+	 @Override
+    public String getGlanceName() {
+        return this.getAttribute("GLANCE_NAME", null);
+    }
 
-	public boolean isHidden() {
-		return this.hasAttribute("HIDE_URL") && !(ContentFactory.getInstance().getPreviewMode());
-	}
-	
-	public String getHideUrl() {
-		//return (String)this.getAttribute("HIDE_URL").getValue();
+    @Override
+    public String getNavName() {
+        return this.getAttribute("NAV_NAME", null);
+    }
+
+    @Override
+    public String getKeywords() {
+        return this.getAttribute("KEYWORDS", null);
+    }
+
+    private static ContentNodeModelAttributeFinder FIND_TRUE_VALUE = new ContentNodeModelAttributeFinder() {
+
+        @Override
+        public boolean check(ContentNodeModel model, Object value) {
+            return Boolean.TRUE.equals(value);
+        }
+    };
+
+    @Override
+    public boolean isSearchable() {
+        Object attributeI = find("NOT_SEARCHABLE", FIND_TRUE_VALUE);
+        return attributeI == null;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return this.hasAttribute("HIDE_URL") && !(ContentFactory.getInstance().getPreviewMode());
+    }
+
+    @Override
+    public String getHideUrl() {
         return this.getAttribute("HIDE_URL", null);
-	}
+    }
 
-	public String getPath() {
-		if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
-			return null;
-		}
-		ContentNodeModel p = this.getParentNode();
-		if (p != null) {
-			if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
-				return "www.freshdirect.com/" + this.getContentName();
-			}
-			String parentPath = p.getPath();
-			if (parentPath != null) {
-				return parentPath + "/" + this.getContentName();
-			}
-		}
-		return null;
-	}
-	
-
-	public ContentNodeModel getStoreNode() {
-		if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
-			return null;
-		}
-		ContentNodeModel p = this.getParentNode();
-		if (p != null) {
-			if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
-				return p;
-			}
-		}
-		return null;
-	}
-
-	private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
-	private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
-
-	// FIXME orphan handling is inelegant
-	public boolean isOrphan() {
-		ContentNodeModel start = this;
-		while ((start != null)
-				&& !(start instanceof StoreModel || RECIPE_ROOT_FOLDER
-						.equals(start.getContentKey()) || FAQ_ROOT_FOLDER
-								.equals(start.getContentKey()))) {
-			start = start.getParentNode();
-		}
-		return start == null;
-	}
-
-	public Object find(String name, ContentNodeModelAttributeFinder finder) {
-            ContentNodeModel current = this;
-            while(current!=null) {
-                Object attribute = current.getNotInheritedAttributeValue(name);
-                if (finder.check(current, attribute)) {
-                    return attribute;
-                }
-                current = current.getParentNode();
-            }
+    @Override
+    public String getPath() {
+        if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT) && !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
+                && !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT) && !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
             return null;
-	}
+        }
+        ContentNodeModel p = this.getParentNode();
+        if (p != null) {
+            if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
+                return "www.freshdirect.com/" + this.getContentName();
+            }
+            String parentPath = p.getPath();
+            if (parentPath != null) {
+                return parentPath + "/" + this.getContentName();
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public String getParentId() {
-	    ContentNodeModel pnode = getParentNode();
-	    if (pnode != null) {
-	        return pnode.getContentName();
-	    }
-	    return null;
-	}
-	
-	@Override
-	public AttributeDefI getAttributeDef(String name) {
-	    return getCMSNode().getDefinition().getAttributeDef(name);
-	}
-	
-	@Override
-	public Image getSideNavImage() {
-	    return FDAttributeFactory.constructImage(this, "SIDENAV_IMAGE");
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T extends ContentNodeModel> T getSingleRelationshipNode(String name) {
-		ContentKey key = (ContentKey) getCmsAttributeValue(name);
-		
+    public ContentNodeModel getStoreNode() {
+        if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT) && !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
+                && !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT) && !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
+            return null;
+        }
+        ContentNodeModel p = this.getParentNode();
+        if (p != null) {
+            if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
+    private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
+
+    // FIXME orphan handling is inelegant
+    @Override
+    public boolean isOrphan() {
+        ContentNodeModel start = this;
+        while ((start != null) && !(start instanceof StoreModel || RECIPE_ROOT_FOLDER.equals(start.getContentKey()) || FAQ_ROOT_FOLDER.equals(start.getContentKey()))) {
+            start = start.getParentNode();
+        }
+        return start == null;
+    }
+
+    public Object find(String name, ContentNodeModelAttributeFinder finder) {
+        ContentNodeModel current = this;
+        while (current != null) {
+            Object attribute = current.getNotInheritedAttributeValue(name);
+            if (finder.check(current, attribute)) {
+                return attribute;
+            }
+            current = current.getParentNode();
+        }
+        return null;
+    }
+
+    @Override
+    public String getParentId() {
+        ContentNodeModel pnode = getParentNode();
+        if (pnode != null) {
+            return pnode.getContentName();
+        }
+        return null;
+    }
+
+    @Override
+    public AttributeDefI getAttributeDef(String name) {
+        return getCMSNode().getDefinition().getAttributeDef(name);
+    }
+
+    @Override
+    public Image getSideNavImage() {
+        return FDAttributeFactory.constructImage(this, "SIDENAV_IMAGE");
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ContentNodeModel> T getSingleRelationshipNode(String name) {
+        ContentKey key = (ContentKey) getCmsAttributeValue(name);
+
         if (key != null) {
             return (T) ContentFactory.getInstance().getContentNodeByKey(key);
         }
         return null;
-	}
+    }
 
 }

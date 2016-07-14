@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import com.freshdirect.cms.merge.MergeResult;
+import com.freshdirect.cms.merge.MergeTask;
+import com.freshdirect.cms.merge.ValidationResult;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishTask;
 
@@ -35,4 +38,10 @@ public interface IBackgroundProcessor {
     void setPublishTasks(List<PublishTask> publishTasks);
 
     List<PublishTask> getPublishTasks();
+
+    void setMergeTask(MergeTask mergeTask);
+
+    Future<MergeResult> mergeDraft(MergeResult merge);
+
+    Future<ValidationResult> validateDraft(ValidationResult merge);
 }

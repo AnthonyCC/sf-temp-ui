@@ -13,6 +13,7 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * {@link com.freshdirect.cms.validation.ContentValidatorI} to check basic structural issues.
@@ -25,7 +26,8 @@ import com.freshdirect.cms.application.ContentServiceI;
  */
 public class BasicValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+    @Override
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		if (node.getKey() == null) {
 			delegate.record("Node with null content key");
 			return;
@@ -45,8 +47,9 @@ public class BasicValidator implements ContentValidatorI {
 			AttributeI value = e.getValue();
 
 			if (def instanceof RelationshipDefI) {
-				if (EnumCardinality.MANY.equals(def.getCardinality()))
-					validateRelationship(delegate, service, node, (RelationshipDefI) def, (List<Object>) value.getValue());
+				if (EnumCardinality.MANY.equals(def.getCardinality())) {
+                    validateRelationship(delegate, service, draftContext, node, (RelationshipDefI) def, (List<Object>) value.getValue());
+                }
 				// TODO: validate relationships of cardinality = ONE
 			} else {
 				validateAttribute(delegate, node, def, value.getValue());
@@ -79,6 +82,7 @@ public class BasicValidator implements ContentValidatorI {
 	private void validateRelationship(
 		ContentValidationDelegate delegate,
 		ContentServiceI service,
+		DraftContext draftContext,
 		ContentNodeI node,
 		RelationshipDefI def,
 		List<Object> values) throws ContentValidationException {
@@ -110,7 +114,7 @@ public class BasicValidator implements ContentValidatorI {
 				return;
 			}
 
-			ContentNodeI destNode = service.getContentNode(destKey);
+			ContentNodeI destNode = service.getContentNode(destKey, draftContext);
 			if (destNode == null) {
 				delegate.record(node.getKey(), def.getName(), "reference to nonexistent node " + destKey);
 			}

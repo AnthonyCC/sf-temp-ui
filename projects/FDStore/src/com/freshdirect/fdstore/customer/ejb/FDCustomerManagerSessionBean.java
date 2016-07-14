@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -7524,16 +7523,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(GET_DRIVER_REPORTED_LATES);
 			rset = pstmt.executeQuery();
-			Hashtable driverlates = new Hashtable();
+			Set<String> driverlates = new HashSet<String>();
 			while(rset.next()) {
-				driverlates.put(rset.getString("ID"), rset.getString("ID"));
+				driverlates.add(rset.getString("ID"));
 			}
 			
 			//get details for the remaining orderids
-			Enumeration eobj = driverlates.keys();
-			while(eobj.hasMoreElements()) {
-				Object saleId = eobj.nextElement();
-				CustomerCreditModel ccm = getSaleDetails(conn, (String) saleId);
+			for (final String saleId : driverlates) {
+				CustomerCreditModel ccm = getSaleDetails(conn, saleId);
 				if(ccm != null) {
 					ccmList.add(ccm);
 				}

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDException;
 
 /**
@@ -60,22 +59,6 @@ public class ContentKey implements Serializable {
 		return false;
 	}
 
-	/**
-	 * @see #getContentNode()
-	 */
-	public ContentNodeI lookupContentNode() {
-		return getContentNode();
-	}
-
-	/**
-	 * Convenience method to look up the corresponding {@link ContentNodeI}
-	 * via the global {@link CmsManager}.
-	 * 
-	 * @return the content node or null if not found
-	 */
-	public ContentNodeI getContentNode() {
-		return CmsManager.getInstance().getContentNode(this);
-	}
 
 	@Override
     public int hashCode() {

@@ -55,11 +55,5 @@
 		<SDMerchantEmail>[% SDMerchantEmail= %]</SDMerchantEmail>
 		<BillerReferenceNumber>[% BillerReferenceNumber= %]</BillerReferenceNumber>
 		<AccountUpdaterEligibility>[% AccountUpdaterEligibility=N %]</AccountUpdaterEligibility>
-        <EUDDBankBranchCode>[% EUDDBankBranchCode= %]</EUDDBankBranchCode>
-        <EUDDIBAN>[% EUDDIBAN= %]</EUDDIBAN>
-        <EUDDBIC>[% EUDDBIC= %]</EUDDBIC>
-        <EUDDMandateSignatureDate>[% EUDDMandateSignatureDate= %]</EUDDMandateSignatureDate>
-        <EUDDMandateID>[% EUDDMandateID= %]</EUDDMandateID>
-        <EUDDMandateType>[% EUDDMandateType= %]</EUDDMandateType>
 	</Profile>
 </Request>

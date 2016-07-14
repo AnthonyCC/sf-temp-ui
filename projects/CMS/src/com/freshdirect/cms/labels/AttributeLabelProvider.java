@@ -2,6 +2,8 @@ package com.freshdirect.cms.labels;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Uses a specific attribute's value as the label. If the attribute
@@ -21,7 +23,8 @@ public class AttributeLabelProvider implements ILabelProvider {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.labels.ILabelProvider#getLabel(com.freshdirect.cms.ContentNodeI)
 	 */
-	public String getLabel(ContentNodeI node) {
+	@Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		AttributeI a = node.getAttribute(attribute);
 		if (a == null) {
 			return null;

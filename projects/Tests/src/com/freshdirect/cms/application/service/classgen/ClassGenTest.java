@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -38,7 +39,7 @@ public class ClassGenTest extends TestCase {
 
     @SuppressWarnings("deprecation")
     public void testFullName() {
-        ContentNodeI node = getService("fullName").getContentNode(key);
+        ContentNodeI node = getService("fullName").getContentNode(key, DraftContext.MAIN);
 
         assertNotNull("gro_choc_fine exists", node);
         assertEquals("key", key, node.getKey());
@@ -53,7 +54,7 @@ public class ClassGenTest extends TestCase {
     }
     
     public void testSubcategories() {
-        ContentNodeI node = getService("subcat").getContentNode(key);
+        ContentNodeI node = getService("subcat").getContentNode(key, DraftContext.MAIN);
         
         Object subcategories = node.getAttributeValue("subcategories");
         assertNotNull("subcategories", subcategories);
@@ -64,7 +65,7 @@ public class ClassGenTest extends TestCase {
     }
     
     public void testCopy() {
-        ContentNodeI node = getService("copy").getContentNode(key);
+        ContentNodeI node = getService("copy").getContentNode(key, DraftContext.MAIN);
         assertEquals("FULL_NAME value", "Chocolate", node.getAttributeValue("FULL_NAME"));
 
         ContentNodeI copy = node.copy();

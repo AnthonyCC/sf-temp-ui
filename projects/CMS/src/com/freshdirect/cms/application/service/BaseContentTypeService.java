@@ -2,11 +2,9 @@ package com.freshdirect.cms.application.service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 

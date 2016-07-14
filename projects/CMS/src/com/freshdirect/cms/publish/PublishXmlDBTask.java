@@ -26,6 +26,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
 import com.freshdirect.cms.util.SingleStoreFilterHelper;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -46,6 +47,8 @@ public class PublishXmlDBTask implements PublishTask {
 	public final static String NS_DC = "http://purl.org/dc/elements/1.1";
 
 	private ContentServiceI contentService;
+	
+	private DraftContext draftContext = DraftContext.MAIN;
 	
 	private DataSource dataSource;
 	
@@ -73,7 +76,7 @@ public class PublishXmlDBTask implements PublishTask {
 		
 		Map<ContentKey, ContentNodeI> publishNodes = new LinkedHashMap<ContentKey, ContentNodeI>();
 		for(String contentTypeId : getPublishContentTypeId()){
-			Map<ContentKey, ContentNodeI> nodes = getContentService().getContentNodes(getContentService().getContentKeysByType(ContentType.get(contentTypeId)));
+			Map<ContentKey, ContentNodeI> nodes = getContentService().getContentNodes(getContentService().getContentKeysByType(ContentType.get(contentTypeId), draftContext), draftContext);
 			publishNodes.putAll(nodes);
 		}
 		ContentNodeSerializer serializer = new ContentNodeSerializer();
@@ -83,7 +86,7 @@ public class PublishXmlDBTask implements PublishTask {
 		if (publish.getStoreId() != null) {
 			final int n0 = l.size();
 			LOG.info("Filtering " + l.size() + " nodes ..");
-			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l);
+			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l, contentService, draftContext);
 			final int n1 = l.size();
 			final double perc = ((double)(n0-n1)*100)/((double)n0);
 			LOG.info("  dropped " + (n0-n1) + " nodes ("+(Math.round(perc))+" %)");

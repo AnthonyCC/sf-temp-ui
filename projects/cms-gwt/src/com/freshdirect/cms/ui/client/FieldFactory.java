@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -19,7 +18,6 @@ import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.freshdirect.cms.ui.client.fields.CmsMultiColumnField;
 import com.freshdirect.cms.ui.client.fields.CustomGridField;
 import com.freshdirect.cms.ui.client.fields.EnumField;
-import com.freshdirect.cms.ui.client.fields.EnumMultiSelectField;
 import com.freshdirect.cms.ui.client.fields.FieldResetPlugin;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.LocationField;
@@ -37,10 +35,10 @@ import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
-import com.freshdirect.cms.ui.model.attributes.MultiEnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
@@ -61,8 +59,6 @@ public final class FieldFactory {
 	/**
 	 * Creates a field for CMS attribute
 	 * 
-	 * TODO: extract read only flag
-	 * 
 	 * @param nodeData
 	 * @param key
 	 * @param readonly
@@ -70,7 +66,9 @@ public final class FieldFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static Field<Serializable> createInnerField( GwtNodeData nodeData, String key, boolean readonly, Serializable value ) {
+	public static Field<Serializable> createInnerField( final GwtNodeData nodeData, final GwtNodePermission permission, final String key, final Serializable value ) {
+        final boolean readonly = permission.isReadonly();
+	    
     	final GwtContentNode aNode = nodeData.getNode();
         ContentNodeAttributeI attribute = aNode.getOriginalAttribute(key);
 
@@ -87,7 +85,7 @@ public final class FieldFactory {
 			case PrimaryHomeSelection:
 				String _key = ManageStoreView.getInstance().getStoreKey();
 				
-				aField = new PrimaryHomeSelectorField( nodeData.getContexts(), nodeData.getParentMap(), _key  );
+				aField = new PrimaryHomeSelectorField( nodeData.getContexts(), nodeData.getParentMap(), _key, permission );
 				((OneToManyRelationField)aField).setValue((List<OneToManyModel>)value);
 				
 				break;
@@ -99,7 +97,7 @@ public final class FieldFactory {
 					pcAttr = new ProductConfigAttribute();
 				}
             	
-            	ProductConfigEditor editor = new ProductConfigEditor( readonly, pcAttr );
+            	ProductConfigEditor editor = new ProductConfigEditor( permission, pcAttr );
             	pcAttr.setFieldObject( editor );
             	
             	aNode.setOriginalAttribute( key, new ProductConfigAttribute( pcAttr ) );
@@ -120,6 +118,9 @@ public final class FieldFactory {
 				field.setValue((Date) attribute.getValue());
 				field.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd"));
 				aField = field;
+				break;
+			default:
+                break;
 			}
 		}
 
@@ -174,7 +175,7 @@ public final class FieldFactory {
 				aField = field;
 			} else if ("onetoone".equals(type)) {
 				OneToOneAttribute attr = (OneToOneAttribute) attribute;
-				OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes(), readonly );
+				OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes(), permission );
 				if (value != null) {
 					field.setValue((ContentNodeModel)value);					
 				}				
@@ -184,15 +185,15 @@ public final class FieldFactory {
 				OneToManyRelationField field = null;
 				if (customFieldDefinition!=null) {
 				    if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
-				        field = new VariationMatrixField(key, attr.getAllowedTypes(), readonly, aNode);
+				        field = new VariationMatrixField(key, attr.getAllowedTypes(), permission, aNode);
 				    } else if (customFieldDefinition.getType() == CustomFieldDefinition.Type.CmsMultiColumnField) {
-				    	field = new CmsMultiColumnField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly, nodeData.getNode().getType());
+				    	field = new CmsMultiColumnField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, permission, nodeData.getNode().getType());
 				    } else if (customFieldDefinition.getGridColumns() != null) {
-				        field = new CustomGridField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly, nodeData.getNode().getType());
+				        field = new CustomGridField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, permission, nodeData.getNode().getType());
 				    }
 				} 
 				if (field == null) {
-					field = new OneToManyRelationField(key, attr.getAllowedTypes(), attr.isNavigable(), readonly, nodeData.getNode().getType());
+					field = new OneToManyRelationField(key, attr.getAllowedTypes(), attr.isNavigable(), permission, nodeData.getNode().getType());
 				}
 				
 				if (value != null) {
@@ -252,9 +253,6 @@ public final class FieldFactory {
 	            editor.setStyleName("x-form-element wysiwigEditor");
 	            editor.setWidth(500);
 	    		editor.setHeight(300);
-	    		//final boolean readonly = attribute.isReadonly() || nodeData.isReadonly();
-	    		//editor.add(new Label("<span class=\"readonly\">" + attribute.getLabel() + "</span>"));
-	    		//editor.setEnabled(Boolean.valueOf(readonly));
 	    		final Serializable value = nodeData.getFormValue(key);
 	    		editor.setHTML((String)value);
 	    		nodeData.getNode().getOriginalAttribute(key).setFieldObject(editor.getTextArea());
@@ -265,17 +263,19 @@ public final class FieldFactory {
 
 
     @SuppressWarnings("unchecked")
-	public static Field<Serializable> createOtherField(GwtNodeData cn, String key, Serializable value, boolean wrapInheritedField) {
-    	final GwtNodeData nodeData = cn;
-    	
+	public static Field<Serializable> createOtherField(final GwtNodeData nodeData, final String key, Serializable value, boolean wrapInheritedField) {
     	ContentNodeAttributeI attribute = nodeData.getNode().getOriginalAttribute(key);
     	
     	if ( attribute == null ) {
-    		CmsGwt.log( "Null attribute [" + key + "] found in node [" + cn.getNode().getKey() + "]", true );
+    		CmsGwt.log( "Null attribute [" + key + "] found in node [" + nodeData.getNode().getKey() + "]", true );
     		return null;
     	}
         
-        boolean readonly = attribute.isReadonly() || nodeData.isReadonly();
+    	final GwtNodePermission permission = new GwtNodePermission( nodeData.getPermission() );
+    	
+    	permission.setAttributeEditable( !attribute.isReadonly() );
+    	
+        final boolean readonly = permission.isReadonly() ;
 
         
         Field<Serializable> field = null;
@@ -283,13 +283,13 @@ public final class FieldFactory {
         /**
          * Create appropriate field editor
          */
-		field = createInnerField(nodeData, key, readonly, value);
+		field = createInnerField(nodeData, permission, key, value);
 		if ( field == null ) {
 			return null;
 		}
 
 		// wrap field in inherited value editor if attribute is inheritable
-		field = (wrapInheritedField && attribute.isInheritable() ) ? decorateInheritedValue(cn, key, readonly, field) : field;
+		field = (wrapInheritedField && attribute.isInheritable() ) ? decorateInheritedValue(nodeData, permission, key, field) : field;
 		
 		field.setData("contentKey", key);
 		
@@ -313,8 +313,9 @@ public final class FieldFactory {
     /**
      * Wrap field into an inheritable field
      */
-	private static Field<Serializable> decorateInheritedValue( GwtNodeData nodeData, String key, final boolean readonly, final Field<Serializable> innerField ) {
-		
+	private static Field<Serializable> decorateInheritedValue( final GwtNodeData nodeData, final GwtNodePermission permission, String key, final Field<Serializable> innerField ) {
+	    final boolean readonly = permission.isReadonly();
+
 		final boolean isInherited = nodeData.getFormValue(key) == null;
 		Field<Serializable> field = new InheritanceField<Serializable>( innerField, isInherited, readonly );
 		ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( nodeData.getCurrentContext(), key );

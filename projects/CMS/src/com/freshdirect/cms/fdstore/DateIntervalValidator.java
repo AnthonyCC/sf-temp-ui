@@ -6,12 +6,14 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 
 public class DateIntervalValidator implements ContentValidatorI {
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
+    @Override
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
 		ContentType t = node.getKey().getType();
 
 		if ( FDContentTypes.YMAL_SET.equals( t ) || FDContentTypes.STARTER_LIST.equals( t )

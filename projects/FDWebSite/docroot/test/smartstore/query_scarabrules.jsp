@@ -1,5 +1,6 @@
 <!doctype html>
 <?xml version="1.0" encoding="UTF-8" ?>
+<%@page import="com.freshdirect.cms.application.ContentServiceI"%>
 <%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
@@ -19,8 +20,8 @@
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%
 	final String nodeKey = "CmsReport:scarabRules";
-
-	if ( CmsManager.getInstance().getContentNode( ContentKey.decode( nodeKey ) ) == null ) {
+    final CmsManager contentService = CmsManager.getInstance();
+	if ( contentService.getContentNode( ContentKey.decode( nodeKey ) ) == null ) {
 		response.sendRedirect("test_notavail.jsp");
 	}
 %>
@@ -35,7 +36,7 @@
 	<body>
 		<%
 		
-			ITable attribute = (ITable)ContentKey.decode( nodeKey ).getContentNode().getAttributeValue( "results" );
+			ITable attribute = (ITable)  contentService.getContentNode( ContentKey.decode( nodeKey ) ).getAttributeValue( "results" );
 			
 			AttributeDefI[] columnDefs = attribute.getColumnDefinitions();
 			List<ITable.Row> rows = attribute.getRows();

@@ -1,9 +1,7 @@
 package com.freshdirect.cms.report;
 
 import java.util.List;
-import java.util.Map;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.context.ContextWalker;
 import com.freshdirect.cms.context.ContextualContentNodeI;

@@ -15,6 +15,9 @@ import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.ITable;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.translator.TranslatorToGwt;
@@ -27,7 +30,7 @@ public class CsvExportServlet extends HttpServlet {
 
     @Override
 	protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
-		
+		final ContentServiceI svc = CmsManager.getInstance();
 		String nodeKey;
 		String attributeKey;
 		AttributeI attribute; 
@@ -36,7 +39,8 @@ public class CsvExportServlet extends HttpServlet {
 			nodeKey = request.getParameter( "nodeKey" );
 			attributeKey = request.getParameter( "attributeKey" );
 		
-			attribute = ContentKey.decode( nodeKey ).getContentNode().getAttribute( attributeKey );
+			final ContentKey key = ContentKey.decode( nodeKey );
+            attribute = svc.getContentNode(key, DraftContext.MAIN).getAttribute( attributeKey );
 			EnumAttributeType type = attribute.getDefinition().getAttributeType();
 	        
 	        if ( type != EnumAttributeType.TABLE ) {
@@ -48,7 +52,7 @@ public class CsvExportServlet extends HttpServlet {
         	return;
 		}
         
-		TableAttribute table = TranslatorToGwt.createTableAttribute( (ITable)attribute.getValue() );		
+		TableAttribute table = TranslatorToGwt.createTableAttribute( (ITable)attribute.getValue(), svc, DraftContext.MAIN );		
 
 		response.setContentType( "text/csv" );
 		response.addHeader( "Content-Disposition", "attachment; filename=\""+nodeKey.replace( ':', '-' )+".csv\"" );

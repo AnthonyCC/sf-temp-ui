@@ -3,6 +3,8 @@ package com.freshdirect.cms.labels;
 import java.util.List;
 
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Chains multiple label providers and returns the first available value.
@@ -23,9 +25,10 @@ public class CompositeLabelProvider implements ILabelProvider {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.labels.ILabelProvider#getLabel(com.freshdirect.cms.ContentNodeI)
 	 */
-	public String getLabel(ContentNodeI node) {
+	@Override
+	public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
 		for (int i = 0; i < labelProviders.length; i++) {
-			String l = labelProviders[i].getLabel(node);
+			String l = labelProviders[i].getLabel(node, contentService, draftContext);
 			if (l != null) {
 				return l;
 			}

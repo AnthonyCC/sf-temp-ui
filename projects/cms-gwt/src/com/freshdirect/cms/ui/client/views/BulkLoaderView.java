@@ -35,13 +35,13 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.layout.BoxLayout.BoxLayoutPack;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.MarginData;
-import com.extjs.gxt.ui.client.widget.layout.BoxLayout.BoxLayoutPack;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.ActionBar;
 import com.freshdirect.cms.ui.client.CmsGwt;
@@ -58,313 +58,316 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class BulkLoaderView extends LayoutContainer {
-	private static final int PAGE_SIZE = 50;
 
-	private class SaveNodeAction extends BasicAction<GwtSaveResponse> {
-		public SaveNodeAction() {
-			startSaveProgress("Saving changes", "Saving...");
-		}
+    private static final int PAGE_SIZE = 50;
 
-		public void onSuccess(GwtSaveResponse result) {
-			showResultsPanel(result);
-			stopProgress("");
-		}
+    private class SaveNodeAction extends BasicAction<GwtSaveResponse> {
 
-		@Override
-		public void errorOccured(Throwable error) {
-			MessageBox.alert("Error", "Error while saving changes: " + error.getMessage(), null);
-			stopProgress("");
-		}
-	}
+        public SaveNodeAction() {
+            startSaveProgress("Saving changes", "Saving...");
+        }
 
-	private class SaveChangesSelectionListener extends SelectionListener<ButtonEvent> {
-		Button upper;
-		Button lower;
+        @Override
+        public void onSuccess(GwtSaveResponse result) {
+            showResultsPanel(result);
+            stopProgress();
+        }
 
-		public SaveChangesSelectionListener(Button upper, Button lower) {
-			this.upper = upper;
-			this.lower = lower;
-		}
+        @Override
+        public void errorOccured(Throwable error) {
+            MessageBox.alert("Error", "Error while saving changes: " + error.getMessage(), null);
+            stopProgress();
+        }
+    }
 
-		@Override
-		public void componentSelected(ButtonEvent ce) {
-			upper.setEnabled(false);
-			lower.setEnabled(false);
-			CmsGwt.getBulkLoaderService().save(new SaveNodeAction());
-		}
-	}
+    private class SaveChangesSelectionListener extends SelectionListener<ButtonEvent> {
 
-	private final class FormUploadListener implements Listener<FormEvent> {
-		private static final String UPLOAD_RESULT_HTML_DIV_OPEN = "<div class=\"file-upload-response\">";
-		private static final String UPLOAD_RESULT_HTML_DIV_CLOSE = "</div>";
+        Button upper;
+        Button lower;
 
-		@Override
-		public void handleEvent(FormEvent be) {
-			StringBuilder resultHtml = new StringBuilder(be.getResultHtml());
-			if (resultHtml.indexOf(UPLOAD_RESULT_HTML_DIV_OPEN) == 0)
-				resultHtml.delete(0, UPLOAD_RESULT_HTML_DIV_OPEN.length());
-			int lastIndex;
-			if ((lastIndex = resultHtml.lastIndexOf(UPLOAD_RESULT_HTML_DIV_CLOSE)) == resultHtml.length()
-					- UPLOAD_RESULT_HTML_DIV_CLOSE.length())
-				resultHtml.delete(lastIndex, resultHtml.length());
+        public SaveChangesSelectionListener(Button upper, Button lower) {
+            this.upper = upper;
+            this.lower = lower;
+        }
 
-			if ("OK".equals(resultHtml.toString())) {
-				CmsGwt.getBulkLoaderService().getPreviewHeader(new BaseCallback<GwtBulkLoadHeader>() {
-					@Override
-					public void onSuccess(GwtBulkLoadHeader result) {
-						BulkLoaderView.this.showPreviewPanel(result);
-					}
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            upper.setEnabled(false);
+            lower.setEnabled(false);
+            CmsGwt.getBulkLoaderService().save(new SaveNodeAction());
+        }
+    }
 
-				});
-			} else {
-				MessageBox.alert("Error", "Error while processing XLS file: " + resultHtml, null);
-			}
-		}
-	}
+    private final class FormUploadListener implements Listener<FormEvent> {
 
-	private final static class GwtBulkLoadRowRenderer implements GridCellRenderer<GwtBulkLoadRow> {
-		@Override
-		public Object render(GwtBulkLoadRow model, String property, ColumnData config, int rowIndex, int colIndex,
-				ListStore<GwtBulkLoadRow> store, Grid<GwtBulkLoadRow> grid) {
-			String value = model.getCells().get(colIndex).getDisplayValue();
-			if (value != null && value.trim().length() == 0)
-				value = null;
-			BoxComponent text;
-			if (value != null) {
-				text = new Text(value);
-			} else {
-				text = new Html("&nbsp;");
-			}
-			text.addStyleName("bulk-loader-state-" + model.getCells().get(colIndex).getStatus().getState().name().toLowerCase());
-			text.setTitle(model.getCells().get(colIndex).getStatus().getMessage());
-			return text;
-		}
-	}
+        private static final String UPLOAD_RESULT_HTML_DIV_OPEN = "<div class=\"file-upload-response\">";
+        private static final String UPLOAD_RESULT_HTML_DIV_CLOSE = "</div>";
 
-	private ContentPanel previewPanel;
-	private ContentPanel resultsPanel;
+        @Override
+        public void handleEvent(FormEvent be) {
+            StringBuilder resultHtml = new StringBuilder(be.getResultHtml());
+            if (resultHtml.indexOf(UPLOAD_RESULT_HTML_DIV_OPEN) == 0)
+                resultHtml.delete(0, UPLOAD_RESULT_HTML_DIV_OPEN.length());
+            int lastIndex;
+            if ((lastIndex = resultHtml.lastIndexOf(UPLOAD_RESULT_HTML_DIV_CLOSE)) == resultHtml.length() - UPLOAD_RESULT_HTML_DIV_CLOSE.length())
+                resultHtml.delete(lastIndex, resultHtml.length());
 
-	private static BulkLoaderView instance = new BulkLoaderView();
+            if ("OK".equals(resultHtml.toString())) {
+                CmsGwt.getBulkLoaderService().getPreviewHeader(new BaseCallback<GwtBulkLoadHeader>() {
 
-	public static BulkLoaderView getInstance() {
-		return instance;
-	}
+                    @Override
+                    public void onSuccess(GwtBulkLoadHeader result) {
+                        BulkLoaderView.this.showPreviewPanel(result);
+                    }
 
-	public BulkLoaderView() {
-		super();
-		HtmlContainer headerMarkup = new HtmlContainer(
-				"<table width=\"100%\" class=\"pageTitle\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr>"
-						+ "<td valign=\"bottom\"><h1 class=\"view-title\">Bulk Load products from XLS file</h1></td>"
-						+ "<td width=\"75\" valign=\"bottom\" align=\"right\" style=\"line-height: 0pt;\">"
-						+ "<img width=\"75\" height=\"66\" src=\"img/banner_admin.gif\"/></td>"
-						+ "</tr></tbody></table>");
+                });
+            } else {
+                MessageBox.alert("Error", "Error while processing XLS file: " + resultHtml, null);
+            }
+        }
+    }
 
-		add(headerMarkup);
-		add(new ActionBar());
-		add(createUploadForm(), new MarginData(10));
-		setScrollMode(Scroll.AUTO);
-	}
+    private final static class GwtBulkLoadRowRenderer implements GridCellRenderer<GwtBulkLoadRow> {
 
-	protected void showResultsPanel(GwtSaveResponse response) {
-		if (resultsPanel != null) {
-			remove(resultsPanel);
-		}
-		resultsPanel = new ContentPanel();
+        @Override
+        public Object render(GwtBulkLoadRow model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtBulkLoadRow> store, Grid<GwtBulkLoadRow> grid) {
+            String value = model.getCells().get(colIndex).getDisplayValue();
+            if (value != null && value.trim().length() == 0)
+                value = null;
+            BoxComponent text;
+            if (value != null) {
+                text = new Text(value);
+            } else {
+                text = new Html("&nbsp;");
+            }
+            text.addStyleName("bulk-loader-state-" + model.getCells().get(colIndex).getStatus().getState().name().toLowerCase());
+            text.setTitle(model.getCells().get(colIndex).getStatus().getMessage());
+            return text;
+        }
+    }
 
-		if (response.getChangeSet() != null) {
-			// we have changeset to show
-			resultsPanel.setHeading("3. Step &ndash; View Results: Changeset " + response.getChangesetId());
-			
-			ChangeHistory changes = new ChangeHistory( new ChangeSetQueryResponse(response.getChangeSet()) );						
-			changes.setHeight(400);
-			resultsPanel.add(changes);			
-			
-		} else if (response.getValidationMessages() != null && response.getValidationMessages().size() > 0) {
-			// we have errors to show
-			resultsPanel.setHeading("3. Step &ndash; View Results: Validation Errors");
-			ListStore<GwtValidationError> store = new ListStore<GwtValidationError>();
-			store.add(response.getValidationMessages());
-			ListView<GwtValidationError> view = new ListView<GwtValidationError>();
-			view.setItemSelector("div.validation-error");
-			view.setTemplate("<tpl for=\".\"><div class=\"validation-error\">{humanReadable}</div></tpl>");
-			view.setStore(store);
-			view.setHeight(300);
-			resultsPanel.add(view);
-		} else {
-			// no changes
-			resultsPanel.setHeading("3. Step &ndash; View Results: No changes");
-			HBoxLayout layout = new HBoxLayout();
-			layout.setPadding(new Padding(10));
-			layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-			layout.setPack(BoxLayoutPack.CENTER);
-			resultsPanel.setLayout(layout);
-			resultsPanel.add(new Label("No changes"));
-		}
-		add(resultsPanel, new MarginData(10));
-		layout();
-	}
+    private ContentPanel previewPanel;
+    private ContentPanel resultsPanel;
 
-	protected void showPreviewPanel(GwtBulkLoadHeader header) {
-		if (previewPanel != null) {
-			remove(previewPanel);
-		}
-		if (resultsPanel != null) {
-			remove(resultsPanel);
-			resultsPanel = null;
-		}
-		insert(previewPanel = createPreviewPanel(header), 3, new MarginData(10));
-		layout();
-	}
+    private static BulkLoaderView instance = new BulkLoaderView();
 
-	public ContentPanel createUploadForm() {
-		ContentPanel panel = new ContentPanel();
-		panel.setHeading("1. Step &ndash; Upload XLS file");
-		panel.setWidth(500);
-		final FormPanel form = new FormPanel();
+    public static BulkLoaderView getInstance() {
+        return instance;
+    }
 
-		form.setAction(GWT.getModuleBaseURL() + "bulkUpload");
-		form.setEncoding(FormPanel.Encoding.MULTIPART);
-		form.setMethod(FormPanel.Method.POST);
-		form.setHeaderVisible(false);
-		form.setBodyBorder(false);
-		form.setButtonAlign(HorizontalAlignment.CENTER);
+    public BulkLoaderView() {
+        super();
+        HtmlContainer headerMarkup = new HtmlContainer("<table width=\"100%\" class=\"pageTitle\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr>"
+                + "<td valign=\"bottom\"><h1 class=\"view-title\">Bulk Load products from XLS file</h1></td>"
+                + "<td width=\"75\" valign=\"bottom\" align=\"right\" style=\"line-height: 0pt;\">" + "<img width=\"75\" height=\"66\" src=\"img/banner_admin.gif\"/></td>"
+                + "</tr></tbody></table>");
 
-		FileUploadField uploadField = new FileUploadField();
-		uploadField.setFieldLabel("XLS file");
-		uploadField.setAllowBlank(false);
-		uploadField.setName("xlsFile");
-		form.add(uploadField, new FormData("100%"));
+        add(headerMarkup);
+        add(new ActionBar());
+        add(createUploadForm(), new MarginData(10));
+        setScrollMode(Scroll.AUTO);
+    }
 
-		form.addButton(new Button("Upload", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				if (form.isValid()) {
-					form.submit();
-				}
-			}
-		}));
+    protected void showResultsPanel(GwtSaveResponse response) {
+        if (resultsPanel != null) {
+            remove(resultsPanel);
+        }
+        resultsPanel = new ContentPanel();
 
-		form.addListener(Events.Submit, new FormUploadListener());
+        if (response.getChangeSet() != null) {
+            // we have changeset to show
+            resultsPanel.setHeading("3. Step &ndash; View Results: Changeset " + response.getChangesetId());
 
-		panel.add(form, new MarginData(0, 25, 0, 0));
+            ChangeHistory changes = new ChangeHistory(new ChangeSetQueryResponse(response.getChangeSet()));
+            changes.setHeight(400);
+            resultsPanel.add(changes);
 
-		return panel;
-	}
+        } else if (response.getValidationMessages() != null && response.getValidationMessages().size() > 0) {
+            // we have errors to show
+            resultsPanel.setHeading("3. Step &ndash; View Results: Validation Errors");
+            ListStore<GwtValidationError> store = new ListStore<GwtValidationError>();
+            store.add(response.getValidationMessages());
+            ListView<GwtValidationError> view = new ListView<GwtValidationError>();
+            view.setItemSelector("div.validation-error");
+            view.setTemplate("<tpl for=\".\"><div class=\"validation-error\">{humanReadable}</div></tpl>");
+            view.setStore(store);
+            view.setHeight(300);
+            resultsPanel.add(view);
+        } else {
+            // no changes
+            resultsPanel.setHeading("3. Step &ndash; View Results: No changes");
+            HBoxLayout layout = new HBoxLayout();
+            layout.setPadding(new Padding(10));
+            layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+            layout.setPack(BoxLayoutPack.CENTER);
+            resultsPanel.setLayout(layout);
+            resultsPanel.add(new Label("No changes"));
+        }
+        add(resultsPanel, new MarginData(10));
+        layout();
+    }
 
-	public ContentPanel createPreviewPanel(GwtBulkLoadHeader header) {
-		ContentPanel previewPanel = new ContentPanel();
-		previewPanel.setHeading("2. Step &ndash; Preview Load Results");
+    protected void showPreviewPanel(GwtBulkLoadHeader header) {
+        if (previewPanel != null) {
+            remove(previewPanel);
+        }
+        if (resultsPanel != null) {
+            remove(resultsPanel);
+            resultsPanel = null;
+        }
+        insert(previewPanel = createPreviewPanel(header), 3, new MarginData(10));
+        layout();
+    }
 
-		LayoutContainer upperButtonBar = new LayoutContainer();
-		HBoxLayout layout2 = new HBoxLayout();
-		layout2.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		upperButtonBar.setLayout(layout2);
+    public ContentPanel createUploadForm() {
+        ContentPanel panel = new ContentPanel();
+        panel.setHeading("1. Step &ndash; Upload XLS file");
+        panel.setWidth(500);
+        final FormPanel form = new FormPanel();
 
-		final Button upper = new Button("Save Changes");
-		final Button lower = new Button("Save Changes");
-		upper.addSelectionListener(new SaveChangesSelectionListener(upper, lower));
-		upper.setEnabled(false);
+        form.setAction(GWT.getModuleBaseURL() + "bulkUpload");
+        form.setEncoding(FormPanel.Encoding.MULTIPART);
+        form.setMethod(FormPanel.Method.POST);
+        form.setHeaderVisible(false);
+        form.setBodyBorder(false);
+        form.setButtonAlign(HorizontalAlignment.CENTER);
 
-		HBoxLayoutData hLayoutData = new HBoxLayoutData();
-		upperButtonBar.add(createLegendMarkup());
-		hLayoutData = new HBoxLayoutData();
-		hLayoutData.setFlex(1);
-		upperButtonBar.add(new Text(), hLayoutData);
-		upperButtonBar.add(upper);
-		hLayoutData = new HBoxLayoutData();
-		hLayoutData.setFlex(1);
-		upperButtonBar.add(new Text(), hLayoutData);
-		HtmlContainer hideThis = createLegendMarkup();
-		hideThis.setStyleAttribute("visibility", "hidden");
-		upperButtonBar.add(hideThis);
+        FileUploadField uploadField = new FileUploadField();
+        uploadField.setFieldLabel("XLS file");
+        uploadField.setAllowBlank(false);
+        uploadField.setName("xlsFile");
+        form.add(uploadField, new FormData("100%"));
 
-		previewPanel.add(upperButtonBar, new MarginData(10));
+        form.addButton(new Button("Upload", new SelectionListener<ButtonEvent>() {
 
-		RpcProxy<PagingLoadResult<GwtBulkLoadRow>> proxy = new RpcProxy<PagingLoadResult<GwtBulkLoadRow>>() {
-			@Override
-			protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtBulkLoadRow>> callback) {
-				CmsGwt.getBulkLoaderService().getPreviewRows((PagingLoadConfig) loadConfig, callback);
-			}
-		};
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (form.isValid()) {
+                    form.submit();
+                }
+            }
+        }));
 
-		final PagingLoader<PagingLoadResult<ModelData>> loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
-		loader.setRemoteSort(true);
+        form.addListener(Events.Submit, new FormUploadListener());
 
-		ListStore<GwtBulkLoadRow> store = new ListStore<GwtBulkLoadRow>(loader);
+        panel.add(form, new MarginData(0, 25, 0, 0));
 
-		final PagingToolBar toolBar = new PagingToolBar(PAGE_SIZE);
-		toolBar.bind(loader);
+        return panel;
+    }
 
-		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-		for (int i = 0; i < header.getCells().size(); i++) {
-			GwtBulkLoadHeaderCell headerCell = header.getCells().get(i);
-			ColumnConfig config = new ColumnConfig(headerCell.getColumnName(), headerCell.getColumnName(), 100);
-			config.setSortable(false);
-			config.setMenuDisabled(true);
-			config.setRenderer(new GwtBulkLoadRowRenderer());
-			columns.add(config);
-		}
+    public ContentPanel createPreviewPanel(GwtBulkLoadHeader header) {
+        ContentPanel previewPanel = new ContentPanel();
+        previewPanel.setHeading("2. Step &ndash; Preview Load Results");
 
-		ColumnModel cm = new ColumnModel(columns);
+        LayoutContainer upperButtonBar = new LayoutContainer();
+        HBoxLayout layout2 = new HBoxLayout();
+        layout2.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+        upperButtonBar.setLayout(layout2);
 
-		final Grid<GwtBulkLoadRow> grid = new Grid<GwtBulkLoadRow>(store, cm);
-		grid.setAutoHeight(true);
-		grid.addStyleName("bulk-loader-grid");
+        final Button upper = new Button("Save Changes");
+        final Button lower = new Button("Save Changes");
+        upper.addSelectionListener(new SaveChangesSelectionListener(upper, lower));
+        upper.setEnabled(false);
 
-		ContentPanel panel = new ContentPanel();
-		panel.setHeaderVisible(false);
-		panel.setFrame(false);
-		panel.setCollapsible(false);
-		panel.setAnimCollapse(false);
-		panel.setLayout(new FitLayout());
-		panel.setScrollMode(Scroll.AUTO);
-		panel.add(grid);
-		panel.setBottomComponent(toolBar);
+        HBoxLayoutData hLayoutData = new HBoxLayoutData();
+        upperButtonBar.add(createLegendMarkup());
+        hLayoutData = new HBoxLayoutData();
+        hLayoutData.setFlex(1);
+        upperButtonBar.add(new Text(), hLayoutData);
+        upperButtonBar.add(upper);
+        hLayoutData = new HBoxLayoutData();
+        hLayoutData.setFlex(1);
+        upperButtonBar.add(new Text(), hLayoutData);
+        HtmlContainer hideThis = createLegendMarkup();
+        hideThis.setStyleAttribute("visibility", "hidden");
+        upperButtonBar.add(hideThis);
 
-		previewPanel.add(panel, new MarginData(10));
+        previewPanel.add(upperButtonBar, new MarginData(10));
 
-		LayoutContainer lowerButtonBar = new LayoutContainer();
-		layout2 = new HBoxLayout();
-		layout2.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		lowerButtonBar.setLayout(layout2);
+        RpcProxy<PagingLoadResult<GwtBulkLoadRow>> proxy = new RpcProxy<PagingLoadResult<GwtBulkLoadRow>>() {
 
-		lower.addSelectionListener(new SaveChangesSelectionListener(upper, lower));
-		lower.setEnabled(false);
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtBulkLoadRow>> callback) {
+                CmsGwt.getBulkLoaderService().getPreviewRows((PagingLoadConfig) loadConfig, callback);
+            }
+        };
 
-		lowerButtonBar.add(createLegendMarkup());
-		hLayoutData = new HBoxLayoutData();
-		hLayoutData.setFlex(1);
-		lowerButtonBar.add(new Text(), hLayoutData);
-		lowerButtonBar.add(lower);
-		hLayoutData = new HBoxLayoutData();
-		hLayoutData.setFlex(1);
-		lowerButtonBar.add(new Text(), hLayoutData);
-		hideThis = createLegendMarkup();
-		hideThis.setStyleAttribute("visibility", "hidden");
-		lowerButtonBar.add(hideThis);
-		
-		previewPanel.add(lowerButtonBar, new MarginData(10));
+        final PagingLoader<PagingLoadResult<ModelData>> loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
+        loader.setRemoteSort(true);
 
-		CmsGwt.getBulkLoaderService().hasAnyError(new BaseCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
-				upper.setEnabled(!result);
-				lower.setEnabled(!result);
-			}
-		});
+        ListStore<GwtBulkLoadRow> store = new ListStore<GwtBulkLoadRow>(loader);
 
-		loader.load(0, PAGE_SIZE);
+        final PagingToolBar toolBar = new PagingToolBar(PAGE_SIZE);
+        toolBar.bind(loader);
 
-		return previewPanel;
-	}
+        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        for (int i = 0; i < header.getCells().size(); i++) {
+            GwtBulkLoadHeaderCell headerCell = header.getCells().get(i);
+            ColumnConfig config = new ColumnConfig(headerCell.getColumnName(), headerCell.getColumnName(), 100);
+            config.setSortable(false);
+            config.setMenuDisabled(true);
+            config.setRenderer(new GwtBulkLoadRowRenderer());
+            columns.add(config);
+        }
 
-	public HtmlContainer createLegendMarkup() {
-		return new HtmlContainer(
-				"<dl class=\"bulk-loader-preview-legend\"><dt class=\"bulk-loader-state-create\"></dt><dd>create</dd>"
-						+ "<dt class=\"bulk-loader-state-update\"></dt><dd>update</dd>"
-						+ "<dt class=\"bulk-loader-state-error_cell\"></dt><dd>error</dd>"
-						+ "<dt class=\"bulk-loader-state-warning\"></dt><dd>warning</dd>"
-						+ "<dt class=\"bulk-loader-state-ignore_cell\"></dt><dd>ignore</dd>"
-						+ "<dt class=\"bulk-loader-state-no_change\" style=\"border: 1px solid gray;\"></dt><dd>no change</dd></dl>");
-	}
+        ColumnModel cm = new ColumnModel(columns);
+
+        final Grid<GwtBulkLoadRow> grid = new Grid<GwtBulkLoadRow>(store, cm);
+        grid.setAutoHeight(true);
+        grid.addStyleName("bulk-loader-grid");
+
+        ContentPanel panel = new ContentPanel();
+        panel.setHeaderVisible(false);
+        panel.setFrame(false);
+        panel.setCollapsible(false);
+        panel.setAnimCollapse(false);
+        panel.setLayout(new FitLayout());
+        panel.setScrollMode(Scroll.AUTO);
+        panel.add(grid);
+        panel.setBottomComponent(toolBar);
+
+        previewPanel.add(panel, new MarginData(10));
+
+        LayoutContainer lowerButtonBar = new LayoutContainer();
+        layout2 = new HBoxLayout();
+        layout2.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+        lowerButtonBar.setLayout(layout2);
+
+        lower.addSelectionListener(new SaveChangesSelectionListener(upper, lower));
+        lower.setEnabled(false);
+
+        lowerButtonBar.add(createLegendMarkup());
+        hLayoutData = new HBoxLayoutData();
+        hLayoutData.setFlex(1);
+        lowerButtonBar.add(new Text(), hLayoutData);
+        lowerButtonBar.add(lower);
+        hLayoutData = new HBoxLayoutData();
+        hLayoutData.setFlex(1);
+        lowerButtonBar.add(new Text(), hLayoutData);
+        hideThis = createLegendMarkup();
+        hideThis.setStyleAttribute("visibility", "hidden");
+        lowerButtonBar.add(hideThis);
+
+        previewPanel.add(lowerButtonBar, new MarginData(10));
+
+        CmsGwt.getBulkLoaderService().hasAnyError(new BaseCallback<Boolean>() {
+
+            @Override
+            public void onSuccess(Boolean result) {
+                upper.setEnabled(!result);
+                lower.setEnabled(!result);
+            }
+        });
+
+        loader.load(0, PAGE_SIZE);
+
+        return previewPanel;
+    }
+
+    public HtmlContainer createLegendMarkup() {
+        return new HtmlContainer("<dl class=\"bulk-loader-preview-legend\"><dt class=\"bulk-loader-state-create\"></dt><dd>create</dd>"
+                + "<dt class=\"bulk-loader-state-update\"></dt><dd>update</dd>" + "<dt class=\"bulk-loader-state-error_cell\"></dt><dd>error</dd>"
+                + "<dt class=\"bulk-loader-state-warning\"></dt><dd>warning</dd>" + "<dt class=\"bulk-loader-state-ignore_cell\"></dt><dd>ignore</dd>"
+                + "<dt class=\"bulk-loader-state-no_change\" style=\"border: 1px solid gray;\"></dt><dd>no change</dd></dl>");
+    }
 }

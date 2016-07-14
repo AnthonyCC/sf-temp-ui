@@ -14,7 +14,9 @@ import com.freshdirect.cms.ContentKey;
  */
 public class ContentValidationDelegate implements Serializable {
 
-	/** List of {@link ContentValidationMessage} */
+    private static final long serialVersionUID = -2688798557488474313L;
+
+    /** List of {@link ContentValidationMessage} */
 	private final List<ContentValidationMessage> messages = new ArrayList<ContentValidationMessage>();
 
 	public void record(String message) {
@@ -33,7 +35,7 @@ public class ContentValidationDelegate implements Serializable {
 	 * @return List of {@link ContentValidationMessage}
 	 */
 	public List<ContentValidationMessage> getValidationMessages() {
-		return messages;
+		return new ArrayList<ContentValidationMessage>(messages);
 	}
 
 	public boolean isEmpty() {

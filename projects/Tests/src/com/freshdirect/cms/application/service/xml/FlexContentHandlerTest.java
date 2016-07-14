@@ -11,6 +11,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 
 public class FlexContentHandlerTest extends TestCase {
 
@@ -24,7 +25,7 @@ public class FlexContentHandlerTest extends TestCase {
 	}
 
 	public void testGetContentNode() {
-		Set allKeys = service.getContentKeys();
+		Set allKeys = service.getContentKeys(DraftContext.MAIN);
 		assertEquals(5, allKeys.size());
 		assertTrue(allKeys.contains(key("A")));
 		assertTrue(allKeys.contains(key("B")));
@@ -32,12 +33,12 @@ public class FlexContentHandlerTest extends TestCase {
 		assertTrue(allKeys.contains(key("D")));
 		assertTrue(allKeys.contains(key("flex_0")));
 
-		ContentNodeI fooA = service.getContentNode(key("A"));
+		ContentNodeI fooA = service.getContentNode(key("A"), DraftContext.MAIN);
 		assertEquals(3, fooA.getAttributes().size());
 		assertEquals("aaa", fooA.getAttributeValue("label"));
 		assertNull(fooA.getAttributeValue("children"));
 
-		ContentNodeI fooB = service.getContentNode(key("B"));
+		ContentNodeI fooB = service.getContentNode(key("B"), DraftContext.MAIN);
 		assertEquals(3, fooB.getAttributes().size());
 		assertEquals("bbb", fooB.getAttributeValue("label"));
 		List l = (List) fooB.getAttributeValue("children");
@@ -45,7 +46,7 @@ public class FlexContentHandlerTest extends TestCase {
 		assertEquals(key("A"), l.get(0));
 		assertEquals(key("B"), l.get(1));
 
-		ContentNodeI fooC = service.getContentNode(key("C"));
+		ContentNodeI fooC = service.getContentNode(key("C"), DraftContext.MAIN);
 		assertEquals(3, fooC.getAttributes().size());
 		assertEquals("ccc", fooC.getAttributeValue("label"));
 		l = (List) fooC.getAttributeValue("children");
@@ -55,14 +56,14 @@ public class FlexContentHandlerTest extends TestCase {
 		assertEquals(key("flex_0"), l.get(2));
 		assertEquals(key("B"), l.get(3));
 
-		ContentNodeI fooFlex0 = service.getContentNode(key("flex_0"));
+		ContentNodeI fooFlex0 = service.getContentNode(key("flex_0"), DraftContext.MAIN);
 		assertEquals(3, fooFlex0.getAttributes().size());
 		assertEquals("xxx", fooFlex0.getAttributeValue("label"));
 		assertNull(fooFlex0.getAttributeValue("children"));
 	}
 
 	public void testDate() {
-		ContentNodeI fooD = service.getContentNode(key("D"));
+		ContentNodeI fooD = service.getContentNode(key("D"), DraftContext.MAIN);
 		assertEquals(3, fooD.getAttributes().size());
 		assertEquals("an element with a date attribute", fooD.getAttributeValue("label"));
 

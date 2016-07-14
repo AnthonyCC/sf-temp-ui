@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 
@@ -41,20 +42,20 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
      * com.freshdirect.cms.application.CmsRequestI)
      */
     @Override
-    public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+    public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
         // Category
         if (FDContentTypes.CATEGORY.equals(node.getKey().getType())) {
             Object recommenderKey = node.getAttributeValue("recommender");
             if (recommenderKey instanceof ContentKey) {
-                ContentNodeI recommender = service.getContentNode((ContentKey) recommenderKey);
+                ContentNodeI recommender = service.getContentNode((ContentKey) recommenderKey, draftContext);
                 List<ContentKey> scopeNodes = (List<ContentKey>) (recommender != null ? recommender.getAttributeValue("scope") : Collections.EMPTY_LIST);
-                checkKey(service, delegate, node.getKey(), recommender.getKey(), node, scopeNodes);
+                checkKey(service, draftContext, delegate, node.getKey(), recommender.getKey(), node, scopeNodes);
             }
         }
         if (FDContentTypes.RECOMMMENDER.equals(node.getKey().getType())) {
             List<ContentKey> scopedNodes = (List<ContentKey>) node.getAttributeValue("scope");
             for (ContentKey key : scopedNodes) {
-                if (searchForRecommender(service, key, node)) {
+                if (searchForRecommender(service, draftContext, key, node)) {
                     delegate.record(node.getKey(), "scope",  key.getEncoded()
                             + " cause circular references!");
                 }
@@ -63,10 +64,10 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
 
     }
 
-    private boolean searchForRecommender(ContentServiceI service, ContentKey key, ContentNodeI recommenderNode) {
+    private boolean searchForRecommender(ContentServiceI service, DraftContext draftContext, ContentKey key, ContentNodeI recommenderNode) {
         ContentType type = key.getType();
         if (FDContentTypes.CATEGORY.equals(type) || FDContentTypes.DEPARTMENT.equals(type)) {
-            ContentNodeI contentNodeI = service.getContentNode(key);
+            ContentNodeI contentNodeI = service.getContentNode(key, draftContext);
             List<ContentKey> children;
             if (FDContentTypes.DEPARTMENT.equals(type)) {
                 children = (List<ContentKey>) contentNodeI.getAttributeValue("categories");
@@ -79,7 +80,7 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
             }
             if (children != null) {
                 for (ContentKey child : children) {
-                    if (searchForRecommender(service, child, recommenderNode)) {
+                    if (searchForRecommender(service, draftContext, child, recommenderNode)) {
                         return true;
                     }
                 }
@@ -88,7 +89,7 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
         return false;
     }
 
-    private boolean checkKey(ContentServiceI service, ContentValidationDelegate delegate, ContentKey originalKey, ContentKey recommenderKey, ContentNodeI node, List<ContentKey> keys) {
+    private boolean checkKey(ContentServiceI service, DraftContext draftContext, ContentValidationDelegate delegate, ContentKey originalKey, ContentKey recommenderKey, ContentNodeI node, List<ContentKey> keys) {
         if (node == null) {
             return false;
         }
@@ -99,10 +100,10 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
         }
         ContentType type = node.getKey().getType();
         if (FDContentTypes.PRODUCT.equals(type) || FDContentTypes.CATEGORY.equals(type) || FDContentTypes.DEPARTMENT.equals(type)) { 
-            Set<ContentKey> parentKeys = service.getParentKeys(node.getKey());
+            Set<ContentKey> parentKeys = service.getParentKeys(node.getKey(), draftContext);
             for (ContentKey parent : parentKeys) {
-                ContentNodeI parentNode = service.getContentNode(parent);
-                if (checkKey(service, delegate, originalKey, recommenderKey, parentNode, keys)) {
+                ContentNodeI parentNode = service.getContentNode(parent, draftContext);
+                if (checkKey(service, draftContext, delegate, originalKey, recommenderKey, parentNode, keys)) {
                     return true;
                 }
             }

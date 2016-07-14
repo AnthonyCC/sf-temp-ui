@@ -1,10 +1,12 @@
 package com.freshdirect.fdstore.content.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -171,7 +173,8 @@ public abstract class ColumnExtractor {
 		
 		public void cacheAttribute(ContentBundle.RowCache cache) throws AbortRowException {
 			ContentNodeModel model = cache.getContentNodeModel();
-			cache.putSequence(CHILD,new ArrayList(model.getContentKey().getContentNode().getChildKeys()));
+			ContentNodeI node = CmsManager.getInstance().getContentNode( model.getContentKey() );
+			cache.putSequence(CHILD,new ArrayList(node.getChildKeys()));
 		}
 	};
 

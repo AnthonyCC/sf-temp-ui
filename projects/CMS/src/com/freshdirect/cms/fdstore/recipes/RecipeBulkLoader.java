@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.RelationshipI;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
@@ -70,6 +71,8 @@ public class RecipeBulkLoader {
 	 *  The CmsManager to use for creating new content.
 	 */
 	private ContentServiceI service;
+
+	private DraftContext draftContext;
 
 	/**
 	 *  A list of SectionNode objects that is the result of parsing
@@ -132,10 +135,12 @@ public class RecipeBulkLoader {
 	 * @see #RECIPE
 	 */
 	public RecipeBulkLoader(ContentServiceI	service,
+	                  DraftContext draftContext,
 					  Reader 			input,
 		              String 			recipeId,
 					  int    			type) {
 		this.service  = service;
+		this.draftContext = draftContext;
 		reader        = new LineNumberReader(input);
 		this.recipeId = recipeId;
 		this.type     = type;
@@ -226,7 +231,7 @@ public class RecipeBulkLoader {
 	 */
 	private List<ContentNodeI> addToNewbornFolder(List<ContentNodeI> list) throws InvalidContentKeyException {
 		ContentKey		newbornKey    = ContentKey.create(FDContentTypes.FDFOLDER, NEWBORN_FOLDER_NAME);
-		ContentNodeI		newbornFolder = service.getContentNode(newbornKey);
+		ContentNodeI		newbornFolder = service.getContentNode(newbornKey, draftContext);
 		
 		if (newbornFolder == null) {
 			return list;
@@ -253,7 +258,7 @@ public class RecipeBulkLoader {
 	 */
 	private List<ContentNodeI> processConfiguredProductGroup() throws InvalidContentKeyException {
 		ContentKey		groupKey  = ContentKey.create(FDContentTypes.CONFIGURED_PRODUCT_GROUP, recipeId);
-		ContentNodeI    groupNode = service.createPrototypeContentNode(groupKey);
+		ContentNodeI    groupNode = service.createPrototypeContentNode(groupKey, draftContext);
 		List<ContentKey>      keyList   = new ArrayList<ContentKey>();
 		
 		// get the list of keys of the existing nodes
@@ -291,12 +296,12 @@ public class RecipeBulkLoader {
 		
 		// create a recipe
 		key    = ContentKey.create(FDContentTypes.RECIPE, recipeId);
-		recipe = service.createPrototypeContentNode(key);
+		recipe = service.createPrototypeContentNode(key, draftContext);
 		
 		// add the main variant to the recipe
 		variantId = recipeId + "_default";
 		key       = ContentKey.create(FDContentTypes.RECIPE_VARIANT, variantId);
-		variant   = service.createPrototypeContentNode(key);
+		variant   = service.createPrototypeContentNode(key, draftContext);
 		ContentNodeUtil.addRelationshipKey((RelationshipI) recipe.getAttribute("variants"), key);
 
 		
@@ -323,7 +328,7 @@ public class RecipeBulkLoader {
 
 			// add the section to the main variant
 			key     = ContentKey.create(FDContentTypes.RECIPE_SECTION, id);
-			section = service.createPrototypeContentNode(key);
+			section = service.createPrototypeContentNode(key, draftContext);
 			ContentNodeUtil.addRelationshipKey((RelationshipI) variant.getAttribute("sections"), key);
 			
 			// add all ingredients to the section
@@ -404,7 +409,7 @@ public class RecipeBulkLoader {
 		StringTokenizer tokenizer = new StringTokenizer(line, DELIMITERS, true);
 
 		ContentKey		key       = new ContentKey(FDContentTypes.CONFIGURED_PRODUCT, generateId());
-		ContentNodeI    node      = service.createPrototypeContentNode(key);
+		ContentNodeI    node      = service.createPrototypeContentNode(key, draftContext);
 		String			token;
 		Boolean			bool;
 		Double        	quantity;

@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.model.EnumModel;
+import com.freshdirect.cms.ui.model.GwtNodePermission;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
@@ -42,7 +43,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 	
 	PCEChangeListener changeListener = new PCEChangeListener();
 	
-	public ProductConfigEditor( boolean readonly, ProductConfigAttribute pcAttr ) {
+	public ProductConfigEditor( GwtNodePermission permission, ProductConfigAttribute pcAttr ) {
 		super();
 	
 		this.readOnly = readonly;
@@ -57,7 +58,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		mainPanel.addStyleName( "product-config-editor" );
 		
 		// === SKU ===
-		skuField = new OneToOneRelationField( attribute.getAllowedTypes(), readonly );
+		skuField = new OneToOneRelationField( attribute.getAllowedTypes(), permission );
 		skuField.setValue( attribute.getValue() );
 		
 		skuField.addListener( Events.Change, new Listener<BaseEvent>() {

@@ -1,29 +1,34 @@
 package com.freshdirect.cms;
 
-import org.apache.commons.lang.enums.Enum;
-
 /**
  * Enumeration of relationship destination cardinalities (One or Many).
  */
-public class EnumCardinality extends Enum {
+public enum EnumCardinality {
 
-	public static EnumCardinality ONE = new EnumCardinality("One");
-	public static EnumCardinality MANY = new EnumCardinality("Many");
+	ONE("One"),
+	MANY("Many")
+	;
+
+    final String name;
 
 	private EnumCardinality(String name) {
-		super(name);
+		this.name = name;
 	}
 
-	public static EnumCardinality getEnum(String name) {
-		return (EnumCardinality) getEnum(EnumCardinality.class, name);
-	}
+    public String getName() {
+        return name;
+    }
+	
+    @Deprecated
+    public static EnumCardinality getEnum(String name) {
+        if (name == null)
+            return null;
 
-//	public static Map getEnumMap() {
-//		return getEnumMap(EnumCardinality.class);
-//	}
-
-//	public static List getEnumList() {
-//		return getEnumList(EnumCardinality.class);
-//	}
-
+        for (EnumCardinality e : values()) {
+            if (e.getName().equalsIgnoreCase(name)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

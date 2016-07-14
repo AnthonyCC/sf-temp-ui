@@ -13,6 +13,7 @@ import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
 /**
@@ -36,65 +37,74 @@ public class MaskContentService extends AbstractContentService implements Conten
 		this.base = base;
 		this.mask = mask;
 	}
-
+	
+	@Override
 	public ContentTypeServiceI getTypeService() {
 		return mask.getTypeService();
 	}
 
-	public Set<ContentKey> getContentKeys() {
+	@Override
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		Set<ContentKey> s = new HashSet<ContentKey>();
-		s.addAll(base.getContentKeys());
-		s.addAll(mask.getContentKeys());
+		s.addAll(base.getContentKeys( draftContext ));
+		s.addAll(mask.getContentKeys( draftContext ));
 		return s;
 	}
 
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	@Override
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		Set<ContentKey> s = new HashSet<ContentKey>();
-		s.addAll(base.getContentKeysByType(type));
-		s.addAll(mask.getContentKeysByType(type));
+		s.addAll(base.getContentKeysByType(type, draftContext));
+		s.addAll(mask.getContentKeysByType(type, draftContext));
 		return s;
 	}
 
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	@Override
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		// get all potential parents from both and recalculate based on masked node data
 
 		Set<ContentKey> s = new HashSet<ContentKey>();
-		s.addAll(base.getParentKeys(key));
-		s.addAll(mask.getParentKeys(key));
+		s.addAll(base.getParentKeys(key, draftContext));
+		s.addAll(mask.getParentKeys(key, draftContext));
 
-		Map parentIndex = ContentNodeUtil.getParentIndex(getContentNodes(s).values());
+		Map<ContentKey, Set<ContentKey>> parentIndex = ContentNodeUtil.getParentIndex(getContentNodes(s, draftContext).values());
 
-		Set parentKeys = (Set) parentIndex.get(key);
+		Set<ContentKey> parentKeys = parentIndex.get(key);
 		return parentKeys == null ? Collections.EMPTY_SET : parentKeys;
 	}
 
-	public ContentNodeI getContentNode(ContentKey key) {
-		ContentNodeI n = mask.getContentNode(key);
+	@Override
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
+		ContentNodeI n = mask.getContentNode(key, draftContext);
 		if (n == null) {
-			n = base.getContentNode(key);
+			n = base.getContentNode(key, draftContext);
 		}
 		return n;
 	}
 
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	@Override
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
 		Map<ContentKey, ContentNodeI> m = new HashMap<ContentKey, ContentNodeI>(keys.size());
-		m.putAll(base.getContentNodes(keys));
-		m.putAll(mask.getContentNodes(keys));
+		m.putAll(base.getContentNodes(keys, draftContext));
+		m.putAll(mask.getContentNodes(keys, draftContext));
 		return m;
 	}
 
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
-		return base.createPrototypeContentNode(key);
+	@Override
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
+		return base.createPrototypeContentNode(key, draftContext);
 	}
 
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
 		return mask.handle(request);
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
-		ContentNodeI n = mask.getRealContentNode(key);
+	@Override
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
+		ContentNodeI n = mask.getRealContentNode(key, draftContext);
 		if (n == null) {
-			n = base.getRealContentNode(key);
+			n = base.getRealContentNode(key, draftContext);
 		}
 		return n;
 	}

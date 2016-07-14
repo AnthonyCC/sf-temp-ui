@@ -18,6 +18,7 @@ import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.SimpleContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
@@ -45,7 +46,7 @@ public class ValidationTaskTest extends TestCase {
 		for (int i = 0; i < NODE_COUNT; i++) {
 			ContentKey k = new ContentKey(ContentType.get("Foo"), String
 					.valueOf(i));
-			req.addNode(service.createPrototypeContentNode(k));
+			req.addNode(service.createPrototypeContentNode(k, DraftContext.MAIN));
 		}
 		service.handle(req);
 	}
@@ -56,7 +57,7 @@ public class ValidationTaskTest extends TestCase {
 		
 		int startingThreads = Thread.activeCount();
 		
-		Set expectedKeys = service.getContentKeys();
+		Set expectedKeys = service.getContentKeys(DraftContext.MAIN);
 		assertEquals(NODE_COUNT, expectedKeys.size());
 
 		List validators = new ArrayList(VALIDATORS_COUNT);
@@ -88,8 +89,9 @@ public class ValidationTaskTest extends TestCase {
 
 		List keys = Collections.synchronizedList(new ArrayList());
 
+		@Override
 		public void validate(ContentValidationDelegate delegate,
-				ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+				ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 			try {
 				Thread.sleep(VALIDATION_DELAY);
 				this.keys.add(node.getKey());
@@ -101,9 +103,10 @@ public class ValidationTaskTest extends TestCase {
 
 	private class FailingValidator extends MockValidator {
 
+	    @Override
 		public void validate(ContentValidationDelegate delegate,
-				ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
-			super.validate(delegate, service, node, request, oldNode);
+				ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+			super.validate(delegate, service, draftContext, node, request, oldNode);
 			throw new RuntimeException("oops");
 		}
 	}

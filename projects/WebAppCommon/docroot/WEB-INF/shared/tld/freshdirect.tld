@@ -5711,12 +5711,17 @@
         </attribute>
     </tag>
 
-
 	<tag>
 		<name>EnableXCForCSR</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.EnableExpressCheckoutPagesTag</tagclass>
 		<bodycontent>JSP</bodycontent>
 	</tag>
+
+    <tag>
+        <name>CheckDraftContextTag</name>
+        <tagclass>com.freshdirect.webapp.taglib.fdstore.CheckDraftContextTag</tagclass>
+        <bodycontent>EMPTY</bodycontent>
+    </tag>
 
  	<tag>
 		<name>ManageNewStandingOrder</name>

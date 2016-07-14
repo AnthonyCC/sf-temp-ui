@@ -3,6 +3,8 @@ package com.freshdirect.cms;
 import java.util.Collection;
 import java.util.Set;
 
+import com.freshdirect.cms.application.ContentTypeServiceI;
+
 /**
  * Schema definition for a {@link com.freshdirect.cms.ContentType}.
  */

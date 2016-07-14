@@ -28,14 +28,14 @@ public interface ContentServiceI {
 	 * 
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set<ContentKey> getContentKeys();
+	public Set<ContentKey> getContentKeys(DraftContext draftContext);
 
 	/**
 	 * Get content keys matching given type.  
 	 * 
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set<ContentKey> getContentKeysByType(ContentType type);
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext);
 
 	/**
 	 * Get keys that have a navigable relationship TO the given key.
@@ -43,18 +43,18 @@ public interface ContentServiceI {
 	 * @param key ContentKey (never null)
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set<ContentKey> getParentKeys(ContentKey key);
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext);
 
 	/**
 	 * @return ContentNodeI (or null if not found, or type is not supported)
 	 */
-	public ContentNodeI getContentNode(ContentKey key);
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext);
 	
 	/**
 	 * @param key
 	 * @return real content nodes (persisted in CMS DB). ERPS only content nodes are not returned!
 	 */
-	public ContentNodeI getRealContentNode(ContentKey key);
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext);
 	
 	/**
 	 * Retrieve multiple nodes.
@@ -62,7 +62,7 @@ public interface ContentServiceI {
 	 * @param keys Set of ContentKey
 	 * @return Map of ContentKey -> ContentNodeI (never null)
 	 */
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys);
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext);
 	
 	/**
 	 * Retrieve nodes of a certain type based on filter criteria.
@@ -71,7 +71,7 @@ public interface ContentServiceI {
 	 * @param criteria filter predicate (never null)
 	 * @return Map of ContentKey -> ContentNodeI (never null)
 	 */
-	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria);
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria, DraftContext draftContext);
 
 	/**
 	 * Instantiate a new blank content object. The object is not yet stored at this point.
@@ -79,7 +79,7 @@ public interface ContentServiceI {
 	 * 
 	 * @return ContentNodeI (or null if type is not supported)
 	 */
-	public ContentNodeI createPrototypeContentNode(ContentKey key);
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext);
 
 	/**
 	 * Process a request to store/update/delete content objects.

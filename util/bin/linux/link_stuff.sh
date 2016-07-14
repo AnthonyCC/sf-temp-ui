@@ -5,7 +5,6 @@
 # run this script from the root FreshDirect directory
 
 ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects/DlvAdmin/docroot/WEB-INF/shared
-ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects/RefAdmin/docroot/WEB-INF/shared
 ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects/FDWebSite/docroot/WEB-INF/shared
 ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects/DlvConfirm/docroot/WEB-INF/shared
 ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects/CRM/docroot/WEB-INF/shared

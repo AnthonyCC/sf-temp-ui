@@ -37,6 +37,7 @@ import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.meta.ContentTypeUtil;
@@ -45,10 +46,10 @@ import com.freshdirect.cms.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * {@link com.freshdirect.cms.application.ContentServiceI} implementation
- * that persists nodes to/from an Oracle RDBMS in a generic schema.
+ * {@link com.freshdirect.cms.application.ContentServiceI} implementation that persists nodes to/from an Oracle RDBMS in a generic schema.
  * 
  * Uses the following tables:
+ * 
  * <pre>
  * cms_contentnode
  * cms_attribute
@@ -60,56 +61,57 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class DbContentService extends AbstractContentService implements ContentServiceI {
 
-	private final static boolean DEBUG_MISSING = false;
-	private final static Logger LOG = LoggerFactory.getInstance(DbContentService.class);
-	
+    private final static boolean DEBUG_MISSING = false;
+    private final static Logger LOG = LoggerFactory.getInstance(DbContentService.class);
 
-	private ContentTypeServiceI typeService;
+    private ContentTypeServiceI typeService;
 
-	private DataSource dataSource;
-	
-	private ContentNodeGenerator generator;
+    private DataSource dataSource;
 
-	public DbContentService() {
-		super();
-	}
+    private ContentNodeGenerator generator;
 
-	public void setContentTypeService(ContentTypeServiceI typeService) {
-		this.typeService = typeService;
-		this.generator = new ContentNodeGenerator(typeService);
-	}
+    public DbContentService() {
+        super();
+    }
 
-	public ContentTypeServiceI getTypeService() {
-		return typeService;
-	}
+    public void setContentTypeService(ContentTypeServiceI typeService) {
+        this.typeService = typeService;
+        this.generator = new ContentNodeGenerator(typeService);
+    }
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    @Override
+    public ContentTypeServiceI getTypeService() {
+        return typeService;
+    }
 
-	private Connection getConnection() throws SQLException {
-		return dataSource.getConnection();
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	public void initialize() {
-	    Collection<BidirectionalReferenceHandler> handlers = this.typeService.getAllReferenceHandler();
-	    for (BidirectionalReferenceHandler handler : handlers) {
-	        preloadHandler(handler);
-	    }
-	}
+    private Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
+    public void initialize() {
+        Collection<BidirectionalReferenceHandler> handlers = this.typeService.getAllReferenceHandler();
+        for (BidirectionalReferenceHandler handler : handlers) {
+            preloadHandler(handler);
+        }
+    }
 
     private void preloadHandler(BidirectionalReferenceHandler handler) {
         Connection conn = null;
         try {
             conn = getConnection();
             for (RelationshipDefI destinationType : handler.getDestinationTypes()) {
-                PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
+                PreparedStatement ps = conn
+                        .prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
                 ps.setString(1, handler.getSourceType().getName());
                 ps.setString(2, destinationType.getName());
                 ps.setString(3, handler.getRelationName());
                 ResultSet resultSet = ps.executeQuery();
-                
-                while(resultSet.next()) {
+
+                while (resultSet.next()) {
                     ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
                     ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
                     handler.addRelation(sourceKey, destKey);
@@ -140,248 +142,247 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     private final static String QUERY_ALL_KEYS = "select id, contenttype_id from cms_contentnode";
 
-	private final static String QUERY_KEYS_BY_TYPE = QUERY_ALL_KEYS + " where contenttype_id = ?";
+    private final static String QUERY_KEYS_BY_TYPE = QUERY_ALL_KEYS + " where contenttype_id = ?";
 
-	private Set getContentKeys(String query, String[] args) {
-		Connection conn = null;
+    private Set<ContentKey> getContentKeys(String query, String[] args) {
+        Connection conn = null;
 
-		HashSet returnSet = new HashSet();
+        Set<ContentKey> returnSet = new HashSet<ContentKey>();
 
-		try {
-			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement(query);
-			for (int i = 0; i < args.length; i++) {
-				ps.setString(i + 1, args[i]);
-			}
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				//returnSet.add(new ContentKey(new ContentType(rs.getString("contenttype_id")), rs.getString("id")));
-				returnSet.add(ContentKey.decode(rs.getString("id")));
-			}
-			rs.close();
-			ps.close();
+        try {
+            conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            for (int i = 0; i < args.length; i++) {
+                ps.setString(i + 1, args[i]);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // returnSet.add(new ContentKey(new ContentType(rs.getString("contenttype_id")), rs.getString("id")));
+                returnSet.add(ContentKey.decode(rs.getString("id")));
+            }
+            rs.close();
+            ps.close();
 
-		} catch (SQLException e) {
-			throw new CmsRuntimeException(e);
-		} finally {
-			close(conn);
-		}
-		return returnSet;
-	}
+        } catch (SQLException e) {
+            throw new CmsRuntimeException(e);
+        } finally {
+            close(conn);
+        }
+        return returnSet;
+    }
 
-	public Set getContentKeys() {
-		return getContentKeys(QUERY_ALL_KEYS, new String[] {});
-	}
+    @Override
+    public Set<ContentKey> getContentKeys(DraftContext draftContext) {
+        return getContentKeys(QUERY_ALL_KEYS, new String[] {});
+    }
 
-	public Set getContentKeysByType(ContentType type) {
-		return getContentKeys(QUERY_KEYS_BY_TYPE, new String[] {type.getName()});
-	}
+    @Override
+    public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
+        return getContentKeys(QUERY_KEYS_BY_TYPE, new String[] { type.getName() });
+    }
 
-	public ContentNodeI getContentNode(ContentKey key) {
-		HashSet p = new HashSet();
-		p.add(key);
-		Map map = getContentNodes(p);
-		ContentNodeI c = (ContentNodeI) map.get(key);
-		return c;
-	}
+    @Override
+    public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
+        Set<ContentKey> p = new HashSet<ContentKey>();
+        p.add(key);
+        Map<ContentKey, ContentNodeI> map = getContentNodes(p, draftContext);
+        ContentNodeI c = map.get(key);
+        return c;
+    }
 
-	private final static String SELECT_MANY_NODES = "select /*+ FIRST_ROWS */ id from cms_contentnode where id in (?)";
+    private final static String SELECT_MANY_NODES = "select /*+ FIRST_ROWS */ id from cms_contentnode where id in (?)";
 
-	private final static String SELECT_MANY_ATTR = "select /*+ FIRST_ROWS */ atr.contentnode_id, atr.def_name, atr.value"
-		+ " from cms_attribute atr"
-		+ " where atr.contentnode_id in (?)"
-		+ " order by atr.contentnode_id, atr.def_name";
+    private final static String SELECT_MANY_ATTR = "select /*+ FIRST_ROWS */ atr.contentnode_id, atr.def_name, atr.value" + " from cms_attribute atr"
+            + " where atr.contentnode_id in (?)" + " order by atr.contentnode_id, atr.def_name";
 
-	private final static String SELECT_MANY_REL = "select /*+ FIRST_ROWS */ r.parent_contentnode_id, r.def_name, r.child_contentnode_id"
-		+ " from cms_relationship r"
-		+ " where r.parent_contentnode_id in (?)"
-		+ " order by r.parent_contentnode_id, r.def_name, r.ordinal";
+    private final static String SELECT_MANY_REL = "select /*+ FIRST_ROWS */ r.parent_contentnode_id, r.def_name, r.child_contentnode_id" + " from cms_relationship r"
+            + " where r.parent_contentnode_id in (?)" + " order by r.parent_contentnode_id, r.def_name, r.ordinal";
 
-	// [APPDEV-3423] fixed parent key getter
-	private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id "
-		+ "from  cms.navtree "
-		+ "where child_contentnode_id=?";
+    // [APPDEV-3423] fixed parent key getter
+    private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id " + "from  cms.navtree " + "where child_contentnode_id=?";
 
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
-		Connection conn = null;
-		try {
-			conn = getConnection();
+    @Override
+    public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
 
-			String[] idChunks = DaoUtil.chunkContentKeys(keys);
+            String[] idChunks = DaoUtil.chunkContentKeys(keys);
 
-			Map<ContentKey, ContentNodeI> nodeMap = new HashMap<ContentKey, ContentNodeI>(keys.size());
-			for (int i = 0; i < idChunks.length; i++) {
-				process(conn, nodeMap, idChunks[i]);
-			}
+            Map<ContentKey, ContentNodeI> nodeMap = new HashMap<ContentKey, ContentNodeI>(keys.size());
+            for (int i = 0; i < idChunks.length; i++) {
+                process(conn, nodeMap, idChunks[i], draftContext);
+            }
 
-			if (DEBUG_MISSING && nodeMap.size() < keys.size()) {
-				Set<ContentKey> s = new HashSet<ContentKey>(keys);
-				s.removeAll(nodeMap.keySet());
-				System.err.println("DbContentService.getContentNodes() NULL for " + s);
-			}
+            if (DEBUG_MISSING && nodeMap.size() < keys.size()) {
+                Set<ContentKey> s = new HashSet<ContentKey>(keys);
+                s.removeAll(nodeMap.keySet());
+                System.err.println("DbContentService.getContentNodes() NULL for " + s);
+            }
 
-			return nodeMap;
+            return nodeMap;
 
-		} catch (SQLException e) {
-			throw new CmsRuntimeException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	public Set<ContentKey> getParentKeys(ContentKey key) {
-		Set<ContentKey> set = new HashSet<ContentKey>();
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement(SELECT_PARENT_KEYS);
-			ps.setString(1, key.getEncoded());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				ContentKey parentKey = ContentKey.decode(rs.getString(1));
-				set.add(parentKey);
-			}
-			rs.close();
-			ps.close();
-		} catch (SQLException e) {
-			throw new CmsRuntimeException(e);
-		} finally {
-			close(conn);
-		}
+        } catch (SQLException e) {
+            throw new CmsRuntimeException(e);
+        } finally {
+            close(conn);
+        }
+    }
 
-		return set;
-	}
+    @Override
+    public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
+        Set<ContentKey> set = new HashSet<ContentKey>();
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement(SELECT_PARENT_KEYS);
+            ps.setString(1, key.getEncoded());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ContentKey parentKey = ContentKey.decode(rs.getString(1));
+                set.add(parentKey);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            throw new CmsRuntimeException(e);
+        } finally {
+            close(conn);
+        }
 
-	private final static int FETCH_SIZE = 1000;
+        return set;
+    }
 
-	private void process(Connection conn, Map<ContentKey, ContentNodeI> nodeMap, String ids) throws SQLException {
+    private final static int FETCH_SIZE = 1000;
 
-		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		stmt.setFetchSize(FETCH_SIZE);
+    private void process(Connection conn, Map<ContentKey, ContentNodeI> nodeMap, String ids, DraftContext draftContext) throws SQLException {
 
-		String query = StringUtils.replace(SELECT_MANY_NODES, "?", ids);
-		ResultSet rs = stmt.executeQuery(query);
-		processNodesResultSet(rs, nodeMap);
-		rs.close();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        stmt.setFetchSize(FETCH_SIZE);
 
-		query = StringUtils.replace(SELECT_MANY_ATTR, "?", ids);
-		rs = stmt.executeQuery(query);
-		processAttributesResultSet(rs, nodeMap);
-		rs.close();
+        String query = StringUtils.replace(SELECT_MANY_NODES, "?", ids);
+        ResultSet rs = stmt.executeQuery(query);
+        processNodesResultSet(rs, nodeMap, draftContext);
+        rs.close();
 
-		query = StringUtils.replace(SELECT_MANY_REL, "?", ids);
-		rs = stmt.executeQuery(query);
-		processAttributesResultSet(rs, nodeMap);
-		rs.close();
+        query = StringUtils.replace(SELECT_MANY_ATTR, "?", ids);
+        rs = stmt.executeQuery(query);
+        processAttributesResultSet(rs, nodeMap);
+        rs.close();
 
-		stmt.close();
+        query = StringUtils.replace(SELECT_MANY_REL, "?", ids);
+        rs = stmt.executeQuery(query);
+        processAttributesResultSet(rs, nodeMap);
+        rs.close();
 
-	}
+        stmt.close();
 
-	private final static String DELETE_ATTRIBUTE = "delete from cms_attribute where contentnode_id = ?";
+    }
 
-	private final static String DELETE_RELATIONSHIP = "delete from cms_relationship where parent_contentnode_id = ?";
+    private final static String DELETE_ATTRIBUTE = "delete from cms_attribute where contentnode_id = ?";
 
-	/** conditional insert */
-	private final static String INSERT_NODE = "insert into cms_contentnode(id, contenttype_id) select ?, ? from dual where not exists (select id from cms_contentnode where id=?)";
+    private final static String DELETE_RELATIONSHIP = "delete from cms_relationship where parent_contentnode_id = ?";
 
-	private final static String INSERT_ATTRIBUTE = "insert into cms_attribute(id, contentnode_id, def_name, def_contenttype, value, ordinal) "
-		+ "values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
+    /** conditional insert */
+    private final static String INSERT_NODE = "insert into cms_contentnode(id, contenttype_id) select ?, ? from dual where not exists (select id from cms_contentnode where id=?)";
 
-	private final static String INSERT_RELATIONSHIP = "insert into cms_relationship(id, parent_contentnode_id, def_name, def_contenttype, child_contentnode_id, ordinal) "
-		+ "values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
-	
-	private final static String DELETE_PREV_OTHER_REL = "delete from cms_relationship where def_name = ? and def_contenttype = ? and child_contentnode_id = ? and ordinal = ?";
+    private final static String INSERT_ATTRIBUTE = "insert into cms_attribute(id, contentnode_id, def_name, def_contenttype, value, ordinal) "
+            + "values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
 
-	private void storeContentNode(ContentNodeI node) {
-		//System.out.println("Storing content node in DB: " + node.getKey());
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			conn.setAutoCommit(false);
-			
-			PreparedStatement ps = conn.prepareStatement(DELETE_ATTRIBUTE);
-			ps.setString(1, node.getKey().getEncoded());
-			ps.executeQuery();
-			ps.close();
+    private final static String INSERT_RELATIONSHIP = "insert into cms_relationship(id, parent_contentnode_id, def_name, def_contenttype, child_contentnode_id, ordinal) "
+            + "values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
 
-			ps = conn.prepareStatement(DELETE_RELATIONSHIP);
-			ps.setString(1, node.getKey().getEncoded());
-			ps.executeQuery();
-			ps.close();
+    private final static String DELETE_PREV_OTHER_REL = "delete from cms_relationship where def_name = ? and def_contenttype = ? and child_contentnode_id = ? and ordinal = ?";
 
-			if (node.getKey().getType()==ContentType.NULL_TYPE) {
-                            LOG.warn("trying to insert null content node:" + node + " key : " + node.getKey());
-			    conn.commit();
-			    return;
-			}
-			
-			PreparedStatement insPs = conn.prepareStatement(INSERT_NODE);
-			addInsBatch(insPs, node.getKey());
+    private void storeContentNode(ContentNodeI node) {
+        // System.out.println("Storing content node in DB: " + node.getKey());
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
 
-			PreparedStatement atrPs = conn.prepareStatement(INSERT_ATTRIBUTE);
-			PreparedStatement relPs = conn.prepareStatement(INSERT_RELATIONSHIP);
-			PreparedStatement delInvPs = conn.prepareStatement(DELETE_PREV_OTHER_REL);
-			
-			//Map attrMap = node.getAttributes();
-			Set<String> names = node.getDefinition().getAttributeNames();
-                        for (String name : names) {
-                            Object value = node.getAttributeValue(name);
-                            // System.out.println("Saving attribute - " + node.getKey() +
-                            // ":"+ attr.getName());
-                            if (value == null) {
-                                continue;
-                            }
-                            AttributeDefI def = node.getDefinition().getAttributeDef(name);
-                            if (def instanceof RelationshipDefI) {
-                                if (((RelationshipDefI) def).isCalculated()) {
-                                    continue;
-                                }
-                                if (EnumCardinality.ONE.equals(def.getCardinality())) {
-                                    ContentKey k = (ContentKey) value;
-                                    addInsBatch(insPs, k);
-                                    addRelBatch(relPs, node.getKey(), name, k, 0);
-                                    if (def instanceof BidirectionalRelationshipDefI) {
-                                        addInverseDelBatch(delInvPs, name, k, 0);
-                                    }
-                                } else {
-                                    List l = (List) value;
-                                    for (int m = 0; m < l.size(); m++) {
-                                        ContentKey k = (ContentKey) l.get(m);
-                                        addInsBatch(insPs, k);
-                                        addRelBatch(relPs, node.getKey(), name, k, m);
-                                    }
-                                }
-                            } else {
-                                atrPs.setString(1, node.getKey().getEncoded());
-                                atrPs.setString(2, name);
-                                atrPs.setString(3, node.getKey().getType().getName());
-                                atrPs.setString(4, ContentTypeUtil.attributeToString(def, value));
-                                atrPs.setInt(5, 0);
-                                atrPs.addBatch();
-                            }
+            PreparedStatement ps = conn.prepareStatement(DELETE_ATTRIBUTE);
+            ps.setString(1, node.getKey().getEncoded());
+            ps.executeQuery();
+            ps.close();
+
+            ps = conn.prepareStatement(DELETE_RELATIONSHIP);
+            ps.setString(1, node.getKey().getEncoded());
+            ps.executeQuery();
+            ps.close();
+
+            if (node.getKey().getType() == ContentType.NULL_TYPE) {
+                LOG.warn("trying to insert null content node:" + node + " key : " + node.getKey());
+                conn.commit();
+                return;
+            }
+
+            PreparedStatement insPs = conn.prepareStatement(INSERT_NODE);
+            addInsBatch(insPs, node.getKey());
+
+            PreparedStatement atrPs = conn.prepareStatement(INSERT_ATTRIBUTE);
+            PreparedStatement relPs = conn.prepareStatement(INSERT_RELATIONSHIP);
+            PreparedStatement delInvPs = conn.prepareStatement(DELETE_PREV_OTHER_REL);
+
+            // Map attrMap = node.getAttributes();
+            Set<String> names = node.getDefinition().getAttributeNames();
+            for (String name : names) {
+                Object value = node.getAttributeValue(name);
+                // System.out.println("Saving attribute - " + node.getKey() +
+                // ":"+ attr.getName());
+                if (value == null) {
+                    continue;
+                }
+                AttributeDefI def = node.getDefinition().getAttributeDef(name);
+                if (def instanceof RelationshipDefI) {
+                    if (((RelationshipDefI) def).isCalculated()) {
+                        continue;
+                    }
+                    if (EnumCardinality.ONE.equals(def.getCardinality())) {
+                        ContentKey k = (ContentKey) value;
+                        addInsBatch(insPs, k);
+                        addRelBatch(relPs, node.getKey(), name, k, 0);
+                        if (def instanceof BidirectionalRelationshipDefI) {
+                            addInverseDelBatch(delInvPs, name, k, 0);
                         }
+                    } else {
+                        List l = (List) value;
+                        for (int m = 0; m < l.size(); m++) {
+                            ContentKey k = (ContentKey) l.get(m);
+                            addInsBatch(insPs, k);
+                            addRelBatch(relPs, node.getKey(), name, k, m);
+                        }
+                    }
+                } else {
+                    atrPs.setString(1, node.getKey().getEncoded());
+                    atrPs.setString(2, name);
+                    atrPs.setString(3, node.getKey().getType().getName());
+                    atrPs.setString(4, ContentTypeUtil.attributeToString(def, value));
+                    atrPs.setInt(5, 0);
+                    atrPs.addBatch();
+                }
+            }
 
-			insPs.executeBatch();
-			insPs.close();
+            insPs.executeBatch();
+            insPs.close();
 
-			atrPs.executeBatch();
-			atrPs.close();
+            atrPs.executeBatch();
+            atrPs.close();
 
-			delInvPs.executeBatch();
-			delInvPs.close();
-			
-			relPs.executeBatch();
-			relPs.close();
+            delInvPs.executeBatch();
+            delInvPs.close();
 
-			conn.commit();
-		} catch (Exception sqle1) {
-			throw new CmsRuntimeException(sqle1);
-		} finally {
-		    close(conn);
-		}
+            relPs.executeBatch();
+            relPs.close();
 
-	}
+            conn.commit();
+        } catch (Exception sqle1) {
+            throw new CmsRuntimeException(sqle1);
+        } finally {
+            close(conn);
+        }
+
+    }
 
     private void addInverseDelBatch(PreparedStatement delInvPs, String relationshipName, ContentKey destKey, int ordinal) throws SQLException {
         delInvPs.setString(1, relationshipName);
@@ -402,67 +403,73 @@ public class DbContentService extends AbstractContentService implements ContentS
         insPs.addBatch();
     }
 
-	private void addRelBatch(PreparedStatement relPs, ContentKey parent, String relationshipName, ContentKey destKey, int ordinal)
-		throws SQLException {
-		relPs.setString(1, parent.getEncoded());
-		relPs.setString(2, relationshipName);
-                relPs.setString(3, destKey.getType().getName());
-		if (ContentType.NULL_TYPE == destKey.getType()) {
-                    relPs.setNull(4, Types.VARCHAR);
-		} else {
-		    relPs.setString(4, destKey.getEncoded());
-		}
-		relPs.setInt(5, ordinal);
-		relPs.addBatch();
-	}
-
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
-		if (!typeService.getContentTypes().contains(key.getType())) {
-			return null;
-		}
-		return createContentNode(key);
-	}
-
-	private void processNodesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
-		while (rs.next()) {
-			ContentKey key = ContentKey.decode(rs.getString("id"));
-			ContentNodeI node = createContentNode(key);
-			nodeMap.put(key, node);
-		}
-	}
-
-    protected ContentNodeI createContentNode(ContentKey key) {
-        return this.generator.createNode(key);
-        //return new ContentNode(this, key);
+    private void addRelBatch(PreparedStatement relPs, ContentKey parent, String relationshipName, ContentKey destKey, int ordinal) throws SQLException {
+        relPs.setString(1, parent.getEncoded());
+        relPs.setString(2, relationshipName);
+        relPs.setString(3, destKey.getType().getName());
+        if (ContentType.NULL_TYPE == destKey.getType()) {
+            relPs.setNull(4, Types.VARCHAR);
+        } else {
+            relPs.setString(4, destKey.getEncoded());
+        }
+        relPs.setInt(5, ordinal);
+        relPs.addBatch();
     }
 
-	private void processAttributesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
-		ContentKey currKey = null;
-		String currAttrName = null;
-		List<String> currValue = new ArrayList<String>();
+    @Override
+    public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
+        if (!typeService.getContentTypes().contains(key.getType())) {
+            return null;
+        }
+        return createContentNode(key, draftContext);
+    }
 
-		while (rs.next()) {
-			ContentKey key = ContentKey.decode(rs.getString(1));
-			String attrName = rs.getString(2);
+    private void processNodesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap, DraftContext draftContext) throws SQLException {
+        while (rs.next()) {
+            ContentKey key = ContentKey.decode(rs.getString("id"));
+            ContentNodeI node = createContentNode(key, draftContext);
+            
+            if (node != null) {
+                nodeMap.put(key, node);
+            }
+        }
+    }
 
-			if (!key.equals(currKey) || !attrName.equals(currAttrName)) {
-				if (currKey != null) {
-					recordAttribute(nodeMap, currKey, currAttrName, currValue);
-				}
-				currKey = key;
-				currAttrName = attrName;
-				currValue = new ArrayList<String>();
-			}
+    protected ContentNodeI createContentNode(ContentKey key, DraftContext draftContext) {
+        return
+            ! ContentKey.NULL_KEY.equals(key)
+                ? this.generator.createNode(key, draftContext)
+                : null
+            ;
+    }
 
-			currValue.add(rs.getString(3));
-		}
-		if (currKey != null) {
-			recordAttribute(nodeMap, currKey, currAttrName, currValue);
-		}
-	}
+    private void processAttributesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
+        ContentKey currKey = null;
+        String currAttrName = null;
+        List<String> currValue = new ArrayList<String>();
+
+        while (rs.next()) {
+            ContentKey key = ContentKey.decode(rs.getString(1));
+            String attrName = rs.getString(2);
+
+            if (!key.equals(currKey) || !attrName.equals(currAttrName)) {
+                if (currKey != null) {
+                    recordAttribute(nodeMap, currKey, currAttrName, currValue);
+                }
+                currKey = key;
+                currAttrName = attrName;
+                currValue = new ArrayList<String>();
+            }
+
+            currValue.add(rs.getString(3));
+        }
+        if (currKey != null) {
+            recordAttribute(nodeMap, currKey, currAttrName, currValue);
+        }
+    }
 
     private void recordAttribute(Map<ContentKey, ContentNodeI> nodeMap, ContentKey key, String attrName, List<String> value) {
-        ContentNodeI node = (ContentNodeI) nodeMap.get(key);
+        ContentNodeI node = nodeMap.get(key);
 
         AttributeDefI aDef = typeService.getContentTypeDefinition(node.getKey().getType()).getAttributeDef(attrName);
         if (aDef == null) {
@@ -472,17 +479,19 @@ public class DbContentService extends AbstractContentService implements ContentS
         node.setAttributeValue(attrName, ContentTypeUtil.convertAttributeValues(aDef, value));
     }
 
-	public CmsResponseI handle(CmsRequestI request) {
-		// TODO distinguish create/update/delete
-		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
-			storeContentNode(node);
-		}
-		return new CmsResponse();
-	}
+    @Override
+    public CmsResponseI handle(CmsRequestI request) {
+        // TODO distinguish create/update/delete
+        for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
+            ContentNodeI node = (ContentNodeI) i.next();
+            storeContentNode(node);
+        }
+        return new CmsResponse();
+    }
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
-		return getContentNode(key);
-	}
+    @Override
+    public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
+        return getContentNode(key, draftContext);
+    }
 
 }

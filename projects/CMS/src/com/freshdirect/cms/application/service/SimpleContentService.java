@@ -14,6 +14,7 @@ import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
@@ -38,18 +39,21 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		this.typeService = typeService;
 	}
 
+	@Override
 	public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
 
-	public ContentNodeI getContentNode(ContentKey key) {
+	@Override
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
 		return nodesByKey.get(key);
 	}
 
-	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	@Override
+	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
 		Map<ContentKey,ContentNodeI> m = new HashMap<ContentKey,ContentNodeI>(keys.size());
 		for (ContentKey key : keys) {
-			ContentNodeI node = getContentNode(key);
+			ContentNodeI node = getContentNode(key, draftContext);
 			if (node != null) {
 				m.put(key, node);
 			}
@@ -57,7 +61,8 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return m;
 	}
 
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	@Override
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		Set<ContentKey> keys = new HashSet<ContentKey>();
 		for (ContentKey key : nodesByKey.keySet()) {
 			if (key.getType().equals(type)) {
@@ -67,22 +72,26 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return keys;
 	}
 
-	public Set<ContentKey> getContentKeys() {
+	@Override
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		return Collections.unmodifiableSet(nodesByKey.keySet());
 	}
 
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	@Override
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		Set<ContentKey> s = nodeParentsByKey.get(key);
 		return s == null ? Collections.EMPTY_SET : s;
 	}
 
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
+	@Override
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
 		if (!getTypeService().getContentTypes().contains(key.getType())) {
 			return null;
 		}
 		return new ContentNode(this, key);
 	}
 
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
 		for (ContentNodeI node : request.getNodes()) {
 			nodesByKey.put(node.getKey(), node);
@@ -100,8 +109,9 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		this.nodeParentsByKey = ContentNodeUtil.getParentIndex(nodesByKey.values());
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
-		return getContentNode(key);
+	@Override
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
+		return getContentNode(key, draftContext);
 	}
 
 }

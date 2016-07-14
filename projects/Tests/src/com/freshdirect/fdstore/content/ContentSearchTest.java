@@ -10,6 +10,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -62,7 +63,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 		searchService.setSynonyms(Collections.<SynonymDictionary>emptyList());
 		searchService.setSpellingSynonyms(Collections.<SynonymDictionary>emptyList());
 
-		Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys());
+		Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
 		searchService.index(contentNodes.values(), true);
 		searchService.indexSpelling(contentNodes.values());
 		searchService.optimize();

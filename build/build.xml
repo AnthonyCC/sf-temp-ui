@@ -15,12 +15,12 @@
 	<property name="release.dir"			value="release" />
 
     <property name="jdk.home"				value="/opt/fdbin/bea/jdk160_05" />
-   <property name="javac.debug"			value="on" />
+    <property name="javac.debug"			value="on" />
 	<property name="javac.optimize"			value="off" />
-	<property name="javac.deprecation"		value="on" />
+	<property name="javac.deprecation"		value="off" />
 	<property name="javac.source"			value="1.6" />
     <property name="weblogic.home"			value="/opt/fdbin/bea/wlserver_10.3" />
-	 <property name="thirdparty.home"		value="${basedir}/lib/thirdparty" />
+    <property name="thirdparty.home"		value="${basedir}/lib/thirdparty" />
 	<property name="testing.home"			value="${basedir}/lib/testing" />
 	<property name="checkout.delete_projects"			value="true" />
 	<property name="selenium.server_host"	value="localhost" />
@@ -912,7 +912,7 @@
 	<macrodef name="makeProject">
 		<attribute name="project" />
 		<attribute name="classpathref" default=""/>
-                <attribute name="source" default="${javac.source}"/>	
+        <attribute name="source" default="${javac.source}"/>	
 		<sequential>
 			<trycatch>
 				<try>
@@ -1862,7 +1862,6 @@
     </macrodef>
 
 
-
     <target name="cms-gwt" description="Build cms-gwt">
 		<path id="cms-gwt.classpath">
             <pathelement location="${work.dir}/Framework.jar"/>
@@ -1902,6 +1901,7 @@
                 <fileset dir="${cms-gwt.path}/war">
                     <include name="*.html"/>
                     <include name="*.jsp"/>
+                	<include name="**/*.js"/>
                     <include name="**/*.css"/>
                 </fileset>
             </war>	
@@ -2222,6 +2222,7 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="CMS.jar"/>
+				<!-- cms-admin -->
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>

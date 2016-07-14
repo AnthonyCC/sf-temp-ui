@@ -39,7 +39,7 @@
 		<priority value="error" />
 	</category>
 	<category name="com.scarabresearch">
-		<priority value="off" />
+		<priority value="debug" />
 	</category>
 	<category name="httpclient">
 		<priority value="info" />
@@ -55,20 +55,7 @@
 		<priority value="info" />
 		<appender-ref ref="request-log" />
 	</category>
-
-	<category name="com.freshdirect.webapp.soy.SoyTemplateEngine">
-		<priority value="OFF" />
-	</category>
-
-	<category name="com.freshdirect.cms.classgenerator.ContentNodeGenerator">
-		<priority value="OFF" />
-	</category>
 	
-	<category name="com.freshdirect.erp.ejb.ErpGrpInfoDAO">
-		<priority value="OFF" />
-	</category>
-
-			
 	<root>
 		<priority value="debug"/>
 		<appender-ref ref="stdout" />

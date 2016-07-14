@@ -7,6 +7,7 @@ package com.freshdirect.fdstore.attributes.cms;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.TitledMedia;
 
@@ -16,20 +17,23 @@ import com.freshdirect.fdstore.content.TitledMedia;
  */
 public class ImageBuilder extends AbstractAttributeBuilder {
 
+    @Override
 	public Object buildValue(AttributeDefI aDef, Object value) {
-		ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
+        ContentNodeI cNode = CmsManager.getInstance().getContentNode((ContentKey) value);
 
         if (cNode == null) { return null; }
         
         String lastModify = (String) cNode.getAttributeValue("lastmodified");
         
-		String path = (String) cNode.getAttributeValue("path")+"?lastModify="+lastModify;
+		String path = (String) cNode.getAttributeValue("path");
 		
 		// FIXME this is due to invalid data
 		if (path == null) {
 			System.err.println("ImageBuilder.buildValue(): image without path " + cNode);
 			path = cNode.getKey().getId();
 		}
+		// append last modify param
+        path = path+"?lastModify="+lastModify;
 		
 		Object widthObj = cNode.getAttributeValue("width"); 
 		if (widthObj == null) {

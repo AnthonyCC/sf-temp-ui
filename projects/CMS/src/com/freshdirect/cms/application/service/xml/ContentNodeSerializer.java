@@ -37,26 +37,28 @@ public class ContentNodeSerializer {
 		return doc;
 	}
 
-	public void visitNode(Element parent, ContentNodeI node) {
-		ContentTypeDefI typeDef = node.getDefinition();
-		Element eNode = parent.addElement(typeDef.getName());
-		eNode.addAttribute("id", node.getKey().getId());
-		for (String name : typeDef.getAttributeNames()) {
-			AttributeDefI attrDef = typeDef.getAttributeDef(name);
-			if (attrDef == null) {
-				LOGGER.warn("No definition for " + node + " " + name);
-				continue;
-			}
-			if (!filter(typeDef, name)) {
-			    continue;
-			}
-			if (attrDef instanceof RelationshipDefI) {
-				visitRelationship(eNode, (RelationshipDefI) attrDef, node.getAttributeValue(name));
-			} else {
-				visitScalar(eNode, attrDef, node.getAttributeValue(name));
-			}
-		}
-	}
+    public void visitNode(Element parent, ContentNodeI node) {
+        if (!ContentKey.NULL_KEY.equals(node.getKey())) {
+            ContentTypeDefI typeDef = node.getDefinition();
+            Element eNode = parent.addElement(typeDef.getName());
+            eNode.addAttribute("id", node.getKey().getId());
+            for (String name : typeDef.getAttributeNames()) {
+                AttributeDefI attrDef = typeDef.getAttributeDef(name);
+                if (attrDef == null) {
+                    LOGGER.warn("No definition for " + node + " " + name);
+                    continue;
+                }
+                if (!filter(typeDef, name)) {
+                    continue;
+                }
+                if (attrDef instanceof RelationshipDefI) {
+                    visitRelationship(eNode, (RelationshipDefI) attrDef, node.getAttributeValue(name));
+                } else {
+                    visitScalar(eNode, attrDef, node.getAttributeValue(name));
+                }
+            }
+        }
+    }
 
     protected boolean filter(ContentTypeDefI typeDef, String name) {
         return true;

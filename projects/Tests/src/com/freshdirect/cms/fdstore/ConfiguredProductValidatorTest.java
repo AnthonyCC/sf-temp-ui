@@ -9,6 +9,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -47,18 +48,18 @@ public class ConfiguredProductValidatorTest extends TestCase {
 	}
 
 	public void testOk() {
-		validator.validate(delegate, service, findProduct("ok"), null, null);
+		validator.validate(delegate, service, DraftContext.MAIN, findProduct("ok"), null, null);
 		assertEquals(0, delegate.getValidationMessages().size());
 	}
 
 	public void testBadSku() {
-		validator.validate(delegate, service, findProduct("bad_sku"), null, null);
+		validator.validate(delegate, service, DraftContext.MAIN, findProduct("bad_sku"), null, null);
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(0, "Sku:XYZ not found");
 	}
 
 	public void testBadSalesUnit() {
-		validator.validate(delegate, service, findProduct("bad_salesunit"),
+		validator.validate(delegate, service, DraftContext.MAIN, findProduct("bad_salesunit"),
 				null, null);
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(0,
@@ -66,7 +67,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 	}
 
 	public void testBadOption() {
-		validator.validate(delegate, service, findProduct("bad_option"), null, null);
+		validator.validate(delegate, service, DraftContext.MAIN, findProduct("bad_option"), null, null);
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(
 				0,
@@ -74,7 +75,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 	}
 
 	public void testMissingOption() {
-		validator.validate(delegate, service, findProduct("missing_option"),
+		validator.validate(delegate, service, DraftContext.MAIN, findProduct("missing_option"),
 				null, null);
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(0, "No value for characteristic C_MT_BF_PAK");
@@ -88,7 +89,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 
 	private ContentNodeI findProduct(String id) {
 		return service.getContentNode(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, id));
+				FDContentTypes.CONFIGURED_PRODUCT, id), DraftContext.MAIN);
 	}
 
 }

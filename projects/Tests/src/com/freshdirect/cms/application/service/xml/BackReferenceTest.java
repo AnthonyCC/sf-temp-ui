@@ -8,6 +8,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.classgenerator.ClassGeneratorContentService;
 
 public class BackReferenceTest extends TestCase {
@@ -32,7 +33,7 @@ public class BackReferenceTest extends TestCase {
         assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType, multiType }), typeService.getContentTypes());
 
         ContentKey barKey = ContentKey.create(barType, "barNode");
-        ContentNodeI barNode = service.getContentNode(barKey);
+        ContentNodeI barNode = service.getContentNode(barKey, DraftContext.MAIN);
         
         assertNotNull("barNode", barNode);
         assertNotNull("barNode.foo", barNode.getAttributeValue("foo"));
@@ -42,7 +43,7 @@ public class BackReferenceTest extends TestCase {
         assertEquals("barNode.foo = fooNode1", fooKey, barNode.getAttributeValue("foo"));
         assertEquals("barNode.foo = fooNode1", fooKey, barNode.getAttribute("foo").getValue());
         
-        ContentNodeI fooNode = service.getContentNode(fooKey);
+        ContentNodeI fooNode = service.getContentNode(fooKey, DraftContext.MAIN);
         assertNotNull("fooNode", fooNode);
         assertNotNull("fooNode.bar attribute", fooNode.getAttribute("bar"));
         assertNotNull("fooNode.bar", fooNode.getAttributeValue("bar"));
@@ -69,7 +70,7 @@ public class BackReferenceTest extends TestCase {
         assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType, multiType }), typeService.getContentTypes());
 
         ContentKey barKey = ContentKey.create(barType, "barNode");
-        ContentNodeI barNode = service.getContentNode(barKey);
+        ContentNodeI barNode = service.getContentNode(barKey, DraftContext.MAIN);
         
         assertNotNull("barNode", barNode);
         assertNotNull("barNode.foo", barNode.getAttributeValue("foo"));
@@ -77,7 +78,7 @@ public class BackReferenceTest extends TestCase {
         
         assertEquals("barNode.foo = fooNode1", fooKey, barNode.getAttributeValue("foo"));
         
-        ContentNodeI fooNode = service.getContentNode(fooKey);
+        ContentNodeI fooNode = service.getContentNode(fooKey, DraftContext.MAIN);
         assertNotNull("fooNode", fooNode);
         assertNotNull("fooNode.bar", fooNode.getAttributeValue("bar"));
         assertEquals("fooNode.bar == barNode", barKey, fooNode.getAttributeValue("bar"));
@@ -98,7 +99,7 @@ public class BackReferenceTest extends TestCase {
         service = new ClassGeneratorContentService("backRefCopies", typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
         
         ContentKey barKey = ContentKey.create(barType, "barNode");
-        ContentNodeI barNode = service.getContentNode(barKey);
+        ContentNodeI barNode = service.getContentNode(barKey, DraftContext.MAIN);
         
         assertNotNull("barNode", barNode);
         assertNotNull("barNode.foo", barNode.getAttributeValue("foo"));
@@ -129,8 +130,8 @@ public class BackReferenceTest extends TestCase {
     public void testOtherReference() throws InvalidContentKeyException {
         service = new ClassGeneratorContentService("backRefCopies2", typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
 
-        ContentNodeI barNode2 = service.getContentNode(ContentKey.create(barType, "barNode2"));
-        ContentNodeI barNode3 = service.getContentNode(ContentKey.create(barType, "barNode3"));
+        ContentNodeI barNode2 = service.getContentNode(ContentKey.create(barType, "barNode2"), DraftContext.MAIN);
+        ContentNodeI barNode3 = service.getContentNode(ContentKey.create(barType, "barNode3"), DraftContext.MAIN);
         final ContentKey foo3 = ContentKey.create(fooType, "fooNode3");
         
         assertNotNull("barNode2.foo", barNode2.getAttributeValue("foo"));
@@ -145,8 +146,8 @@ public class BackReferenceTest extends TestCase {
     
     public void testMultiType() throws InvalidContentKeyException {
         service = new ClassGeneratorContentService("multi", typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
-        ContentNodeI m1 = service.getContentNode(ContentKey.create(multiType, "m1"));
-        ContentNodeI m2 = service.getContentNode(ContentKey.create(multiType, "m2"));
+        ContentNodeI m1 = service.getContentNode(ContentKey.create(multiType, "m1"), DraftContext.MAIN);
+        ContentNodeI m2 = service.getContentNode(ContentKey.create(multiType, "m2"), DraftContext.MAIN);
         
         assertNotNull("m1", m1);
         assertNotNull("m2", m2);
@@ -157,8 +158,8 @@ public class BackReferenceTest extends TestCase {
         ContentKey m1switcher = (ContentKey) m1.getAttributeValue("switcher");
         ContentKey m2switcher = (ContentKey) m2.getAttributeValue("switcher");
         
-        ContentNodeI fooNode3 = service.getContentNode(m1switcher);
-        ContentNodeI barNode2 = service.getContentNode(m2switcher);
+        ContentNodeI fooNode3 = service.getContentNode(m1switcher, DraftContext.MAIN);
+        ContentNodeI barNode2 = service.getContentNode(m2switcher, DraftContext.MAIN);
 
         assertNotNull("fooNode3", fooNode3);
         assertNotNull("barNode2", barNode2);

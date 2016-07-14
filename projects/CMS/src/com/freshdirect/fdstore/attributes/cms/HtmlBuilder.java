@@ -7,6 +7,7 @@ package com.freshdirect.fdstore.attributes.cms;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.TitledMedia;
 
@@ -16,9 +17,10 @@ import com.freshdirect.fdstore.content.TitledMedia;
  */
 public class HtmlBuilder extends AbstractAttributeBuilder {
     
+    @Override
     public Object buildValue(AttributeDefI aDef, Object value) {
-        ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
-        
+        ContentNodeI cNode = CmsManager.getInstance().getContentNode((ContentKey) value);
+
         if (cNode == null) { return null; }
         
         String path = (String) cNode.getAttributeValue("path");

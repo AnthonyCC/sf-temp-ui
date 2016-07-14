@@ -12,6 +12,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsException;
@@ -21,6 +23,8 @@ import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsUser;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -34,26 +38,27 @@ public class ProductBulkLoader {
 	 * @param failures (RETURN) a map of product keys to exception messages of product keys that failed, or if null nothing
 	 */
 	// TODO refactor it to ProductBulkLoader class
-	public static void XLSBulkLoad(InputStream is, String userId, List successes, Map failures) throws IOException {
+	public static void XLSBulkLoad(InputStream is, String userId, List<ContentKey> successes, Map<String, String> failures) throws IOException {
 		//open file
-	
 		POIFSFileSystem fs = new POIFSFileSystem(is);
 		HSSFWorkbook wb = new HSSFWorkbook(fs);
 		HSSFSheet sheet = wb.getSheetAt(0);
-	
+		final ContentServiceI contentService = CmsManager.getInstance();
+		final DraftContext draftContext = DraftContext.MAIN;
+
 		// Iterate over each row in the sheet
-		Iterator rows = sheet.rowIterator();
+		Iterator<Row> rows = sheet.rowIterator();
 		
-		Map attributeColumns = new HashMap();
+		Map<Integer,String> attributeColumns = new HashMap<Integer,String>();
 		CmsRequest request = new CmsRequest(new CmsUser(userId));
 		while (rows.hasNext()) {
 			HSSFRow row = (HSSFRow) rows.next();
 	
 			if (row.getRowNum() == 0) {
 				
-				Map columnMap = new HashMap();
+				Map<Integer,String> columnMap = new HashMap<Integer,String>();
 	
-				Iterator cells = row.cellIterator();
+				Iterator<Cell> cells = row.cellIterator();
 				while (cells.hasNext()) {
 					HSSFCell cell = (HSSFCell) cells.next();
 	
@@ -74,14 +79,14 @@ public class ProductBulkLoader {
 				// validate and create key
 				ContentKey prodKey = ContentKey.create(FDContentTypes.PRODUCT, prodKeyString);
 
-				if(prodKey.lookupContentNode() != null){
+				if(contentService.getContentNode(prodKey, draftContext) != null){
 					throw new CmsException("Duplicate Node " + prodKey);
 				}
 
-				ContentNodeI prod = CmsManager.getInstance().createPrototypeContentNode(prodKey);
+				ContentNodeI prod = contentService.createPrototypeContentNode(prodKey, draftContext);
 
 
-				Iterator cells = row.cellIterator();
+				Iterator<Cell> cells = row.cellIterator();
 				while (cells.hasNext()) {
 					HSSFCell cell = (HSSFCell) cells.next();
 	
@@ -96,7 +101,7 @@ public class ProductBulkLoader {
 						if(attrName.toLowerCase().equals("skus")){
 							ContentKey key = new ContentKey(FDContentTypes.SKU, cell.getStringCellValue());
 			                
-							ContentNodeUtil.createNode(key, request, attr);
+							ContentNodeUtil.createNode(key, request, attr, contentService, draftContext);
 						}	
 						
 						if(attrName.toLowerCase().equals("brands")){
@@ -107,7 +112,7 @@ public class ProductBulkLoader {
 			                String id = "bd_"+ProductBulkLoader.removeNonAlpha(tmpBrandName.substring(0,strLen));
 			                ContentKey key = new ContentKey(FDContentTypes.BRAND, id);
 			                
-			                ContentNodeUtil.createNode(key, request, attr);
+			                ContentNodeUtil.createNode(key, request, attr, contentService, draftContext);
 							
 						} else if (attr instanceof RelationshipI)
 							ContentNodeUtil.setRelationshipValue(cell.getStringCellValue(), attr);
@@ -126,7 +131,7 @@ public class ProductBulkLoader {
 			}
 	
 		}
-		CmsManager.getInstance().handle(request);
+		contentService.handle(request);
 	}
 
 

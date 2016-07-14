@@ -11,11 +11,10 @@ import java.util.Map;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.util.MultiStoreProperties;
-import com.freshdirect.cms.util.PrimaryHomeUtil;
 
 
 /**
@@ -35,6 +34,7 @@ public class HCProducer implements Runnable {
 	public int status = INIT;
 	
 	private CmsManager mgr;
+	private DraftContext draftContext = DraftContext.MAIN;
 	private ContextService svc;
 
 	// set contains dirty nodes (categories)
@@ -93,7 +93,7 @@ public class HCProducer implements Runnable {
 			ContentNodeI node = mgr.getContentNode(prodKey);
 			
 			// primary home
-			ContentKey priHomeKey = CmsManager.getInstance().getPrimaryHomeKey(prodKey);
+			ContentKey priHomeKey = CmsManager.getInstance().getPrimaryHomeKey(prodKey, DraftContext.MAIN);
 			
 			if (priHomeKey == null)
 				continue;
@@ -101,7 +101,7 @@ public class HCProducer implements Runnable {
 			// 1. is primary home valid? - find a node with bogus HOME link
 
 			// get all parents
-			List ctxs = new ArrayList(svc.getAllContextsOf(node.getKey()));
+			List ctxs = new ArrayList(svc.getAllContextsOf(node.getKey(), draftContext));
 			if (ctxs.size() < 2) {
 				// no multiple parents found
 				statNoMultipleParents++;
@@ -121,7 +121,7 @@ public class HCProducer implements Runnable {
 				continue;
 			}
 			
-			HCWalker w = new HCWalker(svc.getContextualizedContentNode(priHomeCtx), dirtyCats).walkWithMe();
+			HCWalker w = new HCWalker(svc.getContextualizedContentNode(priHomeCtx, draftContext), dirtyCats).walkWithMe();
 			if (w.isValid()) {
 				statPriHomeValid++;
 				continue; // this home is cool, step over
@@ -136,7 +136,7 @@ public class HCProducer implements Runnable {
 					continue;
 				
 				// walk the parent
-				w = new HCWalker(svc.getContextualizedContentNode(c), dirtyCats).walkWithMe();
+				w = new HCWalker(svc.getContextualizedContentNode(c, draftContext), dirtyCats).walkWithMe();
 				if (w.isValid()) {
 					alternativeParent = c;
 					break;

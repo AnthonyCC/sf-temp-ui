@@ -1,10 +1,6 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 
 
 public interface AvailabilityI {

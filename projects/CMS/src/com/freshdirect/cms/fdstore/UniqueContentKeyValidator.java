@@ -9,6 +9,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 
@@ -68,10 +69,10 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 		
 	}
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
+	@Override
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
 		ContentType type = node.getKey().getType();
 		if ( UNIQUE_TYPES.contains( type ) ) {
-
 			Set<ContentKey> keys = new HashSet<ContentKey>( UNIQUE_TYPES.size() - 1 );
 			for ( ContentType t : UNIQUE_TYPES ) {
 				if ( !t.equals( type ) ) {
@@ -79,7 +80,7 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 				}
 			}
 
-			Map<ContentKey, ContentNodeI> nodes = service.getContentNodes( keys );
+            Map<ContentKey, ContentNodeI> nodes = service.getContentNodes( keys, draftContext );
 			if ( !nodes.isEmpty() ) {
 				delegate.record( node.getKey(), "Content with the same ID already exists: " + nodes.keySet() );
 			}

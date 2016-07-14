@@ -10,6 +10,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -119,7 +120,7 @@ public class RecommendationPaginationTest extends TestCase {
 
 
 	public void testArbitraryNumberOfItems() {
-		final List<ContentKey> keyz = new ArrayList<ContentKey>(service.getContentKeysByType(FDContentTypes.PRODUCT));
+		final List<ContentKey> keyz = new ArrayList<ContentKey>(service.getContentKeysByType(FDContentTypes.PRODUCT, DraftContext.MAIN));
 
 		// test it 10 times
 		for (int m=0; m<10; m++) {

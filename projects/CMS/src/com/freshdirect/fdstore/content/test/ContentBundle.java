@@ -1,25 +1,22 @@
 package com.freshdirect.fdstore.content.test;
 
-import com.freshdirect.fdstore.content.ContentFactory;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.Predicate;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-
 import com.freshdirect.framework.util.CartesianProduct;
 import com.freshdirect.framework.util.ListConcatenation;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-
-import java.util.Map;
-import java.util.HashMap;
-
-
-import org.apache.commons.collections.Predicate;
 
 /**
  * Builds a content matrix from CMS data.

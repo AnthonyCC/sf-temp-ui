@@ -9,8 +9,10 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
+import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.MaskContentService;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.application.service.SimpleContentService;
@@ -38,24 +40,24 @@ public class ValidatingContentService extends ProxyContentService {
 	/**
 	 * @throws ContentValidationException
 	 */
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
-
+	    DraftContext draftContext = request.getDraftContext();
 		MaskContentService masked = new MaskContentService(getProxiedService(),
 				new SimpleContentService(getTypeService()));
 		masked.handle(request);
 
 		Set<ContentKey> keys = getKeys(request.getNodes());
-		final Map<ContentKey, ContentNodeI> originalNodes = getProxiedService().getContentNodes(keys);
-                keys.addAll(getChildKeys(request.getNodes()));
+		final Map<ContentKey, ContentNodeI> originalNodes = getProxiedService().getContentNodes(keys, draftContext);
+        keys.addAll(getChildKeys(request.getNodes()));
 		keys.addAll(getChildKeys(originalNodes.values()));
 
-		Collection<ContentNodeI> nodes = masked.getContentNodes(keys).values();
+		Collection<ContentNodeI> nodes = masked.getContentNodes(keys, draftContext).values();
 
 		ContentValidationDelegate delegate = new ContentValidationDelegate();
                 for (ContentNodeI node : nodes) {
-                    ContentNodeI oldNode = originalNodes.get(node.getKey());
                     for (ContentValidatorI validator : validators) {
-                        validator.validate(delegate, masked, node, request, null);
+                        validator.validate(delegate, masked, draftContext, node, request, null);
                     }
 		}
 
@@ -63,24 +65,23 @@ public class ValidatingContentService extends ProxyContentService {
 			throw new ContentValidationException(delegate);
 		}
 
-		return super.handle(request);
+		return request.isDryMode() ? new CmsResponse() : super.handle(request);
 	}
 
 	private Set<ContentKey> getKeys(Collection<ContentNodeI> nodes) {
-		Set<ContentKey> s = new HashSet<ContentKey>(nodes.size());
+		Set<ContentKey> contentKeys = new HashSet<ContentKey>(nodes.size());
 		for (ContentNodeI node : nodes) {
-			s.add(node.getKey());
+			contentKeys.add(node.getKey());
 		}
-		return s;
+		return contentKeys;
 	}
 
-	private Set<ContentKey> getChildKeys(Collection<ContentNodeI> nodes) {
-		Set<ContentKey>  s = new HashSet<ContentKey>();
-                for (ContentNodeI node : nodes) {
-			Set<ContentKey> childKeys = ContentNodeUtil.getChildKeys(node);
-			s.addAll(childKeys);
-		}
-		return s;
-	}
+    private Set<ContentKey> getChildKeys(Collection<ContentNodeI> nodes) {
+        Set<ContentKey> childContentKeys = new HashSet<ContentKey>();
+        for (ContentNodeI node : nodes) {
+            childContentKeys.addAll(ContentNodeUtil.getChildKeys(node));
+        }
+        return childContentKeys;
+    }
 
 }

@@ -4,12 +4,14 @@ import java.util.Collection;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.labels.ILabelProvider;
 
 public class TileLabelProvider implements ILabelProvider {
 
     @Override
-    public String getLabel(ContentNodeI node) {
+    public String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
         if (FDContentTypes.TILE.equals(node.getKey().getType())) {
             return "Tile[" + node.getKey().getId() + ", media:"+formatContentKey(node.getAttributeValue("media"))+']';
         }

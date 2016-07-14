@@ -16,11 +16,11 @@
 		<module>CMS</module>
 		<module>cms-gwt</module>
 		<module>FDStore</module>
-		<module>listadmin</module>
-		<module>RulesAdmin</module>
-		<module>OCF</module>
-		<module>ocf-adm</module>
-		<module>MarketingAdmin</module>
+		<!-- module>listadmin</module -->
+		<!-- module>RulesAdmin</module -->
+		<!-- module>OCF</module -->
+		<!-- module>ocf-adm</module -->
+		<!-- module>MarketingAdmin</module -->
 		<module>DataLoader</module>
 		<module>ERPSWebApp</module>
 		<module>StandingOrdersService</module>
@@ -29,6 +29,8 @@
 		<module>CRM</module>
 		<module>FDWebSite</module>
 		<module>Tools</module>
+
+		<module>ImportStoreDataTool</module>
 	</modules>
 
 	<properties>
@@ -247,10 +249,11 @@
 				<version>1.0.0</version>
 			</dependency>
 
+			<!-- http://stackoverflow.com/questions/9898499/oracle-jdbc-ojdbc6-jar-as-a-maven-dependency -->
 			<dependency>
-				<groupId>oracle</groupId>
+				<groupId>com.oracle</groupId>
 				<artifactId>ojdbc6</artifactId>
-				<version>11.2.0.3.0</version>
+				<version>11.2.0.3</version>
 			</dependency>
 
 			<!-- FIXME version conflict! Framework depends on commons-httpclient 2.0.2 -->
