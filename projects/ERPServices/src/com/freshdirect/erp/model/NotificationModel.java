@@ -26,16 +26,22 @@ public class NotificationModel implements Serializable{
 	private double amount;
 	private PrimaryKey pk;
 	private Date insertDate;
+	private Date commitDate;
 	
 	
 	public NotificationModel(String sale_id, EnumNotificationType notification_type, 
-			EnumSaleStatus  notification_status, String third_party_name, double amount){
+			EnumSaleStatus  notification_status, String third_party_name, double amount, Date insertDate, Date commitDate){
 		this.sale_id = sale_id;
 		this.notification_status = notification_status;
 		this.notification_type = notification_type;
 		this.third_party_name = third_party_name;
 		this.amount = amount;
-		this.insertDate = new Date();
+		this.insertDate = insertDate;
+		this.commitDate = commitDate;
+	}
+	
+	public NotificationModel(){
+
 	}
 
 	
@@ -94,6 +100,16 @@ public class NotificationModel implements Serializable{
 		this.amount = amount;
 	}
 	
+	
+	
+	public Date getCommitDate() {
+		return commitDate;
+	}
+
+	public void setCommitDate(Date commitDate) {
+		this.commitDate = commitDate;
+	}
+
 	public NotificationModel getModel(){
 		     // do a serialization / de-serialization cycle as a trick
 	        // against explicit deep cloning

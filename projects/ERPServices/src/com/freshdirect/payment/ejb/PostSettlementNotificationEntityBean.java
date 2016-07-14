@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -42,7 +43,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	private EntityContext entityCtx;
 	
 	public void initialize() {
-		model = new NotificationModel(null, null, null,null,0.0);
+		model = new NotificationModel(null, null, null,null,0.0,null,null);
 	}
 
 	public NotificationModel getModel() {
@@ -63,6 +64,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		this.model.setPk(model.getPk());
 		this.model.setSale_id(model.getSale_id());
 		this.model.setThird_party_name(model.getThird_party_name());
+		this.model.setCommitDate(model.getCommitDate());
 	}
 
 	public void setPK(PrimaryKey pk) {
@@ -243,7 +245,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		setPK(new PrimaryKey(getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PYMT_STLMNT_NOTIFICATION (ID,SALE_ID,AMOUNT,NOTIFICATION_TYPE,INSERT_DATE,NOTIFICATION_STATUS,THIRD_PARTY_NAME) values (?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PYMT_STLMNT_NOTIFICATION (ID,SALE_ID,AMOUNT,NOTIFICATION_TYPE,INSERT_DATE,NOTIFICATION_STATUS,THIRD_PARTY_NAME,COMMIT_DATE) values (?,?,?,?,?,?,?,?)");
 		ps.setString(1, getPK().getId());
 		ps.setString(2, model.getSale_id());
 		ps.setDouble(3, model.getAmount());
@@ -251,6 +253,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		ps.setTimestamp(5, new Timestamp(model.getInsertDate().getTime()));
 		ps.setString(6, model.getNotification_status().getStatusCode());
 		ps.setString(7, model.getThird_party_name());
+		ps.setTimestamp(8,  new Timestamp(model.getCommitDate().getTime()));
 	
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -269,7 +272,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	
 	
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("select SALE_ID,AMOUNT,NOTIFICATION_TYPE,NOTIFICATION_STATUS,THIRD_PARTY_NAME from CUST.PYMT_STLMNT_NOTIFICATION where ID=?");
+		PreparedStatement ps = conn.prepareStatement("select SALE_ID,AMOUNT,NOTIFICATION_TYPE,INSERT_DATE, NOTIFICATION_STATUS,THIRD_PARTY_NAME, COMMIT_DATE from CUST.PYMT_STLMNT_NOTIFICATION where ID=?");
 		ps.setString(1, getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -278,9 +281,11 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		String salesPk = rs.getString(1);
 		Double amount = rs.getDouble(2);
 		EnumNotificationType notification_type = EnumNotificationType.getNotificationType((rs.getString(3)));
-		EnumSaleStatus notification_status = EnumSaleStatus.getSaleStatus(rs.getString(4));
-		String thirdParty = rs.getString(5);
-		this.model = new NotificationModel(salesPk, notification_type, notification_status, thirdParty, amount);
+		Date insertDate = rs.getDate(4);
+		EnumSaleStatus notification_status = EnumSaleStatus.getSaleStatus(rs.getString(5));
+		String thirdParty = rs.getString(6);
+		Date commitDate = rs.getDate(7);
+		this.model = new NotificationModel(salesPk, notification_type, notification_status, thirdParty, amount, insertDate, commitDate);
 		this.model.setPk(getPK());
 	}
 	
@@ -441,17 +446,13 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	        }
 	}
 
-	String update = "update CUST.PYMT_STLMNT_NOTIFICATION set SALE_ID = ?, AMOUNT=?, NOTIFICATION_TYPE=?, INSERT_DATE=?, NOTIFICATION_STATUS=?,THIRD_PARTY_NAME=? where id=?";
+	String update = "update CUST.PYMT_STLMNT_NOTIFICATION set NOTIFICATION_STATUS=?, COMMIT_DATE=? where id=?";
 	
 	public void update(Connection conn, NotificationModel model) throws SQLException {
 			PreparedStatement ps = conn.prepareStatement(update);
 			int index = 1;
-			ps.setString(index++, model.getSale_id()!=null?model.getSale_id():null);
-			ps.setDouble(index++, model.getAmount());
-			ps.setString(index++, model.getNotification_type()!=null?model.getNotification_type().getCode():null);
-			ps.setTimestamp(index++, new Timestamp(model.getInsertDate().getTime()));
 			ps.setString(index++, model.getNotification_status()!=null?model.getNotification_status().getStatusCode():null);
-			ps.setString(index++, model.getThird_party_name()!=null?model.getThird_party_name():null);
+			ps.setTimestamp(index++, new Timestamp(model.getCommitDate().getTime()));
 			ps.setString(index++, getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");

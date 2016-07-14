@@ -3,6 +3,7 @@ package com.freshdirect.dataloader.payment.notification;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -54,6 +55,7 @@ PostSettlementNotificationProcessor	 {
 	private void changeNotificationStatus(PostSettlementNotifySB postSettlementNotify, String salesId) throws RemoteException, EJBException, FinderException, ErpTransactionException, CreateException, SQLException {
 		NotificationModel notificationModel = postSettlementNotify.findBySalesIdAndType(salesId, EnumNotificationType.AVALARA).getModel();
 		notificationModel.setNotification_status(EnumSaleStatus.SETTLED);
+		notificationModel.setCommitDate(new Date());
 		this.saveNoification(notificationModel);		
 	}
 }

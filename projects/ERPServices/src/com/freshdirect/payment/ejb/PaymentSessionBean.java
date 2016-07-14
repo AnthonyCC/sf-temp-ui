@@ -227,7 +227,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 				}
 				ErpAbstractOrderModel order = eb.getCurrentOrder();
 				if(EnumSaleStatus.SETTLED.equals(eb.getStatus()) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
-					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount());
+					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount(), eb.getCaptureDate(),null);
 					getPostSettlementNotificationHome().create(notificationModel);
 				}
 			}

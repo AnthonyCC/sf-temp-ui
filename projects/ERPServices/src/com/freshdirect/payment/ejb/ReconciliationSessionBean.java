@@ -113,7 +113,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 				eb.addSettlement(model);
 				EnumSaleStatus updatedStatus = eb.getStatus();
 				if(EnumSaleStatus.SETTLED.equals(updatedStatus) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
-					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount());
+					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount(), eb.getCaptureDate(),null);
 					getPostSettlementNotificationHome().create(notificationModel);
 				}
 			}
