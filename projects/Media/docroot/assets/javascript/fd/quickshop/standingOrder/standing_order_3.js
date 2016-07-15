@@ -39,6 +39,9 @@ $jq( document ).ready(function() {
 		openSOSettings($jq.QueryString["soid"]);
 		$jq("#soid_" + $jq.QueryString['soid'] + " .standing-orders-3-so-settings-item").focus();
 	}
+	if($jq(".standing-orders-3-so-settings-container").length == 1){
+		$jq(".standing-orders-3-so-settings-container button.standing-orders-3-so-button-settings").click();
+	}
 	FreshDirect.standingorder.isStandingOrderContext = true;
 });
 
