@@ -489,6 +489,10 @@ public class OrderLineUtil {
 		Map<String,String> conf = config.getOptions();
 		Set<String> currOptions = new HashSet<String>();
 		FDVariation[] variations = product.getVariations();
+		
+		if((null==variations || variations.length <=0) && null!=conf && !conf.isEmpty()){
+			throw new FDInvalidConfigurationException.InvalidOption("Invalid variation options found."+product + " config" + conf);
+		}
 		for (int vi = 0; vi < variations.length; vi++) {
 			FDVariation var = variations[vi];
 			String varOpt = conf.get(var.getName());
