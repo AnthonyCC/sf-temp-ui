@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.atp.FDAvailabilityI;
+import com.freshdirect.fdstore.content.AvailabilityFactory;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
@@ -113,18 +115,20 @@ public class BrowseController extends BaseController {
             SessionUser user) throws FDException, ServiceException, JsonException {
     	String postData = getPostData(request, response);
     	long startTime=System.currentTimeMillis();
-    	if (user == null) {
-    		user = fakeUser(request.getSession());
-    	}
-
-    	// Retrieving any possible payload
-        
-        BrowseQuery requestMessage = null;
+    	BrowseQuery requestMessage = null;
 
         LOG.debug("BrowseController PostData received: [" + postData + "]");
         if (StringUtils.isNotEmpty(postData)) {
             requestMessage = parseRequestObject(request, response, BrowseQuery.class);
         }
+    	if (user == null && requestMessage!=null) {
+    		user = fakeUser(request.getSession(),requestMessage);
+    	} else {
+    		user=fakeUser(request.getSession());
+    	}
+
+    	// Retrieving any possible payload
+        
         BrowseResult result = new BrowseResult();
         
         if(ACTION_NAVIGATION.equals(action)) {

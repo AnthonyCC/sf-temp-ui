@@ -22,23 +22,28 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.cms.util.PublishId;
+import com.freshdirect.common.context.FulfillmentContext;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoCartException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -53,12 +58,12 @@ import com.freshdirect.mobileapi.model.tagwrapper.HttpSessionWrapper;
 import com.freshdirect.mobileapi.service.Oas247Service;
 import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -453,6 +458,30 @@ public abstract class BaseController extends AbstractController implements Messa
     protected SessionUser fakeUser(HttpSession session) {
     	fakedUserForRequest.set(Boolean.TRUE);
     	FDUser user = new FDUser();
+//    	user.setDefaultPricingContext();
+    	user.setRobot(true);// I hate to do this but door3 didnt do anonymous browsing properly, revisit during fdx please
+		FDSessionUser sessionUser = new FDSessionUser(user, session);
+    	session.setAttribute(SessionName.USER, sessionUser);
+		return SessionUser.wrap(sessionUser);
+    }
+    
+    protected SessionUser fakeUser(HttpSession session, BrowseQuery query) {
+    	fakedUserForRequest.set(Boolean.TRUE);
+    	FDUser user = null;
+    	if(query != null && query.getCatalogKey() != null){
+    		CatalogInfo catalogInfo = BrowseUtil.getCatalogInfo(query.getCatalogKey());
+    		FulfillmentContext fulfillmentContext=new FulfillmentContext();
+    		fulfillmentContext.setPlantId(catalogInfo.getKey().getPlantId());
+    		PricingContext pricingContext=new PricingContext(catalogInfo.getKey().getPricingZone());
+    		UserContext userContext=new UserContext();
+    		userContext.setFulfillmentContext(fulfillmentContext);
+    		userContext.setPricingContext(pricingContext);
+    		userContext.setStoreContext(StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))));
+    		user=new FDUser(userContext);
+    		catalogInfo.setShowKey(false);
+    	} else {
+    		user=new FDUser();
+    	}
 //    	user.setDefaultPricingContext();
     	user.setRobot(true);// I hate to do this but door3 didnt do anonymous browsing properly, revisit during fdx please
 		FDSessionUser sessionUser = new FDSessionUser(user, session);

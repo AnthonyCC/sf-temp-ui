@@ -382,6 +382,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public FDUser() {
 		super();
 	}
+	
+	public FDUser(UserContext userContext) {
+		super();
+		this.userContext=userContext;
+	}
 
 	public EnumTransactionSource getApplication() {
 		return application;
