@@ -37,10 +37,6 @@ gulp.task('clean:js', function() {
   return del([build('js/app.js')]);
 });
 
-gulp.task('clean:jsModules', function() {
-  return del([build('js/modules/*.js')]);
-});
-
 gulp.task('clean:libs', function() {
   return del([build('js/libs.js'), build('components')]);
 });
@@ -91,17 +87,6 @@ gulp.task('js', ['clean:js'], function () {
   return res;
 });
 
-gulp.task('jsModules', ['clean:jsModules'], plugins.folders('src/js/modules', function (module) {
-  return gulp.src(path.join('src/js/modules', module, '*.js'))
-    .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.babel())
-    .pipe(gulpif(!DEBUG, plugins.uglify()))
-    .pipe(plugins.concat(module + '.js'))
-    .pipe(plugins.sourcemaps.write('.'))
-    .pipe(gulp.dest(build('js/modules')));
-  })
-);
-
 gulp.task('css', ['clean:css'], function () {
   var processors = [
     autoprefixer({browsers: ['last 2 version', 'ie 9']}),
@@ -151,7 +136,7 @@ gulp.task('html:copy', ['clean:html'], function () {
     .pipe(gulp.dest(build()));
 });
 
-gulp.task('html:vulcanize', ['lint:html', 'html:copy', 'libs', 'components', 'externalCss', 'css', 'js', 'jsModules'], function () {
+gulp.task('html:vulcanize', ['lint:html', 'html:copy', 'libs', 'components', 'externalCss', 'css', 'js'], function () {
   return gulp.src([build('**/*.html'), '!'+build('components/**/*')])
     .pipe(plugins.vulcanize({
       abspath: '',
@@ -182,7 +167,7 @@ gulp.task('assets', ['clean:assets'], function () {
     .pipe(gulp.dest(build('assets')));
 });
 
-gulp.task('build', ['js', 'jsModules', 'libs', 'fonts', 'css', 'externalCss', 'html', 'assets']);
+gulp.task('build', ['js', 'libs', 'fonts', 'css', 'externalCss', 'html', 'assets']);
 
 gulp.task('default', ['lint', 'build'], function () {
 });
@@ -233,7 +218,7 @@ gulp.task('serve', ['default'], function () {
   });
 
   DEBUG = true;
-  gulp.watch('src/js/**/*', ['jsModules', 'js', reload]);
+  gulp.watch('src/js/**/*', ['js', reload]);
   gulp.watch('src/css/**/*', ['css', reload]);
   gulp.watch('src/css/fonts/**/*', ['fonts', reload]);
   gulp.watch('src/assets/**/*', ['assets', reload]);
