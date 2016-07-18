@@ -462,7 +462,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		}
 		
 		if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
-			LOGGER.warn( "Invalid reservation : zone id-s do not match!" );
+			LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
 			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
 			return ERROR;
 		}
