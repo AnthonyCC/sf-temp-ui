@@ -80,6 +80,12 @@ var FreshDirect = FreshDirect || {};
         $('#'+this.popupId+' [fdform]').each(function (i, form) {
           fd.modules.common.forms.decorateFields(form);
         });
+
+        try {
+          fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['AddPaymentPromo'], OAS_query);
+        } catch (e) {
+          console.trace(e);
+        }
       }
     },
     selectForm: {

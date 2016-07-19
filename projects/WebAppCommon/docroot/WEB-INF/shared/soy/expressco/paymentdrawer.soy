@@ -37,7 +37,6 @@
     {foreach $payment in $payments}
       {if $payment.selected}
         {call .paymentmethodpreviewitem data="$payment"}
-        {param metadata: 'true' /}
         {/call}
       {/if}
     {/foreach}
@@ -444,7 +443,6 @@
 * @param? eWalletID
 * @param? mpLogoURL
 * @param? emailID
-* @param metadata
 */
 {template .paymentmethodpreviewitem autoescape="false"}
 <div class='drawer__previewitem'>
@@ -489,11 +487,8 @@
   </div>
   {/if}
 </div>
-{if $metadata and $metadata.enableECheck and $metadata.paymentPromoOAS}
-  <div id="eCheckButton" data-component="addpaymentmethodbutton" aria-haspopup="true">
-    <iframe width="162" height="38" src="/OASonly.jsp?listPos=FirstECheckPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
-  </div>
-{/if}
+<div id="oas_b_FirstECheckPromo" data-component="addpaymentmethodbutton" aria-haspopup="true">
+</div>
 {/template}
 
 

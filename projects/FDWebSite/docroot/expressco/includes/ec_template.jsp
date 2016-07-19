@@ -9,6 +9,7 @@
     <title><tmpl:get name="title" /></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />

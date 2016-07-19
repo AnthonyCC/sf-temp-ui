@@ -82,4 +82,5 @@ var FreshDirect = FreshDirect || {};
 
   fd.modules.common.utils.register("updateOAS", "done", done, fd);
   fd.modules.common.utils.register("quickshop.common", "updateOAS", updateOAS, fd);
+  fd.modules.common.utils.register("modules.common", "updateOAS", updateOAS, fd);
 }(FreshDirect));

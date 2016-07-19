@@ -5,11 +5,8 @@
  */
 {template .addpaymentmethodpopup autoescape="false"}
     <div class="formcontainer" data-show="{if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}addpaymentmethod_creditcard{/if}{if $data.paymentMethodType == 'EC'}addpaymentmethod_bank{/if}{if $data.paymentMethodType == 'ET'}addpaymentmethod_ebt{/if}">
-    {if $data.metadata and $data.metadata.enableECheck and $data.metadata.paymentPromoOAS}
-	    <div class="">
-	      <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$data.metadata.paymentPromoOAS}"></iframe>
-	    </div>
-     {/if}
+    <div id="oas_b_AddPaymentPromo">
+    </div>
     {if not $data.id}
 	    <div class="formselector{if $data.metadata and $data.metadata.enableECheck and $data.metadata.paymentPromoOAS} selector-decoration{/if}">
 	      <label for="addpaymentmethod_creditcard_selector" class="tabs"><input type="radio" name="showform" id="addpaymentmethod_creditcard_selector" value="addpaymentmethod_creditcard"  class="credit_card_selector" {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit Card</label>
