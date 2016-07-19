@@ -84,15 +84,18 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 		fdOrder.getAvalaraTaxValue(avalaraContext);
 		Message[] messages = avalaraContext.getMessages();
 		boolean isAlreadySubmitted = false;
+		if(null != messages){
 		for(Message message : messages){
 			if(message.getDetails().equals("Expected Saved|Posted")){
 				isAlreadySubmitted = true;
 				break;
+			   }
 			}
 		}
 		if((null != avalaraContext.getDocCode() && !"".equals(avalaraContext.getDocCode())) || isAlreadySubmitted){
 			return true;
 		}
+		LOGGER.info("commitToAvalara - SaleId : "+saleId+"  Avalara Messages : "+messages+"  Doc Code:"+ avalaraContext.getDocCode());
 		return false;
 	}
 	
