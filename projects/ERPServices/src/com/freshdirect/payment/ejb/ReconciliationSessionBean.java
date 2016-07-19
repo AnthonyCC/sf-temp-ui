@@ -44,6 +44,8 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTransactionI;
+import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
@@ -109,11 +111,14 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 				}
 
 				order = eb.getCurrentOrder();
-
+				
 				eb.addSettlement(model);
 				EnumSaleStatus updatedStatus = eb.getStatus();
 				if(EnumSaleStatus.SETTLED.equals(updatedStatus) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
-					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount(), eb.getCaptureDate(),null);
+					List<ErpTransactionModel> transactions = new ArrayList<ErpTransactionModel>(((ErpSaleModel)eb.getModel()).getTransactions());
+					Collections.sort(transactions, ErpTransactionI.TX_DATE_COMPARATOR);
+					Collections.reverse(transactions);
+					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount(), transactions.get(0).getTransactionDate(),null);
 					getPostSettlementNotificationHome().create(notificationModel);
 				}
 			}
