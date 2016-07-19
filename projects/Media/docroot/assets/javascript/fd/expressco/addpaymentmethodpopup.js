@@ -70,6 +70,10 @@ var FreshDirect = FreshDirect || {};
         this.refreshBody(data);
         this.popup.show($t);
         this.popup.clicked = true;
+    
+        if ($t[0].id ==='eCheckButton') {
+        	$('.formcontainer').attr('data-show', 'addpaymentmethod_bank');
+        };
 
         this.noscroll(true);
 
