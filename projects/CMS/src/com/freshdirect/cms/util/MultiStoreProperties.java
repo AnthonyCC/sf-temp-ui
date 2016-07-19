@@ -22,8 +22,8 @@ public class MultiStoreProperties {
 	private static final String FRESHDIRECT_PROPERTIES_FILE_NAME = "freshdirect.properties";
 	private static final Logger LOGGER = LoggerFactory.getInstance(MultiStoreProperties.class);
 	private static final String PROP_STORE_ID = "multistore.store.id";
-	private static final String PROP_FDX_ENABLED = "multistore.enabled";
-	private static final boolean FDX_DEFAULT_ENABLED = false;
+	private static final String PROP_MULTI_MODE = "multistore.enabled";
+	private static final boolean PROP_MULTI_MODE_DEFAULT = false;
 	private static Properties properties;
 
 	static {
@@ -52,7 +52,7 @@ public class MultiStoreProperties {
 	 * @return
 	 */
 	public static boolean hasCmsStoreID() {
-		return properties.entrySet().contains(PROP_STORE_ID);
+		return properties.keySet().contains(PROP_STORE_ID);
 	}
 	
 	
@@ -62,7 +62,7 @@ public class MultiStoreProperties {
 	 * @return
 	 */
 	public static boolean isCmsMultiStoreEnabled() {
-		return getBooleanValue(PROP_FDX_ENABLED, FDX_DEFAULT_ENABLED);
+		return getBooleanValue(PROP_MULTI_MODE, PROP_MULTI_MODE_DEFAULT);
 	}
 
 	private static boolean getBooleanValue(String key, boolean defaultValue) {
