@@ -253,7 +253,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		ps.setTimestamp(5, new Timestamp(model.getInsertDate().getTime()));
 		ps.setString(6, model.getNotification_status().getStatusCode());
 		ps.setString(7, model.getThird_party_name());
-		ps.setTimestamp(8,  new Timestamp(model.getCommitDate().getTime()));
+		ps.setTimestamp(8,  model.getCommitDate()!=null?new Timestamp(model.getCommitDate().getTime()):null);
 	
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -452,7 +452,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 			PreparedStatement ps = conn.prepareStatement(update);
 			int index = 1;
 			ps.setString(index++, model.getNotification_status()!=null?model.getNotification_status().getStatusCode():null);
-			ps.setTimestamp(index++, new Timestamp(model.getCommitDate().getTime()));
+			ps.setTimestamp(index++, model.getCommitDate()!=null?new Timestamp(model.getCommitDate().getTime()):null);
 			ps.setString(index++, getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
