@@ -574,7 +574,7 @@ public class DeliveryAddressService {
         }
 
         String unattendedDeliveryInstructions = "";
-        EnumUnattendedDeliveryFlag unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
+        EnumUnattendedDeliveryFlag unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.OPT_OUT;
         if (DeliveryAddressValidationConstants.BACKUP_DELIVERY_UNATTANDED.equalsIgnoreCase(backupDeliverySetting)) {
             unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.OPT_IN;
             unattendedDeliveryInstructions = formData.get(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS);

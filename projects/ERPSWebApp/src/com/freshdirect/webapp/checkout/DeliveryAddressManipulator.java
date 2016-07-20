@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
@@ -26,6 +27,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
@@ -53,6 +55,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -396,6 +399,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
 		
+		setDefaultUnattendedDeliveryFlag(scrubbedAddress,erpAddress);
+		
 		if (validator.isAddressDeliverable()) {
 			
 			checkAndSetEbtAccepted(scrubbedAddress.getZipCode(), user, cart);
@@ -441,6 +446,30 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		return erpAddress;
 	}
 
+
+	private static void setDefaultUnattendedDeliveryFlag(
+			AddressModel scrubbedAddress, ErpAddressModel erpAddress)
+			throws FDResourceException {
+		try {
+			FDDeliveryAddressCheckResponse addressCheckResponse = FDDeliveryManager
+					.getInstance().checkAddress(scrubbedAddress);
+			if (CollectionUtils.isNotEmpty(addressCheckResponse.getZoneInfo())) {
+				FDDeliveryZoneInfo zoneInfo = addressCheckResponse
+						.getZoneInfo().get(0);
+				if (zoneInfo.isUnattended()
+						&& !EnumUnattendedDeliveryFlag.OPT_OUT
+								.equals(erpAddress.getUnattendedDeliveryFlag())) {
+					erpAddress
+							.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+				}
+			}
+
+		} catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+			LOGGER.error("Error while performing address check ", e);
+		}
+	}
+	
 	/**
 	 * Order is EBT accepted => zipcode for cart's deliveryAddress is ebt accepted 
 	 * 					AND => user does not have any kind of EBT alerts
