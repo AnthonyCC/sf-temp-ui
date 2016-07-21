@@ -1208,8 +1208,11 @@ public class FDUserDAO {
 			ps.setString(1, "X");
 			ps.setString(2, id);
 			int rowcount = ps.executeUpdate();
-			if(rowcount != 0)
+			if(rowcount != 0){
 				LOGGER.info("LOCKED THE ORDER FOR MODIFICATION SUCCESSFUL... "+id);
+			}else{
+				LOGGER.info("updateOrderInModifyState failed: "+id);
+			}
 			ps.close();
 		
 	}
@@ -1228,6 +1231,8 @@ public class FDUserDAO {
 		if (rs.next()) {
 			LOGGER.info("ORDER IS READY FOR PICKING... "+id);
 			return true;
+		}else{
+			LOGGER.info("isReadyForPick failed: "+id);
 		}
 		rs.close();
 		ps.close();
@@ -1243,8 +1248,11 @@ public class FDUserDAO {
 		PreparedStatement ps = conn.prepareStatement(UPDATE_ORDER_INPROCESS);
 		ps.setString(1, orderNum);
 		int rowcount = ps.executeUpdate();
-		if(rowcount != 0)
+		if(rowcount != 0){
 			LOGGER.info("UPDATE THE ORDER IN PROCESS SUCCESSFUL... "+orderNum);
+		}else{
+			LOGGER.info("updateOrderInProcess failed: "+orderNum);
+		}
 		ps.close();
 		
 	}
@@ -1257,8 +1265,11 @@ public class FDUserDAO {
 		PreparedStatement ps = conn.prepareStatement(UNLOCKORDER_MODIFYSTATE);
 		ps.setString(1, orderId);
 		int rowcount = ps.executeUpdate();
-		if(rowcount != 0)
+		if(rowcount != 0){
 			LOGGER.info("UNLOCK THE ORDER FROM MODIFICATION SUCCESSFUL... "+orderId);
+		}else{
+			LOGGER.info("releaseModificationLock failed: "+orderId);
+		}
 		ps.close();
 	
 	

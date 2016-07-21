@@ -131,6 +131,15 @@ public class DeliveryAddressService {
         if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
                 || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
             ActionResult actionResult = new ActionResult();
+            if(deliveryAddress!=null){
+            	LOGGER.info("address Id: "+deliveryAddress.getId()+ " " +deliveryAddressId);
+            }
+            if(deliveryAddress!=null && deliveryAddress instanceof ErpDepotAddressModel){
+            	LOGGER.info("depot address: "+deliveryAddress.getAddress1()+ " "+((ErpDepotAddressModel) deliveryAddress).getZoneCode());
+            }
+            if(user.getShoppingCart().getZoneInfo()==null){
+            	LOGGER.info("zone is null: "+user.getIdentity());
+            }
             DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null,
                     null, null);
             if (actionResult.isSuccess()) {

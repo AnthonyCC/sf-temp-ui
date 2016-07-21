@@ -2415,7 +2415,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw re;
 		} catch (RemoteException re) {
 			try{
-				LOGGER.info("Exception releaseReservation by ID: " + reservationId);
+				LOGGER.info("RemoteException releaseReservation by ID: " + reservationId);
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
@@ -3171,26 +3171,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
 							
-			//Moving the commit reservation section to the end of modify order flow as reservation can be committed to logistics and still modify order fails because of the auth.
-			// Deal with Reservation in DLV
-						/*newReservationId = order.getDeliveryInfo()
-								.getDeliveryReservationId();
-						if (!newReservationId.equals(oldReservationId)) {
-							// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-
-							// reservation has changed so release old reservation
-							FDDeliveryManager.getInstance().releaseReservation(
-									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
-							// now commit the new Reservation
-							// dlvSB.commitReservation(newReservationId,
-							// identity.getErpCustomerPK(), saleId);
-							
-							FDDeliveryManager.getInstance().commitReservation(
-									newReservationId, identity.getErpCustomerPK(), 
-									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
-									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
-						}*/
-
 		} catch (DeliveryPassException de) {
 			throw de;
 		} catch (CreateException ce) {
@@ -3198,6 +3178,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (ErpAddressVerificationException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+					LOGGER.info("AVE releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
 					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
 						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 				}
@@ -3208,6 +3189,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (ErpAuthorizationException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+					LOGGER.info("AUF releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
 					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
 						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 				}
@@ -3218,6 +3200,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}  catch (RemoteException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+					LOGGER.info("RemoteException releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
 					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
 						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 				}
@@ -4763,7 +4746,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			//restore reservation is false
 			FDDeliveryManager.getInstance().releaseReservation(reservation.getId(), address , event, false);
-			LOGGER.info("releaseReservation by ID: " + reservation.getId());
+			LOGGER.info("cancelReservation by ID: " + reservation.getId());
 			
 			this.logActivity(getReservationActivityLog(reservation
 					.getTimeslot(), actionInfo,

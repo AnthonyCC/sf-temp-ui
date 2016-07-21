@@ -726,6 +726,7 @@ public class FDDeliveryManager {
 			Result response = logisticsService.cancelReservation(LogisticsDataEncoder.encodeCancelReservationRequest(rsvId, addressModel, event, restoreReservation));
 			LogisticsDataDecoder.decodeResult(response);	
 			if(response!=null && response.getDebug()!=null && response.getDebug().containsKey("restored")){
+				LOGGER.info("reservation restored: "+ rsvId+ " "+Boolean.getBoolean(response.getDebug().get("restored")) );
 				return Boolean.getBoolean(response.getDebug().get("restored"));
 			}
 			return false;

@@ -22,12 +22,12 @@ import com.freshdirect.logistics.delivery.dto.Customers;
 public class CustomerDAO implements ICustomerDAO {
 
 	private static String GET_CUSTOMERS_BYID =   "SELECT C.ID, FDC.ID FDC_ID, CI.FIRST_NAME, CI.LAST_NAME, C.USER_ID, CI.HOME_PHONE, CI.BUSINESS_PHONE, "
-            + "CI.CELL_PHONE, CI.MOBILE_NUMBER, CI.BUSINESS_EXT, "
+            + "CI.CELL_PHONE, FDE.MOBILE_NUMBER, CI.BUSINESS_EXT, "
             + "CASE WHEN EXISTS (SELECT 1 FROM CUST.PROFILE P WHERE P.CUSTOMER_ID=FDC.ID  AND P.PROFILE_NAME='ChefsTable' AND P.PROFILE_VALUE='1') " 
             + "THEN '1' ELSE '0' END AS CHEFSTABLE " 
-            + "FROM CUST.CUSTOMER C, CUST.FDCUSTOMER FDC " 
+            + "FROM CUST.CUSTOMER C, CUST.FDCUSTOMER FDC, CUST.FDCUSTOMER_ESTORE FDE " 
             + ", CUST.CUSTOMERINFO CI " 
-            + "WHERE C.ID = CI.CUSTOMER_ID AND C.ID = FDC.ERP_CUSTOMER_ID AND C.ID IN (:ids)";
+            + "WHERE C.ID = CI.CUSTOMER_ID AND C.ID = FDC.ERP_CUSTOMER_ID AND C.ID IN (:ids) AND FDE.FDCUSTOMER_ID = FDC.ID AND FDE.E_STORE = 'FreshDirect'";
 	     
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 	

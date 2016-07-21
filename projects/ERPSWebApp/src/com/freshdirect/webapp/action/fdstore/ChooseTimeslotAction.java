@@ -178,35 +178,6 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					}
 					}
 					
-					/*	FDReservation rsvInCart = cart.getDeliveryReservation();
-						
-						ErpAddressModel originalAddress = null;
-						
-						if (cart instanceof FDModifyCartModel) {
-							if (((FDModifyCartModel) cart).getOriginalOrder()
-									.getDeliveryAddress() != null) {
-
-								originalAddress = new ErpAddressModel(
-										((FDModifyCartModel) cart)
-												.getOriginalOrder()
-												.getDeliveryAddress());
-								handleAddressChangeAfterReserve(cart,
-										originalAddress, rsvInCart, user,
-										timeSlot, erpAddress, chefsTable,
-										hasSteeringDiscount, event, session);
-							}
-						}else {
-								if (cart.getDeliveryReservation().getAddress() != null) {
-									originalAddress = new ErpAddressModel(cart
-											.getDeliveryReservation()
-											.getAddress());
-									handleAddressChangeAfterReserve(cart,
-											originalAddress, rsvInCart,
-											user, timeSlot, erpAddress,
-											chefsTable, hasSteeringDiscount,
-											event, session);
-								}
-						}*/
 
 				}catch (ReservationUnavailableException re) {
 							actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
@@ -219,36 +190,6 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			} 
 		return actionResult;
 	}
-	
-/*	private static void handleAddressChangeAfterReserve(FDCartModel cart, ErpAddressModel originalAddress, FDReservation rsvInCart, FDSessionUser user,
-			FDTimeslot timeSlot, ErpAddressModel erpAddress,
-			boolean chefsTable, boolean hasSteeringDiscount,
-			TimeslotEvent event, HttpSession session) throws FDResourceException, ReservationException{
-		
-		if(originalAddress.getScrubbedStreet()!=null && 
-				cart.getDeliveryAddress().getScrubbedStreet()!=null && 
-				originalAddress.getZipCode()!=null &&
-				cart.getDeliveryAddress().getZipCode() != null){
-			
-			if(!(originalAddress.getScrubbedStreet().equalsIgnoreCase(cart.getDeliveryAddress().getScrubbedStreet()) ||
-					originalAddress.getZipCode().equalsIgnoreCase(cart.getDeliveryAddress().getZipCode()))){
-				LOGGER.info(originalAddress.getScrubbedStreet()+ " "+cart.getDeliveryAddress().getScrubbedStreet()+" "+originalAddress.getZipCode()+cart.getDeliveryAddress().getZipCode());
-				if(rsvInCart!=null && StringUtils.isNotBlank(rsvInCart.getId())){
-					LOGGER.info("releaseReservation by ID: " + rsvInCart.getPK().getId());
-					try{
-						FDDeliveryManager.getInstance().releaseReservation(rsvInCart.getPK().getId(),originalAddress, event, false);
-					}catch(FDResourceException fde){
-						LOGGER.info("resource exception while releasing the reservation " +rsvInCart.getPK());
-					}
-					reserveTimeslot(user, timeSlot, erpAddress, chefsTable, true, hasSteeringDiscount, event, session);
-				}
-				
-			}
-						
-		}
-	}*/
-	
-	
 	
 	private static void reserveTimeslot(FDSessionUser user,
 			FDTimeslot timeSlot, ErpAddressModel erpAddress,

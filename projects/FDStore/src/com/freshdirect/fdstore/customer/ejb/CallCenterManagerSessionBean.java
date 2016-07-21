@@ -1324,7 +1324,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
 	
 	private static final String ROUTE_STOP_QRY_SMS = "select * from ( "
-		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, ci.mobile_number as phone, di.phone_ext,"
+		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, ce.mobile_number as phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci, cust.fdcustomer_estore ce"
 		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and ce.fdcustomer_id=ci.customer_id and sa.requested_date=?";
