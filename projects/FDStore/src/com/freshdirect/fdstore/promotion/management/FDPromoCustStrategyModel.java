@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion.management;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +33,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private boolean excludeSameDayDlv;
 	private EnumDeliveryOption deliveryDayType;
 	private EnumComparisionType echeckMatchType;
-	private List<EnumDeliveryType> orderRangeDeliveryTypes;
+	private String[] orderRangeDeliveryTypes;
 	
 
 	public FDPromoCustStrategyModel() {
@@ -44,7 +45,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 			boolean orderTypeHome, boolean orderTypePickup,
 			boolean orderTypeCorporate, boolean orderTypeFDX,
 			EnumCardType[] paymentType,
-			String priorEcheckUse,EnumComparisionType echeckMatchType, EnumPromoFDXTierType fdxTierType) {
+			String priorEcheckUse,EnumComparisionType echeckMatchType, EnumPromoFDXTierType fdxTierType,String[] orderRangeDeliveryTypes) {
 		super();
 		this.promotionId = promotionId;
 		this.orderRangeStart = orderRangeStart;
@@ -62,6 +63,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.dpTypes=dpTypes;
 		this.echeckMatchType=echeckMatchType;
 		this.fdxTierType = fdxTierType;
+		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
 	}
 	/*public FDPromoCustStrategyModel(String promotionId,
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
@@ -191,18 +193,18 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	public void setFdxTierType(EnumPromoFDXTierType fdxTierType) {
 		this.fdxTierType = fdxTierType;
 	}
-	public List<EnumDeliveryType> getOrderRangeDeliveryTypes() {
+	public String[] getOrderRangeDeliveryTypes() {
 		return orderRangeDeliveryTypes;
 	}
 	public void setOrderRangeDeliveryTypes(
-			List<EnumDeliveryType> orderRangeDeliveryTypes) {
+			String[] orderRangeDeliveryTypes) {
 		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
 	}
 	
 	public boolean isDeliveryTypeForOrderRange(EnumDeliveryType deliveryType){
 		boolean isDeliveryTypeForOrderRange = false;
 		if(null != orderRangeDeliveryTypes){
-			isDeliveryTypeForOrderRange = orderRangeDeliveryTypes.contains(deliveryType);
+			isDeliveryTypeForOrderRange = Arrays.asList(orderRangeDeliveryTypes).contains(deliveryType.getCode());
 		}
 		return isDeliveryTypeForOrderRange;
 	}

@@ -63,23 +63,27 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			if("promoCustReq".equalsIgnoreCase(this.getActionName())){
 				String orderRangeStart = NVL.apply(request.getParameter("orderRangeStart"),"").trim();
 				String orderRangeEnd = NVL.apply(request.getParameter("orderRangeEnd"),"").trim();
-				String residential = NVL.apply(request.getParameter("residential"),"").trim();
-				String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
-				String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
-				String isFdx = NVL.apply(request.getParameter("isFdx"),"").trim();
+				boolean residential = !"".equalsIgnoreCase(NVL.apply(request.getParameter("residential"),"").trim());
+				boolean commercial = !"".equalsIgnoreCase(NVL.apply(request.getParameter("commerical"),"").trim());
+				boolean pickup = !"".equalsIgnoreCase(NVL.apply(request.getParameter("pickup"),"").trim());
+				boolean isFdx = !"".equalsIgnoreCase(NVL.apply(request.getParameter("isFdx"),"").trim());
 //				StringBuilder orderRangeDeliveryTypes = new StringBuilder();
-				List<EnumDeliveryType> orderRangeDeliveryTypes=new ArrayList<EnumDeliveryType>();
-				if(!"".equalsIgnoreCase(residential)){
-					orderRangeDeliveryTypes.add(EnumDeliveryType.HOME);
-				}
-				if(!"".equalsIgnoreCase(commerical)){
-					orderRangeDeliveryTypes.add(EnumDeliveryType.CORPORATE);
-				}
-				if(!"".equalsIgnoreCase(pickup)){
-					orderRangeDeliveryTypes.add(EnumDeliveryType.PICKUP);
-				}
-				if(!"".equalsIgnoreCase(isFdx)){
-					orderRangeDeliveryTypes.add(EnumDeliveryType.FDX);
+				String[] orderRangeDeliveryTypes= null;
+				if(residential || commercial || pickup || isFdx){
+					orderRangeDeliveryTypes =new String[4];
+				
+					if(residential){
+						orderRangeDeliveryTypes[0]=EnumDeliveryType.HOME.getCode();
+					}
+					if(commercial){
+						orderRangeDeliveryTypes[1]=EnumDeliveryType.CORPORATE.getCode();
+					}
+					if(pickup){
+						orderRangeDeliveryTypes[2] = EnumDeliveryType.PICKUP.getCode();
+					}
+					if(isFdx){
+						orderRangeDeliveryTypes[3] =EnumDeliveryType.FDX.getCode();
+					}
 				}
 				
 				String[] cohorts = request.getParameterValues("cohorts");
@@ -455,12 +459,14 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			actionResult.addError(true, "dpDates", " Dlv Pass expiration end date should not be before start date.");
 		} 
 		
+		boolean orderRangeErrorsExist = false;
 		if("".equals(orderRangeStart)){
 			model.setOrderRangeStart(null);
 		}else{
 			if( !isInteger(orderRangeStart)){
 				model.setOrderRangeStart(null);
 				actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeStart +"' should be Number.");
+				orderRangeErrorsExist = true;
 			}else{
 				model.setOrderRangeStart(Integer.parseInt(orderRangeStart));
 			}
@@ -471,16 +477,24 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			if(!isInteger(orderRangeEnd)){
 				model.setOrderRangeEnd(null);
 				actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeEnd +"' should be Number.");
+				orderRangeErrorsExist = true;
 			}else{
 				model.setOrderRangeEnd(Integer.parseInt(orderRangeEnd));
 			}
 		}
 		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && model.getOrderRangeEnd()<model.getOrderRangeStart()){
 			actionResult.addError(true, "orderRanges", " Order instance start value must be less than or equal to end value.");
+			orderRangeErrorsExist = true;
 		}
-		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && (null == model.getOrderRangeDeliveryTypes() || model.getOrderRangeDeliveryTypes().isEmpty())){
+		if(!orderRangeErrorsExist && model.getOrderRangeEnd()== null && model.getOrderRangeStart() ==null ){
+			model.setOrderRangeDeliveryTypes(null);
+		} 
+		
+		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && (null == model.getOrderRangeDeliveryTypes() || model.getOrderRangeDeliveryTypes().length <= 0)){
 			actionResult.addError(true, "orderRangeDeliveryTypes", "One of the delivery service types must be selected, when order instance ranges are specified.");
 		}
+
+		
 		/*if(!"".equals(orderRangeStart)){
 			if( !isInteger(orderRangeStart)){
 				actionResult.addError(true, "orderRangesStart", " Order instance "+orderRangeStart +" should be Number.");

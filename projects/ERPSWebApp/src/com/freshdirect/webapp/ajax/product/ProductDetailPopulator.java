@@ -1193,8 +1193,8 @@ public class ProductDetailPopulator {
 		boolean doPriceConfigConversion = false;	
 		if(null !=user && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.priceconfigdisplay2016, user) && "lb".equalsIgnoreCase(item.getScaleUnit()) && null !=item.getDepartmentId()){					
 			String deparmentIds = FDStoreProperties.getPriceConfigDepartments();
-			if(null !=deparmentIds){
-				StringTokenizer st = new StringTokenizer(deparmentIds, ",");					
+			if(null !=deparmentIds && !"".equalsIgnoreCase(deparmentIds.trim())){
+				StringTokenizer st = new StringTokenizer(deparmentIds.trim(), ",");					
 				while(st.hasMoreElements()){
 					String departmentId = st.nextToken();
 					if(item.getDepartmentId().equalsIgnoreCase(departmentId)){

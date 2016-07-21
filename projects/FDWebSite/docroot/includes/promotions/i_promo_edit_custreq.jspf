@@ -48,7 +48,7 @@
 					<td class="promo_detail_label"> Include delivery types for current order count(cumulative):</td>
 					<td><table ><tr>
 								<td><input type="checkbox" id="residential" name="residential" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.HOME))?"checked":"" %>/> Residential</td>
-								<td><input type="checkbox" id="commerical" name="commerical" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.CORPORATE))?"checked":"" %>/> Commercial</td>
+								<td><input type="checkbox" id="commerical" name="commerical" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.CORPORATE))?"checked":"" %>/> Corporate</td>
 								<td><input type="checkbox" id="pickup" name="pickup" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.PICKUP))?"checked":"" %>/> Pickup</td>
 								<td><input type="checkbox" id="isFdx" name="isFdx" <%= (null!=csm && csm.isDeliveryTypeForOrderRange(EnumDeliveryType.FDX))?"checked":"" %>/> FDX</td>
 							</tr>

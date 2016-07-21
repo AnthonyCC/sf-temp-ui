@@ -139,22 +139,23 @@ String userId = request.getParameter("userId");
 							<td class="alignL">Range <span class="gray">order # </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeStart() : "" %> <span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeEnd() : "" %> <span class="grayIta8pt">(first order == 1)</span></td>
 						</tr>
 					<% } %>
-					<% if ( csm != null && (null !=promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes() && !promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().isEmpty()) ) { %>
+					<% if ( csm != null && (null !=promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes() && promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().length > 0) ) { %>
 						<tr>
 							<td class="promo_detail_label">Included delivery types for current order count(cumulative):</td>
 							<td class="alignL">
 							<% StringBuilder orderRangeDeliveryTypes = new StringBuilder();
 							String orderRangeDeliveryTypesStr ="";
-							for (Iterator<EnumDeliveryType> iterator = promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
-								EnumDeliveryType deliveryType = iterator.next();
+							//for (Iterator<EnumDeliveryType> iterator = promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
+								for (int i = 0; i <  promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes().length; i++) {					
+									String deliveryType = promotion.getCustStrategies().get(0).getOrderRangeDeliveryTypes()[i];
 								if(null != deliveryType){
-									if(EnumDeliveryType.HOME.equals(deliveryType)){
+									if(EnumDeliveryType.HOME.getCode().equals(deliveryType)){
 										orderRangeDeliveryTypes.append("Residential").append(", ");	
-									} else if(EnumDeliveryType.CORPORATE.equals(deliveryType)){
+									} else if(EnumDeliveryType.CORPORATE.getCode().equals(deliveryType)){
 										orderRangeDeliveryTypes.append("Corporate").append(", ");	
-									} else if(EnumDeliveryType.PICKUP.equals(deliveryType)){
+									} else if(EnumDeliveryType.PICKUP.getCode().equals(deliveryType)){
 										orderRangeDeliveryTypes.append("Pickup").append(", ");	
-									} else if(EnumDeliveryType.FDX.equals(deliveryType)){
+									} else if(EnumDeliveryType.FDX.getCode().equals(deliveryType)){
 										orderRangeDeliveryTypes.append("FDX").append(", ");	
 									}
 									orderRangeDeliveryTypesStr = orderRangeDeliveryTypes.toString() ;

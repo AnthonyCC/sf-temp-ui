@@ -1379,14 +1379,17 @@ public class FDPromotionManagerNewDAO {
 				
 				ps.setString(index++, null !=model.getFdxTierType()?model.getFdxTierType().getName():null);
 				
-				if(null !=model.getOrderRangeDeliveryTypes() && !model.getOrderRangeDeliveryTypes().isEmpty()){
-					StringBuilder orderRangeDeliveryTypes = new StringBuilder();
-					for (Iterator<EnumDeliveryType> iterator = model.getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
-						EnumDeliveryType enumDeliveryType = iterator.next();
-						orderRangeDeliveryTypes.append(enumDeliveryType.getCode()).append(",");						
+				String[] orderRangeDeliveryTypes = model.getOrderRangeDeliveryTypes();
+				if(null !=orderRangeDeliveryTypes && orderRangeDeliveryTypes.length > 0){
+					StringBuilder orderRangeDeliveryType = new StringBuilder();
+					for (int i = 0; i < orderRangeDeliveryTypes.length; i++) {					
+						String deliveryType = orderRangeDeliveryTypes[i];
+						if(null !=deliveryType && !"".equalsIgnoreCase(deliveryType)){
+							orderRangeDeliveryType.append(deliveryType).append(",");
+						}
 					}
 					
-					ps.setString(index++,orderRangeDeliveryTypes.toString());
+					ps.setString(index++,orderRangeDeliveryType.toString());
 				}else{
 					ps.setNull(index++, Types.VARCHAR);
 				}
@@ -1651,13 +1654,14 @@ public class FDPromotionManagerNewDAO {
 			promoCustStrategyModel.setFdxTierType(EnumPromoFDXTierType.getEnum(rs.getString("FDX_TIER_TYPE")));
 			if(null !=rs.getString("ORDER_RANGE_DELIVERY_TYPES")){
 				String[] orderRangeDeliveryType = rs.getString("ORDER_RANGE_DELIVERY_TYPES").split(",");
-				if(null !=orderRangeDeliveryType && orderRangeDeliveryType.length > 0){
-					List<EnumDeliveryType> orderRangeDeliveryTypes = new ArrayList<EnumDeliveryType>();
+				promoCustStrategyModel.setOrderRangeDeliveryTypes(orderRangeDeliveryType);
+				/*if(null !=orderRangeDeliveryType && orderRangeDeliveryType.length > 0){
+					EnumDeliveryType[] orderRangeDeliveryTypes = new EnumDeliveryType[orderRangeDeliveryType.length];
 					for (int i = 0; i < orderRangeDeliveryType.length; i++) {
-						orderRangeDeliveryTypes.add(EnumDeliveryType.getDeliveryType(orderRangeDeliveryType[i]));
+						orderRangeDeliveryTypes[i] = EnumDeliveryType.getDeliveryType(orderRangeDeliveryType[i]);
 					}
 					promoCustStrategyModel.setOrderRangeDeliveryTypes(orderRangeDeliveryTypes);
-				}
+				}*/
 			}
 						
 			list.add(promoCustStrategyModel);
@@ -3909,14 +3913,17 @@ public class FDPromotionManagerNewDAO {
 				}else{
 					ps.setNull(15, Types.VARCHAR);
 				}
-				if(null !=model.getOrderRangeDeliveryTypes() && !model.getOrderRangeDeliveryTypes().isEmpty()){
-					StringBuilder orderRangeDeliveryTypes = new StringBuilder();
-					for (Iterator<EnumDeliveryType> iterator = model.getOrderRangeDeliveryTypes().iterator(); iterator.hasNext();) {
-						EnumDeliveryType enumDeliveryType = iterator.next();
-						orderRangeDeliveryTypes.append(enumDeliveryType.getCode()).append(",");						
-					}
+				String[] orderRangeDeliveryTypes = model.getOrderRangeDeliveryTypes();
+				if(null !=orderRangeDeliveryTypes && orderRangeDeliveryTypes.length > 0){
+					StringBuilder orderRangeDeliveryType = new StringBuilder();
+					for (int i = 0; i < orderRangeDeliveryTypes.length; i++) {					
+						String deliveryType = orderRangeDeliveryTypes[i];
+						if(null !=deliveryType && !"".equalsIgnoreCase(deliveryType)){
+							orderRangeDeliveryType.append(deliveryType).append(",");
+						}
+					}			
 					
-					ps.setString(16,orderRangeDeliveryTypes.toString());
+					ps.setString(16,orderRangeDeliveryType.toString());
 				}else{
 					ps.setNull(16, Types.VARCHAR);
 				}
