@@ -79,6 +79,7 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
 
 public class CheckoutController extends BaseController {
 
@@ -1368,8 +1369,12 @@ public class CheckoutController extends BaseController {
     	if(user.getFDSessionUser().getShoppingCart().getPaymentMethod() ==null) {
     		checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), ""); 
     	}
+    	
+    	ResultBundle dlvValidationResult = new ResultBundle();
+    	dlvValidationResult.setActionResult(new ActionResult());
+    	
     	if(user!=null && user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && 
-    			user.getFDSessionUser().getShoppingCart().getPaymentMethod() !=null){
+    			user.getFDSessionUser().getShoppingCart().getPaymentMethod() !=null && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true)){
     		//Reservation Validity
 	    	boolean reservationValid = checkout.checkReservationExpiry(user);
 	    	if(reservationValid){
@@ -1429,11 +1434,13 @@ public class CheckoutController extends BaseController {
     			message.addErrorMessage("Error processing checkout - User");
  			} else if (user.getShoppingCart()==null){
     			message.addErrorMessage("Error processing checkout - Cart");
+ 			} else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription()!=null && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))){
+    			message.addErrorMessage(dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription());
  			} else if (user.getShoppingCart().getDeliveryReservation()==null){
     			message.addErrorMessage("Error processing checkout - Reservation");
  			} else if (user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null){
     			message.addErrorMessage("Error processing checkout - Payment Method");
- 			}
+ 			} 
  			message.setStatus(Message.STATUS_FAILED);
  			
     	}
