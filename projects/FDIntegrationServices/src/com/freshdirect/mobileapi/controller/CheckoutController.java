@@ -1434,13 +1434,13 @@ public class CheckoutController extends BaseController {
     			message.addErrorMessage("Error processing checkout - User");
  			} else if (user.getShoppingCart()==null){
     			message.addErrorMessage("Error processing checkout - Cart");
- 			} else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription()!=null && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))){
-    			message.addErrorMessage(dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription());
  			} else if (user.getShoppingCart().getDeliveryReservation()==null){
     			message.addErrorMessage("Error processing checkout - Reservation");
  			} else if (user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null){
     			message.addErrorMessage("Error processing checkout - Payment Method");
- 			} 
+ 			} else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only")!=null && dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription()!=null && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))){
+    			message.addErrorMessage(dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription());
+ 			}
  			message.setStatus(Message.STATUS_FAILED);
  			
     	}
