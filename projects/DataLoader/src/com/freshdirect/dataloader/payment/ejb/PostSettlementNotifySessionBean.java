@@ -95,7 +95,10 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 		if((null != avalaraContext.getDocCode() && !"".equals(avalaraContext.getDocCode())) || isAlreadySubmitted){
 			return true;
 		}
-		LOGGER.info("commitToAvalara - SaleId : "+saleId+"  Avalara Messages : "+messages+"  Doc Code:"+ avalaraContext.getDocCode());
+		LOGGER.info("commitToAvalara - SaleId : "+saleId+ "Doc Code:"+ avalaraContext.getDocCode());
+		for(Message message:messages){
+			LOGGER.info("  Avalara Message detail : "+message.getDetails()+"\n  Avalara message "+message.getSummary());
+		}
 		return false;
 	}
 	
