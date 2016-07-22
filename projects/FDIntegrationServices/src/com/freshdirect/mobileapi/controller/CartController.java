@@ -38,6 +38,7 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -252,6 +253,8 @@ public class CartController extends BaseController {
      * @throws FDException 
      */
     private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
+        
         Cart cart = user.getShoppingCart();
         while(ContentFactory.getInstance().getCurrentUserContext().getPricingContext() == null){
     		continue;
