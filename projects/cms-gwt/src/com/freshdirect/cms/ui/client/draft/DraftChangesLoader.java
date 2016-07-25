@@ -59,7 +59,6 @@ public class DraftChangesLoader implements DataProxy<ListLoadResult<? extends Mo
                 // transform gwt pojos to GXT store models
                 for (GwtDraftChange cs : result) {
                     alreadyLoadedNodes.add(cs.toModelData());
-                    CmsGwt.consoleLog(cs.getChangedValue());
                 }
 
                 Collections.reverse(alreadyLoadedNodes);
