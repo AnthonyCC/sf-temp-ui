@@ -96,8 +96,10 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 			return true;
 		}
 		LOGGER.info("commitToAvalara - SaleId : "+saleId+ "Doc Code:"+ avalaraContext.getDocCode());
+		if(null != messages && messages.length>0){
 		for(Message message:messages){
 			LOGGER.info("  Avalara Message detail : "+message.getDetails()+"\n  Avalara message "+message.getSummary());
+		    }
 		}
 		return false;
 	}
