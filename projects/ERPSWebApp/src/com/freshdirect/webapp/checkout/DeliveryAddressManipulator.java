@@ -399,7 +399,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
 		
-		setDefaultUnattendedDeliveryFlag(scrubbedAddress,erpAddress);
+		setDefaultUnattendedDeliveryFlag(erpAddress, scrubbedAddress);
 		
 		if (validator.isAddressDeliverable()) {
 			
@@ -447,27 +447,31 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	}
 
 
-	private static void setDefaultUnattendedDeliveryFlag(
-			AddressModel scrubbedAddress, ErpAddressModel erpAddress)
-			throws FDResourceException {
+	private static FDDeliveryZoneInfo getAddressZone(AddressModel scrubbedAddress, Date date) throws FDResourceException, FDInvalidAddressException {
+		return FDDeliveryManager.getInstance().getZoneInfo(scrubbedAddress,
+				date != null ? date : new Date(), null, null);
+	}
+	
+	public static void setDefaultUnattendedDeliveryFlag(ErpAddressModel erpAddress, AddressModel scrubbAddress) {
+
 		try {
-			FDDeliveryAddressCheckResponse addressCheckResponse = FDDeliveryManager
-					.getInstance().checkAddress(scrubbedAddress);
-			if (CollectionUtils.isNotEmpty(addressCheckResponse.getZoneInfo())) {
-				FDDeliveryZoneInfo zoneInfo = addressCheckResponse
-						.getZoneInfo().get(0);
-				if (zoneInfo.isUnattended()
+			if (erpAddress != null) {
+				FDDeliveryZoneInfo zoneInfo = getAddressZone(scrubbAddress, null);
+				if (zoneInfo != null && zoneInfo.isUnattended()
 						&& !EnumUnattendedDeliveryFlag.OPT_OUT
 								.equals(erpAddress.getUnattendedDeliveryFlag())) {
-					erpAddress
-							.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+					erpAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+
 				}
 			}
-
+		} catch (FDResourceException e) {
+			LOGGER.warn("FDResourceException during UnattendedDelivery availability check : "
+					+ e.getMessage());
 		} catch (FDInvalidAddressException e) {
-			e.printStackTrace();
-			LOGGER.error("Error while performing address check ", e);
+			LOGGER.info("FDInvalidAddressException during UnattendedDelivery availability check : "
+					+ e.getMessage());
 		}
+
 	}
 	
 	/**
