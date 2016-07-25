@@ -13,17 +13,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.oauth.OAuthException;
-
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -40,6 +37,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
 import com.freshdirect.smartstore.service.VariantRegistry;
+
+import net.oauth.OAuthException;
 
 /**
  * 
@@ -68,13 +67,15 @@ public class Warmup {
 		LOGGER.info("Warmup started");
 		warmupOAuthProvider();
 		
+		LOGGER.info("CMS Multi-Store context: " + MultiStoreContextUtil.getContext( CmsManager.getInstance() ));
+		
 		long time = System.currentTimeMillis();
 		contentFactory.getStore();
 		LOGGER.info("Store warmup in " + (System.currentTimeMillis() - time) + " ms");
 
 		Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
 		for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
-			ContentKey key = (ContentKey) i.next();
+			ContentKey key = i.next();
 			skuCodes.add(key.getId());
 		}
 
@@ -88,7 +89,8 @@ public class Warmup {
 		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
 
 		new Thread("warmup-step-2") {
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					final UserContext ctx = ContentFactory.getInstance().getCurrentUserContext();
 
