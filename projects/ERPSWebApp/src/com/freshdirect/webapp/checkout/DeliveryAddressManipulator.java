@@ -399,8 +399,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
 		
-		setDefaultUnattendedDeliveryFlag(erpAddress, scrubbedAddress);
-		
 		if (validator.isAddressDeliverable()) {
 			
 			checkAndSetEbtAccepted(scrubbedAddress.getZipCode(), user, cart);
@@ -446,33 +444,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		return erpAddress;
 	}
 
-
-	private static FDDeliveryZoneInfo getAddressZone(AddressModel scrubbedAddress, Date date) throws FDResourceException, FDInvalidAddressException {
-		return FDDeliveryManager.getInstance().getZoneInfo(scrubbedAddress,
-				date != null ? date : new Date(), null, null);
-	}
-	
-	public static void setDefaultUnattendedDeliveryFlag(ErpAddressModel erpAddress, AddressModel scrubbAddress) {
-
-		try {
-			if (erpAddress != null) {
-				FDDeliveryZoneInfo zoneInfo = getAddressZone(scrubbAddress, null);
-				if (zoneInfo != null && zoneInfo.isUnattended()
-						&& !EnumUnattendedDeliveryFlag.OPT_OUT
-								.equals(erpAddress.getUnattendedDeliveryFlag())) {
-					erpAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
-
-				}
-			}
-		} catch (FDResourceException e) {
-			LOGGER.warn("FDResourceException during UnattendedDelivery availability check : "
-					+ e.getMessage());
-		} catch (FDInvalidAddressException e) {
-			LOGGER.info("FDInvalidAddressException during UnattendedDelivery availability check : "
-					+ e.getMessage());
-		}
-
-	}
 	
 	/**
 	 * Order is EBT accepted => zipcode for cart's deliveryAddress is ebt accepted 
