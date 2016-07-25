@@ -11,7 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.draft.service.DraftService;
-import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.multistore.MultiStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package com.freshdirect.cms.util;
+package com.freshdirect.cms.multistore;
 
 import java.io.IOException;
 import java.util.Properties;
