@@ -61,7 +61,8 @@ var FreshDirect = FreshDirect || {};
     },
     open: {
       value: function (e, data) {
-        var $t = e && $(e.currentTarget) || $(document.body);
+        var $t = e && $(e.currentTarget) || $(document.body),
+        	tabToShow = $t.attr('data-showechecktab');
         e && e.preventDefault();
 
         data = data || {};
@@ -70,10 +71,10 @@ var FreshDirect = FreshDirect || {};
         this.refreshBody(data);
         this.popup.show($t);
         this.popup.clicked = true;
-    
-        if ($t[0].id ==='eCheckButton') {
-        	$('.formcontainer').attr('data-show', 'addpaymentmethod_bank');
-        };
+        
+        if(tabToShow) {
+        	$('.formcontainer').attr('data-show', tabToShow);
+        }
 
         this.noscroll(true);
 
