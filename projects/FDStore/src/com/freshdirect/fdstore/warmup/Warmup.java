@@ -10,7 +10,6 @@ package com.freshdirect.fdstore.warmup;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -19,7 +18,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -67,18 +65,15 @@ public class Warmup {
 		LOGGER.info("Warmup started");
 		warmupOAuthProvider();
 		
-		LOGGER.info("CMS Multi-Store context: " + MultiStoreContextUtil.getContext( CmsManager.getInstance() ));
-		
 		long time = System.currentTimeMillis();
 		contentFactory.getStore();
 		LOGGER.info("Store warmup in " + (System.currentTimeMillis() - time) + " ms");
 
 		Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
-		for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
-			ContentKey key = i.next();
+        for (final ContentKey key : skuContentKeys) {
 			skuCodes.add(key.getId());
 		}
-
+		
 		LOGGER.info(skuCodes.size() + " SKUs found");
 
 		CacheWarmupUtil.warmupFDCaches();
