@@ -123,7 +123,7 @@ public class BrowseController extends BaseController {
         }
     	if (user == null && requestMessage!=null) {
     		user = fakeUser(request.getSession(),requestMessage);
-    	} else {
+    	} else if (user == null) {
     		user=fakeUser(request.getSession());
     	}
 
