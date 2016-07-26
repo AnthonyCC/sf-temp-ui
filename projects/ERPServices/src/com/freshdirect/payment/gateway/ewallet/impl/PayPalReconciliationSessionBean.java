@@ -387,6 +387,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						summary.setAffiliateAccountId(rs.getString("AFFILIATE_ACCOUNT_ID"));
 						summary.setTotalTransactionFeeCredit(rs.getLong("TOTAL_TRANS_FEE_CREDIT"));
 						summary.setTotalTransactionFeeDebit(rs.getLong("TOTAL_TRANS_FEE_DEBIT"));
+						summary.setProcessDate(rs.getTimestamp("PROCESSED_TIME_DATE"));
 					
 						ppStlmnts.add(summary);
 					}

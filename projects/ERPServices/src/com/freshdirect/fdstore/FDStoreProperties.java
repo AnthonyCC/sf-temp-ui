@@ -1659,7 +1659,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
         defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
-        defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.5");
+        defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.00");
 
         refresh();
     }

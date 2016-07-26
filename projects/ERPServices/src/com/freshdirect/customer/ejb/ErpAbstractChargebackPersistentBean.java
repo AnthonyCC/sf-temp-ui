@@ -130,7 +130,11 @@ public abstract class ErpAbstractChargebackPersistentBean extends ErpPaymentPers
 
 		int index = 1; 
 		ps.setString(index++, salesactionId);
-		ps.setDate(index++, new java.sql.Date(this.model.getBatchDate().getTime()));
+		if(null != this.model.getBatchDate()){
+			ps.setDate(index++, new java.sql.Date(this.model.getBatchDate().getTime()));
+		}else{
+			ps.setNull(index++, Types.DATE);
+		}
 		ps.setString(index++, this.model.getBatchNumber());
 		ps.setString(index++, this.model.getCbkControlNumber());
 		//ps.setDouble(index++, this.model.getCbkDiscount());
