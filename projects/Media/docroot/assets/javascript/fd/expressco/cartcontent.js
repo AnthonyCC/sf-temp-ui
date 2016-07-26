@@ -194,14 +194,17 @@ function get_current_paymenttype_choice(){
 /* APPDEV-4904, Set the chosen payment type for the customer within the global js object.
 NOTE: only affects javascript objects/variables on the current page until the next tab/page refresh or close */
 function set_current_payment_choice_JSonly(arr){
-	var fd = window.FreshDirect;
+	var fd = window.FreshDirect,
+		arr = arr || [];
 	
 	/*first correct the window.FreshDirect version of what payment the customer currently has selected */
 	for(var i=0; i<arr.length; i++){
-		if( arr[i].selected == true ){
-			window.FreshDirect.expressco.data.payment.payments[i].selected = true;
-		}else{
-			window.FreshDirect.expressco.data.payment.payments[i].selected = false;
+		if(fd.expressco && fd.expressco.data && fd.expressco.data.payment && fd.expressco.data.payment.payments[i] ) {
+			if( arr[i].selected == true ){
+				FreshDirect.expressco.data.payment.payments[i].selected = true;
+			}else{
+				FreshDirect.expressco.data.payment.payments[i].selected = false;
+			}
 		}
 	}
 	
