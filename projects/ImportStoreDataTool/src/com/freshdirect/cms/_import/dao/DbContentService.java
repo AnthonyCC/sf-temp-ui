@@ -36,6 +36,7 @@ import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.meta.ContentTypeUtil;
@@ -72,7 +73,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 		this.generator = new ContentNodeGenerator(typeService);
 	}
 
-	public ContentTypeServiceI getTypeService() {
+	@Override
+    public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
 
@@ -92,9 +94,9 @@ public class DbContentService extends AbstractContentService implements ContentS
 	    
 	    // Cache all nodes by loading them at once
 	    final long t0 = System.currentTimeMillis();
-	    final Set<ContentKey> contentKeys = getContentKeys();
+	    final Set<ContentKey> contentKeys = getContentKeys(DraftContext.MAIN);
 	    LOGGER.info("[initialize] Loading " + contentKeys.size() + " content nodes" );
-		getContentNodes(null);
+		getContentNodes(null, DraftContext.MAIN);
 	    final long t1 = System.currentTimeMillis();
 	    LOGGER.info("[initialize] ... in " + ((t1-t0)/1000) + " + secs" );
 	}
@@ -172,21 +174,21 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
     @Override
-	public Set<ContentKey> getContentKeys() {
+	public Set<ContentKey> getContentKeys(DraftContext draftContext) {
 		return getContentKeys(QUERY_ALL_KEYS, new String[] {});
 	}
 
     @Override
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext) {
 		return getContentKeys(QUERY_KEYS_BY_TYPE, new String[] {type.getName()});
 	}
 
     @Override
-	public ContentNodeI getContentNode(ContentKey key) {
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
 		Set<ContentKey> p = new HashSet<ContentKey>();
 		p.add(key);
-		Map<ContentKey, ContentNodeI> map = getContentNodes(p);
-		ContentNodeI c = (ContentNodeI) map.get(key);
+		Map<ContentKey, ContentNodeI> map = getContentNodes(p, draftContext);
+		ContentNodeI c = map.get(key);
 		return c;
 	}
 
@@ -219,7 +221,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 
     @Override
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
     	// optimization
 		if (keys == null)
 			return getContentNodes();
@@ -266,7 +268,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
     @Override
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext) {
 		Set<ContentKey> set = new HashSet<ContentKey>();
 		Connection conn = null;
 		try {
@@ -492,7 +494,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		            } else {
 		                List<ContentKey> l = (List<ContentKey>) value;
 		                for (int m = 0; m < l.size(); m++) {
-		                    ContentKey k = (ContentKey) l.get(m);
+		                    ContentKey k = l.get(m);
 		                    addInsertNodeToBatch(insertNodeStmt, k);
 		                    addRelBatch(insertRelshipStmt, node.getKey(), name, k, m);
 		                }
@@ -543,7 +545,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
     @Override
-	public ContentNodeI createPrototypeContentNode(ContentKey key) {
+	public ContentNodeI createPrototypeContentNode(ContentKey key, DraftContext draftContext) {
 		if (!typeService.getContentTypes().contains(key.getType())) {
 			return null;
 		}
@@ -559,7 +561,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
     protected ContentNodeI createContentNode(ContentKey key) {
-        return this.generator.createNode(key);
+        return this.generator.createNode(key, DraftContext.MAIN);
     }
 
 	private void processAttributesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
@@ -588,7 +590,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
     private void recordAttribute(Map<ContentKey, ContentNodeI> nodeMap, ContentKey key, String attrName, List<String> value) {
-        ContentNodeI node = (ContentNodeI) nodeMap.get(key);
+        ContentNodeI node = nodeMap.get(key);
 
         AttributeDefI aDef = typeService.getContentTypeDefinition(node.getKey().getType()).getAttributeDef(attrName);
         if (aDef == null) {
@@ -617,8 +619,9 @@ public class DbContentService extends AbstractContentService implements ContentS
 		return new CmsResponse();
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
-		return getContentNode(key);
+    @Override
+	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext) {
+		return getContentNode(key, draftContext);
 	}
 
 }

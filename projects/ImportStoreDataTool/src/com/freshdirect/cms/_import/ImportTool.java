@@ -27,6 +27,7 @@ import com.freshdirect.cms._import.dao.DbContentService;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.UserI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.db.DbTypeService;
@@ -390,7 +391,7 @@ public class ImportTool {
 		outDao.createStoreIndicesPhaseOne();
 		outDao.analyzeStoreTables();
 		
-    	final Set<ContentKey> allKeys = inStoreManager.getContentKeys();
+    	final Set<ContentKey> allKeys = inStoreManager.getContentKeys(DraftContext.MAIN);
     	
     	final int n_batches = (int) Math.ceil( (((double)allKeys.size()) / BATCH_SIZE ));
     	int k=0;
@@ -400,7 +401,7 @@ public class ImportTool {
 		CmsRequest req = new CmsRequest(MASTER);
 
     	while (cit.hasNext()) {
-			req.addNode(inStoreManager.getContentNode(cit.next()));
+			req.addNode(inStoreManager.getContentNode(cit.next(), DraftContext.MAIN));
 			k++;
 			
 			if (k>0 && k%BATCH_SIZE == 0) {
@@ -458,13 +459,13 @@ public class ImportTool {
 		outDao.dropMediaIndex();
 		outDao.flushMediaTable();
 		
-		LOGGER.info("Import media objects ("+inMediaManager.getContentKeys().size()+")");
+		LOGGER.info("Import media objects ("+inMediaManager.getContentKeys(DraftContext.MAIN).size()+")");
 		
 		CmsRequest req = new CmsRequest(MASTER);
 		
 		long t0 = System.currentTimeMillis();
-		for (ContentKey cKey : inMediaManager.getContentKeys()) {
-			final ContentNodeI mediaNode = inMediaManager.getContentNode(cKey);
+		for (ContentKey cKey : inMediaManager.getContentKeys(DraftContext.MAIN)) {
+			final ContentNodeI mediaNode = inMediaManager.getContentNode(cKey, DraftContext.MAIN);
 			req.addNode(mediaNode);
 		}
 		outMediaManager.handle(req);
@@ -585,7 +586,7 @@ public class ImportTool {
 		req.addNode(node);
 
 		for (ContentKey subKey : node.getChildKeys()) {
-			req.addNode(inManager.getContentNode(subKey));
+			req.addNode(inManager.getContentNode(subKey, DraftContext.MAIN));
 		}
 	}
 	
