@@ -388,8 +388,11 @@ public class CmsManager implements ContentServiceI {
     /**
      * Return E-STORE id of the current store
      * 
+     * @deprecated Use {@link #getEStoreEnum()} instead
+     * 
      * @return ID or null in case of multi-store environment
      */
+    @Deprecated
     public String getEStoreId() {
         return eStoreEnum != null ? eStoreEnum.getContentId() : null;
     }
