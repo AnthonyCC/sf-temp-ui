@@ -27,33 +27,30 @@ public final class MultiStoreContextUtil {
 
             context = MultiStoreContext.NO_STORE;
         
+            LOGGER.info("Context: no-store");
         } else if (isCMSPoweredByDatabase()) {
             // CMS runs on DB == multistore mode is enabled
-            // TODO elaborate the case of MultiStoreProperties.isCmsMultiStoreEnabled() ...
+
+            final boolean hasCmsStoreID = MultiStoreProperties.hasCmsStoreID();
             
-            LOGGER.debug("Database backed CMS context ...");
-            // LOGGER.debug("... multi-store mode enabled: " + MultiStoreProperties.isCmsMultiStoreEnabled());
-            LOGGER.debug("... multi-store mode: enabled implicitly");
-            LOGGER.debug("... store-key is dedicated: " + MultiStoreProperties.hasCmsStoreID());
+            LOGGER.debug("Database backed Store data ...");
 
             // Preview Node := multi-store enabled (CMS cluster requires) AND eStore ID is explicitly set (preview node requires)
-            final boolean isPreviewNode = /* MultiStoreProperties.isCmsMultiStoreEnabled() && */ MultiStoreProperties.hasCmsStoreID();
+            final boolean isPreviewNode = hasCmsStoreID;
 
             if (isPreviewNode) {
-                LOGGER.debug("... CMS Preview with store key: " + MultiStoreProperties.getCmsStoreId());
+                LOGGER.info("Context: single-store / DB preview with store key: " + MultiStoreProperties.getCmsStoreId());
             } else {
-                LOGGER.debug("... CMS Editor / Admin node (no dedicated store key)");
+                LOGGER.info("Context: multi-store : CMS Editor / CMS Admin node");
             }
 
-            context = isPreviewNode ? MultiStoreContext.MULTISTORE_WITH_KEY : MultiStoreContext.MULTISTORE;
-            
+            context = isPreviewNode ? MultiStoreContext.SINGLESTORE_PREVIEW : MultiStoreContext.MULTISTORE;
+
         } else {
-            LOGGER.debug("Store.xml powered read-only CMS context");
+            LOGGER.info("Context: single-store, Store data is loaded from Store.xml");
 
             context = MultiStoreContext.SINGLESTORE;
         }
-
-        LOGGER.info("CMS Multi-Store context: " + context);
         
         return context;
     }

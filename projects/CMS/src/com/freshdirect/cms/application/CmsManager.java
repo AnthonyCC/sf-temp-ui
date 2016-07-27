@@ -24,6 +24,8 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.multistore.MultiStoreContext;
+import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.cms.multistore.MultiStoreProperties;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.IBackgroundProcessor;
@@ -123,9 +125,9 @@ public class CmsManager implements ContentServiceI {
         // see CMSServiceConfig.xml or CMSServiceConfig_prd.xml
         ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
         ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-        final boolean flag = !registry.containsService("com.freshdirect.cms.ChangeTracker", ContentServiceI.class);
+        final boolean readOnlyMode = ! MultiStoreContextUtil.isCMSPoweredByDatabase();
 
-        this.initializeInternal(mgr, search, flag);
+        this.initializeInternal(mgr, search, readOnlyMode);
     }
 
     /**
@@ -167,34 +169,55 @@ public class CmsManager implements ContentServiceI {
     }
 
     private ContentKey calculateSingleStoreId() {
-        String theKey;
-        if (!MultiStoreProperties.isCmsMultiStoreEnabled()) {
+        
+        // find out current context
+        final MultiStoreContext ctx = MultiStoreContextUtil.getContext( this );
+        
+        final String theKey;
+        if (ctx.isSingleStore()) {
             //
             // == Single-Store CMS mode ==
             //
 
-            // find first Store key
-            Set<ContentKey> storeKeys = this.getContentKeysByType(FDContentTypes.STORE);
-            LOGGER.debug(".. Available store keys in CMS : " + storeKeys);
-            if (storeKeys == null || storeKeys.isEmpty()) {
-                theKey = "FreshDirect";
-                LOGGER.error("[SINGLE-STORE CMS MODE] ATTENTION!! No store nodes found in CMS. Get ready for system failure!");
-            } else {
-                theKey = storeKeys.iterator().next().getId();
-                LOGGER.info("[SINGLE-STORE CMS MODE] booting with store ID : " + theKey);
-            }
+            if (ctx.isPreviewNode()) {
+                // Preview mode 
+                final String candidate = MultiStoreProperties.getCmsStoreId();
+                if (candidate == null) {
+                    LOGGER.warn("[SINGLE-STORE CMS MODE] failed to acquire store key, most probably multistore.store.id property is not set!");
+                    LOGGER.warn("... falling back to default key FreshDirect");
+                    theKey = EnumEStoreId.FD.getContentId();
+                } else {
+                    theKey = candidate;
+                }
 
-        } else {
+                LOGGER.info("[SINGLE-STORE CMS MODE] booting as Preview Node with store key : " + theKey);
+            } else {
+                // find the first Store key
+                Set<ContentKey> storeKeys = this.getContentKeysByType(FDContentTypes.STORE, DraftContext.MAIN);
+                LOGGER.debug(".. Available store keys in CMS are : " + storeKeys);
+                if (storeKeys == null || storeKeys.isEmpty()) {
+                    theKey = "FreshDirect";
+                    LOGGER.error("[SINGLE-STORE CMS MODE] ATTENTION!! No store nodes found in CMS. Get ready for system failure!");
+                } else {
+                    theKey = storeKeys.iterator().next().getId();
+                    LOGGER.info("[SINGLE-STORE CMS MODE] booting as Production Node with store key : " + theKey);
+                }
+            }
+        } else if (ctx.isMultiStore()) {
             //
             // == Multi-Store CMS mode ==
             //
-            // Preview nodes require explicit store keys
             if (!MultiStoreProperties.hasCmsStoreID()) {
                 LOGGER.warn("[MULTI-STORE CMS MODE] No explicit CMS Store key is set! Will use default store key ...");
             }
 
+            // acquire key from prop file, defaulting to FreshDirect
             theKey = MultiStoreProperties.getCmsStoreId();
-            LOGGER.info("[MULTI-STORE CMS MODE] Multi-Store mode ENABLED, booting with store ID : " + theKey);
+            LOGGER.info("[MULTI-STORE CMS MODE] Multi-Store mode ENABLED, booting with store key : " + theKey);
+        } else {
+            // no-store mode
+            LOGGER.info("[NO-STORE CMS MODE] CMS is not available or no store node found");
+            theKey = null;
         }
 
         return theKey != null ? new ContentKey(FDContentTypes.STORE, theKey) : null;

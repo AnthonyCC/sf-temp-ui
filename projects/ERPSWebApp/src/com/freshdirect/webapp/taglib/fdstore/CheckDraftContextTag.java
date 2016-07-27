@@ -12,7 +12,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.draft.service.DraftService;
-import com.freshdirect.cms.multistore.MultiStoreContext;
 import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -32,8 +31,9 @@ public class CheckDraftContextTag extends SimpleTagSupport {
     public void doTag() throws JspException {
 
         // Determine if storefront runs in CMS preview mode
-        //   preview mode := multi-store enabled (CMS cluster requires) AND eStore ID is explicitly set (preview node requires)
-        final boolean isPreviewNode = MultiStoreContextUtil.getContext( CmsManager.getInstance() ) == MultiStoreContext.MULTISTORE_WITH_KEY;
+        final boolean isPreviewNode = MultiStoreContextUtil
+                .getContext( CmsManager.getInstance() )
+                .isPreviewNode();
 
         if (isPreviewNode) {
             LOGGER.debug("CMS Draft tag is enabled");
