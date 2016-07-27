@@ -22,7 +22,9 @@ public class MultiStoreProperties {
 	private static final String FRESHDIRECT_PROPERTIES_FILE_NAME = "freshdirect.properties";
 	private static final Logger LOGGER = LoggerFactory.getInstance(MultiStoreProperties.class);
 	private static final String PROP_STORE_ID = "multistore.store.id";
+	@Deprecated
 	private static final String PROP_MULTI_MODE = "multistore.enabled";
+	@Deprecated
 	private static final boolean PROP_MULTI_MODE_DEFAULT = false;
 	private static Properties properties;
 
@@ -39,7 +41,8 @@ public class MultiStoreProperties {
 	}
 
 	/**
-	 * ID of Store CMS node
+	 * Returns the ID part of CMS Store key (if set)
+	 * Defaulted to FreshDirect. 
 	 * 
 	 * @return
 	 */
@@ -59,8 +62,11 @@ public class MultiStoreProperties {
 	/**
 	 * Is multi-store feature enabled on storefront Defaults to false
 	 * 
+	 * @deprecated Don't use it. Multi-store context is automatically detected by CMS
+	 * 
 	 * @return
 	 */
+	@Deprecated
 	public static boolean isCmsMultiStoreEnabled() {
 		return getBooleanValue(PROP_MULTI_MODE, PROP_MULTI_MODE_DEFAULT);
 	}
