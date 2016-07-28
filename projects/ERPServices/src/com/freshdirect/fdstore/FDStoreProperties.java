@@ -877,6 +877,18 @@ public class FDStoreProperties {
     private static final String PROP_PRICE_CONFIG_CONVERSION_LIMIT = "fdstore.price.config.conversion.limit";
     private static final String PROP_PRICE_CONFIG_DEPARTMENTS = "fdstore.price.config.deparments.cms.ids";
     
+    private final static String PROP_DEFAULT_FDX_PLANTID = "fdstore.default.fdx.plantid";
+    private final static String PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL = "fdstore.default.fdx.distribution.channel";
+    private final static String PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT = "fdstore.default.fdx.distribution.channel.parent";
+    private final static String PROP_DEFAULT_FDX_SALESORG = "fdstore.default.fdx.salesorg";
+    private final static String PROP_DEFAULT_FDX_SALESORG_PARENT = "fdstore.default.fdx.salesorg.parent";
+    private final static String PROP_DEFAULT_FD_PLANTID = "fdstore.default.fd.plantid";
+    private final static String PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL = "fdstore.default.fd.distribution.channel";
+    private final static String PROP_DEFAULT_FD_SALESORG = "fdstore.default.fd.salesorg";
+    
+    
+    
+    
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1660,6 +1672,16 @@ public class FDStoreProperties {
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
         defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
         defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.00");
+        
+        defaults.put(PROP_DEFAULT_FDX_PLANTID, "1310");
+        defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL, "01");
+        defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT, "01");
+        defaults.put(PROP_DEFAULT_FDX_SALESORG, "1310");
+        defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "0001");
+        defaults.put(PROP_DEFAULT_FD_PLANTID, "1000");
+        defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
+        defaults.put(PROP_DEFAULT_FD_SALESORG, "0001");
+        
 
         refresh();
     }
@@ -4268,6 +4290,38 @@ public class FDStoreProperties {
 
     public static int getHlOrderFeedMins() {
         return Integer.parseInt(get(PROP_HOOK_LOGIC_ORDER_FEED_MINS));
+    }
+    
+    public static String getDefaultFdxPlantID() {
+        return get(PROP_DEFAULT_FDX_PLANTID);
+    }
+    
+    public static String getDefaultFdxDistributionChannel() {
+        return get(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL);
+    }
+    
+    public static String getDefaultFdxDistributionChannelParent() {
+        return get(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT);
+    }
+    
+    public static String getDefaultFdxSalesOrg() {
+        return get(PROP_DEFAULT_FDX_SALESORG);
+    }
+    
+    public static String getDefaultFdxSalesOrgParent() {
+        return get(PROP_DEFAULT_FDX_SALESORG_PARENT);
+    }
+    
+    public static String getDefaultFdPlantID() {
+        return get(PROP_DEFAULT_FD_PLANTID);
+    }
+    
+    public static String getDefaultFdDistributionChannel() {
+        return get(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL);
+    }
+    
+    public static String getDefaultFdSalesOrg() {
+        return get(PROP_DEFAULT_FD_SALESORG);
     }
 
     public static Set<String> getBrowseAggregatedCategories() {

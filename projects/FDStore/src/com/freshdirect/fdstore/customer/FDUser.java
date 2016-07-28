@@ -2193,11 +2193,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if(fulfillmentInfo==null) {
 				//default the fulfillments
 				if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
-					fulfillmentContext.setPlantId("1300");
-					zoneInfo=new ZoneInfo(pricingZoneId,"1300","01",ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId,"0001","01"));
+					fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdxPlantID());
+					zoneInfo=new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdxSalesOrg(),FDStoreProperties.getDefaultFdxDistributionChannel(),ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdxSalesOrgParent(),FDStoreProperties.getDefaultFdxDistributionChannelParent()));
 				} else {
-					fulfillmentContext.setPlantId("1000");
-					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+					fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+					zoneInfo=new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel());
 				}
 				
 		 } else {

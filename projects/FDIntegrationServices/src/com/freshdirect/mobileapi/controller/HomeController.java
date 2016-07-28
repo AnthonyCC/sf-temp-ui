@@ -229,7 +229,7 @@ public class HomeController extends BaseController {
 		}
 		else
 		{
-			plantid = "1310";
+			plantid = FDStoreProperties.getDefaultFdxPlantID();
 		}
 		
 		pageRequest.setPlantId(plantid);
