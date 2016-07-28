@@ -93,6 +93,7 @@ public class FDEmailFactory {
 			email = new FDTransactionalEmail(customer, order, order.getEStoreId());
 			
 			email.setXslPath("h_final_amount_confirm_fdx.xsl", "h_final_amount_confirm_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
 			email.setSubject("Order Up! We're Coming At Ya");
@@ -130,6 +131,7 @@ public class FDEmailFactory {
 			email = new FDTransactionalEmail(customer, order, order.getEStoreId());
 	
 			email.setXslPath("h_order_confirm_fdx.xsl", "h_order_confirm_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
 			email.setSubject("We Got Your Order. Get Excited!");
@@ -152,6 +154,7 @@ public class FDEmailFactory {
 			email = new FDTransactionalEmail(customer, order, EnumEStoreId.FDX);
 			
 			email.setXslPath("h_order_change_fdx.xsl", "h_order_change_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
 			email.setSubject("We Got Your Changes");
@@ -188,6 +191,7 @@ public class FDEmailFactory {
 			email = new FDCancelOrderConfirmEmail(customer, orderNumber, startTime, endTime);
 			
 			email.setXslPath("h_order_cancel_fdx.xsl", "h_order_cancel_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
 			email.setSubject("Order "+orderNumber+": Officially Canceled");
@@ -225,6 +229,7 @@ public class FDEmailFactory {
 			email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDXCSHours());
 			
 			email.setXslPath("h_credit_general_fdx.xsl", "h_credit_general_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
 			email.setFromEmail(FDX_SIDEKICKS_EMAIL); //add to email's data for footer text
 			email.setSubject("Store Credit Issued");
@@ -268,6 +273,7 @@ public class FDEmailFactory {
 			email = new FDForgotPasswordEmail(customer, passwordLink, expiration);
 
 			email.setXslPath("h_password_link_fdx.xsl", "h_password_link_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
 			email.setCCList(ccList);
@@ -295,6 +301,7 @@ public class FDEmailFactory {
 			email = new FDInfoEmail(customer);
 			
 			email.setXslPath("h_signup_confirm_fdx.xsl", "h_signup_confirm_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setSubject("Congrats! You're In!");
 			email.setFromEmail(FDX_ANNOUNCE_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ANNOUNCE_EMAIL));
@@ -1222,6 +1229,7 @@ public class FDEmailFactory {
 			email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime, FDCSContactHoursUtil.getFDXCSHours());
 
 			email.setXslPath("h_settlement_failure_fdx.xsl", "h_settlement_failure_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
 			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
 			email.setSubject("We Were Unable to Process Your Payment");
@@ -1309,7 +1317,8 @@ public class FDEmailFactory {
 			//START : APPBUG-2900 - Added Logger for checking duplicate emails.
 			LOGGER.debug("FDEmailFactory :: createUserIdChangeEmail (FDX) ===> Entered ");
 			email = new FDInfoEmail(customer);
-			email.setXslPath("h_user_id_change_fdx.xsl", "h_user_id_change_fdx.xsl");
+			email.setXslPath("h_user_id_change_fdx.xsl", "h_user_id_change_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 
 			email.setSubject("Email Address Updated");
 			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
@@ -1366,6 +1375,7 @@ public class FDEmailFactory {
 			email = new FDCustomerInfoEmail(customer,attributeMap);
 
 			email.setXslPath("h_user_edit_delv_address_fdx.xsl", "h_user_edit_delv_address_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setSubject("Delivery Address Updated");
 			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
@@ -1403,6 +1413,7 @@ public class FDEmailFactory {
 			email = new FDCustomerInfoEmail(customer,attributeMap);
 
 			email.setXslPath("h_user_new_delv_address_fdx.xsl", "h_user_new_delv_address_fdx.xsl"); //no text version
+			email.setHtmlEmail(true);
 			email.setSubject("Delivery Address Updated");
 			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
