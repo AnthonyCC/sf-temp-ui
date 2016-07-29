@@ -365,12 +365,8 @@
 		{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
 			<div class="portrait-item-price display-default-sales-unit-container">
 				<span class="display-default-sales-unit">{$dispDefaultSalesUnit} |</span>
-				{if $dealInfo}
-					{if $grpLink}
-						<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-					{else}
-						<div class="portrait-item-price-deal">{$dealInfo}</div>
-					{/if}
+				{if $dealInfo and not $grpLink}
+					<div class="portrait-item-price-deal">{$dealInfo}</div>
 				{/if}
 				{call common.price}
 					{param wasPrice:$wasPrice /}
@@ -381,6 +377,9 @@
 				<div class="price-per-default-sales-unit">
 					 ${$pricePerDefaultSalesUnit}
 				</div>
+				{if $dealInfo and $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+				{/if}
 				{if $savingString}
 					{if $grpLink}
 					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
