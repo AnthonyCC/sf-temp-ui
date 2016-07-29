@@ -259,9 +259,9 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				else if (ErpServicesProperties.getPPREFEventCodes().contains(trxn.getTransactionEventCode()))
 					info = reconsSB.addSettlement(model, saleId, affiliate, true);
 				else if (ErpServicesProperties.getPPCBKEventCodes().contains(trxn.getTransactionEventCode())) {
-					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, summary.getProcessDate()));
+					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else if (ErpServicesProperties.getPPCBREventCodes().contains(trxn.getTransactionEventCode())) {
-					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, summary.getProcessDate()));
+					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else
 					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
 				
