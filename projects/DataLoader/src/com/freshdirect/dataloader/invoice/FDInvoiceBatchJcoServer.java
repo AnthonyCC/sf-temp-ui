@@ -377,10 +377,11 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 							continue;
 						}
 
-						if (!EnumSaleStatus.INPROCESS.equals(order.getOrderStatus())) {
-							populateResponseRecord(result, param, "Order not in correct status [PRC] to add invoice");
+						//To fix - APPDEV-5294 - Duplicate invoice export for an order from SAP, should be ignored and return success to SAP.
+						/*if (!EnumSaleStatus.INPROCESS.equals(order.getOrderStatus())) {
+							populateResponseRecord(result, param, "Order is in ["+order.getOrderStatus()+"], not in correct status [PRC] to add invoice");
 							continue;
-						}
+						}*/
 
 						ErpShippingInfo shippingInfo = new ErpShippingInfo(param.getTruckNumber(),
 								param.getStopSequence(), param.getRegularCartonCnt(), param.getFreezerCartonCnt(),

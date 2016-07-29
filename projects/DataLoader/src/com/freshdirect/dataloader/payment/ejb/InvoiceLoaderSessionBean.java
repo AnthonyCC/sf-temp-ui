@@ -81,7 +81,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			} 
 			
 			if (!status.equals(EnumSaleStatus.INPROCESS)) {
-				throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
+				throw new EJBException("Sale#: " + saleId + "["+status.getStatusCode()+"] is not in correct status[PRC] to add invoice");
 			}
 			
 			// FIXME fix Discount promotionCode, since parser cannot provide it
