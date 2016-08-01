@@ -310,7 +310,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		
 		String gatewayOrderId = "";
 		String saleId = "";
-		int totalTrxns = this.ppReconSB.processPPFee(ppStlmntTrxns, settlementInfos);
+		int totalTrxns = processPPFee(ppStlmntTrxns, settlementInfos);
 		if (totalTrxns == 0)
 			return null;
 		
@@ -397,6 +397,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		cbModel.setMerchantReferenceNumber(trxn.getOrderId());
 		cbModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 		cbModel.setTransactionSource(EnumTransactionSource.SYSTEM);
+		cbModel.setOriginalTxDate(date);
 	}
 	
 	private ErpAffiliate getErpAffiliate(String accountId) {
@@ -407,5 +408,42 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		} else {
 			throw new RuntimeException("Unknown ErpAffiliate identified " + accountId);
 		}
+	}
+	
+	public int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) {
+		long txFee = 0;
+		long miscFee = 0;
+		int totalTrxns = 0;
+		for (ErpSettlementSummaryModel summary : stlmntTrxns) {
+			for (ErpSettlementTransactionModel tx : summary.getSettlementTrxns()) {
+				totalTrxns++;
+				if (ErpServicesProperties.getPPSTLEventCodes().contains(tx.getTransactionEventCode())) {
+					txFee += tx.getFeeAmount();
+				} else if (ErpServicesProperties.getPPSTFEventCodes().contains(tx.getTransactionEventCode()) ||
+						ErpServicesProperties.getPPCBKEventCodes().contains(tx.getTransactionEventCode()) ||
+						ErpServicesProperties.getPPREFEventCodes().contains(tx.getTransactionEventCode())) {
+					miscFee += tx.getFeeAmount();
+				}
+			}
+		}
+		
+		if (totalTrxns <= 0)
+			return 0;
+		ErpPPSettlementInfo txFeeInfo = new ErpPPSettlementInfo("FeeTrxnNOInvoice", ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
+		txFeeInfo.setAmount(new Money(txFee).getDollar());
+		txFeeInfo.setTxEventCode(ReconciliationConstants.FEE_KEY);
+		if (txFee < 0)
+			LOGGER.error("Unexpected Tx fee in settlement ");
+		else
+			settlementInfos.add(txFeeInfo);
+		
+		ErpPPSettlementInfo miscFeeInfo = new ErpPPSettlementInfo("FeeTrxnNOInvoice", ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
+		miscFeeInfo.setAmount(new Money(miscFee).getDollar());
+		miscFeeInfo.setTxEventCode(ReconciliationConstants.MISC_FEE_KEY);
+		if (miscFee < 0)
+			LOGGER.error("Unexpected Misc fee in settlement ");
+		else if (miscFee > 0)
+			settlementInfos.add(miscFeeInfo);
+		return totalTrxns;
 	}
 }
