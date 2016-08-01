@@ -12,9 +12,14 @@ import javax.ejb.CreateException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpChargebackModel;
+import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.DataLoaderProperties;
@@ -24,12 +29,15 @@ import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.Money;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.payment.gateway.impl.ReconciliationConstants;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
+import com.freshdirect.payment.model.ErpSettlementTransactionModel;
 import com.freshdirect.payment.model.ErpSummaryDetailModel;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
 
@@ -241,7 +249,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		
 		try {
 			if (DataLoaderProperties.isPayPalSettlementEnabled() && (this.ppReconSB!=null)) {
-				List ppSettlementInfos = this.ppReconSB.processPPSettlements(settlementIds);
+//				List ppSettlementInfos = this.ppReconSB.processPPSettlements(settlementIds);
+				List ppSettlementInfos = processPPSettlements(settlementIds);
 				if (ppSettlementInfos != null)
 					appendPPSettlements(ppSettlementInfos);
 				else
@@ -282,5 +291,121 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 			return "Fee Reversal";
 		}
 		return "NOT DEFINED";
+	}
+	
+	/**
+	 * This method settles trxns and also generates SettlementInfo for PayPal orders for SAP.
+	 * @return
+	 */
+	public List<ErpPPSettlementInfo> processPPSettlements(List<String> ppStlmntIds) throws RemoteException, CreateException, ErpTransactionException {
+	
+//		ReconciliationSB reconsSB = lookupReconciliationHome().create();
+		
+		List<ErpPPSettlementInfo> settlementInfos = new ArrayList<ErpPPSettlementInfo>();
+		
+		List<ErpSettlementSummaryModel> ppStlmntTrxns = this.ppReconSB.getPPTrxns(ppStlmntIds);
+		if (ppStlmntTrxns == null) {
+			return null;
+		}
+		
+		String gatewayOrderId = "";
+		String saleId = "";
+		int totalTrxns = this.ppReconSB.processPPFee(ppStlmntTrxns, settlementInfos);
+		if (totalTrxns == 0)
+			return null;
+		
+		for (ErpSettlementSummaryModel summary : ppStlmntTrxns) {
+			ErpAffiliate affiliate = getErpAffiliate(summary.getAffiliateAccountId());
+			for (ErpSettlementTransactionModel trxn : summary.getSettlementTrxns()) {
+				ErpSettlementModel model = new ErpSettlementModel();
+
+				model.setAuthCode(null);
+				model.setAmount(new Money(trxn.getGrossTransactionAmount()).getDollar());
+				model.setCardType(EnumCardType.PAYPAL);
+				model.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
+				model.setTransactionSource(EnumTransactionSource.SYSTEM);
+				model.setSequenceNumber(trxn.getPaypalReferenceId());
+				gatewayOrderId = trxn.getGatewayOrderId();
+				model.setGatewayOrderID(gatewayOrderId);
+
+				if (gatewayOrderId != null) {
+					saleId = gatewayOrderId.substring(0, gatewayOrderId.indexOf("X"));
+				} else {
+					throw new RuntimeException("PayPal settlement failed as Order Id is null ");
+				}
+				
+				model.setProcessorTrxnId(trxn.getPaypalReferenceId());
+				model.setAffiliate(affiliate);
+				ErpSettlementInfo info = null;
+				if (ErpServicesProperties.getPPSTLEventCodes().contains(trxn.getTransactionEventCode()))
+					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, false);
+				else if (ErpServicesProperties.getPPREFEventCodes().contains(trxn.getTransactionEventCode()))
+					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, true);
+				else if (ErpServicesProperties.getPPCBKEventCodes().contains(trxn.getTransactionEventCode())) {
+					info = this.reconciliationSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+				} else if (ErpServicesProperties.getPPCBREventCodes().contains(trxn.getTransactionEventCode())) {
+					info = this.reconciliationSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+				} else
+					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
+				
+				try {
+					ErpPPSettlementInfo ppInfo = new ErpPPSettlementInfo(info.getInvoiceNumber(), affiliate);
+					if (info.getId() != null)
+						ppInfo.setId(info.getId());
+					ppInfo.setAmount(new Money(trxn.getGrossTransactionAmount()).getDollar());
+					ppInfo.setChargeSettlement(info.isChargeSettlement());
+					ppInfo.setSplitTransaction(info.hasSplitTransaction());
+					ppInfo.setsettlementFailedAfterSettled(info.isSettlementFailedAfterSettled());
+					ppInfo.setTransactionCount(info.getTransactionCount());
+					ppInfo.setTxEventCode(trxn.getTransactionEventCode());
+					ppInfo.setCardType(info.getCardType());
+					settlementInfos.add(ppInfo);
+				} catch (Exception e) {
+					// Not expecting as of now
+					LOGGER.error("[PayPal Batch]", e);
+				}
+			}
+		}
+
+		return settlementInfos;
+	}
+	
+	private ErpChargebackModel getChargebackModel(ErpSettlementTransactionModel trxn, ErpAffiliate affiliate, Date date) {
+		ErpChargebackModel cbModel = new ErpChargebackModel();
+		populateChargeBack(cbModel, trxn, affiliate, date);
+		return cbModel;
+	}
+	
+	private ErpChargebackReversalModel getChargebackReversalModel(ErpSettlementTransactionModel trxn, ErpAffiliate affiliate, Date date) {
+		ErpChargebackReversalModel cbModel = new ErpChargebackReversalModel();
+		populateChargeBack(cbModel, trxn, affiliate, date);
+		return cbModel;
+	}
+	
+	private void populateChargeBack(ErpChargebackModel cbModel, ErpSettlementTransactionModel trxn, ErpAffiliate affiliate, Date date) {
+		cbModel.setAffiliate(affiliate);
+		cbModel.setAmount(new Money(trxn.getGrossTransactionAmount()).getDollar());
+		cbModel.setCardType(EnumCardType.PAYPAL);
+		cbModel.setBatchDate(date);
+		String ppRefId = trxn.getPaypalReferenceId();
+		String cbRefId = ppRefId != null ? ppRefId.substring(0, 14) : "";
+		cbModel.setCbkReferenceNumber(cbRefId);
+		cbModel.setCcNumLast4("1111");
+		cbModel.setCbkRespondDate(date);
+		cbModel.setCbkWorkDate(date);
+		cbModel.setGatewayOrderID(trxn.getGatewayOrderId());
+		cbModel.setMerchantReferenceNumber(trxn.getOrderId());
+		cbModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
+		cbModel.setTransactionSource(EnumTransactionSource.SYSTEM);
+	}
+	
+	private ErpAffiliate getErpAffiliate(String accountId) {
+		if (ErpServicesProperties.getPPFDAccountIds().contains(accountId)) {
+			return ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
+		} else if (ErpServicesProperties.getPPFDWAccountIds().contains(accountId)) {
+			return ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
+		} else {
+			throw new RuntimeException("Unknown ErpAffiliate identified " + accountId);
+		}
 	}
 }

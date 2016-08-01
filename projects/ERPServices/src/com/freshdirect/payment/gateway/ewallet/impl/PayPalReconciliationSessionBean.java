@@ -316,7 +316,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		cbModel.setTransactionSource(EnumTransactionSource.SYSTEM);
 	}
 	
-	private int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) {
+	public int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) {
 		long txFee = 0;
 		long miscFee = 0;
 		int totalTrxns = 0;
@@ -363,7 +363,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			" BANK_REF_ID, STATUS " +
 			"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? AND PROCESSED_TIME_DATE IS NULL AND STATUS = 'P'";
 	
-	private List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) {
+	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) {
 		
 		Connection conn = null;
 		PreparedStatement psStlmntSumm = null;

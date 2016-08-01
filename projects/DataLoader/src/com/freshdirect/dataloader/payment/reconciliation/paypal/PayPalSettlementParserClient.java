@@ -26,7 +26,7 @@ import com.freshdirect.payment.model.ErpSummaryDetailModel;
 
 public class PayPalSettlementParserClient extends SettlementParserClient {
 	
-	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechFINParserClient.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(PayPalSettlementParserClient.class);
 	
 	private Date batchDate;
 	private String batchNumber;
