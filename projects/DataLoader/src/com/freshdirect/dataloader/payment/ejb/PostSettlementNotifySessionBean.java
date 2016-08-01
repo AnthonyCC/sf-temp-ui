@@ -7,8 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -51,7 +56,7 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 	}
 	
 	public NotificationModel findBySalesIdAndType(String salesId, EnumNotificationType type) throws RemoteException, EJBException, FinderException{
-		PostSettlementNotificationEB postSettlementNotification = lookupPostSettlementNotificationHome().findBySalesIdAndType(salesId, type);
+		PostSettlementNotificationEB postSettlementNotification = lookupPostSettlementNotificationHome().findBySalesIdAndTypeAndStatus(salesId, type, EnumSaleStatus.PENDING);
 		return postSettlementNotification.getModel();
 	}
 	
@@ -75,7 +80,47 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 			return lst;
 	}
 	
-	public boolean commitToAvalara(PrimaryKey saleId) throws RemoteException, FinderException{
+	public List<String> commitToAvalara(Collection<String> pendingNotifications) throws RemoteException, FinderException{
+		final List<String> salesNotCommitted = new ArrayList<String>();
+		ExecutorService executor = Executors.newFixedThreadPool(10);
+		for(final String saleId : pendingNotifications){
+		Future<Boolean> future = executor.submit(new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				boolean salesCommited = commitSale(saleId);
+				if(salesCommited){
+					if(!updateNotificationStatus(saleId)){
+						salesNotCommitted.add(saleId);
+					}
+				}
+				else{
+					salesNotCommitted.add(saleId);
+				}
+				return salesCommited;
+			}
+		});
+		}
+		executor.shutdown();
+		return salesNotCommitted;
+		
+	}
+
+	private boolean updateNotificationStatus(String saleId) throws RemoteException, EJBException, FinderException {
+				boolean salesUpdated = false;
+				NotificationModel notificationModel = findBySalesIdAndType(saleId, EnumNotificationType.AVALARA).getModel();
+				notificationModel.setNotification_status(EnumSaleStatus.SETTLED);
+				notificationModel.setCommitDate(new Date());
+				try {
+					updateNotification(notificationModel);
+					salesUpdated=true;
+				} catch (Exception e) {
+					salesUpdated = false;
+					LOGGER.info("update failed for sale id: "+saleId);
+				}		
+				return salesUpdated;
+	}
+
+	private boolean commitSale(String saleId) throws FinderException, RemoteException {
 		ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 		ErpSaleModel saleModel = (ErpSaleModel) eb.getModel();
 		FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);

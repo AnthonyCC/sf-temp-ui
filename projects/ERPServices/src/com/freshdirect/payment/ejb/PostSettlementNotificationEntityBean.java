@@ -139,6 +139,41 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		}		
 	}
 	
+	public PrimaryKey ejbFindBySalesIdAndTypeAndStatus(String saleId, EnumNotificationType type, EnumSaleStatus status) throws ObjectNotFoundException, FinderException {
+		Connection conn = null;
+		try {
+			initialize();
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.PYMT_STLMNT_NOTIFICATION where SALE_ID=? and NOTIFICATION_TYPE=? and NOTIFICATION_STATUS=?");
+			ps.setString(1, saleId);
+			ps.setString(2, type.getCode());
+			ps.setString(3, status.getStatusCode());
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next()) {
+				throw new ObjectNotFoundException("Unable to find SettlementNotification with saleId " + saleId);
+			}
+
+			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
+			setPK(foundPk);
+			rs.close();
+			ps.close();
+
+			return foundPk;
+
+		} catch (SQLException sqle) {
+			throw new FinderException(sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Error closing connection", sqle2);
+			}
+		}		
+	}
+	
+	
 	public Collection<PrimaryKey> ejbFindMultipleByPrimaryKeys(Collection<PrimaryKey> pks) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {

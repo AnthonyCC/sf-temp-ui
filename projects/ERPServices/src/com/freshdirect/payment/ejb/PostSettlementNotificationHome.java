@@ -28,4 +28,5 @@ public interface PostSettlementNotificationHome extends EJBHome {
 	
 	public PostSettlementNotificationEB findByCriteria(String salesId, EnumSaleStatus status, EnumNotificationType type) throws FinderException, RemoteException;
 	
+	public PostSettlementNotificationEB findBySalesIdAndTypeAndStatus(String saleId, EnumNotificationType type, EnumSaleStatus status) throws FinderException, RemoteException;
 }
