@@ -6,6 +6,7 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 
 public class FDUserUtil {
 	
@@ -35,13 +36,13 @@ public class FDUserUtil {
 	public static ErpDeliveryPlantInfoModel getDefaultDeliveryPlantInfo(EnumEStoreId eStore) {
 		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
 		if(EnumEStoreId.FDX.equals(eStore)) {
-			delPlantInfo.setPlantId("1300");
-			delPlantInfo.setSalesOrg("1300");
+			delPlantInfo.setPlantId(FDStoreProperties.getDefaultFdxPlantID());
+			delPlantInfo.setSalesOrg(FDStoreProperties.getDefaultFdxSalesOrg());
 			
 		}
 		else {
-			delPlantInfo.setPlantId("1000");
-			delPlantInfo.setSalesOrg("0001");
+			delPlantInfo.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+			delPlantInfo.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
 		}
 		delPlantInfo.setDistChannel("01");
 		delPlantInfo.setDivision("01");
