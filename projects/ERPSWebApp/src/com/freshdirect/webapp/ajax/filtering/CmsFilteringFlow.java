@@ -359,7 +359,7 @@ public class CmsFilteringFlow {
             searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
         }
         if (searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts) {
-            searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
+            //searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
         }
         browseDataContext.getSections().setLimit(searchCarouselProductLimit);
     }
