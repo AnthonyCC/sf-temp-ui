@@ -438,6 +438,16 @@ public class CheckoutController extends BaseController {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONS_EXP_DELIVERY_DATE
 					, MessageCodes.MSG_COUPONS_EXP_DELIVERY_DATE);
         }
+        if (cart != null) {
+			try{
+			cart.applycredit(user);
+			} catch(Exception e) {
+				responseMessage .setSuccessMessage("Exception when applying store credit");
+				return model;
+			}
+		} else {
+			responseMessage.addErrorMessage("CART IS EMPTY");
+		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
