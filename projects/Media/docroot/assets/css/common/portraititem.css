@@ -370,6 +370,7 @@
 }
 
 .display-default-sales-unit-container .price-per-default-sales-unit {
+	clear: both;
 	font-size: 12px;
 	font-weight: bold;
 }
