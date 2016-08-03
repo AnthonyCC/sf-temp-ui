@@ -152,7 +152,7 @@ public class AddressUtil {
             //
             // need to look and see if delivery is available within the next seven days
             //
-        	FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date, iPackagingModel, serviceType);
+        	FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date, iPackagingModel, serviceType, (user!=null && user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null);
         	LOGGER.debug("getZoneInfo[EnumZipCheckResponses] :"+EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse()));
 			result.addError((!EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse())), EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);
             return zoneInfo;
@@ -169,18 +169,6 @@ public class AddressUtil {
 			throws FDResourceException {
 		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 		return getZoneInfo(user, address, result, date, iPackagingModel, serviceType);
-	}
-
-	public static FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize iPackagingModel, EnumRegionServiceType serviceType) throws FDResourceException {
-
-		try {
-			FDDeliveryZoneInfo zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, iPackagingModel, serviceType);
-			LOGGER.debug("getZoneInfo[EnumZipCheckResponses] :" + EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse()));
-			return zoneInfo;
-		} catch (FDInvalidAddressException fdia) {
-			LOGGER.info("getZoneInfo Invalid address", fdia);
-			return new FDDeliveryZoneInfo(null, null, null, EnumZipCheckResponses.DONOT_DELIVER);
-		}
 	}
 
 	public static EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {

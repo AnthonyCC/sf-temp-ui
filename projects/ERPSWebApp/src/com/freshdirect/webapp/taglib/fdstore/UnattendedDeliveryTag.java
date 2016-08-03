@@ -75,7 +75,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
     }
 
     private static FDDeliveryZoneInfo getAddressZone(ErpAddressModel thisAddress, Date date) throws FDResourceException, FDInvalidAddressException {
-        return FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null);
+        return FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null, thisAddress.getCustomerId());
     }
 
     private static boolean checkZone(FDDeliveryZoneInfo zoneInfo, ErpAddressModel thisAddress, boolean checkUserOptions) {

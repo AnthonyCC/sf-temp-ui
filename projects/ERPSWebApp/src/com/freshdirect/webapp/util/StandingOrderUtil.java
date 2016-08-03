@@ -499,7 +499,7 @@ public class StandingOrderUtil {
 		
 		FDDeliveryZoneInfo zoneInfo = null;
 		try {
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), null);
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), null, so.getCustomerId());
 		} catch (FDInvalidAddressException e) {
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );

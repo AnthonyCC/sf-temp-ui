@@ -79,7 +79,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 
 		if (zoneInfo == null && address != null) {
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, tomorrow, user.getHistoricOrderSize(),  null);
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, tomorrow, user.getHistoricOrderSize(),  null, (user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null);
 		}
 
 		String zoneCode = zoneInfo != null ? zoneInfo.getZoneCode() : FDStoreProperties.getCutoffDefaultZoneCode();

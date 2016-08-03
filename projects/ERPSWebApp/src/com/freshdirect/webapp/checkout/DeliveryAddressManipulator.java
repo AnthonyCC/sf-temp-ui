@@ -878,7 +878,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			// get the real zoneInfo object from deliveryManager
 			FDDeliveryZoneInfo zoneInfo = null;
 			try {
-				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new Date(), null, null );
+				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new Date(), null, null, (identity!=null)?identity.getErpCustomerPK():null );
 			} catch (FDInvalidAddressException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -49,7 +49,7 @@ public class CartFactory {
         //FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
             
         try {
-            FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
+            FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null, identity.getErpCustomerPK());
             
 			FDReservation deliveryReservation =
 				new FDReservation(

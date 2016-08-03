@@ -401,7 +401,7 @@ public class DeliveryAddressService {
         boolean isUnatteded = false;
 
         try {
-            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null);
+            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null, deliveryAddress.getCustomerId());
             isUnatteded = deliveryZoneInfo.isUnattended() && isDeliveryAddressUnattended(deliveryAddress);
         } catch (FDInvalidAddressException e) {
             LOGGER.error("Can not find zone info of delivery address.", e);

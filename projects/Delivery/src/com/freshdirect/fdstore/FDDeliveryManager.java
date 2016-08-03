@@ -404,10 +404,11 @@ public class FDDeliveryManager {
 		} 
 	}
 
-    public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType)
+    public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType, String customerId)
             throws FDResourceException, FDInvalidAddressException {
 
-        ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), DateUtil.truncate(date), (address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet());
+        ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), DateUtil.truncate(date), 
+        		(address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet(), address.getServiceType().getName(), customerId);
         FDDeliveryZoneInfo result = zoneInfoByDateZipScrubbedAddress.get(key);
 
         try {

@@ -1214,7 +1214,8 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        	}
 	        	//Set Delivery Region Info
 	        	FDTimeslot selectedTimeslot = modCart.getDeliveryReservation().getTimeslot();
-	        	FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(modCart.getDeliveryAddress(), selectedTimeslot.getStartDateTime(), null, modCart.getDeliveryReservation().getRegionSvcType());
+	        	FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(modCart.getDeliveryAddress(), selectedTimeslot.getStartDateTime(),
+	        			null, modCart.getDeliveryReservation().getRegionSvcType(), (identity!=null)?identity.getErpCustomerPK():null);
 	        	if(zInfo != null){
 	        		FDDeliveryZoneInfo zoneInfo = new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, zInfo.getRegionId(), EnumZipCheckResponses.DELIVER);
 		        	modCart.setZoneInfo(zoneInfo);

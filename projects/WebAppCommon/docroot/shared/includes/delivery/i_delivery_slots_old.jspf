@@ -199,7 +199,7 @@ Calendar nextDayVal = Calendar.getInstance();
 nextDayVal.add(Calendar.DATE, 1);
  if(address != null) {
  	try { 
-	  	FDDeliveryZoneInfo tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(), null);
+	  	FDDeliveryZoneInfo tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(), null, (user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null);
 	  	if(tmpModel != null) {
 	  		String defZoneCode = tmpModel.getZoneCode();
 	  		if(defZoneCode != null) { %>

@@ -79,7 +79,7 @@ public class AddressFinder {
 		if(erpAddress!=null){
 			try {
 				zInfo = FDDeliveryManager.getInstance().getZoneInfo(erpAddress, new java.util.Date(), user.getHistoricOrderSize(), 
-						 user.getRegionSvcType(erpAddress.getId()));
+						 user.getRegionSvcType(erpAddress.getId()), (user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null);
 			} catch (FDInvalidAddressException e) {
 				e.printStackTrace();
 			}    

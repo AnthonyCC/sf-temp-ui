@@ -2157,7 +2157,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address) {
     	
     	try {
-			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()));
+			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()), address.getCustomerId());
 			if(deliveryZoneInfo!=null)
 				return deliveryZoneInfo.getFulfillmentInfo();
 			

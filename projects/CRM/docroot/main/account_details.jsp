@@ -573,7 +573,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                                 if (rsv != null && rsv.getAddressId().equals(address.getPK().getId())) {%>
                                 	<span style="color:#FF6600;">&raquo;</span> Reserved timeslot: <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%>, <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> 
                                 		<% //FDDeliveryManager.getInstance().geocodeAddress(address);
-                                		   String zoneId = FDDeliveryManager.getInstance().getZoneInfo(address, Calendar.getInstance().getTime(), null, rsv.getRegionSvcType()).getZoneId();
+                                		   String zoneId = FDDeliveryManager.getInstance().getZoneInfo(address, Calendar.getInstance().getTime(), null, rsv.getRegionSvcType(), rsv.getCustomerId()).getZoneId();
                                 		
                                 		if(zoneId == null || !zoneId.equalsIgnoreCase(rsv.getZoneId())) { %>
                                 			<blink><span class='no'>ZONE MISMATCH</span></blink>

@@ -174,7 +174,7 @@ public class OrderConsumer implements IConsumer {
 
 			//System.out.println("-------> find timeslots from " + begCal.getTime() + " to " + endCal.getTime());
 
-			FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
+			FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null, identity.getErpCustomerPK());
 			System.out.println("zone id is : " + zInfo.getZoneId());
 			
 			List<DateRange> dateranges = new ArrayList<DateRange>();

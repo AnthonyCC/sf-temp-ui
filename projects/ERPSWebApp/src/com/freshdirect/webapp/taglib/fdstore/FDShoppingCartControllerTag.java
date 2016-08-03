@@ -412,7 +412,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                                     ErpAddressModel address = so.getDeliveryAddress();
                                     temporaryCart.setDeliveryAddress(address);
                                     temporaryCart.setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, so.getNextDeliveryDate(), user.getHistoricOrderSize(),
-                                            user.getRegionSvcType(address.getId())));
+                                            user.getRegionSvcType(address.getId()), (user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null));
 
                                     for (FDProductSelectionI ps : productSelectionList) {
                                         FDCartLineI cartLine = new FDCartLineModel(ps);

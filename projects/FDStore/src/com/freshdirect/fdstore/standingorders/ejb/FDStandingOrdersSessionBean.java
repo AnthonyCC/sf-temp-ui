@@ -583,7 +583,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 					cal.setTime(startDateTime);
 					CustomerAvgOrderSize historicSize = FDCustomerManager.getHistoricOrderSize(so.getCustomerIdentity().getErpCustomerPK());
 					if(deliveryAddressModel!=null && StringUtils.isNotBlank(deliveryAddressModel.getAddress1())){
-						zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, cal.getTime(), historicSize, null);
+						zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, cal.getTime(), historicSize, null, (so.getCustomerIdentity()!=null)?so.getCustomerIdentity().getErpCustomerPK():null);
 					}
 				} catch (FDInvalidAddressException e) {
 					LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
