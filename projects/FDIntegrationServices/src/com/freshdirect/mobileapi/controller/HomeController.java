@@ -203,36 +203,19 @@ public class HomeController extends BaseController {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		
-		ErpAddressModel address = new ErpAddressModel();
-		if(user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() != null)
-		{
-			address = user.getShoppingCart().getDeliveryAddress();
+		if(!pageRequest.isPreview()){
+			String zipcode = user.getZipCode();
+	    	String plantid;
+			if(zipcode != null && zipcode.trim().length() > 0)
+			{
+				ErpAddressModel address = new ErpAddressModel();
+        		address.setZipCode(zipcode);
+        		plantid = BrowseUtil.getCatalogInfoAddr(address, user, request).getKey().getPlantId();
+	        } else {
+	        	plantid = FDStoreProperties.getDefaultFdxPlantID();
+	        }
+			pageRequest.setPlantId(plantid);
 		}
-		else
-		{
-			address = null;
-		}
-		
-    	String plantid;
-		if(address != null)
-		{
-			CatalogKeyResult res = new CatalogKeyResult();
-        	CatalogInfo ci = null;
-        	
-        	if(address.getZipCode() != null && address.getZipCode().trim().length() > 0) {
-        		ci = BrowseUtil.getCatalogInfoAddr(address, user, request);
-        	} else {
-        		ci = BrowseUtil.getCatalogInfo(user, request);
-        	}
-        	CatalogId cid = ci.getKey();
-        	plantid = cid.getPlantId();
-		}
-		else
-		{
-			plantid = FDStoreProperties.getDefaultFdxPlantID();
-		}
-		
-		pageRequest.setPlantId(plantid);
 		
 		if(pageRequest != null){
 			if(pageRequest.isPreview()){ 
