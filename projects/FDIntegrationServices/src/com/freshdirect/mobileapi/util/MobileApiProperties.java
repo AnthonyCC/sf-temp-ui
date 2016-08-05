@@ -69,6 +69,9 @@ public class MobileApiProperties {
 	private static final String PROP_EWALLET_PAYPAL_ENABLED = "mobileapi.ewallet.paypal.enabled";
 	private static final String PROP_EWALLET_MASTERPASS_ENABLED = "mobileapi.ewallet.masterpass.enabled";
 	
+    private static final String CORS_DOMAIN = "mobileapi.CORS.domain";
+    private static final String PROP_3RDPARTY_P3PENABLED = "mobileapi.3rdparty.p3penabled";
+
     private final static Properties defaults = new Properties();
 
     static {
@@ -84,7 +87,9 @@ public class MobileApiProperties {
 		defaults.put(PROP_ADDITION_MEDIA_PATH,"/media/editorial/win_fdw/icons/");
 		defaults.put(PROP_EWALLET_PAYPAL_ENABLED, "true");
 		defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, "true");
-		
+		defaults.put(CORS_DOMAIN, "*");
+		defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
+
         refresh();
     }
 
@@ -206,4 +211,13 @@ public class MobileApiProperties {
 	public static boolean isMasterpassEnabled() {
         return Boolean.valueOf(get(PROP_EWALLET_MASTERPASS_ENABLED)).booleanValue();
     }
+	
+    public static String getCORSDomain() {
+       return get(CORS_DOMAIN);
+    }
+
+    public static boolean isP3PPolicyEnabled() {
+        return Boolean.valueOf(get(PROP_3RDPARTY_P3PENABLED)).booleanValue();
+    }
+
 }

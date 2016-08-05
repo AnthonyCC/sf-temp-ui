@@ -106,6 +106,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	
 	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		//long startTime=System.currentTimeMillis();
+	    LOGGER.info("getQsSpecificEveryItemEverOrderedList - entry - identity: " + identity + " storeContext: " + storeContext);
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -124,6 +125,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			//System.out.println("Time taken in FDListManagerSB.getQsSpecificEveryItemEverOrderedList() ::"+((System.currentTimeMillis()-startTime)) );
 			return retList;
 		} catch (SQLException e) {
+		    LOGGER.error(e);
 			throw new FDResourceException(e);
 		} finally {
             close(conn);

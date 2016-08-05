@@ -15,55 +15,56 @@ public class UserContext implements Serializable {
     private StoreContext storeContext;
     private FulfillmentContext fulfillmentContext;
 
-    public static UserContext createDefault(EnumEStoreId eStore) {
+    @Deprecated
+	public static UserContext createDefault(EnumEStoreId eStore){
+		UserContext userContext = new UserContext();
+		userContext.setPricingContext(PricingContext.DEFAULT);
+		userContext.setStoreContext(StoreContext.createStoreContext(eStore));
+		userContext.setFulfillmentContext(FulfillmentContext.createDefault());
+		//default FDIdentity is null
+		return userContext;
+	}
+	
+    public static UserContext createUserContext(EnumEStoreId eStore) {
         UserContext userContext = new UserContext();
-        userContext.setPricingContext(PricingContext.DEFAULT);
+        userContext.setPricingContext(PricingContext.createPricingContext(eStore));
         userContext.setStoreContext(StoreContext.createStoreContext(eStore));
         userContext.setFulfillmentContext(FulfillmentContext.createDefault());
-        // default FDIdentity is null
         return userContext;
     }
-
-    public PricingContext getPricingContext() {
-        return pricingContext;
-    }
-
-    public void setPricingContext(PricingContext pricingContext) {
-        this.pricingContext = pricingContext;
-    }
-
-    public void resetPricingContext() {
-        this.setPricingContext(null);
-    }
-
-    // Added for Junit testing.
-    @Deprecated
-    public void setDefaultPricingContext() {
-        this.setPricingContext(PricingContext.DEFAULT);
-    }
-
-    public FDIdentity getFdIdentity() {
-        return fdIdentity;
-    }
-
-    public void setFdIdentity(FDIdentity fdIdentity) {
-        this.fdIdentity = fdIdentity;
-    }
-
-    public StoreContext getStoreContext() {
-        return storeContext;
-    }
-
-    public void setStoreContext(StoreContext storeContext) {
-        this.storeContext = storeContext;
-    }
-
-    public FulfillmentContext getFulfillmentContext() {
-        return fulfillmentContext;
-    }
-
-    public void setFulfillmentContext(FulfillmentContext fulfillmentContext) {
-        this.fulfillmentContext = fulfillmentContext;
-    }
-
+	
+	public PricingContext getPricingContext() {
+		return pricingContext;
+	}
+	public void setPricingContext(PricingContext pricingContext) {
+		this.pricingContext = pricingContext;
+	}
+	
+	public void resetPricingContext(){
+		this.setPricingContext(null);
+	}
+	
+	//Added for Junit testing.
+	public void setDefaultPricingContext() {
+		this.setPricingContext(PricingContext.DEFAULT);
+	}
+	
+	public FDIdentity getFdIdentity() {
+		return fdIdentity;
+	}
+	public void setFdIdentity(FDIdentity fdIdentity) {
+		this.fdIdentity = fdIdentity;
+	}
+	public StoreContext getStoreContext() {
+		return storeContext;
+	}
+	public void setStoreContext(StoreContext storeContext) {
+		this.storeContext = storeContext;
+	}
+	public FulfillmentContext getFulfillmentContext() {
+		return fulfillmentContext;
+	}
+	public void setFulfillmentContext(FulfillmentContext fulfillmentContext) {
+		this.fulfillmentContext = fulfillmentContext;
+	}
 }

@@ -2,6 +2,9 @@ package com.freshdirect.cms.search;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutoComplete {
@@ -56,6 +59,8 @@ public class AutoComplete {
                 if (autocompleteUpdater == null) {
                     autocompleteUpdater = new Thread(new Runnable() {
                         public void run() {
+                            // TODO this is a hack, update usercontext in every new thread, create UserContext with factory method everywhere
+                            ContentFactory.getInstance().setCurrentUserContext(UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum()));
                             long time = System.currentTimeMillis();
                             LOGGER.info("autocomplete re-calculation started");
                             AutoComplete.this.autocompletion = createAutocompleteService();

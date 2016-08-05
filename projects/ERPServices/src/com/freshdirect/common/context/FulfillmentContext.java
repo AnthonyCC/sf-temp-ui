@@ -16,6 +16,8 @@ public class FulfillmentContext implements Serializable {
 	private String plantId;
 	
 	private static final String DEFAULT_PLANT="1000";
+	public static final String BROOKLYN_DEFAULT_PLANT_ID = "1300";
+	public static final String MANHATTAN_DEFAULT_PLANT_ID = "1310";
 	
 	public String getPlantId() {
 		return StringUtil.isEmpty(plantId)?DEFAULT_PLANT:plantId;

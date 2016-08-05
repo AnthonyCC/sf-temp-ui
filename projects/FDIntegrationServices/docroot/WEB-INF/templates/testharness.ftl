@@ -80,44 +80,94 @@ function loadStuff() {
   if(loaddata == "Signup") {  	
   	$("#url").val("/saptest12@freshdirect.com/register/");
   	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "SignupFDX") {  	
   	$("#url").val("/saptest12@freshdirect.com/registerfdx/");
-  	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test", "securityQuestion" : "new york", "firstName" : "Sairam", "lastName" : "Krishnasamy", "serviceType" : "HOME", "companyName" : "ABC Inc.", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "jersey city", "state" : "NJ", "zipCode" : "07306" , "mobile_number": "2035594465", "workPhone" : "2013345534" , "recieveSMSAlerts" : "true"}');	
+  	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test", "securityQuestion" : "new york", "firstName" : "Sairam", "lastName" : "Krishnasamy", "serviceType" : "HOME", "companyName" : "ABC Inc.", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "jersey city", "state" : "NJ", "zipCode" : "07306" , "mobile_number": "2035594465", "workPhone" : "2013345534" , "recieveSMSAlerts" : "true"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "CheckByZip") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME" }');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "globalalerts") {  	
   	$("#url").val("/saptest12@freshdirect.com/globalalerts/");
   	$("#payload").val('{"page" : "1"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "CheckByAddress") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyaddress/");
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME", "address1" : "", "apartment" : "", "city" : "", "state" : ""}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "CheckByAddressEX") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyaddressEX/");
   	$("#payload").val('{ "zipCode" : "07306", "serviceType" : "HOME", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "Jersey City", "state" : "Nj"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "Login") {  	
   	$("#url").val("/saptest12@freshdirect.com/login/");
   	$("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Session") {
     $("#url").val("/saptest12@freshdirect.com/session/check/");
     $("#payload").val('{"source" : "IFX"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "AddAnonymousAddress") {  	
   	$("#url").val("/saptest12@freshdirect.com/session/addanonymousaddress/");
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME", "address1" : "", "apartment" : "", "city" : "", "state" : ""}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddPromo") {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
   	$("#payload").val('');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "AddCode") {
   	$("#url").val("/saptest12@freshdirect.com/cart/code/apply/TEST_P0002");
   	$("#payload").val('');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ClipCoupon") {
   	$("#url").val("/saptest12@freshdirect.com/cart/coupon/clip/53421");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "RemovePromo") {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/remove/TEST_P0002");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddItem-SimpleBeef") {
   	$("#url").val("/saptest12@freshdirect.com/cart/add/");
   	var postdata = '{'+
@@ -135,7 +185,10 @@ function loadStuff() {
 		'\n	}'+
 		'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddItem-SimpleWine") {
   	$("#url").val("/saptest12@freshdirect.com/cart/add/");
   	var postdata = '{'+
@@ -151,7 +204,10 @@ function loadStuff() {
 		'\n	}'+
 		'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "UpdateItem-SimpleBeef") {
   	$("#url").val("/saptest12@freshdirect.com/cart/update/");
   	var postdata = '{'+
@@ -170,339 +226,595 @@ function loadStuff() {
 		'\n	}'+
 		'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "RemoveItem") {
   	$("#url").val("/saptest12@freshdirect.com/cart/remove/621581041");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ViewItem") {
   	$("#url").val("/saptest12@freshdirect.com/cart/viewitem/621581041");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "RemoveAllItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removeallitems/");
   	$("#payload").val('');
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ViewItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/getdetail/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SaveCart") {
   	$("#url").val("/saptest12@freshdirect.com/cart/save/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SetTip") {
   	$("#url").val("/saptest12@freshdirect.com/cart/tip/set/1.5");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "InitCheckout") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/init/");
     $("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutAuthenticate") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/authenticate/");
     $("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutGetConsolidatedCart") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/getConsolidatedCart/");
     $("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetDeliveryAddresses") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SetDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/set/");
   	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL"  }');  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SetDeliveryAddressEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddress/set/");
   	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL"  }');
   	SetDeliveryAddressEx
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+  	
   } else if (loaddata == "AcceptDeliveryPassTermsAndConditionsReturnTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/dpacceptterms/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ReserveDeliverySlot") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserve/2150625068/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ReserveDeliverySlotEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserveex/2150625068/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "ATPErrorDetails") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/atp/error/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ATPRemove") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/atp/removeitems/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "SpecialRestrictionErrorDetails") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/specialrestriction/details/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SpecialRestrictionRemoveItem") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/specialrestriction/removeitems/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetPaymentMethods") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/getall/");
   	$("#payload").val("");
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SetPaymentMethods") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/set/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SetPaymentMethodsEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutSetOrderLevelMobileNumberEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/order/set/");
   	    $("#payload").val('{"mobile_number" : "2019361486"}');
-   } else if(loaddata == "CheckoutSetOrderLevelMobilePreferencesEx") {  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if(loaddata == "CheckoutSetOrderLevelMobilePreferencesEx") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setorderlevelmobilepreferences/");
   	$("#payload").val('{"mobile_number" : "6462467793", "non_marketing_sms" : "Y", "marketing_sms" : "Y"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "CheckoutSetOrderLevelMobilePreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setorderlevelmobilepreferencesfd/");
   	$("#payload").val('{"mobile_number" : "2035594464", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddPaymentMethodEx") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/addex/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddAndSetPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/addandset/");
   	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC", "csv":"","billingCtry":"US"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "EditPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/edit/");
   	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SavePaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/save/");
   	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
-  	  
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "DeletePaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/delete/");
   	$("#payload").val('{ "paymentMethodId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "DeletePaymentMethodEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/deleteex/");
   	$("#payload").val('{ "paymentMethodId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SaveDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/save/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddAndSetDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/addandset/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","doorman":"false", "dlvServiceType" : "HOME"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "updateUserAccount") {
   	$("#url").val("/user/account/update/");
   	$("#payload").val('{"oldUserName" : "bogus@freshdirect.com","newUserName" : "bogus1@freshdirect.com","oldPassword" : "test","newPassword" : "test1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "AccountSetUserNames") {
   	$("#url").val("/user/name/set/");
   	$("#payload").val('{"firstName" : "ChangeMeFirstName","lastName" : "changeMeLastName"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if(loaddata == "AccountGetUserNames") {
   	$("#url").val("/user/name/");
   	$("#payload").val('');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
   	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutEditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/edit/");
   	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "DeleteDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/delete/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutDeleteDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/delete/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "DeleteDeliveryAddressEx") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/deleteex/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CheckoutDeleteDeliveryAddressEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/deleteex/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "OrderDetail") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/orderdetail/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ReviewOrderDetail") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/revieworderdetail/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SubmitOrder") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/ordersubmit/");
   	$("#payload").val('{ "deviceId" : "asdfjhdsfh"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SubmitOrderEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/submitorderex/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetSelectedDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/getselectedeliverydaddress/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetPaymentMethodVerifyStatus") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/getpmverifystatus/");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "VerifyAge") {  	
   	$("#url").val("/saptest12@freshdirect.com/alcohol/verifyage/");
   	$("#payload").val('');
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AcknowledgeHealthWarning") {  	
   	$("#url").val("/saptest12@freshdirect.com/alcohol/acknowledgehealthwarning/");
   	$("#payload").val('');
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "RemoveAlcohol") {  	
   	$("#url").val("/saptest12@freshdirect.com/alcohol/removefromcart/");
   	$("#payload").val('');
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Search") {
   	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchEX") {
   	$("#url").val("/searchEX/");
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchUPC") {
   	$("#url").val("/search/");
 	var postdata = '{"upc": "689544080602", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchUPCEX") {
   	$("#url").val("/searchEX/");
 	var postdata = '{"upc": "689544080602", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchSort") {
   	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "SearchSortEX") {
   	$("#url").val("/searchEX/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchFilter") {
   	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchFilterEX") {
   	$("#url").val("/searchEX/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ProductRecommended") {
   	$("#url").val("/product/Recommended/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ProductDetailMoreInfo") {
   	$("#url").val("/product/moreinfo/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetExistingOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/detail");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetExistingOrders") {
   	$("#url").val("/saptest12@freshdirect.com/order/details/");
   	$("#payload").val('{"orders":["10270258529","10270259198","10270258535","10270258520","10270258541"]}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CancelExistingOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153087389/cancel");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "GetOrderHistory") {
   	$("#url").val("/saptest12@freshdirect.com/account/orders/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddProfile") {
   	$("#url").val("/saptest12@freshdirect.com/account/profile/add/");
   	$("#payload").val('{ "name" : "", "value" : "", notes : ""}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
   	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "SetMobilePreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
   	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "SetEmailPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setemailpreferences/");
   	$("#payload").val('{ "email_subscribed" : "Y" }');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "GetEmailPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/getemailpreferences/");
   	$("#payload").val('');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if(loaddata == "GetMobilePreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/getmobilepreferences/");
   	$("#payload").val('');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }   else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#payload").val('');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "CheckModify") {
   	$("#url").val("/saptest12@freshdirect.com/order/checkmodify");
   	$("#payload").val('{"orders":["10270258529","10270259198","10270258535","10270258520","10270258541"]}');
-  	
-  } 
-  
-  else if (loaddata == "CancelOrderModify") {
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  }  else if (loaddata == "CancelOrderModify") {
   	$("#url").val("/saptest12@freshdirect.com/order/cancelmodify/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Logout") {
   	$("#url").val("/saptest12@freshdirect.com/logout/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "TransactionSource") {
   	$("#url").val("/saptest12@freshdirect.com/transactionsource/");
   	var postdata = '{"source" : "IPW"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "Acknowledge") {
   	$("#url").val("/saptest12@freshdirect.com/acknowledge/");
   	var postdata = '{ "ackType" : "TC","appSource":"FD", "acknowledge" : "true" }';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ForgotPassword") {
   	$("#url").val("/saptest12@freshdirect.com/forgotpassword/");
   	$("#payload").val('{ "username" : "saptest12@freshdirect.com"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/id/2153085854/quickshop/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AddItem-MultipleBeef") {
   	$("#url").val("/saptest12@freshdirect.com/cart/addmultiple/");
   	var postdata = '{'+
@@ -534,57 +846,93 @@ function loadStuff() {
 		'\n	]'+
 		'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ShoppingLists") {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglists/");
   	$("#payload").val('{"page" : "1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "OrderHistoryQuickshop") {
   	$("#url").val("/saptest12@freshdirect.com/orders/quickshop/");
   	$("#payload").val('{"page" : "1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    
   } else if (loaddata == "FdLists") {
   	$("#url").val("/saptest12@freshdirect.com/starterlists/");
   	$("#payload").val('{"page" : "1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopFdLists") {
   	$("#url").val("/saptest12@freshdirect.com/starterlist/id/list_basics/quickshop/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopLists") {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopGetDeptsForEveryItemOrdered") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/filterdays/none/getdeptsforeveryitem/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopEveryItemOrderedByDept") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/dept/id/gro/filterdays/none/sortby/name/geteveryitemfordept/");
   	$("#payload").val('{"page" : "1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopEveryItemEverOrdered") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
   	$("#payload").val('{"page" : "1"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "QuickShopEveryItemEverOrderedEX") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverorderedEX/");
   	$("#payload").val('{"page" : "1" , "max" : "20000"}');
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "RemoveMultipleItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
   	var postdata = '{'+
   	'  "ids" : ["-2093500227","545704818"]'+
 	'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "MultipleProductDetail") {
   	$("#url").val("/saptest12@freshdirect.com/product/multipleproductdetail/");
   	var postdata = '{'+
   	'  "ids" : ["-2093500227","545704818"]'+
 	'\n}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ProductGetPrice") {
   	$("#url").val("/product/getprice/catid/crt/id/crt_jumbo");
   	var postdata = '\n	{'+
@@ -602,15 +950,24 @@ function loadStuff() {
 	'\n	    "options" : {}'+
 	'\n	} ';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SSYouMightAlsoLike") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/youmightalsolike/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ContactUsFormData") {
   	$("#url").val("/saptest12@freshdirect.com/contactus/get/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ContactUsSubmit") {
   	$("#url").val("/saptest12@freshdirect.com/contactus/send/");
   	var postdata = '\n	{'+
@@ -619,421 +976,791 @@ function loadStuff() {
 	'\n	    "message" : "please ignore. this is a test"'+
 	'\n	} ';
 	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SSYourFavorite") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/yourfavorite/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SSFavorite") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/favorite/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SSFDFavorite") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/fdfavorite/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSBestDealCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/bestdealcarousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSCustomerFavoriteCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/customerfavouritecarousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSPeakProduceCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/peakproducecarousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSBestDealMeatCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/bestdealmeatcarousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/carousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "SSDepartmentCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/departmentcarousel/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "WGDCategories") {
   	$("#url").val("/product/whatsgood/categories/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "WGDCategoryProducts") {
   	$("#url").val("/product/whatsgood/category/xxx/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "WGDPresidentPicks") {
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#url").val("/product/presidentspick/");
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "WGDButcherBlock") {
   	$("#url").val("/product/butchersblock/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "WGDPeakProduce") {
   	$("#url").val("/product/peakproduce/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "WGDBrandNameDeals") {
   	$("#url").val("/product/brandnamedeals/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountDeliveryInfo") {
   	$("#url").val("/saptest12@freshdirect.com/account/addresses/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountDeliveryTimeslotsDefault") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountDeliveryTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/2148933356");
   	$("#payload").val("");
-   
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountDeliveryTimeslotsDefaultTimezone") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/timezone");
   	var postdata='{ "timezone": "EDT" }';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountDeliveryTimeslotsTimezone") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/timezone/2148933356");
   	var postdata='{ "timezone": "EDT" }';
   	$("#payload").val(postdata);
-  	  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountCancelTimeslotsReservation") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/cancel");
     var postdata = '{ "addressId" : "2148933356","deliveryTimeslotId": "xxx"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "AccountReservedTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/reserve");
     var postdata = '{ "addressId" : "2148933356", "deliveryTimeslotId": "xxx"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "SearchAutocomplete") {
   	$("#url").val("/search/autocomplete/c");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "EmailCapture") {
   	$("#url").val("/emailcapture/test@test.com");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "EmailCaptureEX") {
   	$("#url").val("/emailcaptureEx/");
   	var postdata = '{"serviceType" : "FDX", "zipCode" : "11101", "email" : "test@test.com"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "ConfiguredValues") {
   	$("#url").val("/configvalue/param1");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Configuration") {
   	$("#url").val("/configuration");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "HelpContactUs") {
   	$("#url").val("/help/contactUs");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+
   } else if (loaddata == "HelpLearnMorePromo") {
   	$("#url").val("/help/learnMorePromo");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "CustomerAgreement") {
   	$("#url").val("/help/termsOfUse");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "smstermsofuse") {
   	$("#url").val("/help/smstermsofuse");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "foodSafety") {
   	$("#url").val("/help/foodSafety");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "aboutUsFdx") {
   	$("#url").val("/help/aboutUsFdx");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "AlcoholRestrictions") {
   	$("#url").val("/help/alcoholrestrictions");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "AlcoholAgeVerification") {
   	$("#url").val("/help/alcoholageverification");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "BackupDeliveryAuthorization") {
   	$("#url").val("/help/backupdeliveryauthorization");
   	$("#payload").val("");   	
-  
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "DeliveryPassTermsAndConditions") {
   	$("#url").val("/help/deliveryPassTermsAndConditions");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Ping") {
   	$("#url").val("/saptest12@freshdirect.com/ping/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "LoginRefresh") {
   	$("#url").val("/saptest12@freshdirect.com/login/refresh/");
   	$("#payload").val("");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseDepartment") {
   	$("#url").val("/browse/departments/");
 	var postdata = '{"page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "BrowseCategory") {
   	$("#url").val("/browse/categories/");
 	var postdata = '{"department": "cof", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "Browse2") {
   	$("#url").val("/browse2/");
 	var postdata = '{"id": "mea"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "globalNav") {
   	$("#url").val("/browse/navigation/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getAllProductsForCategory") {
   	$("#url").val("/browse/getproducts/"); 
   	var postdata = '{"id": "bfry"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/"); 
   	var postdata = '{"id": "fsh_deli_meat", "filterByIds" : ["filter_global_rwa"], "sortBy" : "PRICE"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getCatalog") {
   	$("#url").val("/browse/getCatalogForAddress/"); 
   	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY", "productCount":"10"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (  loaddata == "getAllCatalogKeys") {
   	$("#url").val("/browse/getAllCatalogKeys/"); 
   	var postdata='';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (  loaddata == "getCatalogForKey") {
   	$("#url").val("/browse/getCatalogForKey/"); 
   	var postdata='{ "key": "FDX-1000-0001-01-0000200501", "productCount":"10"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  	
-  	
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (  loaddata == "getCatalogId") {
   	$("#url").val("/browse/getCatalogIdForAddress/"); 
   	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (  loaddata == "getCatalogKey") {
   	$("#url").val("/browse/getCatalogKeyForAddress/"); 
   	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (  loaddata == "getCatalogKeyForCurrentSession") {
   	$("#url").val("/browse/getCatalogKeyForCurrentSession/"); 
   	var postdata='';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
  } else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseCategoryContentProductOnly") {
   	$("#url").val("/browse/categorycontentproductonly/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseGroupContents") {
   	$("#url").val("/browse/groupproducts/");
 	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseCouponDepartment") {
   	$("#url").val("/coupon/browse/departments/");
 	var postdata = '{"page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "BrowseCouponCategory") {
   	$("#url").val("/coupon/browse/categories/");
 	var postdata = '{"department": "gro", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseCouponCategoryContent") {
   	$("#url").val("/coupon/browse/categorycontent/");
 	var postdata = '{"category": "hba_deo", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "BrowseCouponCategoryContentProductOnly") {
   	$("#url").val("/coupon/browse/categorycontentproductonly/");
 	var postdata = '{"category": "picks_gltnfr_condi", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "BrowseAllCoupons") {
   	$("#url").val("/coupon/browse/allCoupons/");
 	var postdata = '{}';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "GetNewProducts") {
   	$("#url").val("/product/getnewproducts/"); 
   	$("#payload").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "EwalletStdCheckout") {
   	$("#url").val("/stdcheckout/"); 
   	var postdata = '{"eWalletType":"MP","callBackUrl":"http://MASTERPASSTEST"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "EwalletStdCheckoutData") {
   	$("#url").val("/stdcheckoutdata/"); 
   	var postdata = '{"eWalletType":"MP", "oauthToken":"204f8e865", "oauthVerifer" : "266f8e865b7s", "checkoutUrl" : "http://masterpasstest/chekouturl"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "GenerateClientToken") {
   	$("#url").val("/generateClientToken/"); 
   	var postdata = '{"eWalletType":"PP"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "IsPayPalWalletPaired") {
   	$("#url").val("/isPayPalWalletPaired/"); 
   	var postdata = '{"eWalletType":"PP"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "UpdatePaypalWalletToken") {
   	$("#url").val("/updatePaypalWalletToken/"); 
   	var postdata = '{"eWalletType":"PP","tokenType":"PaymentNonce","tokenValue":"xxx", "firstName":"Aniwesh", "lastName":"Vatsal", "emailId":"pp@email.com", "deviceId":"ldfkjdlf123"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (  loaddata == "DisconnectWallet") {
   	$("#url").val("/disconnectWallet/"); 
   	var postdata = '{"eWalletType":"PP"}';
   	$("#payload").val(postdata);
-  	$("#result").val("");  
+  	$("#result").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if ( loaddata == "getSortOptionsForCat") {
   	$("#url").val("/browse/sortoptionsforcategory/"); 
   	var postdata = '{"id": "fdx_test"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (loaddata == "IvrCallLog") {
   	$("#url").val("/ext/t002/");
 	var postdata = '1,9174068937,11540278667,10/04/2012 06:05:00,2,CallComplete,51,571-730-5796,delivery access';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "smsMessageRelay") {
   	$("#url").val("/ext/t003/");
 	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if (loaddata == "fdxsmsMessageRelay") {
   	$("#url").val("/ext/t004/");
 	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
   	$("#payload").val(postdata);
-  	
-  }
-  else if (loaddata == "fdxdeliveryInfo") {
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  }  else if (loaddata == "fdxdeliveryInfo") {
   	$("#url").val("/ext/t005/");
 	var postdata = '0028630699,02/02/2016 06:05:00,0028634499,02/02/2016 06:45:00';
   	$("#payload").val(postdata);
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }
     else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (loaddata == "GetRegions") {
   	$("#url").val("/lookup/regions/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getDetail") {
   	$("#url").val("/recipe/getdetail/QLmRGXthw"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getAll") {
   	$("#url").val("/recipe/getall/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getTags") {
   	$("#url").val("/recipe/gettags/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "foodilySearch") {
   	$("#url").val("/recipe/search/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getAllHome") {
   	$("#url").val("/home/getall/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "featuredCategories") {
   	$("#url").val("/home/featuredcategories/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "getHomeAndCategories") {
   	$("#url").val("/home/all/"); 
   	$("#payload").val(""); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if ( loaddata == "getPage"){
   	$("#url").val("/home/getPage/");
   	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (  loaddata == "sociallogin") {
   	$("#url").val("/social/login/"); 
   	$("#payload").val('{"userToken":"e3314c02-9884-434e-b7b8-548da63dbe70","provider":"mastercard", "source" : " mastercard ", "email": "tirumal_b@yahoo.com"}'); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "linkaccount") {
   	$("#url").val("/social/linkaccount/"); 
   	$("#payload").val('{"email" : "tirumal_b@yahoo.com", "password" : "qwert1","existingToken":"e3314c02-9884-434e-b7b8-548da63dbe70","newToken":"e3314c02-9884-434e-b7b8-548da63dbe70","provider":"mastercard", "source" : "mastercard"}'); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if (  loaddata == "registersocial") {
   	$("#url").val("/saptest12@freshdirect.com/registersocial/"); 
   	$("#payload").val('{"email" : "test978@gmail.com", "password" : "welcome", "securityQuestion" : "test", "firstName" : "Test", "lastName" : "Registration", "serviceType" : "HOME", "address1" : "500 W 43 st", "apartment" : "8c", "city" : "New York", "state" : "NY", "zipCode" : "10036" , "mobile_number": "2035594466", "recieveSMSAlerts" : "true","userToken" : "e3314c02-9884-434e-b7b8-548da63dbe70", "provider" : "mastercard", "source" : " mastercard "}'); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (  loaddata == "unlinkaccount") {
   	$("#url").val("/social/unlinkaccount/"); 
   	$("#payload").val('{"email" : "test@yahoo.com", "userToken":"123"}'); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }  else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
   	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}'); 	
-  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }else if ( loaddata == "NewBrowseCategory") {
   	$("#url").val("/newbrowse/categories/");
 	var postdata = '{"department": "cof", "page" : "1", "max" : "25", "loadCategoriesCarousel" : "4", "carouselProductCount" : "6"}';
   	$("#payload").val(postdata);
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webLoginCheck") {
+  	$("#url").val("/checklogin");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "GET";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+  	
+  } else if (loaddata == "webChangePassword") {
+  	$("#url").val("/changepassword");
+  	var postdata = '{"email" : "testuser@testing.com", "token" : "232fsd44", "password" : "12345678", "confirmPassword" : "12345678"}';
+  	$("#payload").val(postdata);
+  	$.apitype = "web";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";;
+
+  } else if (loaddata == "webLogout") {
+  	$("#url").val("/logout");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/json";
+
+  } else if (loaddata == "webHomePage") {
+  	$("#url").val("/page/home?requestedDate=1467905604");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "GET";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webProductCatalogProduct") {
+  	$("#url").val("/productcatalog/product?catalogKey=FDX-1000-0001-01-0000200501&productIds=fsh_deli_meat,bstk_rbeye_bnls");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "GET";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webSearch") {
+  	$("#url").val("/search?query=meat");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "GET";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webSocialLogin") {
+  	$("#url").val("/sociallogin?redirect_url=afonya");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webTimeslot") {
+  	$("#url").val("/timeslot");
+  	$("#payload").val("");
+  	$.apitype = "web";
+  	$.httpMethod = "GET";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "webSetPayment") {
+  	$("#url").val("/checkout/payment");
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
+  	$.apitype = "web";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "pickListGetAll") {
+  	$("#url").val("/pickslist/getall/");
+  	$("#payload").val("");
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "pickListGetAllIphone") {
+  	$("#url").val("/pickslistiPhone/getall/");
+  	$("#payload").val("");
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "pickListGetDetail") {
+  	$("#url").val("/pickslist/getdetail/PickList_fdx");
+  	$("#payload").val("");
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   }
   $("#result").JSONView({});  	
   $("#payload").focus();
 }
 
 function doStuff() {
+  var url = $("#url").val();
+  var httpMethod = $.httpMethod;
+  var contentType = $.contentType;
   var version = $("#version").val();
   $.cookie("version", version);
-  var strURL = "/mobileapi/v/" + version + $("#url").val();
+  if ($.apitype == 'web'){
+    var strURL = "/mobileapi/api" + url;
+  } else {
+    var strURL = "/mobileapi/v/" + version + url;
+  }
   var postData = "";
   var payload = $("#payload").val();
   var dType = "html";
@@ -1133,17 +1860,21 @@ function doStuff() {
 		
   }
    else {
-	  postData = "data=" + $.URLEncode(payload);
+       postData = "data=" + $.URLEncode(payload);
   }
   
    $.ajax({
-	      type: "POST",
+	      type: httpMethod,
 	      url: strURL,
 	      data: postData,
 	      dataType: dType,
+          contentType: contentType,
 	      success: function(msg) {
-	         $("#result").JSONView(msg, { collapsed: true, nl2br: true, recursive_collapser: true });
-	      }
+	        $("#result").JSONView(msg, { collapsed: true, nl2br: true, recursive_collapser: true });
+	      },
+	      error:function(msg){
+            $("#result").JSONView(msg.responseText, { collapsed: true, nl2br: true, recursive_collapser: true });
+        }
 	});	
 }	
 </script>
@@ -1152,15 +1883,17 @@ function doStuff() {
   <p><b>URL:</b> <input id="url" name="url" type="text" size="65" /> <b>Ver:</b> <input id="version" name="version" type="text" size="2" />
   <b>- or -</b>
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
-  <option value="">========== ZIP CHECK ==========</option>
+  <option value=""> ========== ZIP CHECK ========== </option>
   <option value="CheckByZip">CheckByZip</option>
   <option value="globalalerts">OAS Alerts</option>
   <option value="CheckByAddress">CheckByAddress</option>
   <option value="CheckByAddressEX">CheckByAddressEX</option>
-  <option value="">========== SIGN UP ==========</option>
+
+  <option value=""> ========== SIGN UP ========== </option>
   <option value="Signup">Signup</option> 
-  <option value="SignupFDX">Signup EX</option>  
-  <option value="">========== LOGIN ==========</option>
+  <option value="SignupFDX">Signup EX</option>
+
+  <option value=""> ========== LOGIN ========== </option>
   <option value="Login">Login</option>
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
@@ -1169,7 +1902,8 @@ function doStuff() {
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
   <option value="TransactionSource">Transaction Source</option>
-   <option value="Acknowledge">Acknowledge</option>
+  <option value="Acknowledge">Acknowledge</option>
+
   <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
   <option value="AddCode">CART - Apply Code</option>
@@ -1186,6 +1920,7 @@ function doStuff() {
   <option value="SaveCart">CART - Save Cart</option>
   <option value="ClipCoupon">CART - Clip Coupon</option>
   <option value="SetTip">CART - Set Tip</option>
+
   <option value=""> ========== CHECKOUT ========== </option>
   <option value="InitCheckout">CHECKOUT - Init</option>
   <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
@@ -1206,7 +1941,7 @@ function doStuff() {
   <option value="ReserveDeliverySlotEx">CHECKOUT - Set Delivery Slot EX</option>
   <option value="ATPErrorDetails">CHECKOUT - Get ATP Error Details</option>
   <option value="ATPRemove">CHECKOUT - Remove all unavailable items</option>
-   <option value="SpecialRestrictionErrorDetails">CHECKOUT - Get Special Restriction Error Details[EBT]</option>
+  <option value="SpecialRestrictionErrorDetails">CHECKOUT - Get Special Restriction Error Details[EBT]</option>
   <option value="SpecialRestrictionRemoveItem">CHECKOUT - Remove all Special Restriction items[EBT]</option>
   <option value="GetPaymentMethods">CHECKOUT - Get Payment Methods</option>
   <option value="SetPaymentMethods">CHECKOUT - Set Payment Methods</option>
@@ -1223,6 +1958,7 @@ function doStuff() {
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
   <option value="AcceptDeliveryPassTermsAndConditionsReturnTimeslots">CHECKOUT - Accept DeliveryPass TermsAndConditions</option>
+
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
   <option value="SearchUPC">SEARCH - UPC barcode</option>
@@ -1233,6 +1969,7 @@ function doStuff() {
   <option value="SearchSortEX">SEARCHEX - Sort</option>
   <option value="SearchFilterEX">SEARCHEX - Filter</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>
+
   <option value=""> ========== BROWSE ========== </option>
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
@@ -1247,14 +1984,16 @@ function doStuff() {
   <option value="getCatalogKey">BROWSE - GET CATALOG KEY FOR ADDRESS EX</option>
   <option value="getCatalogKeyForCurrentSession">BROWSE - GET CATALOG KEY FOR SESSION</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
-    <option value="globalNav">BROWSE - NAVIGATION</option>
+  <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
+
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
   <option value="BrowseCouponCategoryContent">BROWSE COUPON - CATEGORYCONTENT</option>
   <option value="BrowseCouponCategoryContentProductOnly">BROWSE COUPON - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseAllCoupons">BROWSE COUPON - All</option>
+
   <option value=""> ========== EWallet ========== </option>
   <option value="EwalletStdCheckout">EWallet - STANDARD CHECKOUT</option>
   <option value="EwalletStdCheckoutData">EWallet - STANDARD CHECKOUT DATA</option>
@@ -1262,11 +2001,10 @@ function doStuff() {
   <option value="IsPayPalWalletPaired">EWallet - IS PAYPALWALLET PAIRED</option>
   <option value="UpdatePaypalWalletToken">EWallet - UPDATE PAYPAL WALLET TOKEN</option>
   <option value="DisconnectWallet">EWallet - DISCONNECT WALLET</option>
-  
-  
+
   <option value=""> ========== New Products ========== </option>
   <option value="GetNewProducts">NEW PRODUCTS - GET ALL NEW PRODUCTS</option>  
-  
+
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
   <option value="MultipleProductDetail">PRODUCT - Multiple Product Detail</option>
@@ -1274,6 +2012,12 @@ function doStuff() {
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>
   <option value="ProductGetPrice">PRODUCT - Pricing API</option>
   <option value="AcknowledgeHealthWarning">PRODUCT - Ack Health Warning</option>
+
+  <option value=""> ========== Pick List ========== </option>
+  <option value="pickListGetAll">PickList - Get All</option> 
+  <option value="pickListGetAllIphone">PickList - Get All Iphone</option>
+  <option value="pickListGetDetail">PickList - Get Detail</option>
+
   <option value=""> ========== ORDERS ========== </option>
   <option value="GetOrderHistory">ORDERS - Order History</option>
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>
@@ -1281,8 +2025,8 @@ function doStuff() {
   <option value="CancelExistingOrder">ORDERS - Cancel Existing Order</option>
   <option value="ModifyOrder">ORDERS - Modify Order</option>
   <option value="CheckModify">ORDERS - Check Modify</option>
-  
   <option value="CancelOrderModify">ORDERS - Cancel Order Modify</option>
+
   <option value=""> ========== QUICKSHOP LISTS/ORDERS ========== </option>
   <option value="OrderHistoryQuickshop">QUICKSHOP - Previous Orders</option>
   <option value="QuickShopOrder">QUICKSHOP - Shop from Order</option>
@@ -1294,9 +2038,11 @@ function doStuff() {
   <option value="QuickShopEveryItemOrderedByDept">QUICKSHOP - Everything You've Ever Ordered By Dept !</option>
   <option value="QuickShopEveryItemEverOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
   <option value="QuickShopEveryItemEverOrderedEX">QUICKSHOP - Everything You've Ever Ordered! EX</option>	
+
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>
   <option value="WGDCategoryProducts">WHATS GOOD - Category Products</option>
+
   <option value=""> ========== SMARTSTORE ========== </option>
   <option value="SSYouMightAlsoLike">SMARTSTORE - YouMightAlsoLike</option>
   <option value="SSYourFavorite">SMARTSTORE - YourFavorite</option>
@@ -1308,9 +2054,11 @@ function doStuff() {
   <option value="SSBestDealMeatCarousel">SMARTSTORE - BestDeal Meat Carousel</option>  -->
   <option value="SSCarousel">SMARTSTORE - Carousel</option>  
   <option value="SSDepartmentCarousel">SMARTSTORE - Department Carousel</option>  
+
   <option value=""> ========== CONTACT US ========== </option>
   <option value="ContactUsFormData">CONTACT US - Init</option>
   <option value="ContactUsSubmit">CONTACT US - Submit</option>
+
   <option value=""> ========== ACCOUNT ========== </option>
   <option value="updateUserAccount">ACCOUNT - Update User Account-email and/or password</option>
   <option value="AccountSetUserNames">ACCOUNT - Set User Names (F&L)</option>
@@ -1339,12 +2087,13 @@ function doStuff() {
   <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
   <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
   <option value="AddProfile">ACCOUNT - Add Profile</option>
-  
+
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="EmailCaptureEX">Email Capture Ex</option>
   <option value="ConfiguredValues">Configured Values</option>
   <option value="Configuration">Configuration</option>
+
   <option value=""> ========== HELP ========== </option>
   <option value="Help">Help</option>
   <option value="HelpContactUs">Help - Contact Us</option>
@@ -1357,36 +2106,53 @@ function doStuff() {
   <option value="DeliveryPassTermsAndConditions">Help - DeliveryPass TermsAndConditions</option>
   <option value="foodSafety">Help - Food Safety</option>
   <option value="aboutUsFdx">Help - About Us</option>
+
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   <option value="smsMessageRelay">Send - sms Alert</option>
   <option value="fdxsmsMessageRelay">Send - fdx sms Alert</option>
   <option value="fdxdeliveryInfo"> fdx delivery info</option>
-  
+
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>
   <option value="GetRegions">Lookup - Get Regions</option>
+
   <option value=""> ========== Foodily ========== </option>
   <option value="getDetail">Foodily - Get Recipe Details</option>
   <option value="getTags">Foodily - Get Tags</option>
   <option value="getAll">Foodily - Get All Recipes</option>
   <option value="foodilySearch">Foodily - search</option>
+
   <option value=""> ========== Home ========== </option>
   <option value="getAllHome"> Home - Get All</option>
   <option value="featuredCategories"> Home - Featured Categories </option>
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
+
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>
   <option value="linkaccount"> External - Link Account </option>
   <option value="registersocial"> External - Register </option>
   <option value="unlinkaccount"> External - Unlink Account </option>
+
   <option value=""> ========== Social Login ========== </option>
   <option value="socialConnect"> Social - Connect </option>
+
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
- 
+
+  <option value=""> ========== Web API ========== </option>
+  <option value="webLoginCheck">Web login check</option>
+  <option value="webSocialLogin">Web social login</option>
+  <option value="webLogout">Web logout</option>
+  <option value="webChangePassword">Web change password</option>
+  <option value="webHomePage">Web home page</option>
+  <option value="webProductCatalogProduct">Web product from catalog</option>
+  <option value="webSearch">Web search</option>
+  <option value="webTimeslot">Web timeslot</option>
+  <option value="webSetPayment">Web set payment</option>
+  
   </select>
   
   <input value="Go" type="button" onclick='javascript:doStuff()'>

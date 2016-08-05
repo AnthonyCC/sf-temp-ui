@@ -29,21 +29,24 @@ public class Message implements DateFormat, Cloneable {
 
     public static Message createSuccessMessage(String messageString) {
         Message message = new Message();
-        message.status = STATUS_SUCCESS;
-        message.addDebugMessage(messageString);
+        message.setSuccessMessage(messageString);
         return message;
     }
     
     public static Message createFailureMessage(String messageString) {
         Message message = new Message();
-        message.status = STATUS_FAILED;
-        message.addErrorMessage(messageString);
+        message.setFailureMessage(messageString);
         return message;
     }
 
     public void setSuccessMessage(String messageString) {
         status = STATUS_SUCCESS;
         addDebugMessage(messageString);
+    }
+    
+    public void setFailureMessage(String messageString) {
+        status = STATUS_FAILED;
+        addErrorMessage(messageString);
     }
 
     public static final String STATUS_SUCCESS = "SUCCESS";

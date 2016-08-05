@@ -4252,6 +4252,10 @@ public class FDStoreProperties {
         return get(PROP_FD_BRAND_PRODUCTS_AD_HOME);
     }
 
+    public static boolean isEdtEstTimeslotConversionEnabled() {
+        return Boolean.valueOf(get(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED)).booleanValue();
+    }
+
     public static boolean isPayPalEnabled() {
         return Boolean.valueOf(get(PROP_EWALLET_PAYPAL_ENABLED)).booleanValue();
     }

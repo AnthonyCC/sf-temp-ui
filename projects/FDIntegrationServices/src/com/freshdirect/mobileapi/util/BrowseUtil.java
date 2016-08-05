@@ -1450,7 +1450,7 @@ public class BrowseUtil {
 	    	return null;
 	    }
 	    
-	    private static SkuInfo getSkuInfo(ProductModel prodModel,String plantID,PricingContext context) {
+	    public static SkuInfo getSkuInfo(ProductModel prodModel,String plantID,PricingContext context) {
 	    	 SkuModel sku=prodModel.getDefaultSku();
 	    	 if(sku==null && prodModel.getSkus().size()>0) {
 	    		 sku=prodModel.getSku(0);
@@ -1590,7 +1590,7 @@ public class BrowseUtil {
 	       	return su;
 	    }
 	    
-	    private static List<com.freshdirect.fdstore.content.Image> getImages(ProductModel p) {
+	    public static List<com.freshdirect.fdstore.content.Image> getImages(ProductModel p) {
 	    	
 		    List<com.freshdirect.fdstore.content.Image> images=new ArrayList<com.freshdirect.fdstore.content.Image>(4);
 			images.add(p.getThumbnailImage());

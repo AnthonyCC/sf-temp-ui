@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -18,7 +19,10 @@ public class PricingContext implements Serializable {
 	//TODO SalesArea comes here
 	private final ZoneInfo pricingZone;
 
+	@Deprecated
 	public static final PricingContext DEFAULT = new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO);
+	@Deprecated
+	public static final PricingContext FDX_DEFAULT = new PricingContext(ZonePriceListing.DEFAULT_FDX_ZONE_INFO);
 
 	public PricingContext(ZoneInfo pricingZone) {
 	    if (pricingZone == null) {
@@ -75,4 +79,11 @@ public class PricingContext implements Serializable {
 		}
 		return null;
 	}
+
+    public static PricingContext createPricingContext(EnumEStoreId eStore) {
+        if (EnumEStoreId.FDX == eStore){
+            return FDX_DEFAULT;
+        }
+        return DEFAULT;
+    }
 }

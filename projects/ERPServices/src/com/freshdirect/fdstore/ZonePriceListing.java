@@ -10,13 +10,15 @@ import java.util.Set;
 import com.freshdirect.common.pricing.ZoneInfo;
 
 public class ZonePriceListing implements Serializable {
-	public static final String DEFAULT_SALES_ORG="0001";
-	public static final String DEFAULT_DIST_CHANNEL="01";
+	public static final String DEFAULT_SALES_ORG = "0001";
+	public static final String DEFAULT_FDX_SALES_ORG = "1300";
+	public static final String DEFAULT_DIST_CHANNEL = "01";
 	public static final String MASTER_DEFAULT_ZONE = "0000100000";
 	public static final String RESIDENTIAL_DEFAULT_ZONE = "0000100001";
 	public static final String CORPORATE_DEFAULT_ZONE = "0000100002";
 	
-	public static final ZoneInfo DEFAULT_ZONE_INFO=new ZoneInfo(MASTER_DEFAULT_ZONE,DEFAULT_SALES_ORG,DEFAULT_DIST_CHANNEL);
+	public static final ZoneInfo DEFAULT_ZONE_INFO = new ZoneInfo(MASTER_DEFAULT_ZONE,DEFAULT_SALES_ORG,DEFAULT_DIST_CHANNEL);
+	public static final ZoneInfo DEFAULT_FDX_ZONE_INFO = new ZoneInfo(MASTER_DEFAULT_ZONE,DEFAULT_FDX_SALES_ORG,DEFAULT_DIST_CHANNEL);
 	
 	
 	//zoneId -> ZonePriceModel

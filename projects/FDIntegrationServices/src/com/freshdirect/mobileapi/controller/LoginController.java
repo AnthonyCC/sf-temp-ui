@@ -519,6 +519,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		return model;   
 	}
 	
+	@Deprecated //duplicated code, use LoginService.formatLoginMessage() instead
 	private Message formatLoginMessage(SessionUser user) throws FDException {
 		Message responseMessage = null;
 
@@ -601,6 +602,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	
 	// FDX-1873 - Show timeslots for anonymous address
 	//FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
+	@Deprecated //duplicated code, use LoginService.setDeliveryAddress() instead
 	public boolean setDeliveryAddress(SessionUser user) throws FDException{
 				 List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
 				 ShipToAddress anonymousAddr = ShipToAddress.wrap(user.getAddress());
@@ -626,6 +628,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	}
 	
 	// FDX-1873 - Show timeslots for anonymous address
+	@Deprecated //duplicated code, use LoginService.matchAddress() instead
 	public static boolean matchAddress(ErpAddressModel addr1, AddressModel addr2) {
 		if (addr1 == null || addr2 == null)
 			return false;
