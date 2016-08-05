@@ -204,17 +204,8 @@ public class HomeController extends BaseController {
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		
 		if(!pageRequest.isPreview()){
-			String zipcode = user.getZipCode();
-	    	String plantid;
-			if(zipcode != null && zipcode.trim().length() > 0)
-			{
-				ErpAddressModel address = new ErpAddressModel();
-        		address.setZipCode(zipcode);
-        		plantid = BrowseUtil.getCatalogInfoAddr(address, user, request).getKey().getPlantId();
-	        } else {
-	        	plantid = FDStoreProperties.getDefaultFdxPlantID();
-	        }
-			pageRequest.setPlantId(plantid);
+			String plantId= user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
+			pageRequest.setPlantId(plantId);
 		}
 		
 		if(pageRequest != null){
