@@ -32,6 +32,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.services.tax.data.CommonResponse.Message;
@@ -82,7 +83,7 @@ public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 	
 	public List<String> commitToAvalara(Collection<String> pendingNotifications) throws RemoteException, FinderException{
 		final List<String> salesNotCommitted = new ArrayList<String>();
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		ExecutorService executor = Executors.newFixedThreadPool(FDStoreProperties.getAvalaraCronThreadCount());
 		for(final String saleId : pendingNotifications){
 		Future<Boolean> future = executor.submit(new Callable<Boolean>() {
 			@Override
