@@ -717,7 +717,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				FDGroup group = this.getFDGroup();
 				if(group != null) {
 					//System.out.println("getGroupScaleSavings=>"+this.lookupFDProduct().getSkuCode());
-					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getUserContext().getPricingContext(), group, this.getGroupQuantity(), this.price.getBasePriceUnit(),this.getCouponDiscount(),this.orderLine.getScaleQuantity());
+					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getUserContext().getPricingContext(), group, 0.0, this.price.getBasePriceUnit(),this.getCouponDiscount(),this.orderLine.getScaleQuantity());
 					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice()+regPrice.getCouponDiscountValue());
 				}
 		} catch (PricingException e) {
