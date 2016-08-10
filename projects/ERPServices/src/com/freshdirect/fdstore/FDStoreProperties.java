@@ -851,6 +851,8 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_LICENSE_KEY = "fdstore.tax.avalara.license.key";
     private final static String PROP_AVALARA_ACCOUNT_NUMBER = "fdstore.tax.avalara.account.number";
     private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";
+    
+    private final static String PROP_AVALARA_CRON_THREAD_COUNT = "fdstore.tax.avalara.cron.threads.count";
 
     private final static String PROP_HOOK_LOGIC_BLACKHOLE_ENABLE = "fdstore.hooklogic.blackhole.enabled";
     private final static String PROP_HOOK_LOGIC_CATEGORY_ENABLE = "fdstore.hooklogic.category.enabled";
@@ -4243,7 +4245,11 @@ public class FDStoreProperties {
     public static String getAvalaraCompanyCode() {
         return StringUtils.defaultString(get(PROP_AVALARA_COMPANY_CODE), "0011");
     }
-
+    
+    public static int getAvalaraCronThreadCount() {
+        return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT)!=null?get(PROP_AVALARA_CRON_THREAD_COUNT):"10");
+    }
+    
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }
