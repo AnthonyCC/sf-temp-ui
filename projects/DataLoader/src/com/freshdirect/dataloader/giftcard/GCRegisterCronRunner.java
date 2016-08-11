@@ -90,7 +90,7 @@ public class GCRegisterCronRunner {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="InventoryUpdater:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String subject="GCRegisterCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
