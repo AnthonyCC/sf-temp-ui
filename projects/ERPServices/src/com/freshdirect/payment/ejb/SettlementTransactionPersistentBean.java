@@ -253,7 +253,7 @@ public class SettlementTransactionPersistentBean extends DependentPersistentBean
     	ps.setString(i++, this.feeCurrency);
     	ps.setString(i++, this.consumerId);
     	ps.setString(i++, this.paymentTrackingId);
-    	ps.setDate(i++, new java.sql.Date((new Date()).getTime()));
+    	ps.setTimestamp(i++, new java.sql.Timestamp((new Date()).getTime()));
     	ps.setString(i++, this.customField);
     	ps.setString(i++, this.storeId);
     	ps.setLong(i++, this.creditTransactionalFee);

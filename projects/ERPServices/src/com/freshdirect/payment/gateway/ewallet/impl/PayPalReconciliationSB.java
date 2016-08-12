@@ -21,4 +21,5 @@ public interface PayPalReconciliationSB extends EJBObject {
 	public void updatePayPalStatus(List<String> settlementIds) throws RemoteException;
 //	public int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) throws RemoteException;
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException;
+	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
 }

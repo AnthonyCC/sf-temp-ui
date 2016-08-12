@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
@@ -93,7 +94,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 		ErpSettlementTransactionModel model = new ErpSettlementTransactionModel();
 
 		String txEventCode = record.getTransactionEventCode();
-		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+		if (null == PayPalSettlementTransactionCodes.EnumPPIgnoreableEventCode.getEnum(txEventCode)) {
 			model.setTransactionId(record.getTransactionId());
 			model.setGatewayOrderId(record.getInvoiceId());
 			model.setPaypalReferenceId(record.getPaypalReferenceId());
@@ -129,7 +130,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			currSectionTotalFeeDebits += record.getFeeAmount();
 		}
 		
-		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+		if (null == PayPalSettlementTransactionCodes.EnumPPIgnoreableEventCode.getEnum(txEventCode)) {
 			if (record.getInvoiceId() == null || StringUtil.isEmpty(record.getInvoiceId())) {
 				throw new RuntimeException("Unrecognized order id " + record.getInvoiceId());
 			} else {

@@ -11,6 +11,7 @@ import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.FlatFileParser.Field;
 import com.freshdirect.dataloader.payment.reconciliation.paypal.EnumPayPalRecordType;
 import com.freshdirect.dataloader.payment.reconciliation.paypal.SectionBodyDataRecord;
+import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 
 public class SectionBodyParser extends PayPalSettlementParser {
 
@@ -109,7 +110,7 @@ public class SectionBodyParser extends PayPalSettlementParser {
         	s=tokens.get(fieldName).trim();
         	String txEventCode = tokens.get(TRANSACTION_EVENT_CODE);
         	if (txEventCode != null) {
-        		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+        		if (null == PayPalSettlementTransactionCodes.EnumPPIgnoreableEventCode.getEnum(txEventCode)) {
 		        	String invoiceId = tokens.get(INVOICE_ID);
 		        	String ppRefId = tokens.get(PAYPAL_REFERENCE_ID);
 		        	if (invoiceId == null || invoiceId.equals("")) {

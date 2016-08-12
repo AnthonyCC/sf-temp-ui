@@ -274,7 +274,7 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         ps.setLong(15, this.totalTransactionFeeCredit);
         ps.setLong(16, this.totalTransactionFeeDebit);
         ps.setString(17, this.settlementSource);
-        ps.setDate(18, new java.sql.Date(new Date().getTime()));
+        ps.setTimestamp(18, new java.sql.Timestamp(new Date().getTime()));
         ps.setString(19, this.isLocked);
         ps.setString(20, this.status);
         

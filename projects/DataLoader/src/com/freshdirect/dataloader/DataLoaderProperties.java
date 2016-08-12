@@ -286,7 +286,7 @@ public class DataLoaderProperties {
 	}
 	
 	
-	public static String getPPSTLEventCodes() {
+	/*public static String getPPSTLEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_STL_EVENTCODES);
 	}
 	
@@ -312,5 +312,5 @@ public class DataLoaderProperties {
 	
 	public static String getPPIgnorableEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_IGNORABLE_EVENTCODES);
-	}
+	}*/
 }

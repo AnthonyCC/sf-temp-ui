@@ -31,6 +31,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.Money;
+import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.payment.gateway.impl.ReconciliationConstants;
@@ -212,15 +213,15 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 					this.builder.addPPFeeDetail(ppInfo);
 				} else if (ppInfo.getTxEventCode().equals(ReconciliationConstants.MISC_FEE_KEY)) {
 					this.builder.addPPMiscFeeDetail(ppInfo);
-				} else if (DataLoaderProperties.getPPSTLEventCodes().contains(ppInfo.getTxEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(ppInfo.getTxEventCode())) {
 					this.builder.addChargeDetail(ppInfo, false, ppInfo.getAmount(), EnumCardType.PAYPAL);
-				} else if (DataLoaderProperties.getPPCBREventCodes().contains(ppInfo.getTxEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(ppInfo.getTxEventCode())) {
 					this.builder.addChargebackReversal(ppInfo, ppInfo.getAmount());
-				} else if (DataLoaderProperties.getPPCBKEventCodes().contains(ppInfo.getTxEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(ppInfo.getTxEventCode())) {
 					this.builder.addChargeback(ppInfo, ppInfo.getAmount());
-				} else if (DataLoaderProperties.getPPREFEventCodes().contains(ppInfo.getTxEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(ppInfo.getTxEventCode())) {
 					this.builder.addChargeDetail(ppInfo, true, ppInfo.getAmount(), EnumCardType.PAYPAL);
-				} else if (DataLoaderProperties.getPPMiscFeeEventCodes().contains(ppInfo.getTxEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPMiscFeeEventCode.getEnum(ppInfo.getTxEventCode())) {
 					this.builder.addInvoice(ppInfo.getAmount(), getMiscFeeDescr(ppInfo.getTxEventCode()));
 				} else {
 					LOGGER.error("Unknown PayPal settlment event code identified " + ppInfo.getTxEventCode());
@@ -337,16 +338,26 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				model.setProcessorTrxnId(trxn.getPaypalReferenceId());
 				model.setAffiliate(affiliate);
 				ErpSettlementInfo info = null;
-				if (ErpServicesProperties.getPPSTLEventCodes().contains(trxn.getTransactionEventCode()))
+				boolean isTrxnExecuted= false;
+				if (null != PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode())){
 					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, false);
-				else if (ErpServicesProperties.getPPREFEventCodes().contains(trxn.getTransactionEventCode()))
+					isTrxnExecuted = true;
+				}else if (null != PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode())){
 					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, true);
-				else if (ErpServicesProperties.getPPCBKEventCodes().contains(trxn.getTransactionEventCode())) {
+					isTrxnExecuted = true;
+				} else if (null != PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = this.reconciliationSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
-				} else if (ErpServicesProperties.getPPCBREventCodes().contains(trxn.getTransactionEventCode())) {
+					isTrxnExecuted = true;
+				} else if (null != PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = this.reconciliationSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
-				} else
-					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
+					isTrxnExecuted = true;
+				} else {
+					LOGGER.info("Transaction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
+				}
+				
+				if(isTrxnExecuted){
+					this.ppReconSB.updatePPSettlementTransStatus(trxn.getId());
+				}
 				
 				try {
 					ErpPPSettlementInfo ppInfo = new ErpPPSettlementInfo(info.getInvoiceNumber(), affiliate);
@@ -417,11 +428,11 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		for (ErpSettlementSummaryModel summary : stlmntTrxns) {
 			for (ErpSettlementTransactionModel tx : summary.getSettlementTrxns()) {
 				totalTrxns++;
-				if (ErpServicesProperties.getPPSTLEventCodes().contains(tx.getTransactionEventCode())) {
+				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(tx.getTransactionEventCode())){//ErpServicesProperties.getPPSTLEventCodes().contains(tx.getTransactionEventCode())) {
 					txFee += tx.getFeeAmount();
-				} else if (ErpServicesProperties.getPPSTFEventCodes().contains(tx.getTransactionEventCode()) ||
-						ErpServicesProperties.getPPCBKEventCodes().contains(tx.getTransactionEventCode()) ||
-						ErpServicesProperties.getPPREFEventCodes().contains(tx.getTransactionEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPSTFEventCode.getEnum(tx.getTransactionEventCode()) ||
+						null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(tx.getTransactionEventCode()) ||
+								null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(tx.getTransactionEventCode())) {
 					miscFee += tx.getFeeAmount();
 				}
 			}

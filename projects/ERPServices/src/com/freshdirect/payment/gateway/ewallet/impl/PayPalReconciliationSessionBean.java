@@ -34,6 +34,7 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.Money;
+import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.ejb.SettlementSummaryPersistentBean;
@@ -90,7 +91,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						throw new EJBException("The batch for date " + date + " are already processed.");
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
 						ps_update_by_settlement_id.setString(1, settlementId);
-						ps_update_by_settlement_id.executeUpdate();
+//						ps_update_by_settlement_id.executeUpdate();
+						ps_update_by_settlement_id.addBatch();
 						settlementIds.add(settlementId);
 					} else if (locked.equals(PAYPAL_SETTLEMENT_IS_LOCKED)) {
 						throw new EJBException("[PayPal Batch] Some other process should be running for the same date " + date);
@@ -98,6 +100,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						throw new EJBException("Invalid locking state exists for date " + date);
 					}
 				}
+				
+				ps_update_by_settlement_id.executeBatch();
 
 				//new process
 				if (settlementIds.isEmpty()) {
@@ -132,10 +136,12 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						LOGGER.info("Ignoring acquiring lock for settlement id." + id);
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
 						ps_update_by_settlement_id.setString(1, id);
-						ps_update_by_settlement_id.executeUpdate();
+//						ps_update_by_settlement_id.executeUpdate();
+						ps_update_by_settlement_id.addBatch();
 						settlementIds.add(id);
 					}
 				}
+				ps_update_by_settlement_id.executeBatch();
 			}
 		} catch (SQLException e) {
 			LOGGER.debug("SQLException: ", e);
@@ -254,13 +260,13 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				model.setProcessorTrxnId(trxn.getPaypalReferenceId());
 				model.setAffiliate(affiliate);
 				ErpSettlementInfo info = null;
-				if (ErpServicesProperties.getPPSTLEventCodes().contains(trxn.getTransactionEventCode()))
+				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode()))
 					info = reconsSB.addSettlement(model, saleId, affiliate, false);
-				else if (ErpServicesProperties.getPPREFEventCodes().contains(trxn.getTransactionEventCode()))
+				else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode()))
 					info = reconsSB.addSettlement(model, saleId, affiliate, true);
-				else if (ErpServicesProperties.getPPCBKEventCodes().contains(trxn.getTransactionEventCode())) {
+				else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
-				} else if (ErpServicesProperties.getPPCBREventCodes().contains(trxn.getTransactionEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else
 					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
@@ -323,11 +329,11 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		for (ErpSettlementSummaryModel summary : stlmntTrxns) {
 			for (ErpSettlementTransactionModel tx : summary.getSettlementTrxns()) {
 				totalTrxns++;
-				if (ErpServicesProperties.getPPSTLEventCodes().contains(tx.getTransactionEventCode())) {
+				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(tx.getTransactionEventCode())) {
 					txFee += tx.getFeeAmount();
-				} else if (ErpServicesProperties.getPPSTFEventCodes().contains(tx.getTransactionEventCode()) ||
-						ErpServicesProperties.getPPCBKEventCodes().contains(tx.getTransactionEventCode()) ||
-						ErpServicesProperties.getPPREFEventCodes().contains(tx.getTransactionEventCode())) {
+				} else if (null !=PayPalSettlementTransactionCodes.EnumPPSTFEventCode.getEnum(tx.getTransactionEventCode()) ||
+						null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(tx.getTransactionEventCode()) ||
+								null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(tx.getTransactionEventCode())) {
 					miscFee += tx.getFeeAmount();
 				}
 			}
@@ -357,11 +363,17 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 															"TOTAL_TRANS_FEE_DEBIT, ALL_RECORDS_PROCESSED, PROCESSED_TIME_DATE " +
 			" FROM CUST.SETTLEMENT where id = ? AND SETTLEMENT_SOURCE = 'PP' ";
 	
-	private static final String GET_PP_SETTLEMENT_TRXNS = "select ID, TRXN_ID, GATEWAY_ORDER_ID, PP_REF_ID, PP_REF_TYPE, " +
+	private static final String GET_PP_SETTLEMENT_TRXNS = /*"select ID, TRXN_ID, GATEWAY_ORDER_ID, PP_REF_ID, PP_REF_TYPE, " +
 			"TX_EVENT_CODE, TX_INITIATION_DATE, TX_COMPLETION_DATE, TX_DEBIT_CREDIT, TX_GROSS_AMOUNT, " +
 			"TX_GROSS_CURRENCY, FEE_DEBIT_CREDIT, FEE_AMOUNT, FEE_CURRENCY, CUSTOM_FIELD, CONSUMER_ID, PAYMENT_TRACKING_ID," +
 			" BANK_REF_ID, STATUS " +
-			"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? AND PROCESSED_TIME_DATE IS NULL AND STATUS = 'P'";
+			"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? AND PROCESSED_TIME_DATE IS NULL AND STATUS = 'P'";*/
+	
+	"select ID, TRXN_ID, GATEWAY_ORDER_ID, PP_REF_ID, PP_REF_TYPE, " +
+	"TX_EVENT_CODE, TX_INITIATION_DATE, TX_COMPLETION_DATE, TX_DEBIT_CREDIT, TX_GROSS_AMOUNT, " +
+	"TX_GROSS_CURRENCY, FEE_DEBIT_CREDIT, FEE_AMOUNT, FEE_CURRENCY, CUSTOM_FIELD, CONSUMER_ID, PAYMENT_TRACKING_ID," +
+	" BANK_REF_ID, STATUS " +
+	"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? AND STATUS = 'P'";
 	
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) {
 		
@@ -485,8 +497,9 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 
 	}
 	
-	private static final String UPDATE_PP_SETTLEMENT = "update CUST.SETTLEMENT set PROCESSED_TIME_DATE = systimestamp, " +
-			" ALL_RECORDS_PROCESSED = 'Y' where id = ?  and settlement_source = 'PP' ";
+	private static final String UPDATE_PP_SETTLEMENT = "update CUST.SETTLEMENT S set PROCESSED_TIME_DATE = systimestamp, " +
+			" ALL_RECORDS_PROCESSED = 'Y' where id = ?  and settlement_source = 'PP' and not exists(select 1 from CUST.SETTLEMENT_TRANSACTION ST where ST.settlement_id=s.id and status='P') ";
+	
 	private static final String UPDATE_PP_SETTLEMENT_TX = "update CUST.SETTLEMENT_TRANSACTION set PROCESSED_TIME_DATE = systimestamp, " +
 			" STATUS = 'C' where settlement_id = ? ";
 			
@@ -500,12 +513,12 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			psStlmntUpd = conn.prepareStatement(UPDATE_PP_SETTLEMENT);
-			psTrxnsUpd = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX);
+//			psTrxnsUpd = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX);
 			for (String settlementId : settlementIds) {
 				psStlmntUpd.setString(1, settlementId);
 				psStlmntUpd.executeUpdate();
-				psTrxnsUpd.setString(1, settlementId);
-				psTrxnsUpd.executeUpdate();
+//				psTrxnsUpd.setString(1, settlementId);
+//				psTrxnsUpd.executeUpdate();
 			}
 		} catch (SQLException e) {
 			LOGGER.debug("[PayPal Batch] SQLException: ", e);
@@ -514,6 +527,30 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		finally {
 			resetConnection(psStlmntUpd, null, null);
 			resetConnection(psTrxnsUpd, null, conn);
+		}
+	}
+	
+	private static final String UPDATE_PP_SETTLEMENT_TX_BY_ID = "update CUST.SETTLEMENT_TRANSACTION set PROCESSED_TIME_DATE = systimestamp, " +
+			" STATUS = 'C' where id = ? ";
+	
+	public void updatePPSettlementTransStatus(String settlementTransId){
+		Connection conn = null;;
+		PreparedStatement psTrxnsUpd = null;
+
+		LOGGER.debug("Update PayPal Settlement Transaction Status.."+settlementTransId);
+		if(null !=settlementTransId){
+			try {
+				conn = this.getConnection();
+				psTrxnsUpd = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX_BY_ID);							
+				psTrxnsUpd.setString(1, settlementTransId);
+				psTrxnsUpd.executeUpdate();
+			} catch (SQLException e) {
+				LOGGER.debug("[PayPal Batch] SQLException: ", e);
+				throw new EJBException("[PayPal Batch] SQLException: ", e);
+			}
+			finally {
+				resetConnection(psTrxnsUpd, null, conn);
+			}
 		}
 	}
 	

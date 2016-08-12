@@ -1060,7 +1060,7 @@ public class ErpServicesProperties {
 		return config.getProperty(PROP_PP_SETTLEMENT_FDW_ACCOUNTID);
 	}
 	
-	public static String getPPSTLEventCodes() {
+	/*public static String getPPSTLEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_STL_EVENTCODES);
 	}
 	
@@ -1078,7 +1078,7 @@ public class ErpServicesProperties {
 	
 	public static String getPPREFEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_REF_EVENTCODES);
-	}
+	}*/
 
 
 	public static String getHLBrandProductAdvertiseURL() {
