@@ -2,6 +2,8 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.mobileapi.controller.data.PhoneNumber;
 
 public class ShipToAddress extends DeliveryAddress {
@@ -36,7 +38,8 @@ public class ShipToAddress extends DeliveryAddress {
 	}
 
 	public ShipToAddress(com.freshdirect.mobileapi.model.ShipToAddress address) {
-        this.id = address.getId();
+		StoreModel store = ContentFactory.getInstance().getStore();
+		this.id = address.getId();
         if (null != address.getType()) {
             this.type = address.getType().toString();
         }
@@ -69,7 +72,10 @@ public class ShipToAddress extends DeliveryAddress {
         }
         this.altType = (address.getAltType() == null ? null : address.getAltType().getCode());
         this.instructions = address.getInstructions();
-        this.availableServiceTypes = address.getAvailableServiceTypes();
+        //APPDEV-5440 - FD Mobile - latency issue with server calls
+        if(store!=null && store.getContentName()!=null && "FDX".equals(store.getContentName())) {
+            this.availableServiceTypes = address.getAvailableServiceTypes();
+         }
     }
 
     public String getFirstName() {
