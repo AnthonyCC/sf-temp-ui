@@ -253,21 +253,23 @@ span.cssbutton.notext[class*=" icon-"] {
 }
 
 .cssbutton.purple.nontransparent {
-  color: #ffffff;
-  background-color: #a367ab;
-  border: 1px solid #a367ab;
+	color: #ffffff;
+	background-color: #a367ab;
+	border: 1px solid #a367ab;
 }
 
 .cssbutton.purple.nontransparent:hover {
-  background-color: #a367ab;
-  border: 1px solid #a367ab;
+	background-color: #8e5a95;
 }
 
 .cssbutton.purple.nontransparent:active {
+	background-color: #af7bb6;
 }
 
 .cssbutton.purple.nontransparent:focus {
-  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+	background-color: #af7bb6;
+	border-color: #824c89;
+	box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
 }
 
 /* red button - transparent by default */
