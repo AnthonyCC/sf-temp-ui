@@ -277,9 +277,11 @@ public class CMSContentFactory {
 						if(sectionNode.getAttributeValue("imageBanner")!=null)
 						section.setImageBanner(createImageBanner((ContentNodeI)getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));						
 						List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");
+						List<ContentKey> musthaveprodKeys = getContentKeysList(sectionNode, "mustHaveProduct");
 						List<ContentKey> categoryKeys = getContentKeysList(sectionNode, "category");
 						List<ContentKey> pickListKeys = getContentKeysList(sectionNode, "pickList");
 						List<String> productList = new ArrayList<String>();
+						List<String> musthaveproductList = new ArrayList<String>();
 						List<String> categoryList = new ArrayList<String>();
 						List<CMSPickListModel> pickListList = new ArrayList<CMSPickListModel>();
 						if(prodKeys != null){
@@ -288,6 +290,13 @@ public class CMSContentFactory {
 							}
 							if(productList!=null && productList.size()>0)
 							section.setProductList(productList);
+						}
+						if(musthaveprodKeys != null){
+							for(ContentKey key:musthaveprodKeys){
+								musthaveproductList.add(key.getEncoded());
+							}
+							if(musthaveproductList!=null && musthaveproductList.size()>0)
+							section.setMustHaveProdList(musthaveproductList);
 						}
 						if(categoryKeys != null){
 							for(ContentKey key:categoryKeys){

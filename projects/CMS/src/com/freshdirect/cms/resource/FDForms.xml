@@ -2162,6 +2162,7 @@
 						<title>PRODUCTS, LISTS &amp; CATEGORIES</title>
 						<fields>
 							<CmsField><attribute>product</attribute></CmsField>
+							<CmsField><attribute>mustHaveProduct</attribute></CmsField>
 							<CmsField><attribute>pickList</attribute></CmsField>		
 							<CmsField><attribute>category</attribute></CmsField>		
 							<CmsField><attribute>displayType</attribute></CmsField>

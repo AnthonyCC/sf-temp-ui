@@ -19,8 +19,8 @@ public class CMSSectionModel {
 	private CMSImageBannerModel imageBanner;
 	private List<CMSPickListModel> pickList;
 	private List<String> productList;
+	private List<String> mustHaveProdList;
 	private List<String> categoryList;
-	
 	
 	public List<CMSComponentModel> getComponents() {
 		return components;
@@ -140,6 +140,14 @@ public class CMSSectionModel {
 
 	public void setProductList(List<String> productList) {
 		this.productList = productList;
+	}
+	
+	public List<String> getMustHaveProdList() {
+		return mustHaveProdList;
+	}
+
+	public void setMustHaveProdList(List<String> mustHaveProdList) {
+		this.mustHaveProdList = mustHaveProdList;
 	}
 
 	public List<String> getCategoryList() {

@@ -2557,6 +2557,9 @@
 			<RelationshipDef cardinality="Many" name="product" label="Product">
 				<DestinationDef contentType="Product"/>
 			</RelationshipDef>
+			<RelationshipDef cardinality="Many" name="mustHaveProduct" label="Must Have Product">
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
 			<RelationshipDef cardinality="Many" name="pickList" label="Picks List">
 				<DestinationDef contentType="PickList"/>
 			</RelationshipDef>
