@@ -489,6 +489,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 				promotion.setCombineOffer(true);
 				//promotion.setMinSubtotal(String.valueOf(FDUserI.FDX_MINIMUM_ORDER_AMOUNT));
+				promotion.setMinSubtotal(String.valueOf(0));
 				promotion.setDescription(formatPromoDescription(PROMO_FREE_DELIVERY_DESCRIPTION, "Free Delivery"));
 				promotion.setOfferDesc(formatAudienceDescription(OFFER_FREE_DELIVERY_DESCRIPTION, "Free Delivery", zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
@@ -911,9 +912,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
 					result.addError(true, "fdxTierTypeEmpty", "For 'Free Delivery' window steering promotion, FDX timeslot type must be selected.");
 				}
-				if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
+				/*if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
 					result.addError(true, "minSubTotalEmpty", "Minimum Sub Total is required for the promotion.");
-				}
+				}*/
 				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
 					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
 				}
