@@ -569,7 +569,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					null, EnumSMSAlertStatus.NONE.value(),
 					EnumSMSAlertStatus.NONE.value(), 
 					null, EnumSMSAlertStatus.NONE.value(),
-					receivedDate,eStoreId.getContentId());
+					receivedDate,EnumEStoreId.FD.toString());
 			smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTOUT_SUCCESS_MESSAG, eStoreId.getContentId());
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTOUT_ALERT_TYPE, customerId);
