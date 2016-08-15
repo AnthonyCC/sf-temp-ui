@@ -111,7 +111,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 				doPost( request, response, user );
 			}
 		} catch ( HttpErrorResponse e ) {
-            String errorMessage = AjaxErrorHandlingService.defaultService().populateErrorMessage(e.getMessage(), user.getCustomerServiceContact());
+            String errorMessage = AjaxErrorHandlingService.defaultService().populateErrorMessage(e.getMessage(), null !=user ? user.getCustomerServiceContact(): "1-212-796-8002");
             response.sendError(e.getErrorCode(), errorMessage);
 		}
 	}

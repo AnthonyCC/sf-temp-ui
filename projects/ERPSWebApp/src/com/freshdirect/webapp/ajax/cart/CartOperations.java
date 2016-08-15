@@ -281,7 +281,7 @@ public class CartOperations {
 	}
 
 	public static String generateFormattedCouponMessage( FDCustomerCoupon coupon, EnumCouponStatus status ) {
-		if ( !status.isDisplayMessage() ) {
+		if (null == status || !status.isDisplayMessage() ) {
 			return "";
 		}
 		
