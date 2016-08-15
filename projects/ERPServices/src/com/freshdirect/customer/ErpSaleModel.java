@@ -10,6 +10,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -17,6 +19,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardTransModel;
@@ -60,6 +63,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private String standingOrderName=null;
 	private String in_modify;
 	private Date lock_timestamp;
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(ErpSaleModel.class);
 	/**
 	 * @return Returns the deliveryPassId.
 	 */
@@ -234,23 +239,27 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	public List<ErpAuthorizationModel> getApprovedAuthorizations(ErpAffiliate affiliate, ErpPaymentMethodI pm) {
 		List<ErpAuthorizationModel> auths = new ArrayList<ErpAuthorizationModel>();
-
+		double _amount=0d;
 		for(ErpAuthorizationModel auth : getApprovedAuthorizations()) {
 			// ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
 			
 			if(affiliate.equals(auth.getAffiliate())) {
+				
 				if((EnumPaymentMethodType.EBT.equals(auth.getPaymentMethodType())||EnumPaymentMethodType.GIFTCARD .equals(auth.getPaymentMethodType())
 					|| EnumCardType.EBT.equals(auth.getCardType())||EnumCardType.GCP .equals(auth.getCardType())	) &&
 					 pm.getAccountNumber().endsWith(auth.getCcNumLast4())	
 				  ) {
+					
 					auths.add(auth);
+					_amount=_amount+auth.getAmount();
 					
 				} else 	if(auth.getCardType().equals(pm.getCardType()) && pm.getProfileID().equals(auth.getProfileID())){
 					auths.add(auth);
+					_amount=_amount+auth.getAmount();
 				}
 			}
 		}
-
+		LOGGER.info(new StringBuilder(200).append(" Approved authorization amount for order: ").append(this.getId()).append(" and affiliate :").append(affiliate.getName()).append(" is $").append(_amount).toString());
 		return auths;
 	}
 

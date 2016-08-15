@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -21,11 +22,13 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 public class AuthorizationStrategy extends PaymentStrategy {
 
 	private static final long	serialVersionUID	= -193567950363428880L;
+	private static final Category LOGGER = LoggerFactory.getInstance(AuthorizationStrategy.class);
 	
 	private final AuthInfo fdAuthInfo;
 	private final AuthInfo bcAuthInfo;
@@ -114,7 +117,6 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				fdAuthInfo.addGCPayment(agc.getAmount());
 			}
 		}
-		
 		return this.getOutstandingAuthorizations(order.getPaymentMethod());
 	}
 	
@@ -163,7 +165,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		if (chargeInvoice != null && chargeInvoice.getAmount() > 0) {
 			auths.add(new AuthorizationInfo(sale.getPK().getId(), sale.getCustomerPk().getId(), fdAuthInfo.affiliate, chargeInvoice.getAmount(), pm, true));
 		}
-
+        
 		return auths;
 	}
 
@@ -209,7 +211,13 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				}
 
 			}
-			
+			if(pm!=null)
+				LOGGER.info(new StringBuilder(200).append(" Needed authorization amount for order: ")
+					                          .append(saleId).append(" and affiliate :")
+					                          .append(affiliate.getName()).append(" is $")
+					                          .append(amount).append(" for paymentMethodType: ").append(pm.getPaymentMethodType()).append(" with last 4 digits ").append(pm.getMaskedAccountNumber())
+					                          .append(" and profileID: ").append(pm.getProfileID())
+					                          .toString());
 			return new AuthorizationInfo(saleId, customerId, affiliate, amount, pm, false);
 		}
 
