@@ -259,7 +259,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				}
 			}
 		}
-		LOGGER.info(new StringBuilder(200).append(" Approved authorization amount for order: ").append(this.getId()).append(" and affiliate :").append(affiliate.getName()).append(" is $").append(_amount).toString());
+		if(null !=affiliate){
+			LOGGER.info(new StringBuilder(200).append(" Approved authorization amount for order: ").append(this.getId()).append(" and affiliate :").append(affiliate.getName()).append(" is $").append(_amount).toString());
+		}
 		return auths;
 	}
 

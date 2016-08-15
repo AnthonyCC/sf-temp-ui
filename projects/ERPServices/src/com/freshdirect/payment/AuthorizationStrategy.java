@@ -211,7 +211,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				}
 
 			}
-			if(pm!=null)
+			if(pm!=null && affiliate!=null )
 				LOGGER.info(new StringBuilder(200).append(" Needed authorization amount for order: ")
 					                          .append(saleId).append(" and affiliate :")
 					                          .append(affiliate.getName()).append(" is $")
