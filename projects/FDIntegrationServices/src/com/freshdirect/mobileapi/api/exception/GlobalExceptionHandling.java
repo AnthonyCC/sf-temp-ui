@@ -32,7 +32,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(FDException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered an error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -40,7 +40,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(ServiceException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered a service error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -48,7 +48,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(ValidationException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered a paramater validation error.", e);
         Message message = new Message();
         for (Map.Entry<String, String> entry : e.getErrors().entrySet()) {
             message.setFailureMessage(entry.getValue());
@@ -61,7 +61,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(FDResourceException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered a resource error.", e);
         String errorMessage = null;
         if (e.getNestedException() != null) {
             errorMessage = e.getNestedException().getMessage();
@@ -75,7 +75,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(FDAuthenticationException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("Given username or password has not been found.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -83,7 +83,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(ErpInvalidPasswordException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("Given password has not been met the requirements.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -91,7 +91,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(JsonParseException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered an json parse error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -99,7 +99,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(JsonMappingException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered an json parse error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -107,7 +107,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Message handle(IOException e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered an io error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 
@@ -115,7 +115,7 @@ public class GlobalExceptionHandling {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Message handle(Exception e) {
-        LOGGER.error("Exception happened", e);
+        LOGGER.error("The application has encountered an internal error.", e);
         return Message.createFailureMessage(e.getMessage());
     }
 }

@@ -1,17 +1,18 @@
 package com.freshdirect.mobileapi.controller;
 
-
-
+import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -30,26 +31,21 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.UserSocialProfile;
-import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLinkRequest;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLogin;
+import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
 import com.freshdirect.mobileapi.controller.data.request.SocialLogin;
+import com.freshdirect.mobileapi.controller.data.response.ExternalAccountLoginResponse;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.SocialLoginResponse;
-import com.freshdirect.mobileapi.controller.data.response.ExternalAccountLoginResponse;
 import com.freshdirect.mobileapi.controller.data.response.SocialResponse;
-import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
-import com.freshdirect.mobileapi.model.MessageCodes;
-import com.freshdirect.mobileapi.model.OrderHistory;
-import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.tagwrapper.ExternalAccountControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.ExternalAccountControllerTagWrapper;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -58,18 +54,20 @@ import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
-import java.util.List;
-
 public class ExternalAccountController extends BaseController implements SystemMessageList{
 
 	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
 	
 	//Actions
-	 private final static String ACTION_RECOGNIZE_ACCOUNT = "login";
-	 private final static String ACTION_SOCIAL_CONNECT_ACCOUNT = "socialConnect";
-	 private final static String ACTION_LINK_ACCOUNT = "linkaccount";
-	 private final static String ACTION_UNLINK_ACCOUNT = "unlinkaccount";
-	 
+	private final static String ACTION_RECOGNIZE_ACCOUNT = "login";
+	private final static String ACTION_SOCIAL_CONNECT_ACCOUNT = "socialConnect";
+	private final static String ACTION_SOCIAL_LOGIN = "socialLogin";
+	private final static String ACTION_LINK_ACCOUNT = "linkaccount";
+	private final static String ACTION_UNLINK_ACCOUNT = "unlinkaccount";
+	
+    protected boolean validateUser() {
+        return false;
+    }
 	
 	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
@@ -77,25 +75,35 @@ public class ExternalAccountController extends BaseController implements SystemM
 			SessionUser user) throws JsonException, FDException  {
 		//recognize Account will merge the existing accounts as well as login the user.
 		if(ACTION_RECOGNIZE_ACCOUNT.equals(action)){
-			ExternalAccountLogin requestMessage = null;
-			requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
+			ExternalAccountLogin requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
 			model = recognizeAccountAndLogin(model, user, requestMessage, request);
 		} else if (ACTION_LINK_ACCOUNT.equals(action)){
-			ExternalAccountLinkRequest requestMessage = null;
-			requestMessage = parseRequestObject(request, response, ExternalAccountLinkRequest.class);
+			ExternalAccountLinkRequest requestMessage = parseRequestObject(request, response, ExternalAccountLinkRequest.class);
 			model = connectExistingAccounts(model, user, requestMessage, request);
 		} else if(ACTION_UNLINK_ACCOUNT.equals(action)){
-			ExternalAccountLogin requestMessage = null;
-			requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
+			ExternalAccountLogin requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
 			model = unlinkExistingAccounts(model, user, requestMessage, request);
-		} if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){			
-			SocialLogin requestMessage = null;
-			requestMessage = parseRequestObject(request, response, SocialLogin.class);
-			model = socialConnectAccount(model, user, requestMessage, request, response);		
+		} if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){
+			SocialLogin requestMessage = parseRequestObject(request, response, SocialLogin.class);
+			Map<String, String> socialUserProfile = getSocialUserProfile(requestMessage.getAccessToken(), requestMessage.getProvider());
+			model = socialConnectAccount(model, user, socialUserProfile, requestMessage.getContext(), request, response);
+		} if(ACTION_SOCIAL_LOGIN.equals(action)){
+		    Map<String, String> socialUserProfile = getSocialUserProfile(request.getParameter("connection_token"));
+			model = socialConnectAccount(model, user, socialUserProfile, request.getParameter("context"), request, response);
+			redirectAfterLogin(response, request.getParameter("redirect_url"));
 		}
 		return model;
-	}	
-	
+	}
+
+    private void redirectAfterLogin(HttpServletResponse response, String redirectUrl) {
+        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+            try {
+                response.sendRedirect(redirectUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Given redirect url could not been found: " + redirectUrl);
+            }
+        }
+    }
 	
 	private ModelAndView unlinkExistingAccounts(ModelAndView model,
 			SessionUser user, ExternalAccountLogin requestMessage,
@@ -118,7 +126,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 		return model;
 	}
 
-private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request ) throws FDException, JsonException{
+    private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request ) throws FDException, JsonException{
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
@@ -141,14 +149,31 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		return model;
 	}
 
+    private Map<String, String> getSocialUserProfile(String accessToken, String providerName) {
+        Map<String, String> socialUserProfile = null;
+        SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+        //get social user profile by access tokenredirectAfterLogin(response, requestMessage);
+        if (accessToken != null && !accessToken.isEmpty()) {
+            socialUserProfile = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
+        }
+        return socialUserProfile;
+    }
 
+    private Map<String, String> getSocialUserProfile(String connectionToken) {
+        Map<String, String> socialUserProfile = null;
+        SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+        if (socialProvider != null && connectionToken != null && connectionToken.length() > 0) {
+            // Retrieve social user's profile
+            socialUserProfile = socialProvider.getSocialUserProfile(connectionToken);
+        }
+        return socialUserProfile;
+    }
 
 	//Social Connect for handling Social login/signup
-	private ModelAndView socialConnectAccount(ModelAndView model,
-			SessionUser user, SocialLogin requestMessage,
+	private ModelAndView socialConnectAccount(ModelAndView model, SessionUser user, 
+	        Map<String, String> socialUser, String context,
 			HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
 		
-		HashMap<String, String> socialUser = null;
 		String userToken = null;
 		String userId = null;
 		String socialEmail = null;
@@ -156,15 +181,6 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		Message responseMessage = null;
 		HttpSession session = request.getSession();
 		
-		//get access token, provider and context from request pay load
-		String accessToken = requestMessage.getAccessToken();
-		String providerName = requestMessage.getProvider();
-		String context = requestMessage.getContext();
-		
-		//get oneall social provider
-		SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
-		//get social user profile by access token
-		socialUser = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
 		if(socialUser!=null){
 			userToken = socialUser.get("userToken");
 			socialEmail = (String) socialUser.get("email");
@@ -177,7 +193,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 				setResponseMessage(model, responseMessage, user);
 				return model;
 			}else if(userToken!=null && (!userToken.equalsIgnoreCase(""))) {
-				requestMessage.setUserToken(userToken);
+//				requestMessage.setUserToken(userToken);
 			} else {
 				responseMessage = new SocialResponse();
 				// user token not valid
@@ -385,81 +401,6 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		return model;
 	}
 
-	
-	private Message formatLoginMessage(SessionUser user) throws FDException {
-		Message responseMessage = null;
-
-		OrderHistory history = user.getOrderHistory();
-		String cutoffMessage = user.getCutoffInfo();
-
-		OrderInfo closestPendingOrder = history
-				.getClosestPendingOrderInfo(new Date());
-		List<OrderInfo> orderHistoryInfo = new ArrayList<OrderInfo>();
-		if (closestPendingOrder != null) {
-			orderHistoryInfo.add(closestPendingOrder);
-		}
-
-		responseMessage = new LoggedIn();
-		((LoggedIn) responseMessage).setChefTable(user.isChefsTable());
-		((LoggedIn) responseMessage).setCustomerServicePhoneNumber(user
-				.getCustomerServiceContact());
-		if (user.getReservationTimeslot() != null) {
-			((LoggedIn) responseMessage).setReservationTimeslot(new Timeslot(
-					user.getReservationTimeslot()));
-		}
-		((LoggedIn) responseMessage).setFirstName(user.getFirstName());
-		((LoggedIn) responseMessage).setLastName(user.getLastName());
-		((LoggedIn) responseMessage).setUsername(user.getUsername());
-		((LoggedIn) responseMessage)
-				.setOrders(com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order
-						.createOrderList(orderHistoryInfo, user));
-		((LoggedIn) responseMessage)
-				.setSuccessMessage("User has been logged in successfully.");
-		((LoggedIn) responseMessage).setItemsInCartCount(user
-				.getItemsInCartCount());
-		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory()
-				.getValidOrderCount());
-		((LoggedIn) responseMessage).setFdUserId(user.getPrimaryKey());
-
-		// DOOR3 FD-iPad FDIP-474
-		//Note: The field is inappropriately named. It is not referring to whether or not the user is on the FD mailing
-		//list, but rather intended to represent whether or not the user is to be notified
-		//in the event of service being introduced to their area.
-		((LoggedIn) responseMessage).setOnMailingList( user.isFutureZoneNotificationEmailSentForCurrentAddress() );
-
-		if (cutoffMessage != null) {
-			responseMessage.addNoticeMessage(
-					MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);
-		}
-
-		if (!user.getFDSessionUser().isCouponsSystemAvailable()) {
-			responseMessage.addWarningMessage(
-					MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE,
-					SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-		}
-
-		// With Mobile App having given ability to add/remove payment method
-		// this is removed
-		/*
-		 * if ((user.getPaymentMethods() == null) ||
-		 * (user.getPaymentMethods().size() == 0)) {
-		 * responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD,
-		 * ERR_NO_PAYMENT_METHOD_MSG); }
-		 */
-		((LoggedIn) responseMessage).setBrowseEnabled(MobileApiProperties
-				.isBrowseEnabled());
-
-		// Added during Mobile Coremetrics Implementation
-		((LoggedIn) responseMessage).setSelectedServiceType(user
-				.getSelectedServiceType() != null ? user
-				.getSelectedServiceType().toString() : "");
-		((LoggedIn) responseMessage).setCohort(user.getCohort());
-		((LoggedIn) responseMessage).setTotalOrderCount(user
-				.getTotalOrderCount());
-
-		return responseMessage;
-	}
-	
 	private Message setCurrentCartToTheUser(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException{
 		FDCartModel currentCart = (FDCartModel)request.getSession().getAttribute(SessionName.CURRENT_CART);
 		try {
@@ -607,7 +548,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 	
 	}
 	
-	private ResultBundle userRegistration(HashMap socialUser, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException {
+	private ResultBundle userRegistration(Map<String, String> socialUser, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException {
 		ResultBundle resultBundleOne = new ResultBundle();
 		 
 		// registration and login goes here
@@ -618,8 +559,8 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			String firstName = (names.length == 0) ? "" : names[0];
 			String lastName = (names.length <= 1) ? ""
 					: names[names.length - 1];
-			String provider = (String) socialUser.get("provider");
-			String userToken = (String) socialUser.get("userToken");
+//			String provider = (String) socialUser.get("provider");
+//			String userToken = (String) socialUser.get("userToken");
 			//RegisterMessageFdxRequest requestMessageRegister = new RegisterMessageFdxRequest();
 			ExternalAccountRegisterRequest requestMessageRegister = new ExternalAccountRegisterRequest();
 			requestMessageRegister.setEmail(email);

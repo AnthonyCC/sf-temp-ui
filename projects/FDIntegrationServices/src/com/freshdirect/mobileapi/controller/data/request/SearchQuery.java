@@ -1,8 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-import com.freshdirect.mobileapi.controller.data.Message;
-
-public class SearchQuery extends Message {
+public class SearchQuery extends RequestMessage {
 	public static final Integer DEFAULT_PAGE = 1;
 	public static final Integer DEFAULT_MAX = 25;
 

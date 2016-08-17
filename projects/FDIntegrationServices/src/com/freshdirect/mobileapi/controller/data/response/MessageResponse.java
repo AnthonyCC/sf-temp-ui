@@ -1,10 +1,8 @@
-package com.freshdirect.mobileapi.api.data.response;
+package com.freshdirect.mobileapi.controller.data.response;
 
 import java.io.Serializable;
 
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail;
-import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 
 public class MessageResponse extends Message implements Serializable {
 

@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,21 +12,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
+import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
-import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
+import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
@@ -49,22 +45,14 @@ public class AccountController extends BaseController {
 
     private static Category LOGGER = LoggerFactory.getInstance(AccountController.class);
 
-    private static String ACTION_GET_ADDRESSES = "getaddresses";
-
-    private static String ACTION_GET_TIMESLOTS = "gettimeslots";
-    
-    private static String ACTION_GET_TIMESLOTS_BY_TIMEZONE = "gettimeslotsbytimezone";
-
-    private static String ACTION_CANCEL_RESERVATION = "cancelreservation";
-
-    private static String ACTION_RESERVE_TIMESLOT = "reservetimeslot";
-
-    private static String PARAM_ADDRESS_ID = "addressId";
-    
+    private static final String ACTION_GET_ADDRESSES = "getaddresses";
+    private static final String ACTION_GET_TIMESLOTS = "gettimeslots";
+    private static final String ACTION_GET_TIMESLOTS_BY_TIMEZONE = "gettimeslotsbytimezone";
+    private static final String ACTION_CANCEL_RESERVATION = "cancelreservation";
+    private static final String ACTION_RESERVE_TIMESLOT = "reservetimeslot";
+    private static final String PARAM_ADDRESS_ID = "addressId";
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
-
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
-    
     private static final String ACTION_ADD_PROFILE = "addProfile";
 
     @Override
@@ -74,11 +62,15 @@ public class AccountController extends BaseController {
         if (ACTION_GET_ADDRESSES.equals(action)) {
             model = getDeliveryAddresses(model, user);
         } else if (ACTION_GET_TIMESLOTS.equals(action)) {
+            RequestMessage requestMessage = null;
+            if (!getPostData(request, response).isEmpty()) {
+                requestMessage = parseRequestObject(request, response, RequestMessage.class);
+            }
             String addressId = request.getParameter(PARAM_ADDRESS_ID);
             if (addressId == null || addressId.isEmpty()) {
-                model = getDeliveryTimeslot(model, user);
+                model = getDeliveryTimeslot(model, user, requestMessage);
             } else {
-                model = getDeliveryTimeslot(model, user, addressId);
+                model = getDeliveryTimeslot(model, user, addressId, requestMessage);
             }
         } else if (ACTION_GET_TIMESLOTS_BY_TIMEZONE.equals(action)) {
             String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -208,9 +200,8 @@ public class AccountController extends BaseController {
         return model;
     }
 
-    private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user) throws FDException, JsonException, ServiceException {
+    private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user, RequestMessage requestMessage) throws FDException, JsonException, ServiceException {
         String addressId = null;
-        StoreModel store = ContentFactory.getInstance().getStore();
         //FDX-1873 - Show timeslots for anonymous address
         if((user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress()))) {
         	addressId = user.getReservationAddressId();
@@ -262,7 +253,7 @@ public class AccountController extends BaseController {
     		return model;
         } else {
     		
-    		return getDeliveryTimeslot(model, user, addressId);
+    		return getDeliveryTimeslot(model, user, addressId, requestMessage);
     	}
         
     }
@@ -319,7 +310,7 @@ public class AccountController extends BaseController {
         return timeSlotResult;
     }
 
-   private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user, String addressId) throws FDException, JsonException,
+   private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user, String addressId, RequestMessage requestMessage) throws FDException, JsonException,
             ServiceException {
 
         DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
@@ -338,8 +329,14 @@ public class AccountController extends BaseController {
 	        }
 	        deliveryTimeslots.setTimeSlots(tslist2);             
         }
+
+        Message responseMessage;
+        if (isFoodkickRequest(requestMessage)) {
+            responseMessage = deliveryTimeslots;
+        } else {
+            responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
+        }
         
-        ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
 

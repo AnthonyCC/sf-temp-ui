@@ -44,7 +44,7 @@ public class ProductService {
             for (String productId : productIds) {
                 try {
                     ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
-                    if (productModel != null) {
+                    if (productModel != null && productModel.isTemporaryUnavailableOrAvailable()) {
                         com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder productBuilder = new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(
                                 productModel.getContentName(), productModel.getFullName());
                         productBuilder.brandTags(productModel.getBrands()).minQty(productModel.getQuantityMinimum()).maxQty(productModel.getQuantityMaximum())

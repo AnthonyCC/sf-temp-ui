@@ -33,7 +33,10 @@
 		<from>^/v/([0-9]+)/social/socialConnect/</from>
 		<to last="true">/sociallogin.do?action=socialConnect&amp;ver=$1</to>
 	</rule>
-	
+	<rule>
+		<from>^/v/([0-9]+)/social/socialLogin/(.*)</from>
+		<to last="true">/sociallogin.do?action=socialLogin&amp;$2&amp;ver=$1</to>
+	</rule>
 	
 	<!-- Search Autocomplete -->
 	<rule>
@@ -150,14 +153,17 @@
 		<to last="true">/login.do?action=loginXE&amp;ver=$1</to>
 	</rule>
 	
-	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/login/check/</from>
+		<to last="true">/login.do?action=checklogin&amp;ver=$1</to>
+	</rule>
+
 	<!-- Session -->
     <rule>
         <from>^/v/([0-9]+)/(.*)/session/check/</from>
         <to last="true">/login.do?action=checksession&amp;ver=$1</to>
     </rule>	
        
-    
     <rule>
         <from>^/v/([0-9]+)/(.*)/session/addanonymousaddress/</from>
         <to last="true">/login.do?action=addanonymousaddress&amp;ver=$1</to>
@@ -455,8 +461,8 @@
 		<to last="true">/checkout.do?action=setpaymentmethod&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/setex/</from>
-		<to last="true">/checkout.do?action=setPaymentMethodEx&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/setex/(.*)</from>
+		<to last="true">/checkout.do?action=setPaymentMethodEx&amp;ver=$1&amp;=$2</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -645,6 +651,11 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/forgotpassword/$</from>
 		<to last="true">/login.do?action=forgotpassword&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/changepassword/$</from>
+		<to last="true">/login.do?action=changepassword&amp;ver=$1</to>
 	</rule>
 		
 	<!-- Ping -->
@@ -943,6 +954,10 @@
 		<to last="true">/browse.do?action=getAllProductsEX&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/getproductsbyproductids/(.*)</from>
+		<to last="true">/browse.do?action=getProductsByProductsIds&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/getCatalogForAddress/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogForAddress&amp;ver=$1</to>
 	</rule>
@@ -978,12 +993,14 @@
 		<from>^/v/([0-9]+)/ideas/home/(.*)</from>
 		<to last="true">/ideas.do?action=getHomeContent&amp;ver=$1</to>
 	</rule>
-	
 	<rule>
 		<from>^/v/([0-9]+)/home/getPage/(.*)</from>
 		<to last="true">/home.do?action=getPage&amp;ver=$1</to>
 	</rule>
-	
+	<rule>
+		<from>^/v/([0-9]+)/home/getPages/(.*)</from>
+		<to last="true">/home.do?action=getPages&amp;ver=$1</to>
+	</rule>
 
 	<!-- Home -->
 	<rule>

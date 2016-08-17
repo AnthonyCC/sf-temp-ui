@@ -12,7 +12,7 @@ import com.freshdirect.mobileapi.api.data.request.SocialLoginMessageRequest;
 public class SocialRequestValidator implements Validator {
 
     @Autowired
-    private ValidationService validationService;
+    private ValidationDtoConverter validationDtoConverter;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -33,7 +33,7 @@ public class SocialRequestValidator implements Validator {
         }
 
         if (errors.hasErrors()) {
-            validationService.createErrorResults(errors);
+            validationDtoConverter.createErrorResults(errors);
         }
 
     }

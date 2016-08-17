@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.mobileapi.api.data.request.SearchMessageRequest;
-import com.freshdirect.mobileapi.api.data.response.SearchMessageResponse;
 import com.freshdirect.mobileapi.api.service.CartService;
 import com.freshdirect.mobileapi.api.service.ConfigurationService;
 import com.freshdirect.mobileapi.api.service.AccountService;
 import com.freshdirect.mobileapi.api.service.SearchService;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.response.SearchMessageResponse;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.SortType;
@@ -25,7 +25,7 @@ import com.freshdirect.mobileapi.util.SortType;
 public class SearchController {
 
     @Autowired
-    private AccountService loginService;
+    private AccountService accountService;
 
     @Autowired
     private CartService cartService;
@@ -39,8 +39,8 @@ public class SearchController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public SearchMessageResponse search(HttpServletRequest request, HttpServletResponse response, SearchMessageRequest searchRequest) throws FDException, ServiceException {
         SearchMessageResponse searchResponse = new SearchMessageResponse();
-        SessionUser user = loginService.checkLogin(request, response, searchRequest.getSource());
-        searchResponse.setLogin(loginService.createLoginResponseMessage(user));
+        SessionUser user = accountService.getSessionUser(request, response, searchRequest.getSource());
+        searchResponse.setLogin(accountService.createLoginResponseMessage(user));
         searchResponse.setCartDetail(cartService.getCartDetail(user));
         searchResponse.setConfiguration(configurationService.getConfiguration(user.getFDSessionUser()));
         searchResponse.setStatus(Message.STATUS_SUCCESS);

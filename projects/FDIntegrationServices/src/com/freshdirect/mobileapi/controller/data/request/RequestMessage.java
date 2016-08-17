@@ -7,8 +7,8 @@ import com.freshdirect.mobileapi.controller.data.Message;
  * @author 
  *
  */
-public class SessionRequest extends Message {
-      
+public class RequestMessage extends Message {
+
     private String source;
 
     

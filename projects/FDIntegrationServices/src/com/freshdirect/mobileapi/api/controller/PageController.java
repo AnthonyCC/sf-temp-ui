@@ -15,13 +15,13 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.mobileapi.api.DateConverter;
 import com.freshdirect.mobileapi.api.data.request.PageMessageRequest;
-import com.freshdirect.mobileapi.api.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.api.service.CartService;
 import com.freshdirect.mobileapi.api.service.ConfigurationService;
 import com.freshdirect.mobileapi.api.service.AccountService;
 import com.freshdirect.mobileapi.api.service.PageService;
 import com.freshdirect.mobileapi.api.service.ProductCatalogService;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.model.SessionUser;
 
 @RestController
@@ -39,7 +39,7 @@ public class PageController {
     private static final String FEED_ID = "feedId";
 
     @Autowired
-    private AccountService loginService;
+    private AccountService accountService;
 
     @Autowired
     private CartService cartService;
@@ -60,9 +60,9 @@ public class PageController {
     public PageMessageResponse getHomePage(HttpServletRequest request, HttpServletResponse response) throws FDException {
         PageMessageResponse pageResponse = new PageMessageResponse();
         PageMessageRequest pageRequest = parsePageRequest(request);
-        SessionUser user = loginService.checkLogin(request, response, pageRequest.getSource());
+        SessionUser user = accountService.getSessionUser(request, response, pageRequest.getSource());
         pageRequest.setPlantId(productCatalogService.getPlantId(request, user));
-        LoggedIn loginMessage = loginService.createLoginResponseMessage(user);
+        LoggedIn loginMessage = accountService.createLoginResponseMessage(user);
         pageResponse.setStatus(loginMessage.getStatus());
         pageResponse.setLogin(loginMessage);
         pageResponse.setCartDetail(cartService.getCartDetail(user));

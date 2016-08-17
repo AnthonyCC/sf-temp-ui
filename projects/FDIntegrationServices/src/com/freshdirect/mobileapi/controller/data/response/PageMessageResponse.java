@@ -1,4 +1,4 @@
-package com.freshdirect.mobileapi.api.data.response;
+package com.freshdirect.mobileapi.controller.data.response;
 
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 

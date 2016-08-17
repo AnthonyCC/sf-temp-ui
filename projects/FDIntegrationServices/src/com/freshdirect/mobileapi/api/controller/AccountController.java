@@ -22,13 +22,13 @@ import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.mobileapi.api.data.request.PasswordMessageRequest;
 import com.freshdirect.mobileapi.api.service.AccountService;
 import com.freshdirect.mobileapi.api.service.ConfigurationService;
 import com.freshdirect.mobileapi.api.service.PasswordService;
 import com.freshdirect.mobileapi.api.validation.PasswordValidator;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.request.SessionRequest;
+import com.freshdirect.mobileapi.controller.data.request.PasswordMessageRequest;
+import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -39,7 +39,7 @@ public class AccountController {
     private static final String MSG_CHANGE_PASSWORD_TOKEN_EXPIRED = "Sorry, the reset password link has expired, please request a new link.";
 
     @Autowired
-    private AccountService loginService;
+    private AccountService accountService;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -54,16 +54,16 @@ public class AccountController {
     private ObjectMapper objectMapper;
 
     @RequestMapping(value = "/checklogin", method = RequestMethod.GET)
-    public Message checkLogin(HttpServletRequest request, HttpServletResponse response, SessionRequest sessionRequest) throws FDException {
-        SessionUser user = loginService.checkLogin(request, response, sessionRequest.getSource());
-        LoggedIn sessionResponse = loginService.createLoginResponseMessage(user);
+    public Message checkLogin(HttpServletRequest request, HttpServletResponse response, RequestMessage sessionRequest) throws FDException {
+        SessionUser user = accountService.getSessionUser(request, response, sessionRequest.getSource());
+        LoggedIn sessionResponse = accountService.createLoginResponseMessage(user);
         sessionResponse.setConfiguration(configurationService.getConfiguration(user.getFDSessionUser()));
         return sessionResponse;
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public void logout(HttpServletRequest request, HttpServletResponse response, SessionRequest sessionRequest) throws IOException {
-        loginService.logout(request.getSession(), response);
+    public void logout(HttpServletRequest request, HttpServletResponse response, RequestMessage sessionRequest) throws IOException {
+        accountService.logout(request.getSession(), response);
         response.sendRedirect(getLandingPagePath(request));
     }
 
@@ -76,16 +76,16 @@ public class AccountController {
             throws FDResourceException, FDAuthenticationException, ErpInvalidPasswordException, JsonParseException, JsonMappingException, IOException {
         PasswordMessageRequest passwordRequest = objectMapper.readValue(request.getParameter("data"), PasswordMessageRequest.class);
 
-        BindingResult passwordErrors = new BeanPropertyBindingResult(passwordRequest, "password", true, 256);
+        BindingResult passwordErrors = new BeanPropertyBindingResult(passwordRequest, "password");
         passwordValidator.validate(passwordRequest, passwordErrors);
 
         Message passwordResponse = null;
-        boolean isTokenExpired = passwordService.isTokenExpired(passwordRequest.getEmail(), passwordRequest.getToken());
+        boolean isTokenExpired = passwordService.isTokenExpired(passwordRequest.getUsername(), passwordRequest.getToken());
         if (isTokenExpired) {
             passwordResponse = Message.createFailureMessage(MSG_CHANGE_PASSWORD_TOKEN_EXPIRED);
         } else {
-            passwordService.changeForgotPassword(request.getSession(), passwordRequest.getEmail(), passwordRequest.getPassword());
-            FDSessionUser user = loginService.login(request, response, passwordRequest.getEmail(), passwordRequest.getPassword());
+            passwordService.changeForgotPassword(request.getSession(), passwordRequest.getUsername(), passwordRequest.getPassword());
+            FDSessionUser user = accountService.login(request, response, passwordRequest.getUsername(), passwordRequest.getPassword());
             passwordResponse = Message.createSuccessMessage("User changes password successfully.");
             passwordResponse.setConfiguration(configurationService.getConfiguration(user));
         }

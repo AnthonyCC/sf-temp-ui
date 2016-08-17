@@ -384,6 +384,13 @@ function loadStuff() {
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    
+  } else if (loaddata == "SetPaymentMethodsExWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
+  	$("#payload").val('{ "source" : "IPW", "paymentMethodId" : "2148933362", "billingRef" : "" }');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
   } else if (loaddata == "CheckoutSetOrderLevelMobileNumberEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/order/set/");
@@ -665,6 +672,13 @@ function loadStuff() {
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "SearchWebEX") {
+  	$("#url").val("/searchEX/");
+  	$("#payload").val('{"source" : "IPW"}');
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
@@ -1102,6 +1116,14 @@ function loadStuff() {
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+paym
+  } else if (loaddata == "AccountDeliveryTimeslotsWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots");
+  	$("#payload").val('{"source" : "IPW"}');
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
 
   } else if (loaddata == "AccountDeliveryTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/2148933356");
@@ -1312,6 +1334,15 @@ function loadStuff() {
   } else if (  loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/"); 
   	var postdata = '{"id": "fsh_deli_meat", "filterByIds" : ["filter_global_rwa"], "sortBy" : "PRICE"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (  loaddata == "getProductsByProductIds") {
+  	$("#url").val("/browse/getproductsbyproductids/"); 
+  	var postdata = '{"source" : "IPW", "productIds" : ["hba_aveeno_bbylavbth", "gro_7gen_gelbbyshmpoo"]}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
     $.apitype = "mobile";
@@ -1647,10 +1678,17 @@ function loadStuff() {
 
   }  else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
-  	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}'); 	
+  	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}');
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+  } else if (loaddata == "socialLogin") {
+  	$("#url").val("/social/socialLogin/context=SIGNIN");
+  	$("#payload").val("");
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
+  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
   }else if ( loaddata == "NewBrowseCategory") {
   	$("#url").val("/newbrowse/categories/");
@@ -1660,67 +1698,25 @@ function loadStuff() {
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
-  } else if (loaddata == "webLoginCheck") {
-  	$("#url").val("/checklogin");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "GET";
+  } else if (loaddata == "LoginCheck") {
+  	$("#url").val("/saptest12@freshdirect.com/login/check/");
+  	$("#payload").val('{"source" : "IPW"}');
+  	$.apitype = "mobile";
+  	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
   	
-  } else if (loaddata == "webChangePassword") {
-  	$("#url").val("/changepassword");
-  	var postdata = '{"email" : "testuser@testing.com", "token" : "232fsd44", "password" : "12345678", "confirmPassword" : "12345678"}';
+  } else if (loaddata == "ChangePassword") {
+  	$("#url").val("/saptest12@freshdirect.com/changepassword/");
+  	var postdata = '{"source" : "IPW", "username" : "testuser@testing.com", "token" : "232fsd44", "password" : "12345678", "confirmPassword" : "12345678"}';
   	$("#payload").val(postdata);
-  	$.apitype = "web";
+  	$.apitype = "mobile";
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";;
 
-  } else if (loaddata == "webLogout") {
-  	$("#url").val("/logout");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "POST";
-  	$.contentType = "application/json";
-
-  } else if (loaddata == "webHomePage") {
-  	$("#url").val("/page/home?requestedDate=1467905604");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "GET";
-  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (loaddata == "webProductCatalogProduct") {
-  	$("#url").val("/productcatalog/product?catalogKey=FDX-1000-0001-01-0000200501&productIds=fsh_deli_meat,bstk_rbeye_bnls");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "GET";
-  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (loaddata == "webSearch") {
-  	$("#url").val("/search?query=meat");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "GET";
-  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (loaddata == "webSocialLogin") {
-  	$("#url").val("/sociallogin?redirect_url=afonya");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "POST";
-  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (loaddata == "webTimeslot") {
-  	$("#url").val("/timeslot");
-  	$("#payload").val("");
-  	$.apitype = "web";
-  	$.httpMethod = "GET";
-  	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (loaddata == "webSetPayment") {
-  	$("#url").val("/checkout/payment");
-  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
-  	$.apitype = "web";
+  } else if (loaddata == "getPages") {
+  	$("#url").val("/home/getPages/");
+  	$("#payload").val('{"requestedDate" : "2016-08-14T12:12:00.000-04:00"}');
+  	$.apitype = "mobile";
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
@@ -1897,10 +1893,12 @@ function doStuff() {
   <option value="Login">Login</option>
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
-  <option value="Session">Session</option>  
+  <option value="Session">Session</option>
+  <option value="LoginCheck">Login check</option>
   <option value="AddAnonymousAddress">Add Anonymous Address</option>  
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
+  <option value="ChangePassword">Change Password</option>
   <option value="TransactionSource">Transaction Source</option>
   <option value="Acknowledge">Acknowledge</option>
 
@@ -1946,6 +1944,7 @@ function doStuff() {
   <option value="GetPaymentMethods">CHECKOUT - Get Payment Methods</option>
   <option value="SetPaymentMethods">CHECKOUT - Set Payment Methods</option>
   <option value="SetPaymentMethodsEx">CHECKOUT - Set Payment Methods EX</option>
+  <option value="SetPaymentMethodsExWeb">CHECKOUT - Set Payment Methods EX Web</option>
   <option value="AddAndSetPaymentMethod">CHECKOUT - Add and Set Payment Method</option>
   <option value="EditPaymentMethod">CHECKOUT - Edit Payment Method</option>
   <option value="SavePaymentMethod">CHECKOUT - Save Payment Method</option>
@@ -1968,6 +1967,7 @@ function doStuff() {
   <option value="SearchUPCEX">SEARCHEX - UPC barcode</option>
   <option value="SearchSortEX">SEARCHEX - Sort</option>
   <option value="SearchFilterEX">SEARCHEX - Filter</option>
+  <option value="SearchWebEX">SEARCHEX - Web</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>
 
   <option value=""> ========== BROWSE ========== </option>
@@ -1986,6 +1986,7 @@ function doStuff() {
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
   <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
+  <option value="getProductsByProductIds">BROWSE - GET PRODUCTS BY PRODUCT IDS</option>
 
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
@@ -2067,6 +2068,7 @@ function doStuff() {
   <option value="AccountDeliveryInfo">ACCOUNT - Get AddressesEX</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>
   <option value="AccountDeliveryTimeslots">ACCOUNT - Get Delivery Timeslots</option>
+  <option value="AccountDeliveryTimeslotsWeb">ACCOUNT - Get Delivery Timeslots Web</option>
   <option value="AccountDeliveryTimeslotsDefaultTimezone">ACCOUNT - Get Delivery Timeslots DEFAULT BY TIMEZONE</option>
   <option value="AccountDeliveryTimeslotsTimezone">ACCOUNT - Get Delivery Timeslots BY TIMEZONE</option>
   <option value="AccountCancelTimeslotsReservation">ACCOUNT - Cancel Timeslot Reservation</option>
@@ -2129,6 +2131,7 @@ function doStuff() {
   <option value="featuredCategories"> Home - Featured Categories </option>
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
+  <option value="getPages">Home - Get Pages (Home&Today'sPick)</option>
 
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>
@@ -2137,22 +2140,12 @@ function doStuff() {
   <option value="unlinkaccount"> External - Unlink Account </option>
 
   <option value=""> ========== Social Login ========== </option>
-  <option value="socialConnect"> Social - Connect </option>
+  <option value="socialConnect"> Social - Connect with user token</option>
+  <option value="socialLogin"> Social - Connect with connection token</option>
 
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
 
-  <option value=""> ========== Web API ========== </option>
-  <option value="webLoginCheck">Web login check</option>
-  <option value="webSocialLogin">Web social login</option>
-  <option value="webLogout">Web logout</option>
-  <option value="webChangePassword">Web change password</option>
-  <option value="webHomePage">Web home page</option>
-  <option value="webProductCatalogProduct">Web product from catalog</option>
-  <option value="webSearch">Web search</option>
-  <option value="webTimeslot">Web timeslot</option>
-  <option value="webSetPayment">Web set payment</option>
-  
   </select>
   
   <input value="Go" type="button" onclick='javascript:doStuff()'>

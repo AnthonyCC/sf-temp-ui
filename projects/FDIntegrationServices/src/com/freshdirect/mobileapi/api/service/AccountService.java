@@ -56,7 +56,7 @@ public class AccountService {
 
     private static Category LOGGER = LoggerFactory.getInstance(AccountService.class);
 
-    public SessionUser checkLogin(HttpServletRequest request, HttpServletResponse response, String source) {
+    public SessionUser getSessionUser(HttpServletRequest request, HttpServletResponse response, String source) {
         HttpSession session = request.getSession();
         FDSessionUser user = getUserFromSession(session);
 

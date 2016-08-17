@@ -21,7 +21,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 public class TimeslotController {
 
     @Autowired
-    private AccountService loginService;
+    private AccountService accountService;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -31,7 +31,7 @@ public class TimeslotController {
 
     @RequestMapping(value = "/timeslot", method = RequestMethod.GET)
     public Message checkLogin(HttpServletRequest request, HttpServletResponse response, TimeslotMessageRequest timeslotRequest) throws FDException {
-        SessionUser user = loginService.checkLogin(request, response, timeslotRequest.getSource());
+        SessionUser user = accountService.getSessionUser(request, response, timeslotRequest.getSource());
         DeliveryTimeslots timeslotResponse = timeslotService.getDeliveryTimeslots(user, timeslotRequest.getAddressId());
         timeslotResponse.setConfiguration(configurationService.getConfiguration(user.getFDSessionUser()));
         timeslotResponse.setStatus(Message.STATUS_SUCCESS);

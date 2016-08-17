@@ -63,30 +63,19 @@ public class RegistrationController extends BaseController implements SystemMess
 	private static Category LOGGER = LoggerFactory
 			.getInstance(RegistrationController.class);
 
-	public static final String ACTION_REGISTER_FROM_IPHONE = "register";
-	
-	public static final String ACTION_REGISTER_FROM_FDX = "registerfdx";
-	
-	public static final String ACTION_REGISTER_FROM_SOCIAL = "registersocial";
-	
+    private static final String ACTION_REGISTER_FROM_IPHONE = "register";
+    private static final String ACTION_REGISTER_FROM_FDX = "registerfdx";
+    private static final String ACTION_REGISTER_FROM_SOCIAL = "registersocial";
     private final static String ACTION_ADD_DELIVERY_ADDRESS = "adddeliveryaddress";
-
     private final static String ACTION_EDIT_DELIVERY_ADDRESS = "editdeliveryaddress";
-    
     private final static String ACTION_SAVE_DELIVERY_ADDRESS = "savedeliveryaddress";
-       
     private final static String ACTION_SET_MOBILE_PREFERENCES = "setmobilepreferences";
-    
     private final static String ACTION_SET_EMAIL_PREFERENCES = "setemailpreferences";
-    
     private final static String ACTION_GET_EMAIL_PREFERENCES = "getemailpreferences";
-  
     private final static String ACTION_GET_MOBILE_PREFERENCES = "getmobilepreferences";
-    
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER = "setmobilepreferencesfirstorder";
-    
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD = "setmobilepreferencesfirstorderfd";
-    
+
 	protected boolean validateUser() {
 		return false;
 	}
@@ -454,40 +443,37 @@ public class RegistrationController extends BaseController implements SystemMess
 
 	}
 
-
-	private Message formatLoginMessage(SessionUser user) throws FDException {
-		Message responseMessage = null;
-
-		responseMessage = new LoggedIn();
-		((LoggedIn) responseMessage).setChefTable(user.isChefsTable());
-		((LoggedIn) responseMessage).setCustomerServicePhoneNumber(user
+	@Override
+	protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
+        LoggedIn responseMessage = new LoggedIn();
+        responseMessage.setChefTable(user.isChefsTable());
+        responseMessage.setCustomerServicePhoneNumber(user
 				.getCustomerServiceContact());
 		if (user.getReservationTimeslot() != null) {
-			((LoggedIn) responseMessage).setReservationTimeslot(new Timeslot(
+		    responseMessage.setReservationTimeslot(new Timeslot(
 					user.getReservationTimeslot()));
 		}
-		((LoggedIn) responseMessage).setFirstName(user.getFirstName());
-        ((LoggedIn) responseMessage).setLastName(user.getLastName());
-		((LoggedIn) responseMessage).setUsername(user.getUsername());
-		((LoggedIn) responseMessage)
-				.setSuccessMessage("User has been logged in successfully.");
-		((LoggedIn) responseMessage).setItemsInCartCount(user
+		responseMessage.setFirstName(user.getFirstName());
+		responseMessage.setLastName(user.getLastName());
+		responseMessage.setUsername(user.getUsername());
+		responseMessage.setSuccessMessage("User has been logged in successfully.");
+		responseMessage.setItemsInCartCount(user
 				.getItemsInCartCount());
-		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
-        ((LoggedIn) responseMessage).setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
-		((LoggedIn) responseMessage).setFdUserId(user.getPrimaryKey());
+		responseMessage.setOrderCount(user.getOrderHistory().getValidOrderCount());
+		responseMessage.setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
+		responseMessage.setFdUserId(user.getPrimaryKey());
 
 		//With Mobile App having given ability to add/remove payment method this is removed
 		/* if ((user.getPaymentMethods() == null)	|| (user.getPaymentMethods().size() == 0)) {
 			responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
 		}*/
-		((LoggedIn) responseMessage).setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
+		responseMessage.setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
 		
 		//Added during Mobile Coremetrics Implementation
-		((LoggedIn) responseMessage).setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
-		((LoggedIn) responseMessage).setCohort(user.getCohort());
-		((LoggedIn) responseMessage).setTotalOrderCount(user.getTotalOrderCount());
-		((LoggedIn) responseMessage).setTcAcknowledge(user.getTcAcknowledge());
+		responseMessage.setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
+		responseMessage.setCohort(user.getCohort());
+		responseMessage.setTotalOrderCount(user.getTotalOrderCount());
+		responseMessage.setTcAcknowledge(user.getTcAcknowledge());
 		
 		return responseMessage;
 	}
@@ -521,6 +507,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		        	}
 		        }
 		        responseMessage = new AddAddressResponse();
+		        responseMessage.setSuccessMessage("Delivery Address added successfully.");
 		        ((AddAddressResponse)responseMessage).setAddedAddress(newelyAdded);
 		        
 	        } else {

@@ -1,4 +1,4 @@
-package com.freshdirect.mobileapi.api.data.response;
+package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public class ProductCatalogMessageResponse extends MessageResponse {
     private static final long serialVersionUID = -4220385142597682317L;
 
     private List<Product> products;
-    private String catalogKey;
+    private String plantId;
 
     public List<Product> getProducts() {
         return products;
@@ -19,12 +19,12 @@ public class ProductCatalogMessageResponse extends MessageResponse {
         this.products = products;
     }
 
-    public String getCatalogKey() {
-        return catalogKey;
+    public String getPlantId() {
+        return plantId;
     }
 
-    public void setCatalogKey(String catalogKey) {
-        this.catalogKey = catalogKey;
+    public void setPlantId(String plantId) {
+        this.plantId = plantId;
     }
 
 }

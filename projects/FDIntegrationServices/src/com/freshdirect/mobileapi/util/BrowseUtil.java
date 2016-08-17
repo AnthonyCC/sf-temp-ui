@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.util;
 
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -18,8 +19,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -27,10 +32,10 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -51,7 +56,6 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterGroupModel;
-import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
@@ -775,23 +779,26 @@ public class BrowseUtil {
 	    	return nosectionCatMap;
 	    }
 	  //----------------------------------------getAllProducts-----------------------------------------------------
-	    public static List<Product> getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
-	    	String contentId = null;
-	    	 //products.clear();
-	    	List<Product> products = new ArrayList<Product>();
-			contentId = requestMessage.getId();
-	    	if (contentId == null) {
-	    		contentId = requestMessage.getDepartment();
-	    	}
-	    	ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(contentId);
-	    	if(!(contentNode instanceof CategoryModel )){
-	    		LOG.info("The id was not a category. Hence sending an empty Products List ");
-	    		return products;
-	    	}
-	    	getAllProducts((CategoryModel)contentNode,user, request,products);
-	    	return products;
-	    }
-	    
+    public static List<Product> getAllProducts(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) {
+        String contentId = null;
+        // products.clear();
+        List<Product> products = new ArrayList<Product>();
+        if (requestMessage.getProductIds() != null && !requestMessage.getProductIds().isEmpty()) {
+
+        } else {
+            contentId = requestMessage.getId();
+            if (contentId == null) {
+                contentId = requestMessage.getDepartment();
+            }
+            ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(contentId);
+            if (!(contentNode instanceof CategoryModel)) {
+                LOG.info("The id was not a category. Hence sending an empty Products List ");
+                return products;
+            }
+            getAllProducts((CategoryModel) contentNode, user, request, products);
+        }
+        return products;
+    }
 	    
 	    private static void getAllProducts(CategoryModel contentNode,SessionUser user, HttpServletRequest request,List<Product> products){
 	    	//Assuming only the id which comes in the request is at category level and not at department level...
@@ -1231,7 +1238,40 @@ public class BrowseUtil {
 	    	
 	    	return returnableProductList;
 	    }
-	
+	    
+	    public static List<com.freshdirect.mobileapi.catalog.model.Product> getProducts(List<String> productIds, String plantId, PricingContext pricingContext, List<String> errors) {
+	        List<com.freshdirect.mobileapi.catalog.model.Product> products = new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
+	        if (productIds != null) {
+	            for (String productId : productIds) {
+	                try {
+	                    ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
+	                    if (productModel != null && productModel.isTemporaryUnavailableOrAvailable()) {
+	                        com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder productBuilder = new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(
+	                                productModel.getContentName(), productModel.getFullName());
+	                        productBuilder.brandTags(productModel.getBrands())
+	                        .minQty(productModel.getQuantityMinimum())
+	                        .maxQty(productModel.getQuantityMaximum())
+	                        .incrementQty(productModel.getQuantityIncrement())
+	                        .quantityText(productModel.getQuantityText())
+	                        .images(BrowseUtil.getImages(productModel))
+	                        .tags(productModel.getTags())
+	                        .generateWineAttributes(productModel)
+	                        .addKeyWords(productModel.getKeywords())
+	                        .generateAdditionTagsFromProduct(productModel)
+	                        .skuInfo(BrowseUtil.getSkuInfo(productModel, plantId, pricingContext))
+	                        .productLayout(productModel.getProductLayout().getId());
+	                        products.add(productBuilder.build());
+	                    } else {
+	                        errors.add(productId);
+	                    }
+	                } catch (Exception e) {
+	                    errors.add(productId);
+	                }
+	            }
+	        }
+	        return products;
+	    }
+	    
 	    private static boolean sortProductByPopularity(List nodes, SessionUser user){
 	    	//First sort the list
 	    	ItemSorterTagWrapper wrapper = new ItemSorterTagWrapper(user);
@@ -1292,8 +1332,7 @@ public class BrowseUtil {
 	    	return productList;
 	    }
 	    
-	    public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
-	    	
+	    public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user){
 	    	int productCount=0;
 	    	CatalogInfo catalogInfo;
 	    	String plantId;
@@ -1306,7 +1345,7 @@ public class BrowseUtil {
 	    		pc = new PricingContext(catalogInfo.getKey().getPricingZone());
 		    	catalogInfo.setShowKey(false);
 	    	} else {
-		    	catalogInfo=getCatalogInfo(requestMessage,user,request);
+		    	catalogInfo=getCatalogInfo(requestMessage,user);
 		    	plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
 		    	pc=user.getFDSessionUser().getUserContext().getPricingContext();
 		    	user.setUserContext();
@@ -1374,27 +1413,39 @@ public class BrowseUtil {
 	    	CatalogId catid = new CatalogInfo.CatalogId(key.geteStore(), Long.toString(key.getPlantId()), key.getPricingZone());
 	    	return new CatalogInfo(catid);
 	    }
-	    
-	    public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request) {
-	    	
-	    	user.setAddress(getAddress(requestMessage));
-	    	return getCatalogInfo(user, request);
-	    }
-	    
-	    public static CatalogInfo getCatalogInfoAddr(AddressModel address,SessionUser user, HttpServletRequest request) {
-	    	
-	    	user.setAddress(address);
-	    	return getCatalogInfo(user, request);
-	    }
-	    
-	    public static CatalogInfo getCatalogInfo(SessionUser user, HttpServletRequest request) {
-	    	
-	    	String plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-	    	PricingContext pc=user.getFDSessionUser().getUserContext().getPricingContext();
-	    	user.setUserContext();
-	    	CatalogId catalogId=new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(),plantId, pc.getZoneInfo());
-	    	return new CatalogInfo(catalogId);
-	    }
+
+    public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage, SessionUser user) {
+        user.setAddress(getAddress(requestMessage));
+        return getCatalogInfo(user);
+    }
+
+    public static CatalogInfo getCatalogInfoAddr(AddressModel address, SessionUser user) {
+        user.setAddress(address);
+        return getCatalogInfo(user);
+    }
+
+    public static CatalogInfo getCatalogInfo(SessionUser user) {
+        String plantId = user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
+        PricingContext pc = user.getFDSessionUser().getUserContext().getPricingContext();
+        user.setUserContext();
+        CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc.getZoneInfo());
+        return new CatalogInfo(catalogId);
+    }
+
+    public static String getPlantId(SessionUser user) {
+        String plantid = null;
+        if (user != null) {
+            String zipcode = user.getZipCode();
+            if (zipcode != null && zipcode.trim().length() > 0) {
+                ErpAddressModel address = new ErpAddressModel();
+                address.setZipCode(zipcode);
+                plantid = BrowseUtil.getCatalogInfoAddr(address, user).getKey().getPlantId();
+            } else {
+                plantid = FDStoreProperties.getDefaultFdxPlantID();
+            }
+        }
+        return plantid;
+    }
 	    
 	    public static List<String> getAllFDXCatalogKeys(){
 	    	

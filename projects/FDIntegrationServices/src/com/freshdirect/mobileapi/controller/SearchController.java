@@ -17,11 +17,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
+import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.SearchMessageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Brand;
@@ -198,13 +202,14 @@ public class SearchController extends BaseController {
         String brandToFilter = null;
         String categoryToFilter = null;
         String departmentToFilter = null;
+        SearchQuery requestMessage = null;
 
         // Retrieving any possible payload
         String postData = getPostData(request, response);
 
         LOG.debug("PostData received: [" + postData + "]");
         if (StringUtils.isNotEmpty(postData)) {
-            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            requestMessage = parseRequestObject(request, response, SearchQuery.class);
             searchTerm = requestMessage.getQuery();
             upc = requestMessage.getUpc();
             page = requestMessage.getPage();
@@ -277,7 +282,8 @@ public class SearchController extends BaseController {
 
         Collections.sort(departmentList, filterComparator);
 
-        SearchResult data = new SearchResult();
+        SearchResult data = null;
+        data = new SearchResult();
         data.setTotalResultCount(productService.getRecentSearchTotalCount());
         data.setQuery(searchTerm);
 //        data.setProductsFromModel(products);
@@ -287,11 +293,21 @@ public class SearchController extends BaseController {
         data.setDepartments(departmentList);
         data.setDidYouMean(productService.getSpellingSuggestion());
         data.setDefaultSortOptions();
+        
+        if (isFoodkickRequest(requestMessage)){
+            SearchMessageResponse searchResponse = new SearchMessageResponse();
+            LoggedIn loginMessage = createLoginResponseMessage(user);
+            searchResponse.setStatus(loginMessage.getStatus());
+            searchResponse.setLogin(loginMessage);
+            searchResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+            searchResponse.setConfiguration(getConfiguration(user));
+            searchResponse.setSearch(data);
+            setResponseMessage(model, searchResponse, user);
+        } else{
+            setResponseMessage(model, data, user);
+        }
         //Use below at later time.
         //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
-        setResponseMessage(model, data, user);
-        
-
         return model;
     }
 

@@ -38,10 +38,10 @@ public class SocialAccountController {
     // Callback method of oneall service, connectionToken comes from there 
     @RequestMapping(value = "/sociallogin", method = RequestMethod.POST)
     public ResponseEntity<Void> login(HttpServletRequest request, HttpServletResponse response, @ModelAttribute SocialLoginMessageRequest socialRequest) throws Exception {
-        BindingResult socialRequestErrors = new BeanPropertyBindingResult(socialRequest, "socialRequest", true, 256);
+        BindingResult socialRequestErrors = new BeanPropertyBindingResult(socialRequest, "socialRequest");
         socialRequestValidator.validate(socialRequest, socialRequestErrors);
         Map<String, String> socialUserProfile = socialAccountService.getSocialUserProfile(socialRequest.getConnection_token());
-        BindingResult socialUserProfileErrors = new BeanPropertyBindingResult(socialUserProfile, "socialUserProfile", true, 256);
+        BindingResult socialUserProfileErrors = new BeanPropertyBindingResult(socialUserProfile, "socialUserProfile");
         socialUserProfileValidator.validate(socialUserProfile, socialUserProfileErrors);
 
         SessionUser user = socialAccountService.signInSocialUser(request, response, socialUserProfile);

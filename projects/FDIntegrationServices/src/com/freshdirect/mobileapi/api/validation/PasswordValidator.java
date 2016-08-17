@@ -9,7 +9,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.freshdirect.mobileapi.api.data.request.PasswordMessageRequest;
+import com.freshdirect.mobileapi.controller.data.request.PasswordMessageRequest;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 @Component
@@ -19,7 +19,7 @@ public class PasswordValidator implements Validator {
     private HttpServletRequest request;
 
     @Autowired
-    private ValidationService validationService;
+    private ValidationDtoConverter validationDtoConverter;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -57,7 +57,7 @@ public class PasswordValidator implements Validator {
         }
 
         if (errors.hasErrors()) {
-            validationService.createErrorResults(errors);
+            validationDtoConverter.createErrorResults(errors);
         }
 
     }

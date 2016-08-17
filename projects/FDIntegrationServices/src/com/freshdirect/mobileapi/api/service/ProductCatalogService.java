@@ -26,9 +26,9 @@ public class ProductCatalogService {
         if (address != null) {
             CatalogInfo catalogInfo = null;
             if (address.getZipCode() != null && address.getZipCode().trim().length() > 0) {
-                catalogInfo = BrowseUtil.getCatalogInfoAddr(address, user, request);
+                catalogInfo = BrowseUtil.getCatalogInfoAddr(address, user);
             } else {
-                catalogInfo = BrowseUtil.getCatalogInfo(user, request);
+                catalogInfo = BrowseUtil.getCatalogInfo(user);
             }
             CatalogId catalogId = catalogInfo.getKey();
             plantid = catalogId.getPlantId();

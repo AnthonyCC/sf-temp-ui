@@ -1,8 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-import com.freshdirect.mobileapi.controller.data.Message;
-
-public class PaymentMethodSelection extends Message {
+public class PaymentMethodSelection extends RequestMessage {
 
     private String paymentMethodId;
 

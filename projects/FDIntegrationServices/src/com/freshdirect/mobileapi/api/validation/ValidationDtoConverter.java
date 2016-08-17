@@ -15,7 +15,7 @@ import com.freshdirect.mobileapi.api.exception.ValidationException;
  *
  */
 @Component
-public class ValidationService {
+public class ValidationDtoConverter {
 
     /**
      * Generates a map of all the validation errors. Errors populated via ValidationException.

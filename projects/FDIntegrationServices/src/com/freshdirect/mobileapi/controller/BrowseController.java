@@ -17,9 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.atp.FDAvailabilityI;
-import com.freshdirect.fdstore.content.AvailabilityFactory;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
@@ -28,6 +27,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
@@ -40,6 +40,8 @@ import com.freshdirect.mobileapi.controller.data.CatalogKeyResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.ProductCatalogMessageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
@@ -50,8 +52,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.mobileapi.util.SortType;
 
 /**
  * @author Sivachandar
@@ -61,40 +61,24 @@ public class BrowseController extends BaseController {
 
 	private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(BrowseController.class);
 
-
     private static final String ACTION_GET_DEPARTMENTS = "getDepartments";
-
     private static final String ACTION_GET_CATEGORIES = "getCategories";
-
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
-
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
-
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
-    
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts";
-
     private static final String ACTION_NAVIGATION ="navigation";
-    
     private static final String ACTION_GET_ALL_CATALOG_KEYS = "getAllCatalogKeys";
-    
     private static final String ACTION_GET_CATALOG_FOR_ADDRESS="getCatalogForAddress";
-
     private static final String ACTION_GET_CATALOG_FOR_CATALOG_KEY = "getCatalogForKey";
-    
     private static final String ACTION_GET_CATALOG_ID_FOR_ADDRESS="getCatalogIdForAddress";
-
     private static final String ACTION_GET_CATALOG_KEY_FOR_ADDRESS="getCatalogKeyForAddress";
-    
     private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
-
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
-    
     private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
-
+    private static final String ACTION_GET_PRODUCTS_BY_PRODUCT_IDS = "getProductsByProductsIds";
 	private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
-
 
     @Override
 	protected boolean validateUser() {
@@ -218,7 +202,7 @@ public class BrowseController extends BaseController {
 	        
 	        	CatalogInfoResult res = new CatalogInfoResult();
 	        	//get the list of products (this will be done recursively) 
-	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user, request);
+	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user);
 	        	//populate the response with the products...
 	        	res.setCatalogInfo(catalogInfo);
 	        	//set the response and return the json.
@@ -231,7 +215,7 @@ public class BrowseController extends BaseController {
 	        	
 	        	CatalogInfoResult res = new CatalogInfoResult();
 	        	//get the list of products (this will be done recursively) 
-	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user, request);
+	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user);
 	        	//populate the response with the products...
 	        	res.setCatalogInfo(catalogInfo);
 	        	//set the response and return the json.
@@ -244,7 +228,7 @@ public class BrowseController extends BaseController {
 	        	
 	        
 	        	CatalogInfoResult res = new CatalogInfoResult();
-	        	CatalogInfo catalogInfo =  BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	CatalogInfo catalogInfo =  BrowseUtil.getCatalogInfo(requestMessage, user);
 	        	res.setCatalogInfo(catalogInfo);
 	        	setResponseMessage(model, res, user);
 	            return model;
@@ -255,9 +239,9 @@ public class BrowseController extends BaseController {
 	        	CatalogInfo ci = null;
 	        	
 	        	if(requestMessage != null && requestMessage.getZipCode() != null && requestMessage.getZipCode().trim().length() > 0) {
-	        		ci = BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        		ci = BrowseUtil.getCatalogInfo(requestMessage, user);
 	        	} else {
-	        		ci = BrowseUtil.getCatalogInfo(user, request);
+	        		ci = BrowseUtil.getCatalogInfo(user);
 	        	}
 	        	CatalogId cid = ci.getKey();
 	        	CatalogKey ck = new CatalogKey();
@@ -271,7 +255,7 @@ public class BrowseController extends BaseController {
 
 	        	CatalogKeyResult res = new CatalogKeyResult();
 	        	
-	        	CatalogInfo ci = BrowseUtil.getCatalogInfo(user, request);
+	        	CatalogInfo ci = BrowseUtil.getCatalogInfo(user);
 	        	CatalogId cid = ci.getKey();
 	        	CatalogKey ck = new CatalogKey();
 	        	ck.seteStore(cid.geteStore());
@@ -290,7 +274,6 @@ public class BrowseController extends BaseController {
 	        	setResponseMessage(model, res, user);
 	        	return model;
 	        } else if(ACTION_GET_ALL_PRODUCTS_EX.equals(action)){
-	        	
 	        	AllProductsResult res = new AllProductsResult	();
 	        	//get the list of products (this will be done recursively) 
 	        	List<String> products =  BrowseUtil.getAllProductsEX(requestMessage, user, request);
@@ -301,7 +284,28 @@ public class BrowseController extends BaseController {
 	        	long endTime=System.currentTimeMillis();
 	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
 	            return model;
-	        }
+            } else if (ACTION_GET_PRODUCTS_BY_PRODUCT_IDS.equals(action)) {
+                List<String> errorProductIds = new ArrayList<String>();
+                CatalogInfo catalogInfo = BrowseUtil.getCatalogInfo(user);
+                String plantId = BrowseUtil.getPlantId(user);
+                ProductCatalogMessageResponse browseResponse = new ProductCatalogMessageResponse();
+                LoggedIn loginMessage = createLoginResponseMessage(user);
+                browseResponse.setStatus(loginMessage.getStatus());
+                browseResponse.setLogin(loginMessage);
+                browseResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+                browseResponse.setConfiguration(getConfiguration(user));
+                browseResponse.setPlantId(plantId);
+                browseResponse.setProducts(BrowseUtil.getProducts(requestMessage.getProductIds(), plantId,
+                        new PricingContext(catalogInfo.getKey().getPricingZone()), errorProductIds));
+                for (String errorProductId : errorProductIds) {
+                    browseResponse.addErrorMessage(errorProductId);
+                }
+
+                setResponseMessage(model, browseResponse, user);
+                long endTime = System.currentTimeMillis();
+                LOG.debug(((endTime - startTime) / 1000) + " seconds");
+                return model;
+            }
         } else {
         	if (ACTION_GET_ALL_CATALOG_KEYS.equals(action)){
 	        	//TODO: actually generate list of CatalogKeys;

@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,11 +47,16 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
+import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoCartException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.MessageCodes;
+import com.freshdirect.mobileapi.model.OrderHistory;
+import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.RequestData;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -61,9 +69,12 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.LocatorUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -175,13 +186,6 @@ public abstract class BaseController extends AbstractController implements Messa
             sessionWrapper.propogateSetValues(actualSession);
         }
     }
-
-    //    public Message createdErrorMessage(Collection<ActionError> errors) {
-    //        Message responseMessage = new Message();
-    //        responseMessage.setStatus(Message.STATUS_FAILED);
-    //        responseMessage.addErrorMessages(errors);
-    //        return responseMessage;
-    //    }
 
     protected RequestData qetRequestData(HttpServletRequest request) {
         RequestData requestData = new RequestData();
@@ -516,5 +520,115 @@ public abstract class BaseController extends AbstractController implements Messa
 
 		return configuration;
 	}
+	
+	protected LoggedIn formatLoginMessage(SessionUser user) throws FDException  {
+	    LoggedIn responseMessage = new LoggedIn();
 
+        OrderHistory history = user.getOrderHistory();
+        String cutoffMessage = user.getCutoffInfo();
+
+        OrderInfo closestPendingOrder = history
+                .getClosestPendingOrderInfo(new Date());
+        List<OrderInfo> orderHistoryInfo = new ArrayList<OrderInfo>();
+        if (closestPendingOrder != null) {
+            orderHistoryInfo.add(closestPendingOrder);
+        }
+
+        responseMessage.setChefTable(user.isChefsTable());
+        responseMessage.setCustomerServicePhoneNumber(user
+                .getCustomerServiceContact());
+        if (user.getReservationTimeslot() != null) {
+            responseMessage.setReservationTimeslot(new Timeslot(
+                    user.getReservationTimeslot()));
+        }
+        responseMessage.setFirstName(user.getFirstName());
+        responseMessage.setLastName(user.getLastName());
+        responseMessage.setUsername(user.getUsername());
+        responseMessage
+                .setOrders(com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order
+                        .createOrderList(orderHistoryInfo, user));
+        responseMessage
+                .setSuccessMessage("User has been logged in successfully.");
+        responseMessage.setItemsInCartCount(user
+                .getItemsInCartCount());
+        responseMessage.setOrderCount(user.getOrderHistory()
+                .getValidOrderCount());
+        responseMessage.setFdUserId(user.getPrimaryKey());
+
+        // DOOR3 FD-iPad FDIP-474
+        //Note: The field is inapproformatLoginMessagepriately named. It is not referring to whether or not the user is on the FD mailing
+        //list, but rather intended to represent whether or not the user is to be notified
+        //in the event of service being introduced to their area.
+        responseMessage.setOnMailingList( user.isFutureZoneNotificationEmailSentForCurrentAddress() );
+
+        if (cutoffMessage != null) {
+            responseMessage.addNoticeMessage(
+                    MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);
+        }
+
+        if (!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+            responseMessage.addWarningMessage(
+                    MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE,
+                    SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+        }
+
+        // With Mobile App having given ability to add/remove payment method
+        // this is removed
+        /*
+         * if ((user.getPaymentMethods() == null) ||
+         * (user.getPaymentMethods().size() == 0)) {
+         * responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD,
+         * ERR_NO_PAYMENT_METHOD_MSG); }
+         */
+        responseMessage.setBrowseEnabled(MobileApiProperties
+                .isBrowseEnabled());
+
+        // Added during Mobile Coremetrics Implementation
+        responseMessage.setSelectedServiceType(user
+                .getSelectedServiceType() != null ? user
+                .getSelectedServiceType().toString() : "");
+        responseMessage.setCohort(user.getCohort());
+        responseMessage.setTotalOrderCount(user
+                .getTotalOrderCount());
+
+        responseMessage.setPlantId(BrowseUtil.getPlantId(user));
+        return responseMessage;
+    }
+	
+    protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
+        LoggedIn responseMessage = null;
+        if (user.isLoggedIn()) {
+            responseMessage = formatLoginMessage(user);
+        } else {
+            responseMessage = new LoggedIn();
+            responseMessage.setFailureMessage("User is not logged in.");
+        }
+        return responseMessage;
+    }
+
+    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) {
+        FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+        if (fdSessionUser == null) {
+            try {
+                fdSessionUser = CookieMonster.loadCookie(request);
+            } catch (FDResourceException ex) {
+                LOGGER.warn(ex);
+            }
+            if (fdSessionUser != null) {
+                FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
+            } else {
+                fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
+            }
+            // ensure usercontext update with FD/FDX values
+            fdSessionUser.resetUserContext();
+            ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
+            request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+        }
+        return SessionUser.wrap(fdSessionUser);
+    }
+
+    protected boolean isFoodkickRequest(RequestMessage requestMessage) {
+        return (requestMessage != null && EnumTransactionSource.IPHONE_WEBSITE == EnumTransactionSource.getTransactionSource(requestMessage.getSource()));
+    }
+	
 }

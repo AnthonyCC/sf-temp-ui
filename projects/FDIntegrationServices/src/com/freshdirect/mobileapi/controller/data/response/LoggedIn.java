@@ -1,12 +1,8 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.model.OrderInfo;
 
 /**
  * @author Rob
@@ -49,6 +45,7 @@ public class LoggedIn extends Message {
     private String resultMessage;
     private boolean tcAcknowledge;
     private boolean anonymousAddressSetFromAcc;
+    private String plantId;
     
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
@@ -224,7 +221,12 @@ public class LoggedIn extends Message {
 		this.anonymousAddressSetFromAcc = anonymousAddressSetFromAcc;
 	}
 
-	
-	
-	
+    public String getPlantId() {
+        return plantId;
+    }
+
+    public void setPlantId(String plantId) {
+        this.plantId = plantId;
+    }
+
 }

@@ -15,18 +15,15 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -35,7 +32,6 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
-import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -47,7 +43,6 @@ import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
 import com.freshdirect.mobileapi.controller.data.request.Login;
-import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
@@ -74,7 +69,6 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -86,77 +80,41 @@ public class CheckoutController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
 
     private static final String PARAM_SLOT_ID = "slotId";
-
     private final static String ACTION_GET_REMOVE_UNAVAILABLE_ITEMS = "removeunavailableitems";
-
     private final static String ACTION_GET_ATP_ERROR_DETAIL = "getatperrordetail";
-
     private final static String ACTION_INIT_CHECKOUT = "initcheckout";
-    
     private final static String ACTION_AUTH_CHECKOUT = "authenticate";
-    
     private final static String ACTION_GET_CONSOLIDATED_CART = "getConsolidatedCart";
-    
     private final static String ACTION_GET_DELIVERY_ADDRESSES = "getdeliveryaddresses";
-
     private final static String ACTION_ORDER_DETAIL = "orderdetail";
-    
     private final static String ACTION_REVIEW_ORDER_DETAIL = "revieworderdetail";
-
     private final static String ACTION_SET_DELIVERY_ADDRESS = "setdeliveryaddress";
-    
     private final static String ACTION_SET_DELIVERY_ADDRESS_EX = "setdeliveryaddressex";
-
     private final static String ACTION_RESERVE_TIMESLOT = "reservetimeslot";
-    
     private final static String ACTION_RESERVE_TIMESLOT_EX = "reservetimeslotex";
-
     private final static String ACTION_GET_PAYMENT_METHODS = "getpaymentmethods";
-
     private final static String ACTION_SET_PAYMENT_METHOD = "setpaymentmethod";
-    
     private final static String ACTION_SET_PAYMENT_METHOD_EX = "setPaymentMethodEx";
-    
     private final static String ACTION_ADD_PAYMENT_METHOD = "addpaymentmethod";
-    
     private final static String ACTION_ADD_PAYMENT_METHOD_EX = "addpaymentmethodex";
-    
     private final static String ACTION_ADD_AND_SET_PAYMENT_METHOD = "addandsetpaymentmethod";
-    
     private final static String ACTION_SAVE_PAYMENT_METHOD = "savepaymentmethod";
-    
     private final static String ACTION_EDIT_PAYMENT_METHOD = "editpaymentmethod";
-    
     private final static String ACTION_DELETE_PAYMENT_METHOD = "deletepaymentmethod";
-    
     private final static String ACTION_DELETE_DELIVERY_ADDRESS = "deletedeliveryaddress";
-    
     private final static String ACTION_DELETE_PAYMENT_METHOD_EX = "deletepaymentmethodex";
-    
     private final static String ACTION_DELETE_DELIVERY_ADDRESS_EX = "deletedeliveryaddressex";
-    
     private final static String ACTION_ADD_AND_SET_DELIVERY_ADDRESS = "addandsetdeliveryaddress";
-
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
-
     private final static String ACTION_ALCOHOL_AGE_VERIFY = "alcoholageverify";
-    
     private final static String ACTION_GET_SELECTED_DELIVERY_ADDRESS = "getselecteddeliveryaddress";
-    
     private final static String ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS = "getpmverifystatus";
-    
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
-    
     private final static String ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS = "removesplrestricteditems";
-
     private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
-    
     private final static String ACTION_SUBMIT_ORDER_FDX ="submitOrderEx";
-    
     private final static String ACTION_SET_ORDER_MOBILE_NUMBER_FDX ="setordermobilenumberfdx";
-    
     private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
-    
     private final static String DEVICE_ID="deviceId";
     
     private AvalaraContext avalaraContext;
@@ -210,7 +168,8 @@ public class CheckoutController extends BaseController {
                 model = reserveTimeslotEx(model, user, slotId, request);
             }
         } else if (ACTION_GET_PAYMENT_METHODS.equals(action)) {
-            model = getPaymentMethods(model, user);
+            Message responseMessage = getPaymentMethods(user);
+            setResponseMessage(model, responseMessage, user);
         } else if (ACTION_SET_PAYMENT_METHOD.equals(action)) {
             PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
             model = setPaymentMethod(model, user, requestMessage, request);
@@ -923,6 +882,7 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView setPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
+
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.setPaymentMethod(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef());
 
@@ -961,7 +921,11 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Payment method set successfully.");
+            if (isFoodkickRequest(reqestMessage)) {
+                responseMessage = getPaymentMethods(user);
+            } else {
+                responseMessage = Message.createSuccessMessage("Payment method set successfully.");
+            }
         } else {
             responseMessage = getErrorMessage(result, request);
         }
@@ -969,7 +933,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private void verifyPaymentMethodFailure(HttpServletRequest request, HttpServletResponse response
     											, SessionUser user, Message responseMessage) {
     	if(request.getSession().getAttribute(SessionParamName.SESSION_PARAM_PYMT_VERIFYFLD) !=null) {
@@ -1229,7 +1193,7 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView getPaymentMethods(ModelAndView model, SessionUser user) throws FDException, JsonException {
+    private Message getPaymentMethods(SessionUser user) throws FDException, JsonException {
 		// Discard Masterpass Wallet Cards from list -- For Standard Checkout Feature
 		List<ErpPaymentMethodI> paymentMethods = discardEwalletCards(user.getPaymentMethods(),"MP");
 		List<PaymentMethod> ewallet = user.getEwallet(paymentMethods);
@@ -1261,8 +1225,8 @@ public class CheckoutController extends BaseController {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
         }
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        responseMessage.setSuccessMessage("Payment methods fetched successfully.");
+        return responseMessage;
     }
     /**
      * @param paymentMethods

@@ -32,7 +32,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 public class CheckoutController {
 
     @Autowired
-    private AccountService loginService;
+    private AccountService accountService;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -46,7 +46,7 @@ public class CheckoutController {
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public Message setPayment(HttpServletRequest request, HttpServletResponse response) throws FDException, JsonParseException, JsonMappingException, IOException {
         PaymentMessageRequest paymentRequest = objectMapper.readValue(request.getParameter("data"), PaymentMessageRequest.class);
-        SessionUser user = loginService.checkLogin(request, response, paymentRequest.getSource());
+        SessionUser user = accountService.getSessionUser(request, response, paymentRequest.getSource());
         ActionResult paymentResult = checkoutService.setPaymentMethod(user, paymentRequest.getPaymentMethodId(), paymentRequest.getBillingRef());
         List<ErpPaymentMethodI> paymentMethods = checkoutService.getPaymentMethods(user);
         String selectedPaymentId  = checkoutService.getSelectedPaymentId(user); 

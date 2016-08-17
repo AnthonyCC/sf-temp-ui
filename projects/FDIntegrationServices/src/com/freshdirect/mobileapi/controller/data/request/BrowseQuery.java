@@ -1,11 +1,11 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.mobileapi.catalog.model.CatalogKey;
-import com.freshdirect.mobileapi.controller.data.Message;
 
-public class BrowseQuery extends Message {
+public class BrowseQuery extends RequestMessage {
 	public static final Integer DEFAULT_PAGE = 1;
 	public static final Integer DEFAULT_MAX = 25;
 
@@ -50,6 +50,8 @@ public class BrowseQuery extends Message {
 	private List<String> filterByIds;
 	
 	private String filterById;
+	
+	private List<String> productIds = new ArrayList<String>();
 
 	public String getZipCode() {
 		return zipCode;
@@ -233,5 +235,12 @@ public class BrowseQuery extends Message {
 		this.carouselProductCount = carouselProductCount;
 	}
 
+    public List<String> getProductIds() {
+        return productIds;
+    }
+
+    public void setProductIds(List<String> productIds) {
+        this.productIds = productIds;
+    }
 
 }

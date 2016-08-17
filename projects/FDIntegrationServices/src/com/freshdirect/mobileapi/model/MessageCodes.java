@@ -253,6 +253,9 @@ public interface MessageCodes {
     public final static String ERR_LINK_ACCOUNT_FAILED ="ERR_LINK_ACCOUNT_FAILED";
 
     public final static String ERR_DIR_ADDRESS_SET_EX="Address set Successfully. Cart has invalid items.";
+    public static final String MSG_CHANGE_PASSWORD_TOKEN_EXPIRED = "Sorry, the reset password link has expired, please request a new link.";
+    public static final String MSG_USER_NOT_FOUND = "Sorry, the username has not been found.";
+    
     
     
     public static class ErrorMessage {

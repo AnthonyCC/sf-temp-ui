@@ -4258,6 +4258,7 @@ public class FDStoreProperties {
         return get(PROP_FD_BRAND_PRODUCTS_AD_HOME);
     }
 
+    // Eastern Daylight Time <> Eastern Standard Time (Daylight Saving Time) conversion enabled
     public static boolean isEdtEstTimeslotConversionEnabled() {
         return Boolean.valueOf(get(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED)).booleanValue();
     }

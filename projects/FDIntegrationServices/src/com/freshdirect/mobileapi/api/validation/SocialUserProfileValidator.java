@@ -14,7 +14,7 @@ public class SocialUserProfileValidator implements Validator {
             "emailVerified" };
 
     @Autowired
-    private ValidationService validationService;
+    private ValidationDtoConverter validationDtoConverter;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -40,7 +40,7 @@ public class SocialUserProfileValidator implements Validator {
         }
 
         if (errors.hasErrors()) {
-            validationService.createErrorResults(errors);
+            validationDtoConverter.createErrorResults(errors);
         }
 
     }
