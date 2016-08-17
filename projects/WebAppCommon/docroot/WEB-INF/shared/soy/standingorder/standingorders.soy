@@ -51,27 +51,37 @@
 					{param softLimit : $soData.settingsData.soSettings.soSoftLimitDisplay /}
 				{/call}	
 			</div>
-			<div class="standing-orders-3-so-settings-activate-container">
-				<div class="standing-orders-3-so-settings-activate">
-					<div class="standing-orders-3-so-settings-activate-icon"></div>
-					<div class="standing-orders-3-so-settings-activate-message">
-						<span class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</span><br/>
-						<span class="standing-orders-3-so-settings-activate-message-text">Click Activate to start receiving your delivery.</span>
-					</div>
-					<button class="standing-orders-3-so-settings-activate-button cssbutton cssbutton-flat green" onclick="activateSo({$item.id});">Activate Delivery</button>
-					<div class="clear"></div>
-				</div>
-			</div>
 			<div class="standing-orders-3-so-settings-drawer-cart">
 				<hr class="standing-orders-3-so-settings-item-line">
 				<div class="standing-orders-3-so-settings-drawer-cart-container">
-					<div class="standing-orders-3-so-settings-activate standing-orders-3-so-settings-activate-bottom">
-						<div class="standing-orders-3-so-settings-activate-icon"></div>
-						<div class="standing-orders-3-so-settings-activate-message">
-							<span class="standing-orders-3-so-settings-activate-message-date">First Delivery: Some Date</span><br/>
-							<span class="standing-orders-3-so-settings-activate-message-text">Click Activate to start receiving your delivery.</span>
+					<div class="standing-orders-3-so-settings-activate-container">
+						<div class="standing-orders-3-so-settings-activate">
+							<div class="standing-orders-3-so-settings-activate-message">
+								<div class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</div>
+								{if not $item.activated and $item.cutOffFormattedDeliveryDate and $item.cutOffDeliveryTime}
+									<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
+								{/if}
+							</div>
+							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" onclick="activateSo({$item.id});">
+								<span>Place Order</span>
+								<span class="est_total">Est. Total: <span class="so-est_total">${$item.amount}</span></span>
+							</button>
+							<div class="clear"></div>
 						</div>
-						<button class="standing-orders-3-so-settings-activate-button cssbutton cssbutton-flat green" onclick="activateSo({$item.id});">Activate Delivery</button>
+					</div>
+					<div class="standing-orders-3-so-settings-drawer-cart-container-wrap">
+					</div>
+					<div class="standing-orders-3-so-settings-activate standing-orders-3-so-settings-activate-bottom">
+						<div class="standing-orders-3-so-settings-activate-message">
+							<div class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</div>
+							{if not $item.activated and $item.cutOffFormattedDeliveryDate and $item.cutOffDeliveryTime}
+								<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
+							{/if}
+						</div>
+						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" onclick="activateSo({$item.id});">
+							<span>Place Order</span>
+							<span class="est_total">Est. Total: <span class="so-est_total">${$item.amount}</span></span>
+						</button>
 						<div class="clear"></div>
 					</div>
 				</div>

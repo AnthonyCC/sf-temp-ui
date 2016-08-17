@@ -168,11 +168,20 @@ function standingOrdersNameInputChangeOK(id){
 		$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-name-header").text(soName);
 		$jq(usoID + " td.td-so-name").text(soName);
 		submitFormManageSO(id,"changename",soName,null);
-	}			
+	}
+}
+
+function soEstimatePriceUpdate(){
+	if ($jq("#cartcontent .st_val_ssOrderTotal").length) {
+		$jq(".standing-orders-3 .standing-orders-3-so-settings-activate-button .so-est_total").text(FreshDirect.cartTemplateObj.data.estimatedTotal);
+	} else {
+		$jq(".standing-orders-3 .standing-orders-3-so-settings-activate-button .so-est_total").text("$0");
+	}
 }
 
 function soSaved(id, activated, isNewSO){
 	var soID = "#soid_" + id;
+	soEstimatePriceUpdate();
 	if(isNewSO){
 		$jq(".standing-orders-3-so-new-saved").addClass("show");
 		setTimeout(function(){
@@ -213,9 +222,9 @@ function submitFormManageSO(id,action,name,freq){
       			if(data.standingOrderResponseData.activate){
       				$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
 	      		}
-      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
+      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
       			populateCartContent();
-      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container').prepend('<div id="ec-drawer"></div>');      			
+      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="ec-drawer"></div>');      			
       			populateDrawer(id);
       			$jq("#soFreq").select2({
       				minimumResultsForSearch: Infinity
@@ -305,9 +314,8 @@ function getSOData(id, action){
         		}
         	}
         	if('activate'==action){
-        		$jq(soID + " .standing-orders-3-so-settings-activate .standing-orders-3-so-settings-activate-icon").remove();
             	$jq(soID + " .standing-orders-3-so-settings-activate .standing-orders-3-so-settings-activate-button").remove();
-            	$jq(soID + " .standing-orders-3-so-settings-activate .standing-orders-3-so-settings-activate-message .standing-orders-3-so-settings-activate-message-date").html("Your Standing Order has been activated.");
+            	$jq(soID + " .standing-orders-3-so-settings-activate .standing-orders-3-so-settings-activate-message .standing-orders-3-so-settings-activate-message-date").html("Your Standing Order has been placed.");
             	$jq(soID + " .standing-orders-3-so-settings-activate .standing-orders-3-so-settings-activate-message .standing-orders-3-so-settings-activate-message-text").html("First Delivery: " + data.dayOfWeek + ", " + data.shortDeliveryDate);
             	setTimeout(function(){
             		$jq(soID + " .standing-orders-3-so-settings-activate").remove();

@@ -221,7 +221,7 @@ function cart_content_template_htmlstr(){
 		
 		//window.cartdata = data;
 		
-		console.log("data = ", data);
+		//console.log("data = ", data);
 		
 		var processFn = window.FreshDirect.cartTemplateObj.processFn;
 						
