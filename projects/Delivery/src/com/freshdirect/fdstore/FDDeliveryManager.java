@@ -1330,12 +1330,12 @@ public class FDDeliveryManager {
  	
  	
  
-	public void captureDeliveryEventNotification(String event) throws FDResourceException{
+	public void captureDeliveryEventNotification(String carrier, String event) throws FDResourceException{
 		
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			Result response = logisticsService.captureDeliveryEventNotification(event);
+			Result response = logisticsService.captureDeliveryEventNotification(carrier, event);
 			LogisticsDataDecoder.decodeResult(response);
 		} catch (FDLogisticsServiceException e) {
 			// TODO Auto-generated catch block

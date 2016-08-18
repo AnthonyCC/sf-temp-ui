@@ -190,7 +190,7 @@ public class ExternalInterfaceController extends BaseController {
     				if("/deliv".equalsIgnoreCase(carrier)){
     					FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
         				String payload = request.getParameter("data");
-        				fDDeliveryManager.captureDeliveryEventNotification(payload);
+        				fDDeliveryManager.captureDeliveryEventNotification("DELIV", payload);
         				responseMessage = Message.createSuccessMessage("T005 Successful.");
         				
     				}else{

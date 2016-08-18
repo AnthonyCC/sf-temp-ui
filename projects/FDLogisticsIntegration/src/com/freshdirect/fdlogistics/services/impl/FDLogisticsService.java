@@ -659,10 +659,10 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	}
 
 	@Override
-	public Result captureDeliveryEventNotification(String event)
+	public Result captureDeliveryEventNotification(String carrier, String event)
 			throws FDLogisticsServiceException {
 		
-		Result response = getData(event, getEndPoint(STORE_DELIVERY_EVENT), Result.class);
+		Result response = getData(event, getEndPoint(STORE_DELIVERY_EVENT+carrier), Result.class);
 		return response;	
 	
 	}
