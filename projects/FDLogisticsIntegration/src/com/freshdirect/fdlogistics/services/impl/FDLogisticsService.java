@@ -152,6 +152,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String STORE_SIGNATURE_FDX ="/delivery/signature";
 	private static final String STORE_NEXT_STOP_FDX ="/delivery/nextstop";
 	private static final String STORE_DELIVERY_INFO_FDX ="/delivery/fdxdeliveryinfo";
+	private static final String STORE_DELIVERY_EVENT ="/delivery/event";
 	
 	
 	
@@ -655,6 +656,15 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	public Result isDispatched(String orderId, String companyCode) throws FDLogisticsServiceException{
 		Result response = getData(null, isDispatchedEndPoint(STATUS_FDX_ORDER_DISPATCH_API+orderId, companyCode), Result.class);
 		return response;
+	}
+
+	@Override
+	public Result captureDeliveryEventNotification(String event)
+			throws FDLogisticsServiceException {
+		
+		Result response = getData(event, getEndPoint(STORE_DELIVERY_EVENT), Result.class);
+		return response;	
+	
 	}
 	
 }

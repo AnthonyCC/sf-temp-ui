@@ -1838,22 +1838,9 @@ function doStuff() {
   }  
   
     else if($("#loaddata").val() == "fdxdeliveryInfo"){
-  var temp = payload.split(",");
-  	if(temp != null && temp.length > 0) {
-  	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
-  	 	if(temp.length > 1) {
-  	 		postData = postData + "&deliveryTime=" + $.URLEncode(temp[1]);
-  	 	}
-  	 	if(temp.length > 2) {
-  	 		postData = postData + "&nexStopErpOrderId=" + $.URLEncode(temp[2]);
-  	 	}
-  	 	if(temp.length > 3) {
-  	 		postData = postData + "&estDeliveryTime=" + $.URLEncode(temp[3]);
-  	 	}
-  	 	
-		
-  	 }
-		
+    
+	 postData = "data=" + $.URLEncode(payload);
+	 	
   }
    else {
        postData = "data=" + $.URLEncode(payload);

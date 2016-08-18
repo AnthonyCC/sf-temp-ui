@@ -76,6 +76,8 @@ public interface ILogisticsService {
 	
 	Result captureFdxDeliveryInfo(FdxDeliveryInfoRequest fdxDeliveryInfo) throws FDLogisticsServiceException;
 	
+	Result captureDeliveryEventNotification(String event) throws FDLogisticsServiceException;
+	
 	DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
 	
 	DeliveryServices getDeliveryServices(Address address) throws FDLogisticsServiceException;

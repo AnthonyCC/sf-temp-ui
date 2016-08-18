@@ -184,14 +184,40 @@ public class ExternalInterfaceController extends BaseController {
     	
     			else if(ACTION_GET_FDX_DEL_INFO.equals(action)){
     			
+    				
     			try{
-    				String erpOrderId=request.getParameter("erpOrderId");
-    				String deliveryTime=request.getParameter("deliveryTime");
-    				String nexStopErpOrderId=request.getParameter("nexStopErpOrderId");
-    				String estDeliveryTime=request.getParameter("estDeliveryTime");
-    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-    				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
-    				responseMessage = Message.createSuccessMessage("T005 Successful.");
+    				String carrier = request.getParameter("carrier");
+    				if("/deliv".equalsIgnoreCase(carrier)){
+    					FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
+        				String payload = request.getParameter("data");
+        				fDDeliveryManager.captureDeliveryEventNotification(payload);
+        				responseMessage = Message.createSuccessMessage("T005 Successful.");
+        				
+    				}else{
+    					String payload = request.getParameter("data");
+    					String[] temp = payload.split(",");
+    					String erpOrderId ="", deliveryTime = "", nexStopErpOrderId = "", estDeliveryTime = "";
+	       			  	 if(temp != null && temp.length > 0) {
+	       			  		 erpOrderId=temp[0];
+	       			  		 if(temp.length > 1) {
+	       			  		 	deliveryTime=temp[1]; 
+	       			  		 }
+	       			  		 if(temp.length > 2){
+	       			  			 nexStopErpOrderId=temp[2]; 
+	       			  		 }
+	       			  		 if(temp.length > 3){
+	       			  			 estDeliveryTime=temp[3]; 
+	       			  		 }
+	       			  	FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
+	    				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
+	    				responseMessage = Message.createSuccessMessage("T005 Successful.");
+	    				}
+	       			  	 
+    				}
+	    				
+    				
+    				
+    				
     			} catch(Exception e) {
     				responseMessage=Message.createFailureMessage("T005 Failed.");
     				LOGGER.info("T005_EXP: Unable to save fdx delivery info received ");

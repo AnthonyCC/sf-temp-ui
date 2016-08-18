@@ -136,7 +136,7 @@ public class FDDeliveryManager {
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
 	
 	/** 24 hr cache Zip, Scrubbed address -> FDDeliveryZoneInfo */
-	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 60 * 60 * 1000);
+	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 15 * 60 * 1000);
 
 
 	private DlvRestrictionsList dlvRestrictions = null;
@@ -1327,8 +1327,22 @@ public class FDDeliveryManager {
 			e.printStackTrace();
 		} 
 	}
+ 	
+ 	
  
- 
+	public void captureDeliveryEventNotification(String event) throws FDResourceException{
+		
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.captureDeliveryEventNotification(event);
+			LogisticsDataDecoder.decodeResult(response);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 	
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
 			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber,String erpOrderId) throws FDResourceException {
