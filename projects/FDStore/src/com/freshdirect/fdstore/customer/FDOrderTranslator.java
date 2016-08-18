@@ -105,7 +105,7 @@ public class FDOrderTranslator {
 			
 		if (cart.getDeliveryAddress() != null) {
 			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
-			if (!cart.getZoneInfo().isUnattended()) {
+			if (null == cart.getZoneInfo() || !cart.getZoneInfo().isUnattended()) {
 				deliveryInfo.getDeliveryAddress().setUnattendedDeliveryInstructions(null);
 				deliveryInfo.getDeliveryAddress().setUnattendedDeliveryFlag(null);
 			}
