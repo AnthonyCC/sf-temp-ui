@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumSaleType;
@@ -734,4 +735,8 @@ public class SessionUser {
 	public void setSoContainerOpen(boolean isSoContainerOpen) {
 		this.sessionUser.setSoContainerOpen(isSoContainerOpen);
 	}
+	
+	public UserContext getUserContext() {
+        return sessionUser.getUserContext();
+    }
 }

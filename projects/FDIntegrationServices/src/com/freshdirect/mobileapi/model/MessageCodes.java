@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public interface MessageCodes {
@@ -83,6 +85,7 @@ public interface MessageCodes {
     public static final String ERR_ORDER_MINIMUM = "ERR_ORDER_MINIMUM";
 
     public static final String ERR_ORDER_MINIMUM_MSG = "We''re sorry; you cannot check out because your pretax order total of {0,number,$0.00} is under the FreshDirect {1,number,$0} minimum order requirement.";
+    public static final String ERR_ORDER_MINIMUM_MSG_FDX = "We''re sorry; you cannot check out because your pretax order total of {0,number,$0.00} is under the FoodKick {1,number,$0} minimum order requirement.";
 
     public static final String ERR_RESTRICTED_ADDRESS = "ERR_RESTRICTED_ADDRESS";
     public static final String ERR_RESTRICTED_ADDRESS_MSG = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address or choose the Pickup option.";
@@ -323,8 +326,16 @@ public interface MessageCodes {
                     Double minimumOrder = new Double(user.getMinimumOrderAmount());
 
                     //May need to distinguish between delivery and pickup
-                    returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG, new Object[] { subTotal,
-                            minimumOrder }));
+                    EnumEStoreId eStore=(user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+                    if(!EnumEStoreId.FDX.equals(eStore)){
+                    	returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG, new Object[] { subTotal,
+                    			minimumOrder }));
+                    }
+                    else
+                    {
+                    	returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG_FDX, new Object[] { subTotal,
+                    			minimumOrder }));
+                    }
                 }
             } else if ("system".equals(key)) {
                 //Generic system error. Pass description through
