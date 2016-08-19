@@ -131,8 +131,7 @@
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}">-->
 						<td width="">
-							<img src="{$img_dir}/insta_60.gif" style="{$layout_maxw_str}" />
-							<p style="font-size: 18px; line-height: 25px; {$fontfamily}">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>
+							<a href="https://www.instagram.com/foodkick/"> <img src="{$img_dir}/insta_60.gif" style="{$layout_maxw_str}" /></a>							  
 						</td>
 						<td width="33%">&nbsp;</td>
 					</tr>
