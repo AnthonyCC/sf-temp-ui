@@ -152,7 +152,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String STORE_SIGNATURE_FDX ="/delivery/signature";
 	private static final String STORE_NEXT_STOP_FDX ="/delivery/nextstop";
 	private static final String STORE_DELIVERY_INFO_FDX ="/delivery/fdxdeliveryinfo";
-	private static final String STORE_DELIVERY_EVENT ="/delivery/event";
+	private static final String STORE_DELIVERY_EVENT ="/delivery/event/";
 	
 	
 	
