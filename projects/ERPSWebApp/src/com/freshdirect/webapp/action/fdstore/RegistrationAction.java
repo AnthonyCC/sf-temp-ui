@@ -1466,7 +1466,11 @@ public class RegistrationAction extends WebActionSupport {
 				String fname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
 				customerInfo.setFirstName(fname);
 			}else{
-				customerInfo.setFirstName(this.firstName);
+				if(this.firstName != null && this.firstName.indexOf("@") > 0) {
+					customerInfo.setFirstName(this.firstName.substring(0, this.firstName.indexOf("@")));
+				} else {
+					customerInfo.setFirstName(this.firstName);
+				}
 			}
 			if((customerInfo.getEmail() != null ) &&  ((this.lastName == null) || ("".equals(this.firstName.trim())))){
 				String lname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
