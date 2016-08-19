@@ -70,35 +70,35 @@
 				<tr>
 					<td colspan="5" >
 						<div style="color: #888; padding: 20px;  {$fontfamily}">
-							<p>This Offer is for free delivery on qualifying order for a thirty (30) day period.
-								Offer applies to first-time customers only.  Free delivery means <u>no delivery or service fees</u>.
-								<u>Eligible orders</u> must (a) exceed minimum purchase requirements before taxes &amp; fees,
-								(b) be within eligible <u>delivery areas</u>, and (c) have a delivery window greater than one (1) hour.
-								Delivery is subject to availability.  No promotional code necessary and the Offer will automatically apply starting with your first purchase and will continue for 30 days.
-								This is a limited time Offer.  All standard customer terms and conditions apply.
-								FoodKick reserves the right to cancel or modify this Offer at any time.  Offer is nontransferable.
-								Void where prohibited.  All rights reserved, Fresh Direct, LLC.
+							<p>*You must be twenty-one or older to purchase alcohol. Wines &amp; Spirits are sold 
+							by FreshDirect Wines &amp; Spirits, an independently owned store with NY State 
+							License #1277181 | 620 5th Ave, Brooklyn, NY 11215. ©2016 Fresh Direct, LLC.
 							</p>
 							
-							<p>
-								ALCOHOL CANNOT BE DELIVERED OUTSIDE OF NEW YORK STATE.
-								Beer, wine and spirits will be removed from your cart during checkout if an out-of-state address is selected for delivery.
-								IT IS A VIOLATION PUNISHABLE UNDER LAW FOR ANY PERSON UNDER THE AGE OF TWENTY-ONE TO PRESENT ANY WRITTEN EVIDENCE OF AGE WHICH IS FALSE,
-								FRAUDULENT OR NOT ACTUALLY HIS/HER OWN FOR THE PURPOSE OF ATTEMPTING TO PURCHASE ANY ALCOHOLIC BEVERAGE.
-								Wines &amp; Spirits are sold by FreshDirect Wines &amp; Spirits, an independently owned store with NY State #1277181 | 620 5th Ave,
-								Brooklyn, NY 11215, Tel: (718) 768-1521, M-W 1-10pm, Th-Sa  11am-10pm, Su  Noon-8pm  2016 FreshDirect, LLC dba FreshDirect Wines &amp; Spirits.
+							<p>**The Free Delivery Offer is for free delivery on qualifying orders for a 
+							60 day period. Offer applies to first-time customers only. Free delivery means 
+							no delivery or service fees. Qualifying orders must (a) exceed minimum purchase 
+							requirements before taxes &amp; fees, (b) be within eligible delivery areas, and (c) 
+							have a delivery window greater than 1 hour. Offer is subject to availability. Offer 
+							will automatically apply starting on the day of your first purchase and will 
+							expire sixty (60) days thereafter. This is a limited time offer. FoodKick reserves 
+							the right to cancel or modify this offer at any time. Offer is nontransferable. 
+							Void where prohibited.
 							</p>	
 							
 							<xsl:if test="//fromEmail != ''">
-								<br /><br />Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br /><br />
+								<br />Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br /><br />
 							</xsl:if>
+							
+							If you prefer not to receive promotional email messages from us, please <a style="color: #888;" href="https://www.freshdirect.com/your_account/signin_information.jsp
+							">click here</a>.<br /><br />
 							<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
 							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br /><br />
 							23-30 Borden Ave. Long Island City, NY 11101<br /><br />
 							<!-- <a href="#">Customer Agreement</a><br /> -->
 							
 							<a href="#" style="color: #888; text-decoration:none;">Customer Agreement</a><br />
-							&#169;2002 - <xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.
+							 &#169; <xsl:value-of select="substring(//curYear,1,4)" />. Fresh Direct, LLC. All Rights Reserved.
 						</div>
 						
 					</td>

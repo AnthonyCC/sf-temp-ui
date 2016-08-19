@@ -26,7 +26,7 @@
 
 	<xsl:variable name="fontfamily" select="'font-family:Arial, Helvetica, sans-serif;'" />
 
-	<xsl:variable name="list_img_tag"><img src="{$img_dir}/check.jpg" style="position:relative;top:5px; margin-right:3px;" /></xsl:variable>
+	<xsl:variable name="list_img_tag"><img src="{$img_dir}/check_60.jpg" style="position:relative;top:5px; margin-right:3px;" /></xsl:variable>
 	<xsl:variable name="list_style" select="concat( $fontfamily, 'margin-bottom:0px; padding-top: 3px; padding-left:0px; min-height:20px; background-position: 0px 1px; text-align:left;')" />
 	<xsl:variable name="cell_style" select="concat( $fontfamily, 'text-align:left; white-space:nowrap;')" />
 	
@@ -50,7 +50,7 @@
 					<table width="" style="width:{$layout_w}px; {$layout_maxw_str} background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
 						<tr>
 							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">
-								Welcome to FoodKick! + 30 Days of Free Delivery
+								Welcome to FoodKick! + 60 Days of Free Delivery
 							</td>
 							<td align="right" style="text-align:right; {$fontfamily} white-space:nowrap; width:152px">
 								&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a>
@@ -66,43 +66,41 @@
 				<table width="" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px; {$layout_w_str} {$layout_maxw_str}">
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width=""><img src="{$img_dir}/hero.png" style="{$layout_maxw_str}" /></td>
+						<td width=""><img src="{$img_dir}/hero_60.gif" style="{$layout_maxw_str}" /></td>
 						<td width="33%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}" align="left" style="text-align:left;">-->
 						<td width="" align="left" style="text-align:left; {$layout_maxw_str}">
-							<div style="color: {$purple}; font-size: 26px; {$fontfamily} font-weight: bold; margin: 27px 0 1px;">
-								Welcome to Life on FoodKick!
-							</div>
-							
+														
 							<p style="margin-bottom:7px; {$fontfamily}">
-								Get the food and booze that makes the moment-we'll bring it to your door in as little as one hour. Plus, your first 30 days of delivery are FREE!*
+								Hey <xsl:value-of select="customer/firstName"/>,
 							</p>
 							<p style="margin-bottom:7px; {$fontfamily}">
-								We curate FoodKick daily to bring you the best of what's fresh right now, so you can discover new ideas and favorites like:
+								Welcome to life on FoodKick! We curate our selection daily to bring you the food + booze you need right now–and we'll deliver to your door<b> in as little as an hour.</b>
 							</p>
+							<p style="color: {$purple}; font-size: 16px; {$fontfamily} font-weight: bold; margin: 20px 0 1px;">								
+								No need to plan or run to the store ever again.
+							</p>						
 							
 							<p style="{$list_style}">
-								<xsl:copy-of select="$list_img_tag"/> Customizable meal hacks &amp; ready-to-eat solutions
+								<xsl:copy-of select="$list_img_tag"/> Meal hacks–from grab-and-go breakfasts to quick weeknight dinners
 							</p>
 
 							<p style="{$list_style}">
-								<xsl:copy-of select="$list_img_tag"/> Farm-fresh produce, meat, fish and dairy
+								<xsl:copy-of select="$list_img_tag"/> Cold beers and party-perfect snacks
 							</p>
 							<p style="{$list_style}">
-								<xsl:copy-of select="$list_img_tag"/> Pantry staples and home essentials
+								<xsl:copy-of select="$list_img_tag"/> Top selection of wines and spirits
 							</p>
 							<p style="{$list_style}">
-								<xsl:copy-of select="$list_img_tag"/> Wines, spirits, and beers to cheers
+								<xsl:copy-of select="$list_img_tag"/> Locally-sourced produce, meat, fish, and dairy
 							</p>
-							
-							<p style="margin-bottom:20px; {$fontfamily}">
-								<b>No need to plan or run errands ever again.</b> <br/>
-								Seriously, even for TP.  Go ahead and place an order now, so you can get back to doing you.
+							<p style="{$list_style}">
+								<xsl:copy-of select="$list_img_tag"/> Pantry staples and home essentials (like TP + Advil)
 							</p>
-							
+																					
 							<!--<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">-->
 							<table width="" align="center" style="width: 276px; max-width:40vw; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
 								<tr>
@@ -118,7 +116,7 @@
 										<a href="{$editorial_dir}/ua_router.html" style=" color: {$white}; text-decoration:none;">
 											<!--<img src="{$img_dir}/button2.png" width="1" height="32" border="0" alt="" />-->
 											
-											<img src="http://i.imgur.com/Y6lnAVB.png" width="277" height="49" border="0" alt="" style="max-width:40vw;" />
+											<img src="{$img_dir}/button_60.jpg" width="277" height="69" border="0" alt="" style="max-width:40vw;" />
 										</a>
 									</td>
 									<td style="margin:0px;padding:0px;border:none;">
@@ -133,8 +131,7 @@
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}">-->
 						<td width="">
-							<h2 style="color:{$purple};text-align:center;font-size:1.3em; margin-top: 28px; margin-bottom: 45px; {$fontfamily}">Get your first 30 days of delivery FREE!</h2>
-							<img src="{$img_dir}/insta.jpg" style="{$layout_maxw_str}" />
+							<img src="{$img_dir}/insta_60.gif" style="{$layout_maxw_str}" />
 							<p style="font-size: 18px; line-height: 25px; {$fontfamily}">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>
 						</td>
 						<td width="33%">&nbsp;</td>
