@@ -88,6 +88,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 			Map<String, String> socialUserProfile = getSocialUserProfile(requestMessage.getAccessToken(), requestMessage.getProvider());
 			model = socialConnectAccount(model, user, socialUserProfile, requestMessage.getContext(), request, response);
 		} if(ACTION_SOCIAL_LOGIN.equals(action)){
+		    // use connection token for social login, which comes from oneall service
 		    Map<String, String> socialUserProfile = getSocialUserProfile(request.getParameter("connection_token"));
 			model = socialConnectAccount(model, user, socialUserProfile, request.getParameter("context"), request, response);
 			redirectAfterLogin(response, request.getParameter("redirect_url"));
@@ -100,7 +101,7 @@ public class ExternalAccountController extends BaseController implements SystemM
             try {
                 response.sendRedirect(redirectUrl);
             } catch (IOException e) {
-                LOGGER.warn("Given redirect url could not been found: " + redirectUrl);
+                LOGGER.warn("Given redirect url could not be found: " + redirectUrl);
             }
         }
     }

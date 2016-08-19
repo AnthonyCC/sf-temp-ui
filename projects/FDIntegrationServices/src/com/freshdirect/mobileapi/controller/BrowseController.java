@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -27,7 +26,6 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
-import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
@@ -40,8 +38,6 @@ import com.freshdirect.mobileapi.controller.data.CatalogKeyResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
-import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
-import com.freshdirect.mobileapi.controller.data.response.ProductCatalogMessageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
@@ -76,7 +72,6 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
-    private static final String ACTION_GET_PRODUCTS_BY_PRODUCT_IDS = "getProductsByProductsIds";
 	private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
 
@@ -284,27 +279,6 @@ public class BrowseController extends BaseController {
 	        	long endTime=System.currentTimeMillis();
 	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
 	            return model;
-            } else if (ACTION_GET_PRODUCTS_BY_PRODUCT_IDS.equals(action)) {
-                List<String> errorProductIds = new ArrayList<String>();
-                CatalogInfo catalogInfo = BrowseUtil.getCatalogInfo(user);
-                String plantId = BrowseUtil.getPlantId(user);
-                ProductCatalogMessageResponse browseResponse = new ProductCatalogMessageResponse();
-                LoggedIn loginMessage = createLoginResponseMessage(user);
-                browseResponse.setStatus(loginMessage.getStatus());
-                browseResponse.setLogin(loginMessage);
-                browseResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
-                browseResponse.setConfiguration(getConfiguration(user));
-                browseResponse.setPlantId(plantId);
-                browseResponse.setProducts(BrowseUtil.getProducts(requestMessage.getProductIds(), plantId,
-                        new PricingContext(catalogInfo.getKey().getPricingZone()), errorProductIds));
-                for (String errorProductId : errorProductIds) {
-                    browseResponse.addErrorMessage(errorProductId);
-                }
-
-                setResponseMessage(model, browseResponse, user);
-                long endTime = System.currentTimeMillis();
-                LOG.debug(((endTime - startTime) / 1000) + " seconds");
-                return model;
             }
         } else {
         	if (ACTION_GET_ALL_CATALOG_KEYS.equals(action)){

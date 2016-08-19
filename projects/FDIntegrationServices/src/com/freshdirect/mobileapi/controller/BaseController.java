@@ -38,7 +38,10 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.Buildver;
@@ -47,7 +50,6 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
-import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -321,7 +323,12 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected <T> T parseRequestObject(HttpServletRequest request, HttpServletResponse response, Class<T> valueType) throws JsonException {
         try {
-            return getMapper().readValue(getPostData(request, response), valueType);
+            String data = getPostData(request, response);
+            if (data != null){
+                return getMapper().readValue(getPostData(request, response), valueType);
+            } else {
+                return null;
+            }
         } catch (JsonGenerationException e) {
             throw new JsonException(e);
         } catch (JsonMappingException e) {
@@ -366,15 +373,15 @@ public abstract class BaseController extends AbstractController implements Messa
     
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
-            try {
-            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
-            		responseMessage.addNoticeMessages(oasService.getMessages(user));
-            	} else {
-                    responseMessage.addNoticeMessages(oasService.getMessages());
-            	}
-            } catch (ServiceException e) {
-                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
-            }
+//            try {
+//            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
+//            		responseMessage.addNoticeMessages(oasService.getMessages(user));
+//            	} else {
+//                    responseMessage.addNoticeMessages(oasService.getMessages());
+//            	}
+//            } catch (ServiceException e) {
+//                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
+//            }
             model.addObject("data", getJsonString(responseMessage));
 
         } catch (JsonGenerationException e) {
@@ -592,7 +599,22 @@ public abstract class BaseController extends AbstractController implements Messa
                 .getTotalOrderCount());
 
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
+        responseMessage.setMobileNumber(getMobileNumber(user));
         return responseMessage;
+    }
+
+    private String getMobileNumber(SessionUser user) throws FDResourceException {
+        String mobileNumber = null;
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+        FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
+        FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
+
+        if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
+            mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
+        } else {
+            mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
+        }
+        return mobileNumber;
     }
 	
     protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
@@ -627,8 +649,4 @@ public abstract class BaseController extends AbstractController implements Messa
         return SessionUser.wrap(fdSessionUser);
     }
 
-    protected boolean isFoodkickRequest(RequestMessage requestMessage) {
-        return (requestMessage != null && EnumTransactionSource.IPHONE_WEBSITE == EnumTransactionSource.getTransactionSource(requestMessage.getSource()));
-    }
-	
 }

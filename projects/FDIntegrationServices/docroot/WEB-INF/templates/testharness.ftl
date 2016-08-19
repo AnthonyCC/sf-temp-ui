@@ -387,7 +387,7 @@ function loadStuff() {
     
   } else if (loaddata == "SetPaymentMethodsExWeb") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
-  	$("#payload").val('{ "source" : "IPW", "paymentMethodId" : "2148933362", "billingRef" : "" }');
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "", "webResponse" : true}');
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -675,7 +675,7 @@ function loadStuff() {
 
   } else if (loaddata == "SearchWebEX") {
   	$("#url").val("/searchEX/");
-  	$("#payload").val('{"source" : "IPW"}');
+  	$("#payload").val('{"query": "coffee", "page" : "1", "webResponse" : true}');
   	$.apitype = "mobile";
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -750,6 +750,13 @@ function loadStuff() {
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
+  } else if(loaddata == "SetMobilePreferencesWeb") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
+  	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y", "webResponse" : true}');
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
   } else if(loaddata == "SetEmailPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setemailpreferences/");
   	$("#payload").val('{ "email_subscribed" : "Y" }');
@@ -795,6 +802,13 @@ function loadStuff() {
   } else if (loaddata == "Logout") {
   	$("#url").val("/saptest12@freshdirect.com/logout/");
   	$("#payload").val("");
+    $.apitype = "mobile";
+    $.httpMethod = "POST";
+    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+    
+  } else if (loaddata == "LogoutWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/logout/");
+  	$("#payload").val('{"webResponse" : true}');
     $.apitype = "mobile";
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -1118,8 +1132,8 @@ function loadStuff() {
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 paym
   } else if (loaddata == "AccountDeliveryTimeslotsWeb") {
-  	$("#url").val("/saptest12@freshdirect.com/account/timeslots");
-  	$("#payload").val('{"source" : "IPW"}');
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/15710980759");
+  	$("#payload").val('{"webResponse" : true}');
   	$.apitype = "mobile";
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -1334,15 +1348,6 @@ paym
   } else if (  loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/"); 
   	var postdata = '{"id": "fsh_deli_meat", "filterByIds" : ["filter_global_rwa"], "sortBy" : "PRICE"}';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  	
-    $.apitype = "mobile";
-    $.httpMethod = "POST";
-    $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  } else if (  loaddata == "getProductsByProductIds") {
-  	$("#url").val("/browse/getproductsbyproductids/"); 
-  	var postdata = '{"source" : "IPW", "productIds" : ["hba_aveeno_bbylavbth", "gro_7gen_gelbbyshmpoo"]}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
     $.apitype = "mobile";
@@ -1698,9 +1703,9 @@ paym
     $.httpMethod = "POST";
     $.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 
-  } else if (loaddata == "LoginCheck") {
-  	$("#url").val("/saptest12@freshdirect.com/login/check/");
-  	$("#payload").val('{"source" : "IPW"}');
+  } else if (loaddata == "SessionWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/session/check/");
+  	$("#payload").val('{"source" : "IPW", "webResponse" : true}');
   	$.apitype = "mobile";
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -1713,8 +1718,8 @@ paym
   	$.httpMethod = "POST";
   	$.contentType = "application/x-www-form-urlencoded; charset=UTF-8";;
 
-  } else if (loaddata == "getPages") {
-  	$("#url").val("/home/getPages/");
+  } else if (loaddata == "getHomePage") {
+  	$("#url").val("/home/getHomePage/");
   	$("#payload").val('{"requestedDate" : "2016-08-14T12:12:00.000-04:00"}');
   	$.apitype = "mobile";
   	$.httpMethod = "POST";
@@ -1879,9 +1884,10 @@ function doStuff() {
   <option value=""> ========== LOGIN ========== </option>
   <option value="Login">Login</option>
   <option value="Logout">Logout</option>
+  <option value="LogoutWeb">Logout Web</option>
   <option value="Ping">Ping</option>
   <option value="Session">Session</option>
-  <option value="LoginCheck">Login check</option>
+  <option value="SessionWeb">Session Web</option>
   <option value="AddAnonymousAddress">Add Anonymous Address</option>  
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
@@ -1973,7 +1979,6 @@ function doStuff() {
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
   <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
-  <option value="getProductsByProductIds">BROWSE - GET PRODUCTS BY PRODUCT IDS</option>
 
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
@@ -2072,6 +2077,7 @@ function doStuff() {
   <option value="DeletePaymentMethodEx">ACCOUNT - Delete Payment Method Ex</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
   <option value="SetMobilePreferences">ACCOUNT - Set Mobile Preferences</option>
+  <option value="SetMobilePreferencesWeb">ACCOUNT - Set Mobile Preferences Web</option>
   <option value="GetMobilePreferences">ACCOUNT - Get Mobile Preferences</option>
   <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
   <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
@@ -2118,7 +2124,7 @@ function doStuff() {
   <option value="featuredCategories"> Home - Featured Categories </option>
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
-  <option value="getPages">Home - Get Pages (Home&Today'sPick)</option>
+  <option value="getHomePage">Home - Get Home Page Web</option>
 
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>

@@ -3,7 +3,6 @@ package com.freshdirect.mobileapi.controller.data.request;
 public class PaymentMethodSelection extends RequestMessage {
 
     private String paymentMethodId;
-
     private String billingRef;
 
     public String getBillingRef() {

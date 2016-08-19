@@ -28,7 +28,7 @@ import com.freshdirect.mobileapi.api.service.PasswordService;
 import com.freshdirect.mobileapi.api.validation.PasswordValidator;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.PasswordMessageRequest;
-import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
+import com.freshdirect.mobileapi.controller.data.request.SessionMessage;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -54,7 +54,7 @@ public class AccountController {
     private ObjectMapper objectMapper;
 
     @RequestMapping(value = "/checklogin", method = RequestMethod.GET)
-    public Message checkLogin(HttpServletRequest request, HttpServletResponse response, RequestMessage sessionRequest) throws FDException {
+    public Message checkLogin(HttpServletRequest request, HttpServletResponse response, SessionMessage sessionRequest) throws FDException {
         SessionUser user = accountService.getSessionUser(request, response, sessionRequest.getSource());
         LoggedIn sessionResponse = accountService.createLoginResponseMessage(user);
         sessionResponse.setConfiguration(configurationService.getConfiguration(user.getFDSessionUser()));
@@ -62,7 +62,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public void logout(HttpServletRequest request, HttpServletResponse response, RequestMessage sessionRequest) throws IOException {
+    public void logout(HttpServletRequest request, HttpServletResponse response, SessionMessage sessionRequest) throws IOException {
         accountService.logout(request.getSession(), response);
         response.sendRedirect(getLandingPagePath(request));
     }

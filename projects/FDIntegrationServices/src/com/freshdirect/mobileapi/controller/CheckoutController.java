@@ -921,7 +921,7 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()) {
-            if (isFoodkickRequest(reqestMessage)) {
+            if (reqestMessage.isWebResponse()) {
                 responseMessage = getPaymentMethods(user);
             } else {
                 responseMessage = Message.createSuccessMessage("Payment method set successfully.");

@@ -577,7 +577,12 @@ public class RegistrationController extends BaseController implements SystemMess
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
+            if (reqestMessage.isWebResponse()) {
+                responseMessage = super.formatLoginMessage(user);
+            } else {
+                responseMessage = new Message();
+            }
+            responseMessage.setSuccessMessage("Contact Number added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
         }

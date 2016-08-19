@@ -1,23 +1,15 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-import com.freshdirect.mobileapi.controller.data.Message;
+public class RequestMessage {
 
-/**
- * 
- * @author 
- *
- */
-public class RequestMessage extends Message {
+    private boolean webResponse;
 
-    private String source;
+    public boolean isWebResponse() {
+        return webResponse;
+    }
 
-    
-	public String getSource() {
-		return source;
-	}
+    public void setWebResponse(boolean webResponse) {
+        this.webResponse = webResponse;
+    }
 
-	public void setSource(String source) {
-		this.source = source;
-	}
-        
 }

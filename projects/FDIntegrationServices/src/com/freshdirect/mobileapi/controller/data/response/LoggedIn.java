@@ -46,7 +46,8 @@ public class LoggedIn extends Message {
     private boolean tcAcknowledge;
     private boolean anonymousAddressSetFromAcc;
     private String plantId;
-    
+    private String mobileNumber;
+
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
 	}
@@ -227,6 +228,14 @@ public class LoggedIn extends Message {
 
     public void setPlantId(String plantId) {
         this.plantId = plantId;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
 }

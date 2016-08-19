@@ -56,7 +56,7 @@ public class HomeController extends BaseController {
 	private static final String ACTION_GET_FEATURED_CATEGORIES = "getFeaturedCategories";
 	private static final String ACTION_GET_All_DETAILS = "getAllDetails";
 	private static final String ACTION_GET_CMS_PAGE = "getPage";
-	private static final String ACTION_GET_CMS_PAGES = "getPages";
+	private static final String ACTION_GET_HOME_PAGE = "getHomePage";
 	private static final Integer DEFAULT_PAGE = 1;
 	private static final Integer DEFAULT_MAX = 998;
 
@@ -73,8 +73,8 @@ public class HomeController extends BaseController {
 			return getAllDetails(model, user, request);
 		} else if (ACTION_GET_CMS_PAGE.equals(action)){
 			return getCMSPage(model, user, request, response);
-        } else if (ACTION_GET_CMS_PAGES.equals(action)){
-            return getCMSPages(model, user, request, response);
+        } else if (ACTION_GET_HOME_PAGE.equals(action)){
+            return getHomePage(model, user, request, response);
         }
 		throw new UnsupportedOperationException();
 	}
@@ -242,7 +242,8 @@ public class HomeController extends BaseController {
 		return model;
 	}
 	
-    private ModelAndView getCMSPages(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
+	// Gives back Home and Today's Pick feeds back
+    private ModelAndView getHomePage(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
         PageMessageResponse pageResponse = new PageMessageResponse();
         CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 

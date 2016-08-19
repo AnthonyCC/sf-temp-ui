@@ -19,6 +19,7 @@ import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -26,8 +27,10 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
@@ -41,6 +44,7 @@ import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -133,12 +137,28 @@ public class AccountService {
             // FDX-1873 - Show timeslots for anonymous address
             boolean deliveryAddr = setDeliveryAddress(user);
             responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
+            responseMessage.setPlantId(BrowseUtil.getPlantId(user));
+            responseMessage.setMobileNumber(getMobileNumber(user));
         } else {
             responseMessage.setFailureMessage("User is not logged in.");
         }
         return responseMessage;
     }
 
+    private String getMobileNumber(SessionUser user) throws FDResourceException {
+        String mobileNumber = null;
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+        FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
+        FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
+
+        if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
+            mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
+        } else {
+            mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
+        }
+        return mobileNumber;
+    }
+    
     // FDX-1873 - Show timeslots for anonymous address
     // FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
     private boolean setDeliveryAddress(SessionUser user) throws FDException {

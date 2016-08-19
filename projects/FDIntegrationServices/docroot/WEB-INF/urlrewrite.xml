@@ -153,11 +153,6 @@
 		<to last="true">/login.do?action=loginXE&amp;ver=$1</to>
 	</rule>
 	
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/login/check/</from>
-		<to last="true">/login.do?action=checklogin&amp;ver=$1</to>
-	</rule>
-
 	<!-- Session -->
     <rule>
         <from>^/v/([0-9]+)/(.*)/session/check/</from>
@@ -954,10 +949,6 @@
 		<to last="true">/browse.do?action=getAllProductsEX&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/browse/getproductsbyproductids/(.*)</from>
-		<to last="true">/browse.do?action=getProductsByProductsIds&amp;ver=$1</to>
-	</rule>
-	<rule>
 		<from>^/v/([0-9]+)/browse/getCatalogForAddress/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogForAddress&amp;ver=$1</to>
 	</rule>
@@ -998,8 +989,8 @@
 		<to last="true">/home.do?action=getPage&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/home/getPages/(.*)</from>
-		<to last="true">/home.do?action=getPages&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/home/getHomePage/(.*)</from>
+		<to last="true">/home.do?action=getHomePage&amp;ver=$1</to>
 	</rule>
 
 	<!-- Home -->

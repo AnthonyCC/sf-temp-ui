@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.freshdirect.mobileapi.catalog.model.CatalogKey;
 
-public class BrowseQuery extends RequestMessage {
+public class BrowseQuery extends SessionMessage {
 	public static final Integer DEFAULT_PAGE = 1;
 	public static final Integer DEFAULT_MAX = 25;
 

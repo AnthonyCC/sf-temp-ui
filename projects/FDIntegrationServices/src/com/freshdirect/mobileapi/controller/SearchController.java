@@ -19,7 +19,6 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
@@ -43,10 +42,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class SearchController extends BaseController {
     private static org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
 
-    private static final String JSON_RENDERED = "json-rendered";
-
     private static final String AUTOCOMPLETE_ACTION = "autocomplete";
-    
     private static final String ACTION_SEARCH_EX = "searchEX";
 
     protected boolean validateUser() {
@@ -294,7 +290,7 @@ public class SearchController extends BaseController {
         data.setDidYouMean(productService.getSpellingSuggestion());
         data.setDefaultSortOptions();
         
-        if (isFoodkickRequest(requestMessage)){
+        if (requestMessage.isWebResponse()){
             SearchMessageResponse searchResponse = new SearchMessageResponse();
             LoggedIn loginMessage = createLoginResponseMessage(user);
             searchResponse.setStatus(loginMessage.getStatus());

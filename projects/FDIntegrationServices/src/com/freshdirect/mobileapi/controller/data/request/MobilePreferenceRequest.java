@@ -1,8 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-import com.freshdirect.mobileapi.controller.data.Message;
-
-public class MobilePreferenceRequest extends Message {
+public class MobilePreferenceRequest extends RequestMessage {
 
 	private String mobile_number;
 	private String order_notices;
