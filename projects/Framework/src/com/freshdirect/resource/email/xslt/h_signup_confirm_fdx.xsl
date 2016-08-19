@@ -104,24 +104,14 @@
 							<!--<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">-->
 							<table width="" align="center" style="width: 276px; max-width:40vw; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
 								<tr>
-									<td style="margin:0px;padding:0px;border:none">
-										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;border:none" />
-									</td>
-									<!--
-									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold; background-color: {$purple};">
-										<a href="{$site}/media/editorial/foodkick/ua_router.html" style=" color: {$white}; text-decoration:none;">LET&#8217;S KICK IT</a>
-									</td>
-									//-->
+																		
 									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold;">
 										<a href="{$editorial_dir}/ua_router.html" style=" color: {$white}; text-decoration:none;">
-											<!--<img src="{$img_dir}/button2.png" width="1" height="32" border="0" alt="" />-->
 											
 											<img src="{$img_dir}/button_60.jpg" width="277" height="69" border="0" alt="" style="max-width:40vw;" />
 										</a>
 									</td>
-									<td style="margin:0px;padding:0px;border:none;">
-										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;border:none" />
-									</td>
+									
 								</tr>
 							</table>
 						</td>
