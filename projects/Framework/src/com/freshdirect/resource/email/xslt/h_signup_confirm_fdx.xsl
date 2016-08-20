@@ -21,13 +21,10 @@
 	<xsl:variable name="layout_w" select="'452'" />
 	<xsl:variable name="layout_w_str" select="concat('width:', $layout_w, 'px;')" />
 
-	<xsl:variable name="layout_maxw" select="'80vw'" />
-	<xsl:variable name="layout_maxw_str" select="concat('max-width:', $layout_maxw, ';')" />
-
 	<xsl:variable name="fontfamily" select="'font-family:Arial, Helvetica, sans-serif;'" />
 
 	<xsl:variable name="list_img_tag"><img src="{$img_dir}/check_60.jpg" style="position:relative;top:5px; margin-right:3px;" /></xsl:variable>
-	<xsl:variable name="list_style" select="concat( $fontfamily, 'margin-bottom:0px; padding-top: 3px; padding-left:0px; min-height:20px; background-position: 0px 1px; text-align:left;')" />
+	<xsl:variable name="list_style" select="concat( $fontfamily, 'margin-bottom:0px; padding-top: 3px; padding-left:0px; background-position: 0px 1px; text-align:left;')" />
 	<xsl:variable name="cell_style" select="concat( $fontfamily, 'text-align:left; white-space:nowrap;')" />
 	
 	<xsl:template match="fdemail">
@@ -43,11 +40,11 @@
 	</xsl:template>
 
 	<xsl:template name="mail_body">
-		<table style="text-align:center; background-color: {$purple}; white-space:nowrap; min-height:24px; width:100%; {$layout_maxw_str}">
+		<table style="text-align:center; background-color: {$purple}; white-space:nowrap; min-height:24px; width:100%;">
 			<tr>
 				<td style="padding-right: 23px;">
 					<!--<table width="{$layout_w}" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">-->
-					<table width="" style="width:{$layout_w}px; {$layout_maxw_str} background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
+					<table width="" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
 						<tr>
 							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">
 								Welcome to FoodKick! + 60 Days of Free Delivery
@@ -63,16 +60,16 @@
 		
 		<div align="center" style="{$fontfamily} margin: 5px auto; padding: 0px 25px 0px 5px; text-align:center; box-sizing: border-box;">
 			<div style="margin: 10px auto; font-size: {$fontsize_p}; text-align: center;">
-				<table width="" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px; {$layout_w_str} {$layout_maxw_str}">
+				<table width="" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px; {$layout_w_str}">
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width=""><img src="{$img_dir}/hero_60.gif" style="{$layout_maxw_str}" /></td>
+						<td width=""><img src="{$img_dir}/hero_60.gif" /></td>
 						<td width="33%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}" align="left" style="text-align:left;">-->
-						<td width="" align="left" style="text-align:left; {$layout_maxw_str}">
+						<td width="" align="left" style="text-align:left;">
 														
 							<p style="margin-bottom:7px; {$fontfamily}">
 								Hey <xsl:value-of select="customer/firstName"/>,
@@ -102,13 +99,13 @@
 							</p>
 																					
 							<!--<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">-->
-							<table width="" align="center" style="width: 276px; max-width:40vw; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
+							<table width="" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
 								<tr>
 																		
-									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold;">
+									<td style="font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold;">
 										<a href="{$editorial_dir}/ua_router.html" style=" color: {$white}; text-decoration:none;">
 											
-											<img src="{$img_dir}/button_60.jpg" width="277" height="69" border="0" alt="" style="max-width:40vw;" />
+											<img src="{$img_dir}/button_60.jpg" width="277" height="69" border="0" alt="Shop Now" />
 										</a>
 									</td>
 									
@@ -121,7 +118,7 @@
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}">-->
 						<td width="">
-							<a href="https://www.instagram.com/foodkick/"> <img src="{$img_dir}/insta_60.gif" style="{$layout_maxw_str}" /></a>							  
+							<a href="https://www.instagram.com/foodkick/"> <img src="{$img_dir}/insta_60.gif" /></a>							  
 						</td>
 						<td width="33%">&nbsp;</td>
 					</tr>

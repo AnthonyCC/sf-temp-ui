@@ -10,48 +10,28 @@
 	<xsl:variable name="sociallink_styles" select="'text-decoration: none; border: none;padding-right:20px;display:inline-block'" />
 	<!--<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 33%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />-->
 	
-	<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 49%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />
-	<xsl:variable name="whitebutton_styles" select="concat('padding: 8px 5px 6px; margin: 10px;font-size: ', $fontsize_p, ';color: #732484;font-weight: bold;height: 36px;text-decoration: none; ', $fontfamily, 'width:158px;text-align:center; box-sizing: border-box;  white-space: nowrap;')" />
+	<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 50%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />
+	<xsl:variable name="whitebutton_styles" select="concat('padding: 8px 5px 6px; margin: 10px;font-size: ', $fontsize_p, ';color: #732484;font-weight: bold;height: 36px;text-decoration: none; ', $fontfamily, 'width:160px;text-align:center; box-sizing: border-box;  white-space: nowrap;')" />
 	
 	<xsl:template name="h_footer_fdx2">
 		<div style="margin: 0px auto; text-align: center;">
-			<table cellpadding="0" cellspacing="7" width="" style="{$layout_w_str} {$layout_maxw_str} border-collapse: separate; padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
-				<!--<tr>
-					<td width="50%" style="text-align: center; padding: 0 5px 5px 0;">
-						<a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">
-							Check/Change an Order
-						</a>
-					</td>
-					<td style="text-align: center; padding: 0 0 5px 5px;"><a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">Contact Us</a></td>
-				</tr>-->
-				<!--<tr>
-					<td colspan="3" style="height: 14px;"><img src="/images/clear.gif" width="1" height="10" border="0" alt="" style="display:none" /></td>
-				</tr>-->
+			<table cellpadding="0" cellspacing="7" width="" style="{$layout_w_str} border-collapse: separate; padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
 				<tr>
-					<td style="{$whitebutton_cell_styles}">
-						<a href="mailto:sidekicks@foodkick.com" style="{$whitebutton_styles}">Contact Us</a>
-					</td>
-					<td style="padding:0px"> &nbsp; </td>
-					<!--<td style="{$whitebutton_cell_styles}">
-						<a href="{$site}" style="{$whitebutton_styles}">Go to FoodKick</a>
-					</td>-->
-					<td style="padding:0px"> &nbsp; </td>
-					<td style="padding:0px"> &nbsp; </td>
-					<td style="{$whitebutton_cell_styles}">
-						<a href="{$site}/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a>
-					</td>
+					<td style="{$whitebutton_cell_styles}"><a href="mailto:sidekicks@foodkick.com" style="{$whitebutton_styles}">Contact Us</a></td>
+					<td style="padding:0px">&nbsp;</td>
+					<td style="padding:0px">&nbsp;</td>
+					<td style="padding:0px">&nbsp;</td>
+					<td style="{$whitebutton_cell_styles}"><a href="{$site}/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a></td>
 				</tr>
 
-				<tr> <td colspan="5" style="padding:0px"> &nbsp; </td> </tr>
+				<tr> <td colspan="5" style="padding:0px">&nbsp;</td></tr>
 
 				<tr>
 					<td colspan="5" style="background-color: #ffffff; border: 1px solid {$border_color}; margin: 5px; padding: 20px;">
 						<table cellpadding="0" cellspacing="0" width="100%" style="padding: 0; margin: 0; border-collapse: collapse; border-spacing: 0; border-style: none;" class="section email-footer-block">
 							<tr>
 								<td width="50%" style="font-family:Georgia, Times New Roman, Times, serif;font-size: 22px; font-weight: bold; padding-right: 10px;" align="center" valign="middle">
-									Spread the
-									<img src="{$img_dir}/heart.png" alt="love" style="margin-bottom: -5px;" />
-									tell a friend
+									Spread the&nbsp;<img src="{$img_dir}/heart.png" alt="love" style="margin-bottom: -5px;" />&nbsp;tell a friend
 								</td>
 							</tr>
 							<tr>
@@ -72,7 +52,7 @@
 						<div style="color: #888; padding: 20px;  {$fontfamily}">
 							<p>*You must be twenty-one or older to purchase alcohol. Wines &amp; Spirits are sold 
 							by FreshDirect Wines &amp; Spirits, an independently owned store with NY State 
-							License #1277181 | 620 5th Ave, Brooklyn, NY 11215. ©2016 Fresh Direct, LLC.
+							License #1277181 | 620 5th Ave, Brooklyn, NY 11215.
 							</p>
 							
 							<p>**The Free Delivery Offer is for free delivery on qualifying orders for a 
