@@ -15,7 +15,7 @@
 	
 	<xsl:template name="h_footer_fdx2">
 		<div style="margin: 0px auto; text-align: center;">
-			<table cellpadding="0" cellspacing="7" width="" style="{$layout_w_str} border-collapse: separate; padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
+			<table cellpadding="0" cellspacing="7" width="" style="{$layout_w_str} padding: 0; margin: auto; border-spacing: 7px; border-style: none; box-sizing: border-box;">
 				<tr>
 					<td style="{$whitebutton_cell_styles}"><a href="mailto:sidekicks@foodkick.com" style="{$whitebutton_styles}">Contact Us</a></td>
 					<td style="padding:0px">&nbsp;</td>
@@ -67,17 +67,16 @@
 							</p>	
 							
 							<xsl:if test="//fromEmail != ''">
-								<br />Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br /><br />
+								<br />Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br/><br/>
 							</xsl:if>
 							
-							If you prefer not to receive promotional email messages from us, please <a style="color: #888;" href="https://www.freshdirect.com/your_account/signin_information.jsp
-							">click here</a>.<br /><br />
+							If you prefer not to receive promotional email messages from us, please <a style="color: #888;" href="http://e.freshdirect.com/FoodkickUnsubscribe">click here</a>.<br/><br/>
 							<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
-							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br /><br />
-							23-30 Borden Ave. Long Island City, NY 11101<br /><br />
+							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br/><br/>
+							23-30 Borden Ave. Long Island City, NY 11101<br/><br/>
 							<!-- <a href="#">Customer Agreement</a><br /> -->
 							
-							<a href="#" style="color: #888; text-decoration:none;">Customer Agreement</a><br />
+							<a href="#" style="color: #888; text-decoration:none;">Customer Agreement</a><br/>
 							 &#169; <xsl:value-of select="substring(//curYear,1,4)" />. Fresh Direct, LLC. All Rights Reserved.
 						</div>
 						
