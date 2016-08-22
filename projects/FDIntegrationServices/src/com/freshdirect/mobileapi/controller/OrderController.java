@@ -13,6 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -96,6 +98,7 @@ public class OrderController extends BaseController {
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */
+    @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
 
@@ -494,7 +497,8 @@ public class OrderController extends BaseController {
         requestData.setSearchTerm(query.getQuery());
         try {
 			FilteringNavigator nav = requestData.convertToFilteringNavigator();
-			FilteringFlowResult<QuickShopLineItemWrapper> result=QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(fdUser, request.getSession(), nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
+            FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(request, fdUser,
+                    request.getSession(), nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
 			return convertToSkuList(result, fdUser);
         } catch (FDResourceException e) {
 			throw new ModelException(e);

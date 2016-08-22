@@ -3,11 +3,13 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class SimpleSearchTag extends AbstractGetterTag<SearchResults> {
@@ -29,7 +31,9 @@ public class SimpleSearchTag extends AbstractGetterTag<SearchResults> {
 
 	@Override
 	protected SearchResults getResult() throws Exception {
-		SearchResults results = ContentSearch.getInstance().searchProducts(nav.getSearchTerm());
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+        SearchResults results = SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user);
 		// Google Analytics Custom Variables
 		if (!nav.isRefined()) {
 			Map<String, String> vars = new LinkedHashMap<String, String>();

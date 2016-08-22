@@ -11,14 +11,16 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.search.SearchService;
 
 /**
  *
@@ -46,7 +48,8 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 		this.searchResults = s;
 	}
 
-	public int doStartTag() throws JspException {
+	@Override
+    public int doStartTag() throws JspException {
 		//
 		// Sanity check the search criteria before performing search
 		//
@@ -61,7 +64,9 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			}
 		}
 
-        SearchResults res = ContentSearch.getInstance().searchProducts(searchFor);
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+        SearchResults res = SearchService.getInstance().searchProducts(searchFor, request.getCookies(), user);
 
 		// set search results in PageContext
 		pageContext.setAttribute(searchResults, res);

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -75,7 +76,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
 		
 		//transform request data
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();

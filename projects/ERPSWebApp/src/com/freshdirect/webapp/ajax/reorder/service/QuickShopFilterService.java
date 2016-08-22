@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -45,16 +46,18 @@ public class QuickShopFilterService {
 		return INSTANCE;
 	}
 
-	public FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItemForPastOrders(FDUserI user, HttpSession session, FilteringNavigator nav, Set<FilteringValue> filters,
+    public FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItemForPastOrders(HttpServletRequest request, FDUserI user, HttpSession session,
+            FilteringNavigator nav, Set<FilteringValue> filters,
 			QuickShopListRequestObject requestData) throws FDResourceException {
 		EnumQuickShopTab tab = EnumQuickShopTab.PAST_ORDERS;
-		return collectQuickShopLineItem(user, session, nav, filters, tab.cacheName, tab, requestData);
+        return collectQuickShopLineItem(request, user, session, nav, filters, tab.cacheName, tab, requestData);
 	}
 
-	public FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItemForTopItems(FDUserI user, HttpSession session, FilteringNavigator nav, Set<FilteringValue> filters)
+    public FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItemForTopItems(HttpServletRequest request, FDUserI user, HttpSession session, FilteringNavigator nav,
+            Set<FilteringValue> filters)
 			throws FDResourceException {
 		EnumQuickShopTab tab = EnumQuickShopTab.TOP_ITEMS;
-		return collectQuickShopLineItem(user, session, nav, filters, tab.cacheName, tab, null);
+        return collectQuickShopLineItem(request, user, session, nav, filters, tab.cacheName, tab, null);
 	}
 
 	public QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom(Map<String, Map<FilteringValue, List<FilteringMenuItem>>> menu, String lastOrderId) {
@@ -81,7 +84,8 @@ public class QuickShopFilterService {
 		return result;
 	}
 
-	private FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItem(FDUserI user, HttpSession session, FilteringNavigator nav, Set<FilteringValue> filters, String cacheName,
+    private FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItem(HttpServletRequest servletRequest, FDUserI user, HttpSession session, FilteringNavigator nav,
+            Set<FilteringValue> filters, String cacheName,
 			EnumQuickShopTab tab, QuickShopListRequestObject requestData) throws FDResourceException {
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
@@ -89,7 +93,7 @@ public class QuickShopFilterService {
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
 		}
-		QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items);
+        QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, servletRequest.getCookies());
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
 		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");

@@ -14,15 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
@@ -58,7 +59,7 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-	protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
 		
 		QuickShopReturnValue responseData = null;
 		try {

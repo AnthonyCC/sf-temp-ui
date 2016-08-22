@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -33,14 +34,14 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
 		
 		LOG.info("Start processing request...");
 		QuickShopReturnValue responseData = null;
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();
 		
 		try {
-			FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(user, session, requestData, nav);
+            FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(user, session, requestData, nav, cookies);
 	
 			responseData = new QuickShopReturnValue(unwrapResult(createPage(requestData, result.getItems())),
 					result.getMenu(), 

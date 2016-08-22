@@ -41,6 +41,13 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 			<xs:attribute name="maxQuantity" type="xs:string" />
 			<xs:attribute name="qtyIncrement" type="xs:string" />
 			
+			<xs:attribute name="keywords" type="xs:string" />
+			<xs:attribute name="akaName" type="xs:string" />
+			<xs:attribute name="notSearchable" type="xs:boolean" />
+			<xs:attribute name="invisible" type="xs:boolean" />
+			<xs:attribute name="hideFromIphone" type="xs:boolean" />
+			<xs:attribute name="categoryName" type="xs:string" />
+			<xs:attribute name="departmentName" type="xs:string" />
 
 			
 	</xs:complexType>

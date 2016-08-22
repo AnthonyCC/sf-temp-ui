@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,9 +19,11 @@ import java.util.zip.ZipOutputStream;
 
 import javax.ejb.EJBException;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
@@ -35,6 +38,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.attributes.EnumAttributeType;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
@@ -44,6 +48,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
@@ -82,10 +87,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     private static final String PRODUCT_ZOOM_IMAGE = "PRODUCT_ZOOM_IMAGE";
     private static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
     private static final String URL_DOMAIN = "https://www.freshdirect.com";
-    private static final String BRAND = "BRAND";
 
     /**
-     * Constructor
+     * Constructor.
      */
     public FDProductFeedSessionBean() {
         super();
@@ -102,8 +106,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
 
     /**
-     * Remove method for container to call
-     * 
+     * Remove method for container to call.
+     *
      * @throws EJBException
      *             throws EJBException if there is any problem.
      */
@@ -112,16 +116,11 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
 
     public boolean uploadProductFeed() throws FDResourceException, RemoteException {
-
         try {
-
             LOGGER.info("Inside uploadProductFeed()..");
-            Products xmlProducts = new Products();
-            JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
-            populateProducts(xmlProducts);
-            uploadProductFeedFile(xmlProducts, jaxbCtx);
+            Products xmlProducts = populateProducts();
+            createAndUploadProductFeedFile(xmlProducts);
             LOGGER.info("Available products fetched & uploaded: " + xmlProducts.getProduct().size());
-
         } catch (Exception e) {
             LOGGER.error("Exception :" + e.getMessage());
             throw new FDResourceException(e);
@@ -129,181 +128,201 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         return true;
     }
 
-    private void populateProducts(Products xmlProducts) throws FDResourceException {
+    private Products populateProducts() throws FDResourceException {
+        Products xmlProducts = new Products();
         Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
-        if (null != skuContentKeys) {
+        if (skuContentKeys != null) {
             LOGGER.info("Skus in CMS: " + skuContentKeys.size());
             for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
                 ContentKey key = i.next();
                 String skucode = key.getId();
-                // if(skucode.equals("HMR0066220") || skucode.equals("MEA1075690")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
-                // if(skucode.startsWith("GRO")) {
                 ProductModel productModel = null;
                 FDProductInfo fdProductInfo = null;
                 FDProduct fdProduct = null;
                 try {
                     productModel = ContentFactory.getInstance().getProduct(skucode);
-                    if (null != productModel && !productModel.isOrphan() && !"Archive".equalsIgnoreCase(productModel.getDepartment().getContentName())) {
+                    if (productModel != null && !productModel.isOrphan() && !"Archive".equalsIgnoreCase(productModel.getDepartment().getContentName())) {
                         fdProductInfo = FDCachedFactory.getProductInfo(skucode);
                         fdProduct = FDCachedFactory.getProduct(fdProductInfo);
-
                     }
                 } catch (FDSkuNotFoundException e) {
                     // Ignore
                 }
-                if (null != fdProductInfo && null != fdProduct) {
-
+                if (fdProductInfo != null && fdProduct != null) {
                     Product product = new Product();
                     xmlProducts.getProduct().add(product);
-
                     populateProductBasicInfo(productModel, fdProductInfo, fdProduct, product);
-
                     populateAttributes(fdProductInfo, fdProduct, product, productModel);
-
                     populatePricingInfo(fdProduct, product);
-
                     populateGroupScalePriceInfo(skucode, product);
-
                     populateSalesUnitInfo(fdProduct, product);
-
                     populateNutritionInfo(fdProduct, product);
-
                     populateConfigurationsInfo(fdProduct, product, productModel.getUserContext().getPricingContext());
-
-                    populateRatingInfo(fdProductInfo, product, "1000");// ::FDX:: What plant to consider?
-
+                    populateRatingInfo(fdProductInfo, product, "1000"); // ::FDX:: What plant to consider?
                     populateInventoryInfo(fdProductInfo, product);
-
                     populateImages(productModel, product);
-
                     populateBrands(productModel, product);
                 }
-                // }
             }
         }
+        return xmlProducts;
     }
 
-    private void uploadProductFeedFile(Products xmlProducts, JAXBContext jaxbCtx) throws FDResourceException {
-
+    private void createAndUploadProductFeedFile(Products xmlProducts) throws FDResourceException, JAXBException {
         File rawProductFile = null;
-        String zipFileName = null;
+        final EnumEStoreId actualStoreId = CmsManager.getInstance().getEStoreEnum();
+        String fileName = createProductFeedFileName(actualStoreId);
+        String zipFileName = fileName + ".zip";
         try {
             if (!xmlProducts.getProduct().isEmpty()) {
-                FileInputStream in = null;
-                ZipOutputStream zos = null;
-                try {
-                    byte[] buffer = new byte[1024];
-                    Marshaller mar = jaxbCtx.createMarshaller();
-
-                    /*
-                     * CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler(); mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler);
-                     */
-
-                    mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                    String fileName = "FDProductFeed_" + df.format(new Date());
-
-                    // Serialize to a Xml file!
-                    rawProductFile = new File(fileName + ".xml");
-                    StreamResult result = new StreamResult(rawProductFile);
-                    mar.marshal(xmlProducts, result);
-
-                    // Zip it!
-                    zipFileName = fileName + ".zip";
-                    FileOutputStream fos = new FileOutputStream(zipFileName);
-                    zos = new ZipOutputStream(fos);
-                    ZipEntry ze = new ZipEntry(rawProductFile.getName());
-                    zos.putNextEntry(ze);
-
-                    int len;
-                    in = new FileInputStream(rawProductFile);
-                    while ((len = in.read(buffer)) > 0) {
-                        zos.write(buffer, 0, len);
-                    }
-                } catch (Exception e) {
-                    throw new FDResourceException("feed serialization failed: " + e.getMessage(), e);
-                } finally {
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-                        if (zos != null) {
-                            zos.closeEntry();
-                            zos.close();
-                        }
-                    } catch (Exception e2) {
-                        // Ignore Me
-                    }
-                }
-
-                // Upload it to subscribers!
-                Connection conn = null;
-                try {
-                    conn = getConnection();
-                    List<ProductFeedSubscriber> productFeedSubscribers = ProductFeedDAO.getAllProductFeedSubscribers(conn);
-
-                    if (productFeedSubscribers != null) {
-                        for (ProductFeedSubscriber subscriber : productFeedSubscribers) {
-                            if (ProductFeedSubscriberType.FTP.equals(subscriber.getType())) {
-                                FeedUploader.uploadToFtp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword(), subscriber.getDefaultUploadPath(), zipFileName);
-                            } else if (ProductFeedSubscriberType.SFTP.equals(subscriber.getType())) {
-                                FeedUploader.uploadToSftp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword(), subscriber.getDefaultUploadPath(), zipFileName);
-                            } else if (ProductFeedSubscriberType.S3.equals(subscriber.getType())) {
-                                FeedUploader.uploadToS3(subscriber.getUserid(), subscriber.getPassword(), subscriber.getUrl(), zipFileName);
-                            } else {
-                                LOGGER.warn("unKnown product feed subscriber:" + subscriber);
-                            }
-                        }
-                    }
-                } catch (SQLException e) {
-                    LOGGER.error("FeedSubscriber DaO CONNECTION failed with SQLException: ", e);
-                    throw new FDResourceException("FeedSubscriber DAO CONNECTION failed with SQLException: " + e.getMessage(), e);
-                } finally {
-                    if (conn != null) {
-                        try {
-                            conn.close();
-                        } catch (SQLException e) {
-                            LOGGER.error("connection close failed with SQLException: ", e);
-                        }
-                    }
-                }
-
+                JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
+                rawProductFile = createProductFeedFiles(xmlProducts, jaxbCtx, fileName, zipFileName);
+                uploadProductFeedFileToSubscribers(actualStoreId, zipFileName);
             } else {
                 throw new FDResourceException("No feed file generated please check the log for error");
             }
         } finally {
-            // Cleanup!
-            if (rawProductFile != null) {
-                LOGGER.info("raw product file about to be deleted :" + rawProductFile.getAbsolutePath());
-                rawProductFile.delete();
+            cleanupProductFeedFiles(rawProductFile, zipFileName);
+        }
+    }
+
+    private void cleanupProductFeedFiles(File rawProductFile, String zipFileName) {
+        if (rawProductFile != null) {
+            LOGGER.info("raw product file about to be deleted :" + rawProductFile.getAbsolutePath());
+            rawProductFile.delete();
+        }
+        if (zipFileName != null) {
+            File dfile = new File(zipFileName);
+            LOGGER.info("zipped product file about to be deleted :" + dfile.getAbsolutePath());
+            dfile.delete();
+        }
+    }
+
+    private void uploadProductFeedFileToSubscribers(final EnumEStoreId actualStoreId, String zipFileName) throws FDResourceException {
+        List<ProductFeedSubscriber> productFeedSubscribers = collectProductFeedSubscribers();
+        for (ProductFeedSubscriber subscriber : productFeedSubscribers) {
+            uploadBySubscriber(actualStoreId, zipFileName, subscriber);
+        }
+    }
+
+    private List<ProductFeedSubscriber> collectProductFeedSubscribers() throws FDResourceException {
+        List<ProductFeedSubscriber> productFeedSubscribers = Collections.emptyList();
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            productFeedSubscribers = ProductFeedDAO.getAllProductFeedSubscribers(conn);
+        } catch (SQLException e) {
+            LOGGER.error("FeedSubscriber DaO CONNECTION failed with SQLException: ", e);
+            throw new FDResourceException("FeedSubscriber DAO CONNECTION failed with SQLException: " + e.getMessage(), e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error("connection close failed with SQLException: ", e);
+                }
             }
-            if (zipFileName != null) {
-                // Remove the generated product feed zip file
-                File dfile = new File(zipFileName);
-                LOGGER.info("zipped product file about to be deleted :" + dfile.getAbsolutePath());
-                dfile.delete();
+        }
+        return productFeedSubscribers;
+    }
+
+    private void uploadBySubscriber(final EnumEStoreId actualStoreId, String zipFileName, ProductFeedSubscriber subscriber) throws FDResourceException {
+        if (!FDStoreProperties.isProductFeedGenerationDeveloperModeEnabled() && actualStoreId != null && subscriber.getStores() != null
+                && subscriber.getStores().contains(actualStoreId)) {
+            switch (subscriber.getType()) {
+                case FTP:
+                    FeedUploader.uploadToFtp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword(), subscriber.getDefaultUploadPath(), zipFileName);
+                    break;
+                case SFTP:
+                    FeedUploader.uploadToSftp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword(), subscriber.getDefaultUploadPath(), zipFileName);
+                    break;
+                case S3:
+                    FeedUploader.uploadToS3(subscriber.getUserid(), subscriber.getPassword(), subscriber.getUrl(), zipFileName);
+                    break;
+                default:
+                    LOGGER.warn("Unknown product feed subscriber: " + subscriber);
             }
         }
     }
 
-    private void populateProductBasicInfo(ProductModel productModel, FDProductInfo fdProductInfo, FDProduct fdProduct, Product product) {
+    private File createProductFeedFiles(Products xmlProducts, JAXBContext jaxbCtx, String fileName, String zipFileName) throws FDResourceException {
+        File rawProductFile = null;
+        FileInputStream in = null;
+        ZipOutputStream zos = null;
+        try {
+            byte[] buffer = new byte[1024];
+            Marshaller mar = jaxbCtx.createMarshaller();
+            /*
+             * CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler(); mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler);
+             */
+            mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            // Serialize to a Xml file!
+            rawProductFile = new File(fileName + ".xml");
+            StreamResult result = new StreamResult(rawProductFile);
+            mar.marshal(xmlProducts, result);
+            // Zip it!
 
+            FileOutputStream fos = new FileOutputStream(zipFileName);
+            zos = new ZipOutputStream(fos);
+            ZipEntry ze = new ZipEntry(rawProductFile.getName());
+            zos.putNextEntry(ze);
+            int len;
+            in = new FileInputStream(rawProductFile);
+            while ((len = in.read(buffer)) > 0) {
+                zos.write(buffer, 0, len);
+            }
+        } catch (Exception e) {
+            throw new FDResourceException("feed serialization failed: " + e.getMessage(), e);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (zos != null) {
+                    zos.closeEntry();
+                    zos.close();
+                }
+            } catch (Exception e2) {
+                LOGGER.error("Error while creating product feed zip file.", e2);
+            }
+        }
+        return rawProductFile;
+    }
+
+    private String createProductFeedFileName(final EnumEStoreId actualStoreId) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        StringBuilder fileNameBuilder = new StringBuilder();
+        fileNameBuilder.append("FDProductFeed_");
+        if (actualStoreId != null) {
+            fileNameBuilder.append(actualStoreId.getContentId());
+        }
+        fileNameBuilder.append("_").append(df.format(new Date()));
+        String fileName = fileNameBuilder.toString();
+        return fileName;
+    }
+
+    private void populateProductBasicInfo(ProductModel productModel, FDProductInfo fdProductInfo, FDProduct fdProduct, Product product) {
         ZoneInfo zone = productModel.getUserContext().getPricingContext().getZoneInfo();
         product.setSkuCode(fdProduct.getSkuCode());
         product.setUpc(fdProductInfo.getUpc());
         product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
         product.setProdId(productModel.getContentName());
-        product.setProdName(productModel.getFullName());
+        product.setProdName(StringEscapeUtils.unescapeHtml(productModel.getFullName()));
         product.setProdUrl(URL_DOMAIN
                 + PreviewLinkProvider.getLink(productModel.getContentKey(), ContentFactory.getInstance().getStoreKey(), CmsManager.getInstance(), DraftContext.MAIN, true));
         populateParentInfo(productModel, product);
         product.setDeptId(productModel.getDepartment().getContentName());
-        product.setProdStatus(null != fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(), zone.getDistributionChanel()) ? fdProductInfo.getAvailabilityStatus(
+        product.setProdStatus(fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(), zone.getDistributionChanel()) != null ? fdProductInfo.getAvailabilityStatus(
                 zone.getSalesOrg(), zone.getDistributionChanel()).getStatusCode() : "");
         product.setMinQuantity("" + productModel.getQuantityMinimum());
         product.setMaxQuantity("" + productModel.getQuantityMaximum());
         product.setQtyIncrement("" + productModel.getQuantityIncrement());
+        // Required by Unbxd, [APPDEV-5329]
+        product.setAkaName(productModel.getAka());
+        product.setKeywords(productModel.getKeywords());
+        product.setNotSearchable(productModel.isNotSearchable());
+        product.setInvisible(productModel.isInvisible());
+        product.setHideFromIphone(productModel.isHideIphone());
     }
 
     private void populateParentInfo(ProductModel productModel, Product product) {
@@ -311,69 +330,66 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         product.setParentCatId(productModel.getParentId());
         product.setRootCatId(productModel.getParentId());
         product.setSubCatId(productModel.getParentId());
-        if (null != productModel.getCategory()) {
+        if (productModel.getCategory() != null) {
+            product.setCategoryName(StringEscapeUtils.unescapeHtml(productModel.getCategory().getFullName())); // [APPDEV-5329]
             ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(productModel.getCategory().getParentId());
-            if (null != contentNode && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())) {
+            if (contentNode != null && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())) {
                 product.setParentCatId(contentNode.getContentName());
                 contentNode = ContentFactory.getInstance().getContentNode(contentNode.getParentId());
-                if (null != contentNode && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())) {
+                if (contentNode != null && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())) {
                     product.setRootCatId(contentNode.getContentName());
                 } else {
                     product.setRootCatId(productModel.getCategory().getParentId());
                 }
             }
         }
+        if (productModel.getDepartment() != null) { // [APPDEV-5329]
+            product.setDepartmentName(StringEscapeUtils.unescapeHtml(productModel.getDepartment().getFullName()));
+        }
     }
 
     private void populateImages(ProductModel productModel, Product product) {
-
         Images images = new Images();
         product.setImages(images);
         Image image = null;
-        if (null != productModel.getProdImage()) {
-            image = new Image();
-            image.setImgType(PRODUCT_IMAGE);
-            image.setImgUrl(URL_DOMAIN + productModel.getProdImage().getPath());
+        if (productModel.getProdImage() != null) {
+            image = createImage(PRODUCT_IMAGE, productModel, productModel.getProdImage().getPath());
             images.getImage().add(image);
         }
-        if (null != productModel.getZoomImage()) {
-            image = new Image();
-            image.setImgType(PRODUCT_ZOOM_IMAGE);
-            image.setImgUrl(URL_DOMAIN + productModel.getZoomImage().getPath());
+        if (productModel.getZoomImage() != null) {
+            image = createImage(PRODUCT_ZOOM_IMAGE, productModel, productModel.getZoomImage().getPath());
             images.getImage().add(image);
         }
-        if (null != productModel.getDetailImage()) {
-            image = new Image();
-            image.setImgType(PRODUCT_DETAIL_IMAGE);
-            image.setImgUrl(URL_DOMAIN + productModel.getDetailImage().getPath());
+        if (productModel.getDetailImage() != null) {
+            image = createImage(PRODUCT_DETAIL_IMAGE, productModel, productModel.getDetailImage().getPath());
             images.getImage().add(image);
         }
-        if (null != productModel.getFeatureImage()) {
-            image = new Image();
-            image.setImgType(PRODUCT_FEATURE_IMAGE);
-            image.setImgUrl(URL_DOMAIN + productModel.getFeatureImage().getPath());
+        if (productModel.getFeatureImage() != null) {
+            image = createImage(PRODUCT_FEATURE_IMAGE, productModel, productModel.getFeatureImage().getPath());
             images.getImage().add(image);
         }
-        if (null != productModel.getCategoryImage()) {
-            image = new Image();
-            image.setImgType(PRODUCT_CATEGORY_IMAGE);
-            image.setImgUrl(URL_DOMAIN + productModel.getCategoryImage().getPath());
+        if (productModel.getCategoryImage() != null) {
+            image = createImage(PRODUCT_CATEGORY_IMAGE, productModel, productModel.getCategoryImage().getPath());
             images.getImage().add(image);
         }
+    }
+
+    private Image createImage(String imageType, ProductModel productModel, String imagePath) {
+        Image image = new Image();
+        image.setImgType(imageType);
+        image.setImgUrl(URL_DOMAIN + imagePath);
+        return image;
     }
 
     // Start :: Add Brand info for Hook logic
     private void populateBrands(ProductModel productModel, Product product) {
-
         Brands brands = new Brands();
         product.setBrands(brands);
-
-        if (null != productModel.getBrands()) {
-            for (Iterator iterator = productModel.getBrands().iterator(); iterator.hasNext();) {
-                BrandModel brandModel = (BrandModel) iterator.next();
+        if (productModel.getBrands() != null) {
+            for (BrandModel brandModel : productModel.getBrands()) {
                 Brand brand = new Brand();
                 brands.getBrand().add(brand);
-                brand.setBrandName(brandModel.getFullName());
+                brand.setBrandName(StringEscapeUtils.unescapeHtml(brandModel.getFullName()));
             }
         }
     }
@@ -381,14 +397,13 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     // End:: Add Brand info for Hook logic
 
     private void populateAttributes(FDProductInfo fdProductInfo, FDProduct fdProduct, Product product, ProductModel productModel) {
-
         Attributes attributes = new Attributes();
         product.setAttributes(attributes);
 
-        for (Iterator iterator = EnumAttributeName.iterator(); iterator.hasNext();) {
+        for (Iterator<EnumAttributeName> iterator = EnumAttributeName.iterator(); iterator.hasNext();) {
             ProdAttribute attribute = new ProdAttribute();
             attributes.getProdAttribute().add(attribute);
-            EnumAttributeName enumAttr = (EnumAttributeName) iterator.next();
+            EnumAttributeName enumAttr = iterator.next();
             attribute.setAttrName(enumAttr.getName());
             attribute.setAttrValue("");
             Object attrValue = null;
@@ -399,38 +414,35 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
             } else {
                 attrValue = fdProduct.getMaterial().getAttribute(enumAttr);
             }
-            if (null != attrValue) {
+            if (attrValue != null) {
                 if (attrValue instanceof Boolean) {
                     attribute.setAttrValue(attrValue.toString());
                 } else {
                     attribute.setAttrValue("" + attrValue);
                 }
             }
-
         }
     }
 
     private void populateConfigurationsInfo(FDProduct fdProduct, Product product, PricingContext pCtx) {
-
         Configurations configurations = new Configurations();
         product.setConfigurations(configurations);
-
         FDVariation[] fdVariations = fdProduct.getVariations();
-        if (null != fdVariations) {
+        if (fdVariations != null) {
             for (int j = 0; j < fdVariations.length; j++) {
                 FDVariation fdVariation = fdVariations[j];
                 Configuration configuration = new Configuration();
                 configurations.getConfiguration().add(configuration);
                 configuration.setCharName(fdVariation.getName());
                 FDVariationOption[] options = fdVariation.getVariationOptions();
-                if (null != options) {
+                if (options != null) {
                     for (int k = 0; k < options.length; k++) {
                         FDVariationOption fdVariationOption = options[k];
                         CharacteristicValuePrice[] cvPrices = fdProduct.getPricing().getCharacteristicValuePrices(pCtx);
                         VariationOption variationOption = new VariationOption();
                         double price = 0.0;
                         String pricingUnit = "NA";
-                        if (null != cvPrices) {
+                        if (cvPrices != null) {
                             for (int l = 0; l < cvPrices.length; l++) {
                                 CharacteristicValuePrice characteristicValuePrice = cvPrices[l];
                                 if (characteristicValuePrice.getCharValueName().equalsIgnoreCase(fdVariationOption.getName())) {
@@ -438,17 +450,13 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
                                     pricingUnit = characteristicValuePrice.getPricingUnit();
                                     break;
                                 }
-
                             }
                         }
-
                         variationOption.setCharValueName(fdVariationOption.getName());
                         variationOption.setCharValueDesc(fdVariationOption.getDescription());
                         variationOption.setPrice(BigDecimal.valueOf(price));
                         variationOption.setPricingUnit(pricingUnit);
-
                         configuration.getVariationOption().add(variationOption);
-
                     }
                 }
             }
@@ -456,9 +464,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
 
     private void populateInventoryInfo(FDProductInfo fdProductInfo, Product product) {
-
         ErpInventoryModel inventoryModel = fdProductInfo.getInventory();
-        if (null != inventoryModel) {
+        if (inventoryModel != null) {
             Inventories inventories = new Inventories();
             product.setInventories(inventories);
             Inventory inventory = new Inventory();
@@ -471,22 +478,19 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
 
     private void populateRatingInfo(FDProductInfo fdProductInfo, Product product, String plantID) {
-
         Ratings ratings = new Ratings();
         product.setRatings(ratings);
         Rating rating = null;
-        if (null != fdProductInfo.getSustainabilityRating(plantID)) {
+        if (fdProductInfo.getSustainabilityRating(plantID) != null) {
             rating = new Rating();
             ratings.getRating().add(rating);
-
             rating.setRatingType(SUSTAINABILITY_RATING);
             rating.setDesc(fdProductInfo.getSustainabilityRating(plantID).getShortDescription());
             rating.setRatingType(fdProductInfo.getSustainabilityRating(plantID).getStatusCode());
         }
-        if (null != fdProductInfo.getRating(plantID)) {
+        if (fdProductInfo.getRating(plantID) != null) {
             rating = new Rating();
             ratings.getRating().add(rating);
-
             rating.setRatingType(RATING);
             rating.setDesc(fdProductInfo.getRating(plantID).getShortDescription());
             rating.setRatingType(fdProductInfo.getRating(plantID).getStatusCode());
@@ -494,29 +498,27 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
 
     private void populateGroupScalePriceInfo(String skucode, Product product) throws FDResourceException {
-
         GroupScalePricing gsp = null;
         GroupPrices groupPrices;
         try {
             FDGroup fdGroup = FDCachedFactory.getProductInfo(skucode).getGroup(ZonePriceListing.DEFAULT_SALES_ORG, ZonePriceListing.DEFAULT_DIST_CHANNEL);
-            gsp = null != fdGroup ? FDCachedFactory.getGrpInfo(fdGroup) : null;
+            gsp = fdGroup != null ? FDCachedFactory.getGrpInfo(fdGroup) : null;
         } catch (FDSkuNotFoundException e) {
             // DO Nothing
         } catch (FDGroupNotFoundException e) {
             // DO Nothing
         }
-        if (null != gsp) {
+        if (gsp != null) {
             groupPrices = new GroupPrices();
             product.setGroupPrices(groupPrices);
             GroupPrice groupPrice = new GroupPrice();
             groupPrices.getGroupPrice().add(groupPrice);
-
-            groupPrice.setZoneCode(ZonePriceListing.DEFAULT_ZONE_INFO.getPricingZoneId());// ::FDX::
+            groupPrice.setZoneCode(ZonePriceListing.DEFAULT_ZONE_INFO.getPricingZoneId()); // ::FDX::
             groupPrice.setGroupMaterials(gsp.getMatList().toString());
-            if (null != gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO)) {// ::FDX::
-                groupPrice.setUnitPrice(BigDecimal.valueOf(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaxUnitPrice()));// ::FDX::
-                groupPrice.setUnitWeight(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getPricingUnit());// ::FDX::
-                groupPrice.setGroupQuantity("" + gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getScaleLowerBound());// ::FDX::
+            if (gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO) != null) { // ::FDX::
+                groupPrice.setUnitPrice(BigDecimal.valueOf(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaxUnitPrice())); // ::FDX::
+                groupPrice.setUnitWeight(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getPricingUnit()); // ::FDX::
+                groupPrice.setGroupQuantity("" + gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getScaleLowerBound()); // ::FDX::
             }
             groupPrice.setGroupId(gsp.getGroupId());
             groupPrice.setGroupDesc(gsp.getLongDesc());
@@ -526,24 +528,19 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     private void populatePricingInfo(FDProduct fdProduct, Product product) {
         Prices prices = new Prices();
         product.setPrices(prices);
-
         ZonePriceModel zpModel = fdProduct.getPricing().getZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO);
         MaterialPrice[] materialPrices = zpModel.getMaterialPrices();
         for (MaterialPrice materialPrice : materialPrices) {
             Price price = new Price();
             prices.getPrice().add(price);
-
             price.setZoneCode(ZonePriceListing.MASTER_DEFAULT_ZONE);
             price.setUnitPrice(BigDecimal.valueOf(materialPrice.getPrice()));
             price.setUnitDescription(materialPrice.getPricingUnit());
             price.setUnitWeight(materialPrice.getPricingUnit());
-
             if (materialPrice.getPromoPrice() > 0.0) {
                 price.setSalePrice(BigDecimal.valueOf(materialPrice.getPromoPrice()));
             }
-
             price.setScaleQuantity("" + materialPrice.getScaleLowerBound());
-
         }
     }
 
@@ -551,11 +548,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         FDSalesUnit[] salesUnits = fdProduct.getSalesUnits();
         SaleUnits saleUnits = new SaleUnits();
         product.setSaleUnits(saleUnits);
-
         for (FDSalesUnit fdSalesUnit : salesUnits) {
             SaleUnit saleUnit = new SaleUnit();
             saleUnits.getSaleUnit().add(saleUnit);
-
             saleUnit.setName(fdSalesUnit.getName());
             saleUnit.setBaseUnit(fdSalesUnit.getBaseUnit());
             saleUnit.setDescription(fdSalesUnit.getDescription());
@@ -565,13 +560,13 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         }
     }
 
-    private void populateNutritionInfo(FDProduct fdProduct, Product product) {
+    private void populateNutritionInfo(final FDProduct fdProduct, final Product product) {
         NutritionInfo nutritionInfo = new NutritionInfo();
         product.setNutritionInfo(nutritionInfo);
         List<FDNutrition> nutritionList = fdProduct.getNutrition();
-        if (null != nutritionList)
-            for (Iterator iterator = nutritionList.iterator(); iterator.hasNext();) {
-                FDNutrition fdNutrition = (FDNutrition) iterator.next();
+        if (nutritionList != null) {
+            for (Iterator<FDNutrition> iterator = nutritionList.iterator(); iterator.hasNext();) {
+                FDNutrition fdNutrition = iterator.next();
                 Nutrition nutrition = new Nutrition();
                 nutritionInfo.getNutrition().add(nutrition);
                 nutrition.setNutritionType(fdNutrition.getName());
@@ -579,5 +574,6 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
                 nutrition.setValue(BigDecimal.valueOf(fdNutrition.getValue()));
 
             }
+        }
     }
 }

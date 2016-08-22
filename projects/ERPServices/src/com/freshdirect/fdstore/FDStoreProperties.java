@@ -888,9 +888,14 @@ public class FDStoreProperties {
     private final static String PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL = "fdstore.default.fd.distribution.channel";
     private final static String PROP_DEFAULT_FD_SALESORG = "fdstore.default.fd.salesorg";
     
+    private static final String PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED = "fdstore.dev.productfeedgeneration.enabled";
     
     
-    
+    // UNBXD integration
+    private static final String PROP_UNBXD_API_KEY = "fdstore.unbxd.apikey";
+    private static final String PROP_UNBXD_SITE_KEY = "fdstore.unbxd.sitekey";
+    private static final String PROP_UNBXD_BASE_URL = "fdstore.unbxd.baseurl";
+    private static final String PROP_UNBXD_FALLBACK_ON_ERROR = "fdstore.unbxd.fallback.on.error";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1504,6 +1509,7 @@ public class FDStoreProperties {
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1684,6 +1690,13 @@ public class FDStoreProperties {
         defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FD_SALESORG, "0001");
         
+
+        defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
+        defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
+        defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
+        defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
+
+        defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
 
         refresh();
     }
@@ -4361,5 +4374,25 @@ public class FDStoreProperties {
     
     public static String getPriceConfigDepartments(){
     	return get(PROP_PRICE_CONFIG_DEPARTMENTS);
+    }
+
+    public static String getUnbxdApiKey() {
+        return get(PROP_UNBXD_API_KEY);
+    }
+
+    public static String getUnbxdSiteKey() {
+        return get(PROP_UNBXD_SITE_KEY);
+    }
+
+    public static String getUnbxdBaseUrl() {
+        return get(PROP_UNBXD_BASE_URL);
+    }
+
+    public static boolean getUnbxdFallbackOnError() {
+        return get(PROP_UNBXD_FALLBACK_ON_ERROR).equalsIgnoreCase("true");
+    }
+
+    public static boolean isProductFeedGenerationDeveloperModeEnabled() {
+        return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED)).booleanValue();
     }
 }

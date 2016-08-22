@@ -11,6 +11,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
@@ -23,10 +24,10 @@ import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.SortIntValueComparator;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.webapp.search.SearchService;
 
 /**
  * @author zsombor, csongor
@@ -45,7 +47,8 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	private static final long serialVersionUID = 3093054384959548572L;
 
 	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
+		@Override
+        public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] { new VariableInfo(data.getAttributeString("id"), SmartSearchTag.class.getName(), true,
 					VariableInfo.NESTED) };
 		}
@@ -81,7 +84,8 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 			return ContentSearch.getInstance().searchUpc(userId, nav.getUpc());
 		} else {
 			searchTerm = nav.getSearchTerm();
-			return ContentSearch.getInstance().searchProducts(nav.getSearchTerm());
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            return SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user);
 		}
 	}
 

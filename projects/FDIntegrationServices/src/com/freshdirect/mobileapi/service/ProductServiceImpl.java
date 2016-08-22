@@ -7,15 +7,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -68,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
         return search(searchTerm, null, page, max, null, null, null, null, user);
     }
 
+    @Override
     public List<Product> search(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
             String categoryId, String deparmentId, SessionUser user) throws ServiceException {
         List<Product> result = new ArrayList<Product>();
@@ -257,9 +260,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
 	@Override
-    public List<String> getAutoSuggestions(String searchTerm) {
+    public List<String> getAutoSuggestions(String searchTerm, HttpServletRequest request) {
         AutoCompleteFacade facade = new AutoCompleteFacade();
-        return facade.getTerms(searchTerm);
+        return facade.getTerms(searchTerm, request);
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,9 +45,9 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		requestData.setUserId(user.getUserId());
 		
 		HttpSession session = request.getSession();
-		
+        Cookie[] cookies = request.getCookies();
 		// main processing
-		QuickShopReturnValue responseData = process( user, session, requestData );
+        QuickShopReturnValue responseData = process(user, session, requestData, cookies);
 		
 		// write out result
 		writeResponseData( response, responseData );
@@ -61,7 +62,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	 * @return
 	 * @throws HttpErrorResponse
 	 */
-	protected abstract QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse;
+    protected abstract QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse;
 
 	
 	// ========================

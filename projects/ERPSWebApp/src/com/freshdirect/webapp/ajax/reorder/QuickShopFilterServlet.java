@@ -66,9 +66,9 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		try {
 			EnumQuickShopTab tab = requestData.getTabType();
 			if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
-				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(user, request.getSession(), nav, TOP_ITEMS_FILTERS);
+                result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(request, user, request.getSession(), nav, TOP_ITEMS_FILTERS);
 			} else {
-				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(user, request.getSession(), nav, PAST_ORDERS_FILTERS, requestData);
+                result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(request, user, request.getSession(), nav, PAST_ORDERS_FILTERS, requestData);
 			}
 		} catch (FDResourceException e) {
 			LOG.error("Error while collecting order history", e);

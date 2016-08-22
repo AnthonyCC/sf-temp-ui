@@ -31,7 +31,6 @@ import com.freshdirect.fdstore.content.AbstractProductItemFilter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.FilteringProductItem;
@@ -75,6 +74,7 @@ import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -380,7 +380,8 @@ public class CmsFilteringFlow {
                         nav.setSearchParams(searchParams);
                     }
                 }
-                searchResults = ContentSearch.getInstance().searchProducts(searchParams);
+
+                searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user);
                 if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){               //if(FDStoreProperties.isHookLogicEnabled()){
                     SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);    
                  }

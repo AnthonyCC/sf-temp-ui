@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ContentSearch;
+import javax.servlet.http.Cookie;
+
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
+import com.freshdirect.webapp.search.SearchService;
 
 public class QuickShopSearchService {
 
@@ -28,10 +31,10 @@ public class QuickShopSearchService {
 	 * @param items
 	 *            - to be merged with the search result
 	 */
-	public void search(String searchTerm, List<QuickShopLineItemWrapper> items) {
+    public void search(String searchTerm, List<QuickShopLineItemWrapper> items, FDUserI user, Cookie[] cookies) {
 		List<String> productIds = null;
 		if (searchTerm != null) {
-			SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, cookies, user);
 			productIds = new ArrayList<String>();
 			for (FilteringSortingItem<ProductModel> product : results.getProducts()) {
 				productIds.add(product.getNode().getContentKey().getId());

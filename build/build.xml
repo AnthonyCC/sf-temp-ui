@@ -1505,7 +1505,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 			<pathelement location="${thirdparty.home}/lcc.jar"/>
-            <pathelement location="${thirdparty.home}/givexclient.jar"/>
+			<pathelement location="${thirdparty.home}/givexclient.jar"/>
 			<pathelement location="${thirdparty.home}/antlr.jar"/>
 			<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
 			<pathelement location="${thirdparty.home}/drools-api.jar"/>
@@ -1757,7 +1757,7 @@
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-         <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>

@@ -45,6 +45,7 @@ public class SearchController extends BaseController {
     private static final String AUTOCOMPLETE_ACTION = "autocomplete";
     private static final String ACTION_SEARCH_EX = "searchEX";
 
+    @Override
     protected boolean validateUser() {
         return false;
     }
@@ -317,7 +318,7 @@ public class SearchController extends BaseController {
         }
         
         ProductServiceImpl productService = new ProductServiceImpl();
-        List<String> suggestions = productService.getAutoSuggestions(searchTerm);
+        List<String> suggestions = productService.getAutoSuggestions(searchTerm, request);
 
         AutoComplete data = new AutoComplete();
         data.setSuggestions(suggestions);

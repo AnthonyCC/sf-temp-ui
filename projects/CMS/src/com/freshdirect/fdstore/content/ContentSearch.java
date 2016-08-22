@@ -129,7 +129,7 @@ public class ContentSearch {
 	 *            the term to be searched for
 	 * @return the search results
 	 */
-	public SearchResults searchProducts(String searchTerm) {
+    public SearchResults searchProducts(String searchTerm) {
 		searchTerm = searchTerm.trim();
 		boolean quoted = ContentSearchUtil.isQuoted(searchTerm);
 		if (quoted)
@@ -472,6 +472,7 @@ public class ContentSearch {
      * @param autocompletion
      */    
     public List<String> getAutocompletions(String prefix) {
+
         AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
 
         if (autocompleter!=null) {

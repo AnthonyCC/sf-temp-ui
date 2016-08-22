@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -33,7 +34,6 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FDFolder;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
@@ -70,6 +70,7 @@ import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
+import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -704,7 +705,7 @@ public class QuickShopHelper {
 	}
 	
 	//Moved code from QuickShopFilterServlet into Helper class so that mobileapi OrderController can use it.	
-	public static FilteringFlowResult<QuickShopLineItemWrapper> getQuickShopPastOrderItems(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, FilteringNavigator nav) throws FDResourceException {
+    public static FilteringFlowResult<QuickShopLineItemWrapper> getQuickShopPastOrderItems(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, FilteringNavigator nav, Cookie[] cookies) throws FDResourceException {
 		
 		//transform request data
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
@@ -722,7 +723,7 @@ public class QuickShopHelper {
 			items = new ArrayList<QuickShopLineItemWrapper>(items);
 		}
 		
-		search(nav.getSearchTerm(), items);
+        search(nav.getSearchTerm(), items, cookies, user);
 		
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
 		
@@ -755,12 +756,13 @@ public class QuickShopHelper {
 	 * 
 	 * Merge the original search result with the user's order history
 	 */
-	public static void search(String searchTerm, List<QuickShopLineItemWrapper> items){
+    public static void search(String searchTerm, List<QuickShopLineItemWrapper> items, Cookie[] cookies, FDUserI user) {
 		
 		List<String> productIds = null;
 		if(searchTerm!=null){
 			
-			SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, cookies, user);
+            // SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
 			productIds = new ArrayList<String>();
 			for(FilteringSortingItem<ProductModel> product : results.getProducts()){
 				productIds.add(product.getNode().getContentKey().getId());
