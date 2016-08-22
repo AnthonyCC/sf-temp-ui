@@ -324,6 +324,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if(!FDStoreProperties.isTCEnabled()){
 			return true;
 		}
+		
+		try {
+			this.cachedFDCustomer = this.getFDCustomer();
+		} catch (FDResourceException e) {
+			LOGGER.warn("Error in getFDCustomer() "+e);
+		}
 		if(this.cachedFDCustomer!=null &&this.cachedFDCustomer.getCustomerEStoreModel()!=null){
 			return this.cachedFDCustomer.getCustomerEStoreModel().getTcAcknowledge();	
 		}else {
