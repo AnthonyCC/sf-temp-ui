@@ -597,6 +597,9 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setCohort(user.getCohort());
         responseMessage.setTotalOrderCount(user
                 .getTotalOrderCount());
+        
+        ((LoggedIn) responseMessage).setTcAcknowledge(user
+				.getTcAcknowledge());
 
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         responseMessage.setMobileNumber(getMobileNumber(user));

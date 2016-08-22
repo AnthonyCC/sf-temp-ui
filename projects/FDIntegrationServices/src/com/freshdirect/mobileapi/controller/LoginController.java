@@ -139,7 +139,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		    responseMessage = ping(request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
 		    responseMessage = logout(user, request, response);
-			refreshFeeds(request, response);
+			//refreshFeeds(request, response);//Removed because its breaking the logout functionality.
 		}else if (ACTION_SOURCE.equals(action)) {
 		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class); 
 			responseMessage = transactionSource(user, request, response,requestMessage);
@@ -520,7 +520,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	
     protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = super.formatLoginMessage(user);
-        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
+//        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
         // FDX-1873 - Show timeslots for anonymous address
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
