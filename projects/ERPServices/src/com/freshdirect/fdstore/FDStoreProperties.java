@@ -1681,10 +1681,10 @@ public class FDStoreProperties {
         defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
         defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.00");
         
-        defaults.put(PROP_DEFAULT_FDX_PLANTID, "1310");
+        defaults.put(PROP_DEFAULT_FDX_PLANTID, "1300");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT, "01");
-        defaults.put(PROP_DEFAULT_FDX_SALESORG, "1310");
+        defaults.put(PROP_DEFAULT_FDX_SALESORG, "1300");
         defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "0001");
         defaults.put(PROP_DEFAULT_FD_PLANTID, "1000");
         defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
