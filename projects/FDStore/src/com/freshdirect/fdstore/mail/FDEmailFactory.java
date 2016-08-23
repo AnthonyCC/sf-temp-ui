@@ -40,6 +40,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -1437,4 +1438,21 @@ public class FDEmailFactory {
 		
 		return email;
 	}
+	
+	public XMLEmailI createSOActivateConfirmation(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder) {
+		FDStandingOrderEmail email = new FDStandingOrderEmail(customer,  order, standingOrder, new ArrayList<FDCartLineI>());
+
+		//TODO need to work on text email 
+		email.setXslPath("h_standing_order_activate_confirm_v1.xsl", "h_standing_order_activate_confirm_v1.xsl");
+
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		StringBuilder subject = new StringBuilder("Your standing order for ");
+		subject.append(df.format(standingOrder.getNextDeliveryDate()));
+
+		email.setSubject(subject.toString());
+
+		return email;
+	}
+	
 }

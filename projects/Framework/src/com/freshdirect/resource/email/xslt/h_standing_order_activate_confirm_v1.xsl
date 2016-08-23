@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt='http://xsltsl.org/date-time' version="1.0">
 	<xsl:import href='stdlib.xsl'/>
-	<xsl:include href='h_order_info_v1.xsl'/>
+	<xsl:include href='h_so_cart_info_v1.xsl'/>
 	<xsl:include href='h_header_v1.xsl'/>
 	<xsl:include href='h_common_functions_v2.xsl'/>
 	<xsl:include href='h_footer_v1.xsl'/>
@@ -10,7 +10,7 @@
 <xsl:template match="fdemail">
 <html>
 <head>
-	<title>Reminder, your standing order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
+	<title>Reminder, your standing order </title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
 </head>
 <body bgcolor="#FFFFFF">

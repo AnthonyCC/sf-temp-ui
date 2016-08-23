@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.standingorder;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-
+import com.freshdirect.fdstore.EnumEStoreId;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -24,20 +26,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemsPopulator;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -120,16 +130,13 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	        if(u!=null){
 	            	
 				if ("settings".equalsIgnoreCase(action) ) {
-					/*
-					 * pageContext.removeAttribute(spName);
-					 * pageContext.removeAttribute(cdName);
-					 */
+					
 					u.setCurrentStandingOrder(null);
 					u.setSoTemplateCart(new FDCartModel());
 					if (soId != null && !"".equals(soId)) {
-						FDStandingOrder so;
+
 	
-						so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
+						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 						u.setCurrentStandingOrder(so);
 						so.setNewSo(true);
 						if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
@@ -193,7 +200,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					//writeResponseData( response, errorMessage );
 	
 				} else if("activate".equalsIgnoreCase(action)) {
-						FDStandingOrdersManager.getInstance().activateStandingOrder(u.getCurrentStandingOrder());
+					    boolean flg=acitivateSO(u);
+					    LOG.info("Standing Order activated " + u.getCurrentStandingOrder().getId() + " " + flg) ;
 				} else if("changename".equalsIgnoreCase(action)){
 					// Need to update name by ID
 					errorMessage = validateStandingOrderName(soName, u);
@@ -234,6 +242,36 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 		}
 	}
+
+	private boolean acitivateSO(FDUserI u) throws FDResourceException, FDInvalidConfigurationException {
+		
+		FDStandingOrder so=u.getCurrentStandingOrder();
+		// Set the payment 
+		u.getSoTemplateCart().setPaymentMethod(u.getCurrentStandingOrder().getPaymentMethod());
+		
+		// Set the Address 
+		
+		u.getSoTemplateCart().setDeliveryAddress(u.getCurrentStandingOrder().getDeliveryAddress());
+		
+		
+		FDCartModel cart=  u.getSoTemplateCart();
+		
+		cart.setEStoreId(EnumEStoreId.FD);
+		cart.getAvalaraTaxValue(new AvalaraContext(cart));
+		
+		FDStandingOrdersManager.getInstance().activateStandingOrder(u.getCurrentStandingOrder());
+		
+		// Sending confirmation Email 
+		
+		FDOrderI order=new FDStandingOrderAdapter(cart,so);
+		
+		
+		FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createSOActivateConfirmation(so.getUserInfo(), order, so));
+		
+		return true;
+	}
+
+
 
 	protected String createStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
 		soName = soName != null ? soName.trim() : "";

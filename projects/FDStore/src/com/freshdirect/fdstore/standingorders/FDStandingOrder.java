@@ -320,6 +320,15 @@ public class FDStandingOrder extends ModelSupport {
 
 	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d.");
 	private final DateFormat dateFormatterShort =  new SimpleDateFormat("MM/dd/yy");
+	private final DateFormat dayFormat =  new SimpleDateFormat("EEEE"); 
+	
+	public String getDeliveryDay() {
+		return dayFormat.format( getNextDeliveryDate() );
+	}
+	
+	public String getDeliveryTime() {
+		return DateUtil.formatTime(getStartTime()) +" - " + DateUtil.formatTime(getEndTime());
+	}
 	
 	public String getNextDeliveryString() {
 		return dateFormatter.format( getNextDeliveryDate() );
