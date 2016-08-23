@@ -293,13 +293,13 @@ public class AccountController extends BaseController {
             throws FDException, JsonException, ServiceException {
         Message responseMessage = null;
         DeliveryTimeslots deliveryTimeslots = getDeliveryTimeslots(user, addressId);
-        if (!requestMessage.isWebResponse()){
-            responseMessage = deliveryTimeslots;
-        } else {
+//        if (!requestMessage.isWebResponse()){
+//            responseMessage = deliveryTimeslots;
+//        } else {
             DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
             deliveryAddresses.setPreSelectedId(addressId);
             responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
-        }
+        //}
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
         
