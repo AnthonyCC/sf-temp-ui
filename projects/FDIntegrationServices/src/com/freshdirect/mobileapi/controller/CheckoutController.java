@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -20,6 +21,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -58,6 +60,7 @@ import com.freshdirect.mobileapi.model.DeliveryAddress;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
+import com.freshdirect.mobileapi.model.MessageCodes.ErrorMessage;
 import com.freshdirect.mobileapi.model.Depot;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.Order;
@@ -1409,7 +1412,14 @@ public class CheckoutController extends BaseController {
  			} else if (user.getShoppingCart()==null){
     			message.addErrorMessage("Error processing checkout - Cart");
  			} else if (user.getShoppingCart().getDeliveryReservation()==null){
-    			message.addErrorMessage("Error processing checkout - Reservation");
+ 				EnumEStoreId eStore=(user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+                if(EnumEStoreId.FDX.equals(eStore)){
+                	message.addErrorMessage("Whoops! Please select your delivery time");
+                }
+                else
+                {
+                	message.addErrorMessage("There is an issue with the delivery time, please select another one");
+                }
  			} else if (user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null){
     			message.addErrorMessage("Error processing checkout - Payment Method");
  			} else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only")!=null && dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription()!=null && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))){
