@@ -35,7 +35,7 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 			redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
 			LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
 			redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
-			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 			response.setHeader("Location", redirectUrl);
 			result = SKIP_PAGE;
 		}
