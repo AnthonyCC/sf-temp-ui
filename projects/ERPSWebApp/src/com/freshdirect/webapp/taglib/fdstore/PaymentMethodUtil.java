@@ -292,9 +292,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             if(!accountNumber.equals(paymentMethod.getMaskedAccountNumber()))
             	paymentMethod.setAccountNumber(scrubAccountNumber(accountNumber));
             
-            paymentMethod.setCardType(EnumCardType.getCardType(cardType));
+            if(!EnumAccountActivityType.UPDATE_PAYMENT_METHOD.equals(activityType)){
+            	paymentMethod.setCardType(EnumCardType.getCardType(cardType));
+            	paymentMethod.setAbaRouteNumber(abaRouteNumber);
+            }
             paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(bankAccountType));
-            paymentMethod.setAbaRouteNumber(abaRouteNumber);
+//            paymentMethod.setAbaRouteNumber(abaRouteNumber);
             paymentMethod.setBankName(bankName);
             paymentMethod.setAddress1(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ADDRESS_1.getCode(),true));
             paymentMethod.setAddress2(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ADDRESS_2.getCode(),true));
