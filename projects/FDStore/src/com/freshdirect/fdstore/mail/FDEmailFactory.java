@@ -1447,8 +1447,7 @@ public class FDEmailFactory {
 
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 
-		StringBuilder subject = new StringBuilder("Your standing order for ");
-		subject.append(df.format(standingOrder.getNextDeliveryDate()));
+		StringBuilder subject = new StringBuilder("Thanks For Creating Your Standing Order. Your Standing Order Has Been Created!");
 
 		email.setSubject(subject.toString());
 

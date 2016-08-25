@@ -28,33 +28,26 @@
 		<tr><td><br/></td></tr>
 					<tr>
 						<td>
-							<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
-
-							<p>This is just a friendly reminder that
-							<xsl:choose>
-								<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">you can pick up your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order</a></xsl:when>
-								<xsl:otherwise>your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order (<xsl:value-of select="standingOrder/customerListName"/>)</a> is scheduled for delivery</xsl:otherwise>
-							</xsl:choose>
-							between <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template>
-							and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template>
-							</b> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></b>.
-							</p>
-
-							<xsl:if test="order/paymentMethod/paymentType != 'M'">
-							<p>If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
-							</xsl:if>
+							<p><b>Hi <xsl:value-of select="customer/firstName"/></b>,</p>
+                            
+                            <p> Thanks for creating your Standing Order. It’s the most convenient way to stay fully stocked with all the office’s favorite eats and drinks!</p>
+							<p>Your first Standing Order is scheduled to arrive on <b><xsl:value-of select="standingOrder/deliveryDay" />, <xsl:value-of select="standingOrder/deliveryMonthDate" /> </b> between <b><xsl:value-of select="standingOrder/deliveryTime" /></b>. </p> 
+                            
+                            <p>We’ll send you an order confirmation with the details of your first Standing Order within the next 24 hours. We’ll also send you a weekly receipt every time your order is assembled and delivered.</p>
 							
-							<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
+							<p>Below you will see the settings for your Standing Order, including its name, day, time, and delivery address. You’ll also see all the items in your order</p> 
 
-							<p>We hope you enjoy everything in your order. Please <a href="http://www.freshdirect.com/">shop again soon</a>.</p>
+							<p>If you’d like to make changes to your Standing Order, <a href="http://www.freshdirect.com/quickshop/standing_orders.jsp">click here.</a> </p>
+							
+							<p>If you’d like to take a look at our tutorial on how to modify your Standing Order, <a href="http://www.freshdirect.com/quickshop/standing_orders.jsp">click here.</a></p>
 
-							<p><b>Happy eating!</b><br/>
-							<br/>
-							Your Customer Service Team at <a href="http://www.freshdirect.com/">FreshDirect</a><br/></p>
+							
+							<p><b>Thanks for shopping with us!</b></p>
+							<p>The FreshDirect At The Office Team </p><br/>
 
 							<p><xsl:call-template name="h_so_cart_info_v1"/></p>
 							
-							<p>NOTE: If this email does not print out clearly, please go to <a href="https://www.freshdirect.com/your_account/order_history.jsp">https://www.freshdirect.com/your_account/order_history.jsp</a> for a printer-friendly version of your order details.</p>
+							<p>NOTE: If this email does not print out clearly, please go to <a href="http://www.freshdirect.com/quickshop/standing_orders.jsp">Standing Order</a> for a printer-friendly version of your order details.</p>
 
 							<p><xsl:call-template name="h_footer_v1"/></p>
 

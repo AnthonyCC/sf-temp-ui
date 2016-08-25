@@ -321,9 +321,15 @@ public class FDStandingOrder extends ModelSupport {
 	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d.");
 	private final DateFormat dateFormatterShort =  new SimpleDateFormat("MM/dd/yy");
 	private final DateFormat dayFormat =  new SimpleDateFormat("EEEE"); 
+	private final DateFormat monthDateFormat =  new SimpleDateFormat("MMMM d"); 
+	
 	
 	public String getDeliveryDay() {
 		return dayFormat.format( getNextDeliveryDate() );
+	}
+	
+	public String getDeliveryMonthDate() {
+		return monthDateFormat.format( getNextDeliveryDate() );
 	}
 	
 	public String getDeliveryTime() {
