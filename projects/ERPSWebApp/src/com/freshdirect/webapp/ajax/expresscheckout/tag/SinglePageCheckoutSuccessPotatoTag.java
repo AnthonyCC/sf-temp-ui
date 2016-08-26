@@ -17,6 +17,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSucces
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutSuccessPotatoTag extends SimpleTagSupport {
 
@@ -33,9 +34,12 @@ public class SinglePageCheckoutSuccessPotatoTag extends SimpleTagSupport {
 		String requestURI = request.getRequestURI();
 		String orderId = request.getParameter(ORDER_ID);
 		Map<String, Object> potato = new HashMap<String, Object>();
-		if (orderId != null && !orderId.isEmpty()) {
+		
+		boolean isSO3Activate=StandingOrderHelper.isSO3StandingOrder(user);
+		
+		if ( (orderId != null && !orderId.isEmpty()) || isSO3Activate) {
 			try {
-                SinglePageCheckoutSuccessData result = SinglePageCheckoutFacade.defaultFacade().loadSuccess(requestURI, user, orderId, session);
+                SinglePageCheckoutSuccessData result = SinglePageCheckoutFacade.defaultFacade().loadSuccess(requestURI, user, orderId, session,isSO3Activate);
                 
 				potato = SoyTemplateEngine.convertToMap(result);
 				

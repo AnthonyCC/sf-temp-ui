@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -262,9 +263,13 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		FDStandingOrdersManager.getInstance().activateStandingOrder(u.getCurrentStandingOrder());
 		
 		// Sending confirmation Email 
+		if(so.getTipAmount()>0.0){
+			cart.setChargeAmount(EnumChargeType.TIP, so.getTipAmount());
+		}
+
+		u.setSoTemplateCart(cart);
 		
 		FDOrderI order=new FDStandingOrderAdapter(cart,so);
-		
 		
 		FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createSOActivateConfirmation(so.getUserInfo(), order, so));
 		

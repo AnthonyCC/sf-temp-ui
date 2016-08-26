@@ -28,6 +28,8 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -342,10 +344,12 @@ public class SinglePageCheckoutFacade {
         return address;
     }
 
-    public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId, HttpSession session) throws FDResourceException, IOException,
+    public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId, HttpSession session, boolean isSO3Activate) throws FDResourceException, IOException,
             TemplateException {
         SinglePageCheckoutSuccessData result = new SinglePageCheckoutSuccessData();
-        FDOrderI order = loadOrder(orderId, user);
+        
+        FDOrderI order = isSO3Activate?new FDStandingOrderAdapter(user.getSoTemplateCart(),user.getCurrentStandingOrder()):loadOrder(orderId, user);
+       
         result.setDrawer(DrawerService.defaultService().loadDrawer(user));
         result.setAddress(loadCartAddress(order, user));
         result.setPayment(loadCartPayment(order, user));
@@ -546,12 +550,29 @@ public class SinglePageCheckoutFacade {
         successPageData.setSoName(order.getStandingOrderName());
         successPageData.setSoOrderDate(order.getSODeliveryDate());
         successPageData.setOrderModifiable(CheckOrderStatusTag.isOrderModifiable(order));
-
+        if(StandingOrderHelper.isSO3StandingOrder(user)){
+        	populateSOActivationSuccess(successPageData,user);
+        }
         successPageData.setReceipt(receiptService.populateReceiptData(order, requestURI, user));
         return successPageData;
     }
 
-    private TextMessageAlertData loadTextMessageAlertData(final FDUserI user) throws FDResourceException, IOException, TemplateException {
+    /**
+     * 
+     * @param successPageData
+     * @param user
+     */
+    private void populateSOActivationSuccess(SuccessPageData successPageData, FDUserI user) {
+        FDStandingOrder so=user.getCurrentStandingOrder();
+    	successPageData.setSOActivate(true);
+    	successPageData.setSoId(so.getId());
+    	successPageData.setSoFrequency(so.getFullFrequencyDescription());
+    	successPageData.setSoDeliveryDay(so.getDeliveryDay());
+    	successPageData.setSoEstimatedTotal(user.getSoTemplateCart().getTotal());
+    	successPageData.setSoDeliveryTime(so.getNextDeliveryString() + " " +so.getDeliveryTime());
+	}
+
+	private TextMessageAlertData loadTextMessageAlertData(final FDUserI user) throws FDResourceException, IOException, TemplateException {
         TextMessageAlertData textMessageAlertData = new TextMessageAlertData();
         textMessageAlertData.setHeader(contentFactoryService.getExpressCheckoutTextMessageAlertHeader(user));
         textMessageAlertData.setShow(textMessageAlertService.showTextMessageAlertPopup(user));
