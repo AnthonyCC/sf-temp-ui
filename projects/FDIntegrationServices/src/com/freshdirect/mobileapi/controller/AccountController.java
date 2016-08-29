@@ -1,7 +1,9 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
+import com.freshdirect.mobileapi.controller.data.response.Orders;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order;
 import com.freshdirect.mobileapi.controller.data.response.ReservationTimeslots;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -41,7 +44,7 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 
-public class AccountController extends BaseController {
+public class AccountController extends BaseController implements Comparator <Order>{
 
     private static Category LOGGER = LoggerFactory.getInstance(AccountController.class);
 
@@ -121,7 +124,14 @@ public class AccountController extends BaseController {
             resultMax = requestMessage.getMax();
         }
         ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
-               
+        
+        if(orders != null || !orders.isEmpty()){
+        	java.util.Collections.sort(orders, new AccountController());
+        	String firstOrder = orders.get(0).getId();
+        	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
+        	orders.get(0).setStatus(order.getOrderDetail(user).getStatus());	
+        }
+        
         ((OrderHistory) responseMessage).setOrders(paginator.getPage(page));
         
         setResponseMessage(model, responseMessage, user);
@@ -374,4 +384,8 @@ public class AccountController extends BaseController {
 		cal.add(Calendar.HOUR, hours);
 		return cal.getTime();
 	}
+    
+    public int compare (Order order1, Order order2){
+    	return order2.getId().compareTo(order1.getId());
+    }
 }
