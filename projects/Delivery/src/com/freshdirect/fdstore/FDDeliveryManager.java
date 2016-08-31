@@ -136,7 +136,7 @@ public class FDDeliveryManager {
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
 	
 	/** 24 hr cache Zip, Scrubbed address -> FDDeliveryZoneInfo */
-	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 15 * 60 * 1000);
+	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 5 * 60 * 1000);
 
 
 	private DlvRestrictionsList dlvRestrictions = null;
