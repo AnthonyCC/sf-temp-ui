@@ -11,6 +11,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.NVL;
@@ -72,7 +73,7 @@ public class DeliveryAddressValidator {
 
 		// Rule: restrict corporate addresses from registering for home delivery
 		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
-			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			giveCommercialAddressError(actionResult);
 			return false;
 		}
 
@@ -148,6 +149,16 @@ public class DeliveryAddressValidator {
 		return true;
 	}
 
+	private void giveCommercialAddressError(ActionResult actionResult) {
+		if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId()))){
+			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS_FDX ) );
+		}
+		else
+		{
+			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+		}
+	}
+
 	/**
 	 * Validate the address. After validation, additional information will be available in
 	 * {@link #getScrubbedAddress()} and {@link #getServiceResult()}.
@@ -167,7 +178,7 @@ public class DeliveryAddressValidator {
 
 		// Rule: restrict corporate addresses from registering for home delivery
 		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
-			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			giveCommercialAddressError(actionResult);
 			return false;
 		}
 
@@ -231,7 +242,7 @@ public class DeliveryAddressValidator {
 		}
 		// Rule: restrict corporate addresses from registering for home delivery
 		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( scrubbedAddress.getServiceType() ) ) {
-			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			giveCommercialAddressError(actionResult);
 			return false;
 		}
 		try {
@@ -378,7 +389,7 @@ public class DeliveryAddressValidator {
 
 		// Rule: restrict corporate addresses from registering for home delivery
 		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
-			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			giveCommercialAddressError(actionResult);
 			return false;
 		}
 

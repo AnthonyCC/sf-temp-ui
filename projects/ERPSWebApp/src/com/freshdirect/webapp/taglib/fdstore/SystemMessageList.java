@@ -129,6 +129,7 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_ACCESS_CODE = "Sorry, this access code ({0}) is not valid.";
 	public final static String MSG_INVALID_CORP_LOCATION = "Sorry, we''re unable to recognize this Corp Location - please make sure it''s entered correctly.";
 	public final static String MSG_COMMERCIAL_ADDRESS = "Sorry, according to our data this is a commercial address, eligible for our corporate delivery service, FreshDirect At The Office.";
+	public final static String MSG_COMMERCIAL_ADDRESS_FDX = "According to our records, this is a commercial address. Please select \"Office\" as type of address to continue.";
 	public final static String MSG_HOME_NO_COS_DLV_ADDRESS = "Sorry, according to our data this is a residential address, eligible for our Home Delivery service.";
 
 	public final static String MSG_EMAIL_TO_SELF			= "Sorry, you cannot enter your own email address.";
