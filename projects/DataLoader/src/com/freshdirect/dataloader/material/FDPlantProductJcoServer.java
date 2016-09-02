@@ -325,7 +325,8 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		salesAreaModel.setDayPartSelling(FDSapHelperUtils.getString(materialSalesAreaTable.getString("ZZDAYPART")));
 
 		if ("33".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())
-				|| "30".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
+				|| "30".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())
+				|| "35".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
 			salesAreaModel.setUnavailabilityReason("Discontinued by SAP");//salesAreaModel.getUnavailabilityReason());
 			salesAreaModel.setUnavailabilityStatus("DISC");
 			salesAreaModel.setUnavailabilityDate(new java.util.Date());
