@@ -3,15 +3,18 @@ package com.freshdirect.fdlogistics.model;
 
 import java.util.Date;
 
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+
 public class ZoneInfoByZipAndDateKey implements java.io.Serializable {
 	
 	public ZoneInfoByZipAndDateKey(String zipCode, Date startDate,
-			String scrubbedStreet, String serviceType, String customerId) {
+			String scrubbedStreet, String serviceType, EnumRegionServiceType regionServiceType, String customerId) {
 		super();
 		this.zipCode = zipCode;
 		this.startDate = startDate;
 		this.scrubbedStreet = scrubbedStreet;
 		this.serviceType = serviceType;
+		this.regionServiceType = regionServiceType;
 		this.customerId = customerId;
 	}
 
@@ -22,6 +25,7 @@ public class ZoneInfoByZipAndDateKey implements java.io.Serializable {
 	private String scrubbedStreet;
 	private String serviceType;
 	private String customerId;
+	private EnumRegionServiceType regionServiceType;
    
    	public String getZipCode() {
         return this.zipCode;
@@ -45,6 +49,10 @@ public class ZoneInfoByZipAndDateKey implements java.io.Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((customerId == null) ? 0 : customerId.hashCode());
+		result = prime
+				* result
+				+ ((regionServiceType == null) ? 0 : regionServiceType
+						.hashCode());
 		result = prime * result
 				+ ((scrubbedStreet == null) ? 0 : scrubbedStreet.hashCode());
 		result = prime * result
@@ -68,6 +76,11 @@ public class ZoneInfoByZipAndDateKey implements java.io.Serializable {
 			if (other.customerId != null)
 				return false;
 		} else if (!customerId.equals(other.customerId))
+			return false;
+		if (regionServiceType == null) {
+			if (other.regionServiceType != null)
+				return false;
+		} else if (!regionServiceType.equals(other.regionServiceType))
 			return false;
 		if (scrubbedStreet == null) {
 			if (other.scrubbedStreet != null)
@@ -106,6 +119,14 @@ public class ZoneInfoByZipAndDateKey implements java.io.Serializable {
 
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	public EnumRegionServiceType getRegionServiceType() {
+		return regionServiceType;
+	}
+
+	public void setRegionServiceType(EnumRegionServiceType regionServiceType) {
+		this.regionServiceType = regionServiceType;
 	}
     
 }

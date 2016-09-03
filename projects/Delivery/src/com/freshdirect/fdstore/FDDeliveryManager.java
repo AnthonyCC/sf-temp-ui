@@ -408,7 +408,7 @@ public class FDDeliveryManager {
             throws FDResourceException, FDInvalidAddressException {
 
         ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), DateUtil.truncate(date), 
-        		(address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet(), address.getServiceType().getName(), customerId);
+        		(address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet(), address.getServiceType().getName(), serviceType, customerId);
         FDDeliveryZoneInfo result = zoneInfoByDateZipScrubbedAddress.get(key);
 
         try {
