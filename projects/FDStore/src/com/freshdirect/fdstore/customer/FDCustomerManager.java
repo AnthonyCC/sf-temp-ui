@@ -2423,12 +2423,23 @@ public class FDCustomerManager {
 		try {
 			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
+			if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
+					ContentFactory.getInstance().getStore().getContentName() != null && !ContentFactory.getInstance().getStore().getContentName().equals("FDX")) {
 			if(chefstable){
 				email = FDEmailFactory.getInstance().createChefsTableEmail(customer, subject, body);
 			}else{
 				if(feedback){
 					email = FDEmailFactory.getInstance().createFeedbackEmail(customer, subject, body);
 				}else if(vending){
+					email = FDEmailFactory.getInstance().createVendingEmail(customer, subject, body);
+				}else{
+					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
+				}
+			}
+			}
+			else
+			{
+				if(vending){
 					email = FDEmailFactory.getInstance().createVendingEmail(customer, subject, body);
 				}else{
 					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
