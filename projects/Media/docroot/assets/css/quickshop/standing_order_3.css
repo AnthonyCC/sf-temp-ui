@@ -336,19 +336,6 @@
     color: #333;
     padding: 10px 0 20px;
 }
-.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
-	font-size: 1em;
-}
-.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-small-text,
-.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
-.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
-	font-size: 0.5em;
-	font-weight: normal;
-}
-.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
-.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
-	padding-top: 10px;
-}
 .standing-orders-3-upcoming-deliveries {
     padding-top: 40px;
 }
@@ -951,9 +938,6 @@
 .standing-orders-3 .standing-orders-3-so-settings-activate-button[disabled]{
 	background: #fff;
 	opacity: 0.5;
-}
-.standing-orders-3 .standing-orders-3-so-settings-activate-button .so-est_total{
-	display: inline-block;
 }
 .standing-orders-3-error-ball{
 	float: left;

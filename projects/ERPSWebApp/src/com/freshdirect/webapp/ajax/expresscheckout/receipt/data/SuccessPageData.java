@@ -12,7 +12,7 @@ public class SuccessPageData {
 
     // START SO 3.1 ACTIVATION SUCCESS PAGE
     
-    private boolean isSOActivate=false;
+    private boolean soActivate=false;
     
     private String soFrequency;
    
@@ -96,18 +96,14 @@ public class SuccessPageData {
         this.isOrderModifiable = isOrderModifiable;
     }
 
-	/**
-	 * @return the isSOActivate
-	 */
-	public boolean isSOActivate() {
-		return isSOActivate;
+
+
+	public boolean isSoActivate() {
+		return soActivate;
 	}
 
-	/**
-	 * @param isSOActivate the isSOActivate to set
-	 */
-	public void setSOActivate(boolean isSOActivate) {
-		this.isSOActivate = isSOActivate;
+	public void setSoActivate(boolean soActivate) {
+		this.soActivate = soActivate;
 	}
 
 	/**

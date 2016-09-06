@@ -574,3 +574,62 @@
 	    font-family: Verdana, Arial, sans-serif;
 	    text-align: left;
 	}
+	#order-summary .so-success-h1{
+		margin: 20px 0;
+		padding: 30px 0;
+		background: #F2F2F2;
+		text-align: center;
+		font-weight: bold;
+	}
+	#order-summary .so-success-header{
+		display: inline-block;
+		font-size: 1.8em;
+		font-weight: bold;
+		line-height: 36px;
+	}
+	#order-summary .so-success-h2{
+		font-weight: bold;
+	}
+	#order-summary .so-success-details-button{
+		float: right;
+		width: 230px;
+	}
+	#order-summary .success-soinfo{
+		clear: both;
+		font-size: 16px;
+		margin: 15px 0 20px;
+		padding: 20px 20px;
+		border-top: 1px solid #e0e3d0;
+	}
+	
+	#order-summary .success-soinfo-item{
+		float: left;
+		clear: both;
+		width: 190px;
+	}
+	.successtotal-so-message{
+		padding: 0 0 40px;
+	}
+	.successtotal-so-message .successtotal-so-message-note{
+		float: left;
+		font-size: 20px;
+		padding: 0 20px 0 0;
+	}
+	.successtotal-so-message .successtotal-so-message-text{
+		display: inline-block;
+		font-size: 16px;
+		max-width: 845px;
+	}
+	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
+		font-size: 1em;
+	}
+	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-small-text,
+	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
+	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
+		font-size: 0.5em;
+		font-weight: normal;
+	}
+	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
+	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
+		padding-top: 10px;
+	}

@@ -564,12 +564,13 @@ public class SinglePageCheckoutFacade {
      */
     private void populateSOActivationSuccess(SuccessPageData successPageData, FDUserI user) {
         FDStandingOrder so=user.getCurrentStandingOrder();
-    	successPageData.setSOActivate(true);
+    	successPageData.setSoActivate(true);
     	successPageData.setSoId(so.getId());
     	successPageData.setSoFrequency(so.getFullFrequencyDescription());
     	successPageData.setSoDeliveryDay(so.getDeliveryDay());
     	successPageData.setSoEstimatedTotal(user.getSoTemplateCart().getTotal());
     	successPageData.setSoDeliveryTime(so.getNextDeliveryString() + " " +so.getDeliveryTime());
+    	successPageData.setSoName(so.getCustomerListName());
 	}
 
 	private TextMessageAlertData loadTextMessageAlertData(final FDUserI user) throws FDResourceException, IOException, TemplateException {

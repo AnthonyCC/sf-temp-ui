@@ -75,7 +75,7 @@ public class CartDataServlet extends BaseJsonServlet {
 				responseData = SoyTemplateEngine.convertToMap(result);
 			} else {
 				String orderId = request.getParameter(ORDER_ID);
-				if (orderId == null) {
+				if (orderId == null || orderId.isEmpty()) {
 					CartData cartData = CartDataService.defaultService().loadCartData(request, user);
 					responseData = SoyTemplateEngine.convertToMap(cartData);
 				} else {

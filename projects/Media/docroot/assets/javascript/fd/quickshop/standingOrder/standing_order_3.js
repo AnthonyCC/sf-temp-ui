@@ -321,6 +321,7 @@ function getSOData(id, action){
             		$jq(soID + " .standing-orders-3-so-settings-activate").remove();
 					closeSOSettings();
 				}, 3000);
+            	window.location.href = "/expressco/success.jsp?soId=" + id;
             	updateSOItem(id, data);
             }
         	if('soItemUpdate'==action){
@@ -379,6 +380,7 @@ function updateSOItem(id, data){
 	var soID = "#soid_" + id;
 	var softLimit = FreshDirect.standingorder.softLimitDisplay || "50";
 	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit:softLimit}));
+
 }
 
 function hideShopNowButtuns(){

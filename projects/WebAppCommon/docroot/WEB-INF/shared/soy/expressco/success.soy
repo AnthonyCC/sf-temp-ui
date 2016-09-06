@@ -8,12 +8,18 @@
 * @param? soName
 * @param? soOrderDate
 * @param? orderModifiable
+* @param? soActivate
+* @param? soFrequency
+* @param? soEstimatedTotal
+* @param? soId
+* @param? soDeliveryTime
+* @param? soDeliveryDay
 */
 {template .successpage autoescape="false"}
 {if $orderId}
-  {call .successheader}
-    {param headerMedia: $header /}
-  {/call}
+    {call .successheader}
+      {param headerMedia: $header /}
+    {/call}
   {call .successtotal}
     {param orderId: $orderId /}
     {param receipt: $receipt /}
@@ -22,6 +28,26 @@
     {param soOrderDate: $soOrderDate /}
     {param orderModifiable: $orderModifiable /}
   {/call}
+{elseif  $soActivate}
+	<h1 class="so-success-h1">Your Standing Order has been placed!</h1>
+  	<div class="so-success-header">Standing Order Summary</div>
+  	<a class="so-success-details-button cssbutton cssbutton-flat purple nontransparent" href="/quickshop/standing_orders.jsp?soid={$soId}#soid_{$soId}">View Details</a>
+  	<div class="success-soinfo">
+  		<div class="success-soinfo-item">Name:</div><div class="success-soinfo-name">{$soName}</div>
+  		<div class="success-soinfo-item">First Delivery:</div><div class="success-soinfo-date">{$soDeliveryTime}</div>
+  		<div class="success-soinfo-item">Frequency:</div><div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
+  		<div class="success-soinfo-item">Estimated Total:</div><div class="success-soinfo-total">{$soEstimatedTotal}</div>
+  	</div>
+    <h2 class="so-success-h2">Your Next Delivery</h2>
+    {call .successtotal}
+	    {param orderId: $orderId /}
+	    {param receipt: $receipt /}
+	    {param rightBlock: $rightBlock /}
+	    {param soName: $soName /}
+	    {param soOrderDate: $soOrderDate /}
+	    {param orderModifiable: $orderModifiable /}
+	    {param soActivate: $soActivate /}
+ 	{/call}
 {/if}
 {/template}
 
@@ -41,9 +67,21 @@
  * @param? soName
  * @param? soOrderDate
  * @param? orderModifiable
+ * @param? soActivate
  */
 {template .successtotal autoescape="false"}
 <div class="successtotal">
+	{if $soActivate}
+  		<div class="successtotal-so-message">
+  			<div class="successtotal-so-message-note">
+  				NOTE:
+  			</div>
+  			<div class="successtotal-so-message-text">
+  				You will recieve an email confirmation for this order.<br/>
+  				Changes can be made after email confirmation has been sent.
+  			</div>
+  		</div>
+  	{/if}
   <div class="successtotal-left">
     {call .receiptBox}
       {param orderId: $orderId /}
@@ -53,6 +91,7 @@
       {param soName: $soName /}
       {param soOrderDate: $soOrderDate /}
       {param orderModifiable: $orderModifiable /}
+      {param soActivate: $soActivate /}
     {/call}
   </div>
   <div class="successtotal-right">
@@ -133,14 +172,19 @@
 * @param? soName
 * @param? soOrderDate
 * @param orderModifiable
+* @param? soActivate
 */
 {template .receiptBox autoescape="false"}
 <div class="orderbox">
+  {if $soActivate}
+     <h2 class="orderid">{$soName}</h2>
+  {else}
   <h2 class="orderid">Order #{$orderId}
   	{if $soName}
   		<div class="standing-order-3-receiptBox">{$soName}, {$soOrderDate} Delivery</div>
   	{/if}
   </h2>
+  {/if}
   {if $receiptLines and length($receiptLines) > 0}
     <ul class="ordertotal">
       {foreach $receipt in $receiptLines}
