@@ -1694,7 +1694,13 @@ public class BrowseUtil {
             	}
             	
         	} else {
-            	list.add(new SortStrategyElement(element));
+        		if(element == SortStrategyElement.PRODUCTS_BY_RATING){
+        			list.add(new SortStrategyElement(element,true));
+        		}
+        		else
+        		{
+        			list.add(new SortStrategyElement(element));
+        		}
         	}
             ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
             sortTagWrapper.sort(products, list);
