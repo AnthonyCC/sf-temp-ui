@@ -35,7 +35,7 @@
                             
                             <p>We’ll send you an order confirmation with the details of your first Standing Order within the next 24 hours. We’ll also send you a weekly receipt every time your order is assembled and delivered.</p>
 							
-							<p>Below you will see the settings for your Standing Order, including its name, day, time, and delivery address. You’ll also see all the items in your order</p> 
+							<p>Below you will see the settings for your Standing Order, including its name, day, time, and delivery address. You’ll also see all the items in your order.</p> 
 
 							<p>If you’d like to make changes to your Standing Order, <a href="http://www.freshdirect.com/quickshop/standing_orders.jsp">click here.</a> </p>
 							
