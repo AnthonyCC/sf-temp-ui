@@ -1539,7 +1539,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
     private String validateQuantity(ProductModel prodNode, double quantity, double adjustmentQuantity, double maximumQuantity) {
         DecimalFormat formatter = new DecimalFormat("0.##");
         if (quantity < prodNode.getQuantityMinimum()) {
-            return "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+        	if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
+					ContentFactory.getInstance().getStore().getContentName() != null && ContentFactory.getInstance().getStore().getContentName().equals("FDX")) {
+                return "FoodKick cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+            }
+            else
+            {
+                return "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+            }
         }
 
         if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
