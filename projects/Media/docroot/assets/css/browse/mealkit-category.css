@@ -39,7 +39,7 @@
   margin-bottom:20px;
   border:1px solid #e1e1e1;
   vertical-align: top;
-  
+ /* height: 100%;*/
 }
 
 .mealkit-products-list-item:nth-child(3n){
@@ -52,6 +52,7 @@
   min-height:500px;
   margin-left:5px;
   margin-right:5px;
+  height: 100%;
 }
 
 .mealkit-products-list-item-imagewrapper{
@@ -87,7 +88,13 @@
 }
 
 .mealkit-products-list-content {
-	margin-bottom: 145px;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+}
+
+.mealkit-products-list-upper {
+	flex-grow: 1;
 }
 
 .mealkit-products-list-item-header-wrapper {
@@ -138,10 +145,10 @@
 }
 
 .product-list-item-bottom {
-	position: absolute;
+	/*position: absolute;
 	bottom: 0;
 	left: 0;
-	width: 100%;
+	width: 100%;*/
 }
 
 .mealkit-product-list-time {

@@ -27,7 +27,7 @@
  {else}
   {if $products and length($products)>0}
    <div class="mealkit-category-head">{$headerText}</div>
-   <ul class="mealkit-products-list">
+   <div class="mealkit-products-list">
     {foreach $product in $products}
       {if $product.available}
         {call .specialMealkitProduct}
@@ -64,7 +64,7 @@
         {/call}
       {/if}
     {/foreach}
-   </ul>
+   </div>
   {/if}
  {/if}
 {/template}
@@ -84,8 +84,9 @@
  * @param? timeToComplete
  */
 {template .specialMealkitProduct autoescape="false"}
-<li class="mealkit-products-list-item">
+<div class="mealkit-products-list-item">
 	<div class="mealkit-products-list-content {$available ? '' : 'unavailable'}">
+		<div class="mealkit-products-list-upper">
 		  <div class="mealkit-products-list-item-imagewrapper">
 		    <a href="/pdp.jsp?productId={$productId}&catId={$catId}">
 		      {if $productDetailImage}<img src="{$productDetailImage}" alt="{if $description}{$description}{/if}" class="mealkit-products-list-item-image" />{/if}
@@ -98,43 +99,43 @@
 		  <div class="product-list-qualitynote">
 		  	<p>{if $productQualityNote and $available}{$productQualityNote}{/if}</p>
 		  </div>
+		 </div>
+		  {if $available}
+		<div class="product-list-item-bottom">
+	      <div class="mealkit-products-list-item-infos">
+		    <p class="mealkit-products-list-item-price">
+			  {if $unitPrice}
+			      {call common.price} 
+			        {param price:$unitPrice /}
+			      {/call}
+			      <span> {if $utSalesUnit}{$utSalesUnit}{/if}</span>
+			  {/if}
+			</p>
+			<p class="mealkit-products-list-item-price">
+			  {if $price}
+			      {call common.price}
+			        {param price:$price /}
+			      {/call}
+			     <span> Per Meal Kit</span>
+			    {/if}
+		    </p>
+		  </div>
+	      <div class="mealkit-products-list-button">
+	   	    <a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
+	      </div>
+	      {if $timeToComplete and $timeToComplete>0}
+	      <div class="mealkit-product-list-time icon-clock2-before">
+	      	<span>{$timeToComplete} minutes</span>
+	      </div>
+	      {else}
+	      <div class="mealkit-product-list-time">
+	        <span></span>
+	      </div>
+	      {/if}
+	     </div>
+	   	{/if}
 	</div>
-	{if $available}
-	<div class="product-list-item-bottom">
-      <div class="mealkit-products-list-item-infos">
-	    <p class="mealkit-products-list-item-price">
-		  {if $unitPrice}
-		      {call common.price} 
-		        {param price:$unitPrice /}
-		      {/call}
-		      <span> {if $utSalesUnit}{$utSalesUnit}{/if}</span>
-		  {/if}
-		</p>
-		<p class="mealkit-products-list-item-price">
-		  {if $price}
-		      {call common.price}
-		        {param price:$price /}
-		      {/call}
-		     <span> Per Meal Kit</span>
-		    {/if}
-	    </p>
-	  </div>
-      <div class="mealkit-products-list-button">
-   	    <a href="/pdp.jsp?productId={$productId}&catId={$catId}"><button class="cssbutton green medium">View</button></a>
-      </div>
-      {if $timeToComplete and $timeToComplete>0}
-      <div class="mealkit-product-list-time icon-clock2-before">
-      	<span>{$timeToComplete} minutes</span>
-      </div>
-      {else}
-      <div class="mealkit-product-list-time">
-        <span></span>
-      </div>
-      {/if}
-     </div>
-    {/if}
-     
-</li><!-- /product-large -->
+</div><!-- /product-large -->
 {/template}
 
 /**
