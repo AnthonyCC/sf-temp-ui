@@ -178,7 +178,7 @@
 		width: 325px;
 	}
 	.thxgiving-addtocart .atc-button-wrapper {
-		display: inline-block !important;
+		display: inline-block;
 	}
 	.thxgiving-addtocart .cssbutton[data-component="addToListButton"] {
 		margin-left: 10px;

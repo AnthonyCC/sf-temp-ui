@@ -174,6 +174,7 @@
 
 .thxgiving-addtocart .subtotal{
   margin-top:17px;
+  line-height: 17px;
 }
 
 .thxgiving-addtocart .subtotal-inner{
@@ -202,7 +203,8 @@
 
 .thxgiving-addtocart .atc-button-wrapper{
   display:block;
-}
+  margin: 10px 0;
+  }
 
 .thxgiving-addtocart input.qty{
   height:48px;
