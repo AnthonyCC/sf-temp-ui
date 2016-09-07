@@ -93,8 +93,9 @@
 .thxgiving-actions {
   display:inline-block;
   vertical-align: top;
-  width:250px;
-  padding-left:25px;
+  width:265px;
+  padding-left:10px;
+  box-sizing: border-box;
 }
 
 .thxgiving-actions .action-item {
