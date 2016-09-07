@@ -36,7 +36,6 @@ public class UnbxdIntegrationService {
 
     public UnbxdSearchResponseRoot searchProducts(String searchTerm) throws IOException {
         UnbxdSearchResponseRoot results = httpService.getData(buildSearchUri(searchTerm, 1), UnbxdSearchResponseRoot.class);
-
         if ((results.getResponse().getNumberOfProducts() != null) && (results.getResponse().getNumberOfProducts().compareTo(SEARCH_ROW_SIZE) == 1)) {
             UnbxdSearchResponseRoot resultsPageTwo = httpService.getData(buildSearchUri(searchTerm, 2), UnbxdSearchResponseRoot.class);
             results.getResponse().getProducts().addAll(resultsPageTwo.getResponse().getProducts());
@@ -45,16 +44,11 @@ public class UnbxdIntegrationService {
         return results;
     }
 
-    public List<String> suggestProducts(String term) {
+    public List<String> suggestProducts(String term) throws IOException {
         List<String> autosuggests = new ArrayList<String>();
-        try {
-            UnbxdAutosuggestResponseRoot results = httpService.getData(AUTOSUGGEST_ENDPOINT + URLEncoder.encode(term, CharEncoding.UTF_8), UnbxdAutosuggestResponseRoot.class);
-            for (UnbxdAutosuggestResultProduct result : results.getResponse().getProducts()) {
-                autosuggests.add(result.getAutosuggest());
-            }
-        } catch (IOException e) {
-            LOGGER.error("Exception while calling UNBXD autosuggest: ", e);
-            autosuggests = Collections.emptyList();
+        UnbxdAutosuggestResponseRoot results = httpService.getData(AUTOSUGGEST_ENDPOINT + URLEncoder.encode(term, CharEncoding.UTF_8), UnbxdAutosuggestResponseRoot.class);
+        for (UnbxdAutosuggestResultProduct result : results.getResponse().getProducts()) {
+        	autosuggests.add(result.getAutosuggest());
         }
         return autosuggests;
     }
