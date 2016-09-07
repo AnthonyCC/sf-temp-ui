@@ -35,6 +35,8 @@ public enum SortType {
             result = NAME;
         } else if (PRICE.toString().equalsIgnoreCase(str)) {
             result = PRICE;
+        } else if (SALE.toString().equalsIgnoreCase(str)) {
+            result = SALE;
         } else if (POPULARITY.toString().equalsIgnoreCase(str)) {
             result = POPULARITY;
         } else if (RECENCY.toString().equalsIgnoreCase(str)) {
@@ -70,6 +72,8 @@ public enum SortType {
             result = NAME;
         } else if (PRICE.getSortValue().equalsIgnoreCase(minSortType)) {
             result = PRICE;
+        } else if (SALE.getSortValue().equalsIgnoreCase(minSortType)) {
+            result = SALE;
         } else if (POPULARITY.getSortValue().equalsIgnoreCase(minSortType)) {
             result = POPULARITY;
         } else if (RECENCY.getSortValue().equalsIgnoreCase(minSortType)) {
