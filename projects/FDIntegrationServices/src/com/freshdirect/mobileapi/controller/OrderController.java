@@ -159,7 +159,7 @@ public class OrderController extends BaseController {
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
-            requestMessage.setMax(20000);
+            requestMessage.setMax(500);
             model = getProductsFromOrderDept(model, user, orderId
             										, (deptId != null && deptId.trim().length() > 0 
             												&& !"all".equalsIgnoreCase(deptId)) ? deptId : null
