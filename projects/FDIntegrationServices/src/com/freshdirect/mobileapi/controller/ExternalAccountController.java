@@ -99,9 +99,9 @@ public class ExternalAccountController extends BaseController implements SystemM
     private void redirectAfterLogin(HttpServletResponse response, String redirectUrl) {
         if (redirectUrl != null && !redirectUrl.isEmpty()) {
             try {
-                response.sendRedirect(redirectUrl);
+                response.sendRedirect(response.encodeRedirectURL(redirectUrl));
             } catch (IOException e) {
-                LOGGER.warn("Given redirect url could not be found: " + redirectUrl);
+                LOGGER.error("Given redirect url could not be found: " + redirectUrl);
             }
         }
     }
@@ -560,9 +560,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 			String firstName = (names.length == 0) ? "" : names[0];
 			String lastName = (names.length <= 1) ? ""
 					: names[names.length - 1];
-//			String provider = (String) socialUser.get("provider");
-//			String userToken = (String) socialUser.get("userToken");
-			//RegisterMessageFdxRequest requestMessageRegister = new RegisterMessageFdxRequest();
 			ExternalAccountRegisterRequest requestMessageRegister = new ExternalAccountRegisterRequest();
 			requestMessageRegister.setEmail(email);
 			requestMessageRegister.setFirstName(firstName);

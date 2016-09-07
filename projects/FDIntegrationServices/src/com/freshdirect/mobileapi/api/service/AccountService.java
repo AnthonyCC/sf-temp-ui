@@ -137,11 +137,11 @@ public class AccountService {
             // FDX-1873 - Show timeslots for anonymous address
             boolean deliveryAddr = setDeliveryAddress(user);
             responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
-            responseMessage.setPlantId(BrowseUtil.getPlantId(user));
             responseMessage.setMobileNumber(getMobileNumber(user));
         } else {
             responseMessage.setFailureMessage("User is not logged in.");
         }
+        responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         return responseMessage;
     }
 

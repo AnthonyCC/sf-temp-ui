@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,6 +25,7 @@ import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
@@ -50,6 +51,7 @@ import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
+import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslotPageResponse;
 import com.freshdirect.mobileapi.controller.data.response.DynamicAvailabilityError;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.controller.data.response.PaymentResponse;
@@ -60,7 +62,6 @@ import com.freshdirect.mobileapi.model.DeliveryAddress;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
-import com.freshdirect.mobileapi.model.MessageCodes.ErrorMessage;
 import com.freshdirect.mobileapi.model.Depot;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.Order;
@@ -72,6 +73,7 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -515,18 +517,26 @@ public class CheckoutController extends BaseController {
         
         Message responseMessage = null;
         if (result.isSuccess()) {
-        	
-        	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
-
+            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
+            
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
                     timeSlotResult);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-            responseMessage = slotResponse;
+
+            if (isCheckLoginStatusEnable(request)) {
+                CMSPageRequest pageRequest = new CMSPageRequest();
+                pageRequest.setRequestedDate(new Date());
+                pageRequest.setPlantId(BrowseUtil.getPlantId(user));
+                DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
+                populateHomePages(user, pageRequest, pageResponse, request);
+                pageResponse.setDeliveryTimeslot(slotResponse);
+                responseMessage = pageResponse;
+            } else {
+                responseMessage = slotResponse;
+            }
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
-            
         } else {
-        	
             responseMessage = getErrorMessage(result, request);
         }
         setResponseMessage(model, responseMessage, user);
@@ -924,7 +934,7 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()) {
-            if (reqestMessage.isWebResponse()) {
+            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_PAYMENT)) {
                 responseMessage = getPaymentMethods(user);
             } else {
                 responseMessage = Message.createSuccessMessage("Payment method set successfully.");

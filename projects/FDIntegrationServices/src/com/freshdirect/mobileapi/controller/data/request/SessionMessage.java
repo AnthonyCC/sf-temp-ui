@@ -1,6 +1,8 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-public class SessionMessage extends RequestMessage {
+import com.freshdirect.mobileapi.controller.data.Message;
+
+public class SessionMessage extends Message {
 
     private String source;
 

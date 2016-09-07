@@ -1,7 +1,6 @@
 package com.freshdirect.mobileapi.api.controller;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,13 +61,9 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public void logout(HttpServletRequest request, HttpServletResponse response, SessionMessage sessionRequest) throws IOException {
+    public Message logout(HttpServletRequest request, HttpServletResponse response, SessionMessage sessionRequest) throws IOException {
         accountService.logout(request.getSession(), response);
-        response.sendRedirect(getLandingPagePath(request));
-    }
-
-    private String getLandingPagePath(HttpServletRequest request) {
-        return request.getContextPath() + request.getServletPath() + PageController.HOME_PAGE_PATH + "?" + PageController.REQUESTED_DATE +  "=" + new Date().getTime() / 1000;
+        return Message.createSuccessMessage("User logged out successfully.");
     }
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

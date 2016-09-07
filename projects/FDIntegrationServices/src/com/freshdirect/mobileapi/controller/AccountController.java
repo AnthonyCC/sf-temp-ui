@@ -20,9 +20,9 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
-import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.Timezone;
@@ -66,11 +66,10 @@ public class AccountController extends BaseController implements Comparator <Ord
             model = getDeliveryAddresses(model, user);
         } else if (ACTION_GET_TIMESLOTS.equals(action)) {
             String addressId = request.getParameter(PARAM_ADDRESS_ID);
-            RequestMessage requestMessage = parseRequestObject(request, response, RequestMessage.class);
             if (addressId == null || addressId.isEmpty()) {
-                model = getReservationTimeslot(model, user, requestMessage);
+                model = getReservationTimeslot(model, request, user);
             } else {
-                model = getReservationTimeslot(model, user, addressId, requestMessage);
+                model = getReservationTimeslot(model, request, user, addressId);
             }
         } else if (ACTION_GET_TIMESLOTS_BY_TIMEZONE.equals(action)) {
             String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -207,7 +206,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         return model;
     }
 
-    private ModelAndView getReservationTimeslot(ModelAndView model, SessionUser user, RequestMessage requestMessage) throws FDException, JsonException, ServiceException {
+    private ModelAndView getReservationTimeslot(ModelAndView model, HttpServletRequest request, SessionUser user) throws FDException, JsonException, ServiceException {
         String addressId = null;
         //FDX-1873 - Show timeslots for anonymous address
         if((user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress()))) {
@@ -242,7 +241,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     		setResponseMessage(model, responseMessage, user);
     		return model;
         } else {
-    		return getReservationTimeslot(model, user, addressId, requestMessage);
+    		return getReservationTimeslot(model, request, user, addressId);
     	}
         
     }
@@ -299,17 +298,17 @@ public class AccountController extends BaseController implements Comparator <Ord
         return timeSlotResult;
     }
 
-    private ModelAndView getReservationTimeslot(ModelAndView model, SessionUser user, String addressId, RequestMessage requestMessage)
+    private ModelAndView getReservationTimeslot(ModelAndView model, HttpServletRequest request, SessionUser user, String addressId)
             throws FDException, JsonException, ServiceException {
         Message responseMessage = null;
         DeliveryTimeslots deliveryTimeslots = getDeliveryTimeslots(user, addressId);
-//        if (!requestMessage.isWebResponse()){
-//            responseMessage = deliveryTimeslots;
-//        } else {
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.EXCLUDE_ADDRESS)){
+            responseMessage = deliveryTimeslots;
+        } else {
             DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
             deliveryAddresses.setPreSelectedId(addressId);
             responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
-        //}
+        }
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
         

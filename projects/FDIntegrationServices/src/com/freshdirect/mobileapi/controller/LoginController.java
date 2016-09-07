@@ -1,9 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,6 +23,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -42,11 +40,11 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AckRequest;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.PasswordMessageRequest;
-import com.freshdirect.mobileapi.controller.data.request.RequestMessage;
 import com.freshdirect.mobileapi.controller.data.request.SessionMessage;
 import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.SessionResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -58,6 +56,7 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -139,7 +138,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		    responseMessage = ping(request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
 		    responseMessage = logout(user, request, response);
-			//refreshFeeds(request, response);//Removed because its breaking the logout functionality.
 		}else if (ACTION_SOURCE.equals(action)) {
 		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class); 
 			responseMessage = transactionSource(user, request, response,requestMessage);
@@ -154,7 +152,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			responseMessage = checkSession(request, response, user, requestMessage);
 		}else if (ACTION_ACK.equals(action)) {
 			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class); 
-			responseMessage = udateAck(request, response, user, requestMessage);
+			responseMessage = updateAck(request, response, user, requestMessage);
 			user.setTcAcknowledge(true);
 		}  else if (ACTION_SESSION_ADD_ANONYMOUS_ADDRESS.equals(action)) {
 			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class); 
@@ -262,24 +260,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         return passwordResponse;
     }
 
-    private void refreshFeeds(HttpServletRequest request, HttpServletResponse response) throws JsonException {
-        if (getPostData(request, response) != null && !getPostData(request, response).isEmpty()) {
-            RequestMessage requestMessage = parseRequestObject(request, response, RequestMessage.class); 
-            if (requestMessage.isWebResponse()) {
-                try {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                    String payload = "{\"requestedDate\" : \"" + df.format(new Date()) + "\"}";
-                    String parameters = "data=" + payload;
-                    String servletPath = "/v/" + request.getParameter("ver") + "/home/getHomePage/";
-                    response.sendRedirect(request.getContextPath() + servletPath + "?" + parameters);
-                } catch (IOException e) {
-                    LOGGER.warn("Home page endpoint could not be found.", e);
-                }
-            }
-        }
-    }
-	
-	private Message udateAck(HttpServletRequest request, HttpServletResponse response, SessionUser user, AckRequest requestMessage)
+	private Message updateAck(HttpServletRequest request, HttpServletResponse response, SessionUser user, AckRequest requestMessage)
 	        throws NoSessionException, FDException {
 		Message responseMessage=null;
 		if (null == user) {
@@ -444,7 +425,16 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				throw new FDAuthenticationException();
 			}
 			user.getFDSessionUser().saveCart();
-			responseMessage = formatLoginMessage(user);
+            if (isCheckLoginStatusEnable(request)) {
+                CMSPageRequest pageRequest = new CMSPageRequest();
+                pageRequest.setRequestedDate(new Date());
+                pageRequest.setPlantId(BrowseUtil.getPlantId(user));
+                PageMessageResponse pageResponse = new PageMessageResponse();
+                populateHomePages(user, pageRequest, pageResponse, request);
+                responseMessage = pageResponse;
+            } else {
+                responseMessage = formatLoginMessage(user);
+            }
 			resetMobileSessionData(request);
 			if (user != null) {
 				FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
@@ -488,30 +478,25 @@ public class LoginController extends BaseController  implements SystemMessageLis
             responseMessage = getErrorMessage(ERR_INVALID_TRANSACTIONCODE, MessageCodes.MSG_INVALID_TRANSACTIONCODE);
         } else {
             request.getSession().setAttribute(SessionName.APPLICATION, transactionSource.getCode());
-            if (requestMessage.isWebResponse()) {
-                user = getUser(request, response);
-                responseMessage = createLoginResponseMessage(user);
-            } else {
-                responseMessage = new SessionResponse();
-                if (user == null) {
-                    FDSessionUser fdSessionUser = null;
-                    try {
-                        fdSessionUser = CookieMonster.loadCookie(request);
-                    } catch (FDResourceException ex) {
-                        LOGGER.warn(ex);
-                    }
-                    if (fdSessionUser != null) {
-                        FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
-                        ((SessionResponse) responseMessage).setSessionExpired(true); // had cookie with no session object so assume session expired
-                    } else {
-                        fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
-                    }
-                    ((SessionResponse) responseMessage).setSessionIsNew(true); // Cookie recognized or new cookie created, it is still a new session
-                    request.getSession().setAttribute(SessionName.USER, fdSessionUser);
-                    user = SessionUser.wrap(fdSessionUser);
-                } else {
-                    ((SessionResponse) responseMessage).setLoggedIn(user.isLoggedIn());
+            responseMessage = new SessionResponse();
+            if (user == null) {
+                FDSessionUser fdSessionUser = null;
+                try {
+                    fdSessionUser = CookieMonster.loadCookie(request);
+                } catch (FDResourceException ex) {
+                    LOGGER.warn(ex);
                 }
+                if (fdSessionUser != null) {
+                    FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
+                    ((SessionResponse) responseMessage).setSessionExpired(true); // had cookie with no session object so assume session expired
+                } else {
+                    fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
+                }
+                ((SessionResponse) responseMessage).setSessionIsNew(true); // Cookie recognized or new cookie created, it is still a new session
+                request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+                user = SessionUser.wrap(fdSessionUser);
+            } else {
+                ((SessionResponse) responseMessage).setLoggedIn(user.isLoggedIn());
             }
             responseMessage.setConfiguration(getConfiguration(user));
         }

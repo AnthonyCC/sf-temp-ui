@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.FDCouponProperties;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.StoreContext;
@@ -37,24 +39,33 @@ import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSSectionModel;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.controller.data.CMSSectionProductModel;
+import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoCartException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.filters.CORSFilter;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.OrderHistory;
@@ -70,6 +81,7 @@ import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -85,11 +97,12 @@ import freemarker.template.TemplateException;
 
 public abstract class BaseController extends AbstractController implements MessageCodes {
 
-    private static final String JSON = "JSON";
-
     private static final Category LOGGER = LoggerFactory.getInstance(BaseController.class);
 
-    public static final String JSON_RENDERED = "json-rendered";
+    private static final String JSON = "JSON";
+    private static final String JSON_RENDERED = "json-rendered";
+    private static final String FEED_PAGE_TYPE = "Feed";
+    private static final String TODAYS_PICK_PAGE_TYPE = "TodaysPick";
 
     public static OasService oasService = new Oas247Service();
 
@@ -207,7 +220,7 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-	if (null == request.getSession().getAttribute(SessionName.USER)) {
+        if (null == request.getSession().getAttribute(SessionName.USER)) {
             throw new NoSessionException("No session");
         }
 
@@ -257,9 +270,13 @@ public abstract class BaseController extends AbstractController implements Messa
                 }
 
                 try {
-                    user = getUserFromSession(request, response);
-                    user.setUserContext();
-                    user.setEligibleForDDPP();
+                    if (isCheckLoginStatusEnable(request)) {
+                        user = getUser(request, response);
+                    } else {
+                        user = getUserFromSession(request, response);
+                        user.setUserContext();
+                        user.setEligibleForDDPP();
+                    }
                 } catch (NoSessionException e) {
                     if (validateUser()) {
                         throw e;
@@ -307,6 +324,25 @@ public abstract class BaseController extends AbstractController implements Messa
         }
 
         return model;
+    }
+
+    protected boolean isCheckLoginStatusEnable(HttpServletRequest request) {
+        String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
+        return foodkickHeader != null && !foodkickHeader.isEmpty();
+    }
+
+    protected boolean isResponseAdditionalEnable(HttpServletRequest request, EnumResponseAdditional responseAdditional) {
+        boolean isResponseEnable = false;
+        if (isCheckLoginStatusEnable(request)) {
+            String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
+            for (String additional : StringUtils.commaDelimitedListToStringArray(foodkickHeader)) {
+                if (responseAdditional.toString().equalsIgnoreCase(additional.trim())) {
+                    isResponseEnable = true;
+                    break;
+                }
+            }
+        }
+        return isResponseEnable;
     }
 
 	protected String traceFor(Throwable e) {
@@ -598,11 +634,10 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setTotalOrderCount(user
                 .getTotalOrderCount());
         
-        ((LoggedIn) responseMessage).setTcAcknowledge(user
-				.getTcAcknowledge());
+        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
 
-        responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         responseMessage.setMobileNumber(getMobileNumber(user));
+        responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         return responseMessage;
     }
 
@@ -627,6 +662,7 @@ public abstract class BaseController extends AbstractController implements Messa
         } else {
             responseMessage = new LoggedIn();
             responseMessage.setFailureMessage("User is not logged in.");
+            responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         }
         return responseMessage;
     }
@@ -650,6 +686,105 @@ public abstract class BaseController extends AbstractController implements Messa
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
         }
         return SessionUser.wrap(fdSessionUser);
+    }
+
+    // Gives back Home and Today's Pick feeds
+    protected void populateHomePages(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
+            LoggedIn loginMessage = createLoginResponseMessage(user);
+            pageResponse.setStatus(loginMessage.getStatus());
+            pageResponse.setLogin(loginMessage);
+            pageResponse.setConfiguration(getConfiguration(user));
+        }
+
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)) {
+            pageResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+        }
+
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_FEEDS)) {
+            List<String> errorProductKeys = new ArrayList<String>();
+
+            for (CMSWebPageModel page : getPages(user, pageRequest, errorProductKeys)) {
+                if (TODAYS_PICK_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
+                    pageResponse.setPick(page);
+                } else if (FEED_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
+                    pageResponse.setPage(page);
+                }
+            }
+
+            for (String errorProductKey : errorProductKeys) {
+                pageResponse.addErrorMessage(errorProductKey);
+            }
+        }
+    }
+    
+    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
+        List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
+        if (pageRequest.isPreview()) {
+            pages.addAll(getPreviewPages(user, pageRequest, errors));
+        } else if (pageRequest.getRequestedDate() == null) {
+            CMSWebPageModel page = getCachedPage(user, pageRequest, errors);
+            if (page == null) {
+                errors.add("Can not find page(s) in cache.");
+            } else {
+                pages.add(page);
+            }
+        } else {
+            pages.addAll(getPagesByParameters(user, pageRequest, errors));
+        }
+        return pages;
+    }
+
+    // Refresh the feed if it is for preview
+    protected List<CMSWebPageModel> getPreviewPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
+        CMSContentFactory.getInstance().cacheAllPages();
+        return getPagesByParameters(user, pageRequest, errors);
+    }
+
+    // Get the feed from cache if it doesn't have request date / if it is not for preview
+    public List<CMSWebPageModel> getPagesByParameters(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
+        List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
+        for (CMSWebPageModel page : pages) {
+            addProductsToSection(user, page, errors);
+        }
+        return pages;
+    }
+
+    // Refresh the feed if it has the date in the request
+    protected CMSWebPageModel getCachedPage(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
+        CMSWebPageModel page = CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageType());
+        addProductsToSection(user, page, errors);
+        return page;
+    }
+
+    private void addProductsToSection(SessionUser user, CMSWebPageModel page, List<String> errors) {
+        if (page != null) {
+            List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
+            for (CMSSectionModel section : page.getSections()) {
+                CMSSectionProductModel sectionWithProduct = new CMSSectionProductModel(section);
+                sectionWithProduct.setProducts(getProducts(user, section.getProductList(), errors));
+                sectionWithProducts.add(sectionWithProduct);
+            }
+            page.setSections(sectionWithProducts);
+        }
+    }
+
+    private List<com.freshdirect.mobileapi.controller.data.Product> getProducts(SessionUser user, List<String> productKeys, List<String> errors) {
+        List<com.freshdirect.mobileapi.controller.data.Product> products = new ArrayList<com.freshdirect.mobileapi.controller.data.Product>();
+        if (productKeys != null) {
+            for (String productKey : productKeys) {
+                try {
+                    com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(ContentKey.decode(productKey).getId(), null, null, user);
+                    if (product != null) {
+                        products.add(new Product(product));
+                    }
+                } catch (Exception e) {
+                    errors.add(productKey);
+                    LOGGER.error("Could not get product model.", e);
+                }
+            }
+        }
+        return products;
     }
 
 }

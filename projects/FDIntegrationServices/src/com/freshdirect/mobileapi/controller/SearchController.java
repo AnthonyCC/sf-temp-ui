@@ -19,6 +19,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
@@ -291,12 +292,14 @@ public class SearchController extends BaseController {
         data.setDidYouMean(productService.getSpellingSuggestion());
         data.setDefaultSortOptions();
         
-        if (requestMessage.isWebResponse()){
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)){
             SearchMessageResponse searchResponse = new SearchMessageResponse();
             LoggedIn loginMessage = createLoginResponseMessage(user);
             searchResponse.setStatus(loginMessage.getStatus());
             searchResponse.setLogin(loginMessage);
-            searchResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)){
+                searchResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+            }
             searchResponse.setConfiguration(getConfiguration(user));
             searchResponse.setSearch(data);
             setResponseMessage(model, searchResponse, user);

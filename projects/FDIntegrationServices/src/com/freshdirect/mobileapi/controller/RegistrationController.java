@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EmailPreferencesResult;
+import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.MobilePreferencesResult;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
@@ -577,7 +578,7 @@ public class RegistrationController extends BaseController implements SystemMess
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         if (result.isSuccess()) {
-            if (reqestMessage.isWebResponse()) {
+            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
                 responseMessage = super.formatLoginMessage(user);
             } else {
                 responseMessage = new Message();

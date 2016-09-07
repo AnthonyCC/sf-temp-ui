@@ -988,10 +988,6 @@
 		<from>^/v/([0-9]+)/home/getPage/(.*)</from>
 		<to last="true">/home.do?action=getPage&amp;ver=$1</to>
 	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/home/getHomePage/(.*)</from>
-		<to last="true">/home.do?action=getHomePage&amp;ver=$1</to>
-	</rule>
 
 	<!-- Home -->
 	<rule>
