@@ -531,6 +531,8 @@
 						<fields>
 							<CmsField><attribute>nameImage</attribute></CmsField>
 							<CmsField><attribute>description</attribute></CmsField>
+							<CmsField><attribute>topText</attribute></CmsField>
+							<CmsField><attribute>bottomText</attribute></CmsField>
 							<CmsField><attribute>categoryBanner</attribute></CmsField>
 							<CmsField><attribute>bannerLocationCLP</attribute></CmsField>
 							<CmsField><attribute>bannerLocationPLP</attribute></CmsField>

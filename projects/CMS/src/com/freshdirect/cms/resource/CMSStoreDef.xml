@@ -604,6 +604,8 @@
 			<AttributeDef type="S" name="RG_USAGE_LABEL" label="Label for Usage" inheritable="true"/>
 			<AttributeDef type="S" name="RG_USAGE_PRICE_LABEL" label="Label for Usage &amp; Price" inheritable="true"/>
 			<AttributeDef type="B" name="SHOW_RATING_RELATED_IMAGE" label="Show Rating Related Image" inheritable="true"/>
+			<AttributeDef type="S" name="topText" label="Top Text"/>
+			<AttributeDef type="S" name="bottomText" label="Bottom Text"/>
 			
 			<!-- SmartStore -->
 			<AttributeDef type="B" name="SS_LEVEL_AGGREGATION" label="Level Aggregation" inheritable="false"/>
