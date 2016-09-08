@@ -1424,7 +1424,7 @@ public class CheckoutController extends BaseController {
  			} else if (user.getShoppingCart().getDeliveryReservation()==null){
  				EnumEStoreId eStore=(user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
                 if(EnumEStoreId.FDX.equals(eStore)){
-                	message.addErrorMessage("Whoops! Please select your delivery time");
+                	message.addErrorMessage("Please select your delivery time");
                 }
                 else
                 {
