@@ -403,16 +403,14 @@ public class FDDeliveryManager {
     public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType, String customerId)
             throws FDResourceException, FDInvalidAddressException {
 
-    	FDDeliveryZoneInfo result = null;
-        try {
+    	try {
                	ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
                 DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
-                result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
+                return LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
                 
         } catch (FDLogisticsServiceException ce) {
             throw new FDResourceException(ce);
         }
-        return result;
     }
 
 	/**
