@@ -375,6 +375,7 @@ function selectWeeklyFrequency(){
 }
 
 function activateSo(id){
+	$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
 	submitFormManageSO(id,"activate",null,null);
 }
 
