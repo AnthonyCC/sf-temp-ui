@@ -36,7 +36,7 @@
   		<div class="success-soinfo-item">Name:</div><div class="success-soinfo-name">{$soName}</div>
   		<div class="success-soinfo-item">First Delivery:</div><div class="success-soinfo-date">{$soDeliveryTime}</div>
   		<div class="success-soinfo-item">Frequency:</div><div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
-  		<div class="success-soinfo-item">Estimated Total:</div><div class="success-soinfo-total">{$soEstimatedTotal}</div>
+  		<div class="success-soinfo-item">Estimated Total:</div><div class="success-soinfo-total">${$soEstimatedTotal}</div>
   	</div>
     <h2 class="so-success-h2">Your Next Delivery</h2>
     {call .successtotal}
@@ -125,11 +125,11 @@
 		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
 		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
 		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
-			  		{if $soFreq == 1}
+			  		{if $soFreq == '1'}
 			  			Every
-			  		{elseif $soFreq == 2}
+			  		{elseif $soFreq == '2'}
 			  			Every Other
-			  		{elseif $soFreq == 4}
+			  		{elseif $soFreq == '4'}
 			  			Every Fourth
 			  		{/if}</br>{$dayOfWeek ? $dayOfWeek : ''}
 		  		</div>			

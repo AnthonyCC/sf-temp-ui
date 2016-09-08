@@ -458,7 +458,7 @@
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
 	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
 
-       <div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout)}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
+       <div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
 		<h2 class='cartsection__title'>
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
@@ -483,7 +483,7 @@
 		{/foreach}
 
 		{if $info.subTotal}
-       				{let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
+       				{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
 			<div class='cartsection__totalwrapper'>
 				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
 					{if $numOfSections > 1 and $containsWineSection}
