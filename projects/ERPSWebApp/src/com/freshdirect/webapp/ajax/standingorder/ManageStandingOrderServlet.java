@@ -273,6 +273,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		
 		FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createSOActivateConfirmation(so.getUserInfo(), order, so));
 		
+		u.getCurrentStandingOrder().setActivate("Y");
+		
 		return true;
 	}
 
