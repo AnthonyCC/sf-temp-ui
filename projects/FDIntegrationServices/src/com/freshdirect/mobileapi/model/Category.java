@@ -23,6 +23,10 @@ public class Category extends ProductContainer {
 
     private String id;
 
+    private String topText;
+    
+    private String bottomText;
+    
     private String sectionHeader;
     
     private List<Image> images = new ArrayList<Image>();
@@ -49,6 +53,8 @@ public class Category extends ProductContainer {
         Category result = new Category();
         result.name = model.getFullName();
         result.id = model.getContentKey().getId();
+        result.topText = model.getTopText();
+        result.bottomText = model.getBottomText();
         
         List<Image> images = new ArrayList<Image>();
         result.setImages(images);
@@ -136,6 +142,22 @@ public class Category extends ProductContainer {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String getTopText() {
+        return topText;
+    }
+
+    public void setTopText(String topText) {
+        this.topText = topText;
+    }
+    
+    public String getBottomText() {
+        return bottomText;
+    }
+
+    public void setBottomText(String bottomText) {
+        this.bottomText = bottomText;
     }
 
     public String getId() {

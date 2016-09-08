@@ -272,7 +272,14 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     public String getFullName() {
         return this.getAttribute("FULL_NAME", null);
     }
-
+    
+    public String getTopText() {
+        return this.getAttribute("topText", null);
+    }
+    
+    public String getBottomText() {
+        return this.getAttribute("bottomText", null);
+    }
    
 	public String getPrimaryText(){
 		return this.getAttribute("PrimaryText", null);
