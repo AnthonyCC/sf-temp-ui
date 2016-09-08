@@ -768,7 +768,7 @@ public class StandingOrderHelper {
 		soSettings.put("isEligibleForStandingOrders", isEligibleForSo3_0(user));
 		soSettings.put("isContainerOpen", ((FDSessionUser)user).isSoContainerOpen()); /* replace with real value - get from fdsessionuser */
 		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
-		soSettings.put("soSoftLimitDisplay", StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()));
+		soSettings.put("soSoftLimit", (int)(FDStoreProperties.getStandingOrderSoftLimit()));
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */

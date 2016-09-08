@@ -48,7 +48,7 @@
 			<div class="standing-orders-3-so-settings-item">
 				{call .standingOrderSettingsItem}
 					{param item: $item /}
-					{param softLimit : $soData.settingsData.soSettings.soSoftLimitDisplay /}
+					{param softLimit : $soData.settingsData.soSettings.soSoftLimit /}
 				{/call}	
 			</div>
 			<div class="standing-orders-3-so-settings-drawer-cart">
@@ -62,9 +62,8 @@
 									<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 								{/if}
 							</div>
-							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" onclick="activateSo({$item.id});">
+							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
 								<span>Place Order</span>
-								<span class="est_total">Est. Total: <span class="so-est_total">${$item.amount}</span></span>
 							</button>
 							<div class="clear"></div>
 						</div>
@@ -78,9 +77,8 @@
 								<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 							{/if}
 						</div>
-						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" onclick="activateSo({$item.id});">
+						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
 							<span>Place Order</span>
-							<span class="est_total">Est. Total: <span class="so-est_total">${$item.amount}</span></span>
 						</button>
 						<div class="clear"></div>
 					</div>
