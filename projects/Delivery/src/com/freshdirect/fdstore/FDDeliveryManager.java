@@ -135,10 +135,6 @@ public class FDDeliveryManager {
 	/* State County by Zip cache */
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
 	
-	/** 24 hr cache Zip, Scrubbed address -> FDDeliveryZoneInfo */
-	private static TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo> zoneInfoByDateZipScrubbedAddress = new TimedLruCache<ZoneInfoByZipAndDateKey, FDDeliveryZoneInfo>(2500, 5 * 60 * 1000);
-
-
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
 	private long lastRefresh = 0;
@@ -407,19 +403,12 @@ public class FDDeliveryManager {
     public FDDeliveryZoneInfo getZoneInfo(AddressModel address, Date date, CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType, String customerId)
             throws FDResourceException, FDInvalidAddressException {
 
-        ZoneInfoByZipAndDateKey key = new ZoneInfoByZipAndDateKey(address.getZipCode(), DateUtil.truncate(date), 
-        		(address.getScrubbedStreet() == null) ? address.getAddress1() : address.getScrubbedStreet(), address.getServiceType().getName(), serviceType, customerId);
-        FDDeliveryZoneInfo result = zoneInfoByDateZipScrubbedAddress.get(key);
-
+    	FDDeliveryZoneInfo result = null;
         try {
-            if (result == null) {
-                ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+               	ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
                 DeliveryZones response = logisticsService.getZone(LogisticsDataEncoder.encodeDeliveryZoneRequest(address, date, orderSize, serviceType));
                 result = LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
-                if (result != null) {
-                    zoneInfoByDateZipScrubbedAddress.put(key, result);
-                }
-            }
+                
         } catch (FDLogisticsServiceException ce) {
             throw new FDResourceException(ce);
         }
