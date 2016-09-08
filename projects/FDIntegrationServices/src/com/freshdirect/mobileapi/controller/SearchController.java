@@ -17,14 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
-import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.SearchMessageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -183,8 +180,15 @@ public class SearchController extends BaseController {
         data.setDefaultSortOptions();
         //Use below at later time.
         //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
-        setResponseMessage(model, data, user);
         
+        if (isCheckLoginStatusEnable(request)){
+            SearchMessageResponse searchResponse = new SearchMessageResponse();
+            populateMessageResponse(user, searchResponse, request);
+            searchResponse.setSearch(data);
+            setResponseMessage(model, searchResponse, user);
+        } else{
+            setResponseMessage(model, data, user);
+        }
 
         return model;
     }
@@ -292,20 +296,7 @@ public class SearchController extends BaseController {
         data.setDidYouMean(productService.getSpellingSuggestion());
         data.setDefaultSortOptions();
         
-        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)){
-            SearchMessageResponse searchResponse = new SearchMessageResponse();
-            LoggedIn loginMessage = createLoginResponseMessage(user);
-            searchResponse.setStatus(loginMessage.getStatus());
-            searchResponse.setLogin(loginMessage);
-            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)){
-                searchResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
-            }
-            searchResponse.setConfiguration(getConfiguration(user));
-            searchResponse.setSearch(data);
-            setResponseMessage(model, searchResponse, user);
-        } else{
-            setResponseMessage(model, data, user);
-        }
+        setResponseMessage(model, data, user);
         //Use below at later time.
         //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
         return model;

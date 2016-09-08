@@ -44,6 +44,7 @@ import com.freshdirect.mobileapi.controller.data.request.SessionMessage;
 import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.SessionResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -348,15 +349,18 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		return responseMessage; 
 }
 
-
-
-	private Message ping(HttpServletRequest request,
-			HttpServletResponse response) throws NoSessionException,
-			FDException, JsonException {
-		SessionUser user = getUserFromSession(request, response);
-		return formatLoginMessage(user);
-
-	}
+    private Message ping(HttpServletRequest request, HttpServletResponse response) throws NoSessionException, FDException {
+        Message responseMessage = null;
+        SessionUser user = getUserFromSession(request, response);
+        if (isCheckLoginStatusEnable(request)) {
+            MessageResponse messageResponse = new MessageResponse();
+            populateMessageResponse(user, messageResponse, request);
+            responseMessage = messageResponse;
+        } else {
+            responseMessage = formatLoginMessage(user);
+        }
+        return responseMessage;
+    }
 
 	/**
 	 * @param requestMessage

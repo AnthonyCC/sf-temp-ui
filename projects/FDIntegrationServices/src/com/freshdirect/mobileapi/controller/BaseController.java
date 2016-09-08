@@ -60,6 +60,7 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -690,16 +691,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     // Gives back Home and Today's Pick feeds
     protected void populateHomePages(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
-        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
-            LoggedIn loginMessage = createLoginResponseMessage(user);
-            pageResponse.setStatus(loginMessage.getStatus());
-            pageResponse.setLogin(loginMessage);
-            pageResponse.setConfiguration(getConfiguration(user));
-        }
-
-        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)) {
-            pageResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
-        }
+        populateMessageResponse(user, pageResponse, request);
 
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_FEEDS)) {
             List<String> errorProductKeys = new ArrayList<String>();
@@ -715,6 +707,19 @@ public abstract class BaseController extends AbstractController implements Messa
             for (String errorProductKey : errorProductKeys) {
                 pageResponse.addErrorMessage(errorProductKey);
             }
+        }
+    }
+
+    protected void populateMessageResponse(SessionUser user, MessageResponse messageResponse, HttpServletRequest request) throws FDException {
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
+            LoggedIn loginMessage = createLoginResponseMessage(user);
+            messageResponse.setStatus(loginMessage.getStatus());
+            messageResponse.setLogin(loginMessage);
+            messageResponse.setConfiguration(getConfiguration(user));
+        }
+
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)) {
+            messageResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
         }
     }
     

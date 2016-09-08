@@ -532,8 +532,8 @@ function loadStuff() {
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
 
-  } else if (loaddata == "SearchWebEX") {
-  	$("#url").val("/searchEX/");
+  } else if (loaddata == "SearchWeb") {
+  	$("#url").val("/search/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
   	$("#payload").val('{"query": "coffee", "page" : "1"}');
 
@@ -989,6 +989,11 @@ function loadStuff() {
   } else if (loaddata == "Ping") {
   	$("#url").val("/saptest12@freshdirect.com/ping/");
   	$("#header").val('');
+  	$("#payload").val("");
+
+  } else if (loaddata == "PingWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/ping/");
+    $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
   	$("#payload").val("");
 
   }  else if (loaddata == "LoginRefresh") {
@@ -1462,6 +1467,7 @@ function doStuff() {
   <option value="LoginWeb">Login Web</option>
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
+  <option value="PingWeb">Ping Web</option>
   <option value="Session">Session</option>
   <option value="AddAnonymousAddress">Add Anonymous Address</option>  
   <option value="LoginRefresh">Login Refresh</option>
@@ -1532,11 +1538,11 @@ function doStuff() {
   <option value="SearchUPC">SEARCH - UPC barcode</option>
   <option value="SearchSort">SEARCH - Sort</option>
   <option value="SearchFilter">SEARCH - Filter</option>
+  <option value="SearchWeb">SEARCH - Web</option>
   <option value="SearchEX">SEARCHEX - Basic</option>
   <option value="SearchUPCEX">SEARCHEX - UPC barcode</option>
   <option value="SearchSortEX">SEARCHEX - Sort</option>
   <option value="SearchFilterEX">SEARCHEX - Filter</option>
-  <option value="SearchWebEX">SEARCHEX - Web</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>
 
   <option value=""> ========== BROWSE ========== </option>

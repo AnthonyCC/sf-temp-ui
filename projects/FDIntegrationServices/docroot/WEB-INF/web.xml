@@ -35,11 +35,6 @@
     <load-on-startup>2</load-on-startup>
   </servlet>
   <servlet>
-    <servlet-name>api</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-  <servlet>
     <servlet-name>discovery</servlet-name>
     <servlet-class>com.freshdirect.mobileapi.servlet.DiscoveryServlet</servlet-class>
     <load-on-startup>2</load-on-startup>
@@ -47,10 +42,6 @@
   <servlet-mapping>
     <servlet-name>mobile-api</servlet-name>
     <url-pattern>*.do</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>api</servlet-name>
-    <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>discovery</servlet-name>
