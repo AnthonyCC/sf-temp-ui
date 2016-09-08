@@ -171,17 +171,18 @@ function standingOrdersNameInputChangeOK(id){
 	}
 }
 
-function soEstimatePriceUpdate(){
-	if ($jq("#cartcontent .st_val_ssOrderTotal").length) {
-		$jq(".standing-orders-3 .standing-orders-3-so-settings-activate-button .so-est_total").text(FreshDirect.cartTemplateObj.data.estimatedTotal);
-	} else {
-		$jq(".standing-orders-3 .standing-orders-3-so-settings-activate-button .so-est_total").text("$0");
+function soPlaceOrderDisplay(amount){
+	if ($jq(".standing-orders-3-so-settings-activate-button").length) {
+		if(amount < FreshDirect.standingorder.softLimitDisplay){
+			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
+		} else {
+			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", false);
+		}
 	}
 }
 
 function soSaved(id, activated, isNewSO){
 	var soID = "#soid_" + id;
-	soEstimatePriceUpdate();
 	if(isNewSO){
 		$jq(".standing-orders-3-so-new-saved").addClass("show");
 		setTimeout(function(){
@@ -219,7 +220,7 @@ function submitFormManageSO(id,action,name,freq){
         	    window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       			$jq(soID).addClass("open");
       			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-error .standing-orders-3-so-settings-error-steps-link").prop( "disabled", true );
-      			if(data.standingOrderResponseData.activate){
+      			if(data.timeslot.soDeliveryDate !== null && $jq(soID + " .standing-orders-3-so-settings-activate").length){
       				$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
 	      		}
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
@@ -325,6 +326,7 @@ function getSOData(id, action){
             	updateSOItem(id, data);
             }
         	if('soItemUpdate'==action){
+        		soPlaceOrderDisplay(data.amount);
         		soSaved(id, data.activated, false);
         		updateSOItem(id, data);
         	}
