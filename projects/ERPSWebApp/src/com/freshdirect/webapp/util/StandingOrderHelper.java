@@ -634,7 +634,7 @@ public class StandingOrderHelper {
 		if(null!=so.getLastError()){
 			map.put("lastError", so.getLastError().name());
 		} else {
-			String lastError= isValidStandingOrder(so, false) && amount<FDStoreProperties.getStandingOrderHardLimit() ? "MINORDER":null;
+			String lastError= isValidStandingOrder(so, false) && amount<FDStoreProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
 			if("MINORDER".equals(lastError)){
 				map.put("errorHeader", FDStandingOrder.ErrorCode.MINORDER.getErrorHeader());
 				map.put("errorDetails",FDStandingOrder.ErrorCode.MINORDER.getErrorDetail(null));
@@ -841,10 +841,10 @@ public class StandingOrderHelper {
 				if (isPdp) {
 					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
 					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
-					if (orderResponseData.getAmount() <= FDStoreProperties.getStandingOrderHardLimit()) {
+					if (orderResponseData.getAmount() <= FDStoreProperties.getStandingOrderSoftLimit()) {
 						orderResponseData.setMessage(" Add $"
-								+ StandingOrderHelper.formatDecimalPrice((FDStoreProperties.getStandingOrderHardLimit() - orderResponseData.getAmount()))
-								+ " to meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()) + " minimum");
+								+ StandingOrderHelper.formatDecimalPrice((FDStoreProperties.getStandingOrderSoftLimit() - orderResponseData.getAmount()))
+								+ " to meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) + " minimum");
 					} else {
 						orderResponseData
 								.setMessage("Changes will begin with your "
@@ -853,11 +853,11 @@ public class StandingOrderHelper {
 					}
 				} else {
 					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
-						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderHardLimit()) {
+						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderSoftLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {
 							orderResponseData
-							.setMessage("Must add items to cart and meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()) + " minimum to receive a delivery");
+							.setMessage("Must add items to cart and meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) + " minimum to receive a delivery");
 						}
 					} else {
 						orderResponseData

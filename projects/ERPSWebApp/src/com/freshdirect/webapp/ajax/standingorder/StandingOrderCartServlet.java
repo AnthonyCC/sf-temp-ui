@@ -102,7 +102,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						 if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							 so.getStandingOrderCart().refreshAll(true);
 						 }
-						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=FDStoreProperties.getStandingOrderHardLimit()){    
+						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=FDStoreProperties.getStandingOrderSoftLimit()){    
 							 StandingOrderHelper.clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"}) ;
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
 						 } if("Y".equalsIgnoreCase(reqData.getAlcoholVerified())){

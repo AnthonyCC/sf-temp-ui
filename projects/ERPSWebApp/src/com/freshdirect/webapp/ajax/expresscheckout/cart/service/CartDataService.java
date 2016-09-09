@@ -182,7 +182,7 @@ public class CartDataService {
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 final HttpSession session = request.getSession();
                 FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-                if (cart.getTotal() >= FDStoreProperties.getStandingOrderHardLimit()) {
+                if (cart.getTotal() >= FDStoreProperties.getStandingOrderSoftLimit()) {
                     StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] { "MINORDER", "TIMESLOT_MINORDER" });
                 }
                 FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
