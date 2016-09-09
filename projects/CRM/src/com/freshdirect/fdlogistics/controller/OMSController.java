@@ -98,7 +98,6 @@ public class OMSController extends BaseController  {
 	OrdersDTO getOrderById(@PathVariable("orderId") String orderId) {
 
 		OrdersDTO orders = new OrdersDTO();
-		OrderDTO order = new OrderDTO();
 		FDOrderI fdorder = null;
 		try {
 			fdorder = FDCustomerManager.getOrder(orderId);
@@ -106,7 +105,7 @@ public class OMSController extends BaseController  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		order=convertToOrderDTOModel(fdorder,order);
+		OrderDTO order = convertToOrderDTOModel(fdorder);
 		//order = orderService.getOrderById(orderId);
 		orders.getOrders().add(order);
 		orders.setSuccessMessage("orders retrieved successfully"); 
@@ -253,7 +252,7 @@ public class OMSController extends BaseController  {
 		}
 	}
 	
-	private OrderDTO convertToOrderDTOModel(FDOrderI f, OrderDTO o)
+	private OrderDTO convertToOrderDTOModel(FDOrderI f)
 	{
 		OrderDTO order=new OrderDTO();
 		Customer custModel = new Customer();
@@ -310,6 +309,7 @@ public class OMSController extends BaseController  {
 			e.printStackTrace();
 		}
 		order.setOrderStatus(saleInfo.getStatus().getName());
+		order.setAlcohol(f.containsAlcohol());
 		return order;
 	}
 
