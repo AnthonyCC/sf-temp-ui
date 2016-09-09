@@ -117,7 +117,7 @@ public class SearchController extends BaseController {
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 
         List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
-                getUserFromSession(request, response));
+                getUserFromSession(request, response), request);
         
         if(request.getSession().getAttribute(SessionName.APPLICATION)!=null 
         		&& EnumTransactionSource.FRIDGE.getCode().equalsIgnoreCase((String)request.getSession().getAttribute(SessionName.APPLICATION))){
@@ -240,7 +240,7 @@ public class SearchController extends BaseController {
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 
         List<String> products = productService.searchProductIds(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
-                getUserFromSession(request, response));
+                getUserFromSession(request, response), request);
         		 
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();

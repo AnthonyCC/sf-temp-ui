@@ -19,6 +19,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
+
 public class HttpRequestWrapper implements HttpServletRequest {
 
     Map<Object, Object> backingMap = new HashMap<Object, Object>();
@@ -83,6 +85,9 @@ public class HttpRequestWrapper implements HttpServletRequest {
 
     @Override
     public String getHeader(String arg0) {
+        if(arg0.equals(HttpHeaders.REFERER)){
+            return referer;
+        }
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
 
@@ -149,7 +154,8 @@ public class HttpRequestWrapper implements HttpServletRequest {
 
     @Override
     public StringBuffer getRequestURL() {
-        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+        return new StringBuffer(requestURI);
+        
     }
 
     @Override
@@ -413,5 +419,14 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public void setQueryString(String queryString) {
         this.queryString = queryString;
     }
-
+    
+    private String referer = "";
+    
+    public String getReferer() {
+        return referer;
+    }
+    
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
 }

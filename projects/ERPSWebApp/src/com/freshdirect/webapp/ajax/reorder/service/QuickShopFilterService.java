@@ -93,7 +93,7 @@ public class QuickShopFilterService {
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
 		}
-        QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, servletRequest.getCookies());
+        QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, servletRequest);
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
 		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");

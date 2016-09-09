@@ -13,6 +13,8 @@ import java.util.TreeSet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.HttpHeaders;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -85,6 +87,10 @@ public class CmsFilteringNavigator {
     private int recipeHits = 0;
 
     private Cookie[] requestCookies;
+    
+    private String referer;
+    private String requestUrl;
+    
     /**
      * Creates a CmsFilteringNavigator instance out of request parameter map.
      * 
@@ -232,6 +238,8 @@ public class CmsFilteringNavigator {
             throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
         }
         cmsFilteringNavigator.setRequestCookies(request.getCookies());
+        cmsFilteringNavigator.setReferer(request.getHeader(HttpHeaders.REFERER));
+        cmsFilteringNavigator.setRequestUrl(request.getRequestURL().toString());
         return cmsFilteringNavigator;
     }
 
@@ -507,5 +515,21 @@ public class CmsFilteringNavigator {
 
     public void setRequestCookies(Cookie[] requestCookies) {
         this.requestCookies = requestCookies;
+    }
+    
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
+    
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
+    }
+    
+    public String getReferer() {
+        return referer;
+    }
+    
+    public String getRequestUrl() {
+        return requestUrl;
     }
 }

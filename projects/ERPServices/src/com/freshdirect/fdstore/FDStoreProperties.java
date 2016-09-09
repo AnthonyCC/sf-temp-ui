@@ -896,6 +896,7 @@ public class FDStoreProperties {
     private static final String PROP_UNBXD_SITE_KEY = "fdstore.unbxd.sitekey";
     private static final String PROP_UNBXD_BASE_URL = "fdstore.unbxd.baseurl";
     private static final String PROP_UNBXD_FALLBACK_ON_ERROR = "fdstore.unbxd.fallback.on.error";
+    private static final String PROP_UNBXD_TRACKING_BASE_URL = "fdstore.unbxd.tracking.base_url";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1695,7 +1696,8 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
-
+        defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
+        
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
 
         refresh();
@@ -4390,6 +4392,10 @@ public class FDStoreProperties {
 
     public static boolean getUnbxdFallbackOnError() {
         return get(PROP_UNBXD_FALLBACK_ON_ERROR).equalsIgnoreCase("true");
+    }
+
+    public static String getUnbxdTrackingServiceBaseURL() {
+        return get(PROP_UNBXD_TRACKING_BASE_URL);
     }
 
     public static boolean isProductFeedGenerationDeveloperModeEnabled() {

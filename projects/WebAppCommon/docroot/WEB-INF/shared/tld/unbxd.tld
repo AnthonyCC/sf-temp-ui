@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+    <tlib-version>3.6</tlib-version>
+    <jsp-version>1.2</jsp-version>
+	<shortname>UNBXD Events Library</shortname>
+	<uri>unbxd</uri>
+	<info>UNBXD Analytics Event Tags Library</info>
+	
+	
+	<tag>
+        <name>browseEvent</name>
+        <tag-class>com.freshdirect.webapp.taglib.unbxd.BrowseEventTag</tag-class>
+        <description>Browse Event Tag</description>
+        <body-content>empty</body-content>
+	</tag>
+
+    <tag>
+        <name>searchEvent</name>
+        <tag-class>com.freshdirect.webapp.taglib.unbxd.SearchEventTag</tag-class>
+        <description>Search Event Tag</description>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <name>clickThruEvent</name>
+        <tag-class>com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag</tag-class>
+        <description>Click-Thru Event Tag</description>
+        <body-content>empty</body-content>
+       
+        <attribute>
+            <name>product</name>
+            <description>Product Model</description>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

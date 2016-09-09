@@ -47,7 +47,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		HttpSession session = request.getSession();
         Cookie[] cookies = request.getCookies();
 		// main processing
-        QuickShopReturnValue responseData = process(user, session, requestData, cookies);
+        QuickShopReturnValue responseData = process(user, session, requestData, request);
 		
 		// write out result
 		writeResponseData( response, responseData );
@@ -62,7 +62,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	 * @return
 	 * @throws HttpErrorResponse
 	 */
-    protected abstract QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse;
+    protected abstract QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, HttpServletRequest request) throws HttpErrorResponse;
 
 	
 	// ========================

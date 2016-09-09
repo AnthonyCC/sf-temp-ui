@@ -10,7 +10,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -134,7 +134,8 @@ public class FakePromotionContext implements PromotionContextI {
 		return null;
 	}
 
-	public void addDiscount(Discount discount) {
+	@Override
+    public void addDiscount(Discount discount) {
 		this.discounts.add(discount);
 	}
 
@@ -226,7 +227,8 @@ public class FakePromotionContext implements PromotionContextI {
 		return null;
 	}
 	
-	public boolean applyZoneDiscount(PromotionI promo, double promotionAmt){
+	@Override
+    public boolean applyZoneDiscount(PromotionI promo, double promotionAmt){
 		return false;
 	}
 
@@ -242,7 +244,8 @@ public class FakePromotionContext implements PromotionContextI {
 		return null;
 	}
 	
-	public Set<String> getLineItemDiscountCodes() {
+	@Override
+    public Set<String> getLineItemDiscountCodes() {
 		return null;
 	}
 
@@ -252,14 +255,19 @@ public class FakePromotionContext implements PromotionContextI {
 		return false;
 	}
 	
-	public String getUsedWSPromotionCode(){
+	@Override
+    public String getUsedWSPromotionCode(){
 		return null;
 	}
 
 	@Override
 	public boolean applyLineItemDollarOffDiscount(PromotionI promo,
 			FDCartLineI lineItem, double promotionAmt, int skuLimit) {
-		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) {
+        return 0;
+    }
 }

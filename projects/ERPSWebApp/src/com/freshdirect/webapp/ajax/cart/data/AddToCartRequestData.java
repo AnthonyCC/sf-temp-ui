@@ -3,6 +3,12 @@ package com.freshdirect.webapp.ajax.cart.data;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freshdirect.webapp.features.service.FeaturesService;
+
 /**
  *	Simple java bean for add to cart requests. 
  *	Class structure is representing the received JSON structure. 	
@@ -27,6 +33,21 @@ public class AddToCartRequestData implements Serializable {
 	private String coremetricsVirtualCategory;
 	
 	private boolean ignoreRedirect;
+	
+	/**
+	 * Temporary place of request cookies
+	 * Some services require this like {@link FeaturesService}
+	 * 
+	 * @see HttpServletRequest#getCookies()
+	 */
+	@JsonIgnore
+	private Cookie[] cookies;
+
+	/**
+	 * The URL the request came from. Required for reporting
+	 */
+	@JsonIgnore
+	private String requestUrl;
 	
 	public List<AddToCartItem> getItems() {
 		return items;
@@ -94,4 +115,20 @@ public class AddToCartRequestData implements Serializable {
 	public void setIgnoreRedirect(boolean ignoreRedirect) {
 		this.ignoreRedirect = ignoreRedirect;
 	}
+	
+    public Cookie[] getCookies() {
+        return cookies;
+    }
+    
+    public void setCookies(Cookie[] cookies) {
+        this.cookies = cookies;
+    }
+
+    public String getRequestUrl() {
+        return requestUrl;
+    }
+    
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
+    }
 }

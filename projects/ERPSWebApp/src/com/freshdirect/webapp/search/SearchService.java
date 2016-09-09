@@ -25,6 +25,7 @@ import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchDidYouMean;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseProduct;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseRoot;
+import com.freshdirect.webapp.taglib.unbxd.SearchEventTag;
 
 public class SearchService {
 
@@ -36,7 +37,7 @@ public class SearchService {
         return INSTANCE;
     }
 
-    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user) {
+    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
         SearchResults searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
 
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
@@ -67,6 +68,9 @@ public class SearchService {
 
                 searchResults.getProducts().clear();
                 searchResults.getProducts().addAll(products);
+                
+                //unbxd analytics
+                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
 
             } catch (IOException e) {
                 if (!FDStoreProperties.getUnbxdFallbackOnError()) {

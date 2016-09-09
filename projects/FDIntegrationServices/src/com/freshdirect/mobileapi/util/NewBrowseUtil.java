@@ -37,7 +37,9 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -71,7 +73,9 @@ import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
+import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
 import com.freshdirect.webapp.util.DepartmentCarouselUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -195,6 +199,8 @@ public class NewBrowseUtil {
 				e.printStackTrace();
 			}
         	result.setCategoryCarouselResult(categoryCarouselResult);
+        	
+        	sendBrowseEventToAnalytics(request, user.getFDSessionUser(), currentFolder);
     	}
     	
     	
@@ -868,4 +874,9 @@ public class NewBrowseUtil {
 		        }
 		    }
 
+		    private static void sendBrowseEventToAnalytics(HttpServletRequest request, FDUserI user, ContentNodeModel model){
+	            if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)){
+	                BrowseEventTag.doSendEvent(model.getContentKey().getId(), user, request);
+	            }
+	        }
 }

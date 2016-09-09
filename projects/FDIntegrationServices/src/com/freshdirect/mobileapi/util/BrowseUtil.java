@@ -67,7 +67,9 @@ import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.browse.filter.ProductItemFilterFactory;
 import com.freshdirect.fdstore.content.browse.filter.TagFilter;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -98,7 +100,9 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
+import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
 
 public class BrowseUtil {
 	private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(BrowseUtil.class);
@@ -144,6 +148,7 @@ public class BrowseUtil {
     				
     			}
     		}
+    		sendBrowseEventToAnalytics(request, user.getFDSessionUser(), currentFolder);
     	}
     	
     	if(currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).isShowAllByDefault()) { // To Support new left nav flow[APPDEV-3251 : mobile API to utilize showAllByDefault]
@@ -795,6 +800,7 @@ public class BrowseUtil {
                 LOG.info("The id was not a category. Hence sending an empty Products List ");
                 return products;
             }
+            sendBrowseEventToAnalytics(request, user.getFDSessionUser(), contentNode);
             getAllProducts((CategoryModel) contentNode, user, request, products);
         }
         return products;
@@ -937,7 +943,8 @@ public class BrowseUtil {
 	    		for(ProductModel pm : productList){
 //	    			LOG.debug("ProductName: " + pm.getFullName());
 	    			products.add(pm.getContentName());
-	    		}		    	
+	    		}
+	    		sendBrowseEventToAnalytics(request, user.getFDSessionUser(), contentNode);
 	    	}
 	    	return products;
 	    }
@@ -1712,5 +1719,11 @@ public class BrowseUtil {
 	    	a.add(null);
 	    	a.add(null);a.add(null);a.add(null);
 	    	System.out.println(a.size());
+	    }
+	    
+	    private static void sendBrowseEventToAnalytics(HttpServletRequest request, FDUserI user, ContentNodeModel model){
+	        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)){
+                BrowseEventTag.doSendEvent(model.getContentKey().getId(), user, request);
+            }
 	    }
 }

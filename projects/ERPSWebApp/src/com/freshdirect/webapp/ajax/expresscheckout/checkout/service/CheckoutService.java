@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.context.MasqueradeContext;
@@ -19,10 +20,11 @@ import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.fdstore.ewallet.EwalletConstants;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -50,12 +52,19 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
+import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
+import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
+import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class CheckoutService {
@@ -195,6 +204,18 @@ public class CheckoutService {
 					if ( masqueradeMakeGoodOrderId == null ) {
 						CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
 						CmShop9Tag.buildPendingModels(session, cart);
+
+						// [APPDEV-5353] [APPDEV-5396] UNBXD analytics
+				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+				            final Visitor visitor = Visitor.withUser(user);
+				            final LocationInfo loc = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+
+				            for (FDCartLineI cartline : cart.getOrderLines()) {
+				                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline);
+				                EventLoggerService.getInstance().log(event);
+				            }
+				        }
+
 					}
 					((FDSessionUser) user).saveCart(true);
 				}

@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
+import com.rsa.cryptoj.c.rQ;
 
 /**
  * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet}
@@ -34,14 +36,14 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, HttpServletRequest request) throws HttpErrorResponse {
 		
 		LOG.info("Start processing request...");
 		QuickShopReturnValue responseData = null;
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();
 		
 		try {
-            FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(user, session, requestData, nav, cookies);
+            FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(user, session, requestData, nav, request);
 	
 			responseData = new QuickShopReturnValue(unwrapResult(createPage(requestData, result.getItems())),
 					result.getMenu(), 

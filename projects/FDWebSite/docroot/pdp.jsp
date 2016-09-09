@@ -26,6 +26,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ taglib uri="unbxd" prefix="unbxd" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -288,3 +289,4 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	} %>
 
 </tmpl:insert>
+<unbxd:clickThruEvent product="<%= productNode %>"/>

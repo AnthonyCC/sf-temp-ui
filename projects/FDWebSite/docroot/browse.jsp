@@ -10,6 +10,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ taglib uri="unbxd" prefix='unbxd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
@@ -24,6 +25,8 @@
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
 <c:set var="listPos" scope="request" value="SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2" />
+
+<unbxd:browseEvent/>
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>

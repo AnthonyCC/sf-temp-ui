@@ -78,4 +78,10 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
+
+    <cache name="UNBXDVisitorCache"
+           maxEntriesLocalHeap="100"
+           timeToLiveSeconds="900"
+           memoryStoreEvictionPolicy="LRU">    
+    </cache>
 </ehcache>

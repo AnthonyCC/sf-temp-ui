@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
 
@@ -381,7 +383,7 @@ public class CmsFilteringFlow {
                     }
                 }
 
-                searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user);
+                searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user, nav.getRequestUrl(), nav.getReferer());
                 if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){               //if(FDStoreProperties.isHookLogicEnabled()){
                     SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);    
                  }

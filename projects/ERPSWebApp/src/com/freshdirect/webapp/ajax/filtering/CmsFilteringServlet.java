@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -18,6 +19,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
@@ -27,42 +29,49 @@ import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
+import com.freshdirect.webapp.taglib.unbxd.SearchEventTag;
 
 public class CmsFilteringServlet extends BaseJsonServlet {
 
-	private static final long serialVersionUID = -3643980667721343751L;
-	private static final Logger LOGGER = LoggerFactory.getInstance( CmsFilteringServlet.class );
+    private static final long serialVersionUID = -3643980667721343751L;
+    private static final Logger LOGGER = LoggerFactory.getInstance(CmsFilteringServlet.class);
 
-	@Override
-	protected boolean synchronizeOnUser() {
-		return false; //no need to synchronize
-	}
-	
-	/**
-	 * Processing json post data
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		
-		try {
-			final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
-			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
+    @Override
+    protected boolean synchronizeOnUser() {
+        return false; // no need to synchronize
+    }
 
-			writeResponseData(response, result);
-		} catch (InvalidFilteringArgumentException e) {
-			returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request
+    /**
+     * Processing json post data
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+
+        try {
+            final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
+            final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser) user);
+
+            writeResponseData(response, result);
+        } catch (InvalidFilteringArgumentException e) {
+            returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Global Navigation", e);
         }
-	
-	}
 
-	public enum BrowseEvent {
-		NOEVENT, PAGEVIEW, ELEMENT, PAGE, SORT;
-	}
+    }
 
-	/**
+    public enum BrowseEvent {
+        NOEVENT,
+        PAGEVIEW,
+        ELEMENT,
+        PAGE,
+        SORT;
+    }
+
+    /**
 	 * Processing query from direct http call
 	 */
 	@SuppressWarnings("unchecked")
@@ -130,6 +139,14 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 				}				
 			}
 			
+			// UNBXD analytics reporting
+			if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+
+			    if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
+			        BrowseEventTag.doSendEvent(navigator.getId(), user, request);
+			    }
+			}
+			
 			writeResponseData(response, payload);
 			
 		} catch (FDResourceException e) {
@@ -156,8 +173,8 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 		}
 	}
 
-	@Override
-	protected int getRequiredUserLevel() {		
-		return FDUserI.GUEST;
-	}
+    @Override
+    protected int getRequiredUserLevel() {
+        return FDUserI.GUEST;
+    }
 }

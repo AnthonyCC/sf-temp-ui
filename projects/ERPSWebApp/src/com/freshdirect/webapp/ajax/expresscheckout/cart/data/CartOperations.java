@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +54,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -69,10 +69,17 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.crm.CrmMasqueradeUtil;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
+import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
+import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
+import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.FDEventFactory;
 
 /**
@@ -133,7 +140,11 @@ public class CartOperations {
 				}
 			}
 			
-			
+            // [APPDEV-5353] UNBXD analytics
+            final boolean isUNBXDAnalyticsAvailable = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, reqData.getCookies(), user);
+            final Visitor visitor = Visitor.withUser(user);
+            final LocationInfo loc = LocationInfo.withUrl(reqData.getRequestUrl());
+
 			// Create cartlines and collect them in a list 
 			List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>(items.size());
 
@@ -191,6 +202,12 @@ public class CartOperations {
 					populateCoremetricsShopTag( responseData, cartLine );
 				}
 
+				// [APPDEV-5353] UNBXD Analytics Events
+                if (isUNBXDAnalyticsAvailable) {
+                    final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine);
+                    
+                    EventLoggerService.getInstance().log(event);
+				}
 			}
 								
 			// add collected cartlines to cart

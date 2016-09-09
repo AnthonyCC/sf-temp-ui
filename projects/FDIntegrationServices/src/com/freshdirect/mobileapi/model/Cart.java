@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
@@ -49,6 +52,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
@@ -59,6 +63,7 @@ import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -93,9 +98,16 @@ import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
+import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
+import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
+import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.RestrictionUtil;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
 
@@ -284,7 +296,7 @@ public class Cart {
      * @throws FDException
      * @throws ServiceException 
      */
-    public ResultBundle addItemToCart(AddItemToCart addItemToCart, RequestData requestData, SessionUser user) throws FDException,
+    public ResultBundle addItemToCart(AddItemToCart addItemToCart, RequestData requestData, SessionUser user, HttpServletRequest request) throws FDException,
             ServiceException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_ADD_TO_CART_EVENT);
@@ -311,12 +323,14 @@ public class Cart {
         List<String> recentItemIds = new ArrayList<String>();
         for (FDCartLineI item : recentItems) {
             recentItemIds.add(Integer.toString(item.getRandomId()));
+            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, item);            
         }
         result.addExtraData(RECENT_ITEMS, recentItemIds);
+        
         return result;
     }
 
-    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, RequestData requestData, SessionUser user)
+    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, RequestData requestData, SessionUser user, HttpServletRequest request)
             throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
 
@@ -335,6 +349,7 @@ public class Cart {
         List<String> recentItemIds = new ArrayList<String>();
         for (FDCartLineI item : recentItems) {
             recentItemIds.add(Integer.toString(item.getRandomId()));
+            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, item);
         }
         result.addExtraData(RECENT_ITEMS, recentItemIds);
         return result;
@@ -1238,4 +1253,14 @@ public class Cart {
 	public double getTaxValue(){
 		return this.cart.getTaxValue();
 	}
+	
+    private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+            Visitor visitor = Visitor.withUser(user);
+            LocationInfo location = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+            final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, location, null, null, cartLine);
+
+            EventLoggerService.getInstance().log(event);
+        }
+    }
 }

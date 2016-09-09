@@ -20,6 +20,8 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -49,6 +51,8 @@ import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 import freemarker.template.TemplateException;
@@ -210,7 +214,7 @@ public class ProductController extends BaseController {
 	        ProductServiceImpl productService = new ProductServiceImpl();
 			try {
 	            List<com.freshdirect.mobileapi.model.Product> searchResults = productService.search("", null, 0, 10, SortType.RELEVANCY, null, null, null,
-	                    user);
+	                    user, request);
 	            products.addAll(searchResults);
             } catch (ServiceException e) {
                 result.addDebugMessage("ERROR_LOADING_SEARCH_ITEMS", this.traceFor(e));
@@ -466,7 +470,7 @@ public class ProductController extends BaseController {
         if (!(StringUtils.isEmpty(categoryId) && StringUtils.isEmpty(productId))) {
             //ProductService productService = new ProductServiceImpl();
             //result = productService.getProduct(categoryId, productId);
-            result = com.freshdirect.mobileapi.model.Product.getProduct(productId, categoryId, null, getUserFromSession(request, response));
+            result = com.freshdirect.mobileapi.model.Product.getProductWithAnalyticsEventSend(productId, categoryId, null, getUserFromSession(request, response), request);
         }
         return result;
     }
@@ -566,5 +570,5 @@ public class ProductController extends BaseController {
         setResponseMessage(model, whatsGoodCategories, user);
         return model;
     }
-
+    
 }

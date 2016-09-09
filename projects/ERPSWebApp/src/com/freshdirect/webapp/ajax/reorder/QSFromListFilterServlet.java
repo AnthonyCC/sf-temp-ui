@@ -92,7 +92,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			}else{
 				items = new ArrayList<QuickShopLineItemWrapper>(items);
 			}
-            QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, request.getCookies());
+            QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, request);
 			//set the default list id on the first page load OR if the current selected list is just deleted or empty
 			selectList(user, nav);
 			

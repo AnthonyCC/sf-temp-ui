@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -28,6 +26,8 @@ import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.payment.gateway.impl.GatewayLogActivity;
+
+import junit.framework.TestCase;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ GatewayLogActivity.class, ErpAffiliate.class })

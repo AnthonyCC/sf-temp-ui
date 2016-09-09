@@ -15,41 +15,9 @@ public final class EventLoggerService implements EventSinkI {
 
     private static EventLoggerService sharedInstance = null;
 
-    private EventLoggerService() {
-        // FIXME change this to the final consumer
-        this.eventConsumer = new EventSinkI() {
+    private final BlockingQueue<AnalyticsEventI> buffer = new LinkedBlockingQueue<AnalyticsEventI>();
 
-            @Override
-            public boolean log(AnalyticsEventI event) {
-                LOGGER.debug("Consuming event " + event.getType());
-                return false;
-            }
-        };
-
-        // event consumer function
-        final Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        AnalyticsEventI event = buffer.take();
-                        eventConsumer.log(event);
-                    } catch (RuntimeException e) {
-                        LOGGER.warn("Could not log event due to: ", e);
-                    } catch (InterruptedException e) {
-                        LOGGER.warn(e);
-                    }
-                }
-            }
-
-        };
-
-        // run the consumer thread
-        Thread t = new Thread(r);
-        t.setDaemon(true);
-        t.start();
-    }
+    private final EventSinkI eventConsumer;
 
     public static EventLoggerService getInstance() {
         if (sharedInstance == null) {
@@ -62,13 +30,38 @@ public final class EventLoggerService implements EventSinkI {
         return sharedInstance;
     }
 
-    private final BlockingQueue<AnalyticsEventI> buffer = new LinkedBlockingQueue<AnalyticsEventI>();
+    private EventLoggerService() {
+        this.eventConsumer = new WebSink();
 
-    private final EventSinkI eventConsumer;
+        // event consumer function
+        final Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        AnalyticsEventI event = buffer.take();
+                        // LOGGER.debug("[<<pop] " + event);
+                        eventConsumer.log(event);
+                    } catch (RuntimeException e) {
+                        LOGGER.warn("Could not log event due to: ", e);
+                    } catch (InterruptedException e) {
+                        LOGGER.warn(e);
+                    }
+                }
+            }
+
+        };
+
+        // run the consumer thread
+        Thread t = new Thread(r, "UNBXD Event Sink");
+        t.setDaemon(true);
+        t.start();
+    }
 
     @Override
     public boolean log(AnalyticsEventI event) {
-
+        // LOGGER.debug("[push>>] " + event);
         return this.buffer.offer(event);
 
     }

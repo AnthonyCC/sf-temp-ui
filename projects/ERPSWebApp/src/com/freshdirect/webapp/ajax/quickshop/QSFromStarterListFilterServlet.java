@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -59,7 +60,7 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, HttpServletRequest request) throws HttpErrorResponse {
 		
 		QuickShopReturnValue responseData = null;
 		try {

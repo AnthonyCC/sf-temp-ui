@@ -16,10 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import junit.framework.TestCase;
-
-import org.json.JSONObject;
-
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -37,12 +33,13 @@ import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
-import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
 import com.metaparadigm.jsonrpc.SerializerState;
 import com.metaparadigm.jsonrpc.UnmarshallException;
+
+import junit.framework.TestCase;
 
 public class FDPromotionJSONSerializerTest extends TestCase {
 	private FDPromoContentModel ctnt;
@@ -76,7 +73,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				aDate, aDate,
 				true, false, false, false, /* order types */
 				new EnumCardType[]{EnumCardType.AMEX, EnumCardType.GCP},
-				"tejbetok",EnumComparisionType.EQUAL,null);
+				"tejbetok",EnumComparisionType.EQUAL,null,null);
 
 		// FDPromoPaymentStrategyModel
 		paymentStrategy = new FDPromoPaymentStrategyModel();
@@ -326,7 +323,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 			}
 		};
 		
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T1());
+		testObj = promoSer.marshall(new SerializerState(), new T1());
 		// System.err.println(testObj.toString());
 		assertEquals("{\"k\":1}", testObj.toString());
 
@@ -338,7 +335,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				this.str = str;
 			}
 		};
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T2());
+		testObj = promoSer.marshall(new SerializerState(), new T2());
 		// System.err.println(testObj.toString());
 		assertEquals("{\"str\":\"abc\"}", testObj.toString());
 
@@ -350,7 +347,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				this.str = str;
 			}
 		}
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T3());
+		testObj = promoSer.marshall(new SerializerState(), new T3());
 		// System.err.println(testObj.toString());
 		assertEquals("{\"str\":[\"a\",\"b\",\"c\"]}", testObj.toString());
 
@@ -362,7 +359,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				this.array = array;
 			}
 		}
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T4());
+		testObj = promoSer.marshall(new SerializerState(), new T4());
 		// System.err.println(testObj.toString());
 		assertEquals("{\"array\":[[1,2,3],\"b\",\"c\"]}", testObj.toString());
 
@@ -381,7 +378,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				this.map = map;
 			}
 		}
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T5());
+		testObj = promoSer.marshall(new SerializerState(), new T5());
 		// System.err.println(testObj.toString());
 		assertEquals("{\"map\":{\"b\":[\"alma\",\"korte\",\"eper\"],\"c\":{\"array\":[[1,2,3],\"b\",\"c\"]},\"a\":\"b\"}}", testObj.toString());
 
@@ -394,7 +391,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 			}
 		}
 		
-		testObj = (JSONObject) promoSer.marshall(new SerializerState(), new T6());
+		testObj = promoSer.marshall(new SerializerState(), new T6());
 		// System.err.println(testObj);
 		assertEquals("{\"mode\":\"CREATE_SO\"}", testObj.toString());
 		

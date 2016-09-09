@@ -314,7 +314,7 @@ public class CartController extends BaseController {
 	            responseMessage.setStatus(Message.STATUS_FAILED);
 	            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
 	        } else {
-	            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
+	            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user, request);
 	            ActionResult result = resultBundle.getActionResult();
 	            propogateSetSessionValues(request.getSession(), resultBundle);
 	
@@ -572,7 +572,7 @@ public class CartController extends BaseController {
 
         Cart cart = user.getShoppingCart();
 
-        ResultBundle resultBundle = cart.addMultipleItemsToCart(reqestMessage, qetRequestData(request), user);
+        ResultBundle resultBundle = cart.addMultipleItemsToCart(reqestMessage, qetRequestData(request), user, request);
         ActionResult result = resultBundle.getActionResult();
 
         if (result.isSuccess()) {

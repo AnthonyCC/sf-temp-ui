@@ -106,6 +106,21 @@ public final class AnalyticsEventFactory {
         return event;
     }
 
+
+    public static AnalyticsEventI createVisitorEventFor(AnalyticsEventI event) {
+        
+        AnalyticsEventI visitorEvent = null;
+        
+        if (event != null && AnalyticsEventType.VISITOR != event.getType() && event.isVisitorEventRequired()) {
+            final Visitor visitor = ((AbstractAnalyticsEvent)event).getVisitor();
+            final LocationInfo loc = ((AbstractAnalyticsEvent)event).getLocationInfo();
+
+            visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null);
+        }
+
+        return visitorEvent;
+    }
+
     public static String createBreadCrumb(ProductContainer container) {
         LinkedList<String> ll = new LinkedList<String>();
 

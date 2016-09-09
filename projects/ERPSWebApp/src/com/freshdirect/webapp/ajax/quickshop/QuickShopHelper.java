@@ -13,8 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
@@ -705,7 +707,7 @@ public class QuickShopHelper {
 	}
 	
 	//Moved code from QuickShopFilterServlet into Helper class so that mobileapi OrderController can use it.	
-    public static FilteringFlowResult<QuickShopLineItemWrapper> getQuickShopPastOrderItems(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, FilteringNavigator nav, Cookie[] cookies) throws FDResourceException {
+    public static FilteringFlowResult<QuickShopLineItemWrapper> getQuickShopPastOrderItems(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, FilteringNavigator nav, HttpServletRequest request) throws FDResourceException {
 		
 		//transform request data
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
@@ -723,7 +725,7 @@ public class QuickShopHelper {
 			items = new ArrayList<QuickShopLineItemWrapper>(items);
 		}
 		
-        search(nav.getSearchTerm(), items, cookies, user);
+        search(nav.getSearchTerm(), items, request, user);
 		
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
 		
@@ -756,12 +758,12 @@ public class QuickShopHelper {
 	 * 
 	 * Merge the original search result with the user's order history
 	 */
-    public static void search(String searchTerm, List<QuickShopLineItemWrapper> items, Cookie[] cookies, FDUserI user) {
+    public static void search(String searchTerm, List<QuickShopLineItemWrapper> items, HttpServletRequest request, FDUserI user) {
 		
 		List<String> productIds = null;
 		if(searchTerm!=null){
 			
-            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, cookies, user);
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
             // SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
 			productIds = new ArrayList<String>();
 			for(FilteringSortingItem<ProductModel> product : results.getProducts()){

@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.http.HttpHeaders;
 
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -15,37 +18,38 @@ import com.freshdirect.webapp.search.SearchService;
 
 public class QuickShopSearchService {
 
-	private static final QuickShopSearchService INSTANCE = new QuickShopSearchService();
+    private static final QuickShopSearchService INSTANCE = new QuickShopSearchService();
 
-	private QuickShopSearchService() {
-	}
+    private QuickShopSearchService() {
+    }
 
-	public static QuickShopSearchService defaultService() {
-		return INSTANCE;
-	}
+    public static QuickShopSearchService defaultService() {
+        return INSTANCE;
+    }
 
-	/**
-	 * Merge the original search result with the user's order history.
-	 * 
-	 * @param searchTerm
-	 * @param items
-	 *            - to be merged with the search result
-	 */
-    public void search(String searchTerm, List<QuickShopLineItemWrapper> items, FDUserI user, Cookie[] cookies) {
-		List<String> productIds = null;
-		if (searchTerm != null) {
-            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, cookies, user);
-			productIds = new ArrayList<String>();
-			for (FilteringSortingItem<ProductModel> product : results.getProducts()) {
-				productIds.add(product.getNode().getContentKey().getId());
-			}
-			Iterator<QuickShopLineItemWrapper> it = items.iterator();
-			while (it.hasNext()) {
-				if (!productIds.contains(it.next().getProduct().getContentKey().getId())) {
-					it.remove();
-				}
-			}
-		}
+    /**
+     * Merge the original search result with the user's order history.
+     * 
+     * @param searchTerm
+     * @param items
+     *            - to be merged with the search result
+     */
+    public void search(String searchTerm, List<QuickShopLineItemWrapper> items, FDUserI user, HttpServletRequest request) {
+        List<String> productIds = null;
+        if (searchTerm != null) {
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, request.getRequestURL().toString(),
+                    request.getHeader(HttpHeaders.REFERER));
+            productIds = new ArrayList<String>();
+            for (FilteringSortingItem<ProductModel> product : results.getProducts()) {
+                productIds.add(product.getNode().getContentKey().getId());
+            }
+            Iterator<QuickShopLineItemWrapper> it = items.iterator();
+            while (it.hasNext()) {
+                if (!productIds.contains(it.next().getProduct().getContentKey().getId())) {
+                    it.remove();
+                }
+            }
+        }
 
-	}
+    }
 }

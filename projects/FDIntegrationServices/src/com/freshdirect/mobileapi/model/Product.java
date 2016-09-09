@@ -21,6 +21,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -78,6 +79,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.util.DateUtil;
@@ -92,6 +94,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
@@ -1813,12 +1817,21 @@ public class Product {
             productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
         }
         try {            
-            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);            
+            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);       
         } catch (ModelException e) {
             throw new ServiceException(e.getMessage(), e);
         }
 
         return result;
+    }
+    
+    public static Product getProductWithAnalyticsEventSend(String id, String categoryId, FDCartLineI cartLine, SessionUser user, HttpServletRequest request) throws ServiceException{
+        Product product = getProduct(id, categoryId, cartLine, user);
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user.getFDSessionUser())){
+          ClickThruEventTag.doSendEvent(user.getFDSessionUser(), request, product.product.getProductModel());
+        }
+        return product;
+
     }
 
     public String getConfigurationDescription() {

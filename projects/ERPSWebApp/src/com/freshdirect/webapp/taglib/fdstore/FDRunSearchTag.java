@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.SearchResults;
@@ -28,49 +29,51 @@ import com.freshdirect.webapp.search.SearchService;
  * @author $Author$
  */
 public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupport {
-	private static final long serialVersionUID = 8024414108195783512L;
 
-	private static Category LOGGER = LoggerFactory.getInstance(FDRunSearchTag.class);
+    private static final long serialVersionUID = 8024414108195783512L;
 
-	private String searchFor;
-	private String errorPage;
-	private String searchResults; // search results key
+    private static Category LOGGER = LoggerFactory.getInstance(FDRunSearchTag.class);
 
-	public void setSearchFor(String s) {
-		this.searchFor = s;
-	}
+    private String searchFor;
+    private String errorPage;
+    private String searchResults; // search results key
 
-	public void setErrorPage(String s) {
-		this.errorPage = s;
-	}
+    public void setSearchFor(String s) {
+        this.searchFor = s;
+    }
 
-	public void setSearchResults(String s) {
-		this.searchResults = s;
-	}
+    public void setErrorPage(String s) {
+        this.errorPage = s;
+    }
 
-	@Override
+    public void setSearchResults(String s) {
+        this.searchResults = s;
+    }
+
+    @Override
     public int doStartTag() throws JspException {
-		//
-		// Sanity check the search criteria before performing search
-		//
-		if (searchFor == null || "".equals(searchFor.trim())) {
-			LOGGER.debug("search criteria was null or empty");
-			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-			try {
-				response.sendRedirect(errorPage);
-				return SKIP_BODY;
-			} catch (IOException ex) {
-				throw new JspException();
-			}
-		}
+        //
+        // Sanity check the search criteria before performing search
+        //
+        if (searchFor == null || "".equals(searchFor.trim())) {
+            LOGGER.debug("search criteria was null or empty");
+            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+            try {
+                response.sendRedirect(errorPage);
+                return SKIP_BODY;
+            } catch (IOException ex) {
+                throw new JspException();
+            }
+        }
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-        SearchResults res = SearchService.getInstance().searchProducts(searchFor, request.getCookies(), user);
+        SearchResults res = SearchService.getInstance().searchProducts(searchFor, request.getCookies(), user, request.getRequestURL().toString(),
+                request.getHeader(HttpHeaders.REFERER));
 
-		// set search results in PageContext
-		pageContext.setAttribute(searchResults, res);
+        // set search results in PageContext
+        pageContext.setAttribute(searchResults, res);
 
-		return EVAL_BODY_BUFFERED;
-	}
+        return EVAL_BODY_BUFFERED;
+    }
 }

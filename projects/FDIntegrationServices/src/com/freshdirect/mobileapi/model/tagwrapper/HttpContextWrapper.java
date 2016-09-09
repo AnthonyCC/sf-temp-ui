@@ -41,6 +41,10 @@ public abstract class HttpContextWrapper {
         ((HttpRequestWrapper) pageContext.getRequest()).setRequestURI(requestURI);
     }
 
+    public void setReferer(String referer) {
+        ((HttpRequestWrapper) pageContext.getRequest()).setReferer(referer);
+    }
+    
     public void setServerName(String serverName) {
         ((HttpRequestWrapper) pageContext.getRequest()).setServerName(serverName);
     }

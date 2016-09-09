@@ -140,6 +140,9 @@ public class AddToCartServlet extends BaseJsonServlet {
 
         // Parse request data
         AddToCartRequestData reqData = parseRequestData(request, AddToCartRequestData.class);
+        // [APPDEV-5353] Fill in required data
+        reqData.setCookies(request.getCookies());
+        reqData.setRequestUrl(request.getRequestURL().toString());
 
         // Get event source
         EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
@@ -363,15 +366,6 @@ public class AddToCartServlet extends BaseJsonServlet {
 		writeResponseData( response, responseData );
 	}
 	
-	/*private static List<PendingPopupOrderInfo> getPendingOrderInfos(FDUserI user) throws FDResourceException{
-		
-		List<PendingPopupOrderInfo> result = new ArrayList<PendingPopupOrderInfo>();
-
-        } catch (Exception e) {
-            returnHttpError(500, "Error while adding items to cart for user " + user.getUserId(), e); // 500 Internal Server Error
-        }
-    }*/
-
     public static FDCartModel modifyOrder(HttpServletRequest request, FDUserI user, FDCartModel cart, AddToCartRequestData reqData) throws HttpErrorResponse {
 
         FDSessionUser sessionUser = null;

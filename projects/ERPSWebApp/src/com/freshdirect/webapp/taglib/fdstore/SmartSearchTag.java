@@ -16,6 +16,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.http.HttpHeaders;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.ContentSearch;
@@ -85,7 +87,8 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 		} else {
 			searchTerm = nav.getSearchTerm();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            return SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user);
+            return SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user, request.getRequestURL().toString(),
+                    request.getHeader(HttpHeaders.REFERER));
 		}
 	}
 

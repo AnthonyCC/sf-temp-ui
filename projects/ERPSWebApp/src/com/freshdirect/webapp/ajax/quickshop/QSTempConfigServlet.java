@@ -44,6 +44,9 @@ public class QSTempConfigServlet extends BaseJsonServlet {
 		
 		//Parse request data
         AddToCartRequestData reqData = parseRequestData( request, AddToCartRequestData.class );
+        // [APPDEV-5353] Fill in required data
+        reqData.setCookies(request.getCookies());
+        reqData.setRequestUrl(request.getRequestURL().toString());
         
         List<AddToCartItem> items = reqData.getItems(); 
 		if ( items == null ) {

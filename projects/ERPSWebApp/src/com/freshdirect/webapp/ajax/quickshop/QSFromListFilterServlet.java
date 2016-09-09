@@ -76,7 +76,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, Cookie[] cookies) throws HttpErrorResponse {
+    protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, HttpServletRequest request) throws HttpErrorResponse {
 		
 		//transform request data
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();

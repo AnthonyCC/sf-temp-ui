@@ -582,5 +582,10 @@
 			<taglib-uri>productBox</taglib-uri>
 			<taglib-location>/WEB-INF/shared/tld/productbox.tld</taglib-location>
 		</taglib>
+		<taglib>
+			<taglib-uri>unbxd</taglib-uri>
+			<taglib-location>/WEB-INF/shared/tld/unbxd.tld</taglib-location>
+		</taglib>
+
 	</jsp-config>
 </web-app>

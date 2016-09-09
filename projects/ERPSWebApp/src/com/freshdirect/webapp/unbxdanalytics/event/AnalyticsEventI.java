@@ -33,4 +33,7 @@ public interface AnalyticsEventI {
     
     @JsonProperty("visit_type")
     String getVisitType();
+    
+    @JsonIgnore
+    boolean isVisitorEventRequired();
 }

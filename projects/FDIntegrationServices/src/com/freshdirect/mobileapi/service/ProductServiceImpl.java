@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.HttpHeaders;
+
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -27,6 +29,7 @@ import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.tagwrapper.HttpRequestWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
@@ -66,25 +69,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> search(String searchTerm, Integer page, Integer max, SessionUser user) throws ServiceException {
-        return search(searchTerm, null, page, max, null, null, null, null, user);
+    public List<Product> search(String searchTerm, Integer page, Integer max, SessionUser user, HttpServletRequest request) throws ServiceException {
+        return search(searchTerm, null, page, max, null, null, null, null, user, request);
     }
 
     @Override
     public List<Product> search(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
-            String categoryId, String deparmentId, SessionUser user) throws ServiceException {
+            String categoryId, String deparmentId, SessionUser user, HttpServletRequest request) throws ServiceException {
         List<Product> result = new ArrayList<Product>();
 
         List<ProductModel> productModels = null;
         SmartSearchTag search = null;
 
         SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+        wrapper.setRequestUrl(request.getRequestURL().toString());
+        wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
         ResultBundle resultBundle;
         try {
             //Rsung - Default sort type if missing
             if (sortType == null) {
                 sortType = SortType.RELEVANCY;
             }
+
             resultBundle = wrapper.getSearchResult(searchTerm, upc, deparmentId, categoryId, brandId, (page - 1), max, "", sortType.getSortValue());
             search = (SmartSearchTag) resultBundle.getExtraData(SmartSearchTagWrapper.ID);
 
@@ -147,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
     }
     
     public List<String> searchProductIds(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
-            String categoryId, String deparmentId, SessionUser user) throws ServiceException{
+            String categoryId, String deparmentId, SessionUser user, HttpServletRequest request) throws ServiceException{
     	
     	List<String> result = new ArrayList<String>();
 
@@ -155,6 +161,8 @@ public class ProductServiceImpl implements ProductService {
         SmartSearchTag search = null;
 
         SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+        wrapper.setRequestUrl(request.getRequestURL().toString());
+        wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
         ResultBundle resultBundle;
         try {
             //Rsung - Default sort type if missing
@@ -219,8 +227,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> search(String searchTerm) throws ServiceException {
-        return search(searchTerm, 1, 25, null);
+    public List<Product> search(String searchTerm, HttpServletRequest request) throws ServiceException {
+        return search(searchTerm, 1, 25, null, request);
     }
 
     public Set<Brand> getBrands() {

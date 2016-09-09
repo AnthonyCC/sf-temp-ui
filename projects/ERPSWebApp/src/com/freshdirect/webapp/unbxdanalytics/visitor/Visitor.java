@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.unbxdanalytics.visitor;
 
-import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 
 /**
  * This class represents the visitor type of
@@ -8,59 +8,55 @@ import com.freshdirect.fdstore.customer.FDIdentity;
  * 
  * Every UNBXD event carry the following visitor properties:
  * - uid
- * - visitor type (see below)
+ * - visitor type
  * 
- * Rules
- * =====
- * 
- * When a user makes an event(search hit, add to cart, etc), you need to check if the visitor event has been fired for that user.
- * #1 If it has not been fired, you need to fire it
- *      passing the value "first_time" to "visitor_type"
- * #2 If it has been fired before, you need to check
- *      if the last time it got fired was before 30 minutes from now.
- * #3 If it was before 30 minutes, you need to fire it
- *      passing the value "repeat" to "visitor_type"
- * #4 Once the visitor event is fired
- *      you can fire other events' APIs.
- * 
- * Visitor UID is currently formed from FDIdentity
+ * Visitor UID is currently formed obtained from {@link FDUserI#getCookie()}
  * 
  * @author segabor
+ *
+ * @see VisitType
+ * @see VisitTypeCache
  *
  */
 public final class Visitor {
 
-    public final static String VISITOR_TYPE_VALUE_FIRST = "first_time";
-    public final static String VISITOR_TYPE_VALUE_REPEAT = "repeat";
-
     private final String uid;
 
-    private boolean repeat = false;
-    
+    private final VisitType visitType;
+
     /**
-     * Default constructor
+     * Default way to obtain a Visitor
+     * 
+     * @param user
+     * 
+     * @return
+     */
+    public static Visitor withUser(FDUserI user) {
+        
+        final String uid = (user.getCookie() == null ? Double.toString(Math.random()) : user.getCookie());
+
+        final VisitType visitType = VisitTypeCache.getInstance().createVisitType(uid);
+        
+        return new Visitor(uid, visitType);
+    }
+
+    /**
+     * Don't use it, instead {@link Visitor#withUser(FDUserI)} is the preferred
+     * way to instantiate a Visitor
      * 
      * @param uid
      */
-    public Visitor(String uid) {
+    public Visitor(String uid, VisitType visitType) {
         this.uid = uid;
-    }
-
-    /**
-     * Convenience constructor
-     * 
-     * @param identity
-     */
-    public Visitor(FDIdentity identity) {
-        this(Visitor.createUID(identity));
+        this.visitType = visitType;
     }
 
     public boolean isFirstTime() {
-        return repeat;
+        return ! visitType.repeat;
     }
 
-    public boolean isRepepat() {
-        return !repeat;
+    public boolean isRepeat() {
+        return visitType.repeat;
     }
 
     /**
@@ -72,19 +68,16 @@ public final class Visitor {
     }
 
     /**
-     * Returns "visitor_type" event attribute value
+     * Returns "visit_type" event attribute value
      * 
      * @return
      */
     public String getVisitType() {
-        return repeat ? VISITOR_TYPE_VALUE_FIRST : VISITOR_TYPE_VALUE_REPEAT;
+        return visitType.toString();
     }
 
-    /**
-     * 
-     */
-    public void setRepeat(boolean flag) {
-        this.repeat = flag;
+    public boolean isVisitorEventRequired() {
+        return visitType.visitorEventRequired;
     }
 
     @Override
@@ -116,15 +109,4 @@ public final class Visitor {
         }
         return true;
     }
-
-    /**
-     * Create UNBXD Visitor uid out of FDIdentity
-     * 
-     * @param identity
-     * @return
-     */
-    public static String createUID(FDIdentity identity) {
-        return identity.getErpCustomerPK();
-    }
-
 }

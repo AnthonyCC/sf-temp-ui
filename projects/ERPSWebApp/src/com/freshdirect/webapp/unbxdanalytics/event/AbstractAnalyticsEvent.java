@@ -31,6 +31,16 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
     }
 
     @Override
+    public boolean isVisitorEventRequired() {
+        return visitor.isVisitorEventRequired();
+    }
+
+    @JsonIgnore
+    public LocationInfo getLocationInfo() {
+        return location;
+    }
+    
+    @Override
     public String getUrl() {
         return location.url;
     }
@@ -39,5 +49,20 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
     @JsonInclude(Include.NON_NULL)
     public String getReferer() {
         return location.referer;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+
+        buf.append("{")
+            .append("type:").append(getType()).append("; ")
+            .append("uid:").append(visitor.getUID()).append("; ")
+            .append("visit_type:").append(visitor.getVisitType()).append("; ")
+            .append("ref:").append(location.url).append("; ")
+            .append("}");
+        ;
+
+        return buf.toString();
     }
 }

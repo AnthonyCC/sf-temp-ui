@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,11 +28,14 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -73,12 +77,19 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
+import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
+import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
+import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
+import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
 public class CheckoutController extends BaseController {
 
@@ -638,6 +649,7 @@ public class CheckoutController extends BaseController {
         boolean checkResult = checkForDeviceId(user,requestMessage,errors); // Check Device ID ; Required only when PayPal wallet is used.
         if(checkResult){ 
 	        callAvalaraForTax(user);
+	        FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
 	        ResultBundle resultBundle = checkout.submitOrder();
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -657,6 +669,7 @@ public class CheckoutController extends BaseController {
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
 		            orderReceipt = order.getOrderDetail(user);
+		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
 	            
 	            orderReceipt.setOrderNumber(orderId);
@@ -691,6 +704,7 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
 
 	        callAvalaraForTax(user);
+	        FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
 	        ResultBundle resultBundle = checkout.submitOrder();
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -710,6 +724,7 @@ public class CheckoutController extends BaseController {
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
 		            orderReceipt = order.getOrderDetail(user);
+		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
 	            
 	            orderReceipt.setOrderNumber(orderId);
@@ -1380,7 +1395,7 @@ public class CheckoutController extends BaseController {
 	    			 message = checkout.fillAtpErrorDetail((SubmitOrderExResult)message, user, request);
 	    		 } else {
 	    			// message = checkout.submitEx((SubmitOrderExResult)message, user, request);
-	    			 
+	    			     FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
 	    				 ResultBundle submitResult = checkout.submitOrder();
 		    			 propogateSetSessionValues(request.getSession(), submitResult);
 		    				if (submitResult.getActionResult().isSuccess()) {
@@ -1399,6 +1414,7 @@ public class CheckoutController extends BaseController {
 				    				 message.wrap(orderReceipt);
 			    		             
 			    					 message.addDebugMessage("Order has been submitted successfully.");
+			    					 createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 		    		             }
 		    				} else {
 		    					message.setStatus(Message.STATUS_FAILED);
@@ -1445,5 +1461,17 @@ public class CheckoutController extends BaseController {
     
     private static boolean isSuccess(String messageStatus) {
     	return !Message.STATUS_FAILED.equals(messageStatus);
+    }
+    
+    private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, List<FDCartLineI> cartLines){
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)){
+            final Visitor visitor = Visitor.withUser(user);
+            final LocationInfo location = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+            LOGGER.debug("UNBXD Service active, cartline size: " + cartLines.size());
+            for(FDCartLineI cartLine : cartLines){
+                AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine);
+                EventLoggerService.getInstance().log(orderEvent);
+            }
+        }
     }
 }
