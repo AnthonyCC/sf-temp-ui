@@ -13,6 +13,8 @@ public class Restriction extends Message {
     }
 
     public Restriction(String name, String restrictionMessage) {
+    	this.name = name;
+    	this.message = restrictionMessage;
     }
 
     public String getName() {
