@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
+import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchDidYouMean;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseProduct;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseRoot;
@@ -75,7 +76,7 @@ public class SearchService {
             } catch (IOException e) {
                 if (!FDStoreProperties.getUnbxdFallbackOnError()) {
                     LOGGER.error("Error while calling unbxd search, fallback on error is false", e);
-                    throw new RuntimeException("UNBXD search service is unavailable");
+                    throw new UnbxdServiceUnavailableException("UNBXD search service is unavailable");
                 } else {
                     LOGGER.error("Error while calling unbxd search, fallback to internal search", e);
                 }

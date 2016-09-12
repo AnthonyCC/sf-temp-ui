@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
@@ -19,6 +17,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
+import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -59,7 +58,7 @@ public class AutoCompleteFacade implements Serializable {
                     results = ContentSearch.getInstance().getAutocompletions(prefix);
                 } else {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback on error is false");
-                    throw new RuntimeException("UNBXD autosuggest service is unavailable");
+                    throw new UnbxdServiceUnavailableException("UNBXD autosuggest service is unavailable");
                 }
             }
         } else {

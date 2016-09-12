@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpRequestWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.util.SortType;
+import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
 
@@ -270,7 +272,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
     public List<String> getAutoSuggestions(String searchTerm, HttpServletRequest request) {
         AutoCompleteFacade facade = new AutoCompleteFacade();
-        return facade.getTerms(searchTerm, request);
+        List<String> autosuggestions = Collections.emptyList();
+        try {
+            autosuggestions = facade.getTerms(searchTerm, request);
+        } catch(UnbxdServiceUnavailableException exception){
+            LOG.error(exception);
+        }
+        return autosuggestions;
     }
 
 }
