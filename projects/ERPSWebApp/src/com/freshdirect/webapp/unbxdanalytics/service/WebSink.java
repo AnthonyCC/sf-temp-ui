@@ -65,7 +65,7 @@ public class WebSink implements EventSinkI {
                 
                 CloseableHttpResponse response = httpclient.execute(request);
 
-                LOGGER.debug("Response Status: " + response.getStatusLine());
+                LOGGER.debug("UNBXD Tracking Response Status: " + response.getStatusLine());
 
                 result = true;
             } catch (ClientProtocolException e) {
