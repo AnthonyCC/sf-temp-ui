@@ -2,14 +2,16 @@ package com.freshdirect.webapp.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
@@ -34,43 +36,146 @@ public class SearchService {
 
     private static final SearchService INSTANCE = new SearchService();
 
+
+    private static class UnbxdSearchResult {
+        public final String suggestedTerm;
+        public final List<String> spellingSuggestions;
+
+        public final List<UnbxdSearchResponseProduct> products;
+
+        public UnbxdSearchResult(String suggestedTerm, List<String> spellingSuggestions, List<UnbxdSearchResponseProduct> products) {
+            this.suggestedTerm = suggestedTerm;
+            this.spellingSuggestions = spellingSuggestions;
+            this.products = products;
+        }
+    }
+
+
+
+    /**
+     * Run UNBXD search operation with the given search term
+     * Repeat the search when no products yielded with search suggestions
+     * 
+     * @param searchTerm
+     * @return result of the search operation wrapped into temporary class
+     * 
+     * @throws IOException search request failed
+     */
+    private static UnbxdSearchResult searchUnbxd(final String searchTerm) throws IOException {
+        final UnbxdIntegrationService unbxdService = UnbxdIntegrationService.getDefaultService();
+
+        final UnbxdSearchResult result;
+        
+        // do the search
+        UnbxdSearchResponseRoot searchResult = unbxdService.searchProducts(searchTerm);
+
+
+        // No products found, repeat the search with suggestion if any
+        if ((searchResult.getResponse().getProducts() == null || searchResult.getResponse().getProducts().isEmpty())
+                && (searchResult.getDidYouMeans() != null && !searchResult.getDidYouMeans().isEmpty())) {
+
+            final String suggestedTerm = searchResult.getDidYouMeans().get(0).getSuggestion();
+
+            // collect all suggestions
+            final List<String> suggestions = new ArrayList<String>();
+            for (UnbxdSearchDidYouMean dymItem : searchResult.getDidYouMeans()) {
+                suggestions.add(dymItem.getSuggestion());
+            }
+
+            LOGGER.debug("No product found for term '" + searchTerm + "'; look for suggested products using suggestion '" + suggestedTerm + "'");
+
+            // repeat search with first suggested term
+            searchResult = unbxdService.searchProducts(suggestedTerm);
+            
+            result = new UnbxdSearchResult(suggestedTerm, suggestions, searchResult.getResponse().getProducts() );
+        } else {
+            result = new UnbxdSearchResult(null, Collections.<String>emptyList(), searchResult.getResponse().getProducts() );
+        }
+
+        return result;
+    }
+
+
+
+    /**
+     * Compose final search result from the ones made by Lucene and UNBXD
+     * 
+     * @param searchTerm original search term
+     * @param luceneResult outcome of Lucene search
+     * @param unbxdResult outcome of UNBXD search
+     * 
+     * @return composed search result
+     */
+    private static SearchResults composeSearchResults(final String searchTerm, SearchResults luceneResult, UnbxdSearchResult unbxdResult) {
+        final List<FilteringSortingItem<ProductModel>> prods = filterProducts(unbxdResult.products);
+        // FIXME - category hits are not supported yet
+        final List<FilteringSortingItem<CategoryModel>> categories = Collections.emptyList();
+        final boolean quoted = ContentSearchUtil.isQuoted(searchTerm);
+
+        final SearchResults finalResult = new SearchResults(prods, luceneResult.getRecipes(), categories, searchTerm, quoted);
+
+        finalResult.setSuggestedTerm(unbxdResult.suggestedTerm);
+        finalResult.setSpellingSuggestions(unbxdResult.spellingSuggestions);
+
+        return finalResult;
+    }
+
+
+    
+    /**
+     * Iterate over UNBXD product results and transforms them to ProductModel instances
+     * sorting out non-displayable ones
+     * 
+     * @param unbxdProducts
+     * @return
+     */
+    private static List<FilteringSortingItem<ProductModel>> filterProducts(Collection<UnbxdSearchResponseProduct> unbxdProducts) {
+        if (unbxdProducts == null || unbxdProducts.size() == 0)
+            return Collections.emptyList();
+        
+        List<FilteringSortingItem<ProductModel>> result = new ArrayList<FilteringSortingItem<ProductModel>>(unbxdProducts.size());
+        for (final UnbxdSearchResponseProduct unbxdProduct : unbxdProducts) {
+            final ContentNodeModel model = ContentFactory.getInstance().getContentNodeByKey(unbxdProduct.getContentKey());
+            if (model instanceof ProductModel && ContentSearchUtil.isDisplayable((ProductModel) model)) {
+                result.add( new FilteringSortingItem<ProductModel>((ProductModel) model) );
+            }
+        }
+
+        return result;
+    }
+
+
+
     public static SearchService getInstance() {
         return INSTANCE;
     }
 
+
+
+    /**
+     * Perform search operation
+     * 
+     * @param searchTerm search Term
+     * @param cookies cookies (required by UNBXD feature check)
+     * @param user (required by UNBXD feature check)
+     * @param requestUrl
+     * @param referer
+     * @return
+     */
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
+        // get search results from Lucene service
         SearchResults searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
 
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
-            UnbxdSearchResponseRoot results;
+            // when UNBXD service is turned on ...
             try {
-                results = UnbxdIntegrationService.getDefaultService().searchProducts(searchTerm);
+                // perform search with UNBXD as well
+                final UnbxdSearchResult internalResult = searchUnbxd(searchTerm);
 
-                if ((results.getResponse().getProducts() == null || results.getResponse().getProducts().isEmpty())
-                        && (results.getDidYouMeans() != null && !results.getDidYouMeans().isEmpty())) {
-                    searchResults.setSuggestedTerm(results.getDidYouMeans().get(0).getSuggestion());
-                    searchResults.setSpellingSuggestions(new ArrayList<String>());
-                    for (UnbxdSearchDidYouMean didYouMean : results.getDidYouMeans()) {
-                        searchResults.getSpellingSuggestions().add(didYouMean.getSuggestion());
-                    }
-                    results = UnbxdIntegrationService.getDefaultService().searchProducts(results.getDidYouMeans().get(0).getSuggestion());
-                }
+                // join results in a new one
+                searchResults = composeSearchResults(searchTerm, searchResults, internalResult);
 
-                List<FilteringSortingItem<ProductModel>> products = new ArrayList<FilteringSortingItem<ProductModel>>();
-                for (UnbxdSearchResponseProduct product : results.getResponse().getProducts()) {
-                    ContentKey contentKey = product.getContentKey();
-                    if (contentKey != null) {
-                        ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNodeByKey(contentKey);
-                        if ((contentNodeModel != null) && (contentNodeModel instanceof ProductModel) && ContentSearchUtil.isDisplayable((ProductModel) contentNodeModel)) {
-                            products.add(new FilteringSortingItem<ProductModel>((ProductModel) contentNodeModel));
-                        }
-                    }
-                }
-
-                searchResults.getProducts().clear();
-                searchResults.getProducts().addAll(products);
-                
-                //unbxd analytics
+                // notify UNBXD analytics
                 SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
 
             } catch (IOException e) {
@@ -87,5 +192,4 @@ public class SearchService {
 
         return searchResults;
     }
-
 }
