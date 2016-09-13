@@ -16,6 +16,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -436,6 +437,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		} catch(ReservationException ex) {	
 			LOGGER.error( "Error performing action " + action, ex );
 			result.addError(new ActionError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION));
+		} catch (FDResourceException ex){
+			LOGGER.error( "Error performing action " + action, ex );
+			result.addError(new ActionError("authorization_failure", ex.getMessage()));
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 			LOGGER.error( "Error performing action " + action, ex );
