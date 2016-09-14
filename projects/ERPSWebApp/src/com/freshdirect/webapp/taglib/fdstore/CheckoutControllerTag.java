@@ -439,7 +439,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			result.addError(new ActionError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION));
 		} catch (FDResourceException ex){
 			LOGGER.error( "Error performing action " + action, ex );
-			result.addError(new ActionError("authorization_failure", ex.getMessage()));
+			result.addError(new ActionError("checkout_error", ex.getMessage()));
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 			LOGGER.error( "Error performing action " + action, ex );
