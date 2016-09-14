@@ -84,7 +84,7 @@ public final class AnalyticsEventFactory {
 
                 if (cartline != null) {
 
-                    event = new AddToCartEvent(visitor, loc, cartline.getSkuCode(), cartline.getQuantity());
+                    event = new AddToCartEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getQuantity());
 
                 } else {
                     throw new IllegalArgumentException("Missing cartline parameter");
@@ -95,7 +95,7 @@ public final class AnalyticsEventFactory {
 
                 if (cartline != null) {
 
-                    event = new OrderEvent(visitor, loc, cartline.getSkuCode(), cartline.getPrice(), cartline.getQuantity());
+                    event = new OrderEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getPrice(), cartline.getQuantity());
 
                 } else {
                     throw new IllegalArgumentException("Missing cartline parameter");

@@ -31,6 +31,13 @@ public interface AnalyticsEventI {
     String getUrl();
     String getReferer();
     
+    /**
+     * Timestamp of the event creation
+     * @return
+     */
+    @JsonIgnore
+    long getTimestamp();
+    
     @JsonProperty("visit_type")
     String getVisitType();
     

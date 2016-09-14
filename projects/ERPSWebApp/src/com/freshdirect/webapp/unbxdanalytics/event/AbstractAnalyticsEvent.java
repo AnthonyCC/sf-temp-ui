@@ -9,10 +9,14 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
 
     protected final Visitor visitor;
     protected final LocationInfo location;
+    
+    @JsonIgnore
+    protected final long timestamp;
 
     public AbstractAnalyticsEvent(Visitor visitor, LocationInfo location) {
         this.visitor = visitor;
         this.location = location;
+        this.timestamp = System.currentTimeMillis();
     }
 
     @JsonIgnore
@@ -43,6 +47,11 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
     @Override
     public String getUrl() {
         return location.url;
+    }
+    
+    @Override
+    public long getTimestamp() {
+        return timestamp;
     }
 
     @Override

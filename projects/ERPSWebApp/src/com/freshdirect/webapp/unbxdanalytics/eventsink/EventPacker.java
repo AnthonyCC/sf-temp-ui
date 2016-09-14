@@ -48,13 +48,10 @@ public final class EventPacker {
             }
         }
 
-        //
-        final long timestamp = System.currentTimeMillis();
-
         queryComponents.put("UnbxdKey", FDStoreProperties.getUnbxdSiteKey());
         queryComponents.put("action", event.getType().getAction());
         queryComponents.put("uid", event.getUid());
-        queryComponents.put("t", Long.toString(timestamp));
+        queryComponents.put("t", String.valueOf(event.getTimestamp()));
 
         Collection<String> params = new ArrayList<String>(queryComponents.size());
         for (Map.Entry<String, String> e : queryComponents.entrySet()) {
