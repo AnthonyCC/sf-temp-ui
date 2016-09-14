@@ -1,0 +1,112 @@
+<div>
+	<%-- TODO : copypasta from tech refresh, needs more fixing --%>
+	<nav class="navbar">
+		<div class="navbar-header">
+			<div class="pull-left wid57">
+				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+			</div>
+			<div class="pull-right" style="margin: 5px 9px 5px 0;">
+				<div class="navbar-ecomvalue">
+				
+					<%
+						String temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+					
+						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
+							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
+							List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+							
+							if (user.getLevel() >= FDUserI.RECOGNIZED) {
+								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+							} else {
+								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+							}
+							//check if user has addresses besides pickup
+							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+								//nope, change url
+								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+							}
+						}
+					%>
+					<a href="<%= temp_delivery_link %>" class="icon-truck"></a>
+				</div>
+				<%-- TODO: CART is hard-coded, boo --%>
+				<div class="navbar-ecomvalue">
+					<a href="/view_cart.jsp" class="icon-shopbag">
+						<i class="glyphicon glyphicon-shopping-cart"></i>
+						<%-- Cart count requires the popupcart.js (which is not loaded)							
+							<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+						 --%>
+					</a>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div id="search">
+				<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<span class="glyphicon glyphicon-search"></span>
+					<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+				</form>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<%-- nav menu --%>
+<%
+	StoreModel store = ContentFactory.getInstance().getStore();
+	List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
+	if(store != null) {
+		List<DepartmentModel> storeDepartments = store.getDepartments();
+		// storeDepartments.get(0).getCategories().get(0).getSubcategories()
+		
+		if(storeDepartments != null) {
+			for(DepartmentModel storeDepartment : storeDepartments) {
+				if(storeDepartment.getContentKey() != null
+					&& !storeDepartment.isHidden()
+					&& !storeDepartment.isHideIphone()) {
+						departments.add(storeDepartment);
+				}
+			}
+		}
+	}
+%>
+<style>
+</style>
+<div id="ghost"></div>
+<div id="navMenu" class="">
+	<div class="navbar navbar-header">
+		<div class="pull-left">
+			<button id="navbarHide" class="navbar-toggle pull-left backnav"><span class="glyphicon glyphicon-menu-left"></span></button>
+			<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div style="height: 100%; width: 100%;">
+		<ul id="navMenuItems">
+			<li class="navMenuItems-topIcon">
+				<div class="iconnav icon-browse-shop"></div>
+				<div class="navlabel">SHOP</div>
+				
+				<ul class="navMenuItems-browse">
+					<li class="navMenuItems-noselect"><div class="glBreadcrumblink">All Shops</div></li>
+					
+					<li><div class="glBreadcrumblink"><span class="ui-icon" style="background-image: url('<%-- WHAT ICON GOES HERE? --%>');"></span><a href="/browse.jsp?id=picks_love">Fresh Deals</a></div></li>
+					<% for (DepartmentModel curDept : departments) {
+						if ("WGD".equalsIgnoreCase(curDept.toString())) {
+							continue;
+						}
+					%>
+						<li><div class="glBreadcrumblink"><span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span><a href="/browse.jsp?id=<%=curDept.toString()%>"><%= curDept.getFullName() %></a></div></li>
+					<% } %>
+				</ul>
+			</li>
+		</ul>
+		
+		<div class="pNavLoginButton-cont">
+			<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>		
+			<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+		</div>
+	</div>
+</div>

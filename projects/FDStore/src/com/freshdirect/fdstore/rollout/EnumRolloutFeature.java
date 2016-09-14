@@ -18,7 +18,8 @@ public enum EnumRolloutFeature {
     browseaggregatedcategories1_0("browseaggregatedcategories", "1_0"), // browse category page with aggregated sub-categories
     hooklogic2016("hooklogic","2016"),
     priceconfigdisplay2016("priceconfigdisplay", "2016"),
-    unbxdintegrationblackhole2016("unbxdintegrationblackhole", "2016")
+    unbxdintegrationblackhole2016("unbxdintegrationblackhole", "2016"),
+    mobweb("mobweb","2016")
     ;
 
     private final EnumRolloutFeature child;
