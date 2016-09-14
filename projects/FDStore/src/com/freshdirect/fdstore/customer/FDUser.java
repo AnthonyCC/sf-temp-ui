@@ -425,6 +425,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.address = a;
         this.invalidateCache();
         this.userContext=null;
+        this.userContext=getUserContext();
     }
 
     public void setAddress(AddressModel a) {
@@ -2139,10 +2140,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 				
 				userContext.setFdIdentity(getIdentity()); //TODO maybe FDIdentity should be removed from FDUser	
 				ErpAddressModel address=null;
-				if(identity!=null)
-					address=getFulfillmentAddress(identity,storeContext.getEStoreId());
-				else if(this.getAddress()!=null) 
+				if(this.getAddress()!=null && this.getAddress().isCustomerAnonymousAddress()){
 					address=new ErpAddressModel(this.getAddress());
+				}
+				else if(identity!=null){
+					address=getFulfillmentAddress(identity,storeContext.getEStoreId());
+				}
+				else if(this.getAddress()!=null) {
+					address=new ErpAddressModel(this.getAddress());
+				}
 				
 				userContext=setFulfillmentAndPricingContext(userContext,address);
 			}
