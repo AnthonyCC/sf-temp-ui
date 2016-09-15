@@ -124,7 +124,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         }
         ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
         
-        if(orders != null || !orders.isEmpty()){
+        if(orders != null && !orders.isEmpty()){
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
         	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
