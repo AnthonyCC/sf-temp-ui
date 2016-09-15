@@ -822,6 +822,7 @@ public class StandingOrderUtil {
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.INVALID_CONFIG, null, cartLine.getQuantity(),null);
 				}
 			}
+			cart.setUserContextToOrderLines(userContext);
 			cart.refreshAll(true);			
 		} catch ( FDInvalidConfigurationException e ) {
 			LOGGER.warn( "Shopping list contains some items with invalid configuration.", e);
