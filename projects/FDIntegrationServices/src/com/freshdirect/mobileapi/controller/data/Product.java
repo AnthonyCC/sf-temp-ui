@@ -24,6 +24,7 @@ import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.mobileapi.model.ProductDomain;
+import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 
 public class Product extends Message {
 
@@ -249,6 +250,8 @@ public class Product extends Message {
 	//FDX-903 update
 	public String heatingInstructions;
 	public String nutrition;
+	
+	protected ProductExtraData productExtraData;
 
 	public Product() {
 
@@ -272,13 +275,13 @@ public class Product extends Message {
         setAkaName(product.getAkaName());
         setFullName(product.getProductTitle());
         setAvailable(product.isAvailable());
-        
+       
         //JIRA FD-iPadFDIP-690 -- Michael Cress
         this.setDescription(product.getDescription());
         
         //APPDEV-4233 Product Description Note
         this.setDescritpionNote(product.getDescriptionNote());
-        
+        setProductExtraData(product.getProductExtraData());
         if ("perishable".equals(product.getLayout())) {
             setLayoutType(LayoutType.PERISHABLE);
         } else if ("wine".equals(product.getLayout())) {
@@ -402,6 +405,7 @@ public class Product extends Message {
                 this.variations.add(var);
             }
         }
+        
         this.setAllegerns(product.getAllergens());
         this.setIngredients(product.getIngredients());
         this.setShowDailyQualityRating(product.showProductRating());
@@ -965,6 +969,14 @@ public class Product extends Message {
 
 	public void setGreatAdditions(List<String> greatAdditions) {
 		this.greatAdditions = greatAdditions;
+	}
+
+	public ProductExtraData getProductExtraData() {
+		return productExtraData;
+	}
+
+	public void setProductExtraData(ProductExtraData productExtraData) {
+		this.productExtraData = productExtraData;
 	}
 	
 }

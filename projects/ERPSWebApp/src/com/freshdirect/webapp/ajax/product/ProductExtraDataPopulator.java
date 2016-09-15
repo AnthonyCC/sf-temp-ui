@@ -227,7 +227,10 @@ public class ProductExtraDataPopulator {
             }
         }
 
-		// organic claims
+      //refactored code into this new method
+        populateClaimsData(data, user, productNode, ctx, grpId, grpVersion);
+        
+	/*	// organic claims
 		{
 			@SuppressWarnings("unchecked")
 			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
@@ -280,7 +283,7 @@ public class ProductExtraDataPopulator {
 			}
 		}
 
-
+*/
 		// kosher type and symbol
 		{
 			PriceCalculator _pc = productNode.getPriceCalculator();
@@ -1094,4 +1097,67 @@ public class ProductExtraDataPopulator {
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
+	
+	public static  ProductExtraData populateClaimsDataForMobile(ProductExtraData data, FDUserI user,
+			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			return 	populateClaimsData(data, user, productNode, ctx, grpId, grpVersion);
+	}
+	
+	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
+			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+		
+		{
+			@SuppressWarnings("unchecked")
+			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+			if (!commonOrgs.isEmpty()) {
+				List<String> aList = new ArrayList<String>(commonOrgs.size());
+				for (EnumOrganicValue claim : commonOrgs) {
+					if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
+						//Changed for APPDEV-705
+
+						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+						if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
+							// %><div>&bull; Organic</div><%
+							aList.add("Organic");
+						}else{
+							//don't use empty
+							if ( !"".equals(claim.getName()) ) {
+								// %><div>&bull; <%= claim.getName() %></div><%
+								aList.add(claim.getName());
+							}
+						}
+					}
+				}
+
+				data.setOrganicClaims(aList);
+			}
+		}
+
+
+		// claims
+		{
+			@SuppressWarnings("unchecked")
+			Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
+			if (!common.isEmpty()) {
+				List<String> aList = new ArrayList<String>(common.size());
+				for (EnumClaimValue claim : common) {
+					if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
+						//Changed for APPDEV-705
+
+						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+						if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
+							// %><div>&bull; Raised Without Antibiotics</div><%
+							aList.add("Raised Without Antibiotics");
+						}else{
+							// %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
+							aList.add(claim.toString());
+						}
+					}
+				}
+				data.setClaims(aList);
+			}
+		}
+		return data;
+	}
+
 }

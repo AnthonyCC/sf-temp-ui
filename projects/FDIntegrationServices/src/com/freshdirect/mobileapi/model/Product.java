@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletContext;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -32,6 +33,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
@@ -43,6 +45,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -67,6 +70,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -82,6 +86,7 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.fdstore.util.RatingUtil;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.QuickDateFormat;
@@ -94,9 +99,13 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.CCFormatter;
+import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
 
@@ -232,6 +241,8 @@ public class Product {
 	
 	private Map<String, String> nutritionFacts;
     //private List<String> warningMessages = new ArrayList<String>();
+	
+	protected ProductExtraData productExtraData;
 
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
     	 this(productModel, user, variant, cartLine, ctx, false);
@@ -1526,13 +1537,37 @@ public class Product {
      */
     public String getDescription() {
         String result = "";
+        String claimText="";
+        String organicClaimText="";
         Html desc = product.getProductModel().getProductDescription();
         if (desc != null) {
             result = ProductUtil.readHtml(desc);
         }
+        claimText=concatList(getProductExtraData().getClaims());
+        if(!StringUtils.isBlank(claimText)){
+        	result=result + "\n" + "Claims" + "\n" + claimText;
+        }
+        organicClaimText=concatList(getProductExtraData().getOrganicClaims());
+        if(!StringUtils.isBlank(organicClaimText)){
+        	result=result + "\n" + "Organic Claims" + "\n" + organicClaimText;
+        }
         return result;
     }
 
+	private String concatList(List<String> claimsList) {
+		StringBuilder sb = new StringBuilder();
+		boolean hasMore = false;
+		if (claimsList != null) {
+			for (String value : claimsList) {
+				if (hasMore) {
+					sb.append(",");
+				}
+				sb.append(value);
+				hasMore = true;
+			}
+		}
+		return sb.toString();
+	}
     /**
      * DUP: FDWebSite/docroot/shared/includes/i_nutrition_sheet.jspf
      *      Class IncludeMediaTag
@@ -1639,6 +1674,20 @@ public class Product {
 	            result = new Wine(productModel, user, variant, cartLine, ctx);
 	        } else {
 	            result = new Product(productModel, user, variant, cartLine, ctx, isQuickBuy);
+	            try {
+				    ProductExtraData data= new ProductExtraData();
+	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null, null);
+	               	result.setProductExtraData(data);	
+				} catch (FDResourceException e) {
+				
+					e.printStackTrace();
+				} catch (FDSkuNotFoundException e) {
+				
+					e.printStackTrace();
+				} /*catch (HttpErrorResponse e) {
+				
+					e.printStackTrace();
+				}*/
 	        }
         }
         return result;
@@ -1812,6 +1861,7 @@ public class Product {
         Product result = null;
 
         productModel = ContentFactory.getInstance().getProductByName(categoryId, id);
+ //       productModel = ProductExtraDataPopulator.createExtraData(user, product, ctx, grpId, grpVersion);
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
             productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
@@ -1988,4 +2038,106 @@ public class Product {
 	public void setNutritionFacts(Map<String, String> nutritionFacts) {
 		this.nutritionFacts = nutritionFacts;
 	}
+	public ProductExtraData getProductExtraData() {
+		return productExtraData;
+	}
+	public void setProductExtraData(ProductExtraData productExtraData) {
+		this.productExtraData = productExtraData;
+	}
+	
+	/*private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
+			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+		
+		{
+			@SuppressWarnings("unchecked")
+			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+			if (!commonOrgs.isEmpty()) {
+				List<String> aList = new ArrayList<String>(commonOrgs.size());
+				for (EnumOrganicValue claim : commonOrgs) {
+					if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
+						//Changed for APPDEV-705
+
+						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+						if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
+							// %><div>&bull; Organic</div><%
+							aList.add("Organic");
+						}else{
+							//don't use empty
+							if ( !"".equals(claim.getName()) ) {
+								// %><div>&bull; <%= claim.getName() %></div><%
+								aList.add(claim.getName());
+							}
+						}
+					}
+				}
+
+				data.setOrganicClaims(aList);
+			}
+		}
+
+
+		// claims
+		{
+			@SuppressWarnings("unchecked")
+			Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
+			if (!common.isEmpty()) {
+				List<String> aList = new ArrayList<String>(common.size());
+				for (EnumClaimValue claim : common) {
+					if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
+						//Changed for APPDEV-705
+
+						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+						if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
+							// %><div>&bull; Raised Without Antibiotics</div><%
+							aList.add("Raised Without Antibiotics");
+						}else{
+							// %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
+							aList.add(claim.toString());
+						}
+					}
+				}
+				data.setClaims(aList);
+			}
+		}
+		return data;
+	}
+*/	
+    private static String populateProductDescription(FDUserI user, MediaI media) {
+        String productDescription = null;
+        if (media != null) {
+            try {
+                productDescription = fetchMedia(media.getPath(), user, false);
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product description media " + media.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product description media " + media.getPath(), e);
+            }
+        }
+        return productDescription;
+    }
+
+    private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+		if (mediaPath == null)
+			return null;
+
+		Map<String,Object> parameters = new HashMap<String,Object>();
+		
+		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+		parameters.put("user", user);
+		parameters.put("sessionUser", user);
+		
+		StringWriter out = new StringWriter();
+				
+		MediaUtils.render(mediaPath, out, parameters, false, 
+				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
+
+		String outString = out.toString();
+		
+		//fix media if needed
+		outString = MediaUtils.fixMedia(outString);
+		
+		return quoted ? JSONObject.quote( outString ) : outString;
+	}
+
+	
 }
