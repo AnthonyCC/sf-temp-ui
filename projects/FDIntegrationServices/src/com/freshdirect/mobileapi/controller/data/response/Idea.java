@@ -33,6 +33,7 @@ public class Idea {
 	private String bannerType;
 	private Map<String, Image> otherImages = new LinkedHashMap<String, Image>();
 	private boolean prodcutLevel;
+	private String redirectURL;
 
 	public static Idea ideaFor(BannerModel model) {
 		Idea idea = new Idea();
@@ -66,6 +67,7 @@ public class Idea {
 		idea.setFeatureText(categoryModel.getFullName());
 		idea.setPrimaryText(categoryModel.getPrimaryText());
 		idea.setSecondaryText(categoryModel.getSecondaryText());
+		idea.setredirectURL(categoryModel.getRedirectURL());
 		
 		//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
 		/**
@@ -207,6 +209,18 @@ public class Idea {
 	
 	public void setPrimaryText(String primaryText) {
 		this.primaryText = primaryText;
+	}
+	
+	public String getRedirectURL() {
+		return redirectURL;
+	}
+	
+	public void setredirectURL(String redirectURL) {
+		if(redirectURL != null && redirectURL.equals("nm")){
+			this.redirectURL = null;
+			return;
+		}
+		this.redirectURL = redirectURL;
 	}
 	
 	public String getSecondaryText() {

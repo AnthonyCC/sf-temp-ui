@@ -285,6 +285,10 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
 		return this.getAttribute("PrimaryText", null);
 	}
 	
+	public String getRedirectURL(){
+		return this.getAttribute("REDIRECT_URL", null);
+	}
+	
 	public String getSecondaryText(){
 		return this.getAttribute("SecondaryText", null);
 	}
