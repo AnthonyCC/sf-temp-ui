@@ -764,14 +764,28 @@ public class BrowseDataBuilderFactory {
 		return col.size()>0 ? col : null;
 	}
 	
+	
+
+    /**
+     * @param sorters
+     * @param nav
+     * @return the displayed sort options
+     * 
+     * Create the sort bar objects
+     */
+    public void processSorting (BrowseDataContext data, CmsFilteringNavigator nav, FDUserI user){
+        processSorting(data, nav, user, true);
+    }
+	
 	/**
 	 * @param sorters
 	 * @param nav
+	 * @param sortFirstTime if false, the natural sorting will not happen
 	 * @return the displayed sort options
 	 * 
 	 * Create the sort bar objects
 	 */
-	public void processSorting (BrowseDataContext data, CmsFilteringNavigator nav, FDUserI user){
+	public void processSorting (BrowseDataContext data, CmsFilteringNavigator nav, FDUserI user, boolean sortFirstTime){
 		
 		List<SortOptionModel> sorters = getSortersForCurrentFlow(data, nav);
 		
@@ -781,7 +795,7 @@ public class BrowseDataBuilderFactory {
 			SortStrategyType usedSortStrategy = null;
 			
 			//set default sort option from first
-			if (nav.getSortBy()==null && sorters.size()>0){
+			if (nav.getSortBy()==null && sorters.size()>0 && sortFirstTime){
 				nav.setSortBy(sorters.get(0).getContentName());
 				nav.setOrderAscending(true);
 			}

@@ -224,7 +224,9 @@ public class CmsFilteringFlow {
             }
             EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
 
-            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
+            //if the unbxd integration is turned on, sorting only should happen if the user chooses to sort - no natural sorting
+            boolean useUnbxdProvidedOrder = !FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, nav.getRequestCookies(), user);
+            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user, useUnbxdProvidedOrder);
 
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 
