@@ -967,6 +967,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null)) ) {
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
+			user.setAddress(address);
 			user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {

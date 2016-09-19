@@ -516,7 +516,7 @@ public class StandingOrderUtil {
 		// ==========================
 		
 		ProcessActionResult vr = new ProcessActionResult();
-		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, so.getTipAmount(), vr, customerUser.getUserContext());		
+		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, so.getTipAmount(), vr, customerUser);		
 		// boolean hasInvalidItems = vr.isFail();
 		
 		final List<FDCartLineI> originalCartItems = new ArrayList<FDCartLineI>(cart.getOrderLines());
@@ -780,7 +780,7 @@ public class StandingOrderUtil {
 	}
 
 
-	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, double tipAmount, ProcessActionResult vr, UserContext userContext) throws FDResourceException {
+	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, double tipAmount, ProcessActionResult vr, FDUserI user) throws FDResourceException {
 		FDCartModel cart = new FDTransientCartModel();
 		
 		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
@@ -805,6 +805,9 @@ public class StandingOrderUtil {
 		cart.setDeliveryReservation( reservation );
         cart.setZoneInfo( zoneInfo );
         cart.setTip(tipAmount);
+        user.setAddress(erpDeliveryAddress);
+        user.resetUserContext();
+        UserContext userContext = user.getUserContext();
         if(null ==userContext){
         	userContext = ContentFactory.getInstance().getCurrentUserContext();
         }
