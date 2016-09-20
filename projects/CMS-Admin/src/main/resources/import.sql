@@ -15,6 +15,7 @@ insert into permission values (13, 'Can modify Other storedata');
 insert into permission values (14, 'Can manage Draft branches');
 insert into permission values (15, 'Can edit Draft branches');
 insert into permission values (16, 'DarkStore content type permission');
+insert into permission values (17, 'ImageBanner content type permission');
 
 -- CREATE PERSONA
 insert into persona values(PERSONA_ID_SEQ.nextVal, 'Admin');
@@ -56,6 +57,7 @@ insert into persona_permission values(4,10);
 insert into persona_permission values(4,11);
 insert into persona_permission values(4,12);
 insert into persona_permission values(4,16);
+insert into persona_permission values(4,17);
 
 
 -- SETUP USER-PERSONA ASSOCIATION

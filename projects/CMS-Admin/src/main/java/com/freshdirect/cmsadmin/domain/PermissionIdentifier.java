@@ -19,7 +19,8 @@ public enum PermissionIdentifier {
     OTHER_STORE_EDITOR(13l),
     DRAFT_MANAGER(14l),
     DRAFT_EDITOR(15l),
-    FOODKICK_DARKSTORE_EDITOR(16l);
+    FOODKICK_DARKSTORE_EDITOR(16l),
+    FOODKICK_IMAGE_BANNER_EDITOR(17l);
 
 
     private static final Map<Long, PermissionIdentifier> permissionNameById = new HashMap<Long, PermissionIdentifier>();

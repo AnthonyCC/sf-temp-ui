@@ -33,6 +33,9 @@ public class PermissionToContentTypeConverter {
             case FOODKICK_DARKSTORE_EDITOR:
                 result = FDContentTypes.DARKSTORE;
                 break;
+            case FOODKICK_IMAGE_BANNER_EDITOR:
+                result = FDContentTypes.IMAGE_BANNER;
+                break;
             default:
                 result = null;
                 break;

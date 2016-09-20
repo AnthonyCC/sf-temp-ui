@@ -22,7 +22,8 @@ public enum Permission {
     OTHER_STORE_EDITOR(13l, "Can modify Other storedata"),
     DRAFT_MANAGER(14l, "Can manage Draft branches"),
     DRAFT_EDITOR(15l, "Can edit Draft branches"),
-    FOODKICK_DARKSTORE_EDITOR(16l, "DarkStore content type permission");
+    FOODKICK_DARKSTORE_EDITOR(16l, "DarkStore content type permission"),
+    FOODKICK_IMAGE_BANNER_EDITOR(17l, "ImageBanner content type permission");
 
     private static final Logger LOG = LoggerFactory.getInstance(Permission.class);
     private Long id;
