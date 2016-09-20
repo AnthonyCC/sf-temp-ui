@@ -510,6 +510,22 @@ request.setAttribute("noyui", true);
 			.glyphicon-menu-left:before {
 			    content: "\e257";
 			}
+			.icon-search {
+			    display: inline-block;
+			    background-image: url('/media/mobileweb/images/searchbar-icon.png');
+			    background-repeat: no-repeat;
+			    background-size: 100%;
+			    height: 20px;
+			    width: 20px;
+			}
+			.icon-cart {
+			    display: inline-block;
+			    background-image: url('/media/mobileweb/images/cart-icon.png');
+			    background-repeat: no-repeat;
+			    background-size: 100%;
+			    height: 25px;
+			    width: 25px;
+			}
 			.pull-left {
 			    float: left !important;
 			}
@@ -521,9 +537,10 @@ request.setAttribute("noyui", true);
 			    bottom: initial;
 			    left: initial;
 			    right: 0;
-			    background-image: url('/media/layout/nav/globalnav/fdx/close-x.png');
-			    height: 12px;
-			    width: 12px;
+			    background-image: url('/media/mobileweb/images/close-grey-icon.png');
+			    background-size: 100%;
+			    height: 24px;
+			    width: 24px;
 			    margin: 6px;
 			    z-index: 99;
 			    position: absolute;
@@ -597,6 +614,12 @@ request.setAttribute("noyui", true);
 			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened > .mm-subblocker {
 				opacity: 0; /* don't make hidden so touch will still close subs */
 			}
+			.mm-menu .mm-navbar a, .mm-menu .mm-navbar>* { /* submenu title */
+			    color: rgba(255,255,255,1);
+			}
+			.mm-menu .mm-btn:after, .mm-menu .mm-btn:before { /* submenu back arrow */
+			    border-color: rgba(255,255,255,1);
+			}
 		</style>
 		
 	</tmpl:put>
@@ -608,7 +631,7 @@ request.setAttribute("noyui", true);
 		<fd:LocationHandler/>
 		<%
 			AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
-			boolean hasFdxServices = LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
+			boolean hasFdxServices = true; /* just true in locationbar as well */  //LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 		%>
 		<script>
 			FreshDirect = FreshDirect || {};
