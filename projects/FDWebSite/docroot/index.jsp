@@ -24,6 +24,8 @@
 <%@ page import='java.text.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -58,7 +60,6 @@ request.setAttribute("noyui", true);
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
 	}
 %>
-
 <tmpl:insert template="<%=pageTemplate %>">
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name="seoMetaTag" direct="true">
@@ -68,6 +69,7 @@ request.setAttribute("noyui", true);
 		<fd:css href="/assets/css/homepage/homepage.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraCss"><%-- MOBILE --%>
+		<link href="/assets/javascript/jquery/mmenu/css/jquery.mmenu.all.css" type="text/css" rel="stylesheet" />
 		<%-- TODO : move to a file --%>
 		<style>
 			body {
@@ -208,24 +210,6 @@ request.setAttribute("noyui", true);
 				opacity: 1;
     			left: 0;
 			}
-			#ghost {
-				transition: visibility 0.05s, opacity 0.05s linear;
-			    position: absolute;
-    			height: 100%;
-    			width: 100%;
-    			top: 0;
-    			left: 0;
-    			bottom: 0;
-    			z-index: 9;    			
-			    visibility: hidden;
-			    opacity: 0;
-			    background-color: #000;
-			}
-			#ghost.open {
-				transition: visibility 0.1s, opacity 0.1s linear;
-				visibility: visible;
-				opacity: 0.5;
-			}
 			.loginDialog {
 				visibility: hidden;
     			left: -80vw;
@@ -235,7 +219,7 @@ request.setAttribute("noyui", true);
 				background-color: #fff;
     			text-align: center;
 				z-index: 15;
-				top: 80px;
+				top: 81px;
 				position: absolute;
 			}
 			.loginDialog.open {
@@ -392,27 +376,47 @@ request.setAttribute("noyui", true);
 		    	width: 40px;
 			}
 			.navMenuItems-topIcon li.ui-menu-item {
-				width: 250px;
 			}
 			.iconnav {
-			    position: absolute;
-			    left: 2px;
 			    width: 35px;
 			    height: 40px;
 			    background-size: 100%;
 			    background-position: center center;
 			    background-repeat: no-repeat;
-			    top: 0;
 			    display: inline-block;
 			}
+			
+			/* left top icons */
 			.icon-browse-shop {
 			    background-image: url('/media/mobileweb/images/browse-shop-icon.png');
+			}
+			/*.mm-iconpanel .mm-panel.mm-subopened .icon-browse-shop {
+			    background-image: url('/media/mobileweb/images/browse-shop-active-icon.png');
+			}*/
+			
+			.icon-browse-reorder {
+			    background-image: url('/media/mobileweb/images/browse-reorder-icon.png');
+			}
+			/*.mm-iconpanel .mm-panel.mm-subopened .icon-browse-reorder {
+			    background-image: url('/media/mobileweb/images/browse-reorder-active-icon.png');
+			}*/
+			
+			.icon-browse-tag {
+			    background-image: url('/media/mobileweb/images/browse-tag-icon.png');
+			}
+			/*.mm-iconpanel .mm-panel.mm-subopened .icon-browse-tag {
+			    background-image: url('/media/mobileweb/images/browse-tag-active-icon.png');
+			}*/
+			
+			.primaryLink a {
+				color: #a1a1a1;
+				text-decoration: none;
+				padding: 5px 10px 5px 20px;
+				display: block;
 			}
 			.pNavLoginButton {
 			    margin: 12px 18px;
 			    background-color: #fafafa;
-			    border-radius: 0px;
-			    border: 1px solid #6aaa6d;
 			    padding: 0px;
 			    color: #6aaa6d;
 			    font-size: 1.2em;
@@ -421,60 +425,50 @@ request.setAttribute("noyui", true);
 			}
 			.pNavLoginButton a {
 			    padding: 10px 10px 10px 20px;
-			}
-			.primaryLink a {
-				color: #a1a1a1;
-				text-decoration: none;
-				padding: 5px 10px 5px 20px;
-				display: block;
+			    height: 48px;
+			    padding: 0px;
+			    line-height: 48px;
+			    color: #4fa157;
+			    border-radius: 4px;
+			    border: 1px solid #4fa157;
 			}
 			.createacc a {
 			    color: #fff;
 			    background: #6aaa6d;
 			}
 			.pNavLoginButton-cont {
-				position: absolute;
-				bottom: 0;
+				margin-top: 30px;
 			}
 			#navMenuItems > li {
 				width: 100%;
 			}
+			#navMenuItems .ui-state-active,
+			#navMenuItems .ui-state-focus {
+				border: none;
+			}
 			#navMenuItems li {
 			    color: #458b4c;
 			    font-size: 1em;
-			    background: transparent;
-			    padding: 0;
-			    border-radius: 0;
-			    position: relative;
 			}
 			#navMenuItems li.ui-menu-item.navMenuItems-topIcon {
-			    margin: 20px 0 20px 10px;
+			    /*margin: 20px 0 20px 10px;*/
 			}
 			#navMenuItems li.ui-menu-item {
 			    padding-left: 30px;
 			}
-			.navMenuItems-topIcon > span.ui-icon-carat-1-e {
-				display: none;
-				visibility: hidden;
-			}
 			.navMenuItems-topIcon > .navlabel {
 				line-height: 40px;
-				padding-left: 20px;
+				/*padding-left: 20px;*/
 				font-weight: bold;
 			}
-			.navMenuItems-topIcon.ui-state-focus > .iconnav,
-			.navMenuItems-topIcon.ui-state-active > .iconnav {
-				position: relative;
+			.navlabel {
+				display: inline-block;
+				vertical-align: top;
+				margin-top: 1em;
 			}
-			.navMenuItems-topIcon.ui-state-focus > .navlabel,
-			.navMenuItems-topIcon.ui-state-active > .navlabel {
-			    padding: 0;
-			    line-height: 10px;
-			}
-			#navMenuItems li.ui-menu-item.navMenuItems-topIcon.ui-state-focus,
-			#navMenuItems li.ui-menu-item.navMenuItems-topIcon.ui-state-active {
-				padding: 10px;
-			    margin: 10px 0;
+			
+			.navMenuItems-browse {
+				right: 0;
 			}
 			.glBreadcrumblink {
 			    display: block;
@@ -487,6 +481,7 @@ request.setAttribute("noyui", true);
 				background-size: 100%;
 				height: 30px;				
 				width: 30px;
+				display: inline-block;
 			}
 			
 			@font-face {
@@ -521,77 +516,167 @@ request.setAttribute("noyui", true);
 			.pull-right {
 			    float: right!important;
 			}
+			.close-x {
+			    top: 0;
+			    bottom: initial;
+			    left: initial;
+			    right: 0;
+			    background-image: url('/media/layout/nav/globalnav/fdx/close-x.png');
+			    height: 12px;
+			    width: 12px;
+			    margin: 6px;
+			    z-index: 99;
+			    position: absolute;
+			    left: auto;
+			}
+			.locabar-tab {
+			    display: inline-block;
+			    padding: 5px 15px;
+			    margin-top: 9px;
+			    background-color: #E1F0DE;
+			    color: #6AAA6D;
+			    font-size: 24px;
+			    font-weight: bold;
+			    line-height: 23px;
+			}
+			.locabar-tab-fdx {
+			    display: inline-block;
+			    background-image: url('/media/layout/nav/globalnav/fdx/locabar-tab-fdx.png');
+			    background-repeat: no-repeat;
+			    height: 23px;
+			    width: 84px;
+			}
+			.navMenuItems-menuselect > .glBreadcrumblink { /* green right-side box */
+				border-right: 9px solid #4fa157;
+			}
+			
+			/* new nav classes */
+			#nav-menu {
+				background-color: #fff;
+			}
+			.mm-navbar {
+				background-color: #6AAA6D;
+				height: 60px;
+			}
+			.mm-navbar-bottom > .navbar-cont {
+				background-color: #6AAA6D;
+				padding-top: 0;
+				height: 50px;
+			}
+			.mm-navbar-bottom {
+    			height: 50px;
+			}
+			.mm-panels>.mm-panel.mm-hasnavbar {
+			    padding-top: 60px; /* this needs to be >= .mm-navbar height */
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-1 {
+				left: 80px;
+			}
+			.navMenuItems-topIcons {
+				background-color: #f1f1f1;
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened .iconnav {
+				display: block;
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened .navlabel {
+				width: 80px;
+			    display: inline-block;
+			    text-align: center;
+			    margin-left: -20px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+				overflow: hidden;
+				margin-top: 0;
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened .mm-selected {
+				background-color: transparent;
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened .hide-on-subopen {
+				display: none;
+			}
+			.mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened > .mm-subblocker {
+				opacity: 0; /* don't make hidden so touch will still close subs */
+			}
 		</style>
 		
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
 		
 	</tmpl:put>
-	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
+	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>		
+		
+		<fd:LocationHandler/>
+		<%
+			AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+			boolean hasFdxServices = LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
+		%>
 		<script>
-			//init menu
-			$jq('#navMenuItems').menu({
-			      items: "> :not(.navMenuItems-noselect)",
-			      focus: function(e, ui) {
-		        	  console.log('focus event 1', e, ui);
-			          if ($jq(this).get(0) !== $jq(ui).get(0).item.parent().get(0)) {
-			        	  console.log('focus event 2', this);
-			        	  var navIcon = $jq(e.currentTarget).find('.iconnav:first');
-			        	  console.log(navIcon);
-			              $jq(this).menu("option", "position", { my: "left top", at: "right+10 top", of: navIcon });
-			              //debugger;
-			          } else {
-			        	  console.log('focus event else');
-			          }
-			      }
-		    });
+			FreshDirect = FreshDirect || {};
+			FreshDirect.locabar = FreshDirect.locabar || {};
+			FreshDirect.locabar.zipcode = <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) %>;
+			FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
+			FreshDirect.locabar.selectedAddress = {
+				type: null,
+				address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
+			};
+		</script>
+		<script src="/assets/javascript/jquery/mmenu/js/jquery.mmenu.all.min.js" type="text/javascript"></script>
+		<script>
+			(function ($) {
+				$(document).ready(function() {
+					$("#nav-menu").mmenu({
+						"extensions": [
+							"pagedim-black",
+							"border-full"
+                     	],
+                     	"offCanvas": {
+							"zposition": "front"
+						},
+						"navbar": {
+							"title": "<img src=\"/media/mobileweb/images/topbar-fd-logo.png\" alt=\"FreshDirect\" class=\"img-responsive\" />"
+						},
+						"navbars": [
+							<% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %>
+								{
+									"position": "bottom",
+									"content": "<div class='navbar-cont'><a href='https://foodkick.freshdirect.com' class='locabar-tab locabar-tab-fdx-cont'><div class='locabar-tab-fdx'></div></a></div>"
+									}
+							<% } %>
+						],
+						"iconPanels": true,
+						"screenReader": true,
+						"setSelected": {
+				            "hover": true,
+				            "parent": true
+				         }
+                  	}, {
+						// configuration
+						offCanvas: {
+							pageSelector: "#page-content"
+						}
+					});
+					
+					var API = $("#nav-menu").data( "mmenu" );
+					
+					$jq('#navbarShow').on('click', function() {
+						console.log('#navbarShow', 'click');
+						API.open();
+					});
+					$jq('.signin>a').on('click', function(e) {
+						e.stopPropagation();
+						$jq('.loginDialog').addClass('open');
+						$jq('body').addClass('no-scroll');
 
-			$jq('.navMenuItems-browse').menu({
-			      items: "> :not(.navMenuItems-noselect)",
-			      position: { my: "left top", at: "right+10 top", of: $jq('#navMenuItems .icon-browse-shop:first')}
-			});
+						API.close();
+					});
+					
+					$jq('.loginDialog .close-x').on('click', function(e) {
+						$jq('.loginDialog').removeClass('open');
+						$jq('body').removeClass('no-scroll');
+					});
+				});
+			}(jQuery));
 			
-			//add events
-			$jq('#navbarShow').on('click', function() {
-				console.log('#navbarShow', 'click');
-				$jq('#navMenu').trigger('show');
-			});
-			$jq('#navbarHide').on('click', function() {
-				console.log('#navbarHide', 'click');
-				if ($jq('.loginDialog').hasClass('open')) { //if login is open, just close that
-					$jq('.loginDialog').removeClass('open');
-				} else {
-					$jq('#navMenu').trigger('hide');	
-				}
-			});
-			$jq('#ghost').on('click', function() {
-				if ($jq(this).hasClass('open')) {
-					$jq('#navMenu').trigger('hide');
-				}
-			});
-			$jq('#navMenu').on('show', function() {
-				console.log('#navMenu', 'show');
-				$jq(this).addClass('open');
-				$jq('#ghost').addClass('open');
-				$jq('body').addClass('no-scroll');
-			}).on('hide', function() {
-				console.log('#navMenu', 'hide');
-				$jq(this).removeClass('open');
-				$jq('#ghost').removeClass('open');
-				$jq('body').removeClass('no-scroll');
-				$jq('.loginDialog').removeClass('open');
-			});
-			$jq('#navMenuItems').on('show', function() {
-				console.log('#navMenuItems', 'show');
-			}).on('hide', function() {
-				console.log('#navMenuItems', 'hide');
-			});
-			$jq('.signin>a').on('click', function(e) {
-				e.stopPropagation();
-				$jq('.loginDialog').addClass('open');
-				$jq('#ghost').addClass('open');
-				$jq('body').addClass('no-scroll');
-			});
 		</script>
 	</tmpl:put>
 	
@@ -644,15 +729,15 @@ request.setAttribute("noyui", true);
 			<div id="mobilehomeMainDiv">
 			<%
 				//OAS setup
-			   	request.setAttribute("listPos", "SystemMessage,HPTab1,HPTab2");
+			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02");
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 			   	
 			   	if (FDStoreProperties.isAdServerEnabled()) {
 					%><div id="OAS_HPTab1">
-			  			<script type="text/javascript">OAS_AD('HPTab1');</script>
+			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
 			  		</div><% 
 					%><div id="OAS_HPTab2">
-		  				<script type="text/javascript">OAS_AD('HPTab2');</script>
+		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
 		  			</div><% 
 			  	}
 						   	
@@ -693,8 +778,8 @@ request.setAttribute("noyui", true);
 				<% } %>
 			</div>
 			<div class="loginDialog">
+				<div class="close-x"></div>				
 				<iframe src="/login/login.jsp"></iframe>
-				
 			</div>
 		<% } else { %>
 			

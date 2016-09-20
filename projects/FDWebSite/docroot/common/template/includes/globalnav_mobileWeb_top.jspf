@@ -72,9 +72,113 @@
 		}
 	}
 %>
-<style>
-</style>
-<div id="ghost"></div>
+<nav id="nav-menu">
+	<ul id="navMenuItems">
+		<li class="navMenuItems-topIcons">
+			<span>
+				<div class="iconnav icon-browse-shop"></div>
+				<span class="navlabel">Shop</span>
+			</span>
+			<ul class="navMenuItems-browse">
+				<li class="navMenuItems-menuselect">
+					<span class="glBreadcrumblink">All Shops</span>
+				</li>
+				
+				<li>
+					<span class="glBreadcrumblink">
+						<span class="ui-icon" style="background-image: url('<%-- WHAT ICON GOES HERE? --%>');"></span>
+						<a href="/browse.jsp?id=picks_love">Fresh Deals</a>
+					</span>
+				</li>
+				<% for (DepartmentModel curDept : departments) {
+					if ("WGD".equalsIgnoreCase(curDept.toString())) {
+						continue;
+					}
+				%>
+					<li>
+						<span class="glBreadcrumblink">
+							<span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span>
+							<a href="/browse.jsp?id=<%=curDept.toString()%>"><%= curDept.getFullName() %></a>
+						</span>
+					</li>
+				<% } %>
+			</ul>
+		</li>
+		
+		<li class="navMenuItems-topIcons">
+			<span>
+				<div class="iconnav icon-browse-reorder"></div>
+				<span class="navlabel">Reorder</span>
+			</span>
+			<ul class="navMenuItems-reorder">
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
+				</li>
+			</ul>
+		</li>
+		
+		<li class="navMenuItems-topIcons">
+			<span>
+				<div class="iconnav icon-browse-tag"></div>
+				<span class="navlabel">More ways to shop</span>
+			</span>
+			<ul class="navMenuItems-shopmore">
+				<li>
+					<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/browse.jsp?id=deals">Deals</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/browse.jsp?id=top_rated">Top-Rated</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="http://blog.freshdirect.com/">Ideas</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/browse.jsp?id=local">Local</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/category.jsp?catId=our_picks_gltnfr">Gluten-Free</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Organic & All-Natural</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Kosher</a></span>
+				</li>
+			</ul>
+		</li>
+		
+		<li class="Spacer hide-on-subopen"></li>
+		<li class="hide-on-subopen">
+			<span>Settings</span>
+		</li>
+		<li class="hide-on-subopen">
+			<span>Help</span>
+		</li>
+		<li class="Spacer hide-on-subopen"></li>
+		<li class="hide-on-subopen">
+			<span>
+				<div class="pNavLoginButton-cont">
+					<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
+					<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+				</div>
+			</span>
+		</li>
+	</ul>
+</nav>
+
+<%-- TODO : HERE DOWN, REMOVE --%>
 <div id="navMenu" class="">
 	<div class="navbar navbar-header">
 		<div class="pull-left">
@@ -86,9 +190,11 @@
 	<div style="height: 100%; width: 100%;">
 		<ul id="navMenuItems">
 			<li class="navMenuItems-topIcon">
-				<div class="iconnav icon-browse-shop"></div>
-				<div class="navlabel">SHOP</div>
-				
+				<div>
+					<div class="iconnav icon-browse-shop"></div>
+					<div class="navlabel">SHOP</div>
+				</div>
+					
 				<ul class="navMenuItems-browse">
 					<li class="navMenuItems-noselect"><div class="glBreadcrumblink">All Shops</div></li>
 					
@@ -105,8 +211,8 @@
 		</ul>
 		
 		<div class="pNavLoginButton-cont">
-			<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>		
-			<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+					
+			
 		</div>
 	</div>
 </div>

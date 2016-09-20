@@ -30,7 +30,7 @@
 
 	
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
-    <div class="container-fluid">
+    <div class="container-fluid" id="page-content"><!-- body cont s -->
     
 	   	<% if (FDStoreProperties.isAdServerEnabled()) {
 			%><div id="OAS_SystemMessage">
@@ -40,13 +40,12 @@
 		
 	    <tmpl:get name="nav_top" />
 		
-	    <div id="content" autoscroll="true">
-	      <tmpl:get name="content" />
-	      <!-- content ends above here-->
-	    </div>
+		<div id="content" autoscroll="true"><!-- content starts here-->
+			<tmpl:get name="content" />
+	    </div><!-- content ends above here-->
 	    
 	    <tmpl:get name="nav_bottom" />
-	</div>
+	</div><!-- body cont e -->
 
     <tmpl:get name="soytemplates" />
     <tmpl:get name="jsmodules" />
