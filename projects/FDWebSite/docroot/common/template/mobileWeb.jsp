@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -17,10 +19,29 @@
     <%@ include file="/common/template/includes/metatags.jspf" %>
     
     <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+    	
+	<fd:LocationHandler/>
+	<%
+		AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+		boolean hasFdxServices = true; /* just true in locationbar as well */  //LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
+	%>
+	<script>
+		FreshDirect = FreshDirect || {};
+		FreshDirect.locabar = FreshDirect.locabar || {};
+		FreshDirect.locabar.zipcode = <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) %>;
+		FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
+		FreshDirect.locabar.selectedAddress = {
+			type: null,
+			address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
+		};
+	</script>
+	
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
+    <jwr:style src="/mobileweb.css" media="all" />
+    
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
@@ -49,6 +70,8 @@
 
     <tmpl:get name="soytemplates" />
     <tmpl:get name="jsmodules" />
+    
+	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
   </body>
 </html>

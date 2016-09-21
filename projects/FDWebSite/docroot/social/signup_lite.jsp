@@ -9,6 +9,10 @@
 <%@ page import="com.freshdirect.mail.EmailUtil"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 
 <fd:CheckLoginStatus />
@@ -18,6 +22,9 @@
 	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	
 	String successPage = request.getParameter("successPage");
 	if (successPage == null) { 
 		    successPage = "index.jsp";
@@ -151,7 +158,6 @@
 </head>
 
 <body style="height: auto;">
-	<center>
 
 	<%
 	
@@ -223,9 +229,14 @@
 		<% } %>	
 <!-- end email validation --> 
 
-	<div id="sulCont" class="signup-style-social social-singup" style="min-width:523px">
+	<div id="sulCont" class="signup-style-social social-singup" style="<% if (!mobWeb) { %>min-width:523px<% } %>">
 		<div class="form-side-social">
-		<div class="form-side-social-header">Create Account:</div>
+		
+		<% if (mobWeb) { %>
+			
+		<% } else { %>
+			<div class="form-side-social-header">Create Account:</div>
+		<% } %>
 		<div id="form_feilds">
 			<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp" autocomplete="off" autocomplete="false">
 				<input type="hidden" name="submission" value="done" />
@@ -443,57 +454,59 @@
 </script>
 
 </div>
-				
-<div class="social-login-headerscr-social">
-	<div class="social-login-line-separator"></div>
-	<span class="social-login-or-separator">or</span>
-	<div class="social-login-line-separator"></div>
-</div>
-
-				
-<div id="social_login_demo" class="social-login-social">
-	<script type="text/javascript">
-		/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
-		var oneall_subdomain = '<%=site_subdomain%>';
+<% if (mobWeb) { %>
+			
+<% } else { %>				
+	<div class="social-login-headerscr-social">
+		<div class="social-login-line-separator"></div>
+		<span class="social-login-or-separator">or</span>
+		<div class="social-login-line-separator"></div>
+	</div>
 	
-		/* Asynchronously load the library */
-		var oa = document.createElement('script');
-		oa.type = 'text/javascript';
-		oa.async = true;
-		oa.src = '//' + oneall_subdomain
-				+ '<%=site_post_url%>/socialize/library.js';
-		var s = document.getElementsByTagName('script')[0];
-		s.parentNode.insertBefore(oa, s);
-	
-		/* This is an event */
-		var my_on_login_redirect = function(args) {
-			return true;
-		}
-	
-		/* Initialise the asynchronous queue */
-		var _oneall = _oneall || [];
-		_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
-    	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
-		_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-		_oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+					
+	<div id="social_login_demo" class="social-login-social">
+		<script type="text/javascript">
+			/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
+			var oneall_subdomain = '<%=site_subdomain%>';
 		
-		<% if(FDStoreProperties.isLocalDeployment()){ %>
-			_oneall.push([ 'social_login', 'set_callback_uri', '<%= "http://" + request.getServerName()  + ":" + request.getServerPort() + "/social/social_login_success.jsp"%>' ]);
-		<% } else { %>
-			_oneall.push([ 'social_login', 'set_callback_uri', '<%= "https://" + request.getServerName() + "/social/social_login_success.jsp"%>' ]);
-		<% } %>
+			/* Asynchronously load the library */
+			var oa = document.createElement('script');
+			oa.type = 'text/javascript';
+			oa.async = true;
+			oa.src = '//' + oneall_subdomain
+					+ '<%=site_post_url%>/socialize/library.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(oa, s);
 		
-		_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
-		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
+			/* This is an event */
+			var my_on_login_redirect = function(args) {
+				return true;
+			}
 		
-		$jq( document ).ready(function() {
-			setTimeout(function(){ 
-				FreshDirect.components.ifrPopup.reposition();
-			}, 100);
-		});
-	</script>
-</div>
-
+			/* Initialise the asynchronous queue */
+			var _oneall = _oneall || [];
+			_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
+	    	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
+			_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
+			_oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+			
+			<% if(FDStoreProperties.isLocalDeployment()){ %>
+				_oneall.push([ 'social_login', 'set_callback_uri', '<%= "http://" + request.getServerName()  + ":" + request.getServerPort() + "/social/social_login_success.jsp"%>' ]);
+			<% } else { %>
+				_oneall.push([ 'social_login', 'set_callback_uri', '<%= "https://" + request.getServerName() + "/social/social_login_success.jsp"%>' ]);
+			<% } %>
+			
+			_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
+			_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
+			
+			$jq( document ).ready(function() {
+				setTimeout(function(){ 
+					FreshDirect.components.ifrPopup.reposition();
+				}, 100);
+			});
+		</script>
+	</div>
+<% } %>
 
 				<div class="clear"></div>
 
@@ -531,7 +544,6 @@
 					}
 				%>
 		</div>
-	</center>
 	<%	
 		/*
 		 * "EXPRESS_REGISTRATION_COMPLETE" is set in SiteAccessControllerTag after express registration succeed
