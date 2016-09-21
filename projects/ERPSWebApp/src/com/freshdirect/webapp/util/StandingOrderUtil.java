@@ -806,6 +806,8 @@ public class StandingOrderUtil {
         cart.setZoneInfo( zoneInfo );
         cart.setTip(tipAmount);
         user.setAddress(erpDeliveryAddress);
+        user.setSelectedServiceType(erpDeliveryAddress.getServiceType() );
+        user.setZPServiceType(erpDeliveryAddress.getServiceType());
         user.setShoppingCart( cart );
         user.resetUserContext();
         UserContext userContext = user.getUserContext();
