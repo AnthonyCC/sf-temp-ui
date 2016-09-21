@@ -39,7 +39,7 @@ public class BrowseEventTag extends SimpleTagSupport {
         if (user != null) {
             final String contentId = req.getParameter("id");
 
-            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, req.getCookies(), user)) {
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 // check input
                 if (contentId == null) {
                     throw new JspException("Parameter error: Null content ID was given");

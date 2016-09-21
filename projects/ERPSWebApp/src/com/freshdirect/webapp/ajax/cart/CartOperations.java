@@ -143,7 +143,7 @@ public class CartOperations {
 			}
 			
 			// [APPDEV-5353] UNBXD analytics
-            final boolean isUNBXDAnalyticsAvailable = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, reqData.getCookies(), user);
+            final boolean isUNBXDAnalyticsAvailable = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, reqData.getCookies(), user);
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo loc = LocationInfo.withUrl(reqData.getRequestUrl());
 			

@@ -34,7 +34,7 @@ public class SearchEventTag extends SimpleTagSupport {
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
         if (user != null) {
 
-            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
                 final String query = request.getParameter("searchParams");
 
                 doSendEvent(user, request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER), query);

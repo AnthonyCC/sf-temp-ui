@@ -206,7 +206,7 @@ public class CheckoutService {
 						CmShop9Tag.buildPendingModels(session, cart);
 
 						// [APPDEV-5353] [APPDEV-5396] UNBXD analytics
-				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 				            final Visitor visitor = Visitor.withUser(user);
 				            final LocationInfo loc = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
 

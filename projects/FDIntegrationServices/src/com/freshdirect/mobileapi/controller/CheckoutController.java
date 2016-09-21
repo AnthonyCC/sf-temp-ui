@@ -1464,7 +1464,7 @@ public class CheckoutController extends BaseController {
     }
     
     private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, List<FDCartLineI> cartLines){
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)){
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)){
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo location = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
             LOGGER.debug("UNBXD Service active, cartline size: " + cartLines.size());

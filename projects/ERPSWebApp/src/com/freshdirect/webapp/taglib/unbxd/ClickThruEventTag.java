@@ -41,7 +41,7 @@ public class ClickThruEventTag extends SimpleTagSupport {
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
         if (user != null) {
-            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, req.getCookies(), user)) {
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 doSendEvent(user, req, product);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");

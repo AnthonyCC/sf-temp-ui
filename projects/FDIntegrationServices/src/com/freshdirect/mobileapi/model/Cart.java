@@ -1255,7 +1255,7 @@ public class Cart {
 	}
 	
     private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
             Visitor visitor = Visitor.withUser(user);
             LocationInfo location = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
             final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, location, null, null, cartLine);
