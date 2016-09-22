@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
@@ -224,9 +225,7 @@ public class CmsFilteringFlow {
             }
             EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
 
-            //if the unbxd integration is turned on, sorting only should happen if the user chooses to sort - no natural sorting
-            boolean useUnbxdProvidedOrder = !FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, nav.getRequestCookies(), user);
-            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user, useUnbxdProvidedOrder);
+            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
 
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 
@@ -389,7 +388,7 @@ public class CmsFilteringFlow {
                 if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){               //if(FDStoreProperties.isHookLogicEnabled()){
                     SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);    
                  }
-                collectSearchRelevancyScores(searchResults);
+                collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
             case NEWPRODUCTS:
                 searchResults = SearchResultsUtil.getNewProducts(nav, user);
@@ -734,15 +733,22 @@ public class CmsFilteringFlow {
     }
 
     /** based on ProductsFilterImpl.createComparator() and FilteringComparatorUtil.createProductComparator() */
-    private void collectSearchRelevancyScores(SearchResults searchResults) {
+    private void collectSearchRelevancyScores(SearchResults searchResults, Cookie[] cookies, FDSessionUser user) {
         String suggestedTerm = NVL.apply(searchResults.getSuggestedTerm(), searchResults.getSearchTerm());
         List<FilteringSortingItem<ProductModel>> products = searchResults.getProducts();
 
-        // if there's only one DYM then we display products for that DYM
-        // but for those products we have to use the suggested term to produce the following scores
-        SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
-        SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
-        SmartSearchUtils.collectTermScores(products, suggestedTerm);
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+            //for unbxd search results the relevancy is the order of in which the products are returned
+            for(int i = products.size(); i > 0; i--){
+                products.get(products.size() - i).putSortingValue(EnumSortingValue.TERM_SCORE, i);
+            }
+        } else {
+            // if there's only one DYM then we display products for that DYM
+            // but for those products we have to use the suggested term to produce the following scores
+            SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
+            SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
+            SmartSearchUtils.collectTermScores(products, suggestedTerm);
+        }
     }
 
     private void processProducts(FilteringFlowType pageType, NavigationModel navigationModel, SearchResults searchResults) {
