@@ -161,6 +161,11 @@ public class SearchService {
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
         // get search results from Lucene service
         SearchResults searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
+        
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+            // notify UNBXD analytics
+            SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
+        }
 
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
             // when UNBXD service is turned on ...
@@ -170,9 +175,6 @@ public class SearchService {
 
                 // join results in a new one
                 searchResults = composeSearchResults(searchTerm, searchResults, internalResult);
-
-                // notify UNBXD analytics
-                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
 
             } catch (IOException e) {
                 if (!FDStoreProperties.getUnbxdFallbackOnError()) {
