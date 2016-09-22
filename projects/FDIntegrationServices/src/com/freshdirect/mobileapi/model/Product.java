@@ -1549,14 +1549,14 @@ public class Product {
         }
         claimText=concatList(getProductExtraData().getClaims());
         if(!StringUtils.isBlank(claimText)){
-        	result=result + "\n" + "Claims : " + "\n" + claimText;
+        	result=result + "\n \n " + "Claims : " + "\n \n " + claimText;
         }
         organicClaimText=concatList(getProductExtraData().getOrganicClaims());
         if(!StringUtils.isBlank(organicClaimText)){
-        	result=result + "\n" + "Organic Claims : " + "\n" + organicClaimText;
+        	result=result + "\n \n " + "Organic Claims : " + "\n \n " + organicClaimText;
         }
         if(StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())){
-        	result=result + "\n" + "Availability Note : " + "\n" + getProductData().getMsgDeliveryNote();
+        	result=result + "\n \n " + "Availability Note : " + "\n \n " + getProductData().getMsgDeliveryNote();
         }
         return result;
     }
