@@ -1416,7 +1416,7 @@ option.address-icon {
 #activatesoalert .so-activate-alert-message{
 	font-size: 13px;
 	padding: 12px 0 0 0;
-	max-width: 670px;
+	max-width: 660px;
 }
 #activatesoalert .so-activate-alert-message-bold,
 #errorsoalerts .so-error-alert-message-bold{

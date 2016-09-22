@@ -96,6 +96,11 @@ user.setSoTemplateCart(new FDCartModel());
 		</a>
 		<hr class="standing-orders-3-edit-header-line">
 	</div>
+	<div class="so3-create-new-so">
+		<div class="so3-create-new-so-text">Create a New Standing Order</div>
+		<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
+		<div class="clear"></div>
+	</div>
 	<div class="standing-orders-3-edit-so-settings">
 		<soy:render template="standingorder.standingOrdersSettings" data="<%=standingOrderSettingDataMap%>"/>
 	</div>

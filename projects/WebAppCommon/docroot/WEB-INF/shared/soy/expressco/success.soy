@@ -123,6 +123,9 @@
 	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
 		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
 		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
+		  	<div class="successtimeslot_time">
+		    	{$timePeriod ? $timePeriod : ''}
+		  	</div>
 		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
 		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
 			  		{if $soFreq == '1'}
@@ -131,11 +134,8 @@
 			  			Every Other
 			  		{elseif $soFreq == '4'}
 			  			Every Fourth
-			  		{/if}</br>{$dayOfWeek ? $dayOfWeek : ''}
+			  		{/if} {$dayOfWeek ? $dayOfWeek : ''}
 		  		</div>			
-		  </div>
-		  <div class="successtimeslot_time">
-		    {$timePeriod ? $timePeriod : ''}
 		  </div>
 		  {if not $soActivated and $soCutOffFormattedDeliveryDate and $soCutOffDeliveryTime}
 			<div class="standing-orders-3-successtimeslot_date-reservation">

@@ -88,9 +88,6 @@ function submitFormNewSO(action, id, name){
 	    		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
 	    		soSaved(id, false, true);
 	    	}
-	    	$jq("#cartcontent").on( "cartcontent-update", function(){ soSaved(id, false, true); });
-  			$jq("#cartcontent").on( "quantity-change", function(){ soSaved(id, false, true); });
-  			$jq("#cartcontent").on( "cartline-delete", function(){ soSaved(id, false, true); });
   			$jq("#ec-drawer").on( "address-update", function(){ soSaved(id, false, true); });
   			$jq("#ec-drawer").on( "timeselector-update", function(){ soSaved(id, false, true); });
   			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soSaved(id, false, true); });
@@ -144,11 +141,16 @@ function closeSOSettings(){
 		$jq(".standing-orders-3-so-settings-container.open").removeClass("open");
 		$jq(".standing-orders-3-so-settings-item .standing-orders-3-so-settings-error .standing-orders-3-so-settings-error-steps-link:disabled").prop( "disabled", false );
 		$jq('.standing-orders-3-so-settings .standing-orders-3-so-settings-activate.open').removeClass('open');
-		$jq("#ec-drawer").remove();
-		$jq("#cartcontent").remove();
+		$jq(".standing-orders-3-so-settings-drawer-cart-container-wrap").empty();
 	}
 }
-
+function opencloseSOSettings(id){
+	if($jq(".standing-orders-3-so-settings-container.open").length){
+		closeSOSettings();
+	} else {
+		openSOSettings(id);
+	}
+}
 function changeSOName(id){
 	var soID = "#soid_" + id;
 	$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-name-change-input-container").addClass("open");
@@ -193,13 +195,12 @@ function soSaved(id, activated, isNewSO){
 			$jq(soID).addClass("show-saved");
 			$jq(soID).addClass("show-saved-activated");
 			setTimeout(function(){
-				$jq(soID).removeClass("show-saved");
-				$jq(soID).removeClass("show-saved-activated");
+				$jq(soID).removeClass("show-saved").removeClass("show-saved-activated").removeClass("drawer-saved").removeClass("cart-saved");
 			}, 3000);
 		} else {
 			$jq(soID).addClass("show-saved");
 			setTimeout(function(){
-				$jq(soID).removeClass("show-saved");
+				$jq(soID).removeClass("show-saved").removeClass("drawer-saved").removeClass("cart-saved");
 			}, 3000);
 		}
 	}
@@ -214,8 +215,7 @@ function submitFormManageSO(id,action,name,freq){
         data: dataString,
         success: function(data) {
             if('settings'==action){
-        		$jq("#ec-drawer").remove();
-        		$jq("#cartcontent").remove();
+        		$jq(".standing-orders-3-so-settings-drawer-cart-container-wrap").empty();
          	    window.FreshDirect.expressco.data = data;
         	    window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       			$jq(soID).addClass("open");
@@ -225,6 +225,7 @@ function submitFormManageSO(id,action,name,freq){
 	      		}
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
       			populateCartContent();
+      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend("<div class='standing-orders-3-saved-container-cart'>" + $jq(soID + " .standing-orders-3-saved-container").html() + "</div>");
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="ec-drawer"></div>');      			
       			populateDrawer(id);
       			$jq("#soFreq").select2({
@@ -286,6 +287,7 @@ function populateDrawer(id){
 function soItemTriggerUpdate(id, data, isCartUpdate){
 	var soID = "#soid_" + id;
 	if(isCartUpdate){
+		$jq(soID).addClass("cart-saved");
 		setTimeout(function(){
 			getSOData(id, "soItemUpdate");
 			if(data.standingOrderResponseData.activate){
@@ -293,6 +295,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 	      	}
 		}, 3000);
 	} else {
+		$jq(soID).addClass("drawer-saved");
 		getSOData(id, "soItemUpdate");
 		if(data.standingOrderResponseData.activate){
 			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
