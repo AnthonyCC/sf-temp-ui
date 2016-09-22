@@ -149,7 +149,7 @@ public class FDProductHelper {
 					material.getSalesUnitCharacteristic(),
 					material.getQuantityCharacteristic(),
 					material.getAlcoholicContent(),
-					material.isTaxable(),material.getSkuCode(), material.getTaxCode());
+					material.isTaxable(),material.getSkuCode(), material.getTaxCode(), material.getMaterialGroup());
 		 Map<String, FDPlantMaterial> plantMaterialMap = getMaterialPlants( material.getMaterialPlants());
 		fdMaterial.setMaterialPlants(plantMaterialMap);
 		Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreaMap = getMaterialSalesAreas(material.getMaterialSalesAreas());

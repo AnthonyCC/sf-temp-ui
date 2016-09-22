@@ -407,6 +407,10 @@ public class FDProduct extends FDSku implements AttributesI {
 	public String getTaxCode(){
 		return this.material.getTaxCode();
 	}
+	
+	public String getMaterialGroup(){
+		return this.material.getMaterialGroup();
+	}
 
 	public boolean isPlatter(String plantID) {
 		return this.material.isPlatter(plantID);
