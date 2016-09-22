@@ -67,6 +67,13 @@
 	    
 	    <tmpl:get name="nav_bottom" />
 	</div><!-- body cont e -->
+	<!-- body cont dialogs start -->
+		<div class="loginDialog">
+			<div class="close-x"></div>				
+			<iframe src="/login/login.jsp" id="signin_iframe" style="display: none;"></iframe>
+			<iframe src="/social/signup_lite.jsp?successPage=undefined" id="createacc_iframe" style="display: none;"></iframe>
+		</div>
+	<!-- body cont dialogs end -->
 
     <tmpl:get name="soytemplates" />
     <tmpl:get name="jsmodules" />

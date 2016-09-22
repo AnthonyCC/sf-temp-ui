@@ -171,11 +171,6 @@ request.setAttribute("noyui", true);
 				    </a>
 				<% } %>
 			</div>
-			<div class="loginDialog">
-				<div class="close-x"></div>				
-				<iframe src="/login/login.jsp" id="signin_iframe" style="display: none;"></iframe>
-				<iframe src="/social/signup_lite.jsp?successPage=undefined" id="createacc_iframe" style="display: none;"></iframe>
-			</div>
 		<% } else { %>
 			
 			<fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">

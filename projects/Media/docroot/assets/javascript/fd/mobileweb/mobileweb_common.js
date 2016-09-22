@@ -53,6 +53,9 @@
 
 			API.close();
 		});
+		$jq('.logout>a').on('click', function(e) {
+			window.top.location = '/logout.jsp';
+		});
 		
 		$jq('.loginDialog .close-x').on('click touch', function(e) {
 			console.log('close click?');

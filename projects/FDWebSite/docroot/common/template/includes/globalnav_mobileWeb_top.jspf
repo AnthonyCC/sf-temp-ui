@@ -161,17 +161,29 @@
 		
 		<li class="Spacer hide-on-subopen"></li>
 		<li class="hide-on-subopen">
-			<span>Settings</span>
+			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
 		<li class="hide-on-subopen">
-			<span>Help</span>
+			<span><a href="/help/index.jsp">Help</a></span>
 		</li>
 		<li class="Spacer hide-on-subopen"></li>
 		<li class="hide-on-subopen">
 			<span>
 				<div class="pNavLoginButton-cont">
-					<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
-					<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+					<% if (user == null || (user != null && user.getLevel() == FDUserI.GUEST)) { /* guest, sign in/create */ %>
+						<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
+						<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+					<% } %>
+					<% if (user != null && 
+						(user.getLevel() == FDUserI.RECOGNIZED || user.getLevel() == FDUserI.SIGNED_IN)) {
+						/* recog/logged in, recog (only) sign in/log out */
+					%>
+						<% if (user != null && user.getLevel() == FDUserI.RECOGNIZED) { %>
+							<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
+						<% } %>
+						<%= ((user != null) ? ("<div class=\"boldgray\">Not " + user.getFirstName() + "?</div>") : "") %>
+						<div class="pNavLoginButton primaryLink logout"><a href="#" class="green transparent cssbutton-flat">Sign out</a></div>
+					<% } %>
 				</div>
 			</span>
 		</li>
