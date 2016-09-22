@@ -100,7 +100,9 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
@@ -243,6 +245,8 @@ public class Product {
     //private List<String> warningMessages = new ArrayList<String>();
 	
 	protected ProductExtraData productExtraData;
+	
+	protected ProductData productData;
 
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
     	 this(productModel, user, variant, cartLine, ctx, false);
@@ -1545,11 +1549,14 @@ public class Product {
         }
         claimText=concatList(getProductExtraData().getClaims());
         if(!StringUtils.isBlank(claimText)){
-        	result=result + "\n" + "Claims" + "\n" + claimText;
+        	result=result + "\n" + "Claims : " + "\n" + claimText;
         }
         organicClaimText=concatList(getProductExtraData().getOrganicClaims());
         if(!StringUtils.isBlank(organicClaimText)){
-        	result=result + "\n" + "Organic Claims" + "\n" + organicClaimText;
+        	result=result + "\n" + "Organic Claims : " + "\n" + organicClaimText;
+        }
+        if(StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())){
+        	result=result + "\n" + "Availability Note : " + "\n" + getProductData().getMsgDeliveryNote();
         }
         return result;
     }
@@ -1678,6 +1685,9 @@ public class Product {
 				    ProductExtraData data= new ProductExtraData();
 	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null, null);
 	               	result.setProductExtraData(data);	
+	               	ProductData productData=new ProductData();
+	               	ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
+	               	result.setProductData(productData);
 				} catch (FDResourceException e) {
 				
 					e.printStackTrace();
@@ -2138,6 +2148,12 @@ public class Product {
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
-
+	public ProductData getProductData() {
+		return productData;
+	}
+	public void setProductData(ProductData productData) {
+		this.productData = productData;
+	}
+	
 	
 }

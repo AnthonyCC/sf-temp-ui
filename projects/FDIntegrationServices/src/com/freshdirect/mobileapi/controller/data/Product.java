@@ -24,6 +24,8 @@ import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.mobileapi.model.ProductDomain;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 
 public class Product extends Message {
@@ -252,6 +254,8 @@ public class Product extends Message {
 	public String nutrition;
 	
 	protected ProductExtraData productExtraData;
+	
+	protected ProductData productData;
 
 	public Product() {
 
@@ -281,7 +285,11 @@ public class Product extends Message {
         
         //APPDEV-4233 Product Description Note
         this.setDescritpionNote(product.getDescriptionNote());
+        
+        //APPDEV-5497 Adding Claims and Availability Info under the description attribute
         setProductExtraData(product.getProductExtraData());
+        setProductData(product.getProductData());
+        
         if ("perishable".equals(product.getLayout())) {
             setLayoutType(LayoutType.PERISHABLE);
         } else if ("wine".equals(product.getLayout())) {
@@ -977,6 +985,14 @@ public class Product extends Message {
 
 	public void setProductExtraData(ProductExtraData productExtraData) {
 		this.productExtraData = productExtraData;
+	}
+
+	public ProductData getProductData() {
+		return productData;
+	}
+
+	public void setProductData(ProductData productData) {
+		this.productData = productData;
 	}
 	
 }

@@ -1650,4 +1650,9 @@ public class ProductDetailPopulator {
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
+	
+	public static void populateAvailabilityMessagesForMobile(ProductData item,
+			ProductModel productModel, FDProduct fdProduct, SkuModel sku){
+		populateAvailabilityMessages(item, productModel, fdProduct, sku);
+	}
 }
