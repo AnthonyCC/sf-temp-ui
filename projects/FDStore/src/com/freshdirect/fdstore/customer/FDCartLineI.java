@@ -95,6 +95,8 @@ public interface FDCartLineI extends FDProductSelectionI {
 	
 	public String getMaterialNumber();
 	
+	public String getMaterialGroup();
+	
 	public String getCartlineId();
 	
 	/**

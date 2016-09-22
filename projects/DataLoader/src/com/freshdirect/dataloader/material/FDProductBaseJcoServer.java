@@ -412,6 +412,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 					materialModel.setMaterialType(materialParam.getMaterialType());
 					materialModel.setTaxable(materialParam.getTaxable().booleanValue());
 					materialModel.setTaxCode(materialParam.getTaxId());
+					materialModel.setMaterialGroup(materialParam.getMaterialGroup());
 
 					if (materialParam.getMaterialGroup() != null && !materialParam.getMaterialGroup().isEmpty()) {
 						materialModel.setAlcoholicContent(FDSapHelperUtils.convertToAlcoholContentType(materialParam

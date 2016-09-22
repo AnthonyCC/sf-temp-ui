@@ -1156,6 +1156,18 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return shortedItems;
 	}
+	
+	public List<FDCartLineI> getBundleShortItems(){
+		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
+		for( FDCartLineI line : orderLines ){
+			if(!line.isPricedByLb()){
+				if (new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() && line.getInvoiceLine().getPrice()<line.getPrice()){
+					bundleShortItems.add(line);
+				}
+			}
+		}
+		return bundleShortItems;
+	}
 
 	public String getSapOrderId() {
 		return getSale().getSapOrderNumber();

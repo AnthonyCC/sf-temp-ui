@@ -232,6 +232,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setAffiliate(fdProduct.getAffiliate(this.getUserContext().getStoreContext().getEStoreId()));
 				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());
 				this.orderLine.setTaxCode(fdProduct.getTaxCode());
+				this.orderLine.setMaterialGroup(fdProduct.getMaterialGroup());
 			}
 			
 			this.performPricing();

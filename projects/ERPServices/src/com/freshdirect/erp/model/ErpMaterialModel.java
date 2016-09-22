@@ -82,6 +82,8 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 
 	/** UPC code assigned by manufacturer */
 	private String UPC;
+	
+	private String materialGroup;
 
 	/** Collection of sales units for display only.
 	 * @link aggregationByValue
@@ -123,7 +125,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	public ErpMaterialModel(String sapId, String baseUnit, String description, String upc, String quantityCharacteristic,
 			String salesUnitCharacteristic, EnumAlcoholicContent alcoholicContent, boolean taxable, String taxCode, 
 			String skuCode, String daysFresh, EnumProductApprovalStatus approvalStatus,
-			String materialType, List prices, List salesUnits, List classes, List displaySalesUnits, List materialPlants, List materialSalesAreas)
+			String materialType, List prices, List salesUnits, List classes, List displaySalesUnits, List materialPlants, List materialSalesAreas, String materialGroup)
 	{
 		super(sapId, description);
 		this.setBaseUnit(baseUnit);
@@ -143,6 +145,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.setApprovalStatus(approvalStatus);
 		this.setMaterialPlants(materialPlants);
 		this.setMaterialSalesAreas(materialSalesAreas);
+		this.setMaterialGroup(materialGroup);
 	}
 
 	/**
@@ -509,7 +512,13 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	public void setMaterialSalesAreas(List materialSalesAreas) {
 		this.materialSalesAreas.set(materialSalesAreas);
 	}
-	
-	
-	
+
+	public String getMaterialGroup() {
+		return materialGroup;
+	}
+
+	public void setMaterialGroup(String materialGroup) {
+		this.materialGroup = materialGroup;
+	}
+		
 }

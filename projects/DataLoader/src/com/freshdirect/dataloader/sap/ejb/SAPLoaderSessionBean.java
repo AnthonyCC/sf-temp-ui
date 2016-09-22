@@ -1719,6 +1719,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 		clonedMatModel.setAlcoholicContent(materialModel.getAlcoholicContent());
 		clonedMatModel.setQuantityCharacteristic(materialModel.getQuantityCharacteristic());
 		clonedMatModel.setSalesUnitCharacteristic(materialModel.getSalesUnitCharacteristic());
+		clonedMatModel.setMaterialGroup(materialModel.getMaterialGroup());
 		return clonedMatModel;
 
 	}

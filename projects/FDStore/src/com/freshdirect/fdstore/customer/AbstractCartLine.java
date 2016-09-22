@@ -168,6 +168,10 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	public String getMaterialNumber() {
 		return this.orderLine.getMaterialNumber();
 	}
+	
+	public String getMaterialGroup(){
+		return this.orderLine.getMaterialGroup();
+	}
 
 	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
 		FDProduct fdp = this.lookupFDProduct();

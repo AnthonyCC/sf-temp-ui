@@ -99,6 +99,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
 	
 	private Double scaleQuantity;
+	private String materialGroup;
 	
     
     public EnumEventSource getSource() {
@@ -575,6 +576,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.scaleQuantity = scaleQuantity;
 	}
 
+	public String getMaterialGroup() {
+		return materialGroup;
+	}
+
+	public void setMaterialGroup(String materialGroup) {
+		this.materialGroup = materialGroup;
+	}
 	
 }
 	
