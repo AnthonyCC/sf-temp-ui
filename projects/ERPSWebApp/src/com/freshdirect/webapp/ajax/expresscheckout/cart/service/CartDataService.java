@@ -553,6 +553,10 @@ public class CartDataService {
             if (FDUserI.GUEST < user.getLevel()) {
                 cartData.setUserRecognized(true);
                 cartData.setUserCorporate(user.isCorporateUser());
+                if(StandingOrderHelper.isSO3StandingOrder(user)){
+                    cartData.setUserCorporate(true);
+
+                }
                 cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
             }
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
