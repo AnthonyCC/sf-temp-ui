@@ -215,6 +215,9 @@
 			<RelationshipDef name="expressCheckoutTextMessageAlertHeader" label="Express Checkout Text Message Alert Header" cardinality="One" >
                 <DestinationDef contentType="Html" />
             </RelationshipDef>
+            <RelationshipDef name="welcomeCarouselImageBanners" label="Welcome Carousel Image Banners" cardinality="Many">
+                <DestinationDef contentType="ImageBanner" />
+            </RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 
