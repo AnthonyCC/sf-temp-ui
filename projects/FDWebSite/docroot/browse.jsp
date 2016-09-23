@@ -1,3 +1,7 @@
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -25,10 +29,18 @@
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
 <c:set var="listPos" scope="request" value="SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2" />
+<%
+String template = "/common/template/browse_template.jsp";
 
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+if (mobWeb) {
+	template = "/common/template/mobileWeb.jsp"; //mobWeb template
+	request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/browse.jsp"); //change for OAS
+}
+%>
 <unbxd:browseEvent/>
 
-<tmpl:insert template='/common/template/browse_template.jsp'>
+<tmpl:insert template='<%=template %>'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
