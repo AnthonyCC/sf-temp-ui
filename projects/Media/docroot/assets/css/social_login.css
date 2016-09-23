@@ -73,6 +73,7 @@
 
 #sulCont .bottom-contents{
   	text-align:center;
+  	margin-bottom: 10px;
 }
 
 #sulCont input[disabled="disabled"]{
@@ -103,7 +104,7 @@
 }
 
 #sulCont .errMsg{
-	width: 292px;
+	/*width: 292px;*/
 }
 
 #sulCont span.error_img {
@@ -419,3 +420,30 @@ br.new_cust{
     box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
 }
 
+
+#sulCont .social-login-or-separator-cont-v2 {
+	display: block;
+	position: relative;
+	text-align: center;
+	margin: 20px 0 32px;
+}
+#sulCont .social-login-line-separator-v2 {
+	position: absolute;
+	top: 0.75em;
+	left: 0;
+	height: 1px;
+	background-color: #ccc;
+	width: 100%;
+}
+#sulCont .social-login-or-separator-v2 {
+	position: relative;
+	display: inline-block;
+	background-color: #fff;
+	height: 1em;
+	font-family: Verdana;
+	color: #333333;
+	font-size: 16px;
+	line-height: 16px;
+	font-weight: 700;
+	padding: 0 20px;
+}

@@ -74,14 +74,6 @@ request.setAttribute("noyui", true);
 	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
 	</tmpl:put>
 	
-	<tmpl:put name="nav_top"><%-- MOBILE --%>
-		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
-	</tmpl:put>
-	
-	<tmpl:put name="nav_bottom"><%-- MOBILE --%>
-		<%@ include file="/common/template/includes/globalnav_mobileWeb_bottom.jspf" %>
-	</tmpl:put>
-	
 	<tmpl:put name='content' direct='true'>
 	<%!
 

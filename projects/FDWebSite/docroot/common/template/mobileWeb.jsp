@@ -59,20 +59,19 @@
 	  		</div><% 
 	  	} %>
 		
-	    <tmpl:get name="nav_top" />
+		<!-- top nav s -->
+		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
+		<!-- top nav e -->
 		
 		<div id="content" autoscroll="true"><!-- content starts here-->
 			<tmpl:get name="content" />
 	    </div><!-- content ends above here-->
 	    
-	    <tmpl:get name="nav_bottom" />
+	    <!-- bottom nav s -->
+	    <%@ include file="/common/template/includes/globalnav_mobileWeb_bottom.jspf" %>
+	    <!-- bottom nav e -->
 	</div><!-- body cont e -->
 	<!-- body cont dialogs start -->
-		<div class="loginDialog">
-			<div class="close-x"></div>				
-			<iframe src="/login/login.jsp" id="signin_iframe" style="display: none;"></iframe>
-			<iframe src="/social/signup_lite.jsp?successPage=undefined" id="createacc_iframe" style="display: none;"></iframe>
-		</div>
 	<!-- body cont dialogs end -->
 
     <tmpl:get name="soytemplates" />

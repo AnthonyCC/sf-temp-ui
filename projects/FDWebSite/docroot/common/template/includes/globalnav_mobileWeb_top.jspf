@@ -1,3 +1,5 @@
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='java.util.*' %>
 <div>
 	<%-- TODO : copypasta from tech refresh, needs more fixing --%>
 	<nav class="navbar">
@@ -72,7 +74,7 @@
 		}
 	}
 %>
-<nav id="nav-menu">
+<nav id="nav-menu" style="display: none;">
 	<ul id="navMenuItems">
 		<li class="navMenuItems-topIcons">
 			<span>
@@ -159,15 +161,13 @@
 			</ul>
 		</li>
 		
-		<li class="Spacer hide-on-subopen"></li>
-		<li class="hide-on-subopen">
+		<li class="hide-on-subopen no-divider">
 			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
-		<li class="hide-on-subopen">
+		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>
 		</li>
-		<li class="Spacer hide-on-subopen"></li>
-		<li class="hide-on-subopen">
+		<li class="hide-on-subopen no-divider">
 			<span>
 				<div class="pNavLoginButton-cont">
 					<% if (user == null || (user != null && user.getLevel() == FDUserI.GUEST)) { /* guest, sign in/create */ %>

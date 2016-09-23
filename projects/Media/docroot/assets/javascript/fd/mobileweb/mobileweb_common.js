@@ -28,39 +28,29 @@
 			offCanvas: {
 				pageSelector: "#page-content"
 			}
-		});
+		}).show();		
 		
 		var API = $("#nav-menu").data( "mmenu" );
 		
 		$jq('#navbarShow').on('click', function() {
 			API.open();
 		});
+		
 		$jq('.signin>a').on('click', function(e) {
 			e.stopPropagation();
-			$jq('#signin_iframe').show();
-			$jq('#createacc_iframe').hide();
-			$jq('.loginDialog').addClass('open');
-			$jq('body').addClass('no-scroll');
+			window.top.location = '/login/login.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
 
 			API.close();
 		});
 		$jq('.createacc>a').on('click', function(e) {
 			e.stopPropagation();
-			$jq('#signin_iframe').hide();
-			$jq('#createacc_iframe').show();
-			$jq('.loginDialog').addClass('open');
-			$jq('body').addClass('no-scroll');
+			window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+
 
 			API.close();
 		});
 		$jq('.logout>a').on('click', function(e) {
 			window.top.location = '/logout.jsp';
-		});
-		
-		$jq('.loginDialog .close-x').on('click touch', function(e) {
-			console.log('close click?');
-			$jq('.loginDialog').removeClass('open');
-			$jq('body').removeClass('no-scroll');
 		});
 	});
 }(jQuery));

@@ -1,16 +1,13 @@
 
 body {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
 	line-height: 1.42857143;
 	color: #333;
 	background-color: #fff;
-}
-body{
-	background:#fff;
-	font-family: Verdana;
-	font-weight:normal;
+	font-weight: normal;
 	-webkit-animation:androidbugfix infinite 1s;
+	overflow-x: hidden;
 }
 
 img {
@@ -260,7 +257,7 @@ footer .anchors a {
 	width: 100%;
 	font-size: 15px;
 	color: #fff;
-	padding: 10px 0;
+	margin: 10px 0;
 }
 footer .footercontent {
 	background-color: #6AAA6E;
@@ -524,4 +521,7 @@ footer .copyright {
 .boldgray {
 	font-weight: bold;
 	color: #656565;
+}
+.no-divider:after {
+	border-bottom-width: 0;
 }

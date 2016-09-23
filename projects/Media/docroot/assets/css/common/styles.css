@@ -186,7 +186,7 @@ form {
 
 .error {
 	color: red;
-	background: url(img/right-facing-error-arrow.png) no-repeat 0 center;
+	/*background: url(img/right-facing-error-arrow.png) no-repeat 0 center;*/
 	text-decoration: none;
 }
 

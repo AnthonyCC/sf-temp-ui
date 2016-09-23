@@ -53,24 +53,18 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 		</script>
 	<%}%>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_LOGIN_TOTAL%>" align="center">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb)?"100%":W_LOGIN_TOTAL%>" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
-		<% if (mobWeb) { %>
-			
-		<% } else { %>
-			<tr>
-				<td width="<%=W_LOGIN_TOTAL-200%>">
-					<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"> -->
-					<span class="Container_Top_CurrentCustLogin">CURRENT CUSTOMERS LOG IN NOW</span>
-				</td>
-		       	<td width="200" align="right">
-		       		<!--  <font class="text9">* Required Information</font>-->
-				</td>
-			</tr>
-			<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
-			<tr><td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
-			<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
-		<% } %>
+		
+		<tr>
+			<td colspan="2" width="<%=W_LOGIN_TOTAL%>">
+				<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"> -->
+				<span class="Container_Top_CurrentCustLogin">CURRENT CUSTOMERS LOG IN NOW</span>
+			</td>
+		</tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
+		<tr><td colspan="2" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
 		<tr>
 			<td colspan="2">
 				<%@ include file="/includes/i_login_field.jspf" %>
