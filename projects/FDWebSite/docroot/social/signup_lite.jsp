@@ -208,7 +208,7 @@
 				<% } %>	
 				<!-- end email validation -->
 				
-				<div id="sulCont" class="signup-style-social social-singup" style="<% if (!mobWeb) { %>min-width:523px<% } %>">
+				<div id="sulCont" class="signup-style-social social-singup" style="<% if (!mobWeb) { %>min-width: 523px;text-align: center;<% } %>">
 					<div class="form-side-social">
 						<div class="form-side-social-header">Create Account:</div>
 						<!-- form_fields start here -->
