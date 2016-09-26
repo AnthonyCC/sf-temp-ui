@@ -622,6 +622,7 @@
 	}
 	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
 		font-size: 1em;
+		white-space: normal;
 	}
 	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-small-text,
 	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,

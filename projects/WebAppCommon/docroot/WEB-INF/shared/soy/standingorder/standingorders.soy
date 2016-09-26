@@ -72,7 +72,7 @@
 					{/if}
 					<div class="standing-orders-3-so-settings-drawer-cart-container-wrap">
 					</div>
-					{if not $item.activated}
+					{if not $item.activated and $item.amount > 0}
 					<div class="standing-orders-3-so-settings-activate standing-orders-3-so-settings-activate-bottom">
 						<div class="standing-orders-3-so-settings-activate-message">
 							<div class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</div>
