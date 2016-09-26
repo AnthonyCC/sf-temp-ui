@@ -68,7 +68,7 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_BRAND_VALUE, brandValue);
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_START, start.toString());
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_PAGE_SIZE, pageSize.toString());
-        this.pageContext.setAttribute(REQ_PARAM_SEARCH_SORT, sort);
+        this.pageContext.setAttribute(REQ_PARAM_SEARCH_SORT, searchSortType);
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_ORDER, "asc"); //locked to asc
 
         result = new ResultBundle(executeTagLogic(), this);
