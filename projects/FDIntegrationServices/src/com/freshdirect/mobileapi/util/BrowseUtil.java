@@ -1422,7 +1422,12 @@ public class BrowseUtil {
 	    }
 
     public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage, SessionUser user) {
-        user.setAddress(getAddress(requestMessage));
+    	if(user.getFDSessionUser()!=null 
+    			&& user.getFDSessionUser().getIdentity()!=null
+    			&& user.getAddress()!=null
+    			&& !user.getAddress().isCustomerAnonymousAddress()){
+    		user.setAddress(getAddress(requestMessage));
+    	}
         return getCatalogInfo(user);
     }
 
@@ -1446,7 +1451,8 @@ public class BrowseUtil {
             if (zipcode != null && zipcode.trim().length() > 0) {
                 ErpAddressModel address = new ErpAddressModel();
                 address.setZipCode(zipcode);
-                plantid = BrowseUtil.getCatalogInfoAddr(address, user).getKey().getPlantId();
+                plantid =user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
+                //plantid = BrowseUtil.getCatalogInfoAddr(address, user).getKey().getPlantId();
             } else {
                 plantid = FDStoreProperties.getDefaultFdxPlantID();
             }
