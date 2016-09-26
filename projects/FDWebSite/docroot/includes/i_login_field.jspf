@@ -232,7 +232,7 @@
 				 	}
 		); 		 
 		</script>
-		<% if (mobWeb) { /* TODO: this design could replace the old ver, but for safety, leaving both for now */ %>
+		<% if (mobWeb_i_login_field) { /* TODO: this design could replace the old ver, but for safety, leaving both for now */ %>
 			<div class="social-login-or-separator-cont-v2">
 				<div class="social-login-line-separator-v2"></div>
 				<div class="social-login-or-separator-v2">or</div>
