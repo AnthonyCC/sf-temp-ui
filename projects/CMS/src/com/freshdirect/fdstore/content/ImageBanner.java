@@ -5,7 +5,10 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class ImageBanner extends ContentNodeModelImpl {
 
-	public ImageBanner(ContentKey key) {
+    private static final long serialVersionUID = 6496621551873294978L;
+
+
+    public ImageBanner(ContentKey key) {
 		super(key);
 	}
 	
@@ -38,7 +41,7 @@ public class ImageBanner extends ContentNodeModelImpl {
 	}
 	
 	
-	public ContentNodeModelImpl getTarget() {	
+	public ContentNodeModel getTarget() {	
 		return FDAttributeFactory.lookup(this, "Target", null);
 	}
 
