@@ -133,7 +133,7 @@
 						<div class="standing-orders-3-error-ball">!</div>
 						<div class="standing-orders-3-error-place-order"><a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">Review and place order</a> by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 					</div>
-				{elseif not $item.activated and not $item.deliveryDate and not $item.deliveryTime}
+				{elseif not $item.deliveryDate and not $item.deliveryTime}
 					<div class="standing-orders-3-error-place-order-container">
 						<div class="standing-orders-3-error-ball">!</div>
 						<div class="standing-orders-3-error-place-order"><a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">Edit your settings</a>. Delivery information is incomplete.</div>

@@ -183,7 +183,7 @@ function soPlaceOrderDisplay(amount){
 	}
 }
 
-function soSaved(id, activated, isNewSO){
+function soSaved(id, activatedAndHasAddress, isNewSO){
 	var soID = "#soid_" + id;
 	if(isNewSO){
 		$jq(".standing-orders-3-so-new-saved").addClass("show");
@@ -191,7 +191,7 @@ function soSaved(id, activated, isNewSO){
 			$jq(".standing-orders-3-so-new-saved.show").removeClass("show");
 		}, 3000);
 	} else {
-		if(activated){
+		if(activatedAndHasAddress){
 			$jq(soID).addClass("show-saved");
 			$jq(soID).addClass("show-saved-activated");
 			setTimeout(function(){
@@ -288,6 +288,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 	var soID = "#soid_" + id;
 	if(isCartUpdate){
 		$jq(soID).addClass("cart-saved");
+		$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap .standing-orders-3-saved-container-cart').html($jq(soID + " .standing-orders-3-saved-container").html());
 		setTimeout(function(){
 			getSOData(id, "soItemUpdate");
 			if(data.standingOrderResponseData.activate){
@@ -306,6 +307,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 function getSOData(id, action){
 	var soID = "#soid_" + id;
 	var dataString = "soId=" + id;
+	var activatedAndHasAddress;
 	$jq.ajax({
         url: '/api/manageStandingOrder',
         type: 'GET',
@@ -329,8 +331,13 @@ function getSOData(id, action){
             	updateSOItem(id, data);
             }
         	if('soItemUpdate'==action){
+        		if(data.activated && data.deliveryDate !=  null){
+        			activatedAndHasAddress = true;
+        		} else {
+        			activatedAndHasAddress = false;
+        		}
         		soPlaceOrderDisplay(data.amount);
-        		soSaved(id, data.activated, false);
+        		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         	}
         	if('displayShopNow'==action){
