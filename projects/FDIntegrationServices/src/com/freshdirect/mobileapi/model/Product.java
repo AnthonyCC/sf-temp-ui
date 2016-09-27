@@ -1547,16 +1547,23 @@ public class Product {
         if (desc != null) {
             result = ProductUtil.readHtml(desc);
         }
-        claimText=concatList(getProductExtraData().getClaims());
-        if(!StringUtils.isBlank(claimText)){
-        	result=result + "\n \n " + "Claims : " + "\n \n " + claimText;
+        if(getProductExtraData()!=null && getProductExtraData().getClaims()!=null)
+        {
+        	claimText=concatList(getProductExtraData().getClaims());
+        	if(!StringUtils.isBlank(claimText)){
+	        	result=result + "\n \n " + "Claims : " + "\n \n " + claimText;
+	        }
+        } 
+        if(getProductExtraData()!=null && getProductExtraData().getOrganicClaims()!=null)
+        {
+	        organicClaimText=concatList(getProductExtraData().getOrganicClaims());
+	        if(!StringUtils.isBlank(organicClaimText)){
+	        	result=result + "\n \n " + "Organic Claims : " + "\n \n " + organicClaimText;
+	        }
         }
-        organicClaimText=concatList(getProductExtraData().getOrganicClaims());
-        if(!StringUtils.isBlank(organicClaimText)){
-        	result=result + "\n \n " + "Organic Claims : " + "\n \n " + organicClaimText;
-        }
-        if(StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())){
-        	result=result + "\n \n " + "Availability Note : " + "\n \n " + getProductData().getMsgDeliveryNote();
+        if(getProductData()!=null && getProductData().getMsgDeliveryNote()!=null && (StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())))
+        {
+	        result=result + "\n \n " + "Availability Note : " + "\n \n " + getProductData().getMsgDeliveryNote();
         }
         return result;
     }
