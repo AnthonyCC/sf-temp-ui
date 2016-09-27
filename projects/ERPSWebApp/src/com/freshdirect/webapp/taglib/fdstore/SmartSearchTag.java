@@ -37,8 +37,10 @@ import com.freshdirect.fdstore.content.SortLongValueComparator;
 import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 
 /**
@@ -123,14 +125,21 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RELEVANCY:
-				// if there's only one DYM then we display products for that DYM
-				// but for those products we have to use the suggested term to produce the following scores
 				String suggestedTerm = getProcessedResults().getSuggestedTerm();
 				if (suggestedTerm == null)
 					suggestedTerm = searchTerm;
-				SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
-				SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
-				SmartSearchUtils.collectTermScores(products, suggestedTerm);
+				if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, ((HttpServletRequest) pageContext.getRequest()).getCookies(), getFDUser())){
+		            //for unbxd search results the relevancy is the order of in which the products are returned
+		            for(int i = products.size(); i > 0; i--){
+		                products.get(products.size() - i).putSortingValue(EnumSortingValue.TERM_SCORE, i);
+		            }
+		        } else {
+		            // if there's only one DYM then we display products for that DYM
+		            // but for those products we have to use the suggested term to produce the following scores
+		            SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
+		            SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
+		            SmartSearchUtils.collectTermScores(products, suggestedTerm);
+		        }
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
 				comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
 				comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));

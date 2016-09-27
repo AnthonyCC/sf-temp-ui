@@ -737,7 +737,7 @@ public class CmsFilteringFlow {
         String suggestedTerm = NVL.apply(searchResults.getSuggestedTerm(), searchResults.getSearchTerm());
         List<FilteringSortingItem<ProductModel>> products = searchResults.getProducts();
 
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)){
             //for unbxd search results the relevancy is the order of in which the products are returned
             for(int i = products.size(); i > 0; i--){
                 products.get(products.size() - i).putSortingValue(EnumSortingValue.TERM_SCORE, i);
