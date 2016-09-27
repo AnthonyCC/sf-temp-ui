@@ -30,6 +30,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.GeoLocationRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReconfirmReservationRequest;
 import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
@@ -64,6 +65,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
@@ -153,13 +155,15 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String STORE_NEXT_STOP_FDX ="/delivery/nextstop";
 	private static final String STORE_DELIVERY_INFO_FDX ="/delivery/fdxdeliveryinfo";
 	private static final String STORE_DELIVERY_EVENT ="/delivery/event/";
-	
-	
-	
+
 	private static final String ACTUAL_ORDERSIZE_API ="/reservation/ordersize/update";
 	private static final String STATUS_FDX_ORDER_DISPATCH_API="/order/orderdispatch/";
 	
 	private static final String ADDRESS_SCRUBBING_API ="/address/scrubbing";
+	
+	private static final String GET_TRUCK_DETAILS_API ="/delivery/trucks/";
+	private static final String RESERVATION_RECONFIRM_API ="/reservation/reconfirm";
+
 
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
@@ -666,5 +670,24 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		return response;	
 	
 	}
+
+	@Override
+	public ListOfObjects<ShippingDetail> getTrucks() throws FDLogisticsServiceException {
+		
+		String response =  httpGetData(getEndPoint(GET_TRUCK_DETAILS_API), String.class);
+		ListOfObjects<ShippingDetail> info = new ListOfObjects<ShippingDetail>();
+		try{
+			info = getMapper().readValue(response, new TypeReference<ListOfObjects<ShippingDetail>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects while getting truck details "+response);
+		}
+		return info;	
+	}
 	
+	@Override
+	public Result reconfirmReservation(ReconfirmReservationRequest request) throws FDLogisticsServiceException {
+		String inputJson = buildRequest(request);
+		Result response =  getData(inputJson, getEndPoint(RESERVATION_RECONFIRM_API), Result.class);
+		return response;	
+	}
 }

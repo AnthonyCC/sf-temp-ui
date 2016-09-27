@@ -3057,7 +3057,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								.getName());
 			}
 			//End apply delivery pass extension promotion.
-
+			
 			// Deal with Reservation in DLV
 						String newReservationId = order.getDeliveryInfo()
 								.getDeliveryReservationId();
@@ -3069,8 +3069,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
 							LOGGER.info("releaseReservation by ID: " + oldReservationId);
 							// now commit the new Reservation
-							// dlvSB.commitReservation(newReservationId,
-							// identity.getErpCustomerPK(), saleId);
+
 							
 							FDDeliveryManager.getInstance().commitReservation(
 									newReservationId, identity.getErpCustomerPK(), 
@@ -3079,6 +3078,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							
 							LOGGER.info("commitReservation by ID: " + newReservationId);
 						}
+						
+
+
 		
 			if (order.getSelectedGiftCards() != null
 					&& order.getSelectedGiftCards().size() > 0) {
@@ -3094,7 +3096,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			GiftCardManagerSB gcSB = this.getGiftCardGManagerHome().create();
 			gcSB.initiatePreAuthorization(saleId);
-
+			
+			
 			/*
 			 * else { ErpAbstractOrderModel originalOrder = sb.getOrder(new
 			 * PrimaryKey(saleId)).getCurrentOrder();
@@ -3118,6 +3121,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				paymentManager.authorizeSaleRealtime(saleId);
 			}
 
+			
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
 			rec.setChangeOrderId(saleId);
 			rec.setStandingOrderId(fdOrder.getStandingOrderId());
@@ -3177,33 +3181,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		} catch (ErpAddressVerificationException re) {
 			try{
-				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
-					LOGGER.info("AVE releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
-					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
-						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
-				}
+				rollbackreservation(info, saleId, order, oldReservationId, event, identity);
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
 			}
 			throw re;
 		} catch (ErpAuthorizationException re) {
 			try{
-				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
-					LOGGER.info("AUF releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
-					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
-						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
-				}
+				rollbackreservation(info, saleId, order, oldReservationId, event, identity);
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
 			}
 			throw re;
 		}  catch (RemoteException re) {
 			try{
-				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
-					LOGGER.info("RemoteException releaseReservation by ID: " + order.getDeliveryInfo().getDeliveryReservationId());
-					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
-						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
-				}
+				rollbackreservation(info, saleId, order, oldReservationId, event, identity);
 			}catch(Exception e){
 				LOGGER.info("There was an exception releasing the reservation.");
 			}
@@ -3217,6 +3209,31 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} /*
 		 * catch (FinderException e) { throw new FDResourceException(e); }
 		 */
+	}
+
+	/**
+	 * @param info
+	 * @param saleId
+	 * @param order
+	 * @param oldReservationId
+	 * @param event
+	 * @param identity
+	 * @throws FDResourceException
+	 * @throws ReservationException
+	 */
+	private void rollbackreservation(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, String oldReservationId, TimeslotEvent event,
+			FDIdentity identity) throws FDResourceException, ReservationException,Exception {
+		
+		if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+			
+			LOGGER.info("Rollback reservation for Authorization and Address verification exception  reservation id : " + order.getDeliveryInfo().getDeliveryReservationId());
+			FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
+				order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
+			FDDeliveryManager.getInstance().recommitReservation(
+					oldReservationId, identity.getErpCustomerPK(), 
+					getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),order.getDeliveryInfo().getDeliveryAddress(),info.isPR1());
+		}
 	}
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
@@ -8234,5 +8251,84 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 	}
+	
+	private static final String SHIPPING_INFO_SALES_ID=" SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND "
+					+" SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN SYSDATE-7 AND SYSDATE+1  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM>=? "
+					+"  and S.TRUCK_NUMBER IS NULL ";
+	
+	public List<String> getShippingInfoSalesId() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<String> shippinginfos = new ArrayList<String>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(SHIPPING_INFO_SALES_ID);
+			
+			pstmt.setInt(1, ErpServicesProperties.getShippingDetailRowCount());
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				shippinginfos.add(rset.getString("ID"));
+			}
+			
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(rset);
+			close(pstmt);
+			close(conn);
+		}
+		return shippinginfos;
+		
+	}
+	
+	private static final String SHIPPING_INFO_CARTON_DETAILS=" SELECT COUNT(*) as carton , CI.CARTON_TYPE, CI.SALE_ID FROM CUST.CARTON_INFO CI, CUST.SALE S "+ 
+	" WHERE CI.SALE_ID = S.ID  AND S.ID IN (?replace?) GROUP BY CI.CARTON_TYPE, CI.SALE_ID ";
+	
+	public  Map<String,Map<String,Integer>>  getShippingInfoCartonDetails(List<String> salesIds) throws FDResourceException {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		Map<String,Map<String,Integer>> shippingCartonInfo = new HashMap<String, Map<String,Integer>>();
+		Map<String,Integer> cartonMap=null;
+        StringBuffer str=null;
+        String saleId=null;
+		
+        try {
+		  conn = getConnection();
+
+			str=new StringBuffer(); 
+			
+			for(String sale:salesIds){
+				str.append(sale);str.append(",");
+			}
+			
+			pstmt = conn.prepareStatement(SHIPPING_INFO_CARTON_DETAILS.replaceAll("\\?replace\\?", str.substring(0, str.length()-2).toString()));
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				saleId=rset.getString("SALE_ID");
+				cartonMap=shippingCartonInfo.get(saleId);
+				if(cartonMap==null){
+					cartonMap=new HashMap<String, Integer>();
+				}
+				cartonMap.put(rset.getString("CARTON_TYPE"), rset.getInt("carton"));
+				shippingCartonInfo.put(saleId, cartonMap);
+			 }
+			
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(rset);
+			close(pstmt);
+			close(conn);
+		}
+		return shippingCartonInfo;
+		
+	}
+	
 }
 

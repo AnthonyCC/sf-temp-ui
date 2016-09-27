@@ -869,5 +869,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
 	public boolean isValidVaultToken(String token, String customerId)throws FDResourceException, RemoteException;
+	
+	public List<String> getShippingInfoSalesId() throws FDResourceException, RemoteException;
+	
+	public Map<String,Map<String,Integer>> getShippingInfoCartonDetails(List<String> salesIds) throws FDResourceException, RemoteException;
 }
 

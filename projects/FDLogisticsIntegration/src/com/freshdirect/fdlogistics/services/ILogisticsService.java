@@ -19,6 +19,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReconfirmReservationRequest;
 import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
@@ -52,6 +53,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
@@ -159,4 +161,10 @@ public interface ILogisticsService {
 	
 	
 	AddressScrubbingResponse scrubbAddresses(AddressScrubbingRequest request) throws FDLogisticsServiceException;
+	
+	ListOfObjects<ShippingDetail> getTrucks()throws FDLogisticsServiceException;
+	
+	Result reconfirmReservation(ReconfirmReservationRequest reservationRequest) throws FDLogisticsServiceException;
+
+	
 }

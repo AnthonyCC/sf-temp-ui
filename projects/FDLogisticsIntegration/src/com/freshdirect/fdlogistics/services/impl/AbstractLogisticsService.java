@@ -90,6 +90,30 @@ public abstract class AbstractLogisticsService {
 		}
 	}
 	
+	/**
+	 *  This method implementation is to get data for the HTTP GET
+	 * @param url
+	 * @param clazz
+	 * @return
+	 * @throws FDLogisticsServiceException
+	 */
+	protected <T> T httpGetData( String url, Class<T> clazz) throws FDLogisticsServiceException {
+		
+		try {
+			RestTemplate restTemplate = getRestTemplate();		
+			ResponseEntity<T> response = restTemplate.getForEntity(new URI(url),clazz);
+			return response.getBody();
+		} catch (RestClientException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:"+url);
+			throw new FDLogisticsServiceException("API connection failure");
+		} catch (URISyntaxException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:"+url);
+			throw new FDLogisticsServiceException("API syntax error");
+		}
+	}
+	
 	protected RestTemplate getRestTemplate(){
 		return restTemplate;
 	}

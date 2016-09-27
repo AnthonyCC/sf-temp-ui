@@ -27,6 +27,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReconfirmReservationRequest;
 import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
@@ -154,7 +155,13 @@ public class LogisticsDataEncoder {
 		customer.setOrderSize(orderSize);
 		return customer;
 	}
-
+	
+	public static Customer encodeCustomer( String customerId) {
+		Customer customer = new Customer();
+		customer.setCustomerId(customerId);
+		return customer;
+	}
+	
 	private static Cart encodeCart(TimeslotEvent event) {
 		Cart cart = new Cart();
 		cart.setDlvchargewaived(event.isDeliveryChargeWaived());
@@ -420,5 +427,13 @@ public class LogisticsDataEncoder {
 		}
 		addressScrubbingRequest.setScrubAddress(addresses);
 		return addressScrubbingRequest;
+	}
+	
+	public static ReconfirmReservationRequest encodeReconfirmReservationRequest(String rsvId,
+			String customerId, OrderContext context, ContactAddressModel address, boolean pr1) {
+		ReconfirmReservationRequest request = new ReconfirmReservationRequest();
+		request.setOrder(encodeOrder(rsvId, context, encodeCustomer(address,customerId),pr1,null));
+		
+		return request;
 	}
 }

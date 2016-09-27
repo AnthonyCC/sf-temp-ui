@@ -68,6 +68,7 @@ import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -4817,5 +4818,42 @@ public class FDCustomerManager {
 			}
 		
 		return isValid;
+		}
+
+		
+		public static List<String> getShippingInfoSalesId() throws FDResourceException {
+			List<String>  salesIds=new ArrayList<String>();
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				salesIds= sb.getShippingInfoSalesId();
+				
+			} catch (RemoteException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+			
+			return salesIds;
+		}
+		
+		public static Map<String,Map<String,Integer>> getShippingInfoCartonDetails(List<String> salesIds) throws FDResourceException {
+			Map<String,Map<String,Integer>> cartonDetails=new HashMap<String, Map<String,Integer>>();
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				cartonDetails= sb.getShippingInfoCartonDetails(salesIds);
+				
+			} catch (RemoteException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+			
+			return cartonDetails;
 		}
 }
