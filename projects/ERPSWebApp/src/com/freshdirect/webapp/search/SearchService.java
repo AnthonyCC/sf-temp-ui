@@ -159,35 +159,37 @@ public class SearchService {
      * @return
      */
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
-        // get search results from Lucene service
-        SearchResults searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
-        
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
-            // notify UNBXD analytics
-            SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
-        }
-
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
-            // when UNBXD service is turned on ...
-            try {
-                // perform search with UNBXD as well
-                final UnbxdSearchResult internalResult = searchUnbxd(searchTerm);
-
-                // join results in a new one
-                searchResults = composeSearchResults(searchTerm, searchResults, internalResult);
-
-            } catch (IOException e) {
-                if (!FDStoreProperties.getUnbxdFallbackOnError()) {
-                    LOGGER.error("Error while calling unbxd search, fallback on error is false", e);
-                    throw new UnbxdServiceUnavailableException("UNBXD search service is unavailable");
-                } else {
-                    LOGGER.error("Error while calling unbxd search, fallback to internal search", e);
-                }
-
+        SearchResults searchResults = new SearchResults();;        
+        if(searchTerm != null && searchTerm.trim().length() > 0){
+            // get search results from Lucene service
+            searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
+            
+            if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+                // notify UNBXD analytics
+                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
             }
-
+    
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
+                // when UNBXD service is turned on ...
+                try {
+                    // perform search with UNBXD as well
+                    final UnbxdSearchResult internalResult = searchUnbxd(searchTerm);
+    
+                    // join results in a new one
+                    searchResults = composeSearchResults(searchTerm, searchResults, internalResult);
+    
+                } catch (IOException e) {
+                    if (!FDStoreProperties.getUnbxdFallbackOnError()) {
+                        LOGGER.error("Error while calling unbxd search, fallback on error is false", e);
+                        throw new UnbxdServiceUnavailableException("UNBXD search service is unavailable");
+                    } else {
+                        LOGGER.error("Error while calling unbxd search, fallback to internal search", e);
+                    }
+    
+                }
+    
+            }
         }
-
         return searchResults;
     }
 }
