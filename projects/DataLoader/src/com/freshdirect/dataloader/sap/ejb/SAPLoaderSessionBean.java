@@ -664,6 +664,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 					.getUnavailabilityDate() : SAPConstants.THE_FUTURE);
 			materialSalesAreaModel.setSkuCode(model.getSkuCode());
 			materialSalesAreaModel.setDayPartSelling(model.getDayPartSelling());
+			materialSalesAreaModel.setPickingPlantId(model.getPickingPlantId());
 		}
 		return materialSalesAreaModel;
 	}
