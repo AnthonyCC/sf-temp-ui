@@ -129,6 +129,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("VMSTD", JCoMetaData.TYPE_CHAR, 8,
 				"Date from availability Status valid"));
 		tableMetaDataList.add(new TableMetaData("ZZDAYPART", JCoMetaData.TYPE_CHAR, 4,"Daypart Selling"));
+		tableMetaDataList.add(new TableMetaData("PICKING_PLANT", JCoMetaData.TYPE_CHAR, 4,"Picking Plant")); 
 		createTableRecord(metaSalesAreaMaterialList, tableMetaDataList);
 		metaSalesAreaMaterialList.lock();
 		repository.addRecordMetaDataToCache(metaSalesAreaMaterialList);
@@ -323,6 +324,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		salesAreaModel.setUnavailabilityReason(FDSapHelperUtils.getString(materialSalesAreaTable.getString("VMSTB")));
 		// salesAreaModel.setUnavailabilityDate(materialSalesAreaTable.getDate("VMSTD"));
 		salesAreaModel.setDayPartSelling(FDSapHelperUtils.getString(materialSalesAreaTable.getString("ZZDAYPART")));
+		salesAreaModel.setPickingPlantId(FDSapHelperUtils.getString(materialSalesAreaTable.getString("PICKING_PLANT")));
 
 		if ("33".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())
 				|| "30".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())

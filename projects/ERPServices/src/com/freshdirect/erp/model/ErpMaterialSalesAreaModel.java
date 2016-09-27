@@ -39,10 +39,12 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
     
     private String dayPartSelling;
     
+    private String pickingPlantId;
+    
     
 	public ErpMaterialSalesAreaModel(String salesOrg, String distChannel,
 			String unavailabilityStatus, Date unavailabilityDate,
-			String unavailabilityReason, String skuCode, String dayPartSelling) {
+			String unavailabilityReason, String skuCode, String dayPartSelling, String pickingPlantId) {
 		super();
 		this.salesOrg = salesOrg;
 		this.distChannel = distChannel;
@@ -54,7 +56,8 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
 		this.unavailabilityReason = unavailabilityReason;
 		this.skuCode = skuCode;
 		this.dayPartSelling = dayPartSelling;
-	}
+		this.pickingPlantId = pickingPlantId;
+	}	
 
 	/**
 	 * 
@@ -168,6 +171,14 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
 		this.dayPartSelling = dayPartSelling;
 	}
 
+	public String getPickingPlantId() {
+		return pickingPlantId;
+	}
+
+	public void setPickingPlantId(String pickingPlantId) {
+		this.pickingPlantId = pickingPlantId;
+	}
+
 	@Override
 	public String toString() {
 		return "ErpMaterialSalesAreaModel [salesOrg=" + salesOrg
@@ -175,7 +186,8 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
 				+ unavailabilityStatus + ", unavailabilityDate="
 				+ unavailabilityDate + ", unavailabilityReason="
 				+ unavailabilityReason + ", skuCode=" + skuCode
-				+ ", dayPartSelling=" + dayPartSelling + "]";
+				+ ", dayPartSelling=" + dayPartSelling + ", pickingPlantId="
+				+ pickingPlantId + "]";
 	}
 
 	

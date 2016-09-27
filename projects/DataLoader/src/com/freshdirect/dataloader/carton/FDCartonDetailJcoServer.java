@@ -76,7 +76,7 @@ public class FDCartonDetailJcoServer extends FdSapServer
 		tableMetaDataList.add(new TableMetaData("BSTNK", JCoMetaData.TYPE_CHAR, 20, 0, "Web Order No"));
 		tableMetaDataList.add(new TableMetaData("VBELN", JCoMetaData.TYPE_CHAR, 10, 0, "Sap Order No"));
 		tableMetaDataList.add(new TableMetaData("POSNR", JCoMetaData.TYPE_NUM, 6, 0, "Order ItemNo"));
-		tableMetaDataList.add(new TableMetaData("ZZCARTON", JCoMetaData.TYPE_CHAR, 10, 0, "Carton Number"));
+		tableMetaDataList.add(new TableMetaData("ZZCARTON", JCoMetaData.TYPE_CHAR, 20, 0, "Carton Number"));
 		tableMetaDataList.add(new TableMetaData("MATNR", JCoMetaData.TYPE_CHAR, 18, 0, "Material Number"));
 		tableMetaDataList.add(new TableMetaData("ZZBARCODE", JCoMetaData.TYPE_CHAR, 20, 0, "Barcode"));
 		tableMetaDataList.add(new TableMetaData("ZZPCKQTY", JCoMetaData.TYPE_CHAR, 13, 0, "Packaged Quantity"));

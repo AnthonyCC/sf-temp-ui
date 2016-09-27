@@ -46,10 +46,13 @@ public class ErpMaterialSalesAreaPersistentBean extends
     
     /** Day Part Selling */
     private String dayPartSelling;
+    
+    /** Picking Plant Id */
+    private String pickingPlantId;
 
 	public ErpMaterialSalesAreaPersistentBean(VersionedPrimaryKey pk,String salesOrg,
 			String distChannel, String unavailabilityStatus,
-			Date unavailabilityDate, String unavailabilityReason, String skuCode, String dayPartSelling) {
+			Date unavailabilityDate, String unavailabilityReason, String skuCode, String dayPartSelling, String pickingPlantId) {
 		super(pk);
 		this.salesOrg = salesOrg;
 		this.distChannel = distChannel;
@@ -61,6 +64,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 		this.unavailabilityReason = unavailabilityReason;
 		this.skuCode = skuCode;
 		this.dayPartSelling = dayPartSelling;
+		this.pickingPlantId = pickingPlantId;
 	}
 
 	/**
@@ -77,7 +81,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 	public ModelI getModel() {
 		ErpMaterialSalesAreaModel salesAreaModel = new ErpMaterialSalesAreaModel(this.salesOrg,
 				this.distChannel, this.unavailabilityStatus,
-				this.unavailabilityDate, this.unavailabilityReason, this.skuCode, this.dayPartSelling);
+				this.unavailabilityDate, this.unavailabilityReason, this.skuCode, this.dayPartSelling, this.pickingPlantId);
 		super.decorateModel(salesAreaModel);
 		return salesAreaModel;
 	}
@@ -90,7 +94,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 		String id = this.getNextId(conn, "ERPS");
 		int version = ((VersionedPrimaryKey) this.getParentPK()).getVersion();
 		if(null !=salesOrg && null != distChannel){
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL_SALES_AREA (ID, MAT_ID, VERSION, SALES_ORG, DISTRIBUTION_CHANNEL, UNAVAILABILITY_STATUS, UNAVAILABILITY_REASON, UNAVAILABILITY_DATE, SKU_CODE, DATE_CREATED, DAYPART_VALUE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL_SALES_AREA (ID, MAT_ID, VERSION, SALES_ORG, DISTRIBUTION_CHANNEL, UNAVAILABILITY_STATUS, UNAVAILABILITY_REASON, UNAVAILABILITY_DATE, SKU_CODE, DATE_CREATED, DAYPART_VALUE, PICKING_PLANT_ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setString(1, id);
 			ps.setString(2, this.getParentPK().getId());
 			ps.setInt(3, version);
@@ -107,6 +111,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 			ps.setString(9, this.skuCode);
 			ps.setTimestamp(10, new java.sql.Timestamp(new Date().getTime()));
 			ps.setString(11, this.dayPartSelling);
+			ps.setString(12, this.pickingPlantId);
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("No database rows created!");
 			}
@@ -130,6 +135,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 		this.unavailabilityReason = materialSalesAreaModel.getUnavailabilityReason();
 		this.skuCode = materialSalesAreaModel.getSkuCode();
 		this.dayPartSelling = materialSalesAreaModel.getDayPartSelling();
+		this.pickingPlantId = materialSalesAreaModel.getPickingPlantId();
 	}
 	
 	/**
@@ -141,7 +147,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 	public static List findByParent(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
 		PreparedStatement ps = conn
-				.prepareStatement("SELECT SKU_CODE, ID, UNAVAILABILITY_STATUS, UNAVAILABILITY_DATE, UNAVAILABILITY_REASON, SALES_ORG, DISTRIBUTION_CHANNEL, DAYPART_VALUE from ERPS.MATERIAL_SALES_AREA where mat_id = ?");
+				.prepareStatement("SELECT SKU_CODE, ID, UNAVAILABILITY_STATUS, UNAVAILABILITY_DATE, UNAVAILABILITY_REASON, SALES_ORG, DISTRIBUTION_CHANNEL, DAYPART_VALUE, PICKING_PLANT_ID from ERPS.MATERIAL_SALES_AREA where mat_id = ?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		String unavailStatus="";
@@ -150,7 +156,7 @@ public class ErpMaterialSalesAreaPersistentBean extends
 			ErpMaterialSalesAreaPersistentBean bean = new ErpMaterialSalesAreaPersistentBean(new VersionedPrimaryKey(rs.getString("ID"),	parentPK.getVersion())
 					, rs.getString("SALES_ORG"), rs.getString("DISTRIBUTION_CHANNEL")
 					, "AVAL".equals(unavailStatus)?"":unavailStatus, rs.getDate("UNAVAILABILITY_DATE")
-					, rs.getString("UNAVAILABILITY_REASON"), rs.getString("SKU_CODE"),rs.getString("DAYPART_VALUE"));
+					, rs.getString("UNAVAILABILITY_REASON"), rs.getString("SKU_CODE"),rs.getString("DAYPART_VALUE"), rs.getString("PICKING_PLANT_ID"));
 			
 			bean.setParentPK(parentPK);
 			lst.add(bean);
