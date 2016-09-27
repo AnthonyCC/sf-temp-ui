@@ -46,4 +46,6 @@ public interface DlvManagerSB extends EJBObject {
 	public void queryForMissingFdxOrders() throws RemoteException;
 
 	public int unlockInModifyOrders() throws RemoteException;
+	
+	public void recommitReservation(String rsvId, String customerId, OrderContext context,ContactAddressModel address,boolean pr1) throws RemoteException, ReservationException, FDResourceException;
 }   

@@ -97,6 +97,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
 
@@ -1390,9 +1391,37 @@ public boolean isDispatched(String orderId, String eStoreId) throws FDResourceEx
 		return true;
 	}
 	
+
+public List<ShippingDetail> getTruckDetails() throws FDResourceException {
+	List<ShippingDetail> shippingDetails=new ArrayList<ShippingDetail>();
+	try{
+		ILogisticsService logisticService = LogisticsServiceLocator.getInstance().getLogisticsService();
+		ListOfObjects<ShippingDetail> result = logisticService.getTrucks();
+		LogisticsDataDecoder.decodeResult(result);
+		
+		if(null!=result.getData() && !result.getData().isEmpty()){
+			shippingDetails=result.getData();
+		}
+		
+		return shippingDetails;
+	}catch(FDLogisticsServiceException e){
+		throw new FDResourceException(e);
+	}
+
 	
+}
 	
-	
+public void recommitReservation(String rsvId, String customerId, OrderContext context,ContactAddressModel address,boolean pr1) throws ReservationException, FDResourceException {
+
+	try {
+		DlvManagerSB sb = getDlvManagerHome().create();
+		sb.recommitReservation(rsvId, customerId, context,address, pr1);
+	} catch (RemoteException re) {
+		throw new FDResourceException(re);
+	} catch (CreateException ce) {
+		throw new FDResourceException(ce);
+	}	
+}	
 	
 	
 }

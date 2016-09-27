@@ -268,10 +268,14 @@ public class ErpServicesProperties {
 	
 	public final static String  PROP_HOOK_LOGIC_CATEGORY_URL="fdstore.erp.hooklogic.category.url";
 	
+	public final static String PROP_SAP_BAPI_UNATTENDED_DELIVERY="sap.bapi.unattended.delivery.flg.feature";
+	
+	public final static String PROP_SHIPPING_DETAILS_ROW_COUNT="sale.shipping.detail.row.count";
+	
 	static {
 		Properties defaults = new Properties();
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:7001");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 
         defaults.put(PROP_PRODUCTTREE_HOME,	"freshdirect.erp.ProductTree");
@@ -477,6 +481,9 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_HL_READ_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_HL_CONNECTION_TIMEOUT_PERIOD, "10");//secs
+		
+		defaults.put(PROP_SAP_BAPI_UNATTENDED_DELIVERY,"false");
+		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,200);
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1180,5 +1187,11 @@ public class ErpServicesProperties {
 		return config.getProperty(PROP_HOOK_LOGIC_PGN);
 	}
 	
+	public static boolean isSAPUnattendedDelivery(){
+		return "true".equals(config.getProperty(PROP_SAP_BAPI_UNATTENDED_DELIVERY))?true:false;
+	}
 	
+	public static int getShippingDetailRowCount(){
+		return Integer.valueOf(config.getProperty(PROP_SHIPPING_DETAILS_ROW_COUNT));
+	}
 }

@@ -748,4 +748,31 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return 0;
 	}
 	
+	public void recommitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address ,boolean pr1) throws ReservationException, FDResourceException{
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.reconfirmReservation(LogisticsDataEncoder.
+					encodeReconfirmReservationRequest(rsvId, customerId, context, address,pr1));
+			if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
+				this.getSessionContext().setRollbackOnly();
+				throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			else if(response.getErrorCode() == EnumApplicationException.ReservationException.getValue()){
+				this.getSessionContext().setRollbackOnly();
+				throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			LogisticsDataDecoder.decodeResult(response);
+		}catch (FDResourceException ex) {
+			this.getSessionContext().setRollbackOnly();
+			throw ex;
+		}catch (FDLogisticsServiceException ex) {
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException(ex);
+		}
+
+	}	
+	
 }
