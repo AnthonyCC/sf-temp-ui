@@ -73,6 +73,7 @@
 <tmpl:get name='soypackage'/>
 
 
+<tmpl:get name='jsmodules'/>
 
 <tmpl:get name='extraJsModules'/>
 
