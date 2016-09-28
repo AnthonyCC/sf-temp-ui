@@ -201,6 +201,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
 				        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
 				        }*/
+				        setResponseMessage(model, responseMessage, user);
 				        return model;
 		        	} 					
 				
