@@ -580,4 +580,21 @@ footer .copyright {
 		max-width: 100%;
 	}
 	
+	.prodDetail-images .main-image {
+	    text-align: left;
+	}
+	
+	/* dirty over-rides */
+	.prodDetail-atc .qtyinput {
+		display: block;
+    	clear: both;
+	}
+	.prodDetail-atc .subtotal .subtotal-price b:before {
+	    content: 'Total: ';
+	}
+	.prodDetail-atc .subtotal .subtotal-price, .prodDetail-atc .subtotal .subtotal-price-estimated {
+		width: 100%;
+		text-align: center;
+		clear: both;
+	}
 	

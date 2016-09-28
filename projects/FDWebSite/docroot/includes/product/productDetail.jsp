@@ -44,7 +44,7 @@
 </script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
-	<fd:CmFieldDecorator/>
+		<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<center class="oas-cnt"><script type="text/javascript">OAS_AD('ProductNote');</script></center>
 		<%} else {%>
@@ -85,17 +85,19 @@
 				</c:if>
 			</div>
 			
-			<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
-				<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-					<%-- don't show evenBetter if we're in group scale context --%>
-				<c:if test="${empty param.grpId}">
-					<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-					<c:if test="${empty productExtraPotato.familyProducts}">
-						<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
-					</c:if>	
-				</c:if>
-				<soy:render template="pdp.likethat" data="${xsell}" />
-			</div>
+			<% if (false) { /* excluding these for now */ %>
+				<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
+					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+						<%-- don't show evenBetter if we're in group scale context --%>
+					<c:if test="${empty param.grpId}">
+						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+						<c:if test="${empty productExtraPotato.familyProducts}">
+							<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
+						</c:if>	
+					</c:if>
+					<soy:render template="pdp.likethat" data="${xsell}" />
+				</div>
+			<% } %>
 			
 			<div class="prodDetail-atc"><%-- coupon/group atc controls --%>
 				<c:if test="${productPotato.available}">
@@ -105,13 +107,12 @@
 						<soy:render template="pdp.ecoupon" data="${productPotato}" />
 						<div class="pdp-atc<%= (StandingOrderHelper.isEligibleForSo3_0(user)) ? " soShow" : "" %>">
 							<div class="pdp-atc-buttons">
-								<div style="display: inline-block;"><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
-								<div style="display: inline-block;"><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
+								<div><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
+								<div><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
 							</div>
 								
 							<div>
 								<div class="pdp-atc-button-wrapper"><button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton">Add to Cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>
-								
 							</div>
 							
 						</div>
