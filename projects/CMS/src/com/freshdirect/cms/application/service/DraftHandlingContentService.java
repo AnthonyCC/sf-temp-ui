@@ -99,7 +99,7 @@ public class DraftHandlingContentService implements ContentServiceI {
         // build parent index from draft nodes
         Map<ContentKey, Set<ContentKey>> draftParentIndex = ContentNodeUtil.getParentIndex(nodes);
         if (draftParentIndex.containsKey(key)) {
-            parentKeys.addAll(draftParentIndex.get(key));
+            parentKeys = draftParentIndex.get(key); //if there is parent info on the draft then we don't need it from 'MAIN'
         }
 
         return parentKeys;
