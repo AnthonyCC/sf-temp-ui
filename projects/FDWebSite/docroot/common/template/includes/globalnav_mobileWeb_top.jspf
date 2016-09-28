@@ -81,14 +81,14 @@
 				<div class="iconnav icon-browse-shop"></div>
 				<span class="navlabel">Shop</span>
 			</span>
-			<ul class="navMenuItems-browse">
+			<ul class="navMenuItems-browse rem-navbar">
 				<li class="navMenuItems-menuselect">
 					<span class="glBreadcrumblink">All Shops</span>
 				</li>
 				
 				<li>
 					<span class="glBreadcrumblink">
-						<span class="ui-icon" style="background-image: url('<%-- WHAT ICON GOES HERE? --%>');"></span>
+						<%-- <span class="ui-icon" style="background-image: url('<% -- WHAT ICON GOES HERE? -- %>');"></span> --%>
 						<a href="/browse.jsp?id=picks_love">Fresh Deals</a>
 					</span>
 				</li>
@@ -99,7 +99,7 @@
 				%>
 					<li>
 						<span class="glBreadcrumblink">
-							<span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span>
+							<%-- <span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span> --%>
 							<a href="/browse.jsp?id=<%=curDept.toString()%>"><%= curDept.getFullName() %></a>
 						</span>
 					</li>
@@ -112,7 +112,7 @@
 				<div class="iconnav icon-browse-reorder"></div>
 				<span class="navlabel">Reorder</span>
 			</span>
-			<ul class="navMenuItems-reorder">
+			<ul class="navMenuItems-reorder rem-navbar">
 				<li>
 					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
 				</li>
@@ -130,7 +130,7 @@
 				<div class="iconnav icon-browse-tag"></div>
 				<span class="navlabel">More ways to shop</span>
 			</span>
-			<ul class="navMenuItems-shopmore">
+			<ul class="navMenuItems-shopmore rem-navbar">
 				<li>
 					<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
 				</li>

@@ -11,12 +11,12 @@
 			"navbar": {
 				"title": "<img src=\"/media/mobileweb/images/topbar-fd-logo.png\" alt=\"FreshDirect\" class=\"img-responsive\" />"
 			},
-			"navbars": [
+			/*"navbars": [
 				{
 					"position": "bottom",
 					"content": (FreshDirect && FreshDirect.locabar && FreshDirect.locabar.hasFdxServices) ? "<div class='navbar-cont'><a href='https://foodkick.freshdirect.com' class='locabar-tab locabar-tab-fdx-cont'><div class='locabar-tab-fdx'></div></a></div>" : ""
 				}
-			],
+			],*/
 			"iconPanels": true,
 			"screenReader": true,
 			"setSelected": {
@@ -28,7 +28,10 @@
 			offCanvas: {
 				pageSelector: "#page-content"
 			}
-		}).show();		
+		}).show();
+		
+		/* remove navbars */
+		$jq('.rem-navbar').parent('.mm-panel').addClass('mm-hasnavbar-rem');
 		
 		var API = $("#nav-menu").data( "mmenu" );
 		

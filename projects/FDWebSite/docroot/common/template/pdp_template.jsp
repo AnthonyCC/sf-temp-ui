@@ -72,11 +72,7 @@
 
 <tmpl:get name='soypackage'/>
 
-<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-<jwr:script src="/fdmodules.js"  useRandomParam="false" />
-<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
 
-<jwr:script src="/pdp.js"  useRandomParam="false" />
 
 <tmpl:get name='extraJsModules'/>
 

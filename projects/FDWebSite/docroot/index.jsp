@@ -59,9 +59,9 @@ request.setAttribute("noyui", true);
 	}
 %>
 <tmpl:insert template="<%=pageTemplate %>">
-	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
+
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/homepage/homepage.css" media="all" />

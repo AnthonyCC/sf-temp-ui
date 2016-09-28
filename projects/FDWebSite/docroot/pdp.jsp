@@ -81,6 +81,17 @@ if ( productNode.isHidden() ) {
    	response.sendRedirect( buf.toString() );
    	return;
 }
+
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+String pageTemplate = "/common/template/pdp_template.jsp";
+if (mobWeb) {
+	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+	String oasSitePage = request.getAttribute("sitePage").toString();
+	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+	}
+}
+
 %>
 
 <%//[redirection] Alcohol alert -> redirect health warning page %>
@@ -106,7 +117,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
 <%}%>
 
-<tmpl:insert template='/common/template/pdp_template.jsp'>
+<tmpl:insert template="<%= pageTemplate %>">
 
   <tmpl:put name="seoMetaTag">
   	<fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title='<%=title%>'/>
@@ -288,5 +299,12 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 		}
 	} %>
 
+	<tmpl:put name="jsmodules">
+		<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+		<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+		<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+		
+		<jwr:script src="/pdp.js"  useRandomParam="false" />
+	</tmpl:put>
 </tmpl:insert>
 <unbxd:clickThruEvent product="<%= productNode %>"/>
