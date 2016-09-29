@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.mobileapi.model.ProductSelection;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 
 public class ProductConfiguration {
 
@@ -36,6 +37,9 @@ public class ProductConfiguration {
 
     private ProductSearchResult product;
 
+    // Optional field, populated only for FK mobile web client
+    private ProductPotatoData productPotato;
+    
     private String configurationDescription;
 
     private Map<String, String> options;
@@ -170,6 +174,14 @@ public class ProductConfiguration {
         this.product = product;
     }
 
+    public ProductPotatoData getProductPotato() {
+        return productPotato;
+    }
+    
+    public void setProductPotato(ProductPotatoData productPotato) {
+        this.productPotato = productPotato;
+    }
+    
     public Sku getSku() {
         return sku;
     }

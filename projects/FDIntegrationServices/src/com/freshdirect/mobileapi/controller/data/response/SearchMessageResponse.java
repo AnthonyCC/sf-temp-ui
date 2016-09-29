@@ -1,18 +1,16 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import com.freshdirect.mobileapi.controller.data.SearchResult;
-
 public class SearchMessageResponse extends MessageResponse {
 
     private static final long serialVersionUID = -4220385142597682317L;
 
-    private SearchResult search;
+    private WebSearchResult search;
 
-    public SearchResult getSearch() {
+    public WebSearchResult getSearch() {
         return search;
     }
 
-    public void setSearch(SearchResult search) {
+    public void setSearch(WebSearchResult search) {
         this.search = search;
     }
 

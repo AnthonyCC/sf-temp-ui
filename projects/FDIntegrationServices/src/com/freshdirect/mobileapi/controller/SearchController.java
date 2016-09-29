@@ -23,6 +23,7 @@ import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.SearchMessageResponse;
+import com.freshdirect.mobileapi.controller.data.response.WebSearchResult;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Brand;
@@ -34,8 +35,10 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SearchController extends BaseController {
@@ -74,6 +77,9 @@ public class SearchController extends BaseController {
 
     private ModelAndView search(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user)
             throws FDException, ServiceException, NoSessionException, JsonException {
+
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        
         // Default values retrieved from GET request
         String searchTerm = request.getParameter("searchTerm");
         String upc = request.getParameter("upc");
@@ -99,7 +105,8 @@ public class SearchController extends BaseController {
             categoryToFilter = requestMessage.getCategory();
             departmentToFilter = requestMessage.getDepartment();
         }
-        SearchResult data = new SearchResult();
+        // 
+
         try {
             // If there is no searchTerm, default is blank string (will retrieve everything)
             if (searchTerm == null) {
@@ -168,37 +175,93 @@ public class SearchController extends BaseController {
 
             Collections.sort(departmentList, filterComparator);
 
-            data.setTotalResultCount(productService.getRecentSearchTotalCount());
-            data.setQuery(searchTerm);
-            data.setProductsFromModel(products);
-            data.setBrands(brandList);
-            data.setCategories(categoryList);
-            data.setDepartments(departmentList);
-            data.setDidYouMean(productService.getSpellingSuggestion());
-            data.setDefaultSortOptions();
-            // Use below at later time.
-            // LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
+            // setup result
+            if (isWebRequest){
+                // WebSearchResult searchResponse = new WebSearchResult();
+                SearchMessageResponse searchResponse = new SearchMessageResponse();
+                populateMessageResponse(user, searchResponse, request);
+
+                WebSearchResult searchResult = new WebSearchResult();
+                
+                searchResult.setQuery(searchTerm);
+                searchResult.setDidYouMean(productService.getSpellingSuggestion());
+
+                searchResult.setCategories(categoryList);
+                searchResult.setDepartments(departmentList);
+                searchResult.setBrands(brandList);
+
+                // ... set default options
+                List<SortType> sortOptions = new ArrayList<SortType>();
+                sortOptions.add(SortType.RELEVANCY);
+                sortOptions.add(SortType.NAME);
+                sortOptions.add(SortType.PRICE);
+                sortOptions.add(SortType.POPULARITY);
+                sortOptions.add(SortType.SALE);
+                searchResult.setSortOptions(sortOptions);
+
+                List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
+                for (final Product product : products) {
+                    final ProductPotatoData data = ProductPotatoUtil.getProductPotato(product.getProductId(), product.getCategoryId(), getServletContext(), user.getFDSessionUser(), false);
+                    if (data != null) {
+                        potatoes.add(data);
+                    }
+                }
+                searchResult.setProducts(potatoes);
+
+                searchResponse.setSearch(searchResult);
+                
+                setResponseMessage(model, searchResponse, user);
+            } else {
+                SearchResult data = new SearchResult();
+                data.setTotalResultCount(productService.getRecentSearchTotalCount());
+                data.setQuery(searchTerm);
+                data.setProductsFromModel(products);
+                data.setBrands(brandList);
+                data.setCategories(categoryList);
+                data.setDepartments(departmentList);
+                data.setDidYouMean(productService.getSpellingSuggestion());
+                data.setDefaultSortOptions();
+                //Use below at later time.
+                //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
+                setResponseMessage(model, data, user);
+            }
         } catch (UnbxdServiceUnavailableException exception) {
             LOG.error(exception);
 
-            data.setTotalResultCount(0);
-            data.setQuery(searchTerm);
-            data.setProductsFromModel(Collections.<Product> emptyList());
-            data.setBrands(Collections.<FilterOption> emptyList());
-            data.setCategories(Collections.<FilterOption> emptyList());
-            data.setDepartments(Collections.<FilterOption> emptyList());
-            data.setDidYouMean("");
-            data.setDefaultSortOptions();
+            if (isWebRequest) {
+                // Response for web client
+                SearchMessageResponse searchResponse = new SearchMessageResponse();
+                populateMessageResponse(user, searchResponse, request);
 
-        }
+                WebSearchResult searchResult = new WebSearchResult();
+                
+                searchResult.setQuery(searchTerm);
+                searchResult.setProducts(Collections.<ProductPotatoData> emptyList());
+                searchResult.setBrands(Collections.<FilterOption> emptyList());
+                searchResult.setCategories(Collections.<FilterOption> emptyList());
+                searchResult.setDepartments(Collections.<FilterOption> emptyList());
+                searchResult.setDidYouMean("");
+                searchResult.setSortOptions(Collections.<SortType>emptyList());
 
-        if (isCheckLoginStatusEnable(request)) {
-            SearchMessageResponse searchResponse = new SearchMessageResponse();
-            populateMessageResponse(user, searchResponse, request);
-            searchResponse.setSearch(data);
-            setResponseMessage(model, searchResponse, user);
-        } else {
-            setResponseMessage(model, data, user);
+                searchResponse.setSearch(searchResult);
+                
+                setResponseMessage(model, searchResponse, user);
+                
+            } else {
+                // Response for mobile apps
+                SearchResult data = new SearchResult();
+                
+                data.setTotalResultCount(0);
+                data.setQuery(searchTerm);
+                data.setProductsFromModel(Collections.<Product> emptyList());
+                data.setBrands(Collections.<FilterOption> emptyList());
+                data.setCategories(Collections.<FilterOption> emptyList());
+                data.setDepartments(Collections.<FilterOption> emptyList());
+                data.setDidYouMean("");
+                data.setDefaultSortOptions();
+
+                setResponseMessage(model, data, user);
+            }
         }
 
         return model;
