@@ -41,6 +41,7 @@ import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
 import com.freshdirect.mobileapi.controller.data.response.ExternalAccountLoginResponse;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -269,7 +270,7 @@ public class RegistrationController extends BaseController implements SystemMess
                 // setup response
                 final LoggedIn login = formatLoginMessage(user);
 
-                populateResponseWithEnabledAdditionsForWebClient(user, webResponse, request, login);
+//                populateResponseWithEnabledAdditionsForWebClient(user, webResponse, request, login);
 
             } else {
                 webResponse.addWarningMessages(result.getWarnings());
