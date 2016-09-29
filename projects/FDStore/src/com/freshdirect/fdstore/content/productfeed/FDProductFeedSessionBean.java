@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -70,6 +71,8 @@ import com.freshdirect.fdstore.content.productfeed.Prices.Price;
 import com.freshdirect.fdstore.content.productfeed.Products.Product;
 import com.freshdirect.fdstore.content.productfeed.Ratings.Rating;
 import com.freshdirect.fdstore.content.productfeed.SaleUnits.SaleUnit;
+import com.freshdirect.fdstore.content.productfeed.taxonomy.Store;
+import com.freshdirect.fdstore.content.productfeed.taxonomy.TaxonomyFeedCreator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -119,7 +122,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         try {
             LOGGER.info("Inside uploadProductFeed()..");
             Products xmlProducts = populateProducts();
-            createAndUploadProductFeedFile(xmlProducts);
+            Store store = TaxonomyFeedCreator.getInstance().createTaxonomyFeed();
+            createAndUploadFeedFiles(xmlProducts, store);
             LOGGER.info("Available products fetched & uploaded: " + xmlProducts.getProduct().size());
         } catch (Exception e) {
             LOGGER.error("Exception :" + e.getMessage());
@@ -168,37 +172,38 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         return xmlProducts;
     }
 
-    private void createAndUploadProductFeedFile(Products xmlProducts) throws FDResourceException, JAXBException {
-        File rawProductFile = null;
+    private void createAndUploadFeedFiles(Products xmlProducts, Store store) throws FDResourceException {
+        File zipFile = null;
+        File productXmlFile = null;
+        File taxonomyXmlFile = null;
         final EnumEStoreId actualStoreId = CmsManager.getInstance().getEStoreEnum();
-        String fileName = createProductFeedFileName(actualStoreId);
-        String zipFileName = fileName + ".zip";
+        String productFeedFileName = createFeedFileName(actualStoreId, "Product");
+        String taxonomyFeedFileName = createFeedFileName(actualStoreId, "Taxonomy");
+        String zipFileName = productFeedFileName + ".zip";
         try {
-            if (!xmlProducts.getProduct().isEmpty()) {
-                JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
-                rawProductFile = createProductFeedFiles(xmlProducts, jaxbCtx, fileName, zipFileName);
-                uploadProductFeedFileToSubscribers(actualStoreId, zipFileName);
+            if (!xmlProducts.getProduct().isEmpty() && !store.getDepartment().isEmpty()) {
+                productXmlFile = createXmlFile(xmlProducts, productFeedFileName);
+                taxonomyXmlFile = createXmlFile(store, taxonomyFeedFileName);
+                zipFile = createZipFile(Arrays.asList(productXmlFile, taxonomyXmlFile), zipFileName);
+                uploadFeedFileToSubscribers(actualStoreId, zipFileName);
             } else {
                 throw new FDResourceException("No feed file generated please check the log for error");
             }
         } finally {
-            cleanupProductFeedFiles(rawProductFile, zipFileName);
+            cleanupFeedFiles(Arrays.asList(productXmlFile, taxonomyXmlFile, zipFile));
         }
     }
 
-    private void cleanupProductFeedFiles(File rawProductFile, String zipFileName) {
-        if (rawProductFile != null) {
-            LOGGER.info("raw product file about to be deleted :" + rawProductFile.getAbsolutePath());
-            rawProductFile.delete();
-        }
-        if (zipFileName != null) {
-            File dfile = new File(zipFileName);
-            LOGGER.info("zipped product file about to be deleted :" + dfile.getAbsolutePath());
-            dfile.delete();
+    private void cleanupFeedFiles(List<File> files) {
+        for (File file : files){
+            if(file != null){
+                LOGGER.info("File about to be deleted :" + file.getAbsolutePath());
+                file.delete();
+            }
         }
     }
 
-    private void uploadProductFeedFileToSubscribers(final EnumEStoreId actualStoreId, String zipFileName) throws FDResourceException {
+    private void uploadFeedFileToSubscribers(final EnumEStoreId actualStoreId, String zipFileName) throws FDResourceException {
         List<ProductFeedSubscriber> productFeedSubscribers = collectProductFeedSubscribers();
         for (ProductFeedSubscriber subscriber : productFeedSubscribers) {
             uploadBySubscriber(actualStoreId, zipFileName, subscriber);
@@ -245,54 +250,64 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         }
     }
 
-    private File createProductFeedFiles(Products xmlProducts, JAXBContext jaxbCtx, String fileName, String zipFileName) throws FDResourceException {
-        File rawProductFile = null;
-        FileInputStream in = null;
-        ZipOutputStream zos = null;
+    private <T> File createXmlFile( T source, String fileName) throws FDResourceException {
+        File rawFile = null;
+        Marshaller marshaller;
+        try {
+            marshaller = JAXBContext.newInstance(source.getClass()).createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            
+            rawFile = new File(fileName + ".xml");
+            StreamResult result = new StreamResult(rawFile);
+            marshaller.marshal(source, result);
+        } catch (JAXBException e) {
+            throw new FDResourceException(e, "Error creating the xml file: " + fileName);
+        }
+        return rawFile;
+    }
+    
+    private File createZipFile(List<File> filesToZip, String zipFileName) throws FDResourceException {
+        FileInputStream fileInputStream = null;
+        ZipOutputStream zipOutputStream = null;
+        File resultingZipFile = null;
         try {
             byte[] buffer = new byte[1024];
-            Marshaller mar = jaxbCtx.createMarshaller();
-            /*
-             * CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler(); mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler);
-             */
-            mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            // Serialize to a Xml file!
-            rawProductFile = new File(fileName + ".xml");
-            StreamResult result = new StreamResult(rawProductFile);
-            mar.marshal(xmlProducts, result);
-            // Zip it!
-
-            FileOutputStream fos = new FileOutputStream(zipFileName);
-            zos = new ZipOutputStream(fos);
-            ZipEntry ze = new ZipEntry(rawProductFile.getName());
-            zos.putNextEntry(ze);
-            int len;
-            in = new FileInputStream(rawProductFile);
-            while ((len = in.read(buffer)) > 0) {
-                zos.write(buffer, 0, len);
+            
+            FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
+            zipOutputStream = new ZipOutputStream(fileOutputStream);
+            
+            for (File file : filesToZip) {
+                ZipEntry zipEntry = new ZipEntry(file.getName());    
+                zipOutputStream.putNextEntry(zipEntry);
+                int length;
+                fileInputStream = new FileInputStream(file);
+                while ((length = fileInputStream.read(buffer)) > 0) {
+                    zipOutputStream.write(buffer, 0, length);
+                }
             }
+            resultingZipFile = new File(zipFileName);
         } catch (Exception e) {
             throw new FDResourceException("feed serialization failed: " + e.getMessage(), e);
         } finally {
             try {
-                if (in != null) {
-                    in.close();
+                if (fileInputStream != null) {
+                    fileInputStream.close();
                 }
-                if (zos != null) {
-                    zos.closeEntry();
-                    zos.close();
+                if (zipOutputStream != null) {
+                    zipOutputStream.closeEntry();
+                    zipOutputStream.close();
                 }
             } catch (Exception e2) {
                 LOGGER.error("Error while creating product feed zip file.", e2);
             }
         }
-        return rawProductFile;
+        return resultingZipFile;
     }
-
-    private String createProductFeedFileName(final EnumEStoreId actualStoreId) {
+    
+    private String createFeedFileName(final EnumEStoreId actualStoreId, final String prefix) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
         StringBuilder fileNameBuilder = new StringBuilder();
-        fileNameBuilder.append("FDProductFeed_");
+        fileNameBuilder.append("FD").append(prefix).append("Feed_");
         if (actualStoreId != null) {
             fileNameBuilder.append(actualStoreId.getContentId());
         }
