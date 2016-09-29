@@ -737,42 +737,39 @@ public abstract class BaseController extends AbstractController implements Messa
     protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
         List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
         if (pageRequest.isPreview()) {
-            pages.addAll(getPreviewPages(user, pageRequest, errors));
+            pages.addAll(getPreviewPages(user, pageRequest, errors, webRequest));
         } else if (pageRequest.getRequestedDate() == null) {
-            CMSWebPageModel page = getCachedPage(user, pageRequest, errors);
+            CMSWebPageModel page = getCachedPage(user, pageRequest, errors, webRequest);
             if (page == null) {
                 errors.add("Can not find page(s) in cache.");
             } else {
                 pages.add(page);
             }
         } else {
-            pages.addAll(getPagesByParameters(user, pageRequest, errors));
+            pages.addAll(getPagesByParameters(user, pageRequest, errors, webRequest));
         }
+        return pages;
+    }
+
+    // Refresh the feed if it is for preview
+    protected List<CMSWebPageModel> getPreviewPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
+        CMSContentFactory.getInstance().cacheAllPages();
+        return getPagesByParameters(user, pageRequest, errors, webRequest);
+    }
+
+    // Get the feed from cache if it doesn't have request date / if it is not for preview
+    public List<CMSWebPageModel> getPagesByParameters(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
+        List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
         for (CMSWebPageModel page : pages) {
             addProductsToSection(user, page, errors, webRequest);
         }
         return pages;
     }
 
-    // Refresh the feed if it is for preview
-    protected List<CMSWebPageModel> getPreviewPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        CMSContentFactory.getInstance().cacheAllPages();
-        return getPagesByParameters(user, pageRequest, errors);
-    }
-
-    // Get the feed from cache if it doesn't have request date / if it is not for preview
-    public List<CMSWebPageModel> getPagesByParameters(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
-        for (CMSWebPageModel page : pages) {
-            addProductsToSection(user, page, errors);
-        }
-        return pages;
-    }
-
     // Refresh the feed if it has the date in the request
-    protected CMSWebPageModel getCachedPage(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
+    protected CMSWebPageModel getCachedPage(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
         CMSWebPageModel page = CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageType());
-        addProductsToSection(user, page, errors);
+        addProductsToSection(user, page, errors, webRequest);
         return page;
     }
 
