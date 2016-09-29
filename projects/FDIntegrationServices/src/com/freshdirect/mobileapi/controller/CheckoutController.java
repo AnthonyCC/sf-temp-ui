@@ -77,8 +77,9 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.mobileapi.util.BrowseUtil;
+import com.freshdirect.mobileapi.util.ProductPotatoUtil;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -391,6 +392,14 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        Message responseMessage = checkout.getCurrentOrderDetails(ctx);
+
+        ActionResult result = new ActionResult();
+        UserValidationUtil.validateOrderMinimum(request.getSession(), result);
+        if (result.isFailure() && isCheckLoginStatusEnable(request)) {
+            responseMessage.addErrorMessages(result.getErrors(), user);
+        }
+        
         Cart cart = user.getShoppingCart();
         if(EnumCouponContext.CHECKOUT.equals(ctx)){
         	user.setRefreshCouponWalletRequired(true);
@@ -400,7 +409,6 @@ public class CheckoutController extends BaseController {
         	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
         	cart.getAvalaraTax(avalaraContext);
         }
-        Message responseMessage = checkout.getCurrentOrderDetails(ctx);
         if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE
         										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
@@ -673,6 +681,11 @@ public class CheckoutController extends BaseController {
 	            }
 	            
 	            orderReceipt.setOrderNumber(orderId);
+
+	            if (isCheckLoginStatusEnable(request)) {
+	                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+	            }
+	            
 	            responseMessage = orderReceipt;
 	            responseMessage.addDebugMessage("Order has been submitted successfully.");
 	            
@@ -728,6 +741,11 @@ public class CheckoutController extends BaseController {
 	            }
 	            
 	            orderReceipt.setOrderNumber(orderId);
+	            
+                if (isCheckLoginStatusEnable(request)) {
+                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+                }
+	            
 	            responseMessage = orderReceipt;
 	            responseMessage.addDebugMessage("Order has been submitted successfully.");
 	            
@@ -1382,17 +1400,17 @@ public class CheckoutController extends BaseController {
 	    	if(reservationValid){
 	    		if(user.getShoppingCart().containsAlcohol()){
 	    			//Call Address And Alcohol Check
-	    			message = checkout.checkAddressForAlcoholAndAgeVerification((SubmitOrderExResult)message, user, request);
+	    			message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
 	    			if(isSuccess(message.getStatus())){
 	    				//Timeslot Alcohol Check
-	    				message = checkout.alcoholTimeSlotCheck((SubmitOrderExResult)message, user, request);
+	    				message = checkout.alcoholTimeSlotCheck(message, user, request);
 	    			}
 	    		}
 	    		// Atp Check
 	    		if(isSuccess(message.getStatus())){
 	    		ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
 	    		 if (!availabliltyResult.isSuccess()){
-	    			 message = checkout.fillAtpErrorDetail((SubmitOrderExResult)message, user, request);
+	    			 message = checkout.fillAtpErrorDetail(message, user, request);
 	    		 } else {
 	    			// message = checkout.submitEx((SubmitOrderExResult)message, user, request);
 	    			     FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
@@ -1409,6 +1427,9 @@ public class CheckoutController extends BaseController {
 			    		             com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
 				    		         if(null !=order){
 				    				            orderReceipt = order.getOrderDetail(user);
+				    			                if (isCheckLoginStatusEnable(request)) {
+				    			                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+				    			                }
 				    			            }
 				    				 orderReceipt.setOrderNumber(orderId);
 				    				 message.wrap(orderReceipt);
