@@ -65,6 +65,7 @@ public class Variation {
             try	{
             	ProductModel pm = ContentFactory.getInstance().getProduct(fdOption.getSkuCode());
             	option.setId(pm.getContentName());
+            	option.setIncludedProducts(pm.getIncludeProducts());
             } catch(Exception e){
             	
             }

@@ -42,6 +42,7 @@ public class Variation {
             option.setName(vo.getName());
             option.setCvp(vo.getCharacteristicValuePrice());
             option.setProductId(vo.getId());
+            option.setIncludedProducts(vo.getIncludedProducts());
             variationOptions.add(option);
         }
     }

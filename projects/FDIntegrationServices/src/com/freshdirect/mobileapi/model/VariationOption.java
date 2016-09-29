@@ -1,5 +1,8 @@
 package com.freshdirect.mobileapi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariationOption;
@@ -16,6 +19,8 @@ public class VariationOption {
 
     String id;
     
+    List<String> includedProducts;
+    
     FDVariationOption option;
 
     public VariationOption(FDVariationOption option) {
@@ -30,6 +35,19 @@ public class VariationOption {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public List<String> getIncludedProducts() {
+        return includedProducts;
+    }
+
+    public void setIncludedProducts(List<ProductModel> includedProducts) {
+    	if(includedProducts != null && !includedProducts.isEmpty()){
+    		this.includedProducts = new ArrayList<String>();
+    		for(int i = 0; i < includedProducts.size(); i++){
+    			this.includedProducts.add(includedProducts.get(i).getContentKey().getId());
+    		}
+    	}
     }
 
     public String getCharacteristicValuePrice() {
