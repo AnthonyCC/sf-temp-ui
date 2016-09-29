@@ -16,7 +16,8 @@ CREATE OR REPLACE PROCEDURE CUST."DELIVERY_PASS_CRON" (request_date IN DATE)
 			DBMS_OUTPUT.PUT_LINE ('Credited ' || SQL%ROWCOUNT || ' records with one delivery');
 
 			 /*  Update delivery pass status to RTU when the original order got delivered. --Modified  to account for orders using gift card as payment method */
-			UPDATE cust.delivery_pass SET status='RTU' WHERE status IN ('PEN','STF') AND purchase_order_id IN (SELECT /*+ USE_NL(s, sa) */s.id FROM cust.sale s, cust.salesaction sa WHERE sa.requested_date >= trunc(SYSDATE -10) AND sa.sale_id = s.id AND sa.action_date =s.cromod_date and sa.action_type IN ('CRO', 'MOD') AND s.status IN ( 'PPG','STP') );
+			/* UPDATE cust.delivery_pass SET status='RTU' WHERE status IN ('PEN','STF') AND purchase_order_id IN (SELECT s.id FROM cust.sale s, cust.salesaction sa WHERE sa.requested_date >= trunc(SYSDATE -10) AND sa.sale_id = s.id AND sa.action_date =s.cromod_date and sa.action_type IN ('CRO', 'MOD') AND s.status IN ( 'PPG','STP') );*/
+			UPDATE cust.delivery_pass dp SET status='RTU' WHERE status IN ('PEN','STF') AND exists (select 1 from cust.sale s where s.id=DP.PURCHASE_ORDER_ID and s.status IN ( 'PPG','STP','STL')); 
 
 			DBMS_OUTPUT.PUT_LINE ('Updated ' || SQL%ROWCOUNT || ' records to ACT status');
 
@@ -51,9 +52,8 @@ CREATE OR REPLACE PROCEDURE CUST."DELIVERY_PASS_CRON" (request_date IN DATE)
 			DBMS_OUTPUT.PUT_LINE ('Credited ' || SQL%ROWCOUNT || ' records with one delivery');
 
 			 /*  Update delivery pass status to RTU when the original order got delivered.  --Modified  to account for orders using gift card as payment method  */
-			/* UPDATE cust.delivery_pass SET status='RTU' WHERE status IN ('PEN','STF') AND purchase_order_id IN (SELECT s.id FROM cust.sale s, cust.salesaction sa WHERE sa.requested_date = TRUNC(request_date) AND sa.sale_id = s.id AND sa.action_date =s.cromod_date and sa.action_type IN ('CRO', 'MOD') AND s.status IN ( 'PPG','STP') ); */
+			UPDATE cust.delivery_pass SET status='RTU' WHERE status IN ('PEN','STF') AND purchase_order_id IN (SELECT s.id FROM cust.sale s, cust.salesaction sa WHERE sa.requested_date = TRUNC(request_date) AND sa.sale_id = s.id AND sa.action_date =s.cromod_date and sa.action_type IN ('CRO', 'MOD') AND s.status IN ( 'PPG','STP','STL') ); 
 
-			UPDATE cust.delivery_pass dp SET status='RTU' WHERE status IN ('PEN','STF') AND exists (Select 1 from cust.sale s where s.id=DP.PURCHASE_ORDER_ID and s.status IN ( 'PPG','STP','STL')); 
 			DBMS_OUTPUT.PUT_LINE ('Updated ' || SQL%ROWCOUNT || ' records to RTU status');
 
 			 /*  Update delivery pass status to RTU when the original order was a make good order/
