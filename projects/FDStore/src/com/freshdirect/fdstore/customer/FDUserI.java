@@ -173,7 +173,7 @@ public interface FDUserI extends java.io.Serializable {
 
     public int getAdjustedValidOrderCount() throws FDResourceException;
     
-    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException;
+    public int getValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException;
 
     public int getValidPhoneOrderCount() throws FDResourceException;
 

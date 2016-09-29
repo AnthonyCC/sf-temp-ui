@@ -17,6 +17,7 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BINCache;
@@ -74,7 +75,10 @@ public class CustomerStrategy implements PromotionStrategyI {
 			}else{				
 				for (Iterator<EnumDeliveryType> iterator = orderRangeDeliveryTypes.iterator(); iterator.hasNext();) {
 					EnumDeliveryType deliveryType = iterator.next();
-					currentOrder = currentOrder + context.getAdjustedValidOrderCount(deliveryType);
+					currentOrder = currentOrder + context.getValidOrderCount(deliveryType);
+				}
+				if(context.getShoppingCart() instanceof FDModifyCartModel){
+					currentOrder--;
 				}
 			}
 			if(currentOrder  < orderRangeStart || currentOrder > orderRangeEnd) return DENY;

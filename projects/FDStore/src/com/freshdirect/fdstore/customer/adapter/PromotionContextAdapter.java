@@ -217,9 +217,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 		}
 	}
 	
-	public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) {
+	public int getValidOrderCount(EnumDeliveryType deliveryType) {
 		try {
-			return this.user.getAdjustedValidOrderCount(deliveryType);
+			return this.user.getValidOrderCount(deliveryType);
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException();
 		}

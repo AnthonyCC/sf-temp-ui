@@ -589,9 +589,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public int getAdjustedValidOrderCount() throws FDResourceException {
     	return this.user.getAdjustedValidOrderCount();
     }
-
-    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
-    	return this.user.getAdjustedValidOrderCount(deliveryType);
+    
+    public int getValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException{
+    	return this.user.getValidOrderCount(deliveryType);
     }
     
     public int getDeliveredOrderCount() throws FDResourceException {

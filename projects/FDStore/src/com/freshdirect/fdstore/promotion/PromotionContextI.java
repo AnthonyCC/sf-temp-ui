@@ -45,7 +45,7 @@ public interface PromotionContextI {
 
 	public int getAdjustedValidOrderCount();
 	
-	public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType);
+	public int getValidOrderCount(EnumDeliveryType deliveryType);
 
 	public int getPromotionUsageCount(String promotionCode);
 

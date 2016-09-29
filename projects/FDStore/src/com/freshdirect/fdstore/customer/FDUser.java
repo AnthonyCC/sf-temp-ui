@@ -70,6 +70,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
@@ -821,17 +822,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
     
     /**
-     * @return number of valid orders, corrected in modify order mode
+     * @return number of valid orders by delivery type
      */
-    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
-    	int orderCount = this.getOrderHistory().getValidOrderCount(deliveryType);
-        if (this.getShoppingCart() instanceof FDModifyCartModel) {
-            // we're in modify order mode, subtract one
-            orderCount--;
-        }
-        return orderCount;
+    public int getValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+    	return this.getOrderHistory().getValidOrderCount(deliveryType);
     }
-
+    
     /**
      * @return number of valid ECheck orders, corrected in modify order mode
      */
