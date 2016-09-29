@@ -71,8 +71,8 @@ import com.freshdirect.fdstore.content.productfeed.Prices.Price;
 import com.freshdirect.fdstore.content.productfeed.Products.Product;
 import com.freshdirect.fdstore.content.productfeed.Ratings.Rating;
 import com.freshdirect.fdstore.content.productfeed.SaleUnits.SaleUnit;
-import com.freshdirect.fdstore.content.productfeed.taxonomy.Store;
-import com.freshdirect.fdstore.content.productfeed.taxonomy.TaxonomyFeedCreator;
+import com.freshdirect.fdstore.content.productfeed.taxonomy.StoreTaxonomyFeedElement;
+import com.freshdirect.fdstore.content.productfeed.taxonomy.TaxonomyFeedPopulator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -122,8 +122,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         try {
             LOGGER.info("Inside uploadProductFeed()..");
             Products xmlProducts = populateProducts();
-            Store store = TaxonomyFeedCreator.getInstance().createTaxonomyFeed();
-            createAndUploadFeedFiles(xmlProducts, store);
+            StoreTaxonomyFeedElement storeTaxonomyFeedElement = TaxonomyFeedPopulator.getInstance().populateStoreTaxonomyFeed();
+            createAndUploadFeedFiles(xmlProducts, storeTaxonomyFeedElement);
             LOGGER.info("Available products fetched & uploaded: " + xmlProducts.getProduct().size());
         } catch (Exception e) {
             LOGGER.error("Exception :" + e.getMessage());
@@ -134,7 +134,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 
     private Products populateProducts() throws FDResourceException {
         Products xmlProducts = new Products();
-        Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
+        Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU, DraftContext.MAIN);
         if (skuContentKeys != null) {
             LOGGER.info("Skus in CMS: " + skuContentKeys.size());
             for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
@@ -172,7 +172,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         return xmlProducts;
     }
 
-    private void createAndUploadFeedFiles(Products xmlProducts, Store store) throws FDResourceException {
+    private void createAndUploadFeedFiles(Products xmlProducts, StoreTaxonomyFeedElement storeElement) throws FDResourceException {
         File zipFile = null;
         File productXmlFile = null;
         File taxonomyXmlFile = null;
@@ -181,9 +181,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         String taxonomyFeedFileName = createFeedFileName(actualStoreId, "Taxonomy");
         String zipFileName = productFeedFileName + ".zip";
         try {
-            if (!xmlProducts.getProduct().isEmpty() && !store.getDepartment().isEmpty()) {
+            if (!xmlProducts.getProduct().isEmpty() && !storeElement.getDepartment().isEmpty()) {
                 productXmlFile = createXmlFile(xmlProducts, productFeedFileName);
-                taxonomyXmlFile = createXmlFile(store, taxonomyFeedFileName);
+                taxonomyXmlFile = createXmlFile(storeElement, taxonomyFeedFileName);
                 zipFile = createZipFile(Arrays.asList(productXmlFile, taxonomyXmlFile), zipFileName);
                 uploadFeedFileToSubscribers(actualStoreId, zipFileName);
             } else {
@@ -307,7 +307,11 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     private String createFeedFileName(final EnumEStoreId actualStoreId, final String prefix) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
         StringBuilder fileNameBuilder = new StringBuilder();
-        fileNameBuilder.append("FD").append(prefix).append("Feed_");
+        fileNameBuilder.append("FD");
+        if(prefix != null && !prefix.isEmpty()){
+            fileNameBuilder.append(prefix);
+        }
+        fileNameBuilder.append("Feed_");
         if (actualStoreId != null) {
             fileNameBuilder.append(actualStoreId.getContentId());
         }
