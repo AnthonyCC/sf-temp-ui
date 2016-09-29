@@ -41,7 +41,6 @@ import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
 import com.freshdirect.mobileapi.controller.data.response.ExternalAccountLoginResponse;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
-import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -78,8 +77,7 @@ public class RegistrationController extends BaseController implements SystemMess
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER = "setmobilepreferencesfirstorder";
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD = "setmobilepreferencesfirstorderfd";
 
-	@Override
-    protected boolean validateUser() {
+	protected boolean validateUser() {
 		return false;
 	}
 
@@ -156,9 +154,6 @@ public class RegistrationController extends BaseController implements SystemMess
 			NoSessionException, JsonException {
 		if(user == null)
 			throw new NoSessionException("No session");
-		
-		final boolean isWebRequest = isCheckLoginStatusEnable(request);
-		
 		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
 		ResultBundle resultBundle = tagWrapper.register(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
@@ -166,50 +161,19 @@ public class RegistrationController extends BaseController implements SystemMess
 		propogateSetSessionValues(request.getSession(), resultBundle);
 
 		Message responseMessage = null;
-		
-		if (isWebRequest) {
-            // web client branch
-
-		    if (result.isSuccess()) {
-		        // mark session with the right source
-	            request.getSession().setAttribute(SessionName.APPLICATION,
-	                    EnumTransactionSource.IPHONE_WEBSITE.getCode());
-
-		        // authenticate user
-		        user = getUser(request, response);
-
-		        // reset mobile app part of session
-                resetMobileSessionData(request);
-
-                // setup response
-                final LoggedIn login = formatLoginMessage(user);
-
-		        MessageResponse webResponse = new MessageResponse();
-		        populateResponseWithEnabledAdditionsForWebClient(user, webResponse, request, login);
-		    } else {
-                responseMessage = getErrorMessage(result, request);
-		    }
+		if (result.isSuccess()) {
+			request.getSession().setAttribute(SessionName.APPLICATION,
+					EnumTransactionSource.IPHONE_WEBSITE.getCode());
+			user = getUserFromSession(request, response);
+			user.setUserContext();
+			user.setEligibleForDDPP();
+			// Create a new Visitor object.
+			responseMessage = formatLoginMessage(user);
+			resetMobileSessionData(request);
 
 		} else {
-		    // mobile app branch
-		    
-    		if (result.isSuccess()) {
-    			request.getSession().setAttribute(SessionName.APPLICATION,
-    					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-    			
-    			user = getUserFromSession(request, response);
-    			user.setUserContext();
-    			user.setEligibleForDDPP();
-    			// Create a new Visitor object.
-    			responseMessage = formatLoginMessage(user);
-    			resetMobileSessionData(request);
-    
-    		} else {
-    			responseMessage = getErrorMessage(result, request);
-    		}
-		
+			responseMessage = getErrorMessage(result, request);
 		}
-
 		responseMessage.addWarningMessages(result.getWarnings());
 		setResponseMessage(model, responseMessage, user);
 		return model;
@@ -271,7 +235,7 @@ public class RegistrationController extends BaseController implements SystemMess
 			ResultBundle resultBundleAdd = tagWrapper.addDeliveryAddress(dliveryAddressRequest);		*/
 			//------------------------------
 		
-		FDSessionUser fduser = user.getFDSessionUser();        
+		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		MobilePreferenceRequest mobilePreferenceRequest = new MobilePreferenceRequest();
@@ -407,7 +371,7 @@ public class RegistrationController extends BaseController implements SystemMess
 			}
 		}	
 		
-		FDSessionUser fduser = user.getFDSessionUser();        
+		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 				
@@ -606,7 +570,7 @@ public class RegistrationController extends BaseController implements SystemMess
             HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = null;   
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -633,7 +597,7 @@ public class RegistrationController extends BaseController implements SystemMess
             HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = null;   
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -655,7 +619,7 @@ public class RegistrationController extends BaseController implements SystemMess
             HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = null;   
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -679,7 +643,7 @@ public class RegistrationController extends BaseController implements SystemMess
     	Message responseMessage = null;
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
     	
-        FDSessionUser fduser = user.getFDSessionUser();        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -708,7 +672,7 @@ public class RegistrationController extends BaseController implements SystemMess
     
     private ModelAndView getEmailPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	
-        FDSessionUser fduser = user.getFDSessionUser();        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -726,7 +690,7 @@ public class RegistrationController extends BaseController implements SystemMess
     
     private ModelAndView getMobilePreferences(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
        
-    	FDSessionUser fduser = user.getFDSessionUser();        
+    	FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
 		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);

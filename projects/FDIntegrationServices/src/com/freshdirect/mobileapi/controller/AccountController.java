@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -13,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -30,6 +29,7 @@ import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
+import com.freshdirect.mobileapi.controller.data.response.Orders;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order;
 import com.freshdirect.mobileapi.controller.data.response.ReservationTimeslots;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -42,7 +42,6 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.Timeslot;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 
 public class AccountController extends BaseController implements Comparator <Order>{
@@ -129,15 +128,10 @@ public class AccountController extends BaseController implements Comparator <Ord
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
         	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
-        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
-            if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
-            }
-            orders.get(0).setStatus(orderDetail.getStatus());
-
+        	orders.get(0).setStatus(order.getOrderDetail(user).getStatus());	
         }
         
-        responseMessage.setOrders(paginator.getPage(page));
+        ((OrderHistory) responseMessage).setOrders(paginator.getPage(page));
         
         setResponseMessage(model, responseMessage, user);
         return model;
@@ -390,7 +384,6 @@ public class AccountController extends BaseController implements Comparator <Ord
 		return cal.getTime();
 	}
     
-    @Override
     public int compare (Order order1, Order order2){
     	return order2.getId().compareTo(order1.getId());
     }

@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -48,10 +49,10 @@ import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
+import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 import freemarker.template.TemplateException;
@@ -120,17 +121,9 @@ public class ProductController extends BaseController {
             	model = getRecommendedProducts(model, request, response, user);
             } else if(MULTIPLE_PRODUCT_DETAIL.equals(action)){
             	MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
-            	if (isCheckLoginStatusEnable(request)) {
-            	    model = getMultipleProductDetailPotatoes(model, reqestMessage, response, user);
-            	} else {
-            	    model = getMultipleProductDetail(model, reqestMessage, response, user);
-            	}
+                model = getMultipleProductDetail(model, reqestMessage, response, user);
             }else {
-                if (isCheckLoginStatusEnable(request)) {
-                    model = getPotatoProduct(model, request, response, user);
-                } else {
-                    model = getProduct(model, request, response, user);
-                }
+                model = getProduct(model, request, response, user);
             }
         } catch (ModelException e) {
             throw new ServiceException(e);
@@ -309,60 +302,6 @@ public class ProductController extends BaseController {
 
     }
 
-    
-    /**
-     * Produces and returns a detailed product info
-     * Works similarly to {@link #getProduct(ModelAndView, HttpServletRequest, HttpServletResponse, SessionUser)})
-     *  
-     * @param model
-     * @param request
-     * @param response
-     * @param user
-     * @return
-     * @throws JsonException
-     */
-    private ModelAndView getPotatoProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response, SessionUser user) throws JsonException {
-        // JSON response body
-        class ProductPotatoMessage extends Message {
-            public final ProductPotatoData product;
-            public String terms = null;
-            
-            public ProductPotatoMessage(ProductPotatoData product) {
-                this.product = product;
-            }
-        }
-
-
-        // final String categoryId = request.getParameter("categoryId");
-        final String productId = request.getParameter("productId");
-        if (/*StringUtils.isEmpty(categoryId) ||*/ StringUtils.isEmpty(productId)) {
-            Message responseMessage = Message.createFailureMessage("Missing parameter(s)");
-            setResponseMessage(model, responseMessage, user);
-            return model;
-        }
-
-        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, user.getFDSessionUser(), true);
-        if (data == null) {
-            Message responseMessage = Message.createFailureMessage("Product not found");
-            setResponseMessage(model, responseMessage, user);
-            return model;
-        }
-
-
-        // setup response
-        
-        final Message responseMessage = new ProductPotatoMessage(data);
-        if (!user.isHealthWarningAcknowledged() && data.getProductData().isAlcoholic()) {
-            
-            //APPDEV-4300 - Alcohol Products - No Details Returned if User Not Logged In 
-
-            responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
-        }
-        setResponseMessage(model, responseMessage, user);
-        return model;
-    }
-
     /**
      * @param model
      * @param request
@@ -423,43 +362,6 @@ public class ProductController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
 
-    }
-
-    /**
-     * 
-     * @param model
-     * @param request
-     * @param response
-     * @param user
-     * @return
-     * @throws JsonException 
-     */
-    private ModelAndView getMultipleProductDetailPotatoes(ModelAndView model, MultipleRequest request, HttpServletResponse response, SessionUser user) throws JsonException {
-
-        class Payload extends Message {
-            public final List<ProductPotatoData> products;
-            
-            public Payload(List<ProductPotatoData> products) {
-                this.products = products;
-            }
-        }
-
-        final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
-        final FDUserI uzer = user.getFDSessionUser();
-
-        // process product keys
-        for (final String productId : request.getIds()) {
-            
-            final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, uzer, false);
-            if (data != null) {
-                potatoes.add(data);
-            }
-        }
-
-        // set response payload
-        setResponseMessage(model, new Payload(potatoes) , user);
-        
-        return model; 
     }
     
     private ModelAndView getMultipleProductDetail(ModelAndView model, MultipleRequest request, HttpServletResponse response, SessionUser user)

@@ -53,7 +53,6 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -109,11 +108,11 @@ public class OrderController extends BaseController {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            model = getOrderDetail(model, user, orderId, request);
+            model = getOrderDetail(model, user, orderId);
         } else if(ACTION_GET_ORDERS.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
-        	model = getDetailsForOrders(model, user, orderIds, request);
+        	model = getDetailsForOrders(model, user, orderIds);
         	
         }else if (ACTION_GET_QUICK_SHOP_ORDER_LIST.equals(action)) {
             model = getQuickshopOrders(model, user, request, response);
@@ -266,9 +265,6 @@ public class OrderController extends BaseController {
     private ModelAndView loadOrder(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
     	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
-        if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail(), getServletContext());
-        }
         ResultBundle resultBundle = Order.loadOrderToCartForUpdate(orderId, user);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -330,14 +326,10 @@ public class OrderController extends BaseController {
      * @throws JsonMappingException
      * @throws IOException
      */
-    private ModelAndView getOrderDetail(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView getOrderDetail(ModelAndView model, SessionUser user, String orderId) throws FDException, JsonException {
         Order order = user.getOrder(orderId);
-        com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
-        if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
-        }
-
-        setResponseMessage(model, orderDetail, user);
+        Message responseMessage = order.getOrderDetail(user);
+        setResponseMessage(model, responseMessage, user);
         return model;
     }
 
@@ -575,24 +567,17 @@ public class OrderController extends BaseController {
     	setResponseMessage(model, quickShop, user);
     	return model;
     }
-
-    private ModelAndView getDetailsForOrders(ModelAndView model, SessionUser user, List<String> orderIds, HttpServletRequest request) throws FDException, JsonException{
+private ModelAndView getDetailsForOrders(ModelAndView model, SessionUser user, List<String> orderIds) throws FDException, JsonException{
     	
     	//Response Object with list of orders
     	Orders orders = new Orders();
     	
     	//For each id Create OrderDetail and add to orders responseObject
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
     	for(String orderId : orderIds){
     		 Order order = user.getOrder(orderId);
     		//wrap each order and add to orders list in response object
     		 try {
-				final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
-                orders.addOrder(orderDetail,orderId);
-                if (isWebRequest) {
-                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
-                }
-				
+				orders.addOrder(order.getOrderDetail(user),orderId);
 			} catch (ParseException e) {
 				throw new FDException(e);
 			}

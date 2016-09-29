@@ -36,7 +36,6 @@ import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.CatalogInfoResult;
 import com.freshdirect.mobileapi.controller.data.CatalogKeyResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
-import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -184,14 +183,12 @@ public class BrowseController extends BaseController {
 	            return model;
 	        	
 	        	
-            } else if (ACTION_GET_CATEGORIES.equals(action) || ACTION_GET_CATEGORYCONTENT.equals(action) || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-                final boolean isWebRequest = isCheckLoginStatusEnable(request);
-                Message res = BrowseUtil.getCategories(requestMessage, user, request, isWebRequest);
-                populateResponseWithEnabledAdditionsForWebClient(user, res, request, null);
-                setResponseMessage(model, res, user);
-                long endTime = System.currentTimeMillis();
-                LOG.debug(((endTime - startTime) / 1000) + " seconds");
-                return model;
+	        } else if (ACTION_GET_CATEGORIES.equals(action)
+	        								|| ACTION_GET_CATEGORYCONTENT.equals(action)
+	        								|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	        	
+	        	result =  BrowseUtil.getCategories(requestMessage, user, request);
+	        	
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
 	        	result.setProductsFromModel(products);

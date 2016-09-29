@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
@@ -91,8 +88,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	private static final String FAKE_SUCCESS_PAGE="fake_success_page";
     private static final String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
 
-	@Override
-    protected boolean validateUser() {
+	protected boolean validateUser() {
 		return false;
 	}
 
@@ -105,8 +101,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	 * org.springframework.web.servlet.ModelAndView, java.lang.String,
 	 * com.freshdirect.mobileapi.model.SessionUser)
 	 */
-	@Override
-    protected ModelAndView processRequest(HttpServletRequest request,
+	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws FDException, ServiceException,
 			NoSessionException, JsonException {
@@ -360,7 +355,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         SessionUser user = getUserFromSession(request, response);
         if (isCheckLoginStatusEnable(request)) {
             MessageResponse messageResponse = new MessageResponse();
-            populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
+            populateMessageResponse(user, messageResponse, request);
             responseMessage = messageResponse;
         } else {
             responseMessage = formatLoginMessage(user);
@@ -513,7 +508,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
         return responseMessage;
     }
 	
-    @Override
     protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = super.formatLoginMessage(user);
 //        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
