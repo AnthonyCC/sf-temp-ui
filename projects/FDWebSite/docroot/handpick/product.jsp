@@ -25,7 +25,13 @@
 	  <div class="mealkit-product-content">
 	     ${ productExtraPotato.productDescription }
 	  </div>
-	  
+      <div class="prodDetail-accords"><%-- accordions --%>
+          <ul class="pdp-accordion">
+              <soy:render template="pdp.nutrition.panel" data="${productExtraPotato}"/>
+              <soy:render template="pdp.accordion.allergens" data="${productExtraPotato}"/>
+              <soy:render template="pdp.accordion.ingredients" data="${productExtraPotato}"/>
+          </ul>
+      </div>
 	</div>
     <div id="mealkit-product-right">
       <c:if test="${productPotato.available}">
