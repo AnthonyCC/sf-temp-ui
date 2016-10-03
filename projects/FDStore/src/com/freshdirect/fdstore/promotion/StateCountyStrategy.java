@@ -105,8 +105,8 @@ public class StateCountyStrategy implements PromotionStrategyI {
 
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
-		System.out.println("\n\n\n\n\nApplying StateCountyStrategy begin \n\n\n\n");
-		System.out.println("PromotionID: " + this.getPromotionId());
+//		System.out.println("\n\n\n\n\nApplying StateCountyStrategy begin \n\n\n\n");
+//		System.out.println("PromotionID: " + this.getPromotionId());
 		
 		String county = null;
 		String state = null;
@@ -126,23 +126,23 @@ public class StateCountyStrategy implements PromotionStrategyI {
 				}
 			}
 		}		
-		System.out.println("County:" + county);
-		System.out.println("State:" + state);
+//		System.out.println("County:" + county);
+//		System.out.println("State:" + state);
 		if(county != null || state != null) {
-			System.out.println("Checking for eligibility");
+//			System.out.println("Checking for eligibility");
 			boolean eligible_for_state = false;
 			boolean eligible_for_county = false;
 			if("A".equals(getState_option())) {
 				//All EXCEPT the listed states
-				System.out.println("State_option is A:" + this.getStates());
+//				System.out.println("State_option is A:" + this.getStates());
 				if(!this.getStates().contains(state)) {
 					System.out.println("State is eligible");
 					eligible_for_state = true;
 				}
 			} else {
-				System.out.println("State_option is O:" + this.getStates());
+//				System.out.println("State_option is O:" + this.getStates());
 				if(this.getStates().contains(state)) {
-					System.out.println("State is eligible");
+//					System.out.println("State is eligible");
 					eligible_for_state = true;
 				}
 			}
@@ -151,22 +151,22 @@ public class StateCountyStrategy implements PromotionStrategyI {
 				//Time to check county
 				if("A".equals(this.getCounty_option())) {
 					//All EXCEPT the listed states
-					System.out.println("County_option is A:" + this.getCounty());
+//					System.out.println("County_option is A:" + this.getCounty());
 					if(!this.getCounty().contains(state+"_"+county)) {
-						System.out.println("County is eligible");
+//						System.out.println("County is eligible");
 						return ALLOW;
 					}
 				} else {
-					System.out.println("County_option is O:" + this.getCounty());
+//					System.out.println("County_option is O:" + this.getCounty());
 					if(this.getCounty().contains(state+"_"+county)) {
-						System.out.println("County is eligible");
+//						System.out.println("County is eligible");
 						return ALLOW;
 					}
 				}
 			}
 		}
 		
-		System.out.println("\n\n\n\n\nApplying StateCountyStrategy end \n\n\n\n");
+//		System.out.println("\n\n\n\n\nApplying StateCountyStrategy end \n\n\n\n");
 		if(context.getUser().getRedeemedPromotion() != null && context.getUser().getRedeemedPromotion().getRedemptionCode() != null)
 			context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode());
 		return DENY;
