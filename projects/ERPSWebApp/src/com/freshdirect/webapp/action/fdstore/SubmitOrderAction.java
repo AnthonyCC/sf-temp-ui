@@ -743,7 +743,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 		} catch (ErpTransactionException ex) {
 			LOGGER.warn("Business rules violated", ex);
-			throw new FDResourceException("Bussiness rules violated " + ex.getMessage());
+			throw new FDResourceException("There is an error modifying your order. Kindly contact customer service");
 				
 		} catch (ErpAuthorizationException ae) {
 			user.incrementFailedAuthorizations();
