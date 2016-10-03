@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
-
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -92,7 +90,7 @@ public class ProductExtraDataPopulator {
 	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
 	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, ServletContext ctx, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -102,12 +100,12 @@ public class ProductExtraDataPopulator {
 		ProductExtraData data = new ProductExtraData();
 		
 		// First populate product-level data
-		populateData( data, user, product, ctx, grpId, grpVersion );
+		populateData( data, user, product, grpId, grpVersion );
 		
 		return data;
 	}
 	
-	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, ServletContext ctx, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( productId == null ) {
 			BaseJsonServlet.returnHttpError( 400, "productId not specified" );	// 400 Bad Request
@@ -116,7 +114,7 @@ public class ProductExtraDataPopulator {
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		
-		return createExtraData( user, product, ctx, grpId, grpVersion );
+		return createExtraData( user, product, grpId, grpVersion );
 	}
 
     public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
@@ -139,7 +137,7 @@ public class ProductExtraDataPopulator {
     }
 	
 	private static void populateData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
 
 		final String popupPage = "/shared/popup.jsp";
 
@@ -228,7 +226,7 @@ public class ProductExtraDataPopulator {
         }
 
       //refactored code into this new method
-        populateClaimsData(data, user, productNode, ctx, grpId, grpVersion);
+        populateClaimsData(data, user, productNode, grpId, grpVersion);
         
 	/*	// organic claims
 		{
@@ -478,7 +476,7 @@ public class ProductExtraDataPopulator {
 				if (nutritionModel != null) {
 					try {
 						StringWriter wr = new StringWriter();
-						if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, false, wr, ctx)) {
+						if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, false, wr)) {
 							data.setOldNutritionPanel(wr.toString());
 						}
 					} catch (IOException e) {
@@ -1099,12 +1097,12 @@ public class ProductExtraDataPopulator {
 	}
 	
 	public static  ProductExtraData populateClaimsDataForMobile(ProductExtraData data, FDUserI user,
-			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-			return 	populateClaimsData(data, user, productNode, ctx, grpId, grpVersion);
+			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			return 	populateClaimsData(data, user, productNode, grpId, grpVersion);
 	}
 	
 	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
 		
 		{
 			@SuppressWarnings("unchecked")

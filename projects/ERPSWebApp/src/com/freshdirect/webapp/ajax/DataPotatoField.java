@@ -243,7 +243,7 @@ public class DataPotatoField {
 	public static Map<String, ?> digProductExtraData( FDUserI user, String categoryId, String productId, ServletContext context, String grpId, String grpVersion ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, productId, categoryId, context, grpId, grpVersion );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, productId, categoryId, grpId, grpVersion );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );
@@ -279,7 +279,7 @@ public class DataPotatoField {
 	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context, String grpId, String grpVersion ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, context, grpId, grpVersion );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, grpId, grpVersion );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );

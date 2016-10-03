@@ -1,37 +1,24 @@
 package com.freshdirect.webapp.taglib.content.nutrition;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.ErpFactory;
-import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.framework.xml.XMLSerializer;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 /**
@@ -151,57 +138,7 @@ public class NutritionPanelTag extends BodyTagSupport {
         	return SKIP_BODY;
         }
         
-        /**
-        
-        if ( showErpsExtra ) {
-        	
-	        String infoSource = nutritionModel.getUomFor(ErpNutritionType.SOURCE);
-	        if ( infoSource != null && infoSource.trim().length() > 0 ) {
-	        	out.print( "Information source: " + infoSource + "<br/>" );
-	        }
-	
-			double netCarbs = nutritionModel.getNetCarbs();		
-			if ( netCarbs > 0 ) {
-				out.print( "Net Carbs: " + netCarbs + "<br/>");
-			}
-			
-			out.print( "<br/>" );
-			
-        }
-		
-		List<FDNutrition> nutritionList = new ArrayList<FDNutrition>();
-		for ( Iterator<String> nIter = nutritionModel.getKeyIterator(); nIter.hasNext(); ) {
-			String key = nIter.next();
-			if ( "IGNORE".equalsIgnoreCase( key ) ) {
-				out.print( "<b>This information is currently hidden from the website</b><br/><br/>" );
-			}
-			FDNutrition fdn = new FDNutrition( ErpNutritionType.getType( key ).getDisplayName(), nutritionModel.getValueFor( key ), nutritionModel.getUomFor( key ) );
-			nutritionList.add( fdn );
-		}		
-        
-        
-        try {
-        	
-        	ServletContext srvCtx = pageContext.getServletContext();
-	        InputStream xslStream = srvCtx.getResourceAsStream( "/WEB-INF/shared/xml/nutrition_label.xsl" );
-			Transformer transformer = TransformerFactory.newInstance().newTransformer( new StreamSource( xslStream ) );
-			
-			org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", nutritionList);
-	        StringWriter st = new StringWriter();
-			transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
-			
-			out.print( st.toString() );
-			
-			return EVAL_BODY_BUFFERED;
-
-        } catch ( TransformerException e) {
-        	LOG.error( "XSL Transformer error while rendering classic nutrition panel for sku:"+skuCode, e );
-        	return SKIP_BODY;
-		}
-		
-		**/
-        
-        if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, showErpsExtra, out, pageContext.getServletContext()) ) {
+        if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, showErpsExtra, out) ) {
 			return EVAL_BODY_BUFFERED;
         }
     	return SKIP_BODY;

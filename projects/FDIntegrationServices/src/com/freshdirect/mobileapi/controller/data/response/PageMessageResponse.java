@@ -1,5 +1,8 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.List;
+
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 
 public class PageMessageResponse extends MessageResponse {
@@ -8,6 +11,7 @@ public class PageMessageResponse extends MessageResponse {
 
     private CMSWebPageModel page;
     private CMSWebPageModel pick;
+    private List<CMSImageBannerModel> welcomeCarouselBanners;
 
     public CMSWebPageModel getPage() {
         return page;
@@ -25,4 +29,11 @@ public class PageMessageResponse extends MessageResponse {
         this.pick = pick;
     }
 
+    public List<CMSImageBannerModel> getWelcomeCarouselBanners() {
+        return welcomeCarouselBanners;
+    }
+
+    public void setWelcomeCarouselBanners(List<CMSImageBannerModel> welcomeCarouselBanners) {
+        this.welcomeCarouselBanners = welcomeCarouselBanners;
+    }
 }

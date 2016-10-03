@@ -86,10 +86,13 @@ import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.catalog.model.UnitPrice;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.Lookup;
+import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
 import com.freshdirect.mobileapi.controller.data.response.FilterGroup;
 import com.freshdirect.mobileapi.controller.data.response.FilterGroupItem;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
+import com.freshdirect.mobileapi.controller.data.response.WebBrowseResult;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.DepartmentSection;
@@ -100,6 +103,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
@@ -109,13 +113,15 @@ public class BrowseUtil {
 	
 	private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 	private static final String FILTER_KEY_BRANDS = "brands";
-    private static final String FILTER_KEY_TAGS = "tags";    
+    private static final String FILTER_KEY_TAGS = "tags";
+    
+    private BrowseUtil() {
+    }
 	
-	public static  BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
-		
+	public static Message getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request, boolean isWebRequest) throws FDException{
 		String contentId = null;
 		String action=null;
-		BrowseResult result = new BrowseResult();
+		Idea featuredCardIdea = null;
 		contentId = requestMessage.getCategory();
     	if (contentId == null) {
     		contentId = requestMessage.getDepartment();
@@ -160,50 +166,14 @@ public class BrowseUtil {
     		BannerModel bm = cm.getTabletCallToActionBanner();
     		if( bm != null )
     		{
-    			Idea featuredCardIdea = Idea.ideaFor(bm);
-    			result.setFeaturedCard(featuredCardIdea);
+    			featuredCardIdea = Idea.ideaFor(bm);
     		}
     	}
-    	List contents = new ArrayList();
-
-        LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
-        Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
-        
-        if (layoutManagerSetting != null) {
-        	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
-        		layoutManagerSetting.setGrabberDepth(0);
-        	}
-
-        	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
-            ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
-            contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
-            
-            // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
-            if(currentFolder instanceof CategoryModel 
-            			&& ((CategoryModel)currentFolder).getProductPromotionType() != null) {
-            	layoutManagerSetting.setFilterUnavailable(true);
-            	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
-            	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
-            	layoutManagerSetting.setSortStrategy(list);
-            }
-            
-            ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-            sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
-
-        } else {
-            //Error happened. It's a internal error so don't expose to user. just log and return empty list
-            ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
-            if (layoutResult.isFailure()) {
-                Collection<ActionError> errors = layoutResult.getErrors();
-                for (ActionError error : errors) {
-                    LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
-                            + error.getDescription());
-                }
-            }
-        }
+    	List contents = getContents(user, currentFolder);
         
         List<Product> products = new ArrayList<Product>();
         List<Product> unavailableProducts = new ArrayList<Product>();
+        List<ProductPotatoData> productDatas = new ArrayList<ProductPotatoData>();
 
         List<Category> categories = new ArrayList<Category>();
         Set<String> categoryIDs = new HashSet<String>();
@@ -251,11 +221,17 @@ public class BrowseUtil {
 								}
                     		}
 
-							if(productModel.isUnavailable()) { // Segregate out unavailable to move them to the end
-                    			unavailableProducts.add(product);
-                    		} else {
-                    			products.add(product);
-                    		}
+                        if (productModel.isUnavailable()) { // Segregate out unavailable to move them to the end
+                            unavailableProducts.add(product);
+                        } else {
+                            products.add(product);
+                            if (isWebRequest) {
+                                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productModel, user.getFDSessionUser(), false);
+                                if (data != null) {
+                                    productDatas.add(data);
+                                }
+                            }
+                        }
                 		}
                 	//}	//DOOR3 FD-iPad FDIP-662
                 } catch (Exception e) {
@@ -313,40 +289,130 @@ public class BrowseUtil {
            }
         }
         
-        Map<String, SortedSet<String>> filters = result.getFilters();
-        if (brands.size() > 0) filters.put("brand", brands);
-        if (countries.size() > 0) filters.put("country", countries);
-        if (regions.size() > 0) filters.put("region", regions);
-        if (grapes.size() > 0) filters.put("grape", grapes);
-        if (typeFilters.size() > 0) filters.put("type", typeFilters);
-        
-        categories= customizeCaegoryListForIpad(categories, categorySections);
-        
-        if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-        	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-        			categories, requestMessage.getMax());
+        Message result = null;
+        if (isWebRequest){
+            WebBrowseResult res = new WebBrowseResult();
+            res.setFullName(currentFolder.getFullName());
+            Map<String, SortedSet<String>> filters = res.getFilters();
+            if (brands.size() > 0)
+                filters.put("brand", brands);
+            if (countries.size() > 0)
+                filters.put("country", countries);
+            if (regions.size() > 0)
+                filters.put("region", regions);
+            if (grapes.size() > 0)
+                filters.put("grape", grapes);
+            if (typeFilters.size() > 0)
+                filters.put("type", typeFilters);
 
-			result.setCategories(paginator.getPage(requestMessage.getPage()));
-			result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
-			result.setTotalResultCount(categories.size());
+            categories = customizeCaegoryListForIpad(categories, categorySections);
+
+            if (categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+                ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(categories,
+                        requestMessage.getMax());
+
+                res.setCategories(paginator.getPage(requestMessage.getPage()));
+                res.setResultCount(res.getCategories() != null ? res.getCategories().size() : 0);
+                res.setTotalResultCount(categories.size());
+            } else {
+                ListPaginator<ProductPotatoData> paginator = new ListPaginator<ProductPotatoData>(productDatas, requestMessage.getMax());
+
+                // send subcategories with products
+                res.setCategories(categories);
+                res.setProducts(paginator.getPage(requestMessage.getPage()));
+                res.setResultCount(res.getProducts() != null ? res.getProducts().size() : 0);
+                res.setTotalResultCount(products.size());
+            }
+
+            res.setFeaturedCard(featuredCardIdea);
+            res.setBottomLevel(nextLevelIsBottom);
+            BrowsePageResponse pageResult = new BrowsePageResponse();
+            pageResult.setCategory(res);
+            result = pageResult;
         } else {
-            eliminateHolidayMealBundleUnavailableProducts(unavailableProducts);
-        	products.addAll(unavailableProducts);//add all unavailable to the end of the list
+            BrowseResult res = new BrowseResult();
+            Map<String, SortedSet<String>> filters = res.getFilters();
+            if (brands.size() > 0)
+                filters.put("brand", brands);
+            if (countries.size() > 0)
+                filters.put("country", countries);
+            if (regions.size() > 0)
+                filters.put("region", regions);
+            if (grapes.size() > 0)
+                filters.put("grape", grapes);
+            if (typeFilters.size() > 0)
+                filters.put("type", typeFilters);
 
-        	ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
-     															products, requestMessage.getMax());
+            categories = customizeCaegoryListForIpad(categories, categorySections);
 
-        	// send subcategories with products
-        	result.setCategories(categories);
-     		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
-     		result.setResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
-     		result.setTotalResultCount(products.size());
+            if (categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+                ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(categories,
+                        requestMessage.getMax());
+
+                res.setCategories(paginator.getPage(requestMessage.getPage()));
+                res.setResultCount(res.getCategories() != null ? res.getCategories().size() : 0);
+                res.setTotalResultCount(categories.size());
+            } else {
+                eliminateHolidayMealBundleUnavailableProducts(unavailableProducts);
+                products.addAll(unavailableProducts);// add all unavailable to the end of the list
+
+                ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(products, requestMessage.getMax());
+
+                // send subcategories with products
+                res.setCategories(categories);
+                res.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
+                res.setResultCount(res.getProducts() != null ? res.getProducts().size() : 0);
+                res.setTotalResultCount(products.size());
+            }
+
+            res.setFeaturedCard(featuredCardIdea);
+            res.setBottomLevel(nextLevelIsBottom);
+            result = res;
         }
-        
-        result.setBottomLevel(nextLevelIsBottom);
         return result;
 		
 	}
+
+    private static List getContents(SessionUser user, ContentNodeModel currentFolder) throws FDException {
+        List contents = new ArrayList();
+
+        LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+        Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+        
+        if (layoutManagerSetting != null) {
+        	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
+        		layoutManagerSetting.setGrabberDepth(0);
+        	}
+
+        	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
+            ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
+            contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
+            
+            // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
+            if(currentFolder instanceof CategoryModel 
+            			&& ((CategoryModel)currentFolder).getProductPromotionType() != null) {
+            	layoutManagerSetting.setFilterUnavailable(true);
+            	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
+            	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
+            	layoutManagerSetting.setSortStrategy(list);
+            }
+            
+            ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+            sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+
+        } else {
+            //Error happened. It's a internal error so don't expose to user. just log and return empty list
+            ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+            if (layoutResult.isFailure()) {
+                Collection<ActionError> errors = layoutResult.getErrors();
+                for (ActionError error : errors) {
+                    LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
+                            + error.getDescription());
+                }
+            }
+        }
+        return contents;
+    }
 	
     private static void eliminateHolidayMealBundleUnavailableProducts(List<Product> unavailableProducts) {
         if (unavailableProducts != null) {

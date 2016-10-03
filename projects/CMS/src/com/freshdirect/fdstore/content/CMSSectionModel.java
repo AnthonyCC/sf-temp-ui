@@ -165,7 +165,130 @@ public class CMSSectionModel {
 	public void setLinkTarget(String linkTarget) {
 		this.linkTarget = linkTarget;
 	}
-	
-	
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((bodyText == null) ? 0 : bodyText.hashCode());
+        result = prime * result + ((captionText == null) ? 0 : captionText.hashCode());
+        result = prime * result + ((categoryList == null) ? 0 : categoryList.hashCode());
+        result = prime * result + ((components == null) ? 0 : components.hashCode());
+        result = prime * result + ((displayType == null) ? 0 : displayType.hashCode());
+        result = prime * result + ((drawer == null) ? 0 : drawer.hashCode());
+        result = prime * result + ((headlineText == null) ? 0 : headlineText.hashCode());
+        result = prime * result + ((imageBanner == null) ? 0 : imageBanner.hashCode());
+        result = prime * result + ((linkTarget == null) ? 0 : linkTarget.hashCode());
+        result = prime * result + ((linkText == null) ? 0 : linkText.hashCode());
+        result = prime * result + ((linkType == null) ? 0 : linkType.hashCode());
+        result = prime * result + ((linkURL == null) ? 0 : linkURL.hashCode());
+        result = prime * result + ((mustHaveProdList == null) ? 0 : mustHaveProdList.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((pickList == null) ? 0 : pickList.hashCode());
+        result = prime * result + ((productList == null) ? 0 : productList.hashCode());
+        result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        CMSSectionModel other = (CMSSectionModel) obj;
+        if (bodyText == null) {
+            if (other.bodyText != null)
+                return false;
+        } else if (!bodyText.equals(other.bodyText))
+            return false;
+        if (captionText == null) {
+            if (other.captionText != null)
+                return false;
+        } else if (!captionText.equals(other.captionText))
+            return false;
+        if (categoryList == null) {
+            if (other.categoryList != null)
+                return false;
+        } else if (!categoryList.equals(other.categoryList))
+            return false;
+        if (components == null) {
+            if (other.components != null)
+                return false;
+        } else if (!components.equals(other.components))
+            return false;
+        if (displayType == null) {
+            if (other.displayType != null)
+                return false;
+        } else if (!displayType.equals(other.displayType))
+            return false;
+        if (drawer == null) {
+            if (other.drawer != null)
+                return false;
+        } else if (!drawer.equals(other.drawer))
+            return false;
+        if (headlineText == null) {
+            if (other.headlineText != null)
+                return false;
+        } else if (!headlineText.equals(other.headlineText))
+            return false;
+        if (imageBanner == null) {
+            if (other.imageBanner != null)
+                return false;
+        } else if (!imageBanner.equals(other.imageBanner))
+            return false;
+        if (linkTarget == null) {
+            if (other.linkTarget != null)
+                return false;
+        } else if (!linkTarget.equals(other.linkTarget))
+            return false;
+        if (linkText == null) {
+            if (other.linkText != null)
+                return false;
+        } else if (!linkText.equals(other.linkText))
+            return false;
+        if (linkType == null) {
+            if (other.linkType != null)
+                return false;
+        } else if (!linkType.equals(other.linkType))
+            return false;
+        if (linkURL == null) {
+            if (other.linkURL != null)
+                return false;
+        } else if (!linkURL.equals(other.linkURL))
+            return false;
+        if (mustHaveProdList == null) {
+            if (other.mustHaveProdList != null)
+                return false;
+        } else if (!mustHaveProdList.equals(other.mustHaveProdList))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (pickList == null) {
+            if (other.pickList != null)
+                return false;
+        } else if (!pickList.equals(other.pickList))
+            return false;
+        if (productList == null) {
+            if (other.productList != null)
+                return false;
+        } else if (!productList.equals(other.productList))
+            return false;
+        if (schedules == null) {
+            if (other.schedules != null)
+                return false;
+        } else if (!schedules.equals(other.schedules))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
+            return false;
+        return true;
+    }
 	
 }

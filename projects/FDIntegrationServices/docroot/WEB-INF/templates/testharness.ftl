@@ -1010,7 +1010,13 @@ function loadStuff() {
   }  else if (loaddata == "BrowseCategory") {
   	$("#url").val("/browse/categories/");
   	$("#header").val('');
-	var postdata = '{"department": "cof", "page" : "1", "max" : "25"}';
+	var postdata = '{"category": "cof", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	
+  }  else if (loaddata == "BrowseCategoryWeb") {
+  	$("#url").val("/browse/categories/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
+	var postdata = '{"category": "avc", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
 
   } else if (loaddata == "Browse2") {
@@ -1309,7 +1315,7 @@ function loadStuff() {
   } else if (loaddata == "getPageWeb") {
   	$("#url").val("/home/getPage/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
-  	$("#payload").val('{"requestedDate" : "2016-08-14T12:12:00.000-04:00"}');
+  	$("#payload").val('{}');
 
   } else if (loaddata == "pickListGetAll") {
   	$("#url").val("/pickslist/getall/");
@@ -1548,6 +1554,7 @@ function doStuff() {
   <option value=""> ========== BROWSE ========== </option>
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
+  <option value="BrowseCategoryWeb">BROWSE - CATEGORY Web</option>
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 

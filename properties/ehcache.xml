@@ -84,4 +84,15 @@
            timeToLiveSeconds="900"
            memoryStoreEvictionPolicy="LRU">    
     </cache>
+
+    <!-- CMS Page Cache -->
+    <cache name="cmsPageCache"
+           maxEntriesLocalHeap="50"
+           eternal="true"
+           memoryStoreEvictionPolicy="LFU">
+           <cacheLoaderFactory class="com.freshdirect.wcms.FDCacheLoaderFactory"
+                               properties="some_property=1, some_other_property=2" />
+           <cacheDecoratorFactory class="net.sf.ehcache.constructs.refreshahead.RefreshAheadCacheFactory"
+                                  properties="name=myCacheRefresher,timeToRefreshSeconds=200,batchSize=10,numberOfThreads=4,maximumBacklogItems=100,evictOnLoadMiss=true" />
+    </cache>
 </ehcache>

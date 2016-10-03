@@ -2,8 +2,30 @@ package com.freshdirect.mobileapi.controller.data;
 
 public class ImageBanner {
 
-	public ImageBanner() {
+    public static ImageBanner wrap(com.freshdirect.fdstore.content.ImageBanner source) {
+        
+        final ImageBanner imgBanner = new ImageBanner();
+        
+        imgBanner.setText(source.getDescription());
+        imgBanner.setFlagColor(source.getFlagColor());
+        imgBanner.setFlagText(source.getFlagText());
+        imgBanner.setPrice(source.getPrice());
+        if (source.getImageBannerImage() != null) {
+            imgBanner.setImage(new Image(source
+                     .getImageBannerImage()).getSource());
+        }
+        if (source.getTarget() != null
+                && source.getTarget().getContentKey() != null) {
+            imgBanner.setTargetTypeId(source
+                     .getTarget().getContentKey().getEncoded());
+        }
+        
+        return imgBanner;
     }
+
+
+	public ImageBanner() {}
+
 
     public ImageBanner(String image, String text, String targetTypeId, String flagText, String flagColor, String price) {
        setImage(image);

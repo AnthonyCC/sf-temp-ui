@@ -3,7 +3,6 @@ package com.freshdirect.mobileapi.model;
 import static java.util.Collections.emptySet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,14 +21,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContext;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -45,7 +36,6 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
-import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -91,7 +81,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.TimeOfDay;
-import com.freshdirect.framework.xml.XMLSerializer;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.comparator.DomainValueComparator;
 import com.freshdirect.mobileapi.model.comparator.VariationComparator;
@@ -99,7 +88,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -108,6 +96,7 @@ import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
 
@@ -464,7 +453,7 @@ public class Product {
                 List<DomainValue> skuMultAttr = sku.getOriginalSku().getVariationMatrix();
 
                 if (skuMultAttr != null && skuMultAttr.size() > 0) {
-                    DomainValue key = (DomainValue) skuMultAttr.get(0);
+                    DomainValue key = skuMultAttr.get(0);
                     if (domainSkuMatrix.containsKey(key)) {
                         ProductDomain productDomain = domainSkuMatrix.get(key);
                         sku.setDomain(productDomain);
@@ -873,7 +862,7 @@ public class Product {
         if (EnumProductLayout.WINE.equals(product.getProductModel().getProductLayout())) {
             List<DomainValue> wineVintage = product.getProductModel().getWineVintage();
             if (wineVintage != null && wineVintage.size() > 0) {
-                DomainValue dValue = (DomainValue) wineVintage.get(0);
+                DomainValue dValue = wineVintage.get(0);
                 result = new StringBuffer(100).append(result).append(" ").append(dValue.getLabel()).toString();
             }
         }
@@ -1610,21 +1599,9 @@ public class Product {
     public String getNutrition() {
         String result = "";
         if (isAvailable()) {
-            try {
-                InputStream xslStream = Product.class.getResourceAsStream(("nutrition_label.xsl"));
-                Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslStream));
-                org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", getDefaultProduct().getNutrition());
-                StringWriter st = new StringWriter();
-                transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
-                result = st.toString();
-            } catch (TransformerConfigurationException e) {
-                LOG.error(e.getMessage(), e);
-            } catch (TransformerFactoryConfigurationError e) {
-                LOG.error(e.getMessage(), e);
-            } catch (TransformerException e) {
-                LOG.error(e.getMessage(), e);
-            }
-
+            StringWriter st = new StringWriter();
+            NutritionInfoPanelRendererUtil.renderPanelWithNutritionList(getDefaultProduct().getNutrition(), st);
+            result = st.toString();
         }
         return result;
     }
@@ -1633,21 +1610,9 @@ public class Product {
         String result = "";
         FDProduct fdProduct = sku.getOriginalSku().getProduct();
         if (isAvailable()) {
-            try {
-                InputStream xslStream = Product.class.getResourceAsStream(("nutrition_label.xsl"));
-                Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslStream));
-                org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", fdProduct.getNutrition());
-                StringWriter st = new StringWriter();
-                transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
-                result = st.toString();
-            } catch (TransformerConfigurationException e) {
-                LOG.error(e.getMessage(), e);
-            } catch (TransformerFactoryConfigurationError e) {
-                LOG.error(e.getMessage(), e);
-            } catch (TransformerException e) {
-                LOG.error(e.getMessage(), e);
-            }
-
+            StringWriter st = new StringWriter();
+            NutritionInfoPanelRendererUtil.renderPanelWithNutritionList(fdProduct.getNutrition(), st);
+            result = st.toString();
         }
         return result;
 
@@ -1690,7 +1655,7 @@ public class Product {
 	            result = new Product(productModel, user, variant, cartLine, ctx, isQuickBuy);
 	            try {
 				    ProductExtraData data= new ProductExtraData();
-	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null, null);
+	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null);
 	               	result.setProductExtraData(data);	
 	               	ProductData productData=new ProductData();
 	               	ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());

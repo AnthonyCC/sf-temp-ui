@@ -52,7 +52,7 @@ public class ProductPotatoServlet extends BaseJsonServlet {
 
             String groupId = request.getParameter("groupId");
             String groupVersion = request.getParameter("groupVersion");
-            productPotatoData.setProductExtraData(ProductExtraDataPopulator.createExtraData(user, product, getServletContext(), groupId, groupVersion));
+            productPotatoData.setProductExtraData(ProductExtraDataPopulator.createExtraData(user, product, groupId, groupVersion));
             LOGGER.info("Product " + productId + " produce extra potatos");
 
             writeResponseData(response, productPotatoData);

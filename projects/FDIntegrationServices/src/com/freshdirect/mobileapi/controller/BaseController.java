@@ -5,11 +5,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.StoreContext;
@@ -39,13 +44,21 @@ import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSComponentType;
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
+import com.freshdirect.fdstore.content.CMSImageModel;
 import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.content.CMSSectionModel;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ImageBanner;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -54,13 +67,16 @@ import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
 import com.freshdirect.mobileapi.controller.data.CMSSectionProductModel;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail;
+import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
+import com.freshdirect.mobileapi.controller.data.response.HasLoggedInField;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
-import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -82,7 +98,9 @@ import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.wcms.CMSContentFactory;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -644,7 +662,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     private String getMobileNumber(SessionUser user) throws FDResourceException {
         String mobileNumber = null;
-        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+        FDSessionUser fduser = user.getFDSessionUser();
         FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
         FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
 
@@ -691,12 +709,14 @@ public abstract class BaseController extends AbstractController implements Messa
 
     // Gives back Home and Today's Pick feeds
     protected void populateHomePages(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
-        populateMessageResponse(user, pageResponse, request);
+        populateResponseWithEnabledAdditionsForWebClient(user, pageResponse, request, null);
 
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_FEEDS)) {
             List<String> errorProductKeys = new ArrayList<String>();
 
-            for (CMSWebPageModel page : getPages(user, pageRequest, errorProductKeys)) {
+            for (CMSWebPageModel page : getPages(user, pageRequest, errorProductKeys, isWebRequest)) {
                 if (TODAYS_PICK_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
                     pageResponse.setPick(page);
                 } else if (FEED_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
@@ -708,69 +728,163 @@ public abstract class BaseController extends AbstractController implements Messa
                 pageResponse.addErrorMessage(errorProductKey);
             }
         }
+        
+        // populate welcome carousel image banners
+        if (isWebRequest) {
+            final StoreModel store = ContentFactory.getInstance().getStore();
+            List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
+            List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>(imageBanners.size());
+            for (ImageBanner imageBanner : imageBanners) {
+                cmsImageBanners.add(convertImageBanner(imageBanner));
+            }
+            pageResponse.setWelcomeCarouselBanners(cmsImageBanners);
+        }
     }
 
-    protected void populateMessageResponse(SessionUser user, MessageResponse messageResponse, HttpServletRequest request) throws FDException {
-        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
-            LoggedIn loginMessage = createLoginResponseMessage(user);
+    private CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
+        CMSImageBannerModel cmsImageBanner = new CMSImageBannerModel();
+        cmsImageBanner.setComponentType(CMSComponentType.BANNER);
+        cmsImageBanner.setName(imageBanner.getName());
+        cmsImageBanner.setDescription(imageBanner.getDescription());
+        cmsImageBanner.setType(imageBanner.getType());
+        cmsImageBanner.setImage(convertImage(imageBanner.getImageBannerImage()));
+        cmsImageBanner.setTarget(convertTarget(imageBanner.getTarget()));
+        cmsImageBanner.setLinkOneTarget(convertTarget(imageBanner.getLinkOneTarget()));
+        cmsImageBanner.setLinkOneText(imageBanner.getLinkOneText());
+        cmsImageBanner.setLinkOneType(imageBanner.getLinkOneType());
+        cmsImageBanner.setLinkOneURL(imageBanner.getLinkOneURL());
+        cmsImageBanner.setLinkTwoTarget(convertTarget(imageBanner.getLinkTwoTarget()));
+        cmsImageBanner.setLinkTwoText(imageBanner.getLinkTwoText());
+        cmsImageBanner.setLinkTwoType(imageBanner.getLinkTwoType());
+        cmsImageBanner.setLinkTwoURL(imageBanner.getLinkTwoURL());
+        return cmsImageBanner;
+    }
+    
+    private String convertTarget(ContentNodeModel node) {
+        String encodedKey = null;
+        if (node != null) {
+            ContentKey key = node.getContentKey();
+            if (key != null) {
+                encodedKey = key.getEncoded();
+            }
+        }
+        return encodedKey;
+    }
+
+    private CMSImageModel convertImage(Image image){
+        CMSImageModel cmsImage = new CMSImageModel();
+        cmsImage.setPath(image.getPath());
+        cmsImage.setHeight(image.getHeight());
+        cmsImage.setWidth(image.getWidth());
+        return cmsImage;
+    }
+
+    protected void populateResponseWithEnabledAdditionsForWebClient(SessionUser user, Message messageResponse, HttpServletRequest request, LoggedIn loginMessage) throws FDException {
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO) && messageResponse instanceof HasLoggedInField) {
+            if (loginMessage == null) {
+                loginMessage = createLoginResponseMessage(user);
+            }
+
             messageResponse.setStatus(loginMessage.getStatus());
-            messageResponse.setLogin(loginMessage);
+            ((HasLoggedInField)messageResponse).setLogin(loginMessage);
             messageResponse.setConfiguration(getConfiguration(user));
         }
 
-        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART)) {
-            messageResponse.setCartDetail(user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART));
+        if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART) && messageResponse instanceof HasCartDetailField) {
+            final CartDetail cartDetail = user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART);
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+            ((HasCartDetailField)messageResponse).setCartDetail(cartDetail);
         }
     }
-    
-    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
+
+    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
+        List<CMSWebPageModel> pages = null;
         if (pageRequest.isPreview()) {
-            pages.addAll(getPreviewPages(user, pageRequest, errors));
-        } else if (pageRequest.getRequestedDate() == null) {
-            CMSWebPageModel page = getCachedPage(user, pageRequest, errors);
-            if (page == null) {
-                errors.add("Can not find page(s) in cache.");
-            } else {
-                pages.add(page);
-            }
+            pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
         } else {
-            pages.addAll(getPagesByParameters(user, pageRequest, errors));
+            pages = getCachedPages(pageRequest);
+            if (isCachedPagesInvalid(pageRequest, pages)) {
+                CMSContentFactory.getInstance().cacheAllPages();
+                pages = getCachedPages(pageRequest);
+            }
         }
-        return pages;
-    }
-
-    // Refresh the feed if it is for preview
-    protected List<CMSWebPageModel> getPreviewPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        CMSContentFactory.getInstance().cacheAllPages();
-        return getPagesByParameters(user, pageRequest, errors);
-    }
-
-    // Get the feed from cache if it doesn't have request date / if it is not for preview
-    public List<CMSWebPageModel> getPagesByParameters(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
         for (CMSWebPageModel page : pages) {
-            addProductsToSection(user, page, errors);
+            addProductsToSection(user, page, errors, webRequest);
         }
         return pages;
     }
 
-    // Refresh the feed if it has the date in the request
-    protected CMSWebPageModel getCachedPage(SessionUser user, CMSPageRequest pageRequest, List<String> errors) {
-        CMSWebPageModel page = CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageType());
-        addProductsToSection(user, page, errors);
-        return page;
+    private boolean isCachedPagesInvalid(CMSPageRequest pageRequest, List<CMSWebPageModel> cachedPages) {
+        boolean invalid = cachedPages.isEmpty();
+
+        if (!invalid) {
+            List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPages(pageRequest);
+            Set<CMSWebPageModel> pageSet = new HashSet<CMSWebPageModel>(pages);
+            Set<CMSWebPageModel> cachedPageSet = new HashSet<CMSWebPageModel>(cachedPages);
+            invalid = !pageSet.equals(cachedPageSet);
+        }
+
+        return invalid;
     }
 
-    private void addProductsToSection(SessionUser user, CMSWebPageModel page, List<String> errors) {
+    private List<CMSWebPageModel> getCachedPages(CMSPageRequest pageRequest) {
+        List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
+        List<String> webPageTypes = (pageRequest.getPageType() != null) ? Arrays.asList(pageRequest.getPageType()) : Arrays.asList(FEED_PAGE_TYPE, TODAYS_PICK_PAGE_TYPE);
+        for (String type : webPageTypes) {
+            CMSWebPageModel cachedFeedPage = CMSContentFactory.getInstance().getCMSPageByName(type);
+            if (cachedFeedPage != null) {
+                pages.add(cachedFeedPage);
+            }
+        }
+        return pages;
+    }
+
+    private void addProductsToSection(SessionUser user, CMSWebPageModel page, List<String> errors, final boolean usePotatoes) {
         if (page != null) {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
-            for (CMSSectionModel section : page.getSections()) {
-                CMSSectionProductModel sectionWithProduct = new CMSSectionProductModel(section);
-                sectionWithProduct.setProducts(getProducts(user, section.getProductList(), errors));
-                sectionWithProducts.add(sectionWithProduct);
+            
+            if (usePotatoes) {
+                final FDUserI uzer = user.getFDSessionUser();
+                
+                // populate lightweight product potatoes
+                for (final CMSSectionModel section : page.getSections()) {
+
+                    final CMSPotatoSectionModel pSection = CMSPotatoSectionModel.withSection(section);
+                    List<String> productKeys = section.getProductList();
+                    if (productKeys == null)
+                        productKeys = Collections.emptyList();
+                    
+                    // collect potatoes in this collection
+                    final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>(productKeys.size());
+
+                    // turn product IDs to product potatoes
+                    for ( final String prodKey : productKeys ) {
+                        // extract CMS id
+                        final String prodId = prodKey.substring(FDContentTypes.PRODUCT.getName().length()+1);
+
+                        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, uzer, false);
+                        if (data != null) {
+                            potatoes.add(data);
+                        }
+                    }
+
+                    // populate section
+                    pSection.setProducts(potatoes);
+                    
+                    // insert new section
+                    sectionWithProducts.add(pSection);
+                }
+            } else {
+                // populate legacy mobile product models
+                for (CMSSectionModel section : page.getSections()) {
+                    CMSSectionProductModel sectionWithProduct = new CMSSectionProductModel(section);
+                    sectionWithProduct.setProducts(getProducts(user, section.getProductList(), errors));
+                    
+                    sectionWithProducts.add(sectionWithProduct);
+                }
             }
             page.setSections(sectionWithProducts);
+            
         }
     }
 
@@ -791,5 +905,4 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return products;
     }
-
 }

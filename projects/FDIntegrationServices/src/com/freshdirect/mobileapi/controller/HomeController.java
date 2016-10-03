@@ -132,7 +132,6 @@ public class HomeController extends BaseController {
 	private ModelAndView getAllDetails(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException, FDException{
 		
 		HomeResponse response = new HomeResponse();
-		BrowseUtil browse = new BrowseUtil();
 		
 		if (user == null) {
     		user = fakeUser(request.getSession());
@@ -179,8 +178,7 @@ public class HomeController extends BaseController {
         	requestMessage.setCategory(cat.getId());
         	requestMessage.setPage(DEFAULT_PAGE);
         	requestMessage.setMax(DEFAULT_MAX);
-        	//BrowseResult res = new BrowseResult();
-        	BrowseResult res=browse.getCategories(requestMessage, user, request);
+        	BrowseResult res = (BrowseResult) BrowseUtil.getCategories(requestMessage, user, request, false);
         	FeaturedCategory featured = new FeaturedCategory();
         	cat.setNoOfProducts(res.getProducts().size());
         	featured.setCategory(cat);

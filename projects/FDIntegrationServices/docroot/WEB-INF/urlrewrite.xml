@@ -941,10 +941,6 @@
 		<to last="true">/browse.do?action=getAllProducts&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/browse/getproducts/(.*)</from>
-		<to last="true">/browse.do?action=getAllProducts&amp;ver=$1</to>
-	</rule>
-	<rule>
 		<from>^/v/([0-9]+)/browse/getproductsEX/(.*)</from>
 		<to last="true">/browse.do?action=getAllProductsEX&amp;ver=$1</to>
 	</rule>

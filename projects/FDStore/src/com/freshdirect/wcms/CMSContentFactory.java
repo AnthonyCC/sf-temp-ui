@@ -49,16 +49,17 @@ import com.freshdirect.fdstore.content.CMSScheduleModel;
 import com.freshdirect.fdstore.content.CMSSectionModel;
 import com.freshdirect.fdstore.content.CMSTextComponentModel;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CMSContentFactory {
 	
 	private static final String FEED_CACHE = "cmsPageCache";
-	private static CMSContentFactory instance = null;
-	Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
 	private static final Category LOG = LoggerFactory.getInstance(CMSContentFactory.class);
+	private static CMSContentFactory instance = null;
 	
+	private Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
 	private DraftContext draftContext = DraftContext.MAIN;
 	
 	public static CMSContentFactory getInstance(){
@@ -76,10 +77,10 @@ public class CMSContentFactory {
 		instance.cacheAllPages();
 		
 		//Schedule the task after every 15 mins.
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.MINUTE, 0);
+        //Calendar calendar = Calendar.getInstance();
+        //calendar.set(Calendar.HOUR, 0);
+        //calendar.set(Calendar.MINUTE, 0);
+        //calendar.set(Calendar.MINUTE, 0);
 		//pageTimer.scheduleAtFixedRate(instance.new PageLoaderTask(), calendar.getTime(), 15 * 60 *1000);
 		//pickListTimer.scheduleAtFixedRate(instance.new PickListLoaderTask(), calendar.getTime(), 15 * 60 *1000);
 	}
@@ -100,6 +101,7 @@ public class CMSContentFactory {
 	public void cacheAllPages(){
 		LOG.debug("Loading all pages in cache "+ new Date());
 		CMSPageRequest pageRequest = new CMSPageRequest();
+		pageRequest.setPlantId(ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId());
 		List<CMSWebPageModel> pages = getCMSPageByParameters(pageRequest);
 		EhCacheUtil.clearCache(FEED_CACHE);
 		for(CMSWebPageModel page: pages){
@@ -141,18 +143,12 @@ public class CMSContentFactory {
 	}
 	
 	public final List<CMSWebPageModel> getCMSPageByParameters(CMSPageRequest pageRequest){
-		List<CMSWebPageModel> response = new ArrayList<CMSWebPageModel>();
-		Map<ContentKey,ContentNodeI> contentNodes = new HashMap<ContentKey,ContentNodeI>();
-		//if preview load from cms db, else read from erps feed table.
-		if(pageRequest.isPreview()){
-			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"), draftContext);
-			contentNodesMap = getContentService().getContentNodes(keys, draftContext);
-		} else {
-			String data = getFeedContent();
-			if(StringUtils.isNotBlank(data)){
-				contentNodesMap = loadNodesFromXMLString(data);				
-			} 
-		}
+		loadFeedNodes(pageRequest);
+		return getCMSPages(pageRequest);
+	}
+
+	public List<CMSWebPageModel> getCMSPages(CMSPageRequest pageRequest) {
+        List<CMSWebPageModel> response = new ArrayList<CMSWebPageModel>();
 		if(contentNodesMap != null && !contentNodesMap.isEmpty()){
 			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
 				ContentNodeI contentNode = contentNodeEntry.getValue();
@@ -183,8 +179,20 @@ public class CMSContentFactory {
 			}
 		}
 		return response;
-	}
-	
+    }
+
+    private void loadFeedNodes(CMSPageRequest pageRequest) {
+        //if preview load from cms db, else read from erps feed table.
+		if(pageRequest.isPreview()){
+			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"), draftContext);
+			contentNodesMap = getContentService().getContentNodes(keys, draftContext);
+		} else {
+			String data = getFeedContent();
+			if(StringUtils.isNotBlank(data)){
+				contentNodesMap = loadNodesFromXMLString(data);				
+			} 
+		}
+    }
 	
 	public final CMSWebPageModel getCMSPageByName(String pageName){
 		CMSWebPageModel page = (CMSWebPageModel) EhCacheUtil.getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
@@ -199,6 +207,7 @@ public class CMSContentFactory {
 			webPage.setSeoMetaDescription((String)contentNode.getAttributeValue("SEO_META_DESCRIPTION"));
 			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
 			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule", request);
+			webPage.setSchedule(schedules);
 			
 			boolean matchingSchedule = isSchedulesMatches(schedules, request, true);
 			if(!matchingSchedule){
@@ -316,6 +325,7 @@ public class CMSContentFactory {
 						if(components != null && !components.isEmpty()){
 							section.setComponents(components);						
 						}
+						section.setSchedules(schedules);
 						sections.add(section);
 					} 
 				}else {

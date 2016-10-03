@@ -380,6 +380,9 @@ public class ProductDetailPopulator {
 		
 		return createProductData( user, product, sku, null, false );
 	}
+
+
+
 	// APPDEV-4251
 	public static ProductData createProductDataForCarousel( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
@@ -404,6 +407,8 @@ public class ProductDetailPopulator {
 		return createProductDataForCarousel( user, product, sku, null, false );
 	}
 
+
+
 	public static ProductData populateBrowseRecommendation(FDUserI user, ProductData data, ProductModel product) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
 		if ( data == null ) {
 			data = new ProductData();
@@ -425,6 +430,8 @@ public class ProductDetailPopulator {
 		
 		return data;
 	}
+
+
 
 	public static ProductData populateSelectedNutritionFields(FDUserI user, ProductData data, FDProduct fdProduct, ErpNutritionType.Type erpsNutritionTypeType) {
 		if ( data == null ) {
@@ -526,20 +533,8 @@ public class ProductDetailPopulator {
 		data.setCMSKey( product.getContentKey().getEncoded() );
 		
 		// Product & brand name - we need to separate them if applicable
-		String fullName = product.getFullName();
-		String productNameNoBrand = fullName;
-		String brandName = product.getPrimaryBrandName();
-		if (	brandName != null && 
-				brandName.length() > 0 && 
-				fullName.length() >= brandName.length() && 
-				fullName.substring( 0, brandName.length() ).equalsIgnoreCase( brandName ) 
-			) {			
-			productNameNoBrand = fullName.substring( brandName.length() ).trim();
-		}
-		
-		data.setProductName( fullName );
-		data.setProductNameNoBrand( productNameNoBrand );
-		data.setBrandName( brandName );
+		populateProductAndBrandName(data, product);
+
 		// APPDEV - 4270 Optimize the webpage changes to append the domain
 		String domains = FDStoreProperties.getSubdomains();
 		data.setAkaName( product.getAka() );
@@ -576,7 +571,45 @@ public class ProductDetailPopulator {
 		return data;
 	}
 
-	
+
+	/**
+	 * Set the following attributes on product potato
+	 * 
+	 * Product Name
+	 * Brand Name
+	 * Product Name without Brand Name
+	 * 
+	 * @param data
+	 * @param product
+	 * @return
+	 */
+	public static BasicProductData populateProductAndBrandName(BasicProductData data, ProductModel product) {
+
+	    // Product & brand name - we need to separate them if applicable
+        final String fullName = product.getFullName();
+        String productNameNoBrand = fullName;
+
+        String brandName = null;
+        if (product.getBrands() != null && !product.getBrands().isEmpty()) {
+            brandName = product.getBrands().get(0).getFullName();
+        }
+
+        // remove brand name from product full name if possible
+        if (    brandName != null && 
+                brandName.length() > 0 && 
+                fullName.length() >= brandName.length() && 
+                fullName.substring( 0, brandName.length() ).equalsIgnoreCase( brandName ) 
+            ) {         
+            productNameNoBrand = fullName.substring( brandName.length() ).trim();
+        }
+
+        // set potato attributes
+        data.setProductName( fullName );
+        data.setProductNameNoBrand( productNameNoBrand );
+        data.setBrandName( brandName );
+
+	    return data;
+	}
 	
 	/**
 	 * Populates product level data.
