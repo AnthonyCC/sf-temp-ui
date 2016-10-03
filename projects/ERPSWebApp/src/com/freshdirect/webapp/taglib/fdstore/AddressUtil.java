@@ -57,6 +57,7 @@ public class AddressUtil {
             
 			foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), shpAddrToModify);
             user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
+            user.setAddress(shpAddrToModify);
             
 //		      zero lat and long to clear cache and force geocode when order is placed (see dlvManagerDAO.getZoneCode())
 	        AddressInfo info = address.getAddressInfo();	        

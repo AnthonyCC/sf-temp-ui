@@ -337,6 +337,22 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		
 		boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
+		
+		//[APPDEV-5568]- Reset the usercontext, as the address is updated.
+		user.resetUserContext();
+		cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+		if (!cart.isEmpty()) {
+			for (FDCartLineI cartLine : cart.getOrderLines()) {
+				cartLine.setUserContext(user.getUserContext());
+				
+			}
+		}
+		try {
+			cart.refreshAll(true);
+		} catch (FDInvalidConfigurationException e) {
+			LOGGER.warn(e);
+		}
+		
 		if(foundFraud){
 			/*
 			 * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]
