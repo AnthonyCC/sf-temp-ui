@@ -7,7 +7,6 @@ import com.freshdirect.fdstore.services.tax.data.CancelTaxResult;
 import com.freshdirect.fdstore.services.tax.data.GeoTaxResult;
 import com.freshdirect.fdstore.services.tax.data.GetTaxRequest;
 import com.freshdirect.fdstore.services.tax.data.GetTaxResult;
-import com.freshdirect.fdstore.services.tax.data.Line;
 
 /*
  * @author Nakkeeran Annamalai
@@ -17,9 +16,6 @@ public class AvalaraTaxService {
 	public GetTaxResult getTax(GetTaxRequest request)
 	{
 		String taxget = "/1.0/tax/get";
-		for(Line line:request.getLines()){
-			LOGGER.info("Tax Code= "+line.getTaxCode());
-		}
 		return FDTaxUtil.execute(taxget, request, GetTaxResult.class);
 	}
 	

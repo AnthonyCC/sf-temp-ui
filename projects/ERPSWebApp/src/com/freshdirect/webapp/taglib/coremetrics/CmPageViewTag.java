@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilterValue;
-import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
@@ -82,7 +81,7 @@ public class CmPageViewTag extends AbstractCmTag {
 				}
 			}
 		} catch (MalformedURLException exc) {
-			LOGGER.error("Failed to process referer URL " + request.getHeader("referer"));
+			LOGGER.debug("Failed to process referer URL " + request.getHeader("referer"));
 		}
 		return null;
 	}
