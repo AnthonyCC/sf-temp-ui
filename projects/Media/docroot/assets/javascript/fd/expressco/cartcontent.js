@@ -576,6 +576,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					}
 					fd.common.dispatcher.signal('cartHeader', ajaxData);
 					fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
+					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData);
 					if(focusedElementId) {
 						try {
 							document.getElementById(focusedElementId).focus();
@@ -687,6 +688,39 @@ etids.div_tooltipPopup = "#tooltipPopup";
 	});
 	productSampleCarousel.listen();
 
+	
+	//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
+	var donationProductSampleCarousel = Object.create(WIDGET,{
+		signal:{
+			value:'donationProductSampleCarousel'
+		},
+		template: {
+			value:expressco.donationProductSampleCarouselWrapper
+		},
+		placeholder:{
+			value:'#donationProductSampleCarousel'
+		},
+		callback: {
+			value: function(value){
+				this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
+				fd.components.carousel && fd.components.carousel.initialize();
+
+				/*remove extra e-tip element crap (sorry for this hack solution)*/
+				if( $(".cartsection__totalwrapper").length > 1 ){
+					$(".cartsection__totalwrapper:first div.subtotalboxes").remove();
+
+					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
+				}
+
+				/*kill certain accidental unwanted repetive elements*/
+				template_cleanup();
+			}
+		}
+	});
+	donationProductSampleCarousel.listen();
+
+	
+	
 	var atcHandler = Object.create(fd.common.signalTarget, {
 		signal: {
 			value: 'atcResult'

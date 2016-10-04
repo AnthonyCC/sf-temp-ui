@@ -745,6 +745,16 @@ label[for="dontupdatecartlines"] {
   display:none;
 }
 
+#donationProductSampleCarousel .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="2"] [data-component="carousel-next"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="3"] [data-component="carousel-prev"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="3"] [data-component="carousel-next"]{
+  background:none;
+  display:none;
+}
+
 #productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel"],
 #productsamplecarousel .product-sample-carousel[product-count="2"] [data-component="carousel"],
 #productsamplecarousel .product-sample-carousel[product-count="3"] [data-component="carousel"]{
@@ -752,11 +762,21 @@ label[for="dontupdatecartlines"] {
   padding-left:0;
 }
 
-#productsamplecarousel .product-sample-carousel [data-component="carousel"]{
+#donationProductSampleCarousel .product-sample-carousel[product-count="1"] [data-component="carousel"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="2"] [data-component="carousel"],
+#donationProductSampleCarousel .product-sample-carousel[product-count="3"] [data-component="carousel"]{
+  padding-right:0;
+  padding-left:0;
+}
+
+
+#productsamplecarousel .product-sample-carousel [data-component="carousel"],
+#donationProductSampleCarousel.product-sample-carousel [data-component="carousel"]{
   margin:0;
 }
 
-#productsamplecarousel .product-sample-carousel [data-component="carousel-mask"]{
+#productsamplecarousel .product-sample-carousel [data-component="carousel-mask"],
+#donationProductSampleCarousel.product-sample-carousel [data-component="carousel-mask"]{
 	margin-top: 20px;
 }
 
@@ -770,6 +790,7 @@ label[for="dontupdatecartlines"] {
   vertical-align:top;
 }
 
+#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li,
 #productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
   width: 282px; /* 124 + 156 */
 }
@@ -814,6 +835,11 @@ label[for="dontupdatecartlines"] {
   width: 354px; /* 154 + 200 */
 }
 
+#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count1,
+#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count2{
+  width: 354px; /* 154 + 200 */
+}
+
 .productSamplingItem.item-count1.portrait-item,
 .productSamplingItem.item-count2.portrait-item{
   padding-left:154px;
@@ -852,7 +878,8 @@ label[for="dontupdatecartlines"] {
   padding-right:0;
 }
 
-#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.productSamplingItem.item-count3 {
+#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.productSamplingItem.item-count3,
+#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.productSamplingItem.item-count3 {
   width: 304px; /* 124 + 180 */
 }
 

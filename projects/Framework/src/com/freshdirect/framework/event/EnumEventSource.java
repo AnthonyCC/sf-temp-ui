@@ -47,7 +47,9 @@ public enum EnumEventSource {
 	
 	view_cart("view_cart"),
 	ps_caraousal("ps_caraousal"),
-
+	
+	dn_caraousal("dn_caraousal"),
+	
 	ExternalPage("ExternalPage"), //External Page
 	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
 	

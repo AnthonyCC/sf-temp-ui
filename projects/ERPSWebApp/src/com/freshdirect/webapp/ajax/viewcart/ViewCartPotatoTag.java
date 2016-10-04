@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
@@ -29,7 +30,13 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
         try {
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             carousels = ViewCartCarouselService.defaultService().populateViewCartTabsRecommendationsAndCarousel(request);
-            productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request);
+          
+            //APPDEV-5516 If the property is true, populate the Donation Carousel , else fall back to Product Sample Carousel
+            if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
+            	productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request);
+            } else {
+                productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request);
+            }
             carousels.setProductSamplesTab(productSamplesTab);
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);

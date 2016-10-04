@@ -572,7 +572,13 @@ public class CartDataService {
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
-            cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+            
+            //APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
+            if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
+            	cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request));	
+            } else {
+            	cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+            }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

@@ -146,7 +146,7 @@ public interface SystemMessageList {
 	public final static String MSG_DLV_PASS_EXTENDED_MULTIPLE_WEEKS = " weeks added to Delivery pass.";
 	public final static String MSG_DLV_PASS_CANCELLED = "Delivery pass was cancelled successfully.";
 	public final static String MSG_DLV_PASS_NOT_CANCELLED="Delivery pass could not be cancelled";
-	public final static String MSG_CONTAINS_DLV_PASS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to buy a DeliveryPass.";
+	public final static String MSG_CONTAINS_DLV_PASS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to buy a DeliveryPass or make a charity donation.";
 	public final static String MSG_UNLIMITED_PASS_CANCELLED = "We''re sorry! Your unlimited delivery pass is already cancelled. Delivery fees will apply if you resubmit the order.";
 	public final static String MSG_PASS_DISCONTINUED = "We're sorry! this product is no longer available.";
 	// SORI MESSGAES
@@ -235,4 +235,7 @@ public interface SystemMessageList {
 	//PayPal
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";	
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR_1="Paypal is unable to process your payment at this time.";
+	
+/*	//APPDEV-5516 Cart Carousel - Grand Giving Donation Technology
+	public final static String MSG_CONTAINS_DONATION_PRODUCTS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to make a charity donation.";*/
 }

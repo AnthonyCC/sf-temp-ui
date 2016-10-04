@@ -61,9 +61,19 @@
         <soy:render template="expressco.cartheader" data="${cartDataPotato}" />
       </div>
 
-      <div id="productsamplecarousel">
+<%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
+<%-- If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel --%>
+  <%   
+   if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
+     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
+        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato}" />
+      </div>     
+<%}else{ %>
+	  <div id="productsamplecarousel" class="product-sample-carousel">
         <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato}" />
       </div>
+      <%} 
+  %>
 
       <div id="questions">
         <soy:render template="expressco.cartheaderQuestions" data="${cartDataPotato}" />

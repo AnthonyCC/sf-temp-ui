@@ -56,6 +56,7 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
@@ -285,6 +286,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private boolean isCustomTip;
 	private boolean isTipApplied = false;
 	private EnumNotificationType taxationtype;
+	
+	private List<ProductModel> donationSampleProducts;
 
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -2103,6 +2106,31 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	public void setTaxationType(EnumNotificationType taxationType){
 		this.taxationtype = taxationType;
+	}
+	
+	//APPDEV -5516 : Cart Carousel - Grand Giving Donation Technology
+	public boolean containsDonationProductsOnly(){
+		if(FDStoreProperties.isPropDonationProductSamplesEnabled()) {
+				
+			String[] donationSkuCode = FDStoreProperties
+					.getPropDonationProductSamplesId().split(",");
+		List<String> donationSkuCodeList=Arrays.asList(donationSkuCode);
+		for (FDCartLineI fdCartLine : getOrderLines()){
+			String cartSku=fdCartLine.getSkuCode();
+			if(!donationSkuCodeList.contains(cartSku)){
+			return false;
+			} 
+		  }
+		}
+		return true;
+	}
+
+	public List<ProductModel> getDonationProducts() {
+		return donationSampleProducts;
+	}
+
+	public void setDonationProducts(List<ProductModel> donationProducts) {
+		this.donationSampleProducts = donationProducts;
 	}
 	
 }

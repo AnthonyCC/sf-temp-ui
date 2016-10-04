@@ -900,6 +900,13 @@ public class FDStoreProperties {
     private static final String PROP_UNBXD_FALLBACK_ON_ERROR = "fdstore.unbxd.fallback.on.error";
     private static final String PROP_UNBXD_TRACKING_BASE_URL = "fdstore.unbxd.tracking.base_url";
 
+    // APPDEV -5516 :Cart Carousel - Grand Giving Donation Technology
+    private static final String PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.donation.product.samples.max.buy.products.limit";
+    private static final String PROP_DONATION_PRODUCT_SAMPLES_TITLE = "fdstore.donation.product.samples.title";
+    private static final String PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.donation.product.samples.max.buy.quantity.limit";
+    private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
+    private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
+    
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1701,6 +1708,13 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
+
+        // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "50");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "50");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_TITLE, "");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "true");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "MKT9000210,MKT9000211,MKT9000212,MKT9000213");
 
         refresh();
     }
@@ -4407,4 +4421,29 @@ public class FDStoreProperties {
     public static List<String> getMealKitMaterialGroup(){
     	return null != config.get("PROP_MEAL_KIT_MATERIAL_GROUP")? (List<String>) config.get("PROP_MEAL_KIT_MATERIAL_GROUP"):null;
     }
+
+	public static int  getPropDonationProductSamplesMaxBuyProductsLimit() {
+		return Integer.parseInt(get(PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT));
+	}
+
+	public static String getPropDonationProductSamplesTitle() {
+		return get(PROP_DONATION_PRODUCT_SAMPLES_TITLE);
+	}
+
+	public static int getPropDonationProductSamplesMaxBuyQuantityLimit() {
+		return Integer.parseInt(get(PROP_DONATION_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT));
+	}
+
+	public static boolean isPropDonationProductSamplesEnabled() {
+	/*//	boolean result=true;
+		result=(Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
+		return result;*/
+		return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
+		
+	}
+
+	public static String getPropDonationProductSamplesId() {
+		return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
+	}
+	
 }

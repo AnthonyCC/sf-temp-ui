@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDProduct;
@@ -21,6 +22,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -460,4 +462,99 @@ public class ViewCartCarouselService {
             session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
         }
     }
+    
+    public ProductSamplesCarousel populateViewCartPageDonationProductSampleCarousel(HttpServletRequest request) throws Exception {
+        CarouselData carouselData = new CarouselData();
+        ProductSamplesCarousel tab = new ProductSamplesCarousel(FDStoreProperties.getPropDonationProductSamplesTitle(), "Product Samples", "", "", "");
+        tab.setCarouselData(carouselData);
+        FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
+        List<ProductData> sampleProducts = new ArrayList<ProductData>();
+        List<FDCartLineI> productSamplesInCart = new ArrayList<FDCartLineI>();
+        Map<String, Double> orderLinesSkuCodeWithQuantity = new HashMap<String, Double>();
+        FDCartModel cart = user.getShoppingCart();
+        List<FDCartLineI> orderLines = cart.getOrderLines();
+        if (null != orderLines && !orderLines.isEmpty()) {
+            for (FDCartLineI orderLine : orderLines) {
+                if (orderLine.getSkuCode() != null) {
+                    // TODO: THE NPE POSSIBILITY NEEDS TO BE CHECKED IN CODE AND DATABASE! IT SEEMS TO BE A DATA ISSUE
+                    // original line: orderLinesSkuCodeWithQuantity.put(orderLine.getProductRef().lookupProductModel().getDefaultSku().getSkuCode(), orderLine.getQuantity());
+                    // issue with PROD user: johannarfarina@gmail.com
+                    orderLinesSkuCodeWithQuantity.put(orderLine.getSkuCode(), orderLine.getQuantity());
+                    orderLine.setErpOrderLineSource(EnumEventSource.dn_caraousal);
+                }
+                if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
+                    productSamplesInCart.add(orderLine);
+                    orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
+                }
+            }
+        }
+    //    List<ProductReference> productSamples = new ArrayList<ProductReference>();
+        List<ProductModel> productModels=new ArrayList<ProductModel>();
+        boolean productSamplesMaxBuyProductsLimitReaced = productSamplesInCart.size() >= FDStoreProperties.getPropDonationProductSamplesMaxBuyProductsLimit();
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+            tab.setProductSamplesReacedMaximumItemQuantity(productSamplesMaxBuyProductsLimitReaced);
+            productModels = getProductModelsFromSku();       
+        } else {
+            if (!productSamplesMaxBuyProductsLimitReaced) {
+            	productModels = getProductModelsFromSku();
+            }
+        }
+        for (ProductModel productModel : productModels) {
+            ProductData pd = new ProductData();
+            SkuModel skuModel = null;
+            if (!(productModel instanceof ProductModelPricingAdapter)) {
+                // wrap it into a pricing adapter if naked
+                productModel = ProductPricingFactory.getInstance().getPricingAdapter(productModel, user.getPricingContext());
+            }
+            if (skuModel == null) {
+                skuModel = productModel.getDefaultSku();
+            }
+            if (skuModel != null) {
+                String skuCode = skuModel.getSkuCode();
+                try {
+                    FDProductInfo productInfo_fam = skuModel.getProductInfo();
+                    FDProduct fdProduct = skuModel.getProduct();
+                    PriceCalculator priceCalculator = productModel.getPriceCalculator();
+                    ProductDetailPopulator.populateBasicProductData(pd, user, productModel);
+                    ProductDetailPopulator.populateProductData(pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true);
+                    ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator, user);
+                    try {
+                        ProductDetailPopulator.populateSkuData(pd, user, productModel, skuModel, fdProduct);
+                    } catch (FDSkuNotFoundException e) {
+                        LOGGER.error("Failed to populate sku data", e);
+                    } catch (HttpErrorResponse e) {
+                        LOGGER.error("Failed to populate sku data", e);
+                    }
+                    ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
+//                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+                    pd.getQuantity().setqMax(1);
+                    populateCartAmountByProductSample(pd, orderLinesSkuCodeWithQuantity.get(skuCode));
+                } catch (FDSkuNotFoundException e) {
+                    LOGGER.warn("Sku not found: " + skuCode, e);
+                }
+                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+                    pd.setAvailable(!productSamplesMaxBuyProductsLimitReaced);
+                }
+                sampleProducts.add(pd);
+            }
+        }
+        carouselData.setProducts(sampleProducts);
+        tab.setCarouselData(carouselData);
+
+        return tab;
+    }
+
+	private List<ProductModel> getProductModelsFromSku()
+			throws FDSkuNotFoundException {
+		List<ProductModel> productModels = new ArrayList<ProductModel>();
+		String[] productIds = FDStoreProperties
+				.getPropDonationProductSamplesId().split(",");
+		for (String productId : productIds) {
+			ProductModel productModel = ContentFactory.getInstance()
+					.getProduct(productId);
+			productModels.add(productModel);
+		}
+		return productModels;
+	}
+
 }

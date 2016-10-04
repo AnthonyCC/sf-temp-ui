@@ -41,6 +41,10 @@ public class AvailabilityService {
 	private static final String CART_IS_EMPTY = "cart_is_empty";
 	private static final String DELIVERY_PASS_CANCELLED = "dlv_pass_cancelled";
 	private static final String GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY = "generalUnderOrderMinimumMessageKey";
+	
+	//APPDEV-5516:Cart Carousel - Grand Giving Donation Technology. 
+	//The warning type would be DONATION_PRODUCTS_ONLY but the warning message will be MSG_CONTAINS_DLV_PASS_ONLY
+	private static final String DONATION_PRODUCTS_ONLY = "donation_products_only";
 
 	private static final int DEFAULT_ATP_RESTRICTION_TIMEOUT = 30000;
 
@@ -111,6 +115,8 @@ public class AvailabilityService {
 				SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
 		warningMessages.put(CART_IS_EMPTY,
 				SystemMessageList.MSG_CHECKOUT_CART_EMPTY);
+		warningMessages.put(DONATION_PRODUCTS_ONLY,
+				SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
 		return warningMessages;
 	}
 
@@ -148,7 +154,11 @@ public class AvailabilityService {
 
 		if (cart.containsDlvPassOnly()) {
 			warningType = DELIVERY_PASS_ONLY;
-		} else if (user.getDlvPassInfo() != null
+		} else if (cart.containsDonationProductsOnly()) {
+			warningType = DONATION_PRODUCTS_ONLY;
+		} else if (cart.containsDlvPassOnly() && cart.containsDonationProductsOnly() ){
+			warningType = DELIVERY_PASS_ONLY;
+		} 	else if (user.getDlvPassInfo() != null
 				&& user.getDlvPassInfo().isUnlimited()
 				&& user.isDlvPassCancelled() && cart.isDlvPassAlreadyApplied()) {
 			warningType = DELIVERY_PASS_CANCELLED;

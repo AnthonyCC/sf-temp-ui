@@ -135,6 +135,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	-o-user-select: none; 
 }
 
+
+.product-donation-sample-carousel h2.product-sample-header{
+	font-size: 18px;
+}
 .product-sample-carousel h2.product-sample-header:hover {
   text-decoration: underline;
 }

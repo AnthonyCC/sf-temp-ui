@@ -408,6 +408,20 @@
 	{/if}
 {/template}
 
+
+/**
+ * @param? productSamplesTab sample products
+ */
+{template .donationProductSampleCarouselWrapper}
+	{if $productSamplesTab}
+		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+			{call expressco.donationProductSampleCarousel data="$productSamplesTab" /}
+		</div>
+	{/if}
+
+{/template}
+
+
 /**
 */
 {template .cartheaderQuestions}
