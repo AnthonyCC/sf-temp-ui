@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,6 +80,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.service.DeliveryAddressValidationDataService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -1298,7 +1300,10 @@ public class CheckoutController extends BaseController {
     	}
     	return updatedPaymentMethodList;
     }
-    private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+
+
+
+    private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         Message responseMessage = null;
@@ -1308,15 +1313,36 @@ public class CheckoutController extends BaseController {
 					"This account is not enabled to change delivery address.");
 		}
         
-        ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(reqestMessage);
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        if (result.isSuccess()) {
-        	 responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        
+        ActionResult result = null;
+        
+        // FKMW - validate form fields before submitting them to the app layer
+        if (isWebRequest) {
+            result = validateDeliveryAddress(requestMessage);
+
+            // halt on any error
+            if (!result.isSuccess()) {
+                responseMessage = getErrorMessage(result, request);
+            }
+        }
+        
+        
+        if (responseMessage == null) {
+            ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(requestMessage);
+            result = resultBundle.getActionResult();
+            if (!isWebRequest) {
+                propogateSetSessionValues(request.getSession(), resultBundle);
+            }
+
+            if (result.isSuccess()) {
+                responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
         }
         responseMessage.addWarningMessages(result.getWarnings());
+
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -1494,5 +1520,30 @@ public class CheckoutController extends BaseController {
                 EventLoggerService.getInstance().log(orderEvent);
             }
         }
+    }
+
+
+
+    /**
+     * A very simple delivery address form validator method
+     * 
+     * DEV NOTE: rather incomplete implementation, just focusing to the apparent issue
+     * It should be integrated into a common validation framework or service later.
+     * 
+     * @see DeliveryAddressValidationDataService
+     * 
+     * @param request
+     * @return
+     */
+    private ActionResult validateDeliveryAddress(DeliveryAddressRequest request) {
+        ActionResult result = new ActionResult();
+        
+        {
+            final Pattern phonePattern = Pattern.compile("(\\d){10}"); // 10 digits is required
+            final String value = request.getDlvhomephone();
+
+            result.addError( !phonePattern.matcher(value).matches(), "address", "Invalid Mobile Number");
+        }
+        return result;
     }
 }
