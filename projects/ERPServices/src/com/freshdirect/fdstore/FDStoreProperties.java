@@ -285,6 +285,8 @@ public class FDStoreProperties {
     private static final String TEMP_DIR = "tmpdir";
 
     private static final String PROP_UPS_BLACKHOLE_ENABLED = "fdstore.ups.blackhole.enabled";
+    
+    private static final String PROP_MEAL_KIT_MATERIAL_GROUP =  "fdstore.meal.kit.material.group";
 
     // CORS domain settings
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
@@ -4400,5 +4402,9 @@ public class FDStoreProperties {
 
     public static boolean isProductFeedGenerationDeveloperModeEnabled() {
         return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED)).booleanValue();
+    }
+    
+    public static List<String> getMealKitMaterialGroup(){
+    	return null != config.get("PROP_MEAL_KIT_MATERIAL_GROUP")? (List<String>) config.get("PROP_MEAL_KIT_MATERIAL_GROUP"):null;
     }
 }
