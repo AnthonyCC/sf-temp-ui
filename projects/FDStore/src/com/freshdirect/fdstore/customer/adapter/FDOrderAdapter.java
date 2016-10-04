@@ -1157,16 +1157,27 @@ public class FDOrderAdapter implements FDOrderI {
 		return shortedItems;
 	}
 	
-	public List<FDCartLineI> getBundleShortItems(){
+	public List<List<FDCartLineI>> getBundleShortItems(){
+		List<List<FDCartLineI>> shortItems = new ArrayList<List<FDCartLineI>>();
 		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
+		List<FDCartLineI> bundleCompleteShort = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
 			if(!line.isPricedByLb()){
-				if (new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() && line.getInvoiceLine().getPrice()<line.getPrice()){
+				if (new Double(line.getDeliveredQuantity()).doubleValue() != 0 && new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() 
+						&& line.getInvoiceLine().getPrice()<line.getPrice()){
 					bundleShortItems.add(line);
+				}
+				else if(!line.isPricedByLb()){
+					if(new Integer(line.getDeliveredQuantity()) == 0 && FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup())){
+						bundleCompleteShort.add(line);
+					}
 				}
 			}
 		}
-		return bundleShortItems;
+		shortItems.add(bundleShortItems);
+		shortItems.add(bundleCompleteShort);	
+			
+		return shortItems;
 	}
 
 	public String getSapOrderId() {

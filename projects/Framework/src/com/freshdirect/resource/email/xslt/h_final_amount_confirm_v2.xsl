@@ -38,15 +38,60 @@
 							</font></p>
 					    </xsl:if>
 						<xsl:choose>
-						<xsl:when test="count(order/shortedItems/shortedItems) > 0">
+						<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count(order/bundleShortItems/bundleShortItems) > 0">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
 							
+							<xsl:choose>
+							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count(order/bundleShortItems/bundleShortItems)=0 and count(order/bundleShortItems/bundleCompleteShort)=0">
 							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
 							<tr><td width="50">&#160;</td>
 							<td>&#160;</td>
-							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>ITEM(S) NOT IN YOUR ORDER:<br/><br/></b></td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
+							<xsl:for-each select="order/bundleShortItems/bundleShortItems">
+									<tr>
+										<td width="50">&#160;</td>
+										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+									</tr>		
+							</xsl:for-each>
+							</table>
+							</p>
+							</xsl:when>
+							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count(order/bundleShortItems/bundleShortItems) > 0 and count(order/bundleShortItems/bundleCompleteShort)=0">
+							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
+							
+							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
+							<xsl:for-each select="order/shortedItems/shortedItems">
+									<tr>
+										<td width="50">&#160;</td>
+										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+									</tr>		
+							</xsl:for-each>
+							<xsl:for-each select="order/bundleShortItems/bundleShortItems">
+									<tr>
+										<td width="50">&#160;</td>
+										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+									</tr>		
+							</xsl:for-each>
+							</table>
+							</p>
+							</xsl:when>
+							<xsl:when test="count(order/bundleShortItems/bundleCompleteShort) > 0">
+							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
+							
+							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
 							</tr>
 							<xsl:for-each select="order/shortedItems/shortedItems">
 									<tr>
@@ -57,7 +102,9 @@
 							</xsl:for-each>
 							</table>
 							</p>
+							</xsl:when>
 							
+							</xsl:choose>
 							<p>To easily replace any unavailable items, you can shop from all or part of your <a href="http://www.freshdirect.com/quickshop/qs_past_orders.jsp">past orders</a> in minutes. Or create personal <a href="http://www.freshdirect.com/quickshop/qs_shop_from_list.jsp">shopping lists</a> to keep track of all the food you love.</p>
 														
 							<xsl:choose>
