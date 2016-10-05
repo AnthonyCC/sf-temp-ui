@@ -2115,8 +2115,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			String[] donationSkuCode = FDStoreProperties
 					.getPropDonationProductSamplesId().split(",");
 		List<String> donationSkuCodeList=Arrays.asList(donationSkuCode);
-		
-		for (FDCartLineI fdCartLine : getOrderLines()){
+		List<FDCartLineI>  fdCartLines=null!=getOrderLines()?getOrderLines():new ArrayList<FDCartLineI>();
+		for (FDCartLineI fdCartLine : fdCartLines){
 			String cartSku=fdCartLine.getSkuCode();
 			if(donationSkuCodeList.contains(cartSku)){
 			 flg=true;

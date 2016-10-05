@@ -465,7 +465,7 @@ public class ViewCartCarouselService {
     
     public ProductSamplesCarousel populateViewCartPageDonationProductSampleCarousel(HttpServletRequest request) throws Exception {
         CarouselData carouselData = new CarouselData();
-        ProductSamplesCarousel tab = new ProductSamplesCarousel(FDStoreProperties.getPropDonationProductSamplesTitle(), "Product Samples", "", "", "");
+        ProductSamplesCarousel tab = new ProductSamplesCarousel("", "Donation Samples", "", "", "");
         tab.setCarouselData(carouselData);
         FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
@@ -473,7 +473,7 @@ public class ViewCartCarouselService {
         Map<String, Double> orderLinesSkuCodeWithQuantity = new HashMap<String, Double>();
         FDCartModel cart = user.getShoppingCart();
         List<FDCartLineI> orderLines = cart.getOrderLines();
-        if (null != orderLines && !orderLines.isEmpty()) {
+    /*    if (null != orderLines && !orderLines.isEmpty()) {
             for (FDCartLineI orderLine : orderLines) {
                 if (orderLine.getSkuCode() != null) {
                     // TODO: THE NPE POSSIBILITY NEEDS TO BE CHECKED IN CODE AND DATABASE! IT SEEMS TO BE A DATA ISSUE
@@ -488,9 +488,10 @@ public class ViewCartCarouselService {
                 }
             }
         }
-    //    List<ProductReference> productSamples = new ArrayList<ProductReference>();
+*/    
         List<ProductModel> productModels=new ArrayList<ProductModel>();
-        boolean productSamplesMaxBuyProductsLimitReaced = productSamplesInCart.size() >= FDStoreProperties.getPropDonationProductSamplesMaxBuyProductsLimit();
+        productModels = getProductModelsFromSku();   
+        /*boolean productSamplesMaxBuyProductsLimitReaced = productSamplesInCart.size() >= FDStoreProperties.getPropDonationProductSamplesMaxBuyProductsLimit();
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
             tab.setProductSamplesReacedMaximumItemQuantity(productSamplesMaxBuyProductsLimitReaced);
             productModels = getProductModelsFromSku();       
@@ -498,7 +499,7 @@ public class ViewCartCarouselService {
             if (!productSamplesMaxBuyProductsLimitReaced) {
             	productModels = getProductModelsFromSku();
             }
-        }
+        }*/
         for (ProductModel productModel : productModels) {
             ProductData pd = new ProductData();
             SkuModel skuModel = null;
@@ -526,15 +527,15 @@ public class ViewCartCarouselService {
                         LOGGER.error("Failed to populate sku data", e);
                     }
                     ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
-//                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
-                    pd.getQuantity().setqMax(1);
-                    populateCartAmountByProductSample(pd, orderLinesSkuCodeWithQuantity.get(skuCode));
+                  //  pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+                 //   pd.getQuantity().setqMax(1);
+                  //  populateCartAmountByProductSample(pd, orderLinesSkuCodeWithQuantity.get(skuCode));
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
                 }
-                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+                /*if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
                     pd.setAvailable(!productSamplesMaxBuyProductsLimitReaced);
-                }
+                }*/
                 sampleProducts.add(pd);
             }
         }
@@ -546,9 +547,10 @@ public class ViewCartCarouselService {
 
 	private List<ProductModel> getProductModelsFromSku()
 			throws FDSkuNotFoundException {
-
 		List<ProductModel> productModels =  new ArrayList<ProductModel>();
 		String[] productIds = FDStoreProperties.getPropDonationProductSamplesId().split(",");
+		//String[] productIds=null != FDStoreProperties.getPropDonationProductSamplesId() ? FDStoreProperties.getPropDonationProductSamplesId().split(",") : null;
+		if (productIds != null){
 			for (String productId : productIds) {
 				try{
 				ProductModel productModel = ContentFactory.getInstance()
@@ -556,11 +558,11 @@ public class ViewCartCarouselService {
 				productModels.add(productModel);
 			} catch (FDSkuNotFoundException e) {
 				LOGGER.warn("Sku not found: " + productId, e);
-			}
-
-		} 
+				}
+			} 
+		}
 		return productModels;
 	}
-			
 
 }
+
