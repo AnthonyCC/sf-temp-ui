@@ -232,14 +232,14 @@
 			    <title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes FD</title>
+						<title>SEO Attributes FreshDirect</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>SEO Attributes FDX</title>
+						<title>SEO Attributes FoodKick</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
@@ -582,14 +582,14 @@
 			    <title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes FD</title>
+						<title>SEO Attributes FreshDirect</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>SEO Attributes FDX</title>
+						<title>SEO Attributes FoodKick</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
@@ -902,14 +902,14 @@
 				<title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes FD</title>
+						<title>SEO Attributes FreshDirect</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>SEO Attributes FDX</title>
+						<title>SEO Attributes FoodKick</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
