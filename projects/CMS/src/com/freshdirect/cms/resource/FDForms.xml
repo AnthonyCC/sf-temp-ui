@@ -232,10 +232,17 @@
 			    <title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes</title>
+						<title>SEO Attributes FD</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SEO Attributes FDX</title>
+						<fields>
+							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>				    
 				</sections>
@@ -575,10 +582,17 @@
 			    <title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes</title>
+						<title>SEO Attributes FD</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SEO Attributes FDX</title>
+						<fields>
+							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>				    
 				</sections>
@@ -888,10 +902,17 @@
 				<title>SEO</title>
 				<sections>
 					<CmsSection>
-						<title>SEO Attributes</title>
+						<title>SEO Attributes FD</title>
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SEO Attributes FDX</title>
+						<fields>
+							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -1981,6 +2002,8 @@
 						<fields>
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
+							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -2018,6 +2041,8 @@
 							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
 							<CmsField><attribute>URL</attribute></CmsField>
+							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
