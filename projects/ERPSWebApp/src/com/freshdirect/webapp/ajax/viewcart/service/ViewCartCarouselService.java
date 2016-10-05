@@ -480,7 +480,7 @@ public class ViewCartCarouselService {
                     // original line: orderLinesSkuCodeWithQuantity.put(orderLine.getProductRef().lookupProductModel().getDefaultSku().getSkuCode(), orderLine.getQuantity());
                     // issue with PROD user: johannarfarina@gmail.com
                     orderLinesSkuCodeWithQuantity.put(orderLine.getSkuCode(), orderLine.getQuantity());
-                    orderLine.setErpOrderLineSource(EnumEventSource.dn_caraousal);
+                    
                 }
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
                     productSamplesInCart.add(orderLine);
@@ -546,15 +546,21 @@ public class ViewCartCarouselService {
 
 	private List<ProductModel> getProductModelsFromSku()
 			throws FDSkuNotFoundException {
-		List<ProductModel> productModels = new ArrayList<ProductModel>();
-		String[] productIds = FDStoreProperties
-				.getPropDonationProductSamplesId().split(",");
-		for (String productId : productIds) {
-			ProductModel productModel = ContentFactory.getInstance()
-					.getProduct(productId);
-			productModels.add(productModel);
-		}
+
+		List<ProductModel> productModels =  new ArrayList<ProductModel>();
+		String[] productIds = FDStoreProperties.getPropDonationProductSamplesId().split(",");
+			for (String productId : productIds) {
+				try{
+				ProductModel productModel = ContentFactory.getInstance()
+						.getProduct(productId);
+				productModels.add(productModel);
+			} catch (FDSkuNotFoundException e) {
+				LOGGER.warn("Sku not found: " + productId, e);
+			}
+
+		} 
 		return productModels;
 	}
+			
 
 }

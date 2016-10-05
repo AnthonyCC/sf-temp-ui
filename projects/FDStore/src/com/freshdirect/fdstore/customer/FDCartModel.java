@@ -56,7 +56,6 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
@@ -281,13 +280,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private EnumEStoreId eStore;
 	private ErpDeliveryPlantInfoModel deliveryPlantInfo;
 	
+	private List<ProductModel> donationSampleProducts;
 	private PhoneNumber orderMobileNumber;
 	
 	private boolean isCustomTip;
 	private boolean isTipApplied = false;
 	private EnumNotificationType taxationtype;
-	
-	private List<ProductModel> donationSampleProducts;
 
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -2108,21 +2106,28 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.taxationtype = taxationType;
 	}
 	
+
 	//APPDEV -5516 : Cart Carousel - Grand Giving Donation Technology
 	public boolean containsDonationProductsOnly(){
+		boolean flg=false;
 		if(FDStoreProperties.isPropDonationProductSamplesEnabled()) {
 				
 			String[] donationSkuCode = FDStoreProperties
 					.getPropDonationProductSamplesId().split(",");
 		List<String> donationSkuCodeList=Arrays.asList(donationSkuCode);
+		
 		for (FDCartLineI fdCartLine : getOrderLines()){
 			String cartSku=fdCartLine.getSkuCode();
-			if(!donationSkuCodeList.contains(cartSku)){
-			return false;
-			} 
+			if(donationSkuCodeList.contains(cartSku)){
+			 flg=true;
+			}else{
+				flg=false;
+				break;
+			}
 		  }
 		}
-		return true;
+		
+		return flg;
 	}
 
 	public List<ProductModel> getDonationProducts() {
@@ -2132,5 +2137,5 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setDonationProducts(List<ProductModel> donationProducts) {
 		this.donationSampleProducts = donationProducts;
 	}
-	
+
 }
