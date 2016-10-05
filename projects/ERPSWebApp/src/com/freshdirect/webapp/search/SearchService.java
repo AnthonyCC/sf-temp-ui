@@ -159,7 +159,7 @@ public class SearchService {
      * @return
      */
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
-        SearchResults searchResults = new SearchResults();;        
+        SearchResults searchResults = new SearchResults(); 
         if(searchTerm != null && searchTerm.trim().length() > 0){
             // get search results from Lucene service
             searchResults = ContentSearch.getInstance().searchProducts(searchTerm);

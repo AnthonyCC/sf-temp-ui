@@ -15,18 +15,18 @@ public final class LocationInfo {
     /**
      * The url of the previous page, will be empty if the user opened that particular url directly
      */
-    public final String referer;
+    public final String referrer;
 
-    public LocationInfo(String url, String referer) {
+    public LocationInfo(String url, String referrer) {
         this.url = url;
-        this.referer = referer;
+        this.referrer = referrer;
     }
 
     public static LocationInfo withUrl(String url) {
         return new LocationInfo(url, null);
     }
 
-    public static LocationInfo withUrlAndReferer(String url, String referer) {
-        return new LocationInfo(url, referer);
+    public static LocationInfo withUrlAndReferer(String url, String referrer) {
+        return new LocationInfo(url, referrer);
     }
 }

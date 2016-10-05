@@ -29,7 +29,7 @@ public interface AnalyticsEventI {
     String getUid();
     
     String getUrl();
-    String getReferer();
+    String getReferrer();
     
     /**
      * Timestamp of the event creation
