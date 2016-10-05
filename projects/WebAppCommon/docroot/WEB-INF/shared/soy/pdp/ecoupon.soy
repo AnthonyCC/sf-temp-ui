@@ -8,6 +8,6 @@
  */
 {template .ecoupon}
 {if $coupon}
-<div class="pdp-ecoupon">{call common.ecoupon data="all" /}</div>
+<div class="pdp-ecoupon{if $couponClipped} isClipped{/if}">{call common.ecoupon data="all" /}</div>
 {/if}
 {/template}

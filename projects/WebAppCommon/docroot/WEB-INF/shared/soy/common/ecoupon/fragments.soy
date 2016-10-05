@@ -34,8 +34,9 @@
 {template .detailsContentHtml autoescape="false"}
 <div name="{$couponName}_detContent" class="fdCoupon_detContent" style="display: none;" >
 {if $coupon.detailedDescription}{$coupon.detailedDescription}{/if}
-<br/>
-{$coupon.expirationDate}
+<br class="break" />
+<span class="fdCoupon_detContent_expiration">{$coupon.expirationDate}</span>
+<button class="cssbutton purple-coup fdCoupon_detContent_saveButton" style="display: none;"><span class="fdCoupon_detContent_saveButton_label">Tap to Save</span></button>
 </div>
 {/template}
 

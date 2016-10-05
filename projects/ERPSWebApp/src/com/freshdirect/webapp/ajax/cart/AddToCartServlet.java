@@ -237,8 +237,10 @@ public class AddToCartServlet extends BaseJsonServlet {
                 for (AddToCartResponseDataItem item : responseData.getAtcResult()) {
                     // get the first successful item for cart-confirm
                     if (item.getStatus() == Status.SUCCESS) {
-                        responseData.setRedirectUrl("/cart_confirm_pdp.jsp?catId=" + item.getCategoryId() + "&productId=" + item.getProductId() + "&cartlineId="
+                    	if (!reqData.isIgnoreRedirect()) {
+                    		responseData.setRedirectUrl("/cart_confirm_pdp.jsp?catId=" + item.getCategoryId() + "&productId=" + item.getProductId() + "&cartlineId="
                                 + item.getCartlineId());
+                    	}
                         break;
                     }
                 }

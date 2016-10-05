@@ -61,6 +61,7 @@
 				
 				<c:if test="${productPotato.available}">			
 					<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
+					<div class="pdp-ratings"><soy:render template="pdp.ratings" data="${productPotato}" /></div>
 					<div class="pdp-price">
 						<soy:render template="common.price" data="${productPotato}" />
 						<soy:render template="pdp.savestring" data="${productPotato}" />
@@ -72,8 +73,7 @@
 						<c:if test="${empty param.grpId and empty param.version}">
 							<soy:render template="pdp.scaleinfo" data="${productPotato}" />
 						</c:if>
-						<soy:render template="pdp.ratings" data="${productPotato}" />
-						<soy:render template="pdp.badges" data="${productExtraPotato}" />
+						<soy:render template="pdp.badges" data="${productExtraPotato}" /><%-- pdp don't need no stinkin' badges --%>
 						<soy:render template="pdp.heatRating" data="${productPotato}" />
 					</div>
 					
@@ -104,15 +104,21 @@
 					<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
 						<soy:render template="pdp.productDataMin" data="${productPotato}" />
 						<soy:render template="pdp.configWrapper" data="${productPotato}" />
+						
 						<soy:render template="pdp.ecoupon" data="${productPotato}" />
+						
 						<div class="pdp-atc<%= (StandingOrderHelper.isEligibleForSo3_0(user)) ? " soShow" : "" %>">
-							<div class="pdp-atc-buttons">
+							<div class="pdp-atc-buttons"><%-- nice class, except the buttons AREN'T IN THIS DIV --%>
 								<div><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
 								<div><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
 							</div>
 								
-							<div>
-								<div class="pdp-atc-button-wrapper"><button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton">Add to Cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>
+							<div class="pdp-atc-buttons-cont"><%-- new class for mobWeb --%>
+								<div class="pdp-atc-button-wrapper">
+									<button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton" data-ignoreredirect="true">Add to Cart</button>
+									<soy:render template="pdp.atcInCart" data="${productPotato}"/>
+								</div>
+								<%-- <button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button> --%>
 							</div>
 							
 						</div>
@@ -139,7 +145,7 @@
 			    </ul>
 			</div>
 			<div class="prodDetail-footer"><%-- LAST PROD DETAILS --%>
-				<soy:render template="pdp.productRequest"/>
+				<%-- <soy:render template="pdp.productRequest"/> --%>
 				
 				<c:if test="${productPotato.available}">
 					<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>

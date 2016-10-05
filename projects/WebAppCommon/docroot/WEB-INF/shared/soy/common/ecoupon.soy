@@ -10,7 +10,7 @@
 {template .ecoupon autoescape="false"}
 {if $couponDisplay } 
 	{let $couponName}fdCoupon_{$coupon.couponId}{/let}
-	<div name="{$couponName}_cont" class="fdCoupon_cont" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
+	<div name="{$couponName}_cont" class="fdCoupon_cont{if $couponClipped} isClipped{/if}" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
 	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{/call}
 	<img src="/media_stat/images/ecoupon/logo-small.png" alt="" class="fdCoupon_img">
   {if $detailsFirst}
@@ -18,6 +18,7 @@
     {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
   {/if}
   <span class="fdCoupon_data">
+  	<span name="{$couponName}_applied" class="fdCoupon_applied"></span>
     {call common.ecoupon.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
     {if not $detailsFirst}
       {call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}

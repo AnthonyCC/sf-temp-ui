@@ -170,17 +170,11 @@
 		<li class="hide-on-subopen no-divider">
 			<span>
 				<div class="pNavLoginButton-cont">
-					<% if (user == null || (user != null && user.getLevel() == FDUserI.GUEST)) { /* guest, sign in/create */ %>
+					<% if (user == null || (user != null && (user.getLevel() == FDUserI.GUEST || user.getLevel() == FDUserI.RECOGNIZED) )) { /* guest, sign in/create */ %>
 						<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
 						<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
 					<% } %>
-					<% if (user != null && 
-						(user.getLevel() == FDUserI.RECOGNIZED || user.getLevel() == FDUserI.SIGNED_IN)) {
-						/* recog/logged in, recog (only) sign in/log out */
-					%>
-						<% if (user != null && user.getLevel() == FDUserI.RECOGNIZED) { %>
-							<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
-						<% } %>
+					<% if (user != null && user.getLevel() == FDUserI.SIGNED_IN) { %>
 						<%= ((user != null) ? ("<div class=\"boldgray\">Not " + user.getFirstName() + "?</div>") : "") %>
 						<div class="pNavLoginButton primaryLink logout"><a href="#" class="green transparent cssbutton-flat">Sign out</a></div>
 					<% } %>

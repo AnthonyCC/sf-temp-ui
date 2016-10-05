@@ -272,6 +272,30 @@ span.cssbutton.notext[class*=" icon-"] {
 	box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
 }
 
+
+/* purple coupon button - not transparent by default, no transp version */
+.cssbutton.purple-coup {
+  color: #fff;
+  background-color: #8957c5;
+  border: 1px solid #8957c5;
+}
+
+.cssbutton.purple-coup:hover {
+  color: #f7f2f8;
+  background-color: #a367ab;
+}
+
+.cssbutton.purple-coup:active {
+  color: #8957c5;
+  background-color: #f7f2f8;
+}
+
+.cssbutton.purple-coup:focus {
+  color: #f7f2f8;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+}
+
+
 /* red button - transparent by default */
 .cssbutton.red,
 .cssbutton.red.transparent {
