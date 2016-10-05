@@ -1,16 +1,18 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
-
-import weblogic.xml.crypto.wss.Base64Encoding;
 
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.sms.SMSAlertManager;
@@ -187,10 +189,31 @@ public class ExternalInterfaceController extends BaseController {
     				
     			try{
     				String carrier = request.getParameter("carrier");
-    				if("/deliv".equalsIgnoreCase(carrier)){
+    				if("/deliv".equalsIgnoreCase(carrier) || "/uberrush".equalsIgnoreCase(carrier)){
+    					carrier = StringUtils.upperCase(carrier.substring(1, carrier.length()));
     					FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-        				String payload = request.getParameter("data");
-        				fDDeliveryManager.captureDeliveryEventNotification("DELIV", payload);
+        				InputStream is = request.getInputStream();
+        				
+        				String line=null;
+        				StringBuilder sb = new StringBuilder();
+        				BufferedReader br = null;
+        				try{
+	        				br = new BufferedReader(new InputStreamReader(is));
+	        				while ((line = br.readLine()) != null) {
+	        					sb.append(line);
+	        				}
+        				}catch (IOException e) {
+        					e.printStackTrace();
+        				} finally {
+        					if (br != null) {
+        						try {
+        							br.close();
+        						} catch (IOException e) {
+        							e.printStackTrace();
+        						}
+        					}
+        				}
+        				fDDeliveryManager.captureDeliveryEventNotification(carrier, sb.toString().trim());
         				responseMessage = Message.createSuccessMessage("T005 Successful.");
         				
     				}else{
@@ -219,6 +242,7 @@ public class ExternalInterfaceController extends BaseController {
     				
     				
     			} catch(Exception e) {
+    				e.printStackTrace();
     				responseMessage=Message.createFailureMessage("T005 Failed.");
     				LOGGER.info("T005_EXP: Unable to save fdx delivery info received ");
     			}  
