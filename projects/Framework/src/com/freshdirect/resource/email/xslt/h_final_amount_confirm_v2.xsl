@@ -94,7 +94,7 @@
 							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
-							<tr><td width="50">&#160;</td>
+							<td width="50">&#160;</td>
 							<td>&#160;</td>							
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
 							<xsl:for-each select="$bundleShortItems">
