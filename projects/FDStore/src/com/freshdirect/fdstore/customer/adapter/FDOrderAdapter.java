@@ -1158,27 +1158,31 @@ public class FDOrderAdapter implements FDOrderI {
 		return shortedItems;
 	}
 	
-	public Map<String,List<FDCartLineI>> getBundleShortItems(){
-		Map<String,List<FDCartLineI>> shortItems = new HashMap<String, List<FDCartLineI>>();
+	public List<FDCartLineI> getBundleShortItems(){
 		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
-		List<FDCartLineI> bundleCompleteShort = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
 			if(!line.isPricedByLb()){
 				if (new Double(line.getDeliveredQuantity()).doubleValue() != 0 && new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() 
 						&& line.getInvoiceLine().getPrice()<line.getPrice()){
 					bundleShortItems.add(line);
-				}
-				else if(!line.isPricedByLb()){
+				}			
+			}
+		}
+			
+		return bundleShortItems;
+	}
+	
+	public List<FDCartLineI> getBundleCompleteShort(){
+		List<FDCartLineI> bundleCompleteShort = new ArrayList<FDCartLineI>();
+		for( FDCartLineI line : orderLines ){
+				 if(!line.isPricedByLb()){
 					if(new Integer(line.getDeliveredQuantity()) == 0 && FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup())){
 						bundleCompleteShort.add(line);
 					}
 				}
-			}
 		}
-		shortItems.put("bundleShortItems", bundleShortItems);
-		shortItems.put("bundleCompleteShort", bundleCompleteShort);	
-			
-		return shortItems;
+				
+		return bundleCompleteShort;
 	}
 
 	public String getSapOrderId() {

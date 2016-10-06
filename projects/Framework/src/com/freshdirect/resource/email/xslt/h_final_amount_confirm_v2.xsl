@@ -37,10 +37,9 @@
 							to <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b>. We’ll meet you at the door!<br/><br/>							
 							</font></p>
 					    </xsl:if>
-					    <xsl:variable name="bundleShortItems" select="map:get(order/bundleShortItems/bundleShortItems,(String)$bundleShortItems)"/>
-					    <xsl:variable name="bundleCompleteShort" select="map:get(order/bundleCompleteShort/bundleCompleteShort,(String)$bundleCompleteShort)"/>
-					    <p>value of bundleShortItems <xsl:value-of select="$bundleShortItems"></xsl:value-of></p>
-					    <p>value of bundleShortItems <xsl:value-of select="$bundleCompleteShort"></xsl:value-of></p>
+					    <xsl:variable name="bundleShortItems" select="order/bundleShortItems/bundleShortItems"/>
+					    <xsl:variable name="bundleCompleteShort" select="order/bundleCompleteShort/bundleCompleteShort"/>
+
 						<xsl:choose>
 						<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count($bundleShortItems) > 0 or count(bundleCompleteShort)">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
