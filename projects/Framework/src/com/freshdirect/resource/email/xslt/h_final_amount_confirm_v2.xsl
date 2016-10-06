@@ -37,20 +37,24 @@
 							to <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b>. We’ll meet you at the door!<br/><br/>							
 							</font></p>
 					    </xsl:if>
+					    <xsl:variable name="bundleShortItems" select="map:get(order/bundleShortItems/bundleShortItems,(String)$bundleShortItems)"/>
+					    <xsl:variable name="bundleCompleteShort" select="map:get(order/bundleCompleteShort/bundleCompleteShort,(String)$bundleCompleteShort)"/>
+					    <p>value of bundleShortItems <xsl:value-of select="$bundleShortItems"></xsl:value-of></p>
+					    <p>value of bundleShortItems <xsl:value-of select="$bundleCompleteShort"></xsl:value-of></p>
 						<xsl:choose>
-						<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count(order/bundleShortItems/bundleShortItems) > 0">
+						<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count($bundleShortItems) > 0 or count(bundleCompleteShort)">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
 							
 							<xsl:choose>
-							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count(order/bundleShortItems/bundleShortItems)=0 and count(order/bundleShortItems/bundleCompleteShort)=0">
+							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count($bundleShortItems)=0 and count($bundleCompleteShort)=0">
 							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
 							<tr><td width="50">&#160;</td>
 							<td>&#160;</td>
-							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>ITEMS NOT IN YOUR ORDER<br/><br/></b></td>
 							</tr>
-							<xsl:for-each select="order/bundleShortItems/bundleShortItems">
+							<xsl:for-each select="order/shortedItems/shortedItems">
 									<tr>
 										<td width="50">&#160;</td>
 										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
@@ -60,13 +64,13 @@
 							</table>
 							</p>
 							</xsl:when>
-							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count(order/bundleShortItems/bundleShortItems) > 0 and count(order/bundleShortItems/bundleCompleteShort)=0">
+							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count($bundleShortItems) > 0 and count($bundleCompleteShort)=0">
 							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
 							<tr><td width="50">&#160;</td>
 							<td>&#160;</td>
-							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>ITEMS NOT IN YOUR ORDER<br/><br/></b></td>
 							</tr>
 							<xsl:for-each select="order/shortedItems/shortedItems">
 									<tr>
@@ -75,7 +79,8 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
-							<xsl:for-each select="order/bundleShortItems/bundleShortItems">
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							<xsl:for-each select="$bundleShortItems">
 									<tr>
 										<td width="50">&#160;</td>
 										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
@@ -85,15 +90,32 @@
 							</table>
 							</p>
 							</xsl:when>
-							<xsl:when test="count(order/bundleShortItems/bundleCompleteShort) > 0">
+							<xsl:when test="count(order/shortedItems/shortedItems) = 0 and count($bundleShortItems) > 0 and count($bundleCompleteShort)=0">
+							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
+							
+							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>							
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							<xsl:for-each select="$bundleShortItems">
+									<tr>
+										<td width="50">&#160;</td>
+										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+									</tr>		
+							</xsl:for-each>
+							</table>
+							</p>
+							</xsl:when>
+							<xsl:when test="count($bundleCompleteShort) > 0">
 							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
 							<tr><td width="50">&#160;</td>
 							<td>&#160;</td>
-							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
 							</tr>
-							<xsl:for-each select="order/shortedItems/shortedItems">
+							<xsl:for-each select="$bundleCompleteShort">
 									<tr>
 										<td width="50">&#160;</td>
 										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>

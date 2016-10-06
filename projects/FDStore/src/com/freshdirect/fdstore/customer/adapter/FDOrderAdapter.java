@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1157,8 +1158,8 @@ public class FDOrderAdapter implements FDOrderI {
 		return shortedItems;
 	}
 	
-	public List<List<FDCartLineI>> getBundleShortItems(){
-		List<List<FDCartLineI>> shortItems = new ArrayList<List<FDCartLineI>>();
+	public Map<String,List<FDCartLineI>> getBundleShortItems(){
+		Map<String,List<FDCartLineI>> shortItems = new HashMap<String, List<FDCartLineI>>();
 		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
 		List<FDCartLineI> bundleCompleteShort = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
@@ -1174,8 +1175,8 @@ public class FDOrderAdapter implements FDOrderI {
 				}
 			}
 		}
-		shortItems.add(bundleShortItems);
-		shortItems.add(bundleCompleteShort);	
+		shortItems.put("bundleShortItems", bundleShortItems);
+		shortItems.put("bundleCompleteShort", bundleCompleteShort);	
 			
 		return shortItems;
 	}
