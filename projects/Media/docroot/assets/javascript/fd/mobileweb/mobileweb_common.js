@@ -83,5 +83,11 @@
 					}
 				}
 			});
+		$jq('.mm-page .portrait-item .relatedItem').remove();
+		$jq('.mm-page .portrait-item').each(function(i, e){
+			if($jq(e).find(".atc-info").attr('data-amount') != 0){
+				$jq(e).find(".addtocart").html($jq(e).find(".atc-info").attr('data-amount')).addClass("ATCHasItemsMobile");
+			}
+		});
 	});
 }(jQuery));

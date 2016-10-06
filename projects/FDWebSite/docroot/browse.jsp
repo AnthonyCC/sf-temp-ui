@@ -162,6 +162,12 @@ if (mobWeb) {
     
   </tmpl:put>
 
+<% if (mobWeb) { %>
+  <tmpl:put name="jsmodules">
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+  </tmpl:put>
+<% } %>
+
   <tmpl:put name='extraJsModules'>
     <jwr:script src="/browse.js"  useRandomParam="false" />
   </tmpl:put>

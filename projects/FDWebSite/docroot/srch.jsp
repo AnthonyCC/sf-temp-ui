@@ -1,3 +1,7 @@
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.HashMap, java.util.ArrayList, java.util.Iterator,  java.util.Map,  java.util.Set"%>
@@ -13,6 +17,8 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="unbxd" prefix='unbxd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+
+<fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
 <%
 	String pageId = request.getParameter("pageType") != null ? (String) request.getParameter("pageType"):"search";
@@ -42,12 +48,25 @@
 			return;
 		}
 	}
+	
+	String template = "/common/template/browse_template.jsp";
+
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	if (mobWeb) {
+		template = "/common/template/mobileWeb.jsp"; //mobWeb template
+		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/browse.jsp"); //change for OAS
+	}
 %>
-<fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
 <%-- TODO search --%>
 <potato:browse/>
+
+<%
+	Map<String, Object> sections = (Map<String, Object>)pageContext.getAttribute("browsePotato");
+	Map<String, Object> browsePotatoSections = (Map<String, Object>)sections.get("sections");
+	browsePotatoSections.put("mobWeb", mobWeb);
+%>
 
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${empty browsePotato.descriptiveContent.oasSitePage ? 'www.freshdirect.com/search.jsp' : browsePotato.descriptiveContent.oasSitePage }" />
@@ -61,7 +80,7 @@
 	</c:otherwise>
 </c:choose>
 
-<tmpl:insert template='/common/template/browse_template.jsp'>
+<tmpl:insert template='<%=template %>'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
@@ -165,7 +184,7 @@
 	    <c:choose>
 	      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
 	        <div class="browse-sections-top transactional">
-	          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
+	          <soy:render template="srch.topContent" data="<%= browsePotatoSections %>" />
 	        </div>
 	
 	        <div class="srch-carousel">
@@ -173,7 +192,7 @@
 	        </div>
 	        
 	        <div class="browse-sections-bottom transactional">
-	          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
+	          <soy:render template="srch.bottomContent" data="<%= browsePotatoSections %>" />
 	        </div>
 	      </c:when>
 	      <c:otherwise>
@@ -282,6 +301,12 @@
             </center>
     </div>
   </tmpl:put>
+  
+<% if (mobWeb) { %>
+  <tmpl:put name="jsmodules">
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+  </tmpl:put>
+<% } %>
 
   <tmpl:put name='extraJsModules'>
     <jwr:script src="/browse.js"  useRandomParam="false" />

@@ -42,7 +42,7 @@ var FreshDirect = FreshDirect || {};
       request.ignoreRedirect = true;
     }
 
-    $('[data-component="ATCButton"]').addClass('ATCinProgress');
+    $(event.target).addClass('ATCinProgress');
     
     //Close the popup after added product to the cart with delay on mobile
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {

@@ -7,9 +7,11 @@
  * @param? filterLabels
  * @param? limit
  * @param? abFeatures
+ * @param? mobWeb
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
+{let $l: $mobWeb ? 26 : $l /}
 	{call browse.content}
 		{param sections:$sections /}
 		{param sectionMaxLevel:$sectionMaxLevel /}
@@ -19,6 +21,7 @@
 		{param numProducts:$l /}
 		{param abFeatures:$abFeatures /}
 		{param ifSingleUL:false /}
+		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}
 
@@ -27,6 +30,7 @@
  * @param? sectionMaxLevel The max depth of sections starting by 1
  * @param? limit
  * @param? abFeatures
+ * @param? mobWeb
  */
 {template .bottomContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
@@ -40,6 +44,7 @@
 				{param fromProducts:$l /}
 				{param noFilterTags:true /}
 				{param abFeatures:$abFeatures /}
+				{param mobWeb:$mobWeb /}
 			{/call}
 		{/foreach}
 	</div>

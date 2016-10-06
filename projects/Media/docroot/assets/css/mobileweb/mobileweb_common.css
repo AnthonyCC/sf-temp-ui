@@ -802,4 +802,82 @@ footer .copyright {
 		-ms-transform: rotate(-135deg);
 		-webkit-transform: rotate(-135deg);
 		top: 4px;
+	}	
+	/*PLP dirty overrides*/
+	.mm-page .pager-holder .pagination-pager-button,
+	.mm-page .pager-holder .pagination-pager-separator,
+	.mm-page #sorter{
+		display: none;
+	}
+	.mm-page .pagination-pager{
+		display: block;
+		width: 285px;
+		margin: auto;
+	}
+	[data-cmeventsource="BROWSE"] .mm-page #content{
+		background: #F2F0EF;
+	}
+	.mm-page .browseContent .sectionContent ul.products{
+		width: 100%;
+		margin: 8px 0 8px;
+		box-sizing: border-box;
+	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item{
+		width: 46%;
+		margin: 0 3% 0 1%;
+		border: 0;
+		box-sizing: border-box;
+		background: #FFFFFF;
+	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child{
+		margin: 0 1% 0 3%;
+	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item:last-child, .browseContent .sectionContent ul.products li.portrait-item.lastInLine{
+		padding: 0 9px 0 9px;
+		margin: 0 3% 0 1%;
+	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item{
+		max-width: none;
+	}
+	.mm-page .portrait-item-controls{
+		height: auto;
+		background: none;
+		width: 32px;
+		right: 4px;
+		bottom: 4px;
+		overflow: visible;
+	}
+	.mm-page .transactional .portrait-item:hover .portrait-item-controls,
+	.mm-page .portrait-item:hover .portrait-item-controls{
+		height: auto;
+	}
+	.mm-page .portrait-item-controls:before{
+	display: block;
+	}
+	.mm-page .portrait-item-controls .qtyinput,
+	.mm-page .portrait-item-controls .addtocart .message,
+	.mm-page .atc .atc-info,
+	.mm-page .portrait-item .relatedItem,
+	.mm-page .portrait-item .subtotal{
+		display: none;
+	}
+	.mm-page .portrait-item-controls .addtocart{
+		height: 33px;
+		width: 32px;
+		background: none;
+		background-image: url('/media/mobileweb/images/fd-add-to-cart-32.png');
+		background-repeat: no-repeat;
+		background-size: 100%;
+		padding: 0;
+		border: 0;
+	}
+	.mm-page .portrait-item-controls .portrait-item-addtocart{
+		height: 33px;
+	}
+	.mm-page .portrait-item-controls .addtocart.ATCHasItemsMobile{
+		background-image: url('/media/mobileweb/images/fd-added-32.png');
+		padding-top: 5px;
+	}
+	.mm-page .portrait-item-controls .addtocart.ATCinProgress{
+		background-image: url('/media/mobileweb/images/loader.gif');
 	}

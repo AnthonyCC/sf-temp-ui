@@ -9,6 +9,7 @@
  * @param? fromProducts
  * @param? abFeatures
  * @param? ifSingleUL
+ * @param? mobWeb
  */
 {template .content autoescape="false"}
 	{if $allSectionsEmpty}
@@ -29,6 +30,7 @@
 					{param fromProducts:$fromProducts /}
 					{param abFeatures:$abFeatures /}
 					{param ifSingleUL:$ifSingleUL /}
+					{param mobWeb:$mobWeb /}
 				{/call}
 			{/foreach}
 		{/if}

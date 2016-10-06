@@ -355,7 +355,7 @@ var FreshDirect = FreshDirect || {};
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
     // block popup open if we force it in browseMain
-    if($('.browseContent').hasClass('no-transactional')){
+    if($('.browseContent').hasClass('no-transactional') || $('.mm-page').length){
       event.stopPropagation();
       return false;
     }

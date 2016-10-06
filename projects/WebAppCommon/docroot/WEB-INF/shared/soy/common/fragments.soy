@@ -57,10 +57,12 @@
 * @param? showConfig
 * @param? abFeatures
 * @param? ifSingleUL
+* @param? mobWeb
 */
 {template .productList autoescape="false"}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
 	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 5 /}
+	{let $itemPerLineFinal: $mobWeb ? 2 : $itemPerLineFinal /}
 	{call common.fixedProductList data="all"}
 		{param itemPerLine:$itemPerLineFinal /}
 		{param showConfig: $showConfig /}
@@ -86,7 +88,6 @@
 	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
 	{let $l: $nProducts - $fProducts /}
 	{let $lines: ceiling($l / $ipl) /}
-	
 	{for $line in range(0, $lines)}
 		<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
   		{for $col in range(0, $ipl)}

@@ -98,7 +98,7 @@ var FreshDirect = FreshDirect || {};
 			n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 			t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 			document,'script','//connect.facebook.net/en_US/fbevents.js');
-			// Insert Your Facebook Pixel ID below. 
+			// Insert Your Facebook Pixel ID below.
 			fbq('init', '1634670833479183');
 
 			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
@@ -118,6 +118,9 @@ var FreshDirect = FreshDirect || {};
             type:item.status
           }));
           element.attr('data-amount', item.inCartAmount);
+          if($('.mm-page').length){
+        	  product.find('.addtocart').html(element.attr('data-amount')).addClass("ATCHasItemsMobile");
+    	  }
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {

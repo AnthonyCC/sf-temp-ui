@@ -46,6 +46,7 @@
  * @param? noFilterTags
  * @param? abFeatures
  * @param? ifSingleUL
+ * @param? mobWeb
  */
 {template .section autoescape="false"}
 {let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
@@ -61,6 +62,7 @@
 					{param usePopularCategoriesLayout:true /}
 					{param abFeatures:$abFeatures /}
 					{param ifSingleUL:$ifSingleUL /}
+					{param mobWeb:$mobWeb /}
 				{/call}
 			{/foreach}
 		{/if}
@@ -104,6 +106,7 @@
 							{param lastLevel:$lastLevel /}
 							{param abFeatures:$abFeatures /}
 							{param ifSingleUL:$ifSingleUL /}
+							{param mobWeb:$mobWeb /}
 						{/call}
 					{/foreach}
 				{/if}
@@ -115,6 +118,7 @@
 						{param productList:$section.products /}
 						{param abFeatures:$abFeatures /}
 						{param ifSingleUL:$ifSingleUL /}
+						{param mobWeb:$mobWeb /}
 					{/call}
 				{elseif $section.recipes}
 					{let $len: length($section.recipes) /}
