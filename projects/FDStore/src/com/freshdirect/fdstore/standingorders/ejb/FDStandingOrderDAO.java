@@ -510,6 +510,7 @@ public class FDStandingOrderDAO {
 		Date currDate = new Date();		
 		PreparedStatement ps = null;
 		try {
+		
 			ps = conn.prepareStatement(UPDATE_STANDING_ORDER);
 			int counter = 1;
 			ps.setString(counter++, so.getCustomerId());
@@ -742,7 +743,7 @@ public class FDStandingOrderDAO {
 		"NVL(CI.CELL_PHONE,'--') as CELL_PHONE, MAX(AL.TIMESTAMP) as FAILED_ON,case when pm.id is null then 'Not Exists' else 'Exists' end  as PAYMENT_METHOD "+
 		"from cust.activity_log al,cust.address a,cust.paymentmethod pm, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl "+ 
 		"where  AL.ACTIVITY_ID='SO-Failed' and so.id=AL.STANDINGORDER_ID and SO.CUSTOMERLIST_ID=CL.ID and SO.CUSTOMER_ID=AL.CUSTOMER_ID and SO.ADDRESS_ID=a.id(+) and SO.PAYMENTMETHOD_ID=pm.id(+) "+
-		"and c.id=ci.customer_id and so.customer_id=c.id and SO.DELETED='0' and SO.ERROR_HEADER is not null group by so.id ,cl.name,c.user_id  ,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') , "+
+		"and c.id=ci.customer_id and so.customer_id=c.id and SO.DELETED='0' and SO.ERROR_HEADER is not null and (SO.IS_ACTIVATED IS  NULL OR SO.IS_ACTIVATED='Y') group by so.id ,cl.name,c.user_id  ,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') , "+
 		"NVL(CI.CELL_PHONE,'--') ,A.COMPANY_NAME ,SO.NEXT_DATE  ,SO.FREQUENCY,SO.START_TIME,SO.END_TIME,SO.CUSTOMER_ID ,A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP , "+
 		"case when pm.id is null then 'Not Exists' else 'Exists' end,SO.ERROR_HEADER order by MAX(AL.TIMESTAMP)  desc";
 	
