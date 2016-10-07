@@ -156,9 +156,7 @@ public class AvailabilityService {
 			warningType = DELIVERY_PASS_ONLY;
 		} else if (cart.containsDonationProductsOnly()) {
 			warningType = DONATION_PRODUCTS_ONLY;
-		} else if (cart.containsDlvPassOnly() && cart.containsDonationProductsOnly() ){
-			warningType = DELIVERY_PASS_ONLY;
-		} 	else if (user.getDlvPassInfo() != null
+		} else if (user.getDlvPassInfo() != null
 				&& user.getDlvPassInfo().isUnlimited()
 				&& user.isDlvPassCancelled() && cart.isDlvPassAlreadyApplied()) {
 			warningType = DELIVERY_PASS_CANCELLED;

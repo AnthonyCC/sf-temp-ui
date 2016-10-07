@@ -2111,14 +2111,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public boolean containsDonationProductsOnly(){
 		boolean flg=false;
 		if(FDStoreProperties.isPropDonationProductSamplesEnabled()) {
-				
-			String[] donationSkuCode = FDStoreProperties
+		String[] donationSkuCode = FDStoreProperties
 					.getPropDonationProductSamplesId().split(",");
 		List<String> donationSkuCodeList=Arrays.asList(donationSkuCode);
 		List<FDCartLineI>  fdCartLines=null!=getOrderLines()?getOrderLines():new ArrayList<FDCartLineI>();
 		for (FDCartLineI fdCartLine : fdCartLines){
 			String cartSku=fdCartLine.getSkuCode();
-			if(donationSkuCodeList.contains(cartSku)){
+			if(donationSkuCodeList.contains(cartSku) || null!=DeliveryPassType.getEnum(cartSku)){
 			 flg=true;
 			}else{
 				flg=false;

@@ -702,8 +702,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 		},
 		callback: {
 			value: function(value){
-				this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
-				fd.components.carousel && fd.components.carousel.initialize();
+			//	this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
+			//	fd.components.carousel && fd.components.carousel.initialize();
 
 				/*remove extra e-tip element crap (sorry for this hack solution)*/
 				if( $(".cartsection__totalwrapper").length > 1 ){
