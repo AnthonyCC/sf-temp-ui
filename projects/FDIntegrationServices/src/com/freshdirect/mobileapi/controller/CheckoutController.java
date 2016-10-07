@@ -58,6 +58,7 @@ import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslotPageResponse;
 import com.freshdirect.mobileapi.controller.data.response.DynamicAvailabilityError;
+import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.controller.data.response.PaymentResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -393,12 +394,14 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+
         Checkout checkout = new Checkout(user);
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
 
         ActionResult result = new ActionResult();
         UserValidationUtil.validateOrderMinimum(request.getSession(), result);
-        if (result.isFailure() && isCheckLoginStatusEnable(request)) {
+        if (result.isFailure() && isWebRequest) {
             responseMessage.addErrorMessages(result.getErrors(), user);
         }
         
@@ -407,19 +410,25 @@ public class CheckoutController extends BaseController {
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
+
+        final FDSessionUser fdSessionUser = user.getFDSessionUser();
+
         if((EnumCouponContext.VIEWCART.equals(ctx) || EnumCouponContext.CHECKOUT.equals(ctx)) && FDStoreProperties.getAvalaraTaxEnabled()){
-        	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
+        	AvalaraContext avalaraContext =  new AvalaraContext(fdSessionUser.getShoppingCart());
         	cart.getAvalaraTax(avalaraContext);
         }
-        if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+
+        // FKMobileWeb: fix cartDetails field, add product potatos
+        if (isWebRequest && responseMessage instanceof HasCartDetailField) {
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), ((HasCartDetailField) responseMessage).getCartDetail());
+        }
+
+        if(!fdSessionUser.isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE
         										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-        }/*else{
-        	user.setRefreshCouponWalletRequired(true);
-        	user.setCouponEvaluationRequired(true);
-        }*/
-        
-        if(user.getFDSessionUser().getShoppingCart().getExpCouponDeliveryDate()!=null){
+        }
+
+        if(fdSessionUser.getShoppingCart().getExpCouponDeliveryDate()!=null){
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONS_EXP_DELIVERY_DATE
 					, MessageCodes.MSG_COUPONS_EXP_DELIVERY_DATE);
         }

@@ -11,7 +11,7 @@ import com.freshdirect.mobileapi.controller.data.Message;
  * @author Rob
  *
  */
-public class Order extends Message {
+public class Order extends Message implements HasCartDetailField {
 
     private String status;
 
@@ -108,10 +108,12 @@ public class Order extends Message {
         this.paymentMethod = paymentMethod;
     }
 
+    @Override
     public CartDetail getCartDetail() {
         return cartDetail;
     }
 
+    @Override
     public void setCartDetail(CartDetail cartDetail) {
         this.cartDetail = cartDetail;
     }
