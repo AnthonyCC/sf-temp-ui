@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -271,7 +273,7 @@ public class CartController extends BaseController {
         
         // populate potatoes
         if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
 
         setResponseMessage(model, responseMessage, user);
@@ -296,7 +298,7 @@ public class CartController extends BaseController {
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         
         if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
         
         responseMessage.setSuccessMessage("Alcoholic items have been removed from the cart successfully.");
@@ -344,7 +346,7 @@ public class CartController extends BaseController {
 	                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
 	                
 	                if (isCheckLoginStatusEnable(request)) {
-	                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+	                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
 	                }
 	                
 	                responseMessage.setSuccessMessage("Item has been added to cart successfully.");
@@ -396,7 +398,7 @@ public class CartController extends BaseController {
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             
             if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             }
             
             responseMessage.setSuccessMessage(successMessage);
@@ -431,7 +433,7 @@ public class CartController extends BaseController {
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             
             if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             }
 
             responseMessage.setSuccessMessage("Cart line item has been updated successfully.");
@@ -616,7 +618,7 @@ public class CartController extends BaseController {
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
             
             if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             }
 
             responseMessage.setSuccessMessage("Items has been added to cart successfully.");
@@ -651,7 +653,7 @@ public class CartController extends BaseController {
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
 
         if (result.isSuccess()) {

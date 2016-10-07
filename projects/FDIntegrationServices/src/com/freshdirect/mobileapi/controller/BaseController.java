@@ -792,7 +792,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_CART) && messageResponse instanceof HasCartDetailField) {
             final CartDetail cartDetail = user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART);
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail, getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             ((HasCartDetailField)messageResponse).setCartDetail(cartDetail);
         }
     }

@@ -131,7 +131,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
         	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
             if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
+                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
             }
             orders.get(0).setStatus(orderDetail.getStatus());
 

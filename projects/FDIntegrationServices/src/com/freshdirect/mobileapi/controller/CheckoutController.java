@@ -685,7 +685,7 @@ public class CheckoutController extends BaseController {
 	            orderReceipt.setOrderNumber(orderId);
 
 	            if (isCheckLoginStatusEnable(request)) {
-	                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+	                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
 	            }
 	            
 	            responseMessage = orderReceipt;
@@ -745,7 +745,7 @@ public class CheckoutController extends BaseController {
 	            orderReceipt.setOrderNumber(orderId);
 	            
                 if (isCheckLoginStatusEnable(request)) {
-                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
                 }
 	            
 	            responseMessage = orderReceipt;
@@ -1454,7 +1454,7 @@ public class CheckoutController extends BaseController {
 				    		         if(null !=order){
 				    				            orderReceipt = order.getOrderDetail(user);
 				    			                if (isCheckLoginStatusEnable(request)) {
-				    			                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail(), getServletContext());
+				    			                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
 				    			                }
 				    			            }
 				    				 orderReceipt.setOrderNumber(orderId);

@@ -267,7 +267,7 @@ public class OrderController extends BaseController {
             JsonException {
     	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
         if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail(), getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail());
         }
         ResultBundle resultBundle = Order.loadOrderToCartForUpdate(orderId, user);
         ActionResult result = resultBundle.getActionResult();
@@ -334,7 +334,7 @@ public class OrderController extends BaseController {
         Order order = user.getOrder(orderId);
         com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
         if (isCheckLoginStatusEnable(request)) {
-            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
         }
 
         setResponseMessage(model, orderDetail, user);
@@ -590,7 +590,7 @@ public class OrderController extends BaseController {
 				final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
                 orders.addOrder(orderDetail,orderId);
                 if (isWebRequest) {
-                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail(), getServletContext());
+                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
                 }
 				
 			} catch (ParseException e) {

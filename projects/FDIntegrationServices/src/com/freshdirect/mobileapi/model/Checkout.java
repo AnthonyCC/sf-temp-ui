@@ -2,17 +2,14 @@ package com.freshdirect.mobileapi.model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,10 +20,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.MunicipalityInfo;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -51,7 +45,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.RestrictionUtil;
 import com.freshdirect.framework.util.DateRange;
@@ -82,7 +75,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class Checkout {
 
@@ -530,7 +522,6 @@ public class Checkout {
      * @return
      * @throws FDException
      */
-    @SuppressWarnings("unchecked")
     public Order getCurrentOrderDetails(EnumCouponContext ctx) throws FDException {
         return sessionUser.getShoppingCart().getCurrentOrderDetails(sessionUser, ctx);
     }
@@ -611,7 +602,7 @@ public class Checkout {
                 group.addCartLineItem(item);
 
                 FDCartLineI cartLine = cart.getOrderLineById(key.intValue());
-                FDAvailabilityInfo info = (FDAvailabilityInfo) invsInfoMap.get(key);
+                FDAvailabilityInfo info = invsInfoMap.get(key);
 
                 item.setQuantity(cartLine.getQuantity());
                 item.setDescription(cartLine.getDescription());

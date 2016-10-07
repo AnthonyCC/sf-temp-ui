@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -141,7 +139,7 @@ public class ProductPotatoUtil {
      * @param cartDetail
      * @param servletContext
      */
-    public static void populateCartDetailWithPotatoes(final FDUserI user, final CartDetail cartDetail, final ServletContext servletContext) {
+    public static void populateCartDetailWithPotatoes(final FDUserI user, final CartDetail cartDetail) {
         List<ProductConfiguration> configurations = new ArrayList<ProductConfiguration>();
         
         for (final AffiliateCartDetail affiliate : cartDetail.getAffiliates()) {
