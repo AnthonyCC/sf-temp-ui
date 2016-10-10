@@ -52,9 +52,9 @@
     <tmpl:get name='nutritionCss'/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
   </head>
-<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
-<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
+<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><![endif]-->
+<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><![endif]-->
+<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><!--<![endif]-->
 	
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     
@@ -71,6 +71,11 @@
 		<!-- top nav e -->
 		
 		<div id="content" autoscroll="true"><!-- content starts here-->
+			<section class="tabs" style="display: none;">
+    			<!-- start : tabs -->
+    			<tmpl:get name='tabs'/>
+    			<!-- end : tabs -->      
+  			</section>
 			<tmpl:get name="content" />
 	    </div><!-- content ends above here-->
 	    

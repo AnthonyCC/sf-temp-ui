@@ -62,12 +62,6 @@
 <%-- TODO search --%>
 <potato:browse/>
 
-<%
-	Map<String, Object> sections = (Map<String, Object>)pageContext.getAttribute("browsePotato");
-	Map<String, Object> browsePotatoSections = (Map<String, Object>)sections.get("sections");
-	browsePotatoSections.put("mobWeb", mobWeb);
-%>
-
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${empty browsePotato.descriptiveContent.oasSitePage ? 'www.freshdirect.com/search.jsp' : browsePotato.descriptiveContent.oasSitePage }" />
 
@@ -184,16 +178,17 @@
 	    <c:choose>
 	      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
 	        <div class="browse-sections-top transactional">
-	          <soy:render template="srch.topContent" data="<%= browsePotatoSections %>" />
+	          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
 	        </div>
-	
+			<% if (!mobWeb) { %>
 	        <div class="srch-carousel">
 	          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
 	        </div>
 	        
 	        <div class="browse-sections-bottom transactional">
-	          <soy:render template="srch.bottomContent" data="<%= browsePotatoSections %>" />
+	          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
 	        </div>
+	        <% } %>
 	      </c:when>
 	      <c:otherwise>
 	          <div class="browse-sections transactional"><%-- this does the main prod grid --%>

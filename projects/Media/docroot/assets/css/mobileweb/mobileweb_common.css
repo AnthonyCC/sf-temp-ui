@@ -809,10 +809,8 @@ footer .copyright {
 	.mm-page #sorter{
 		display: none;
 	}
-	.mm-page .pagination-pager{
-		display: block;
-		width: 285px;
-		margin: auto;
+	.mm-page .pagination{
+		text-align: center;
 	}
 	[data-cmeventsource="BROWSE"] .mm-page #content{
 		background: #F2F0EF;

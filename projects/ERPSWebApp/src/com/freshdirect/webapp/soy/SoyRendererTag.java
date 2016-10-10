@@ -17,10 +17,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormMetaDataService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.JspMethods;
 import com.google.template.soy.data.SoyMapData;
 
 public class SoyRendererTag extends SimpleTagSupport {
@@ -64,6 +67,7 @@ public class SoyRendererTag extends SimpleTagSupport {
         try {
             dataObj.put("abFeatures", SoyTemplateEngine.convertToMap(FeaturesService.defaultService().getActiveFeaturesMapped(cookies, user)));
             dataObj.put("metadata", SoyTemplateEngine.convertToMap(FormMetaDataService.defaultService().populateFormMetaData(user)));
+            dataObj.put("mobWeb", FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(((HttpServletRequest) pageContext.getRequest()).getHeader("User-Agent")));
         } catch (FDResourceException e) {
             LOGGER.error("Can not decorate soy data with additional information.", e);
         }

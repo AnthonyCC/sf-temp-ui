@@ -14,6 +14,7 @@ var FreshDirect = FreshDirect || {};
       if (DECORATE_BODY && body && typeof body === 'object') {
         body.metadata = body.metadata || fd.metaData;
         body.abFeatures = body.abFeatures || fd.features && fd.features.active;
+        body.mobWeb = body.mobWeb || fd.mobWeb;
       }
       bus.push({
         to: to,
