@@ -85,6 +85,13 @@
 				</c:if>
 			</div>
 			
+			<div class="prodDetail-grp"><%-- group items --%>
+				<div class="pdp-group-prods">
+					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+				</div>
+			</div>
+			
+			
 			<% if (false) { /* excluding these for now */ %>
 				<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
 					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />

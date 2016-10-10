@@ -18,7 +18,7 @@
   	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<meta name="fragment" content="!">
     
-    <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
     	
 	<fd:LocationHandler/>
 	<%

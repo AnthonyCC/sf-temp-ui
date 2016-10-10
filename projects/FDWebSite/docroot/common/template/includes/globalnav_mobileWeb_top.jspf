@@ -8,7 +8,7 @@
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+				<a class="navbar-brand" href="/"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
 			</div>
 			<div class="pull-right" style="margin: 5px 9px 5px 0;">
 				<div class="navbar-ecomvalue">
@@ -183,42 +183,3 @@
 		</li>
 	</ul>
 </nav>
-
-<%-- TODO : HERE DOWN, REMOVE --%>
-<div id="navMenu" class="">
-	<div class="navbar navbar-header">
-		<div class="pull-left">
-			<button id="navbarHide" class="navbar-toggle pull-left backnav"><span class="glyphicon glyphicon-menu-left"></span></button>
-			<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
-		</div>
-		<div class="clearfix"></div>
-	</div>
-	<div style="height: 100%; width: 100%;">
-		<ul id="navMenuItems">
-			<li class="navMenuItems-topIcon">
-				<div>
-					<div class="iconnav icon-browse-shop"></div>
-					<div class="navlabel">SHOP</div>
-				</div>
-					
-				<ul class="navMenuItems-browse">
-					<li class="navMenuItems-noselect"><div class="glBreadcrumblink">All Shops</div></li>
-					
-					<li><div class="glBreadcrumblink"><span class="ui-icon" style="background-image: url('<%-- WHAT ICON GOES HERE? --%>');"></span><a href="/browse.jsp?id=picks_love">Fresh Deals</a></div></li>
-					<% for (DepartmentModel curDept : departments) {
-						if ("WGD".equalsIgnoreCase(curDept.toString())) {
-							continue;
-						}
-					%>
-						<li><div class="glBreadcrumblink"><span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span><a href="/browse.jsp?id=<%=curDept.toString()%>"><%= curDept.getFullName() %></a></div></li>
-					<% } %>
-				</ul>
-			</li>
-		</ul>
-		
-		<div class="pNavLoginButton-cont">
-					
-			
-		</div>
-	</div>
-</div>
