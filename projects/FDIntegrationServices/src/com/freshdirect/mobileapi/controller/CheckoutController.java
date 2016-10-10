@@ -1449,7 +1449,7 @@ public class CheckoutController extends BaseController {
                 if (isSuccess(message.getStatus())) {
                     ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
                     if (!availabliltyResult.isSuccess()) {
-                        message = checkout.fillAtpErrorDetail(message, user, request);
+                        message = checkout.fillAtpErrorDetail(message, request);
                     } else {
                         // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
                         FDCartModel cartModel = fdUser.getShoppingCart();

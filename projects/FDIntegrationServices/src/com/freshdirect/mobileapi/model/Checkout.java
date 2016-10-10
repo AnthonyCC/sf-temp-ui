@@ -82,6 +82,16 @@ public class Checkout {
 
     private static Category LOGGER = LoggerFactory.getInstance(Checkout.class);
 
+
+    private final SessionUser sessionUser;
+
+
+    public Checkout(SessionUser sessionUser) {
+        this.sessionUser = sessionUser;
+    }
+
+
+
     /**
      * @return
      * @throws FDException
@@ -498,14 +508,8 @@ public class Checkout {
         return result;
     }
 
-    private SessionUser sessionUser;
-
     private FDUser getFDUser() {
         return sessionUser.getFDSessionUser().getUser();
-    }
-
-    public Checkout(SessionUser sessionUser) {
-        this.sessionUser = sessionUser;
     }
 
     /**
@@ -895,7 +899,7 @@ public class Checkout {
      * 
      * @param message
      * @param user
-     * @param request
+     * @param isWebRequest value 'true' is meant for FK Mobile Web clients, 'false' should be the default
      * @return
      * @throws FDResourceException
      */
@@ -943,12 +947,10 @@ public class Checkout {
      * Called by checkoutController.submitOrderEx () performs ATP check and populates the message with unavailable items and their possible replacements.
      * 
      * @param message
-     * @param user
      * @param request
      * @return
      */
-    public SubmitOrderExResult fillAtpErrorDetail(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) {
-        this.sessionUser = user;
+    public SubmitOrderExResult fillAtpErrorDetail(SubmitOrderExResult message, HttpServletRequest request) {
         AtpError atpError = (AtpError) this.getAtpErrorDetail();
         AtpErrorData unavailabilityData = null;
         try {
