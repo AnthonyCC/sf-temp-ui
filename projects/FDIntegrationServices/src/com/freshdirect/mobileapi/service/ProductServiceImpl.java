@@ -36,6 +36,7 @@ import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -84,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         SmartSearchTag search = null;
 
         SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
-        wrapper.setRequestUrl(request.getRequestURL().toString());
+        wrapper.setRequestUrl(RequestUtil.getFullRequestUrl(request));
         wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
         ResultBundle resultBundle;
         try {
