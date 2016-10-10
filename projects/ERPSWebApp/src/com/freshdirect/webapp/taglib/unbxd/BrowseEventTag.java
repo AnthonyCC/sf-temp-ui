@@ -23,6 +23,7 @@ import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class BrowseEventTag extends SimpleTagSupport {
 
@@ -57,7 +58,7 @@ public class BrowseEventTag extends SimpleTagSupport {
         if (model instanceof ProductContainer) {
 
             final Visitor visitor = Visitor.withUser(user);
-            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
+            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
             AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null);
 

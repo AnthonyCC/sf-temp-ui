@@ -59,13 +59,13 @@ import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
+import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class CheckoutService {
@@ -209,7 +209,7 @@ public class CheckoutService {
 						// [APPDEV-5353] [APPDEV-5396] UNBXD analytics
 				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 				            final Visitor visitor = Visitor.withUser(user);
-				            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
+				            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
 				            for (FDCartLineI cartline : cart.getOrderLines()) {
 				                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline);

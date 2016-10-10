@@ -19,6 +19,7 @@ import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class SearchEventTag extends SimpleTagSupport {
 
@@ -37,7 +38,7 @@ public class SearchEventTag extends SimpleTagSupport {
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
                 final String query = request.getParameter("searchParams");
 
-                doSendEvent(user, RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), query);
+                doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), query);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");
             }

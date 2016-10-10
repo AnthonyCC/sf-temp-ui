@@ -25,7 +25,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsFilteringNavigator {
@@ -240,7 +240,7 @@ public class CmsFilteringNavigator {
         }
         cmsFilteringNavigator.setRequestCookies(request.getCookies());
         cmsFilteringNavigator.setReferer(request.getHeader(HttpHeaders.REFERER));
-        cmsFilteringNavigator.setRequestUrl(RequestUrlUtil.getInstance().getFullRequestUrl(request));
+        cmsFilteringNavigator.setRequestUrl(RequestUtil.getFullRequestUrl(request));
         return cmsFilteringNavigator;
     }
 

@@ -20,6 +20,7 @@ import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
+import com.freshdirect.webapp.util.RequestUtil;
 
 
 public class ClickThruEventTag extends SimpleTagSupport {
@@ -50,7 +51,7 @@ public class ClickThruEventTag extends SimpleTagSupport {
     }
     
     public static void doSendEvent(FDUserI user, HttpServletRequest request, ProductModel model) {
-        doSendEvent(user, RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model);
+        doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model);
     }
     
     public static void doSendEvent(FDUserI user, String requestedUrl, String referer, ProductModel model){
