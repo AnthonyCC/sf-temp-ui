@@ -1413,107 +1413,109 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException{
-    	Checkout checkout = new Checkout(user);
-    	
-    	SubmitOrderExResult message = new SubmitOrderExResult();
+    private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+        final Checkout checkout = new Checkout(user);
 
-    	if(null !=user.getFDSessionUser().getGiftCardList()){
-    		user.getFDSessionUser().getShoppingCart().setSelectedGiftCards( user.getFDSessionUser().getGiftCardList().getSelectedGiftcards() );
-    	}
-		
-    	if(user.getFDSessionUser().getShoppingCart().getPaymentMethod() ==null) {
-    		checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), ""); 
-    	}
-    	
-    	ResultBundle dlvValidationResult = new ResultBundle();
-    	dlvValidationResult.setActionResult(new ActionResult());
-    	
-    	if(user!=null && user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && 
-    			user.getFDSessionUser().getShoppingCart().getPaymentMethod() !=null && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true)){
-    		//Reservation Validity
-	    	boolean reservationValid = checkout.checkReservationExpiry(user);
-	    	if(reservationValid){
-	    		if(user.getShoppingCart().containsAlcohol()){
-	    			//Call Address And Alcohol Check
-	    			message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
-	    			if(isSuccess(message.getStatus())){
-	    				//Timeslot Alcohol Check
-	    				message = checkout.alcoholTimeSlotCheck(message, user, request);
-	    			}
-	    		}
-	    		// Atp Check
-	    		if(isSuccess(message.getStatus())){
-	    		ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
-	    		 if (!availabliltyResult.isSuccess()){
-	    			 message = checkout.fillAtpErrorDetail(message, user, request);
-	    		 } else {
-	    			// message = checkout.submitEx((SubmitOrderExResult)message, user, request);
-	    			     FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
-	    				 ResultBundle submitResult = checkout.submitOrder();
-		    			 propogateSetSessionValues(request.getSession(), submitResult);
-		    				if (submitResult.getActionResult().isSuccess()) {
-		    					message.setStatus(Message.STATUS_SUCCESS);
-		    					com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
-		    		             String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
-		    		             if(orderId==null && user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null ){
-		    		            	 message.addErrorMessage("Payment method not selected");
-		    		  				message.setStatus(Message.STATUS_FAILED);
-		    		             } else {
-			    		             com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
-				    		         if(null !=order){
-				    				            orderReceipt = order.getOrderDetail(user);
-				    			                if (isCheckLoginStatusEnable(request)) {
-				    			                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
-				    			                }
-				    			            }
-				    				 orderReceipt.setOrderNumber(orderId);
-				    				 message.wrap(orderReceipt);
-			    		             
-			    					 message.addDebugMessage("Order has been submitted successfully.");
-			    					 createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
-		    		             }
-		    				} else {
-		    					message.setStatus(Message.STATUS_FAILED);
-		    					message.addErrorMessages(submitResult.getActionResult().getErrors(), user);
-		    				}
-		    				message.addWarningMessages(submitResult.getActionResult().getWarnings());
-	    			 
-	    			 
-	    		 }
-	    		}
-	    	} else {
-	    		// Reservation expired.
-	 			message.addErrorMessage("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION);
-	 			message.setStatus(Message.STATUS_FAILED);
-	    	}
-    	
-    	} else {
-    		// cart not set up for checkout.
-    		if (user==null){
-    			message.addErrorMessage("Error processing checkout - User");
- 			} else if (user.getShoppingCart()==null){
-    			message.addErrorMessage("Error processing checkout - Cart");
- 			} else if (user.getShoppingCart().getDeliveryReservation()==null){
- 				EnumEStoreId eStore=(user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
-                if(EnumEStoreId.FDX.equals(eStore)){
-                	message.addErrorMessage("Please select your delivery time");
+        SubmitOrderExResult message = new SubmitOrderExResult();
+
+        final FDUserI fdUser = user.getFDSessionUser();
+        if (null != fdUser.getGiftCardList()) {
+            fdUser.getShoppingCart().setSelectedGiftCards(fdUser.getGiftCardList().getSelectedGiftcards());
+        }
+
+        if (fdUser.getShoppingCart().getPaymentMethod() == null) {
+            checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), "");
+        }
+
+        ResultBundle dlvValidationResult = new ResultBundle();
+        dlvValidationResult.setActionResult(new ActionResult());
+
+        if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
+                && fdUser.getShoppingCart().getPaymentMethod() != null
+                && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true)) {
+            // Reservation Validity
+            boolean reservationValid = checkout.checkReservationExpiry(user);
+            if (reservationValid) {
+                if (user.getShoppingCart().containsAlcohol()) {
+                    // Call Address And Alcohol Check
+                    message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
+                    if (isSuccess(message.getStatus())) {
+                        // Timeslot Alcohol Check
+                        message = checkout.alcoholTimeSlotCheck(message, user, request);
+                    }
                 }
-                else
-                {
-                	message.addErrorMessage("There is an issue with the delivery time, please select another one");
+                // Atp Check
+                if (isSuccess(message.getStatus())) {
+                    ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
+                    if (!availabliltyResult.isSuccess()) {
+                        message = checkout.fillAtpErrorDetail(message, user, request);
+                    } else {
+                        // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
+                        FDCartModel cartModel = fdUser.getShoppingCart();
+                        ResultBundle submitResult = checkout.submitOrder();
+                        propogateSetSessionValues(request.getSession(), submitResult);
+                        if (submitResult.getActionResult().isSuccess()) {
+                            message.setStatus(Message.STATUS_SUCCESS);
+                            com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
+                            String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
+                            if (orderId == null && fdUser.getShoppingCart().getPaymentMethod() == null) {
+                                message.addErrorMessage("Payment method not selected");
+                                message.setStatus(Message.STATUS_FAILED);
+                            } else {
+                                com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
+                                if (null != order) {
+                                    orderReceipt = order.getOrderDetail(user);
+                                    if (isCheckLoginStatusEnable(request)) {
+                                        ProductPotatoUtil.populateCartDetailWithPotatoes(fdUser, orderReceipt.getCartDetail());
+                                    }
+                                }
+                                orderReceipt.setOrderNumber(orderId);
+                                message.wrap(orderReceipt);
+
+                                message.addDebugMessage("Order has been submitted successfully.");
+                                createAndSendUnbxdAnalyticsEvent(fdUser, request, cartModel.getOrderLines());
+                            }
+                        } else {
+                            message.setStatus(Message.STATUS_FAILED);
+                            message.addErrorMessages(submitResult.getActionResult().getErrors(), user);
+                        }
+                        message.addWarningMessages(submitResult.getActionResult().getWarnings());
+
+                    }
                 }
- 			} else if (user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null){
-    			message.addErrorMessage("Error processing checkout - Payment Method");
- 			} else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only")!=null && dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription()!=null && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))){
-    			message.addErrorMessage(dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription());
- 			}
- 			message.setStatus(Message.STATUS_FAILED);
- 			
-    	}
-    	
-    	setResponseMessage(model, message, user);
-    	return model;
+            } else {
+                // Reservation expired.
+                message.addErrorMessage("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION);
+                message.setStatus(Message.STATUS_FAILED);
+            }
+
+        } else {
+            // cart not set up for checkout.
+            if (user == null) {
+                message.addErrorMessage("Error processing checkout - User");
+            } else if (user.getShoppingCart() == null) {
+                message.addErrorMessage("Error processing checkout - Cart");
+            } else if (user.getShoppingCart().getDeliveryReservation() == null) {
+                EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
+                        : EnumEStoreId.FD;
+                if (EnumEStoreId.FDX.equals(eStore)) {
+                    message.addErrorMessage("Please select your delivery time");
+                } else {
+                    message.addErrorMessage("There is an issue with the delivery time, please select another one");
+                }
+            } else if (fdUser.getShoppingCart().getPaymentMethod() == null) {
+                message.addErrorMessage("Error processing checkout - Payment Method");
+            } else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only") != null
+                    && dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription() != null
+                    && (!dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription().equals(""))) {
+                message.addErrorMessage(dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription());
+            }
+            message.setStatus(Message.STATUS_FAILED);
+
+        }
+
+        setResponseMessage(model, message, user);
+        return model;
     }
     
     private static boolean isSuccess(String messageStatus) {

@@ -118,7 +118,7 @@ public class Checkout {
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
         return result;
     }
-    
+
     /**
      * @param paymentMethodId
      * @param billingReference
@@ -126,29 +126,29 @@ public class Checkout {
      * @throws FDException
      */
     public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference) throws FDException {
-    	 boolean isCustomAdded=false;
+        boolean isCustomAdded = false;
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
-        //if we have orderMinimum not met we are going to remove it and pass the result 
+        // if we have orderMinimum not met we are going to remove it and pass the result
         ActionResult customActionResult = new ActionResult();
-        if(result.getActionResult().isFailure()){
-        	 Collection<ActionError> errors = result.getActionResult().getErrors();
-        	 for(ActionError error : errors){
- 	         	if("order_minimum".equals(error.getType())){
- 	         		continue;
- 	         	} else {
- 	         		customActionResult.addError(error);
- 	         	}
- 	         }
-        	 Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
         }
-        if(isCustomAdded){
-       	 result.setActionResult(customActionResult);
-        } 
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -157,31 +157,31 @@ public class Checkout {
         ResultBundle result = tagWrapper.addPaymentMethod(paymentMethod);
         return result;
     }
-    
+
     public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod) throws FDException {
-        boolean isCustomAdded=false;
+        boolean isCustomAdded = false;
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addPaymentMethodEx(paymentMethod);
-        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
         ActionResult customActionResult = new ActionResult();
-        if(result.getActionResult().isFailure()){
-	         Collection<ActionError> errors = result.getActionResult().getErrors();
-	         for(ActionError error : errors){
-	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
-	         		continue;
-	         	} else {
-	         		customActionResult.addError(error);
-	         	}
-	         }
-	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
         }
-        if(isCustomAdded){
-       	 result.setActionResult(customActionResult);
-        } 
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -196,7 +196,7 @@ public class Checkout {
         ResultBundle result = tagWrapper.editPaymentMethod(paymentMethod);
         return result;
     }
-    
+
     public ResultBundle savePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.savePaymentMethod(paymentMethod);
@@ -212,27 +212,27 @@ public class Checkout {
     public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId);
-        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        boolean isCustomAdded=false;
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        boolean isCustomAdded = false;
         ActionResult customActionResult = new ActionResult();
-        if(result.getActionResult().isFailure()){
-	         Collection<ActionError> errors = result.getActionResult().getErrors();
-	         for(ActionError error : errors){
-	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
-	         		continue;
-	         	} else {
-	         		customActionResult.addError(error);
-	         	}
-	         }
-	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
         }
-        if(isCustomAdded){
-       	 result.setActionResult(customActionResult);
-        } 
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -242,37 +242,36 @@ public class Checkout {
         return result;
     }
 
-
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddress(deleteShipToAddressId);
         return result;
     }
-    
+
     public ResultBundle deleteDeliveryAddressEx(String deleteShipToAddressId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddressEx(deleteShipToAddressId);
-        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        boolean isCustomAdded=false;
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        boolean isCustomAdded = false;
         ActionResult customActionResult = new ActionResult();
-        if(result.getActionResult().isFailure()){
-	         Collection<ActionError> errors = result.getActionResult().getErrors();
-	         for(ActionError error : errors){
-	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
-	         		continue;
-	         	} else {
-	         		customActionResult.addError(error);
-	         	}
-	         }
-	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
         }
-        if(isCustomAdded){
-       	 result.setActionResult(customActionResult);
-        } 
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -304,7 +303,7 @@ public class Checkout {
         String selectedTimeslotId = null;
         String deliveryTimeslotId = null;
         String reservationTimeslotId = null;
-        //We can assume that we have shopping cart at this point
+        // We can assume that we have shopping cart at this point
         FDCartI cart = sessionUser.getShoppingCart().getCart();
         if (cart.getDeliveryReservation() != null) {
             deliveryTimeslotId = cart.getDeliveryReservation().getTimeslotId();
@@ -330,19 +329,17 @@ public class Checkout {
      */
     public String getPreselectedDeliveryAddressId() throws FDResourceException {
         String addressId = null;
-        
+
         Cart cart = sessionUser.getShoppingCart();
-            
-        if (cart != null && cart.isModifyCart()) 
-        {
-        	FDCartModel cartModel = cart.getCart();
-        	
-        	if(cartModel == null) 
-        		return sessionUser.getDefaultShipToAddress();
-        	
+
+        if (cart != null && cart.isModifyCart()) {
+            FDCartModel cartModel = cart.getCart();
+
+            if (cartModel == null)
+                return sessionUser.getDefaultShipToAddress();
+
             addressId = cartModel.getDeliveryReservation().getAddressId();
-        }
-        else {
+        } else {
             addressId = sessionUser.getDefaultShipToAddress();
             if (addressId == null) {
                 addressId = sessionUser.getReservationAddressId();
@@ -352,11 +349,8 @@ public class Checkout {
     }
 
     /**
-     * @see com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag
-     * DUP: duplicated the age verification logic on the CheckoutControllerTag class.
-     * It was also updated to remove a reference about a page/HttpServletRequest.
-     * We also removed the logic about "app" == "CALLCENTER" check as that should controlled
-     * by the controller not model.
+     * @see com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag DUP: duplicated the age verification logic on the CheckoutControllerTag class. It was also updated to remove
+     *      a reference about a page/HttpServletRequest. We also removed the logic about "app" == "CALLCENTER" check as that should controlled by the controller not model.
      *
      * @param app
      * @param request
@@ -369,36 +363,29 @@ public class Checkout {
     }
 
     /**
-     * TODO: What if this method is called before delivery address/slot is set.  Probably need to throw an exception.
+     * TODO: What if this method is called before delivery address/slot is set. Probably need to throw an exception.
+     * 
      * @return
      * @throws FDException
      */
     public boolean isDuplicateOrder() throws FDException {
-        //Perform duplicate check
+        // Perform duplicate check
         OrderHistoryInfoTagWrapper orderHistoryInfoTagWrapper = new OrderHistoryInfoTagWrapper(this.sessionUser);
         List<FDOrderInfoI> orderInfos = orderHistoryInfoTagWrapper.getOrderHistoryInfo();
 
         /*
          * DUP: /checkout/step_3_choose.jsp
+         * 
          * @see /checkout/step_3_choose.jsp
          *
-            // redirect to Duplicate Order warning page if has another order for the same day
-            String ignoreSaleId = null;
-            if (cart instanceof FDModifyCartModel) {
-                    ignoreSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
-            }
-
-            Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-
-            for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-                    FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
-                    if (!(oi.getErpSalesId().equals(ignoreSaleId))
-                            && oi.isPending()
-                            && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
-                            response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_duplicate.jsp?successPage=/checkout/step_3_choose.jsp"));
-                            return;
-                    }
-            }
+         * // redirect to Duplicate Order warning page if has another order for the same day String ignoreSaleId = null; if (cart instanceof FDModifyCartModel) { ignoreSaleId =
+         * ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId(); }
+         * 
+         * Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
+         * 
+         * for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) { FDOrderInfoI oi = (FDOrderInfoI) hIter.next(); if (!(oi.getErpSalesId().equals(ignoreSaleId)) &&
+         * oi.isPending() && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
+         * response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_duplicate.jsp?successPage=/checkout/step_3_choose.jsp")); return; } }
          */
         FDCartModel cart = getFDUser().getShoppingCart();
         String ignoreSaleId = null;
@@ -409,8 +396,7 @@ public class Checkout {
         Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
         for (Iterator hIter = orderInfos.iterator(); hIter.hasNext();) {
             FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
-            if (!(oi.getErpSalesId().equals(ignoreSaleId)) && oi.isPending()
-                    && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
+            if (!(oi.getErpSalesId().equals(ignoreSaleId)) && oi.isPending() && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
                 isDuplicateOrder = true;
             }
         }
@@ -439,74 +425,76 @@ public class Checkout {
         }
         return result;
     }
+
     /**
      * This sets the address for FDX by passes the minimum delivery and age restriction.
+     * 
      * @param id
      * @param type
      * @return
      * @throws FDException
      */
-    public ResultBundle setCheckoutDeliveryAddressEx(String id, DeliveryAddressType type)throws FDException{
-    	 CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-         ResultBundle result = null;
-         boolean isCustomAdded=false;
-         if ((result == null) || (result.getActionResult().isSuccess())) {
-        	 result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-         }
-         //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-         ActionResult customActionResult = new ActionResult();
-         if(result.getActionResult().isFailure()){
-	         Collection<ActionError> errors = result.getActionResult().getErrors();
-	         for(ActionError error : errors){
-	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
-	         		continue;
-	         	} else {
-	         		customActionResult.addError(error);
-	         	}
-	         }
-	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
-         }
-         if(isCustomAdded){
-        	 result.setActionResult(customActionResult);
-         } 
-         return result;
-    }
-    
-    public ResultBundle setCheckoutOrderMobileNumberEx(String orderMobileNumber)throws FDException{
-   	 CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+    public ResultBundle setCheckoutDeliveryAddressEx(String id, DeliveryAddressType type) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = null;
-        boolean isCustomAdded=false;
-
-        if ((result == null) || (result.getActionResult().isSuccess())) 
-       	 result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
-        
-        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        ActionResult customActionResult = new ActionResult();
-        if(result.getActionResult().isFailure()){
-	         Collection<ActionError> errors = result.getActionResult().getErrors();
-	         for(ActionError error : errors){
-	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
-	         		continue;
-	         	} else {
-	         		customActionResult.addError(error);
-	         	}
-	         }
-	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
-	         for(ActionWarning warning : warnings){
-	        	 customActionResult.addWarning(warning);
-	         }
-	         isCustomAdded=true;
+        boolean isCustomAdded = false;
+        if ((result == null) || (result.getActionResult().isSuccess())) {
+            result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
         }
-        if(isCustomAdded){
-       	 result.setActionResult(customActionResult);
-        } 
-       
-         return result;
-   }
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
+        return result;
+    }
+
+    public ResultBundle setCheckoutOrderMobileNumberEx(String orderMobileNumber) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = null;
+        boolean isCustomAdded = false;
+
+        if ((result == null) || (result.getActionResult().isSuccess()))
+            result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
+
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
+
+        return result;
+    }
 
     private SessionUser sessionUser;
 
@@ -541,22 +529,19 @@ public class Checkout {
         return orderReceipt;
     }
 
-     /**
-     * TODO: Model should not return request data class.  Unnecessary coupling of model and view.
+    /**
+     * TODO: Model should not return request data class. Unnecessary coupling of model and view.
+     * 
      * @return
      */
     public Message getAtpErrorDetail() {
         /*
-         * DUP: FDWebSite/docroot/checkout/step_2_unavail.jsp
-         * LAST UPDATED ON: 10/07/2009
-         * LAST UPDATED WITH SVN#: 5951
-         * WHY: The following logic was duplicate because it was specified in a JSP file.
-         * WHAT: If there are ATP failure, the duplicated code determines what options are available based on failure
-         *     condition.
+         * DUP: FDWebSite/docroot/checkout/step_2_unavail.jsp LAST UPDATED ON: 10/07/2009 LAST UPDATED WITH SVN#: 5951 WHY: The following logic was duplicate because it was
+         * specified in a JSP file. WHAT: If there are ATP failure, the duplicated code determines what options are available based on failure condition.
          */
         DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
         Cart cart = this.sessionUser.getShoppingCart();
-        Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
+        Map<String, FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 
         Map<String, List<Integer>> groupingMap = new HashMap<String, List<Integer>>();
         List<Integer> regularItems = new ArrayList<Integer>();
@@ -616,11 +601,12 @@ public class Checkout {
                     if (EnumDlvRestrictionReason.KOSHER.equals(rsn)) {
                         itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_KOSHER);
                         itemAvailabilityError.setMessage("Kosher production item - not available Fri, Sat, Sun AM, and holidays");
-                        //                                        %><a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Kosher production item</a> - not available Fri, Sat, Sun AM, and holidays<%
+                        // %><a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Kosher production item</a> - not available Fri, Sat, Sun AM, and
+                        // holidays<%
                     } else {
                         itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_GENERIC_RESTRICTED_AVAILABILITY);
                         itemAvailabilityError.setMessage(((FDRestrictedAvailabilityInfo) info).getRestriction().getMessage());
-                        //                                        %><%= ((FDRestrictedAvailabilityInfo)info).getRestriction().getMessage() %><%
+                        // %><%= ((FDRestrictedAvailabilityInfo)info).getRestriction().getMessage() %><%
                     }
                 } else if (info instanceof FDStockAvailabilityInfo) {
                     itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_LIMITED_INVENTORY);
@@ -644,7 +630,7 @@ public class Checkout {
                             FDVariationOption option = fdp.getVariationOption(matNo);
                             if (option != null) {
                                 unavailableOptions.add(option.getDescription());
-                                //Check to see if this option is the only option for the variation
+                                // Check to see if this option is the only option for the variation
                                 FDVariation[] vars = fdp.getVariations();
                                 for (int vi = 0; vi < vars.length; vi++) {
                                     FDVariation aVar = vars[vi];
@@ -657,13 +643,11 @@ public class Checkout {
                             }
                         }
                     }
-                    itemAvailabilityError.setMessage("The following options are unavailable:"
-                            + StringUtils.join(unavailableOptions.iterator(), ","));
+                    itemAvailabilityError.setMessage("The following options are unavailable:" + StringUtils.join(unavailableOptions.iterator(), ","));
 
-                    //The arg index are: 0 : "singleOptionIsOut", is only option flag
-                    //The arg index are: 1+ : options that were unavailable
-                    String[] args = (String[]) ArrayUtils.add(unavailableOptions.toArray(new String[unavailableOptions.size()]), 0, Boolean
-                            .toString(singleOptionIsOut));
+                    // The arg index are: 0 : "singleOptionIsOut", is only option flag
+                    // The arg index are: 1+ : options that were unavailable
+                    String[] args = (String[]) ArrayUtils.add(unavailableOptions.toArray(new String[unavailableOptions.size()]), 0, Boolean.toString(singleOptionIsOut));
                     itemAvailabilityError.setArgs(args);
                 } else if (info instanceof FDMuniAvailabilityInfo) {
                     MunicipalityInfo muni = ((FDMuniAvailabilityInfo) info).getMunicipalityInfo();
@@ -676,13 +660,13 @@ public class Checkout {
             } // end for
         }
 
-        //Set first date available, in case.
+        // Set first date available, in case.
         Date firstAvailableDate = cart.getFirstAvailableDate();
         if (firstAvailableDate != null) {
             atpError.setFirstAvailableDate(firstAvailableDate);
         }
 
-        //Delivey Pass
+        // Delivey Pass
         List<DlvPassAvailabilityInfo> unavailPasses = cart.getUnavailablePasses();
         if (unavailPasses != null && unavailPasses.size() > 0) {
             AtpError.Group group = new AtpError.Group();
@@ -706,7 +690,7 @@ public class Checkout {
         }
         // Unavailability Data
         Unavailability unavailability = Unavailability.collectData(this.sessionUser);
-    	atpError.setUnavailability(unavailability);
+        atpError.setUnavailability(unavailability);
         atpError.setUnreadKeys(unreadKeys);
         return atpError;
     }
@@ -724,21 +708,21 @@ public class Checkout {
         return result;
     }
 
- // Code from checkout/step_3_unavail.jsp
+    // Code from checkout/step_3_unavail.jsp
     public Message getSpecialRestrictedItemDetail() {
 
         SpecialRestrictedItemsError splRestrictionError = new SpecialRestrictedItemsError();
 
-        if(this.sessionUser != null && this.sessionUser.getShoppingCart() != null) {
+        if (this.sessionUser != null && this.sessionUser.getShoppingCart() != null) {
 
             Cart cart = this.sessionUser.getShoppingCart();
             List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 
             List<FDCartLineI> orderLines = cart.getOrderLines();
-            if(orderLines != null && orderLines.size() > 0) {
+            if (orderLines != null && orderLines.size() > 0) {
 
-                for(FDCartLineI cartLine : orderLines) {
-                    if(cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
+                for (FDCartLineI cartLine : orderLines) {
+                    if (cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
                         ebtIneligibleOrderLines.add(cartLine);
 
                         SpecialRestrictedItemsError.CartLineItem item = new SpecialRestrictedItemsError.CartLineItem();
@@ -750,7 +734,7 @@ public class Checkout {
                     }
                 }
 
-                if(splRestrictionError.getItems() != null && ebtIneligibleOrderLines.size() > 0) {
+                if (splRestrictionError.getItems() != null && ebtIneligibleOrderLines.size() > 0) {
                     splRestrictionError.setErrorCode(MessageCodes.ERR_EBT_RESTRICTED);
                     splRestrictionError.setMessage(MessageCodes.MSG_EBT_PRODUCT_NOT_ALLOWED);
                     cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
@@ -761,7 +745,8 @@ public class Checkout {
     }
 
     /**
-     * @param requestData [For now special means EBT restricted item, may be useful in future for other special restriction]
+     * @param requestData
+     *            [For now special means EBT restricted item, may be useful in future for other special restriction]
      * @return
      * @throws FDException
      */
@@ -778,199 +763,196 @@ public class Checkout {
         ResultBundle result = wrapper.verifyAlcoholAge();
         return result;
     }
-    
- // -----------------------------------FDX SUBMIT ORDER -------------------------------------------------------------
+
+    // -----------------------------------FDX SUBMIT ORDER -------------------------------------------------------------
 
     /**
- 	 * This is used by checkoutController.submitOrderEx () to check payment and submit order
- 	 * @param message
- 	 * @param user
- 	 * @param request
- 	 * @return
- 	 * @throws FDException
- 	 */
- 	public SubmitOrderExResult submitEx(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDException{
- 		ResultBundle submitResult = this.submitOrder();
- 		
-			if (submitResult.getActionResult().isSuccess()) {
-				message.setStatus(Message.STATUS_SUCCESS);
-				com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
-	             String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
-				 com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
-				 if(null !=order){
-			            orderReceipt = order.getOrderDetail(user);
-		            }
-				 message.wrap(orderReceipt);
-				 message.addDebugMessage("Order has been submitted successfully.");
-			} else {
-				message.setStatus(Message.STATUS_FAILED);
-				message.addErrorMessages(submitResult.getActionResult().getErrors(), user);
-			}
-			message.addWarningMessages(submitResult.getActionResult().getWarnings());
- 		
- 		return message;
- 	}
- 	
- 	/**
- 	 * This checks if the reservation in the cart is still valid
- 	 * called by checkoutController.submitOrderEx ()
- 	 * If everything is set correctly and cutoff, expiry are not stale returns true. 
- 	 * @param user
- 	 * @return
- 	 */
- 	public boolean checkReservationExpiry(SessionUser user){
- 		boolean reservationValid=true;
- 		Date now = new Date();
- 		//check if everything with the timeslot reservation is fine.
- 		if(user.getShoppingCart().getDeliveryReservation().getTimeslot()!=null &&
- 				user.getShoppingCart().getDeliveryReservation().getTimeslot().getDlvStartTime()!=null &&
- 				user.getShoppingCart().getDeliveryReservation().getTimeslot().getDlvEndTime()!=null){
- 			
- 			//Check cutoff time already stale 
-	 		if (user.getShoppingCart().getDeliveryReservation().getTimeslot().getCutoffDateTime()!=null&&
-	 				user.getShoppingCart().getDeliveryReservation().getTimeslot().getCutoffDateTime().before(now)){
-	 			reservationValid=false;
-	 		}
-	 		
-	 		if(user.getShoppingCart().isModifyCart()){
-	 			Date origCutoff = user.getShoppingCart().getDeliveryReservation().getCutoffTime();
-				if (new Date().after(origCutoff)) {
-					reservationValid=false;
-				}
-	 		}
-	 		if((user.getShoppingCart().getOriginalReservation()!=null && 
-	 				!user.getShoppingCart().getOriginalReservation().getId().equals(user.getShoppingCart().getDeliveryReservation().getId())) || 
-	 				user.getShoppingCart().getOriginalReservation() == null){
-		 		// check expiration time stale
-		 		if(user.getShoppingCart().getDeliveryReservation().getExpirationDateTime()!=null && 
-		 				user.getShoppingCart().getDeliveryReservation().getExpirationDateTime().before(now)){
-		 			reservationValid=false;
-		 		}
-	 		}
-	 		
- 		} else {
- 			//the delivery timeslot is not properly set reservation is not valid.
- 			reservationValid=false;
- 		}
- 		
- 		return reservationValid;
- 	}
- 	
- 	/**
- 	 * This is called by checkoutController.submitOrderEx ()
- 	 * this check if address is valid for alcohol and if age verified.
- 	 * Delivery Address type is not used by verify Address call we are making in this method.
- 	 * This takes care of Age Verification as well.
- 	 * @param message
- 	 * @param user
- 	 * @param request
- 	 * @return
- 	 * @throws FDException
- 	 */
- 	public SubmitOrderExResult checkAddressForAlcoholAndAgeVerification(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDException{
- 		boolean isAddressEligibleForAlcohol = false;
- 		boolean isAgeVerified = false;
- 		AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(user);
- 		ResultBundle result = alcoholAddressCheckWrapper.verifyAddress(user.getShoppingCart().getDeliveryReservation().getTimeslot().getId(), null);
- 		if(!user.getFDSessionUser().getShoppingCart().isAgeVerified()){
- 			result.getActionResult().addError(new ActionError("didnot_agree", "You must certify that you are over 21 in order to proceed with Checkout. If you cannot, please remove the alcohol items from your cart before continuing."));
- 		}
- 		if (result.getActionResult().isSuccess()) {
-				isAddressEligibleForAlcohol = true;
-				isAgeVerified = true;
-				message.setAddressValidForAlcohol(isAddressEligibleForAlcohol);
-				message.setAgeVerified(isAgeVerified);
-			} else {
-				if (!user.getShoppingCart().isAgeVerified()) {
-					isAgeVerified = false;
-				}
-				isAddressEligibleForAlcohol = false;
+     * This is used by checkoutController.submitOrderEx () to check payment and submit order
+     * 
+     * @param message
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     */
+    public SubmitOrderExResult submitEx(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDException {
+        ResultBundle submitResult = this.submitOrder();
 
-				message.addErrorMessages(result.getActionResult().getErrors(), user);
-				if (result.getActionResult().getErrors().size() >= 1) {
-					StringBuffer alcoholWarning = new StringBuffer();
-					for (ActionError error : result.getActionResult().getErrors()) {
-						alcoholWarning.append(error.getDescription());
-						alcoholWarning.append("\n");
-					}
-					message.setAlcoholRestrictionMessage(alcoholWarning.toString());
-				}
-				message.setAddressValidForAlcohol(isAddressEligibleForAlcohol);
-				message.setAgeVerified(isAgeVerified);
-				message.setStatus(Message.STATUS_FAILED);
-				
-			}
- 		return message;
- 	}
- 	
- 	/**
- 	 * This is called by checkoutController.submitOrderEx ()
- 	 * checks the timeslot validity for alcohol delivery
- 	 * @param message
- 	 * @param user
- 	 * @param request
- 	 * @return
- 	 * @throws FDResourceException
- 	 */
- 	public SubmitOrderExResult alcoholTimeSlotCheck(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDResourceException{
- 		AddressModel address = AddressUtil.scrubAddress(user.getShoppingCart().getDeliveryAddress(), new ActionResult());
- 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(
- 				user.getShoppingCart().getDeliveryReservation().getTimeslot().getId(), user.getShoppingCart().getDeliveryAddress().getBuildingId(),
- 				true);
- 		/*Using DeliveryTimeSlotTag to reuse 
-			alcoholRestrictionReasons  &
-			isTimeSlotAlcoholRestricted Functionality*/
- 		com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag dlvTimeSlotTag = new DeliveryTimeSlotTag();
- 		//get the baseRange - this is used while getting the restrictions for delivery
-			DateRange baseRange=new DateRange(timeSlot.getDeliveryDate(), DateUtil.addDays(timeSlot.getDeliveryDate(),1));
-			
-			//get the restrictions
-			DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+        if (submitResult.getActionResult().isSuccess()) {
+            message.setStatus(Message.STATUS_SUCCESS);
+            com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
+            String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
+            com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
+            if (null != order) {
+                orderReceipt = order.getOrderDetail(user);
+            }
+            message.wrap(orderReceipt);
+            message.addDebugMessage("Order has been submitted successfully.");
+        } else {
+            message.setStatus(Message.STATUS_FAILED);
+            message.addErrorMessages(submitResult.getActionResult().getErrors(), user);
+        }
+        message.addWarningMessages(submitResult.getActionResult().getWarnings());
 
-			//filter and get if restriction apply to the given timeslot id
-			List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,dlvTimeSlotTag.getAlcoholRestrictionReasons(user.getShoppingCart().getCart()),baseRange);
-			//Filter Alcohol restrictions by current State and county.
-			final String county = FDDeliveryManager.getInstance().getCounty(address);
- 			List<RestrictionI> alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
- 			
- 			boolean isTimeslotRestrictedForAlcohol = com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag.isTimeslotAlcoholRestricted(alcoholRestrictions, timeSlot);
- 			
- 			//Reason we flip the boolean value in below statement : we get if timeslot is restricted and are
- 			//                  setting timeslot validity.
- 			message.setTimeSlotValidForAlcohol(!isTimeslotRestrictedForAlcohol);
- 			if(isTimeslotRestrictedForAlcohol){
- 				message.addErrorMessage("This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.");
- 				message.setStatus(Message.STATUS_FAILED);
- 				
- 			} 
- 		return message;
- 	}
- 	
+        return message;
+    }
 
- 	/**
- 	 * Called by checkoutController.submitOrderEx ()
- 	 * performs ATP check and populates the message with unavailable items and their possible replacements.
- 	 * @param message
- 	 * @param user
- 	 * @param request
- 	 * @return
- 	 */
- 	public SubmitOrderExResult fillAtpErrorDetail(SubmitOrderExResult message, SessionUser user, HttpServletRequest request){
- 		this.sessionUser=user;
- 		AtpError atpError = (AtpError) this.getAtpErrorDetail();
-			AtpErrorData unavailabilityData = null;
-			try {
-				unavailabilityData = AtpErrorData.wrap(atpError);
-			} catch (ParseException e) {
-				message.addErrorMessage("Error While retrieving unvailable items List");
-			}
-			message.setUnavaialabilityData(unavailabilityData);
-			message.setStatus(Message.STATUS_FAILED);
-			message.addErrorMessage("ATP ERROR","One or more items Unavailable.");
- 		
- 		return message;
- 	}
- 	
+    /**
+     * This checks if the reservation in the cart is still valid called by checkoutController.submitOrderEx () If everything is set correctly and cutoff, expiry are not stale
+     * returns true.
+     * 
+     * @param user
+     * @return
+     */
+    public boolean checkReservationExpiry(SessionUser user) {
+        boolean reservationValid = true;
+        Date now = new Date();
+        // check if everything with the timeslot reservation is fine.
+        if (user.getShoppingCart().getDeliveryReservation().getTimeslot() != null && user.getShoppingCart().getDeliveryReservation().getTimeslot().getDlvStartTime() != null
+                && user.getShoppingCart().getDeliveryReservation().getTimeslot().getDlvEndTime() != null) {
 
+            // Check cutoff time already stale
+            if (user.getShoppingCart().getDeliveryReservation().getTimeslot().getCutoffDateTime() != null
+                    && user.getShoppingCart().getDeliveryReservation().getTimeslot().getCutoffDateTime().before(now)) {
+                reservationValid = false;
+            }
+
+            if (user.getShoppingCart().isModifyCart()) {
+                Date origCutoff = user.getShoppingCart().getDeliveryReservation().getCutoffTime();
+                if (new Date().after(origCutoff)) {
+                    reservationValid = false;
+                }
+            }
+            if ((user.getShoppingCart().getOriginalReservation() != null
+                    && !user.getShoppingCart().getOriginalReservation().getId().equals(user.getShoppingCart().getDeliveryReservation().getId()))
+                    || user.getShoppingCart().getOriginalReservation() == null) {
+                // check expiration time stale
+                if (user.getShoppingCart().getDeliveryReservation().getExpirationDateTime() != null
+                        && user.getShoppingCart().getDeliveryReservation().getExpirationDateTime().before(now)) {
+                    reservationValid = false;
+                }
+            }
+
+        } else {
+            // the delivery timeslot is not properly set reservation is not valid.
+            reservationValid = false;
+        }
+
+        return reservationValid;
+    }
+
+    /**
+     * This is called by checkoutController.submitOrderEx () this check if address is valid for alcohol and if age verified. Delivery Address type is not used by verify Address
+     * call we are making in this method. This takes care of Age Verification as well.
+     * 
+     * @param message
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     */
+    public SubmitOrderExResult checkAddressForAlcoholAndAgeVerification(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDException {
+        boolean isAddressEligibleForAlcohol = false;
+        boolean isAgeVerified = false;
+        AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(user);
+        ResultBundle result = alcoholAddressCheckWrapper.verifyAddress(user.getShoppingCart().getDeliveryReservation().getTimeslot().getId(), null);
+        if (!user.getFDSessionUser().getShoppingCart().isAgeVerified()) {
+            result.getActionResult().addError(new ActionError("didnot_agree",
+                    "You must certify that you are over 21 in order to proceed with Checkout. If you cannot, please remove the alcohol items from your cart before continuing."));
+        }
+        if (result.getActionResult().isSuccess()) {
+            isAddressEligibleForAlcohol = true;
+            isAgeVerified = true;
+            message.setAddressValidForAlcohol(isAddressEligibleForAlcohol);
+            message.setAgeVerified(isAgeVerified);
+        } else {
+            if (!user.getShoppingCart().isAgeVerified()) {
+                isAgeVerified = false;
+            }
+            isAddressEligibleForAlcohol = false;
+
+            message.addErrorMessages(result.getActionResult().getErrors(), user);
+            if (result.getActionResult().getErrors().size() >= 1) {
+                StringBuffer alcoholWarning = new StringBuffer();
+                for (ActionError error : result.getActionResult().getErrors()) {
+                    alcoholWarning.append(error.getDescription());
+                    alcoholWarning.append("\n");
+                }
+                message.setAlcoholRestrictionMessage(alcoholWarning.toString());
+            }
+            message.setAddressValidForAlcohol(isAddressEligibleForAlcohol);
+            message.setAgeVerified(isAgeVerified);
+            message.setStatus(Message.STATUS_FAILED);
+
+        }
+        return message;
+    }
+
+    /**
+     * This is called by checkoutController.submitOrderEx () checks the timeslot validity for alcohol delivery
+     * 
+     * @param message
+     * @param user
+     * @param request
+     * @return
+     * @throws FDResourceException
+     */
+    public SubmitOrderExResult alcoholTimeSlotCheck(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDResourceException {
+        AddressModel address = AddressUtil.scrubAddress(user.getShoppingCart().getDeliveryAddress(), new ActionResult());
+        FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(user.getShoppingCart().getDeliveryReservation().getTimeslot().getId(),
+                user.getShoppingCart().getDeliveryAddress().getBuildingId(), true);
+        /*
+         * Using DeliveryTimeSlotTag to reuse alcoholRestrictionReasons & isTimeSlotAlcoholRestricted Functionality
+         */
+        com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag dlvTimeSlotTag = new DeliveryTimeSlotTag();
+        // get the baseRange - this is used while getting the restrictions for delivery
+        DateRange baseRange = new DateRange(timeSlot.getDeliveryDate(), DateUtil.addDays(timeSlot.getDeliveryDate(), 1));
+
+        // get the restrictions
+        DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+
+        // filter and get if restriction apply to the given timeslot id
+        List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, dlvTimeSlotTag.getAlcoholRestrictionReasons(user.getShoppingCart().getCart()),
+                baseRange);
+        // Filter Alcohol restrictions by current State and county.
+        final String county = FDDeliveryManager.getInstance().getCounty(address);
+        List<RestrictionI> alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+
+        boolean isTimeslotRestrictedForAlcohol = com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag.isTimeslotAlcoholRestricted(alcoholRestrictions, timeSlot);
+
+        // Reason we flip the boolean value in below statement : we get if timeslot is restricted and are
+        // setting timeslot validity.
+        message.setTimeSlotValidForAlcohol(!isTimeslotRestrictedForAlcohol);
+        if (isTimeslotRestrictedForAlcohol) {
+            message.addErrorMessage("This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.");
+            message.setStatus(Message.STATUS_FAILED);
+
+        }
+        return message;
+    }
+
+    /**
+     * Called by checkoutController.submitOrderEx () performs ATP check and populates the message with unavailable items and their possible replacements.
+     * 
+     * @param message
+     * @param user
+     * @param request
+     * @return
+     */
+    public SubmitOrderExResult fillAtpErrorDetail(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) {
+        this.sessionUser = user;
+        AtpError atpError = (AtpError) this.getAtpErrorDetail();
+        AtpErrorData unavailabilityData = null;
+        try {
+            unavailabilityData = AtpErrorData.wrap(atpError);
+        } catch (ParseException e) {
+            message.addErrorMessage("Error While retrieving unvailable items List");
+        }
+        message.setUnavaialabilityData(unavailabilityData);
+        message.setStatus(Message.STATUS_FAILED);
+        message.addErrorMessage("ATP ERROR", "One or more items Unavailable.");
+
+        return message;
+    }
 
 }
