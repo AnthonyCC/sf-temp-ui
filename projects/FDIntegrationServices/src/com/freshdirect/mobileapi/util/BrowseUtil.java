@@ -1794,7 +1794,7 @@ public class BrowseUtil {
 	    }
 	    
 	    private static void sendBrowseEventToAnalytics(HttpServletRequest request, FDUserI user, ContentNodeModel model){
-	        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)){
+	        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)){
                 BrowseEventTag.doSendEvent(model.getContentKey().getId(), user, request);
             }
 	    }

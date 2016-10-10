@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -32,7 +31,6 @@ import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
-import com.freshdirect.webapp.taglib.unbxd.SearchEventTag;
 
 public class CmsFilteringServlet extends BaseJsonServlet {
 
@@ -140,7 +138,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 			}
 			
 			// UNBXD analytics reporting
-			if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user)) {
+			if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 
 			    if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
 			        BrowseEventTag.doSendEvent(navigator.getId(), user, request);

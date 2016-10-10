@@ -1859,7 +1859,7 @@ public class Product {
     
     public static Product getProductWithAnalyticsEventSend(String id, String categoryId, FDCartLineI cartLine, SessionUser user, HttpServletRequest request) throws ServiceException{
         Product product = getProduct(id, categoryId, cartLine, user);
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(), user.getFDSessionUser())){
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user.getFDSessionUser())){
           ClickThruEventTag.doSendEvent(user.getFDSessionUser(), request, product.product.getProductModel());
         }
         return product;
