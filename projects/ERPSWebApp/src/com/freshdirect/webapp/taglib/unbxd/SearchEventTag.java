@@ -37,7 +37,7 @@ public class SearchEventTag extends SimpleTagSupport {
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
                 final String query = request.getParameter("searchParams");
 
-                doSendEvent(user, request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER), query);
+                doSendEvent(user, RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), query);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");
             }

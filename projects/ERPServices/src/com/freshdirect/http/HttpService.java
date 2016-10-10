@@ -97,7 +97,7 @@ public class HttpService {
             HttpResponse response = client.execute(get);
             InputStream payload = response.getEntity().getContent();
             String body = IOUtils.toString(payload, "UTF-8");
-            LOG.debug("HttpService.getData for uri: " + uri + "\n" + body);
+            //LOG.debug("HttpService.getData for uri: " + uri + "\n" + body);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             result = mapper.readValue(body, type);

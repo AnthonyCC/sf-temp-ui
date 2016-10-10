@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.search.SearchService;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 
 /**
  *
@@ -68,7 +69,7 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-        SearchResults res = SearchService.getInstance().searchProducts(searchFor, request.getCookies(), user, request.getRequestURL().toString(),
+        SearchResults res = SearchService.getInstance().searchProducts(searchFor, request.getCookies(), user, RequestUrlUtil.getInstance().getFullRequestUrl(request),
                 request.getHeader(HttpHeaders.REFERER));
 
         // set search results in PageContext

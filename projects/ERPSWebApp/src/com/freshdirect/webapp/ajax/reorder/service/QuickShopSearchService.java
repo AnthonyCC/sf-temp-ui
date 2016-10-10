@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.search.SearchService;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 
 public class QuickShopSearchService {
 
@@ -37,7 +38,7 @@ public class QuickShopSearchService {
     public void search(String searchTerm, List<QuickShopLineItemWrapper> items, FDUserI user, HttpServletRequest request) {
         List<String> productIds = null;
         if (searchTerm != null) {
-            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, request.getRequestURL().toString(),
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, RequestUrlUtil.getInstance().getFullRequestUrl(request),
                     request.getHeader(HttpHeaders.REFERER));
             productIds = new ArrayList<String>();
             for (FilteringSortingItem<ProductModel> product : results.getProducts()) {

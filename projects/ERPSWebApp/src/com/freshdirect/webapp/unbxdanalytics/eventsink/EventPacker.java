@@ -13,8 +13,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -76,7 +80,13 @@ public final class EventPacker {
         // do the JSON
         try {
             Writer writer = new StringWriter();
-            new ObjectMapper().writeValue(writer, event);
+            ObjectMapper objectMapper = new ObjectMapper();
+            
+            DefaultSerializerProvider serializerProvider = new DefaultSerializerProvider.Impl();
+            serializerProvider.setNullValueSerializer(new NullValueSerializer()); // for sending the null referrer as empty string
+            objectMapper.setSerializerProvider(serializerProvider);
+            
+            objectMapper.writeValue(writer, event);
             jsonPayload = writer.toString();
 
             LOGGER.debug(jsonPayload);
@@ -88,5 +98,15 @@ public final class EventPacker {
             LOGGER.error(e);
         }
         return jsonPayload;
+    }
+    
+    private static class NullValueSerializer extends StdSerializer<Object> {
+        protected NullValueSerializer() {
+            super(Object.class);
+        }
+        @Override
+        public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonGenerationException {
+            jsonGenerator.writeString("");
+        }
     }
 }

@@ -57,11 +57,11 @@ public class BrowseEventTag extends SimpleTagSupport {
         if (model instanceof ProductContainer) {
 
             final Visitor visitor = Visitor.withUser(user);
-            final LocationInfo loc = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
             AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null);
 
-            LOGGER.debug("Sending browse event for content ID" + containerId);
+            LOGGER.debug("Sending browse event for content ID " + containerId);
 
             // log event
             EventLoggerService.getInstance().log(event);

@@ -88,6 +88,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
@@ -1522,7 +1523,7 @@ public class CheckoutController extends BaseController {
     private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, List<FDCartLineI> cartLines){
         if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)){
             final Visitor visitor = Visitor.withUser(user);
-            final LocationInfo location = LocationInfo.withUrlAndReferer(request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+            final LocationInfo location = LocationInfo.withUrlAndReferer(RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
             LOGGER.debug("UNBXD Service active, cartline size: " + cartLines.size());
             for(FDCartLineI cartLine : cartLines){
                 AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine);

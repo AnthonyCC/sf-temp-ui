@@ -28,6 +28,7 @@ import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 
 public class QSTempConfigServlet extends BaseJsonServlet {
 
@@ -46,7 +47,7 @@ public class QSTempConfigServlet extends BaseJsonServlet {
         AddToCartRequestData reqData = parseRequestData( request, AddToCartRequestData.class );
         // [APPDEV-5353] Fill in required data
         reqData.setCookies(request.getCookies());
-        reqData.setRequestUrl(request.getRequestURL().toString());
+        reqData.setRequestUrl(RequestUrlUtil.getInstance().getFullRequestUrl(request));
         
         List<AddToCartItem> items = reqData.getItems(); 
 		if ( items == null ) {

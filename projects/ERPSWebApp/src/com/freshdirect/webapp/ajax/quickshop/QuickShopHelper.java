@@ -74,6 +74,7 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 
 /**
  * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopHelper}
@@ -763,7 +764,7 @@ public class QuickShopHelper {
 		List<String> productIds = null;
 		if(searchTerm!=null){
 			
-            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, request.getRequestURL().toString(), request.getHeader(HttpHeaders.REFERER));
+            SearchResults results = SearchService.getInstance().searchProducts(searchTerm, request.getCookies(), user, RequestUrlUtil.getInstance().getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
             // SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
 			productIds = new ArrayList<String>();
 			for(FilteringSortingItem<ProductModel> product : results.getProducts()){

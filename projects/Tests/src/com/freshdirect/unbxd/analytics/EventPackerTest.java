@@ -21,6 +21,7 @@ import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.eventsink.EventPacker;
+import com.freshdirect.webapp.unbxdanalytics.visitor.VisitType;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
 
@@ -31,7 +32,7 @@ public class EventPackerTest {
     
     @Before
     public void setUp() throws Exception {
-        visitor = new Visitor("test");
+        visitor = new Visitor("test", new VisitType(false, false));
         location = LocationInfo.withUrl("http://test/location");
     }
 

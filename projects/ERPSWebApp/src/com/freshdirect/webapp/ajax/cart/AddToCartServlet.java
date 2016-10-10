@@ -53,6 +53,7 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.unbxd.RequestUrlUtil;
 
 public class AddToCartServlet extends BaseJsonServlet {
 
@@ -142,7 +143,7 @@ public class AddToCartServlet extends BaseJsonServlet {
         AddToCartRequestData reqData = parseRequestData(request, AddToCartRequestData.class);
         // [APPDEV-5353] Fill in required data
         reqData.setCookies(request.getCookies());
-        reqData.setRequestUrl(request.getRequestURL().toString());
+        reqData.setRequestUrl(RequestUrlUtil.getInstance().getFullRequestUrl(request));
 
         // Get event source
         EnumEventSource evtSrc = EnumEventSource.UNKNOWN;

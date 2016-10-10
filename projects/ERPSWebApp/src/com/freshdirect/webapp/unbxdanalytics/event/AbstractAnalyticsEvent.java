@@ -55,7 +55,7 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
     }
 
     @Override
-    @JsonInclude(Include.NON_NULL)
+    @JsonInclude(Include.ALWAYS)
     public String getReferrer() {
         return location.referrer;
     }

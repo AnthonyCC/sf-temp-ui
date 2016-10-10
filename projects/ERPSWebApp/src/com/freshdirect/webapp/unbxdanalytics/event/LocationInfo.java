@@ -1,5 +1,8 @@
 package com.freshdirect.webapp.unbxdanalytics.event;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Class holds data for location tracking
  *
@@ -15,6 +18,7 @@ public final class LocationInfo {
     /**
      * The url of the previous page, will be empty if the user opened that particular url directly
      */
+    @JsonInclude(Include.ALWAYS)
     public final String referrer;
 
     public LocationInfo(String url, String referrer) {
