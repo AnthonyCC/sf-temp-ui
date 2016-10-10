@@ -16,6 +16,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneCo
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PredefinedTextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.RoutingNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.StateConstraint;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.StreetTextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.TextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.ZipCodeConstraint;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
@@ -47,7 +48,7 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.NICK_NAME, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.FIRST_NAME, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.LAST_NAME, new TextConstraint(false));
-            put(DeliveryAddressValidationConstants.STREET, new TextConstraint(false));
+            put(DeliveryAddressValidationConstants.STREET, new StreetTextConstraint(false));
             put(DeliveryAddressValidationConstants.APARTMENT, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.CITY, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.STATE, new StateConstraint(false));
@@ -74,7 +75,7 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.COMPANY_NAME, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.FIRST_NAME, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.LAST_NAME, new TextConstraint(false));
-            put(DeliveryAddressValidationConstants.STREET, new TextConstraint(false));
+            put(DeliveryAddressValidationConstants.STREET, new StreetTextConstraint(false));
             put(DeliveryAddressValidationConstants.APARTMENT, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.CITY, new TextConstraint(false));
             put(DeliveryAddressValidationConstants.STATE, new StateConstraint(false));
@@ -155,7 +156,7 @@ public class ConstraintProviderService {
             .unmodifiableMap(new HashMap<String, Constraint<String>>() {
 
                 {
-                    put(DeliveryAddressValidationConstants.STREET, new TextConstraint(false));
+                    put(DeliveryAddressValidationConstants.STREET, new StreetTextConstraint(false));
                     put(DeliveryAddressValidationConstants.APARTMENT, new TextConstraint(true));
                     put(DeliveryAddressValidationConstants.CITY, new TextConstraint(false));
                     put(DeliveryAddressValidationConstants.STATE, new StateConstraint(false));
