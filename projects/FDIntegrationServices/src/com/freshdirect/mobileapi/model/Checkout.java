@@ -78,6 +78,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class Checkout {
 
+    private static final String ERR_TSLOT_ALC_RESTRICTED = "This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.";
+
     private static Category LOGGER = LoggerFactory.getInstance(Checkout.class);
 
     /**
@@ -394,8 +396,8 @@ public class Checkout {
             ignoreSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
         }
         Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-        for (Iterator hIter = orderInfos.iterator(); hIter.hasNext();) {
-            FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
+        for (Iterator<FDOrderInfoI> hIter = orderInfos.iterator(); hIter.hasNext();) {
+            FDOrderInfoI oi = hIter.next();
             if (!(oi.getErpSalesId().equals(ignoreSaleId)) && oi.isPending() && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
                 isDuplicateOrder = true;
             }
@@ -556,9 +558,9 @@ public class Checkout {
                 String rcpSrcId = cartLine.getRecipeSourceId();
                 if (rcpSrcId != null) {
                     String deptDecs = cartLine.getDepartmentDesc();
-                    List rcpItems = groupingMap.get(deptDecs);
+                    List<Integer> rcpItems = groupingMap.get(deptDecs);
                     if (rcpItems == null) {
-                        rcpItems = new ArrayList();
+                        rcpItems = new ArrayList<Integer>();
                         groupingMap.put(deptDecs, rcpItems);
                         groupingKeyList.add(deptDecs);
                     }
@@ -617,13 +619,13 @@ public class Checkout {
                 } else if (info instanceof FDCompositeAvailabilityInfo) {
                     ArrayList<String> unavailableOptions = new ArrayList<String>();
                     itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_OPTIONS_UNAVAILABLE);
-                    Map componentInfos = ((FDCompositeAvailabilityInfo) info).getComponentInfo();
+                    Map<String,FDAvailabilityInfo> componentInfos = ((FDCompositeAvailabilityInfo) info).getComponentInfo();
                     boolean singleOptionIsOut = false;
-                    for (Iterator i = componentInfos.entrySet().iterator(); i.hasNext();) {
-                        Map.Entry e = (Map.Entry) i.next();
-                        String componentKey = (String) e.getKey();
+                    for (Iterator<Map.Entry<String,FDAvailabilityInfo>> i = componentInfos.entrySet().iterator(); i.hasNext();) {
+                        Map.Entry<String,FDAvailabilityInfo> e = i.next();
+                        String componentKey = e.getKey();
                         if (componentKey != null) {
-                            FDAvailabilityInfo componentInfo = (FDAvailabilityInfo) e.getValue();
+                            FDAvailabilityInfo componentInfo = e.getValue();
                             FDProduct fdp = cartLine.lookupFDProduct();
                             String matNo = StringUtils.right(componentKey, 9);
                             System.out.println(matNo);
@@ -897,7 +899,7 @@ public class Checkout {
      * @return
      * @throws FDResourceException
      */
-    public SubmitOrderExResult alcoholTimeSlotCheck(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDResourceException {
+    public SubmitOrderExResult alcoholTimeSlotCheck(SubmitOrderExResult message, SessionUser user, boolean isWebRequest) throws FDResourceException {
         AddressModel address = AddressUtil.scrubAddress(user.getShoppingCart().getDeliveryAddress(), new ActionResult());
         FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(user.getShoppingCart().getDeliveryReservation().getTimeslot().getId(),
                 user.getShoppingCart().getDeliveryAddress().getBuildingId(), true);
@@ -924,7 +926,13 @@ public class Checkout {
         // setting timeslot validity.
         message.setTimeSlotValidForAlcohol(!isTimeslotRestrictedForAlcohol);
         if (isTimeslotRestrictedForAlcohol) {
-            message.addErrorMessage("This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.");
+            
+            if (isWebRequest) {
+                message.addErrorMessage("ERR_TSLOT_ALC_RESTRICTED", ERR_TSLOT_ALC_RESTRICTED);
+            } else {
+                message.addErrorMessage(ERR_TSLOT_ALC_RESTRICTED);
+            }
+            
             message.setStatus(Message.STATUS_FAILED);
 
         }

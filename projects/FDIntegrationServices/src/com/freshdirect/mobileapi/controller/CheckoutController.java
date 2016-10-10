@@ -1414,6 +1414,7 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
         final Checkout checkout = new Checkout(user);
 
         SubmitOrderExResult message = new SubmitOrderExResult();
@@ -1441,7 +1442,7 @@ public class CheckoutController extends BaseController {
                     message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
                     if (isSuccess(message.getStatus())) {
                         // Timeslot Alcohol Check
-                        message = checkout.alcoholTimeSlotCheck(message, user, request);
+                        message = checkout.alcoholTimeSlotCheck(message, user, isWebRequest);
                     }
                 }
                 // Atp Check
@@ -1458,14 +1459,14 @@ public class CheckoutController extends BaseController {
                             message.setStatus(Message.STATUS_SUCCESS);
                             com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
                             String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
-                            if (orderId == null && fdUser.getShoppingCart().getPaymentMethod() == null) {
+                            if (orderId == null && cartModel.getPaymentMethod() == null) {
                                 message.addErrorMessage("Payment method not selected");
                                 message.setStatus(Message.STATUS_FAILED);
                             } else {
                                 com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
                                 if (null != order) {
                                     orderReceipt = order.getOrderDetail(user);
-                                    if (isCheckLoginStatusEnable(request)) {
+                                    if (isWebRequest) {
                                         ProductPotatoUtil.populateCartDetailWithPotatoes(fdUser, orderReceipt.getCartDetail());
                                     }
                                 }
