@@ -42,7 +42,7 @@ import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
-import com.freshdirect.webapp.util.RequestUrlUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 
 /**
  * @author zsombor, csongor
@@ -90,7 +90,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 		} else {
 			searchTerm = nav.getSearchTerm();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            return SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user, RequestUrlUtil.getFullRequestUrl(request),
+            return SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user, RequestUtil.getFullRequestUrl(request),
                     request.getHeader(HttpHeaders.REFERER));
 		}
 	}

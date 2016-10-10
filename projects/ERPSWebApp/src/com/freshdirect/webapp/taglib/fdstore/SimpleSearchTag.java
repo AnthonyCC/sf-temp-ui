@@ -13,7 +13,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.util.RequestUrlUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class SimpleSearchTag extends AbstractGetterTag<SearchResults> {
 	private static final long serialVersionUID = -2366286812494532490L;
@@ -36,7 +36,7 @@ public class SimpleSearchTag extends AbstractGetterTag<SearchResults> {
 	protected SearchResults getResult() throws Exception {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-        SearchResults results = SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user, RequestUrlUtil.getFullRequestUrl(request),
+        SearchResults results = SearchService.getInstance().searchProducts(nav.getSearchTerm(), request.getCookies(), user, RequestUtil.getFullRequestUrl(request),
                 request.getHeader(HttpHeaders.REFERER));
 		// Google Analytics Custom Variables
 		if (!nav.isRefined()) {
