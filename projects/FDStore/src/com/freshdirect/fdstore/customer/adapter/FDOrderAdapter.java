@@ -1147,7 +1147,7 @@ public class FDOrderAdapter implements FDOrderI {
 		for ( FDCartLineI line : orderLines ) {
 			if (line.getDeliveredQuantity() != null && !"".equals(line.getDeliveredQuantity())) {				
 				if (line.isPricedByLb()) {				
-					if (new Double(line.getDeliveredQuantity()).doubleValue() == 0) {
+					if (new Double(line.getDeliveredQuantity()).doubleValue() == 0 && !FDStoreProperties.getMealKitMaterialGroup().equals(line.getMaterialGroup())) {
 						shortedItems.add(line);
 					}				
 				} else if (new Double(line.getDeliveredQuantity()).doubleValue() < line.getQuantity()) {					

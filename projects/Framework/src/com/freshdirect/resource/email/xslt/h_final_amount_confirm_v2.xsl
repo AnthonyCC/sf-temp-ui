@@ -79,7 +79,10 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
 							<xsl:for-each select="$bundleShortItems">
 									<tr>
 										<td width="50">&#160;</td>
@@ -140,7 +143,10 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
 							<xsl:for-each select="$bundleShortItems">
 									<tr>
 										<td width="50">&#160;</td>
@@ -166,7 +172,10 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
 							<xsl:for-each select="$bundleCompleteShort">
 									<tr>
 										<td width="50">&#160;</td>
@@ -192,7 +201,10 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
 							<xsl:for-each select="$bundleShortItems">
 									<tr>
 										<td width="50">&#160;</td>
@@ -200,7 +212,10 @@
 										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
 									</tr>		
 							</xsl:for-each>
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
 							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>YOUR BUNDLE(S) ARE NOT AVAILABLE<br/><br/></b></td>
+							</tr>
 							<xsl:for-each select="$bundleCompleteShort">
 									<tr>
 										<td width="50">&#160;</td>
