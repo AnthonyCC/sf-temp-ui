@@ -568,7 +568,7 @@ public class RegistrationController extends BaseController implements SystemMess
         return model;
     }
 
-    private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+    private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         // APPDEV-4315- Intermittent: Cannot Create Address -Start
 
@@ -579,17 +579,37 @@ public class RegistrationController extends BaseController implements SystemMess
                 responseMessage = Message.createSuccessMessage(ACTION_EDIT_DELIVERY_ADDRESS);
                 throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
             }
-            RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
-            ResultBundle resultBundle = tagWrapper.editDeliveryAddress(reqestMessage);
+            
+            
+            ActionResult result = null;
 
-            ActionResult result = resultBundle.getActionResult();
+            // === FKMW - validate form fields before submitting them to the app layer ===
+            
+            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+            if (isWebRequest) {
+                result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
-            propogateSetSessionValues(request.getSession(), resultBundle);
-
-            if (result.isSuccess()) {
-                responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
-            } else {
-                responseMessage = getErrorMessage(result, request);
+                // halt on any error
+                if (!result.isSuccess()) {
+                    responseMessage = getErrorMessage(result, request);
+                }
+            }
+            
+            // === FKMW end ===
+            
+            if (responseMessage == null) {
+                RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+                ResultBundle resultBundle = tagWrapper.editDeliveryAddress(requestMessage);
+    
+                result = resultBundle.getActionResult();
+    
+                propogateSetSessionValues(request.getSession(), resultBundle);
+    
+                if (result.isSuccess()) {
+                    responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
+                } else {
+                    responseMessage = getErrorMessage(result, request);
+                }
             }
             responseMessage.addWarningMessages(result.getWarnings());
             setResponseMessage(model, responseMessage, user);
