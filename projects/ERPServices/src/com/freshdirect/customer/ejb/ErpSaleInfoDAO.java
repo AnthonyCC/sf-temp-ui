@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -28,6 +29,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.RedeliverySaleInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
@@ -797,5 +799,53 @@ public class ErpSaleInfoDAO {
 				
 				return lastOrderID;
 			}
+
+	private static final String UPDATE_SALE_SHIIPING_DETAIL = " UPDATE CUST.SALE SA  SET SA.TRUCK_NUMBER=?, SA.STOP_SEQUENCE=? ,SA.NUM_REGULAR_CARTONS=?"
+			+ ",SA.NUM_FREEZER_CARTONS=?,NUM_ALCOHOL_CARTONS=? WHERE SA.ID=?";
+
+	public static boolean updateSalesShippingInfo(Connection conn,
+			Map<String, ErpShippingInfo> erpShippingMap) throws SQLException {
+		PreparedStatement pst = null;
+		ErpShippingInfo shippingInfo = null;
+		try {
+			pst = conn.prepareStatement(UPDATE_SALE_SHIIPING_DETAIL);
+
+			for (Map.Entry<String, ErpShippingInfo> shipping : erpShippingMap.entrySet()) {
+				
+				shippingInfo = shipping.getValue();
+				
+				if(null!=shippingInfo.getTruckNumber()){
+					pst.setString(1, shippingInfo.getTruckNumber());
+				}else{
+					pst.setNull(1,java.sql.Types.NULL);
+
+				}if(null!=shippingInfo.getStopSequence()){
+					pst.setString(2, shippingInfo.getStopSequence());
+				}else{
+					pst.setNull(2,java.sql.Types.NULL);
+
+				}
+				pst.setInt(3,
+						shippingInfo.getRegularCartons() > 0 ? shippingInfo.getRegularCartons() : 0);
+				pst.setInt(4,
+						shippingInfo.getFreezerCartons() > 0 ? shippingInfo.getFreezerCartons() : 0);
+				pst.setInt(5,
+						shippingInfo.getAlcoholCartons() > 0 ? shippingInfo.getAlcoholCartons() : 0);
+				pst.setString(6, shipping.getKey());
+				
+				pst.addBatch();
+
+			}
+			if(!erpShippingMap.isEmpty()){
+				 pst.executeBatch();
+			}
+			
+		} finally {
+             if(pst!=null){
+            	 pst.close();
+             }
+		}
+		return true;
+	}
 
 }

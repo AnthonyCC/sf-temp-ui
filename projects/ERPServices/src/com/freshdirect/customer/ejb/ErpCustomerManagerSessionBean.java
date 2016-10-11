@@ -207,6 +207,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			// transform ErpCustomerModel into CustomerI
 			// send the ship-to addr as the bill-to
+			
+			// APPDEV-5314 pass unattended delivery flg to SAP
+			
 			SapCustomerI customer = null;
 			if(isGiftCardBuyer) {
 				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());	
@@ -1708,6 +1711,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			final ErpAffiliate USQ = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 			final ErpAffiliate FDW = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 			final ErpAffiliate FDX = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX);
+			boolean departmentLevel=false;
 			for ( ErpComplaintLineModel line : lines ) {
 				if(EnumComplaintLineType.ORDER_LINE.equals(line.getType())) {
 					ErpOrderLineModel orderline = order.getOrderLineByPK(line.getOrderLineId());
@@ -1724,9 +1728,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					}
 				} else {
 					fdAmount += line.getAmount();
+					departmentLevel=true;
 				}
 			}
 			
+
 			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 			List<ErpPaymentMethodI> paymentList=customerEB.getPaymentMethods();
@@ -1744,6 +1750,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			PaymentManager paymentManager = new PaymentManager();
 			List<ErpCaptureModel> auths = saleEB.getCaptures();
 
+			// START Pass the authorized amount for cash back with it's affiliates
+			
+			if (departmentLevel) {
+
+				Map<ErpAffiliate, Double> cashBackMap = getAuthorizedAffiliateAmount(fdAmount,
+						auths);
+				fdAmount = null != cashBackMap.get(FD) ? cashBackMap.get(FD) : 0.0;
+				fdxAmount = null != cashBackMap.get(FDX) ? cashBackMap.get(FDX) : 0.0;
+				fdwAmount = null != cashBackMap.get(FDW) ? cashBackMap.get(FDW) : 0.0;
+				usqAmount = null != cashBackMap.get(USQ) ? cashBackMap.get(USQ) : 0.0;
+				bcAmount = null != cashBackMap.get(BC) ? cashBackMap.get(BC) : 0.0;
+
+			}
+			// END Pass the authorized amount for cash back with it's affiliates
+			
 			if(fdAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
@@ -1795,6 +1816,49 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException("Error talking to beans", e);
 		}
 	} // method addCashback
+
+	
+	
+	private Map<ErpAffiliate, Double> getAuthorizedAffiliateAmount(Double fdAmount, List<ErpCaptureModel> auths) {
+		
+		Map<ErpAffiliate, Double> affiliateMap=new HashMap<ErpAffiliate, Double>();
+		Map<ErpAffiliate, Double> capturedAmount=new HashMap<ErpAffiliate, Double>();
+		
+		for(ErpCaptureModel model:auths){
+			Double authAmt=capturedAmount.get(model.getAffiliate());
+			if(authAmt==null){
+				authAmt=0.0;
+			}
+			authAmt=authAmt+model.getAmount();
+			capturedAmount.put(model.getAffiliate(), authAmt);
+		}
+		
+		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getPrimaryAffiliate());
+		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW));
+		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX));
+		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_BC));
+		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ));
+
+		return affiliateMap;
+	}
+
+
+	private Double populateAuthorizedAmount(Map<ErpAffiliate, Double> affiliateMap,
+			Map<ErpAffiliate, Double> capturedAmount, Double fdAmount,ErpAffiliate affiliate) {
+        Double authAmount=capturedAmount.get(affiliate);
+		
+        if(authAmount!=null){
+			if(fdAmount>0 && fdAmount<=authAmount){
+				affiliateMap.put(affiliate, fdAmount);
+				fdAmount=0.0;
+			}else if(fdAmount>authAmount){
+				affiliateMap.put(affiliate, authAmount);
+				fdAmount=fdAmount-authAmount;
+			}
+		}
+        return fdAmount;
+	}
+
 
 	private ErpComplaintModel getLastComplaint(Collection<ErpComplaintModel> col) {
 
@@ -3112,4 +3176,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
+		
+	public boolean updateSalesShippingInfo(Map<String, ErpShippingInfo> erpShippingMap)
+			throws ErpTransactionException {
+		Connection conn = null;
+
+		try {
+			conn = this.getConnection();
+			return ErpSaleInfoDAO.updateSalesShippingInfo(conn, erpShippingMap);
+		} catch (SQLException se) {
+			throw new ErpTransactionException(se);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+	}
 }

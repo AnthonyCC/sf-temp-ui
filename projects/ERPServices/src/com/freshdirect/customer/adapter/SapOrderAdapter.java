@@ -94,6 +94,7 @@ public class SapOrderAdapter implements SapOrderI {
 				paymentMethod.setState(br.getCodeExt());
 			}
 		}*/
+				
 		if (paymentMethod != null) {
 			this.customer = new CustomerAdapter(phonePrivate, erpCustomer, shipTo, paymentMethod, this.getAlternateDeliveryAddress());
 		} else {
@@ -285,6 +286,11 @@ public class SapOrderAdapter implements SapOrderI {
 	public String getCustomerServiceMessage() {
 		String csMessage = this.erpOrder.getCustomerServiceMessage();
 		return csMessage == null ? "" : csMessage;
+	}
+	
+	public ErpAddressModel getDeliveryAddress(){
+		return this.erpOrder.getDeliveryInfo().getDeliveryAddress(); 
+		 
 	}
 
 	public String getDeliveryInstructions() {

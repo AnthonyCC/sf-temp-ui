@@ -23,6 +23,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -484,4 +485,17 @@ class SalesOrderHelper {
 		
 	}
 
+	/**
+	 *   APPDEV-5314 : get unatteded delivery flg to send to SAP 
+	 *   pass "X" character along with 4 spaces when unatteded delivery flg is opted in otherwise pass 5 spaces
+	 */
+	public static String populateUnattendedDlvFlg(EnumUnattendedDeliveryFlag unattendedDeliveryFlg) {
+		
+		if(ErpServicesProperties.isSAPUnattendedDelivery()) {
+		    if(EnumUnattendedDeliveryFlag.OPT_IN.equals(unattendedDeliveryFlg)){
+			   return StringUtils.rightPad("X", 5, " ");
+		   } else {return StringUtils.rightPad(" ", 5);}
+	    } return "";
+		
+	}
 }

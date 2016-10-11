@@ -231,6 +231,10 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
 		String gcAmount = StringUtils.rightPad(String.valueOf(order.getGcAmount()), 10);
 		
+		// APPDEV-5314 to send un attended delivery flg to SAP
+		String unattendedDeliveryFlg=SalesOrderHelper.populateUnattendedDlvFlg(order.getDeliveryAddress().getUnattendedDeliveryFlag());
+
+		
 		if(order.isAddOnOrder())
 			referenceOrder=order.getReferenceOrderId();
 		
@@ -243,6 +247,7 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		bapi.addExtension("BAPE_VBAK", StringUtils.repeat(" ", 10)
 			+ recipeFlag
 			+ goGreen
+			+ unattendedDeliveryFlg
 			+ StringUtils.repeat(" ", 15)
 			+ gcAmount // offset 36-45
 			+ StringUtils.repeat(" ", 40)

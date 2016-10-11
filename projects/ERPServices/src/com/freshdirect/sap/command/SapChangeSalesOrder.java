@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QuickDateFormat;
@@ -211,10 +212,13 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
 		String gcAmount = StringUtils.rightPad(String.valueOf(order.getGcAmount()), 10);
 	
+		String unattendedDeliveryFlg=SalesOrderHelper.populateUnattendedDlvFlg(order.getDeliveryAddress().getUnattendedDeliveryFlag());
+		
 		// 10 spaces + 5 (flag) + 5 (GREEN) + 65 spaces + 20 chars
 		bapi.addExtension("BAPE_VBAK", salesDocumentNumber
 			+ recipeFlag
 			+ goGreen
+			+ unattendedDeliveryFlg
 			+ StringUtils.repeat(" ", 15)
 			+ gcAmount
 			+ StringUtils.repeat(" ", 40)
@@ -234,5 +238,7 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 				+ "X");
 
 	}
+
+
 
 }

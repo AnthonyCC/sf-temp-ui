@@ -11,12 +11,13 @@ package com.freshdirect.sap;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import com.freshdirect.common.pricing.CreditMemo;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
-
-import java.util.List;
 
 public interface SapOrderI extends Serializable {
 
@@ -134,6 +135,6 @@ public interface SapOrderI extends Serializable {
 	
 	public String getReferenceOrderId();
 	
-	
+	public ErpAddressModel getDeliveryAddress();
 }
 

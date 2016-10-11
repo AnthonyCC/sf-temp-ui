@@ -295,4 +295,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 
     public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
     public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) throws RemoteException;
+    
+    public boolean updateSalesShippingInfo(Map<String,ErpShippingInfo> erpShippingMap) throws ErpTransactionException ,RemoteException;
 }
