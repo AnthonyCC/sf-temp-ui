@@ -8253,7 +8253,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	private static final String SHIPPING_INFO_SALES_ID=" SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND "
-					+" SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN SYSDATE-7 AND SYSDATE+1  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM>=? "
+					+" SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN SYSDATE-1 AND SYSDATE  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM>=? "
 					+"  and S.TRUCK_NUMBER IS NULL ";
 	
 	public List<String> getShippingInfoSalesId() throws FDResourceException {
