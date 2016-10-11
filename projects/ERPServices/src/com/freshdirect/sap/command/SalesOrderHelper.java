@@ -491,11 +491,11 @@ class SalesOrderHelper {
 	 */
 	public static String populateUnattendedDlvFlg(EnumUnattendedDeliveryFlag unattendedDeliveryFlg) {
 		
-		if(ErpServicesProperties.isSAPUnattendedDelivery()) {
+		//if(ErpServicesProperties.isSAPUnattendedDelivery()) {
 		    if(EnumUnattendedDeliveryFlag.OPT_IN.equals(unattendedDeliveryFlg)){
 			   return StringUtils.rightPad("X", 5, " ");
 		   } else {return StringUtils.rightPad(" ", 5);}
-	    } return "";
+	   // } return "";
 		
 	}
 }
