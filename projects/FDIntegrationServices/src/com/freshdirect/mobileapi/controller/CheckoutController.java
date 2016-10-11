@@ -1322,11 +1322,11 @@ public class CheckoutController extends BaseController {
 					"This account is not enabled to change delivery address.");
 		}
         
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
-        
         ActionResult result = null;
         
-        // FKMW - validate form fields before submitting them to the app layer
+        // === FKMW - validate form fields before submitting them to the app layer ===
+        
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
         if (isWebRequest) {
             result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
@@ -1335,6 +1335,8 @@ public class CheckoutController extends BaseController {
                 responseMessage = getErrorMessage(result, request);
             }
         }
+        
+        // === FKMW end ===
         
         
         if (responseMessage == null) {

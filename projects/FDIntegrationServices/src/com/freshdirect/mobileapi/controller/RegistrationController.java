@@ -51,6 +51,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -505,7 +506,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		return responseMessage;
 	}
 	
-    private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+    private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         // APPDEV-4315- Intermittent: Cannot Create Address -Start
         Message responseMessage = null;
@@ -514,29 +515,48 @@ public class RegistrationController extends BaseController implements SystemMess
                 responseMessage = Message.createSuccessMessage(ACTION_ADD_DELIVERY_ADDRESS);
                 throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
             }
-            RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
-            ResultBundle resultBundle = tagWrapper.addDeliveryAddress(reqestMessage);
-            ActionResult result = resultBundle.getActionResult();
 
-            propogateSetSessionValues(request.getSession(), resultBundle);
-            if (result.isSuccess()) {
+            ActionResult result = null;
 
-                ErpAddressModel eam = (ErpAddressModel) resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
+            // === FKMW - validate form fields before submitting them to the app layer ===
+            
+            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+            if (isWebRequest) {
+                result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
-                List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
-                ShipToAddress newelyAdded = null;
-                for (ErpAddressModel toCheck : addresses) {
-                    if (DeliveryAddressManipulator.matchAddress(toCheck, eam)) {
-                        newelyAdded = ShipToAddress.wrap(toCheck);
-                        break;
-                    }
+                // halt on any error
+                if (!result.isSuccess()) {
+                    responseMessage = getErrorMessage(result, request);
                 }
-                responseMessage = new AddAddressResponse();
-                responseMessage.setSuccessMessage("Delivery Address added successfully.");
-                ((AddAddressResponse) responseMessage).setAddedAddress(newelyAdded);
-
-            } else {
-                responseMessage = getErrorMessage(result, request);
+            }
+            
+            // === FKMW end ===
+            
+            if (responseMessage == null) {
+                RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+                ResultBundle resultBundle = tagWrapper.addDeliveryAddress(requestMessage);
+                result = resultBundle.getActionResult();
+    
+                propogateSetSessionValues(request.getSession(), resultBundle);
+                if (result.isSuccess()) {
+    
+                    ErpAddressModel eam = (ErpAddressModel) resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
+    
+                    List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
+                    ShipToAddress newelyAdded = null;
+                    for (ErpAddressModel toCheck : addresses) {
+                        if (DeliveryAddressManipulator.matchAddress(toCheck, eam)) {
+                            newelyAdded = ShipToAddress.wrap(toCheck);
+                            break;
+                        }
+                    }
+                    responseMessage = new AddAddressResponse();
+                    responseMessage.setSuccessMessage("Delivery Address added successfully.");
+                    ((AddAddressResponse) responseMessage).setAddedAddress(newelyAdded);
+    
+                } else {
+                    responseMessage = getErrorMessage(result, request);
+                }
             }
             responseMessage.addWarningMessages(result.getWarnings());
             setResponseMessage(model, responseMessage, user);
