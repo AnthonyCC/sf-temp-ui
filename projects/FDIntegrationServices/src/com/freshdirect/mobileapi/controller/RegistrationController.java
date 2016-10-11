@@ -507,47 +507,44 @@ public class RegistrationController extends BaseController implements SystemMess
 	
     private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	//APPDEV-4315- Intermittent: Cannot Create Address -Start
-    	Message responseMessage = null;
-    	if(user!=null){
-    		if (user.isVoucherHolder()) {
-				responseMessage = Message
-						.createSuccessMessage(ACTION_ADD_DELIVERY_ADDRESS);
-				throw new FDActionNotAllowedException(
-						"This account is not enabled to change delivery address.");
-			}
-    	 	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
-	        ResultBundle resultBundle = tagWrapper.addDeliveryAddress(reqestMessage);
-	        ActionResult result = resultBundle.getActionResult();
-	
-	        propogateSetSessionValues(request.getSession(), resultBundle);
-	        if (result.isSuccess()) {
-	        
-	        	ErpAddressModel eam = (ErpAddressModel)resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
-		        
-		        List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
-		        ShipToAddress newelyAdded = null;
-		        for(ErpAddressModel toCheck : addresses){
-		        	if(DeliveryAddressManipulator.matchAddress(toCheck, eam)){
-		        		newelyAdded = ShipToAddress.wrap(toCheck);
-		        		break;
-		        	}
-		        }
-		        responseMessage = new AddAddressResponse();
-		        responseMessage.setSuccessMessage("Delivery Address added successfully.");
-		        ((AddAddressResponse)responseMessage).setAddedAddress(newelyAdded);
-		        
-	        } else {
-	            responseMessage = getErrorMessage(result, request);
-	        }
-	        responseMessage.addWarningMessages(result.getWarnings());
-	        setResponseMessage(model, responseMessage, user);
-    	}
-    	else {
-    		responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
-    		setResponseMessage(model, responseMessage, user);
-    	}
-        //APPDEV-4315- Intermittent: Cannot Create Address -End
+        // APPDEV-4315- Intermittent: Cannot Create Address -Start
+        Message responseMessage = null;
+        if (user != null) {
+            if (user.isVoucherHolder()) {
+                responseMessage = Message.createSuccessMessage(ACTION_ADD_DELIVERY_ADDRESS);
+                throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
+            }
+            RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+            ResultBundle resultBundle = tagWrapper.addDeliveryAddress(reqestMessage);
+            ActionResult result = resultBundle.getActionResult();
+
+            propogateSetSessionValues(request.getSession(), resultBundle);
+            if (result.isSuccess()) {
+
+                ErpAddressModel eam = (ErpAddressModel) resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
+
+                List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
+                ShipToAddress newelyAdded = null;
+                for (ErpAddressModel toCheck : addresses) {
+                    if (DeliveryAddressManipulator.matchAddress(toCheck, eam)) {
+                        newelyAdded = ShipToAddress.wrap(toCheck);
+                        break;
+                    }
+                }
+                responseMessage = new AddAddressResponse();
+                responseMessage.setSuccessMessage("Delivery Address added successfully.");
+                ((AddAddressResponse) responseMessage).setAddedAddress(newelyAdded);
+
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
+            responseMessage.addWarningMessages(result.getWarnings());
+            setResponseMessage(model, responseMessage, user);
+        } else {
+            responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+        }
+        // APPDEV-4315- Intermittent: Cannot Create Address -End
         return model;
     }
 
