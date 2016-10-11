@@ -570,43 +570,37 @@ public class RegistrationController extends BaseController implements SystemMess
 
     private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	//APPDEV-4315- Intermittent: Cannot Create Address -Start
-    	
-		Message responseMessage = null;
-		if (user != null) {
+        // APPDEV-4315- Intermittent: Cannot Create Address -Start
 
-			if (user.isVoucherHolder()) {
-				responseMessage = Message
-						.createSuccessMessage(ACTION_EDIT_DELIVERY_ADDRESS);
-				throw new FDActionNotAllowedException(
-						"This account is not enabled to change delivery address.");
-			}
-			RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(
-					user.getFDSessionUser());
-			ResultBundle resultBundle = tagWrapper
-					.editDeliveryAddress(reqestMessage);
+        Message responseMessage = null;
+        if (user != null) {
 
-			ActionResult result = resultBundle.getActionResult();
+            if (user.isVoucherHolder()) {
+                responseMessage = Message.createSuccessMessage(ACTION_EDIT_DELIVERY_ADDRESS);
+                throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
+            }
+            RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+            ResultBundle resultBundle = tagWrapper.editDeliveryAddress(reqestMessage);
 
-			propogateSetSessionValues(request.getSession(), resultBundle);
+            ActionResult result = resultBundle.getActionResult();
 
-			if (result.isSuccess()) {
-				responseMessage = Message
-						.createSuccessMessage("Delivery Address updated successfully.");
-			} else {
-				responseMessage = getErrorMessage(result, request);
-			}
-			responseMessage.addWarningMessages(result.getWarnings());
-			setResponseMessage(model, responseMessage, user);
-		}
+            propogateSetSessionValues(request.getSession(), resultBundle);
 
-		else {
-			responseMessage = getErrorMessage(ERR_SESSION_EXPIRED,
-					"Session does not exist in the server.");
-			setResponseMessage(model, responseMessage, user);
-		}
-		// APPDEV-4315- Intermittent: Cannot Create Address -End
-		return model;
+            if (result.isSuccess()) {
+                responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
+            responseMessage.addWarningMessages(result.getWarnings());
+            setResponseMessage(model, responseMessage, user);
+        }
+
+        else {
+            responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+        }
+        // APPDEV-4315- Intermittent: Cannot Create Address -End
+        return model;
     }
     
     private ModelAndView setMobilePreferences(ModelAndView model, SessionUser user, MobilePreferenceRequest reqestMessage,
