@@ -39,8 +39,6 @@
 					    </xsl:if>
 					    <xsl:variable name="bundleShortItems" select="order/bundleShortItems/bundleShortItems"/>
 					    <xsl:variable name="bundleCompleteShort" select="order/bundleCompleteShort/bundleCompleteShort"/>
-						<p>value of bundleShortItems is: <xsl:value-of select="$bundleShortItems"></xsl:value-of></p>
-						<p>value of bundleCompleteShort is: <xsl:value-of select="bundleCompleteShort"></xsl:value-of></p>
 						<xsl:choose>
 						<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count($bundleShortItems) > 0 or count(bundleCompleteShort) > 0">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
