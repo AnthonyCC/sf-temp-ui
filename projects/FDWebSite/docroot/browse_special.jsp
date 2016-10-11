@@ -66,6 +66,14 @@
 
   </tmpl:put>
   
+	<tmpl:put name="jsmodules">
+		<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+		<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+		<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+		
+		<jwr:script src="/pdp.js"  useRandomParam="false" />
+	</tmpl:put>
+  
 </tmpl:insert>
 </c:when>
 <c:otherwise>
