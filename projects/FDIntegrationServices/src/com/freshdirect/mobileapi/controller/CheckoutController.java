@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,8 +79,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
+import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.service.DeliveryAddressValidationDataService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -1329,7 +1328,7 @@ public class CheckoutController extends BaseController {
         
         // FKMW - validate form fields before submitting them to the app layer
         if (isWebRequest) {
-            result = validateDeliveryAddress(requestMessage);
+            result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
             // halt on any error
             if (!result.isSuccess()) {
@@ -1533,30 +1532,5 @@ public class CheckoutController extends BaseController {
                 EventLoggerService.getInstance().log(orderEvent);
             }
         }
-    }
-
-
-
-    /**
-     * A very simple delivery address form validator method
-     * 
-     * DEV NOTE: rather incomplete implementation, just focusing to the apparent issue
-     * It should be integrated into a common validation framework or service later.
-     * 
-     * @see DeliveryAddressValidationDataService
-     * 
-     * @param request
-     * @return
-     */
-    private ActionResult validateDeliveryAddress(DeliveryAddressRequest request) {
-        ActionResult result = new ActionResult();
-        
-        {
-            final Pattern phonePattern = Pattern.compile("(\\d){10}"); // 10 digits is required
-            final String value = request.getDlvhomephone();
-
-            result.addError( !phonePattern.matcher(value).matches(), "address", "Invalid Mobile Number");
-        }
-        return result;
     }
 }
