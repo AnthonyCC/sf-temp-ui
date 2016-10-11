@@ -1708,7 +1708,7 @@ public class FDStoreProperties {
 
         // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
-        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "MKT9000210,MKT9000211,MKT9000212,MKT9000213");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
 
         refresh();
     }
