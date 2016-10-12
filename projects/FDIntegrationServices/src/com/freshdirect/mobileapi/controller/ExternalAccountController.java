@@ -318,9 +318,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 									socialEmail, socialUser.get("emailVerified"));
 							}
 							if(registrationResultBundle.getActionResult().isSuccess()) {
-								request.getSession().setAttribute(
-										SessionName.APPLICATION,
-										EnumTransactionSource.FDX_IPHONE.getCode());
 								responseMessage = setCurrentCartToTheUser(user,
 										request, response);
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
