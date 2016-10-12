@@ -22,6 +22,7 @@ import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
 import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -122,9 +123,9 @@ public class FDInventoryJcoServer extends FdSapServer {
 					final BigDecimal commitedQty = materialTable.getBigDecimal("BMENG");
 					final String salesUnit = FDSapHelperUtils.getString(materialTable.getString("MEINS"));
 
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Got Inventory Record For Plant:" + plant + "\t Material No:" + matNo
-								+ "\t Start Date:" + startDate + "\t Committed Qty:" + commitedQty + "\t Sales Unit:"
+					if (SapProperties.isInventoryExportLogEnabled()) {
+						LOG.info("Got Inventory Record For Plant:" + plant + ", Material No:" + matNo
+								+ ", Start Date:" + startDate + ", Committed Qty:" + commitedQty + ", Sales Unit:"
 								+ salesUnit);
 					}
 

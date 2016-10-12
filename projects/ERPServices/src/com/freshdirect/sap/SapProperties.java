@@ -67,7 +67,7 @@ public class SapProperties {
 		defaults.put(PROP_MATERIAL_UOM_EXPORT_LOG, "false");
 		defaults.put(PROP_MATERIAL_PRICE_EXPORT_LOG, "false");
 		defaults.put(PROP_INVOICE_EXPORT_LOG, "false");
-		defaults.put(PROP_INVENTORY_EXPORT_LOG, "false");
+		defaults.put(PROP_INVENTORY_EXPORT_LOG, "true");
 		defaults.put(PROP_COOL_INFO_EXPORT_LOG, "false");
 		defaults.put(PROP_GROUP_SCALE_EXPORT_LOG, "false");
 		
