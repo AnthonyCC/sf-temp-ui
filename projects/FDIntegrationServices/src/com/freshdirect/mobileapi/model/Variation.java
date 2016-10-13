@@ -96,7 +96,16 @@ public class Variation {
                 result.type = VariationType.MULTIPLE_CHOICE;
             }
         }
-        result.optional = variation.isOptional();
+        
+        if ("checkbox".equals(variation.getDisplayFormat()) && variation.isOptional() == true)
+        {
+        	result.optional = false;
+        }
+        else
+        {
+        	result.optional = variation.isOptional();
+        }
+        
         result.underLabel = variation.getUnderLabel();
         result.name = variation.getName();
         result.description = variation.getDescription();
