@@ -182,13 +182,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 		Message responseMessage = null;
 		HttpSession session = request.getSession();
 		
-		if(user.getApplication() != null)
-		{
-			request.getSession().setAttribute(
-					SessionName.APPLICATION,
-					user.getApplication());
-		}
-		else
+		if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
 		{
 			request.getSession().setAttribute(
 					SessionName.APPLICATION,
