@@ -1145,9 +1145,10 @@ public class FDOrderAdapter implements FDOrderI {
 		List<FDCartLineI> shortedItems = new ArrayList<FDCartLineI>();
 
 		for ( FDCartLineI line : orderLines ) {
-			if (line.getDeliveredQuantity() != null && !"".equals(line.getDeliveredQuantity())) {				
+			if (line.getDeliveredQuantity() != null && !"".equals(line.getDeliveredQuantity()) && line.getMaterialGroup()!=null 
+					&& !FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup())) {				
 				if (line.isPricedByLb()) {				
-					if (new Double(line.getDeliveredQuantity()).doubleValue() == 0 && !FDStoreProperties.getMealKitMaterialGroup().equals(line.getMaterialGroup())) {
+					if (new Double(line.getDeliveredQuantity()).doubleValue() == 0) {
 						shortedItems.add(line);
 					}				
 				} else if (new Double(line.getDeliveredQuantity()).doubleValue() < line.getQuantity()) {					
@@ -1162,7 +1163,7 @@ public class FDOrderAdapter implements FDOrderI {
 		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
 			if(!line.isPricedByLb()){
-				if (new Double(line.getDeliveredQuantity()).doubleValue() != 0 && new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() 
+				if (line.getDeliveredQuantity() != null && new Double(line.getDeliveredQuantity()).doubleValue() != 0 && new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() 
 						&& line.getInvoiceLine().getPrice()<line.getPrice()){
 					bundleShortItems.add(line);
 				}			
@@ -1176,7 +1177,8 @@ public class FDOrderAdapter implements FDOrderI {
 		List<FDCartLineI> bundleCompleteShort = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
 				 if(!line.isPricedByLb()){
-					if(new Integer(line.getDeliveredQuantity()) == 0 && FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup())){
+					if(line.getDeliveredQuantity() != null && new Integer(line.getDeliveredQuantity()) == 0 && line.getMaterialGroup()!= null 
+							&& FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup())){
 						bundleCompleteShort.add(line);
 					}
 				}

@@ -1703,6 +1703,8 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
+
+        defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
 
@@ -4419,7 +4421,14 @@ public class FDStoreProperties {
 	public static String getPropDonationProductSamplesId() {
 		return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
 	}
-	 public static List<String> getMealKitMaterialGroup(){
-	    	return null != config.get("PROP_MEAL_KIT_MATERIAL_GROUP")? (List<String>) config.get("PROP_MEAL_KIT_MATERIAL_GROUP"):null;
-	    }
+	
+	public static List<String> getMealKitMaterialGroup(){
+		String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);
+		List<String> materialKitsList = new ArrayList<String>();
+		if(materialKits !=null){
+			materialKitsList = Arrays.asList(materialKits.split(","));
+		}
+		
+		return materialKitsList;
+	}	
 }
