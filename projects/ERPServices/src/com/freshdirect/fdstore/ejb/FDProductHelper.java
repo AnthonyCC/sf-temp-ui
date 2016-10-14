@@ -191,7 +191,7 @@ public class FDProductHelper {
 			SalesAreaInfo salesAreaInfo =new SalesAreaInfo(materialSalesAreaModel.getSalesOrg(), materialSalesAreaModel.getDistChannel());
 			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
 			if(null == materialSalesArea){
-				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartSelling()));
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartSelling()),materialSalesAreaModel.getPickingPlantId());
 				materialSalesAreaMap.put(salesAreaInfo,materialSalesArea);
 			}						
 		}
@@ -207,7 +207,7 @@ public class FDProductHelper {
 			SalesAreaInfo salesAreaInfo =materialSalesAreaModel.getSalesAreaInfo();
 			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
 			if(null == materialSalesArea){
-				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartType()));
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartType()),materialSalesAreaModel.getPickingPlantId());
 				materialSalesAreaMap.put(new String(salesAreaInfo.getSalesOrg()+salesAreaInfo.getDistChannel()).intern(),materialSalesArea);
 			}						
 		}

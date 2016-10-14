@@ -142,5 +142,7 @@ public interface SapOrderLineI extends Serializable {
 	public ErpCouponDiscountLineModel getCouponDiscount();
 	
 	public EnumTaxationType getTaxationType();
+	
+	public String getPickingPlantId();
 
 }

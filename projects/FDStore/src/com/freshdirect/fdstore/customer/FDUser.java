@@ -2179,7 +2179,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     	return null;
     }
     
-	private UserContext setFulfillmentAndPricingContext( UserContext userContext,ErpAddressModel address) throws FDResourceException {                                  
+    private UserContext setFulfillmentAndPricingContext( UserContext userContext,ErpAddressModel address) throws FDResourceException {                           
 			                                            
 		
 		FulfillmentContext fulfillmentContext= new FulfillmentContext();
@@ -2202,20 +2202,26 @@ public class FDUser extends ModelSupport implements FDUserI {
 				//default the fulfillments
 				if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
 					fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdxPlantID());
+					fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdxSalesOrg());
+					fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdxDistributionChannel());
 					zoneInfo=new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdxSalesOrg(),FDStoreProperties.getDefaultFdxDistributionChannel(),ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdxSalesOrgParent(),FDStoreProperties.getDefaultFdxDistributionChannelParent()));
 				} else {
 					fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+					fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
+					fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
 					zoneInfo=new ZoneInfo(pricingZoneId,FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel());
 				}
 				
 		 } else {
 			 	fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
+			 	fulfillmentContext.setSalesOrg(fulfillmentInfo.getSalesArea().getSalesOrg());
+				fulfillmentContext.setDistChannel(fulfillmentInfo.getSalesArea().getDistChannel());
 				zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
 		 }
 		userContext.setFulfillmentContext(fulfillmentContext);
 		userContext.setPricingContext(new PricingContext(zoneInfo));
 		return userContext;
-	}	
+	}
 
 	/** use getUserContext().setPricingContext() instead */
 	@Deprecated

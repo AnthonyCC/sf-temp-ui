@@ -41,8 +41,10 @@ class MaterialAvailabilityHelper {
 	}
 
 	protected void build() {
-		this.bapi.setPlant( /*SapProperties.getPlant()*/order.getPlant() );
-		this.bapi.setStgeLoc( /*SapProperties.getStgeLoc() */order.getPlant());
+//		this.bapi.setPlant( /*SapProperties.getPlant()*/order.getPlant() );
+		this.bapi.setPlant( /*SapProperties.getPlant()*/this.orderLine.getPickingPlantId() );
+//		this.bapi.setStgeLoc( /*SapProperties.getStgeLoc() */order.getPlant());
+		this.bapi.setStgeLoc( /*SapProperties.getStgeLoc()*/this.orderLine.getPickingPlantId() );
 
 		this.bapi.setCustomerNumber( this.order.getCustomer().getSapCustomerNumber() );
 		this.bapi.setMaterialNumber( this.orderLine.getMaterialNumber() );
@@ -64,7 +66,7 @@ class MaterialAvailabilityHelper {
 			Date confDate = bapi.getCommitedDate(i);
 			double confQty = bapi.getCommitedQty(i);
 			inventoryEntries.add(
-				new ErpInventoryEntryModel( new java.sql.Date( confDate.getTime() ), confQty,order.getPlant() )
+				new ErpInventoryEntryModel( new java.sql.Date( confDate.getTime() ), confQty,this.orderLine.getPickingPlantId()/*order.getPlant()*/ )
 			);
 		}
 		

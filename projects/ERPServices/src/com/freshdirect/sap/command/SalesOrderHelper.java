@@ -369,6 +369,10 @@ class SalesOrderHelper {
 			public String getSalesDist() {
 				return "100000";
 			}
+			
+			public String getPickingPlantId(){
+				return "1000";
+			}
 		};
 
 		bapi.addOrderItemIn(item);

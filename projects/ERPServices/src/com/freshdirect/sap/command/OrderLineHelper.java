@@ -60,6 +60,7 @@ class OrderLineHelper {
 				public int getMaxPartialDlv() { return 0; }
 				public String getCustMat35() { return orderline.getDepartmentDesc(); }
 				public String getSalesDist(){ return orderline.getPricingZoneId();}
+				public String getPickingPlantId(){ return orderline.getPickingPlantId();}
 			};
 
 			// order item in

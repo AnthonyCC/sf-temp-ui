@@ -33,6 +33,7 @@ public interface BapiOrder extends BapiFunctionI {
 		public int getMaxPartialDlv();
 		public String getCustMat35();
 		public String getSalesDist();
+		public String getPickingPlantId();
 	}
 	
 	public static interface ScheduleIn {

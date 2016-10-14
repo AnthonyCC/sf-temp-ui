@@ -584,6 +584,11 @@ public class SapOrderAdapter implements SapOrderI {
 		public EnumTaxationType getTaxationType() {
 			return orderLine.getTaxationType();
 		}
+
+		@Override
+		public String getPickingPlantId() {
+			return orderLine.getPlantID();
+		}
 	}
 
 	@Override

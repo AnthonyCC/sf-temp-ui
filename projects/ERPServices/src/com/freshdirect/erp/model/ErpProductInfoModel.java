@@ -386,6 +386,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		private Date unavailabilityDate;
 		private String unavailabilityReason;
 		private String dayPartType;
+		private String pickingPlantId;
 		/**
 		 * @param salesAreaInfo
 		 * @param unavailabilityStatus
@@ -394,7 +395,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public ErpMaterialSalesAreaInfo(SalesAreaInfo salesAreaInfo,
 				String unavailabilityStatus, Date unavailabilityDate,
-				String unavailabilityReason, String dayPartType) {
+				String unavailabilityReason, String dayPartType, String pickingPlantId) {
 			super();
 			this.salesAreaInfo = salesAreaInfo;
 			if(unavailabilityStatus==null)
@@ -404,6 +405,7 @@ public class ErpProductInfoModel extends ModelSupport {
 			this.unavailabilityDate = unavailabilityDate;
 			this.unavailabilityReason = unavailabilityReason;
 			this.dayPartType = dayPartType;
+			this.pickingPlantId = pickingPlantId;
 		}
 		/**
 		 * @return the salesAreaInfo
@@ -464,6 +466,12 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public void setDayPartType(String dayPartType) {
 			this.dayPartType = dayPartType;
+		}
+		public String getPickingPlantId() {
+			return pickingPlantId;
+		}
+		public void setPickingPlantId(String pickingPlantId) {
+			this.pickingPlantId = pickingPlantId;
 		}
 		
 		

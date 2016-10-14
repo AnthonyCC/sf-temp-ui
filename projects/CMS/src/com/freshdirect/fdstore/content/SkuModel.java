@@ -10,6 +10,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -142,11 +143,16 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		try {
 
 			FDProductInfo fdpi = this.getProductInfo();
-			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
+//			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+//			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
 			String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
-			String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,plantID);
+			String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();			
+			String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);			
+			if(null == pickingPlantId ||"".equals(pickingPlantId.trim())){
+				pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			}
+			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,pickingPlantId);
+			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,pickingPlantId);
 
 		} catch (FDSkuNotFoundException fdsnfe) {
 			return UNAVAILABLE;

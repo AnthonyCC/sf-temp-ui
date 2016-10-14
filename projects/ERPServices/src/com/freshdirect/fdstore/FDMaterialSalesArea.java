@@ -18,6 +18,7 @@ public class FDMaterialSalesArea implements Serializable {
 	private Date unavailabilityDate;
 	private String unavailabilityReason;
 	private EnumDayPartValueType dayPartValueType;
+	private String pickingPlantId;
 	/**
 	 * 
 	 */
@@ -34,12 +35,13 @@ public class FDMaterialSalesArea implements Serializable {
 	 */
 	public FDMaterialSalesArea(SalesAreaInfo salesAreaInfo,
 			String unavailabilityStatus, Date unavailabilityDate,
-			String unavailabilityReason, EnumDayPartValueType dayPartValueType) {
+			String unavailabilityReason, EnumDayPartValueType dayPartValueType,String pickingPlantId) {
 		this.salesAreaInfo = salesAreaInfo;
 		this.unavailabilityStatus = unavailabilityStatus;
 		this.unavailabilityDate = unavailabilityDate;
 		this.unavailabilityReason = unavailabilityReason;
 		this.dayPartValueType = dayPartValueType;
+		this.pickingPlantId = pickingPlantId;
 	}
 
 	/**
@@ -103,6 +105,20 @@ public class FDMaterialSalesArea implements Serializable {
 	 */
 	public void setDayPartValueType(EnumDayPartValueType dayPartValueType) {
 		this.dayPartValueType = dayPartValueType;
+	}
+
+	/**
+	 * @return the pickingPlantId
+	 */
+	public String getPickingPlantId() {
+		return pickingPlantId;
+	}
+
+	/**
+	 * @param pickingPlantId the pickingPlantId to set
+	 */
+	public void setPickingPlantId(String pickingPlantId) {
+		this.pickingPlantId = pickingPlantId;
 	}
 
 	/* (non-Javadoc)

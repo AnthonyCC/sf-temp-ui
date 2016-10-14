@@ -492,8 +492,17 @@ public class FDProductInfo extends FDSku  {
 		}
 	}
 
-	public FDMaterialSalesArea getFDMaterialSalesArea(SalesAreaInfo salesArea) {
-		return materialAvailability.get(salesArea);
+	public FDMaterialSalesArea getFDMaterialSalesArea(String salesOrg, String distributionChannel) {
+		return materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+	}
+	
+	public String getPickingPlantId(String salesOrg, String distributionChannel) {
+		String pickingPlantId = null;
+		FDMaterialSalesArea matSalesArea = materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		if(null != matSalesArea){
+			pickingPlantId = matSalesArea.getPickingPlantId();
+		}
+		return pickingPlantId;
 	}
 
 	public Map<String, FDMaterialSalesArea> getAvailability() {

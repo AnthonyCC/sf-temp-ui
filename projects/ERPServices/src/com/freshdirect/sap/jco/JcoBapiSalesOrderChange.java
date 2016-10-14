@@ -98,6 +98,7 @@ class JcoBapiSalesOrderChange extends JcoBapiOrder implements BapiSalesOrderChan
 		this.orderItemInX.setValue("PRICE_DATE", "X");
 		this.orderItemInX.setValue("SALES_UNIT", "X");
 		this.orderItemInX.setValue("CUST_MAT35", "X");
+		this.orderItemInX.setValue("PLANT", "X");
 	}
 
 	public void addOrderScheduleInX(int itmNumber) {
