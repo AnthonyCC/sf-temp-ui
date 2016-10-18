@@ -91,6 +91,7 @@ public class CmsFilteringNavigator {
     
     private String referer;
     private String requestUrl;
+    private boolean aggregateCategories;
     
     /**
      * Creates a CmsFilteringNavigator instance out of request parameter map.
@@ -202,8 +203,6 @@ public class CmsFilteringNavigator {
         }
 
         String id = cmsFilteringNavigator.getId();
-        String picksId = cmsFilteringNavigator.getPicksId();
-
         cmsFilteringNavigator.parseFilteringFlowType(request);
         int pageSpecificPageSize;
         if (parsedPageSize != null) {
@@ -532,5 +531,13 @@ public class CmsFilteringNavigator {
     
     public String getRequestUrl() {
         return requestUrl;
+    }
+
+    public boolean isAggregateCategories() {
+        return aggregateCategories;
+    }
+
+    public void setAggregateCategories(boolean aggregateCategories) {
+        this.aggregateCategories = aggregateCategories;
     }
 }

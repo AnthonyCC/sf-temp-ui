@@ -93,6 +93,15 @@ public class CmsFilteringFlow {
     private static String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
     private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 
+    private static final CmsFilteringFlow INSTANCE = new CmsFilteringFlow();
+
+    public static CmsFilteringFlow getInstance() {
+        return INSTANCE;
+    }
+
+    private CmsFilteringFlow() {
+    }
+
     public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
         BrowseData browseData = null;
         BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
@@ -830,7 +839,9 @@ public class CmsFilteringFlow {
         browseDataContext.setNavigationModel(navigationModel);
         browseDataContext.setCurrentContainer(contentNodeModel);
 
-        applyCategoryAggregationForGroundAndBurgers(nav, user, browseDataContext, contentNodeModel);
+        if (isCategoryAggregationApplicable(nav, user, contentNodeModel)) {
+            applyCategoryAggregation(nav, browseDataContext.getSectionContexts());
+        }
 
         savePageTypeForCaching(nav.getPageType(), browseDataContext);
 
@@ -929,27 +940,45 @@ public class CmsFilteringFlow {
     }
 
     /**
-     * Aggregate Ground & Burgers sub-category products into single section and remove sub-category titles
+     * Aggregate sub-category products into single section and remove sub-category titles
      * 
-     * @param nav
-     * @param user
-     * @param browseDataContext
-     * @param contentNodeModel
+     * @param sectionContexts
      */
-    private void applyCategoryAggregationForGroundAndBurgers(CmsFilteringNavigator nav, FDSessionUser user, BrowseDataContext browseDataContext, ContentNodeModel contentNodeModel) {
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.browseaggregatedcategories1_0, nav.getRequestCookies(), user)
-                && FDStoreProperties.getBrowseAggregatedCategories().contains(contentNodeModel.getContentKey().getEncoded())) {
-            SectionContext mainSectionContext = browseDataContext.getSectionContexts().get(0);
+    private void applyCategoryAggregation(CmsFilteringNavigator nav, List<SectionContext> sectionContexts) {
+        if (sectionContexts != null && !sectionContexts.isEmpty()) {
+            SectionContext mainSectionContext = sectionContexts.get(0);
             SectionContext mergedSectionContext = new SectionContext();
+            mergedSectionContext.setCatId("");
             mergedSectionContext.setProductItems(new ArrayList<FilteringProductItem>());
-            for (SectionContext subSectionContext : mainSectionContext.getSectionContexts()) {
-                mergedSectionContext.getProductItems().addAll(subSectionContext.getProductItems());
-            }
+            collectCategoryProducts(nav, mainSectionContext, mergedSectionContext);
             List<SectionContext> subSectionContexts = mainSectionContext.getSectionContexts();
-            subSectionContexts.clear();
-            subSectionContexts.add(mergedSectionContext);
+            if (subSectionContexts != null) {
+                subSectionContexts.clear();
+                subSectionContexts.add(mergedSectionContext);
+            }
             ProductService.defaultService().removeSkuDuplicates(mergedSectionContext.getProductItems());
         }
+    }
+
+    private void collectCategoryProducts(CmsFilteringNavigator nav, SectionContext actualSectionContext, SectionContext mergedSectionContext) {
+        List<SectionContext> childSectionContexts = actualSectionContext.getSectionContexts();
+        if (childSectionContexts != null) {
+            for (SectionContext childSectionContext : childSectionContexts) {
+                List<FilteringProductItem> productItems = childSectionContext.getProductItems();
+                if (productItems != null) {
+                    mergedSectionContext.getProductItems().addAll(productItems);
+                }
+                if (nav.isAggregateCategories()) {
+                    collectCategoryProducts(nav, childSectionContext, mergedSectionContext);
+                }
+            }
+        }
+    }
+
+    private boolean isCategoryAggregationApplicable(CmsFilteringNavigator nav, FDSessionUser user, ContentNodeModel contentNodeModel) {
+        boolean isAggregationFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.browseaggregatedcategories1_0, nav.getRequestCookies(), user);
+        boolean containsCategoryProperties = FDStoreProperties.getBrowseAggregatedCategories().contains(contentNodeModel.getContentKey().getEncoded());
+        return (isAggregationFeatureActive && containsCategoryProperties) || nav.isAggregateCategories();
     }
 
     private boolean checkWineDepartment(NavigationModel navigationModel) {

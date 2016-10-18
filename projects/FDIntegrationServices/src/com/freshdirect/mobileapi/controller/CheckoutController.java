@@ -539,9 +539,12 @@ public class CheckoutController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
     	    	
     	Checkout checkout = new Checkout(user);
-    	
-        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
-                .getType()));
+    	ResultBundle resultBundle = null;
+    	 if (isCheckLoginStatusEnable(request)) {
+    	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
+    	 } else {
+    	     resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
+    	 }
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         
@@ -556,7 +559,6 @@ public class CheckoutController extends BaseController {
 
             if (isCheckLoginStatusEnable(request)) {
                 CMSPageRequest pageRequest = new CMSPageRequest();
-                pageRequest.setRequestedDate(new Date());
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
                 DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
                 populateHomePages(user, pageRequest, pageResponse, request);
@@ -1417,7 +1419,6 @@ public class CheckoutController extends BaseController {
     private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
         final boolean isWebRequest = isCheckLoginStatusEnable(request);
         final Checkout checkout = new Checkout(user);
-
         SubmitOrderExResult message = new SubmitOrderExResult();
 
         final FDUserI fdUser = user.getFDSessionUser();

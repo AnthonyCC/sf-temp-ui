@@ -1,26 +1,16 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -30,6 +20,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.UserAccountUpdateRequest;
+import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse.ResultCode;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -38,21 +29,24 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 
 public class UserController extends BaseController {
 
-	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
-	public static final String ACTION_UPDATE_USER = "updateUser";
-	public static final String ACTION_UPDATE_USER_ACCOUNT = "updateUserAccount"; //FDIP-1062  modified to updateUserAccount from updateUser
-	public static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
-	public static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
-	public static final String ACTION_USER_RESERVE_DELIVERY_SLOT = "reserveDeliveryTimeSlot";
-	public static final String ACTION_USER_GET_NAME = "getUserName";
-	public static final String ACTION_USER_SET_NAME = "setUserName";
+    private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
+
+	private static final String ACTION_UPDATE_USER = "updateUser";
+	private static final String ACTION_UPDATE_USER_ACCOUNT = "updateUserAccount"; //FDIP-1062  modified to updateUserAccount from updateUser
+	private static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
+	private static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
+	private static final String ACTION_USER_RESERVE_DELIVERY_SLOT = "reserveDeliveryTimeSlot";
+	private static final String ACTION_USER_GET_NAME = "getUserName";
+	private static final String ACTION_USER_SET_NAME = "setUserName";
+	private static final String USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE = "UserId and Password both empty nothing is to change";
 
 	protected boolean validateUser() {
 		return false;
@@ -86,63 +80,66 @@ public class UserController extends BaseController {
 			
 		}
 		//JIRA FD-iPad FDIP-1062
-		else if( ACTION_UPDATE_USER_ACCOUNT.equals(action))
-		{
-			UserAccountUpdateResponse responseObject = new UserAccountUpdateResponse();
-			try
-			{
-				//Check if a session exists and user is logged in if yes then proceed
-				if(user==null){
-					responseObject.setResult(ResultCode.USER_NOT_LOGGED_IN);
-				} else {
-					
-					UserAccountUpdateRequest uau = parseRequestObject(request, response, UserAccountUpdateRequest.class);
-					//Check if both new userId and new Password Are empty
-					if((uau.getNewPassword()==null||uau.getNewPassword().isEmpty())&&(uau.getNewUserName()==null || uau.getNewUserName().isEmpty())){
-						LOGGER.error("UserId and Password both empty noting is to change");
-						responseObject.setResult(ResultCode.BOTH_USERNAME_PASSWORD_EMPTY);
-					} else{
-						performUserAccountUpdate(request.getSession(), uau, user);
-						responseObject.setResult(ResultCode.OK);
-					}
-				}
-			}
-			catch(JsonException je )
-			{
-				responseObject.setResult(ResultCode.REQUEST_FORMAT_ERROR);
-			}
-			catch (ErpInvalidPasswordException e)
-			{
-				responseObject.setResult(ResultCode.INVALID_PASSWORD_ERROR);
-			}
-			catch (ErpDuplicateUserIdException e)
-			{
-				responseObject.setResult(ResultCode.USERIDALREADYTAKEN);
-			}
-			catch (FDActionNotAllowedException e)
-			{
-				responseObject.setResult(ResultCode.INVALID_PASSWORD_ERROR);
-			}
-
-			
-			ObjectMapper om = new ObjectMapper();
-			String jsonresponse;
-			try
-			{
-				jsonresponse = om.writeValueAsString(responseObject);
-				PrintWriter pw = response.getWriter();
-				pw.write(jsonresponse);
-				pw.flush();
-			}
-			catch (JsonProcessingException e)
-			{
-				response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-			}
-			catch (IOException e)
-			{
-				response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-			}
-		}
+        else if (ACTION_UPDATE_USER_ACCOUNT.equals(action)) {
+            UserAccountUpdateRequest uau = parseRequestObject(request, response, UserAccountUpdateRequest.class);
+            if (isCheckLoginStatusEnable(request)) {
+                MessageResponse messageResponse = new MessageResponse();
+                if ((uau.getNewPassword() == null || uau.getNewPassword().isEmpty()) && (uau.getNewUserName() == null || uau.getNewUserName().isEmpty())) {
+                    messageResponse.setFailureMessage(USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE);
+                    LOGGER.error(USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE);
+                } else {
+                    if (user.isLoggedIn()) {
+                        try {
+                            performUserAccountUpdate(request.getSession(), uau, user);
+                            request.getSession().removeAttribute(SessionName.USER);
+                            user = getUser(request, response);
+                        } catch (FDAuthenticationException e) {
+                            messageResponse.setFailureMessage(e.getMessage());
+                            LOGGER.error(e.getMessage());
+                        } catch (ErpInvalidPasswordException e) {
+                            messageResponse.setFailureMessage(e.getMessage());
+                            LOGGER.error(e.getMessage());
+                        } catch (ErpDuplicateUserIdException e) {
+                            messageResponse.setFailureMessage(e.getMessage());
+                            LOGGER.error(e.getMessage());
+                        } catch (FDActionNotAllowedException e) {
+                            messageResponse.setFailureMessage(e.getMessage());
+                            LOGGER.error(e.getMessage());
+                        }
+                    } else {
+                        messageResponse.setFailureMessage("User is not logged in");
+                        LOGGER.error("User is not logged in");
+                    }
+                }
+                populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
+                setResponseMessage(model, messageResponse, user);
+                return model;
+            } else {
+                UserAccountUpdateResponse userResponse = new UserAccountUpdateResponse();
+                // Check if a session exists and user is logged in if yes then proceed
+                if (user == null) {
+                    userResponse.setResult(ResultCode.USER_NOT_LOGGED_IN);
+                } else {
+                    // Check if both new userId and new password are empty
+                    if ((uau.getNewPassword() == null || uau.getNewPassword().isEmpty()) && (uau.getNewUserName() == null || uau.getNewUserName().isEmpty())) {
+                        LOGGER.error(USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE);
+                        userResponse.setResult(ResultCode.BOTH_USERNAME_PASSWORD_EMPTY);
+                    } else {
+                        try {
+                            performUserAccountUpdate(request.getSession(), uau, user);
+                            userResponse.setResult(ResultCode.OK);
+                        } catch (ErpInvalidPasswordException e) {
+                            userResponse.setResult(ResultCode.INVALID_PASSWORD_ERROR);
+                        } catch (ErpDuplicateUserIdException e) {
+                            userResponse.setResult(ResultCode.USERIDALREADYTAKEN);
+                        } catch (FDActionNotAllowedException e) {
+                            userResponse.setResult(ResultCode.INVALID_PASSWORD_ERROR);
+                        }
+                    }
+                }
+                setResponseMessage(model, userResponse, user);
+            }
+        }
 		else if (ACTION_UPDATE_USER_ADDRESS.equals(action)) {
 //        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
 //            model = addDeliveryAddress(model, user, requestMessage, request);
@@ -198,40 +195,28 @@ public class UserController extends BaseController {
 		return model;
 	}
 
-    protected <T> T parseRequestObject(HttpServletRequest request, HttpServletResponse response, Class<T> valueType) throws JsonException {
-        try {
-            return getMapper().readValue(getPostData(request, response), valueType);
-        } catch (JsonGenerationException e) {
-            throw new JsonException(e);
-        } catch (JsonMappingException e) {
-            throw new JsonException(e);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
-    }
-    
-    private void performUserUpdate( SessionUser UserObject, HttpServletRequest request )
+    private void performUserUpdate( SessionUser user, HttpServletRequest request )
     {
-    	UserUpdater updater = new UserUpdater( UserObject.getFDSessionUser(), request );
+    	UserUpdater updater = new UserUpdater();
     	updater.execute();
     }
     
-    private void performUserAccountUpdate( HttpSession Session, UserAccountUpdateRequest UAU, SessionUser user )
+    private void performUserAccountUpdate( HttpSession session, UserAccountUpdateRequest userRequest, SessionUser user )
     		throws FDAuthenticationException, FDResourceException, ErpInvalidPasswordException, ErpDuplicateUserIdException, FDActionNotAllowedException
     {
-    	String oldUserID = UAU.getOldUserName();
-    	String newUserID = UAU.getNewUserName();
-    	String oldPW = UAU.getOldPassword();
-    	String newPW = UAU.getNewPassword();
+    	String oldUserID = userRequest.getOldUserName();
+    	String newUserID = userRequest.getNewUserName();
+    	String oldPW = userRequest.getOldPassword();
+    	String newPW = userRequest.getNewPassword();
 
 		//Verify user
     	String sessionUserId = user.getUsername();
     	
-		FDIdentity FDID = FDCustomerManager.login(oldUserID, oldPW);
+		FDIdentity identity = FDCustomerManager.login(oldUserID, oldPW);
 		
-		if( FDID == null || !oldUserID.equalsIgnoreCase(sessionUserId) )	//Not sure if this could happen, its an edge case
+		if( identity == null || !oldUserID.equalsIgnoreCase(sessionUserId) )	//Not sure if this could happen, its an edge case
 		{
-			throw new FDAuthenticationException();
+			throw new FDAuthenticationException("Login user id is not equal with old user id");
 		}
 		
 		/*
@@ -241,15 +226,12 @@ public class UserController extends BaseController {
 		 * event that a follow-on call has to be made.
 		 */
 
-		//Adapted from AccountActivityUtil:
-		FDSessionUser currentUser = (FDSessionUser) Session.getAttribute(SessionName.USER);
-		EnumEStoreId eStore=currentUser.getUserContext().getStoreContext()!=null?currentUser.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
-		FDActionInfo info = new FDActionInfo(eStore,EnumTransactionSource.IPHONE_WEBSITE, FDID, "CUSTOMER", "", null, (currentUser!=null)?currentUser.getPrimaryKey():null);
+		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDActionInfo aInfo = AccountActivityUtil.getActionInfo(session);
 
-		
 		//Update the user's password
 		if(newPW!=null && !newPW.isEmpty()){
-			FDCustomerManager.changePassword(info, oldUserID, newPW);
+			FDCustomerManager.changePassword(aInfo, oldUserID, newPW);
 		} else {
 			LOGGER.info("Password Not being Changed.");
 		}
@@ -259,23 +241,23 @@ public class UserController extends BaseController {
 			if(currentUser.isVoucherHolder()){
 				throw new FDActionNotAllowedException("This account is not enabled to change username.");
 			}
-			FDCustomerManager.updateUserId(info, newUserID);
+			FDCustomerManager.updateUserId(aInfo, newUserID);
 		} else {
 			LOGGER.info("UserId not being Changed ");
 		}
     }
     
-    private void performUserAddressUpdate( UpdateUserAddressRequest UUAR )
+    private void performUserAddressUpdate( UpdateUserAddressRequest uuar )
     {
     	
     }
     
-    private void performUserPaymentMethodUpdate( UpdateUserPaymentMethodRequest UUPMR )
+    private void performUserPaymentMethodUpdate( UpdateUserPaymentMethodRequest uumr )
     {
     	
     }
     
-    private void performUserReserveDeliveryTimeSlot( UpdateUserDeliveryTimeSlotrequest UUPMR )
+    private void performUserReserveDeliveryTimeSlot( UpdateUserDeliveryTimeSlotrequest uupmr )
     {
     	
     }
@@ -334,15 +316,6 @@ public class UserController extends BaseController {
     
     private class UserUpdater extends LocationHandlerTag
     {
-    	private FDSessionUser user;
-    	private HttpServletRequest request;
-    
-    	public UserUpdater( FDSessionUser User, HttpServletRequest Request )
-    	{
-    		user = User;
-    		request = Request;
-    	}
-    	
     	public void execute()
     	{
     		super.setAction("futureZoneNotification");	//set the action to perform

@@ -47,6 +47,7 @@ public class LoggedIn extends Message {
     private boolean anonymousAddressSetFromAcc;
     private String plantId;
     private String mobileNumber;
+    private List<String> providers;
 
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
@@ -238,4 +239,11 @@ public class LoggedIn extends Message {
         this.mobileNumber = mobileNumber;
     }
 
+    public List<String> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<String> providers) {
+        this.providers = providers;
+    }
 }

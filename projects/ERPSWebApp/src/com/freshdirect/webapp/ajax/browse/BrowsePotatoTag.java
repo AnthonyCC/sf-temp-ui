@@ -58,7 +58,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				nav.parseFilteringFlowType(request);
 			}
 			
-			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(nav, user);
+			final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, user);
 			
 			ctx.setAttribute(name, DataPotatoField.digBrowse(result));
 		

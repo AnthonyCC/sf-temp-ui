@@ -178,7 +178,7 @@ public class HomeController extends BaseController {
         	requestMessage.setCategory(cat.getId());
         	requestMessage.setPage(DEFAULT_PAGE);
         	requestMessage.setMax(DEFAULT_MAX);
-        	BrowseResult res = (BrowseResult) BrowseUtil.getCategories(requestMessage, user, request, false);
+        	BrowseResult res = BrowseUtil.getCategories(requestMessage, user, request);
         	FeaturedCategory featured = new FeaturedCategory();
         	cat.setNoOfProducts(res.getProducts().size());
         	featured.setCategory(cat);

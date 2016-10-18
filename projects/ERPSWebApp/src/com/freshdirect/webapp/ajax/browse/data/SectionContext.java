@@ -19,9 +19,6 @@ import com.freshdirect.webapp.ajax.product.data.RecipeData;
 
 public class SectionContext extends SectionData {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2762428822897828535L;
 	private static final Logger LOGGER = LoggerFactory.getInstance( SectionContext.class );
 	

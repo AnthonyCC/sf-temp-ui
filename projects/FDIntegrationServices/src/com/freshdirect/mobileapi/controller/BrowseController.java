@@ -1,15 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,14 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
-import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
@@ -39,8 +26,8 @@ import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
-import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.DepartmentSection;
 import com.freshdirect.mobileapi.model.FDGroup;
@@ -50,10 +37,6 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
 
-/**
- * @author Sivachandar
- *
- */
 public class BrowseController extends BaseController {
 
 	private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(BrowseController.class);
@@ -73,18 +56,16 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
-	private static final String FILTER_KEY_BRANDS = "brands";
-    private static final String FILTER_KEY_TAGS = "tags";
 
     @Override
 	protected boolean validateUser() {
 		return false;
 	}
 
-    public void addSections(DepartmentModel storeDepartment, Department result, boolean isFDX) {
+    public void addSections(SessionUser user, DepartmentModel storeDepartment, Department result, boolean isExtraResponse) {
     	//Department sections are added here
     	//Call BrowseUtil to populate all the categories.
-	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(storeDepartment, isFDX);
+	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(user, storeDepartment, isExtraResponse);
 	   result.setSections(departmentSections);
     }
 
@@ -95,47 +76,53 @@ public class BrowseController extends BaseController {
             SessionUser user) throws FDException, ServiceException, JsonException {
     	String postData = getPostData(request, response);
     	long startTime=System.currentTimeMillis();
-    	BrowseQuery requestMessage = null;
+    	LOG.debug("BrowseController PostData received: [" + postData + "]");
 
-        LOG.debug("BrowseController PostData received: [" + postData + "]");
+        if (isCheckLoginStatusEnable(request)) {
+            if (ACTION_GET_CATEGORIES.equals(action)) {
+                BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
+                populateResponseWithEnabledAdditionsForWebClient(user, res, request, null);
+                setResponseMessage(model, res, user);
+                long endTime = System.currentTimeMillis();
+                LOG.debug(((endTime - startTime) / 1000) + " seconds");
+                return model;
+            }
+        }
+
+        BrowseQuery requestMessage = null;
         if (StringUtils.isNotEmpty(postData)) {
             requestMessage = parseRequestObject(request, response, BrowseQuery.class);
         }
-    	if (user == null && requestMessage!=null) {
-    		user = fakeUser(request.getSession(),requestMessage);
-    	} else if (user == null) {
-    		user=fakeUser(request.getSession());
-    	}
+        if (user == null && requestMessage != null) {
+            user = fakeUser(request.getSession(), requestMessage);
+        } else if (user == null) {
+            user = fakeUser(request.getSession());
+        }
 
     	// Retrieving any possible payload
         
         BrowseResult result = new BrowseResult();
         
         if(ACTION_NAVIGATION.equals(action)) {
-        	
         	GlobalNavResult res = new GlobalNavResult();
         	StoreModel store = ContentFactory.getInstance().getStore();
+        	boolean isExtraResponse = isCheckLoginStatusEnable(request);
         	//DepartmentNameComparator departmentNameComparator = new DepartmentNameComparator();
-        	
         	List<Department> departments = new ArrayList<Department>();
         	Department dpt = null;
 	           if(store != null) {
 	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
-	        	 
-	        	   
 	        	   if(storeDepartments != null) {
-	        		  
 		        	   for(DepartmentModel storeDepartment : storeDepartments) {
 		        		   if(storeDepartment.getContentKey() != null
 		        				   && !storeDepartment.isHidden()
 		        				   && !storeDepartment.isHideIphone()) {
 		        			   //Add logic to populate departmentSections
 		        			   dpt = Department.wrap(storeDepartment);
-		        			   addSections(storeDepartment, dpt, store.getContentName().equals("FDX"));
-		        			   departments.add(dpt);		        			   
+		        			   addSections(user, storeDepartment, dpt, isExtraResponse);
+		        			   departments.add(dpt);
 		        		   }
 		        	   }
-		        	   
 	        	   }
 	           }
 	       /* if(store!=null && store.getContentKey()!=null && store.getContentKey().getId()!=null && store.getContentKey().getId().equals(MobileApiProperties.getStoreId())) {
@@ -185,9 +172,7 @@ public class BrowseController extends BaseController {
 	        	
 	        	
             } else if (ACTION_GET_CATEGORIES.equals(action) || ACTION_GET_CATEGORYCONTENT.equals(action) || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-                final boolean isWebRequest = isCheckLoginStatusEnable(request);
-                Message res = BrowseUtil.getCategories(requestMessage, user, request, isWebRequest);
-                populateResponseWithEnabledAdditionsForWebClient(user, res, request, null);
+                Message res = BrowseUtil.getCategories(requestMessage, user, request);
                 setResponseMessage(model, res, user);
                 long endTime = System.currentTimeMillis();
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
@@ -298,163 +283,5 @@ public class BrowseController extends BaseController {
     	LOG.debug(((endTime-startTime)/1000)+" seconds");
         return model;
     }
-    
-    private class NameComparator implements Comparator<Category> {
-
-		@Override
-		public int compare(Category o1, Category o2) {
-			return o1.getName().compareToIgnoreCase(o2.getName());
-		}
-
-	}
-    
-    //This method Splits the categories List into sublists based on sectionHeader and sorts each alphabetically
-    private List<Category> customizeCaegoryListForIpad(List<Category> categories, List<CategorySectionModel> categorySections){
-    	//get the size of categorySections which we will use to create number of sublists
-    	int numOfSections = categorySections.size();
-    	NameComparator nameComparator = new NameComparator();
-    	List<List<Category>> sublists = new ArrayList<List<Category>>();
-    	
-    	// Loop on the categorySections : inside loop on categories to split into sublists based on sectionHeader
-    	for(int i = 0;i < numOfSections;i++){
-    		List<Category> tempSublist = new ArrayList<Category>();
-    		for(Category cat:categories){
-    			if(cat.getSectionHeader()!=null && !cat.getSectionHeader().isEmpty() && cat.getSectionHeader().equals(categorySections.get(i).getHeadline())){
-    				tempSublist.add(cat);
-    			}
-    		}
-    		//Sort the tempSublist based on Name
-    		
-	        Collections.sort(tempSublist, nameComparator);
-    		sublists.add(tempSublist);
-    	}
-    	//For Shop By sectioHeader is null
-    	List<Category> temp = new ArrayList<Category>();
-    	for(Category cat : categories){
-    		if(cat.getSectionHeader()==null || cat.getSectionHeader().isEmpty() ){
-    			temp.add(cat);
-    		}
-    		
-    	}
-    	Collections.sort(temp, nameComparator);
-    	sublists.add(temp);
-    	//Merge the sublists into one 
-    	List<Category> sortedCategories = new ArrayList<Category>();
-    	for(List<Category> tempSortedSublist: sublists){
-    		sortedCategories.addAll(tempSortedSublist);
-    	}
-    	
-    	return sortedCategories;
-    	
-    }
-
-	private void addCategoryHeadline(
-			List<CategorySectionModel> categorySections,
-			CategoryModel categoryModel, Category category) {
-	    // Simple department
-	    if (categorySections.isEmpty()) {
-	        if (!categoryModel.isPreferenceCategory()) {
-	            final String leftNavHeader = categoryModel.getDepartment().getRegularCategoriesLeftNavBoxHeader();
-                final String sectionName = isNotBlank(leftNavHeader) ? leftNavHeader : categoryModel.getDepartment().getFullName();
-	            category.setSectionHeader(sectionName);
-	        }
-	        return;
-	    }
-	    // Department with sections
-		for (CategorySectionModel section : categorySections) {
-			for (CategoryModel c : section.getSelectedCategories()) {
-				if (c.getContentName().equals(categoryModel.getContentName())) {
-					category.setSectionHeader(section.getHeadline());
-					return;
-				}
-			}
-		}
-	}
-
-    private boolean passesFilter(ProductModel product,
-			HttpServletRequest request) {
-        return filterTags(product, request) && filterBrands(product, request);
-	}
-
-	private boolean filterBrands(ProductModel product,
-			HttpServletRequest request) {
-		String[] filterBrands = request.getParameterValues(FILTER_KEY_BRANDS);
-    	if (filterBrands == null) {
-    		return true;
-    	}
-    	for (String filter : filterBrands) {
-			for (BrandModel brand : product.getBrands()) {
-				if (StringUtils.equalsIgnoreCase(brand.getName(), filter)) return true;
-			}
-		}
-    	return false;
-	}
-
-	private boolean filterTags(ProductModel product, HttpServletRequest request) {
-		String[] filterTags = request.getParameterValues(FILTER_KEY_TAGS);
-    	if (filterTags == null) {
-    		return true;
-    	}
-    	for (String filter : filterTags) {
-			for (TagModel tag : product.getAllTags()) {
-				if (StringUtils.equalsIgnoreCase(tag.getName(), filter)) return true;
-			}
-		}
-    	return false;
-	}
-
-	private boolean isEmptyProductGrabberCategory(CategoryModel category) { //APPDEV-3659 : Treat empty Product Grabber categories the same on mobile and site
-    	if(category.getProductGrabbers() != null && category.getProductGrabbers().size() > 0 ) {
-    		List<ProductModel> tmpProducts = category.getProducts();
-    		if(tmpProducts == null || tmpProducts.size() == 0) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-
-    @SuppressWarnings("unused")
-	private List<Category> getCategories(List<CategoryModel> storeCategories) {
-    	List<Category> categories = new ArrayList<Category>();
-		if(storeCategories != null) {
-			for(CategoryModel storeCategory : storeCategories) {
-				if(storeCategory.isActive() && !storeCategory.isHideIphone()) {
-					categories.add(Category.wrap(storeCategory));
-				}
-			}
-		}
-		return categories;
-    }
-
-	private Map<String, String> getQueryMap(String url) {
-		Map<String, String> map = new HashMap<String, String>();
-		if (url != null) {
-			try {
-				URI uri = new URI(url);
-				String query = uri.getQuery();
-				if(query != null) {
-					String[] params = query.split("&");
-					if(params != null) {
-						for (String param : params) {
-							map.put(param.split("=")[0], param.split("=")[1]);
-						}
-					}
-				}
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return map;
-		}
-		return map;
-	}
-	
-	private class DepartmentNameComparator implements Comparator<Department> {
-		@Override
-		public int compare(Department o1, Department o2) {
-			return o1.getName().compareToIgnoreCase(o2.getName());
-		}
-
-	}
 
 }

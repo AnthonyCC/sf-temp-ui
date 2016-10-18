@@ -398,7 +398,12 @@ function loadStuff() {
   	$("#url").val("/user/account/update/");
   	$("#header").val('');
   	$("#payload").val('{"oldUserName" : "bogus@freshdirect.com","newUserName" : "bogus1@freshdirect.com","oldPassword" : "test","newPassword" : "test1"}');
-
+  	
+  } else if (loaddata == "updateUserAccountWeb") {
+  	$("#url").val("/user/account/update/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
+  	$("#payload").val('{"oldUserName" : "bogus@freshdirect.com","newUserName" : "bogus1@freshdirect.com","oldPassword" : "test","newPassword" : "test1"}');
+  	
   } else if(loaddata == "AccountSetUserNames") {
   	$("#url").val("/user/name/set/");
   	$("#header").val('');
@@ -535,7 +540,7 @@ function loadStuff() {
   } else if (loaddata == "SearchWeb") {
   	$("#url").val("/search/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
-  	$("#payload").val('{"query": "coffee", "page" : "1"}');
+  	$("#payload").val('{"pageType" : "SEARCH", "browseEvent" : "pageview", "searchParams" : "avocado", "activeTab" : "product"}');
 
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
@@ -1015,8 +1020,8 @@ function loadStuff() {
   	
   }  else if (loaddata == "BrowseCategoryWeb") {
   	$("#url").val("/browse/categories/");
-  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
-	var postdata = '{"category": "avc", "page" : "1", "max" : "25"}';
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
+	var postdata = '{"pageType" : "BROWSE", "id" : "mls_entrees", "pageSize" : "30", "all" : "true", "activePage" : "0", "sortBy" : "Sort_PopularityUp", "orderAsc" : "true", "activeTab" : "product", "aggregateCategories" : "true"}';
   	$("#payload").val(postdata);
 
   } else if (loaddata == "Browse2") {
@@ -1026,19 +1031,24 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
 
-  } else if (  loaddata == "globalNav") {
+  } else if (loaddata == "globalNav") {
   	$("#url").val("/browse/navigation/");
-  	$("#header").val(''); 
-  	$("#payload").val(""); 	
+  	$("#header").val('');
+  	$("#payload").val("");
 
-  } else if (  loaddata == "getAllProductsForCategory") {
+  } else if (loaddata == "globalNavWeb") {
+  	$("#url").val("/browse/navigation/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
+  	$("#payload").val("");
+
+  } else if (loaddata == "getAllProductsForCategory") {
   	$("#url").val("/browse/getproducts/");
   	$("#header").val(''); 
   	var postdata = '{"id": "bfry"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
 
-  } else if (  loaddata == "getAllProductsForCategoryEX") {
+  } else if (loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/");
   	$("#header").val(''); 
   	var postdata = '{"id": "fsh_deli_meat", "filterByIds" : ["filter_global_rwa"], "sortBy" : "PRICE"}';
@@ -1567,6 +1577,7 @@ function doStuff() {
   <option value="getCatalogKeyForCurrentSession">BROWSE - GET CATALOG KEY FOR SESSION</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
   <option value="globalNav">BROWSE - NAVIGATION</option>
+  <option value="globalNavWeb">BROWSE - NAVIGATION Web</option>
   <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
 
   <option value=""> ========== BROWSE COUPON ========== </option>
@@ -1643,6 +1654,7 @@ function doStuff() {
 
   <option value=""> ========== ACCOUNT ========== </option>
   <option value="updateUserAccount">ACCOUNT - Update User Account-email and/or password</option>
+  <option value="updateUserAccountWeb">ACCOUNT - Update User Account-email and/or password Web</option>
   <option value="AccountSetUserNames">ACCOUNT - Set User Names (F&L)</option>
   <option value="AccountGetUserNames">ACCOUNT - Get User Names (F&L)</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get Addresses</option>

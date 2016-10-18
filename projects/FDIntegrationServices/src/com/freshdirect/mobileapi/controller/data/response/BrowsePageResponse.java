@@ -1,17 +1,19 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.Map;
+
 public class BrowsePageResponse extends MessageResponse {
 
     private static final long serialVersionUID = 2442758769270937157L;
 
-    private WebBrowseResult category;
+    private Map<String, ?> browse;
 
-    public WebBrowseResult getCategory() {
-        return category;
+    public Map<String, ?> getBrowse() {
+        return browse;
     }
 
-    public void setCategory(WebBrowseResult category) {
-        this.category = category;
+    public void setBrowse(Map<String, ?> browse) {
+        this.browse = browse;
     }
 
 }

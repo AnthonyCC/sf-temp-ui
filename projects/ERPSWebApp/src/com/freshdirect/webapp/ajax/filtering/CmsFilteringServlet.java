@@ -50,7 +50,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 
         try {
             final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
-            final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser) user);
+            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
 
             writeResponseData(response, result);
         } catch (InvalidFilteringArgumentException e) {
@@ -79,7 +79,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 		try {
 			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
 			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
-			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
+			final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 
 			if ( request.getParameterMap().keySet().contains("data") ) {

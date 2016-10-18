@@ -12,9 +12,6 @@ import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 
 public class BrowseDataContext extends BrowseData {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3281468863959645884L;
 	
 	@JsonIgnore
@@ -33,16 +30,12 @@ public class BrowseDataContext extends BrowseData {
 	private FilteringFlowType pageType;
 	
     public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav) {
-		
 		List<SectionData> sections = new ArrayList<SectionData>();
 		for(SectionContext context : sectionContexts){
             sections.add(context.extractDataFromContext(user, nav));
 		}
-
 		this.getSections().setSections(sections);
-		
 		return this;
-		
 	}
 
 	public List<SectionContext> getSectionContexts() {

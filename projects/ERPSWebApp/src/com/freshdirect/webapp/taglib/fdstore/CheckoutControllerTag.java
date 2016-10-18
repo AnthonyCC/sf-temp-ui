@@ -188,7 +188,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					boolean makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null || currentUser.getMasqueradeContext()!=null && currentUser.getMasqueradeContext().getMakeGoodFromOrderId()!=null;
 					if ( !makeGoodOrder ) {
 						// Set the selected gift carts for processing.
-						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
+					    if (null != currentUser.getGiftCardList()) {
+						    currentUser.getShoppingCart().setSelectedGiftCards(currentUser.getGiftCardList().getSelectedGiftcards());
+					    }
 					}
 				}
 				

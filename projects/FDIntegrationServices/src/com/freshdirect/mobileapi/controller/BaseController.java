@@ -38,6 +38,7 @@ import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
@@ -59,6 +60,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -657,6 +659,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
         responseMessage.setMobileNumber(getMobileNumber(user));
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
+        responseMessage.setProviders(ExternalAccountManager.getConnectedProvidersByUserId(user.getUsername(), EnumExternalLoginSource.SOCIAL));
         return responseMessage;
     }
 
@@ -699,11 +702,11 @@ public abstract class BaseController extends AbstractController implements Messa
             } else {
                 fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
             }
-            // ensure usercontext update with FD/FDX values
-            fdSessionUser.resetUserContext();
-            ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
         }
+        // ensure usercontext update with FD/FDX values
+        fdSessionUser.resetUserContext();
+        ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
         return SessionUser.wrap(fdSessionUser);
     }
 
@@ -785,7 +788,9 @@ public abstract class BaseController extends AbstractController implements Messa
                 loginMessage = createLoginResponseMessage(user);
             }
 
-            messageResponse.setStatus(loginMessage.getStatus());
+            if (!Message.STATUS_FAILED.equals(messageResponse.getStatus())) {
+                messageResponse.setStatus(loginMessage.getStatus());
+            }
             ((HasLoggedInField)messageResponse).setLogin(loginMessage);
             messageResponse.setConfiguration(getConfiguration(user));
         }
