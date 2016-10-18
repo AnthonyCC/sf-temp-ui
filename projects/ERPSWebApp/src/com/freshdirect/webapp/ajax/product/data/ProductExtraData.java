@@ -403,6 +403,18 @@ public class ProductExtraData implements Serializable {
 	 */
 	protected WineData wineData;
 	
+	/* component group meal, optional products */
+	
+	protected List<ProductData> optionalProducts;
+	
+	public List<ProductData> getOptionalProducts() {
+		return optionalProducts;
+	}
+
+	public void setOptionalProducts(List<ProductData> optionalProducts) {
+		this.optionalProducts = optionalProducts;
+	}
+
 	public List<String> getAllergens() {
 		return allergens;
 	}

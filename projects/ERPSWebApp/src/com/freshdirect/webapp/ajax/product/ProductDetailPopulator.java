@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
@@ -833,7 +834,7 @@ public class ProductDetailPopulator {
 
 		// Set data
 		
-		populateSkuVariations(data, getVariations( fdProduct, currentConfig,user.getUserContext().getPricingContext() ) );
+		populateSkuVariations(data, getVariations( fdProduct, product, currentConfig,user.getUserContext().getPricingContext() ) );
 		data.setLabel( getLabel( sku ) );
 		
 		data.setSalesUnitLabel( product.getSalesUnitLabel() );
@@ -1483,11 +1484,30 @@ public class ProductDetailPopulator {
 	}
 
 
-	public static List<Variation> getVariations( FDProduct fdProd, Map<String, String> currentConfig,PricingContext pCtx ) {
+	public static List<Variation> getVariations( FDProduct fdProd, ProductModel product, Map<String, String> currentConfig,PricingContext pCtx ) {
 		FDVariation[] variations = fdProd.getVariations();
 		List<Variation> varList = new ArrayList<Variation>();
 		
-		for ( FDVariation fdVar : variations ) {
+		List<FDVariation> orderedVariationsList = new ArrayList<FDVariation>();
+		List<ComponentGroupModel> componentGroups = product.getComponentGroups();
+		
+		if (!componentGroups.isEmpty()) {
+			for (ComponentGroupModel curCompModel : componentGroups) {
+				List<String> chars = curCompModel.getCharacteristicNames();
+				
+				for (String curChar : chars) {
+					FDVariation tempVar = fdProd.getVariation(curChar);
+					orderedVariationsList.add(tempVar);
+				}
+			}
+			
+		} else {
+			for ( FDVariation fdVar : variations ) {
+				orderedVariationsList.add(fdVar);
+			}
+		}
+		
+		for ( FDVariation fdVar : orderedVariationsList ) {
 			String varName = fdVar.getName();
 			Variation var = new Variation();
 			var.setName( varName );

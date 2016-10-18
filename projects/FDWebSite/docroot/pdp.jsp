@@ -216,13 +216,26 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			}
 		%>
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
+<%
 
-<% if (productNode.getSpecialLayout()==null) { %>
+	String layoutPath = prodLayout.getLayoutPath();
+	/* leaving this, in case we need to go to this solution
+	if (mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL)) {
+		layoutPath = "/includes/product/componentGroupMeal_mobileWeb.jsp";
+	}*/
+
+	//ignore product layout and just use the default
+	boolean debugIgnoreProductLayout = request.getParameter("debugIgnoreProductLayout")!=null ? "true".equalsIgnoreCase(request.getParameter("debugIgnoreProductLayout")) : false;
+	boolean forceProductLayout = false; /* force the product to just use the normal layout instead of it's CMS-defined one */
+	if (mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL) || debugIgnoreProductLayout) {
+		forceProductLayout = true;
+	}
+	
+%>
 	<c:set value="${productPotato}" scope="request" var="productPotato" />
 	<c:set value="${productExtraPotato}" scope="request" var="productExtraPotato" />
+<% if (productNode.getSpecialLayout()==null || forceProductLayout) { %>
 	
 	<tmpl:put name='content' direct='true'>
 		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
@@ -242,15 +255,20 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			<jsp:param name="grpId" value="${ param.grpId }"/>
 			<jsp:param name="version" value="${ param.version }"/>
 		</jsp:include>
-    <script>
-      window.FreshDirect = window.FreshDirect || {};
-      window.FreshDirect.browse = window.FreshDirect.browse || {};
-      window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
-
-      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
-      window.FreshDirect.activeDraft = "${activeDraft}"
-      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
-    </script>
+	    <script>
+			window.FreshDirect = window.FreshDirect || {};
+			window.FreshDirect.browse = window.FreshDirect.browse || {};
+			window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+			
+			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>;
+			window.FreshDirect.activeDraft = "${activeDraft}";
+			window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}";
+			    
+			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
+			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
+			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+	    </script>
 	</tmpl:put>
 	
 <% } else { // special layout include
@@ -277,7 +295,22 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	<tmpl:put name='content' direct='true'>
 		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
-		<jsp:include page="<%= prodLayout.getLayoutPath() %>" flush="false"/>
+		<jsp:include page="<%= layoutPath %>" flush="false"/>
+		
+		<script>
+			window.FreshDirect = window.FreshDirect || {};
+			window.FreshDirect.browse = window.FreshDirect.browse || {};
+			window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+			
+			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+			window.FreshDirect.activeDraft = "${activeDraft}"
+			window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}";
+			
+			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
+			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
+			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+	    </script>
 	</tmpl:put>
 	</fd:FDShoppingCart>
 <% } %>

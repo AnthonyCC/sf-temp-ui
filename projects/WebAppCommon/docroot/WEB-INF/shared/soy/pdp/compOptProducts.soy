@@ -1,0 +1,20 @@
+{namespace pdp}
+
+/**
+ * @param optionalProducts
+ * @param? mobWeb
+ */
+{template .compOptProducts}
+	{if $optionalProducts and length($optionalProducts) > 0}
+		<div class="pdp-compOptProducts">
+			<div class="pdp-compOptProducts-header">Optional Great Additions:</div>
+			<div class="pdp-compOptProducts-prods">
+					{call common.productList}
+						{param productList:$optionalProducts /}
+						{param mobWeb:$mobWeb /}
+					{/call}
+			</div>
+		</div>
+	{/if}
+{/template}
+

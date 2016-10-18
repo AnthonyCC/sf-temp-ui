@@ -8,7 +8,7 @@
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
 			</div>
 			<div class="pull-right" style="margin: 5px 9px 5px 0;">
 				<div class="navbar-ecomvalue">

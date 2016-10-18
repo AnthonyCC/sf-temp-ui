@@ -43,6 +43,7 @@ import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -904,6 +905,84 @@ public class ProductExtraDataPopulator {
 			}
 				data.setGroupScaleData(gsData);
 		}
+		
+		/* component group meal component groups and optional products */
+			List<ComponentGroupModel> componentGroups = productNode.getComponentGroups();
+			List<ProductData> optProducts = new ArrayList<ProductData>();
+			List<FilteringProductItem> optProdModels =  new ArrayList<FilteringProductItem>();
+			
+			int compGrpIdx = 0;
+			for (Iterator cgItr = componentGroups.iterator(); cgItr.hasNext(); compGrpIdx++) {
+				ComponentGroupModel compGroup = (ComponentGroupModel) cgItr.next();
+
+				/* componentGroupMeal.jsp layout doesn't check preview mode */
+				if (compGroup.isUnavailable() && !(ContentFactory.getInstance().getPreviewMode())) continue;
+
+				//  dont show this component group stuff if it is for popup only 
+				if (compGroup.isShowInPopupOnly()) continue;
+				
+				if (compGroup.isShowOptions()) {
+					for (ProductModel pm : compGroup.getOptionalProducts()) {
+						FilteringProductItem fpt = new FilteringProductItem(pm);
+						optProdModels.add(fpt);
+					}
+
+					for (FilteringProductItem fpt : optProdModels )	{
+						
+						ProductModel productModel = fpt.getProductModel();
+						
+						ProductData pd = new ProductData();
+						SkuModel skuModel = null;
+	
+						if (!(productModel instanceof ProductModelPricingAdapter)) {
+							// wrap it into a pricing adapter if naked
+							productModel = ProductPricingFactory.getInstance()
+									.getPricingAdapter(productModel,
+									        user.getUserContext().getPricingContext());
+						}
+	
+						if (skuModel == null) {
+							skuModel = productModel.getDefaultSku();
+						}
+						//String skuCode = skuModel.getSkuCode();
+	
+						try {
+							if(skuModel==null) {continue;}
+							
+							FDProductInfo productInfo_fam = skuModel.getProductInfo();
+							FDProduct fdProduct = skuModel.getProduct();
+	
+							PriceCalculator priceCalculator = productModel.getPriceCalculator();
+	
+							ProductDetailPopulator.populateBasicProductData(pd, user, productModel);
+							
+							ProductDetailPopulator.populateProductData(pd, user,
+									productModel, skuModel, fdProduct, priceCalculator, null, true, true);
+							ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator, user);
+	
+							try {
+								ProductDetailPopulator.populateSkuData(pd, user, productModel, skuModel, fdProduct);
+							} catch (FDSkuNotFoundException e) {
+								LOG.error("Failed to populate sku data", e);
+							} catch (HttpErrorResponse e) {
+								LOG.error("Failed to populate sku data", e);
+							}
+	
+							ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
+	
+						} catch (FDSkuNotFoundException e) {
+							LOG.warn("Sku not found: " +pd.getSkuCode(), e);
+						}
+						
+						optProducts.add(pd);
+					}
+				}
+			}
+
+			data.setOptionalProducts(optProducts);
+			
+		/* component group meal component groups and optional products */
+		
 		
 		/* placeholder for product family products */
 		if(FDStoreProperties.isProductFamilyEnabled())

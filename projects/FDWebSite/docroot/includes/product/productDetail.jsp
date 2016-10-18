@@ -29,18 +29,41 @@
 	ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId"));
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 %>
+	    <script>
+			window.FreshDirect = window.FreshDirect || {};
+			window.FreshDirect.browse = window.FreshDirect.browse || {};
+			window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+			
+			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+			window.FreshDirect.activeDraft = "${activeDraft}"
+			window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}";
+			    
+			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
+			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
+			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+	    </script>
 <script>
 	var FreshDirect = FreshDirect || {};
 	FreshDirect.pdp = FreshDirect.pdp || {};
+	FreshDirect.pdp.data = FreshDirect.pdp.data || {};
 	
-	productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-	productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
-	images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
-	evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
-	xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
+	/* are these used? if not, remove and use name-spaced versions */
+		productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+		productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+		images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
+		evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
+		xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
 	
 	FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>;
 	FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
+	
+	FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+	FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+
+	FreshDirect.pdp.images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
+	FreshDirect.pdp.evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
+	FreshDirect.pdp.xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
 </script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
@@ -85,27 +108,6 @@
 				</c:if>
 			</div>
 			
-			<div class="prodDetail-grp"><%-- group items --%>
-				<div class="pdp-group-prods">
-					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-				</div>
-			</div>
-			
-			
-			<% if (false) { /* excluding these for now */ %>
-				<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
-					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-						<%-- don't show evenBetter if we're in group scale context --%>
-					<c:if test="${empty param.grpId}">
-						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-						<c:if test="${empty productExtraPotato.familyProducts}">
-							<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
-						</c:if>	
-					</c:if>
-					<soy:render template="pdp.likethat" data="${xsell}" />
-				</div>
-			<% } %>
-			
 			<div class="prodDetail-atc"><%-- coupon/group atc controls --%>
 				<c:if test="${productPotato.available}">
 					<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
@@ -131,6 +133,21 @@
 						</div>
 					</form>
 				</c:if>
+			</div>
+			
+			<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
+				<% if (false) { /* excluding these for now */ %>
+					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+						<%-- don't show evenBetter if we're in group scale context --%>
+					<c:if test="${empty param.grpId}">
+						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+						<c:if test="${empty productExtraPotato.familyProducts}">
+							<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
+						</c:if>	
+					</c:if>
+					<soy:render template="pdp.likethat" data="${xsell}" />
+				<% } %>
+				<soy:render template="pdp.compOptProducts" data="${productExtraPotato}" />
 			</div>
 			
 			<div class="prodDetail-accords"><%-- accordions --%>
