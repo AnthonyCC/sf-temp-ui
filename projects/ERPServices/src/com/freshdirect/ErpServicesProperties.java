@@ -483,7 +483,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HL_CONNECTION_TIMEOUT_PERIOD, "10");//secs
 		
 		defaults.put(PROP_SAP_BAPI_UNATTENDED_DELIVERY,"false");
-		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,200);
+		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,600);
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);

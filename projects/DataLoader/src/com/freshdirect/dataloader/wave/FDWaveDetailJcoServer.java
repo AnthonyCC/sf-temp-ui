@@ -70,9 +70,12 @@ public class FDWaveDetailJcoServer extends FdSapServer
 		tableMetaDataList.add(new TableMetaData("BSTNK", JCoMetaData.TYPE_CHAR, 20, 0, "WebOrder No"));
 		tableMetaDataList.add(new TableMetaData("VBELN", JCoMetaData.TYPE_CHAR, 10, 0, "Sap Order No"));
 		tableMetaDataList.add(new TableMetaData("ZZSWAVENO", JCoMetaData.TYPE_NUM, 6, 0, "Wave No"));
-		tableMetaDataList.add(new TableMetaData("ZZTRKNO", JCoMetaData.TYPE_NUM, 6, 0, "Truck No"));
-		tableMetaDataList.add(new TableMetaData("ZZSTOPSEQ", JCoMetaData.TYPE_CHAR, 5, 0, "Stop No"));
+		// Start APPDEV-5319  As part of HRy SAP is no more going to pass below attributes 
+		
+		//tableMetaDataList.add(new TableMetaData("ZZTRKNO", JCoMetaData.TYPE_NUM, 6, 0, "Truck No"));
+		//tableMetaDataList.add(new TableMetaData("ZZSTOPSEQ", JCoMetaData.TYPE_CHAR, 5, 0, "Stop No"));
 
+		//END APPDEV-5319
 		createTableRecord(metaWaveList, tableMetaDataList);
 		metaWaveList.lock();
 
@@ -126,16 +129,20 @@ public class FDWaveDetailJcoServer extends FdSapServer
 						final String webOrderNo = waveTable.getString("BSTNK");
 						final String sapOrderNo = waveTable.getString("VBELN");
 						final String waveNo = leftPad(String.valueOf(waveTable.getInt("ZZSWAVENO")), 6, '0');
-						final String truckNumber = leftPad(String.valueOf(waveTable.getInt("ZZTRKNO")), 6, '0');
-						final String stopNo = leftPad(waveTable.getString("ZZSTOPSEQ"), 5, '0');
-
+						// Start APPDEV-5319  As part of HRy SAP is no more going to pass below attributes 
+						
+						/*final String truckNumber = leftPad(String.valueOf(waveTable.getInt("ZZTRKNO")), 6, '0');
+						final String stopNo = leftPad(waveTable.getString("ZZSTOPSEQ"), 5, '0'); */
+                       
+						//END APPDEV-5319
+						
 						if (LOG.isDebugEnabled())
 						{
 							LOG.debug("Got Wave Record For WebOrderNo:" + webOrderNo + "\t SapOrderNo:" + sapOrderNo + "\t Wave Number:"
-									+ waveNo + "\t Route Number:" + truckNumber + "\t Stop Number:" + stopNo);
+									+ waveNo + "\t Route Number:");
 						}
 
-						waveEntries.put(webOrderNo, new ErpShippingInfo(waveNo, truckNumber, stopNo, 0, 0, 0));
+						waveEntries.put(webOrderNo, new ErpShippingInfo(waveNo, null, null, 0, 0, 0));
 						waveTable.nextRow();
 					}
 

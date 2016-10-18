@@ -150,17 +150,23 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("BILLING_TYPE", JCoMetaData.TYPE_CHAR, 4, "Billing Type"));
 		tableMetaDataList.add(new TableMetaData("WEB_ORD", JCoMetaData.TYPE_CHAR, 20,"Customer purchase order number/Web Order "));
 		tableMetaDataList.add(new TableMetaData("ORDER_STATUS", JCoMetaData.TYPE_CHAR, 1, "Order Status"));
-		tableMetaDataList.add(new TableMetaData("ZZTRKNO", JCoMetaData.TYPE_CHAR, 6, "Truck Number"));
 		tableMetaDataList.add(new TableMetaData("INV_TOTAL", JCoMetaData.TYPE_CHAR, 15,"Invoice total before applying credit"));
 		tableMetaDataList.add(new TableMetaData("INV_TAX", JCoMetaData.TYPE_CHAR, 15, "Invoice Tax amount"));
 		tableMetaDataList.add(new TableMetaData("INV_BOT_DEP", JCoMetaData.TYPE_CHAR, 15, "Bottle Deposit"));
 		tableMetaDataList.add(new TableMetaData("INV_SUB_TOTAL", JCoMetaData.TYPE_CHAR, 15, "Invoice Subtotal"));
 		tableMetaDataList.add(new TableMetaData("CREDIT_AMOUNT", JCoMetaData.TYPE_CHAR, 15, "Credit Amount"));
 		tableMetaDataList.add(new TableMetaData("INV_GROSS", JCoMetaData.TYPE_CHAR, 15,"Gross amount after applying credit"));
+		
+		// Start APPDEV-5319  As part of HRy SAP is no more going to pass below attributes 
+		
+		/* tableMetaDataList.add(new TableMetaData("ZZTRKNO", JCoMetaData.TYPE_CHAR, 6, "Truck Number"));
 		tableMetaDataList.add(new TableMetaData("ZZSTOPSEQ", JCoMetaData.TYPE_CHAR, 5, "Stop Sequence"));
 		tableMetaDataList.add(new TableMetaData("REG_CRTN", JCoMetaData.TYPE_CHAR, 3, "Regular cartons"));
 		tableMetaDataList.add(new TableMetaData("FRZ_CRTN", JCoMetaData.TYPE_CHAR, 3, "Freezer cartons"));
-		tableMetaDataList.add(new TableMetaData("ALC_CRTN", JCoMetaData.TYPE_CHAR, 3, "Alcohol cartons"));
+		tableMetaDataList.add(new TableMetaData("ALC_CRTN", JCoMetaData.TYPE_CHAR, 3, "Alcohol cartons")); */
+		
+		//End APPDEV-5319
+		
 		tableMetaDataList.add(new TableMetaData("HDR_DISCOUNT", JCoMetaData.TYPE_CHAR, 15,"Actual discount at header level"));
 		tableMetaDataList.add(new TableMetaData("ZZBMREF", JCoMetaData.TYPE_CHAR, 20, "Credit Memo Web Reference No."));
 		tableMetaDataList.add(new TableMetaData("CREDIT_MEMO_NO", JCoMetaData.TYPE_CHAR, 10, "Credit memo No."));
@@ -383,10 +389,14 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 							continue;
 						}*/
 
-						ErpShippingInfo shippingInfo = new ErpShippingInfo(param.getTruckNumber(),
+						// START APPDEV-5319 : SAP is not going to pass below attributes as part of HRY
+						/* ErpShippingInfo shippingInfo =  new ErpShippingInfo(param.getTruckNumber(),
 								param.getStopSequence(), param.getRegularCartonCnt(), param.getFreezerCartonCnt(),
-								param.getAlcoholCartonCnt());
-
+								param.getAlcoholCartonCnt()); */
+                       
+						ErpShippingInfo shippingInfo = null;
+						// End APPDEV-5319
+						
 						ErpInvoiceModel invoice = new ErpInvoiceModel();
 
 						// 1. set HEADER info
@@ -560,13 +570,15 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 
 		param.setSalesOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ORDER_NO")));
 
-		param.setTruckNumber(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZTRKNO")));
+		// Start APPDEV-5319  As part of HRy SAP is no more going to pass below attributes 
+		
+		/* param.setTruckNumber(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZTRKNO")));
 		param.setStopSequence(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZSTOPSEQ")));
-
 		param.setRegularCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("REG_CRTN")));
 		param.setFreezerCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("FRZ_CRTN")));
-		param.setAlcoholCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("ALC_CRTN")));
-
+		param.setAlcoholCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("ALC_CRTN"))); */
+        
+		//End APPDEV-5319
 		param.setHeaderDiscount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("HDR_DISCOUNT")));
 
 		/*param.setCreditWebReferenceNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZBMREF")));
