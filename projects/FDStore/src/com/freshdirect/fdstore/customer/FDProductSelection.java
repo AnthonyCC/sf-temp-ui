@@ -822,11 +822,13 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected String getPickingPlantId(){
 		String pickingPlantId = null;
 		FDProductInfo prodInfo = this.lookupFDProductInfo();
-		if(null != prodInfo && null != getUserContext()){
-			pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
-		}
-		if(null == pickingPlantId){
-			pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+		if(null != getUserContext()){
+			if(null != prodInfo){
+				pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+			}
+			if(null == pickingPlantId){
+				pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+			}
 		}
 		return pickingPlantId;		
 	}
