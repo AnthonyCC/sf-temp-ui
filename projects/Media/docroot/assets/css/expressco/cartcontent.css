@@ -906,6 +906,9 @@ label[for="dontupdatecartlines"] {
   vertical-align:top;
 }
 
+#transactionalPopup .productSamplingItem .portrait-item-atl{
+	display:none;
+}
 
 .total-masq{
   font-size:14px;
