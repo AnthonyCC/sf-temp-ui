@@ -97,15 +97,19 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 
 /**
 * @param? optionalProducts
+* @param? mobWeb
 */
 {template .bundleProductRecommendation autoescape="false"}
 {if $optionalProducts and length($optionalProducts)>0}
   {foreach $rec in $optionalProducts}
-    <p class="recommendation-title">{$rec.fullName}</p>
-    <div class="recommendation-editorial">{$rec.editorial}</div>
-    {call common.productList}
-      {param productList:$rec.optionalProducts /}
-    {/call}
+    <p class="recommendation-title{($mobWeb) ? ' pdp-optProducts-header' : ''}">{$rec.fullName}</p>
+    <div class="recommendation-editorial{($mobWeb) ? ' pdp-optProducts-editorial' : ''}">{$rec.editorial}</div>
+    <div class="{($mobWeb) ? ' pdp-optProducts-prods' : ''}">
+	    {call common.productList}
+	      {param productList:$rec.optionalProducts /}
+	      {param mobWeb:$mobWeb /}
+	    {/call}
+    </div>
   {/foreach}
 {/if}
 {/template}

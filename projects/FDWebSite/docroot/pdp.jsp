@@ -123,8 +123,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
   	<fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title='<%=title%>'/>
   </tmpl:put>
 
-
-
   <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
@@ -266,8 +264,17 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			    
 			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
 			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
-			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+			
+			window.FreshDirect.pdp.layout = {
+				'forced': '<%= forceProductLayout %>', /* param: debugIgnoreProductLayout=true */
+				'id': '<%= prodLayout.getId() %>',
+				'name': '<%= prodLayout.getName() %>'
+				<%= (productNode.getSpecialLayout()!=null) 
+					? ", 'special' : { 'id': '"+productNode.getSpecialLayout().getId()+"', 'name': '"+productNode.getSpecialLayout().getName()+"' }" 
+					: "" %>
+			};
+			window.FreshDirect.pdp.data = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.extraData = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
 	    </script>
 	</tmpl:put>
 	
@@ -307,9 +314,17 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}";
 			
 			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
-			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
-			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+			
+			window.FreshDirect.pdp.layout = {
+				'forced': '<%= forceProductLayout %>', /* param: debugIgnoreProductLayout=true */
+				'id': '<%= prodLayout.getId() %>',
+				'name': '<%= prodLayout.getName() %>'
+				<%= (productNode.getSpecialLayout()!=null) 
+					? ", 'special' : { 'id': '"+productNode.getSpecialLayout().getId()+"', 'name': '"+productNode.getSpecialLayout().getName()+"' }" 
+					: "" %>
+			};
+			window.FreshDirect.pdp.data = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.extraData = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
 	    </script>
 	</tmpl:put>
 	</fd:FDShoppingCart>

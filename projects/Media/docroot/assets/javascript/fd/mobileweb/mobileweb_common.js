@@ -1,3 +1,4 @@
+var API;
 (function ($) {
 	$(document).ready(function() {
 		/* NAV */
@@ -34,7 +35,7 @@
 			/* remove navbars */
 			$('.rem-navbar').parent('.mm-panel').addClass('mm-hasnavbar-rem');
 			
-			var API = $("#nav-menu").data( "mmenu" );
+			API = $("#nav-menu").data( "mmenu" );
 			
 			$('#navbarShow').on('click', function() {
 				API.open();
@@ -57,6 +58,40 @@
 				window.top.location = '/logout.jsp';
 			});
 			
+			API.bind( "init", function() {
+				console.log('API init event');
+			});
+			API.bind( "setSelected", function() {
+				console.log('API setSelected event');
+			});
+			API.bind( "update", function() {
+				console.log('API update event');
+			});
+			API.bind( "openPanel", function(e) {
+				console.log('API openPanel event', e);
+			});
+			API.bind( "openingPanel", function() {
+				console.log('API openingPanel event');
+			});
+			API.bind( "openedPanel", function() {
+				console.log('API openedPanel event');
+			});
+			API.bind( "closeAllPanels", function() {
+				console.log('API closeAllPanels event');
+			});
+			API.bind( "closePanel", function() {
+				console.log('API closePanel event');
+			});
+			API.bind( "closingPanel", function() {
+				console.log('API closingPanel event');
+			});
+			API.bind( "closedPanel", function() {
+				console.log('API closedPanel event');
+			});
+			
+			
+			/*$('a[href="#mm-0"]').on('click', function() {
+			});*/
 		/* PDP */
 			$jq('.pdp-ecoupon').find('.fdCoupon_data:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>')
 			$('.pdp-ecoupon').on('click', function(e) {

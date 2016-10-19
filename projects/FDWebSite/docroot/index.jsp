@@ -157,8 +157,17 @@ request.setAttribute("noyui", true);
 					        }
 						%>
 				        <div class="helpDiv"></div>
-						<span class="span-left"><%= curCat.getFullName() %></span>
-						<span class="span-right"><%= curCat.getPrimaryText() %></span>
+				        <%-- one of these two are correct, but until we have the business rule(s)... 
+							<span class="span-left"><%= curCat.getFullName() %></span>
+							<span class="span-right"><%= curCat.getPrimaryText() %></span>
+						--%>
+						<% 
+							String bannerText = curCat.getPrimaryText();
+							if ("".equals(bannerText)) {
+								bannerText = curCat.getFullName();
+							}
+						%>
+						<div class="home-page-banner-subtext"><%= bannerText %></div>
 					</div>
 				    </a>
 				<% } %>

@@ -39,32 +39,25 @@
 			window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}";
 			    
 			window.FreshDirect.pdp = window.FreshDirect.pdp || {};
-			window.FreshDirect.pdp.data = window.FreshDirect.pdp.data || {};
-			window.FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-			window.FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
-	    </script>
-<script>
-	var FreshDirect = FreshDirect || {};
-	FreshDirect.pdp = FreshDirect.pdp || {};
-	FreshDirect.pdp.data = FreshDirect.pdp.data || {};
-	
-	/* are these used? if not, remove and use name-spaced versions */
-		productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-		productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
-		images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
-		evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
-		xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
-	
-	FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>;
-	FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
-	
-	FreshDirect.pdp.data.product = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-	FreshDirect.pdp.data.productExtra = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+			
+			window.FreshDirect.pdp.data = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+			window.FreshDirect.pdp.extraData = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+			
+			FreshDirect.pdp.images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
+			FreshDirect.pdp.evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
+			FreshDirect.pdp.xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
+			FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>;
+			FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 
-	FreshDirect.pdp.images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
-	FreshDirect.pdp.evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
-	FreshDirect.pdp.xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
-</script>
+	    </script>
+		<script>
+			/* are these used? if not, remove and use name-spaced versions */
+				productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>;
+				productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+				images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
+				evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
+				xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
+		</script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
 		<fd:CmFieldDecorator/>

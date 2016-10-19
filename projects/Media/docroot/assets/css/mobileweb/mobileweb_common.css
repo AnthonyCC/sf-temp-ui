@@ -23,7 +23,7 @@ img {
 .helpDiv {
 	position: absolute;
 	height: 30px;
-	padding: 5px 10px;
+	/*padding: 5px 10px;*/
 	background: #000000;
 	opacity: 0.3;
 	width: 100%;
@@ -57,6 +57,16 @@ img {
 }
 .home-page-banner-top img, .home-page-banner img {
 	width: 100%;
+}
+.home-page-banner-subtext {
+	text-align: center;
+	color: #ffffff;
+	text-transform: normal;
+	display: inline-block;
+	position: absolute;
+	bottom: 4px;
+	width: 100%;
+	font-weight: normal;
 }
 .navbar-brand, .navbar-nav>li>a {
 	text-shadow: 0 1px 0 rgba(255,255,255,.25);
@@ -585,7 +595,8 @@ footer .copyright {
 	    content: none;
 	}
 	
-	.pdp .prodDetail h1.pdpTitle, .pdp .prodDetail h1 {
+	.pdp .prodDetail h1.pdpTitle,
+	.pdp .prodDetail h1 {
 		font-size: 1.25em;
 	}
 
@@ -816,7 +827,7 @@ footer .copyright {
 		-webkit-transform: rotate(-135deg);
 		top: 4px;
 	}
-	.pdp-compOptProducts-header {
+	.pdp-compOptProducts-header, .pdp-optProducts-header {
 	    display: block;
 	    padding: 6px 3px 6px 3px;
 	    font-size: 12px;
@@ -825,17 +836,51 @@ footer .copyright {
 		border: 1px solid #c0bebd;
 		border-bottom: none;
 	}
-	.pdp-compOptProducts-prods {
+	.pdp-compOptProducts-prods, .pdp-optProducts-prods {
 		background: #F2F0EF;
 		padding: 6px 0;
 		border: 1px solid #c0bebd;
 		border-top: 0;
 	}
-	.pdp-compOptProducts ul.products {
+	.pdp-compOptProducts ul.products, .pdp-optProducts ul.products  {
 	    margin: 32px 0 29px;
 	    padding: 0;
 	    display: table;
 	    width: 800px;
+	}
+	
+	/* PDP HOLIDAY MEAL OVERRIDES */
+	.pdp .prodDetail .thxgiving-bundle,
+	.pdp .prodDetail .thxgiving-includes,
+	.pdp .prodDetail .thxgiving-addtocart .addtocart-right.pdp-atc,
+	.pdp .prodDetail .thxgiving-addtocart .addtocart-left,
+	.pdp .prodDetail .thxgiving-images .main-image {
+		width: 100%;
+	}
+	.pdp .prodDetail .thxgiving-recommendations.pdp-optProducts li.portrait-item {
+		display: inline-block;
+	}
+	.pdp .prodDetail .thxgiving-addtocart .pdp-atc input.qty {
+		height: 40px !important; /* battle of the importants */
+	}
+	.pdp .prodDetail .pdp-optProducts-editorial {
+		border: 1px solid #c0bebd;
+		border-top: 0;
+		border-bottom: 0;
+		padding-bottom: 20px; /* toggle padding-margin so border works */
+    	margin-bottom: 0;
+	}
+	.pdp .prodDetail .thxgiving-addtocart.prodDetail-atc .quantity_minus,
+	.pdp .prodDetail .thxgiving-addtocart.prodDetail-atc .quantity_plus {
+		margin-top: 0;
+	}
+	.pdp .prodDetail .thxgiving-addtocart.prodDetail-atc .addtolist {
+		display: none;
+	}
+	.pdp .prodDetail .thxgiving-bundle-title,
+	.pdp .prodDetail .thxgiving-bundle-price {
+		font-size: 1.25em;
+		text-align: left;
 	}
 	
 	
@@ -855,13 +900,15 @@ footer .copyright {
 		clear: both;
 	}
 	.mm-page .browseContent .sectionContent ul.products,
-	.mm-page .pdp-compOptProducts ul.products {
+	.mm-page .pdp-compOptProducts ul.products,
+	.mm-page .pdp-optProducts ul.products {
 		width: 100%;
 		margin: 8px 0 8px;
 		box-sizing: border-box;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
-	.mm-page .pdp-compOptProducts ul.products li.portrait-item {
+	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
+	.mm-page .pdp-optProducts ul.products li.portrait-item {
 		width: 46%;
 		margin: 0 3% 0 1%;
 		border: 0;
@@ -869,11 +916,13 @@ footer .copyright {
 		background: #FFFFFF;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child,
-	.mm-page .pdp-compOptProducts ul.products li.portrait-item:first-child {
+	.mm-page .pdp-compOptProducts ul.products li.portrait-item:first-child,
+	.mm-page .pdp-optProducts ul.products li.portrait-item:first-child {
 		margin: 0 1% 0 3%;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:last-child,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item:last-child,
+	.mm-page .pdp-optProducts ul.products li.portrait-item:last-child,
 	.browseContent .sectionContent ul.products li.portrait-item.lastInLine {
 		padding: 0 9px 0 9px;
 		margin: 0 3% 0 1%;
@@ -882,7 +931,8 @@ footer .copyright {
 		margin: 0 1% 0 3%;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
-	.mm-page .pdp-compOptProducts ul.products li.portrait-item {
+	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
+	.mm-page .pdp-optProducts ul.products li.portrait-item {
 		max-width: none;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item form.atc{
