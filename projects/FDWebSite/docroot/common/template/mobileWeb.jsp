@@ -76,6 +76,11 @@
     			<tmpl:get name='tabs'/>
     			<!-- end : tabs -->      
   			</section>
+			    <nav class="leftnav" style="display: none;">
+			      <!-- start : leftnav -->
+			      <tmpl:get name='leftnav'/>
+			      <!-- end : leftnav -->    
+			    </nav>
 			<tmpl:get name="content" />
 	    </div><!-- content ends above here-->
 	    

@@ -119,7 +119,7 @@ var FreshDirect = FreshDirect || {};
           }));
           element.attr('data-amount', item.inCartAmount);
           if($('.mm-page').length){
-        	  product.find('.addtocart').html(element.attr('data-amount')).addClass("ATCHasItemsMobile");
+        	  product.find('button.addtocart').html(element.attr('data-amount')).addClass("ATCHasItemsMobile");
     	  }
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');

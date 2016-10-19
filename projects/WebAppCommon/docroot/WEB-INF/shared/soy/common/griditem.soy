@@ -53,6 +53,7 @@
  * @param? extraClass extra css class for items
  * @param? cmEventSource optional coremetrics event source
  * @param? showConfig show configuration and similar things for e.g. quickshop
+ * @param? mobWeb
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
@@ -131,6 +132,7 @@
   {param hookLogicBeaconImpression:$item.imageBeacon /}
   {param pricePerDefaultSalesUnit:$item.pricePerDefaultSalesUnit /}
   {param dispDefaultSalesUnit:$item.dispDefaultSalesUnit /}
+  {param mobWeb:$mobWeb /}
 {/call}
 {/template}
 
@@ -309,6 +311,7 @@
  * @param? hookLogicBeaconImpression
  * @param? pricePerDefaultSalesUnit
  * @param? dispDefaultSalesUnit
+ * @param? mobWeb
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -468,6 +471,7 @@
 			{param cmEventSource:$cmEventSource /}
 			{param listId:$listId /}
 			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
+			{param mobWeb:$mobWeb /}
 		{/call}
 		{call common.atcInCart}
 			{param amount:$inCartAmount /}
@@ -504,6 +508,7 @@
 			{call common.transactionalGridItem}
 				{param item:$relatedItem /}
 				{param extraClass:$extraClass /}
+				{param mobWeb:$mobWeb /}
 			{/call}
 		</ul>
 	{/if}
@@ -512,6 +517,7 @@
 			{call common.transactionalGridItem}
 				{param item:$replacement /}
 				{param extraClass:$extraClass /}
+				{param mobWeb:$mobWeb /}
 			{/call}
 		</ul>
 	{/if}
@@ -634,11 +640,12 @@
  * @param? cmEventSource optional coremetrics event source
  * @param? listId list id
  * @param? freeSamplePromoProduct free sample product
+ * @param? mobWeb
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
     <div class="portrait-item-controls-content">
-      {if $availabilityMessage}
+      {if $availabilityMessage and not $mobWeb}
       <div class="portrait-item-availability-message">
         {$availabilityMessage}
       </div>
@@ -672,7 +679,7 @@
           {else}
             <div class="subtotalPlaceholder"></div>
           {/if}
-          <button type="button" class="customize cssbutton cssbutton-flat orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</button>
+          <button type="button" class="customize cssbutton cssbutton-flat orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms or $mobWeb}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</button>
         {else}
           {if $quantity}
             {call common.subtotal}
@@ -686,7 +693,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
+            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms or ($mobWeb and $soldBySalesUnit) or ($mobWeb and $availabilityMessage)}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
           {/if}
         {/if}
       </div>

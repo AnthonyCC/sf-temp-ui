@@ -142,9 +142,11 @@
 				{/if}
 
 				{if $section.categories and length($section.categories) > 0}
-					{foreach $category in $section.categories}
-						{call .category data="$category" /}
-					{/foreach}
+					{if $mobWeb}<div class="sectionContentCategory">{/if}
+						{foreach $category in $section.categories}
+							{call .category data="$category" /}
+						{/foreach}
+					{if $mobWeb}</div>{/if}
 				{/if}
 			</div>
 		</section>

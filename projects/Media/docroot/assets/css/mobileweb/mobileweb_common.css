@@ -497,6 +497,13 @@ footer .copyright {
 .mm-iconpanel .mm-panel.mm-iconpanel-0.mm-subopened > .mm-subblocker {
 	opacity: 0; /* don't make hidden so touch will still close subs */
 }
+.mm-menu .mm-panel ul.mm-listview li span.glBreadcrumblink{
+	padding: 0;
+}
+.mm-menu .mm-panel ul.mm-listview li span.glBreadcrumblink a{
+	display: block;
+	padding: 10px 10px 10px 20px;	
+}
 .mm-menu .mm-navbar a, .mm-menu .mm-navbar>* { /* submenu title */
 	color: rgba(255,255,255,1);
 }
@@ -844,6 +851,9 @@ footer .copyright {
 	[data-cmeventsource="BROWSE"] .mm-page #content{
 		background: #F2F0EF;
 	}
+	[data-cmeventsource="BROWSE"] .mm-page #content .pager-holder{
+		clear: both;
+	}
 	.mm-page .browseContent .sectionContent ul.products,
 	.mm-page .pdp-compOptProducts ul.products {
 		width: 100%;
@@ -868,9 +878,15 @@ footer .copyright {
 		padding: 0 9px 0 9px;
 		margin: 0 3% 0 1%;
 	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child{
+		margin: 0 1% 0 3%;
+	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item {
 		max-width: none;
+	}
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item form.atc{
+		clear: both;
 	}
 	.mm-page .portrait-item-controls{
 		height: auto;
@@ -879,6 +895,9 @@ footer .copyright {
 		right: 4px;
 		bottom: 4px;
 		overflow: visible;
+	}
+	.mm-page .portrait-item-controls .portrait-item-controls-content{
+		display: block;
 	}
 	.mm-page .transactional .portrait-item:hover .portrait-item-controls,
 	.mm-page .portrait-item:hover .portrait-item-controls{
@@ -891,10 +910,12 @@ footer .copyright {
 	.mm-page .portrait-item-controls .addtocart .message,
 	.mm-page .atc .atc-info,
 	.mm-page .portrait-item .relatedItem,
-	.mm-page .portrait-item .subtotal{
+	.mm-page .portrait-item .subtotal,
+	.mm-page .carousels{
 		display: none;
 	}
-	.mm-page .portrait-item-controls .addtocart{
+	.mm-page .portrait-item-controls .addtocart,
+	.mm-page .portrait-item-controls .customize{
 		height: 33px;
 		width: 32px;
 		background: none;
@@ -904,6 +925,9 @@ footer .copyright {
 		padding: 0;
 		border: 0;
 	}
+	.mm-page .portrait-item-controls .customize{
+		font-size: 0;
+	}
 	.mm-page .portrait-item-controls .portrait-item-addtocart{
 		height: 33px;
 	}
@@ -911,11 +935,61 @@ footer .copyright {
 		background-image: url('/media/mobileweb/images/fd-added-32.png');
 		padding-top: 5px;
 	}
-	.mm-page .portrait-item-controls .addtocart.ATCinProgress{
+	.mm-page .portrait-item-controls .addtocart.ATCinProgress,
+	.mm-page .portrait-item-controls .customize.ATCinProgress{
 		background-image: url('/media/mobileweb/images/loader.gif');
 	}
+	.mm-page .browseContent{
+		clear: both;
+	}
+	.mm-page .browseContent .sectionContent{
+		width: 100%;
+		padding-bottom: 5px;
+	}
+	.mm-page .browseContent .sectionContentCategory{
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.mm-page .browseContent .sectionContentCategory .category{
+		position: relative;
+		width: 46%;
+		margin: 0 3% 6px 1%;
+		padding: 8px 0 45px;
+		background: #ffffff;
+		vertical-align: top;
+	}
+	.mm-page .browseContent .sectionContentCategory .category .name{
+		position: absolute;
+		bottom: 8px;
+	}
+	.mm-page .browseContent .sectionContentCategory .category:nth-child(odd){
+		margin: 0 1% 6px 3%;
+	}
+	.mm-page .browseContent section h2.last{
+		padding-top: 20px;
+	}
 	
-.DEBUG {
-	border: 1px solid #f00;
-	background-color: #fcc;
-}
+	.mm-page .browseContent .large-visual .lv-title{
+	    margin: 0 3% 32px;
+	}
+	.mm-page .browseContent .large-visual .lv-item{
+		width: 46%;
+		margin: 0 3% 6px 1%;
+		padding: 8px 0;
+		vertical-align: initial;
+		background: #ffffff;
+	}
+	.mm-page .browseContent .large-visual .lv-item:nth-of-type(odd){
+		margin: 0 1% 6px 3%;
+	}
+	.mm-page .browseContent .large-visual .pic-container{
+		width: auto;
+		text-align: center;
+	}
+	.mm-page .browseContent .large-visual .lv-item-title,
+	.mm-page .browseContent .large-visual .lv-item .lv-sub-items{
+		padding: 0 2px;
+	}
+	.mm-page .portrait-item-controls .select-wrapper{
+		display: none;
+	}

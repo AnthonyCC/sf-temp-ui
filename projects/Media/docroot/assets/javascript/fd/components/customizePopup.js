@@ -171,6 +171,9 @@ var FreshDirect = FreshDirect || {};
 
     /* go to product instead of showing customize */
     if ($(element).data('bypasscustomizepopup')) {
+      if($('.mm-page').length){
+    	  $(element).addClass("ATCinProgress");
+      }
       var $par = $(element).closest('[data-component="product-controls"]');
       if ($par.length === 0) { $par = $(element).closest('[data-component="product"]').find('[data-component="product-controls"]'); }
       if ($par) {

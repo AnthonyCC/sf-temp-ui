@@ -34,6 +34,7 @@
 * @param? fromProducts
 * @param? numProducts
 * @param productList
+* @param? mobWeb
 */
 {template .flexProductList autoescape="false"}
 {let $len: length($productList) /}
@@ -45,6 +46,7 @@
     {let $product: $productList[$fProducts + $n] /}
     {call common.transactionalGridItem}
       {param item:$product /}
+      {param mobWeb:$mobWeb /}
     {/call}
   {/for}
 </ul>
@@ -79,6 +81,7 @@
 * @param? itemPerLine
 * @param? showConfig
 * @param? isHookLogic
+* @param? mobWeb
 */
 {template .fixedProductList autoescape="false"}
 
@@ -102,6 +105,7 @@
 		          		{param item:$product /}
 		          		{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine') /}
 		          		{param showConfig: $showConfig /}
+		          		{param mobWeb:$mobWeb /}
 		        	{/call}
 	        	{/if}
       		{/if}

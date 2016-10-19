@@ -30,8 +30,11 @@ var FreshDirect = FreshDirect || {};
         	$.ajax({
         		url: '/media/editorial/site_pages/health_warning_overlay_2016.html',
         		context: this
-        	}).done(function(data) {       		        		
+        	}).done(function(data) {
         		popupContent = $('<div class="USQPopupContent"></div>').html(data).prepend('<a class="container-close USQ-close">Close</a>');
+        		if($('.mm-page').length){
+        			popupContent.addClass("mobWeb-health-warning-overlay");
+        		}
         		this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
         		this.opened = true;
         		this.container.show();
@@ -69,7 +72,9 @@ var FreshDirect = FreshDirect || {};
         }
         //hiding the background body scrollbar and adding margin with width of scrollbar, so the content will not move
         $("body").css("overflow","hidden");
-        $("body").css("margin-right","17px");
+        if(!$('.mm-page').length){
+        	$("body").css("margin-right","17px");
+        }
       }
     },
 
