@@ -248,7 +248,7 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 			+ recipeFlag
 			+ goGreen
 			+ unattendedDeliveryFlg
-			+ StringUtils.repeat(" ", 15)
+			+ StringUtils.repeat(" ", 10)
 			+ gcAmount // offset 36-45
 			+ StringUtils.repeat(" ", 40)
 			+ billingRef  // offset 86 --> 105

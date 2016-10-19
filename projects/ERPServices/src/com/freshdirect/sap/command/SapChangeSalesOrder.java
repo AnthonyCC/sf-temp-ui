@@ -219,7 +219,7 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 			+ recipeFlag
 			+ goGreen
 			+ unattendedDeliveryFlg
-			+ StringUtils.repeat(" ", 15)
+			+ StringUtils.repeat(" ", 10)
 			+ gcAmount
 			+ StringUtils.repeat(" ", 40)
 			+ billingRef
