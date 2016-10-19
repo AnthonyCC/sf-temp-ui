@@ -91,6 +91,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setUserContext(ctx);
 		
 		this.orderLine.setEStoreId(ctx.getStoreContext().getEStoreId());
+		this.orderLine.setPlantID(getPickingPlantId());
 		
 		
 		
@@ -685,6 +686,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public void setUserContext(UserContext uCtx) {
 		this.orderLine.setUserContext(uCtx);
+		this.orderLine.setPlantID(getPickingPlantId());
 	}
 	
 	public List<ErpClientCode> getClientCodes() {
@@ -817,4 +819,15 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.fireConfigurationChange();		
 	}
 	
+	protected String getPickingPlantId(){
+		String pickingPlantId = null;
+		FDProductInfo prodInfo = this.lookupFDProductInfo();
+		if(null != prodInfo && null != getUserContext()){
+			pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+		}
+		if(null == pickingPlantId){
+			pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+		}
+		return pickingPlantId;		
+	}
 }

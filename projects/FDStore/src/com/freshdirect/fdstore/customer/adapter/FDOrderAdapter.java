@@ -244,7 +244,9 @@ public class FDOrderAdapter implements FDOrderI {
 		List<ErpOrderLineModel> erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {
 			ErpOrderLineModel ol = erpLines.get(i);
-			ol.setPlantID(dpi.getPlantId());
+			if(null == ol.getPlantID()){
+				ol.setPlantID(dpi.getPlantId());
+			}
 			
 			String olNum = ol.getOrderLineNumber();
 			ErpInvoiceLineI firstInvoiceLine = getFirstInvoiceLine(olNum);

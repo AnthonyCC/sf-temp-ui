@@ -192,7 +192,7 @@ public class CartOperations {
 				cartLine.setCoremetricsVirtualCategory( reqData.getCoremetricsVirtualCategory() );
 				
 				cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
-				cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
+//				cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
 				cartLinesToAdd.add(cartLine);
 				
