@@ -32,6 +32,7 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -1670,6 +1671,9 @@ public class FDCustomerManager {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+			ErpChargeLineModel chargeLine=createOrder.getCharge(EnumChargeType.DELIVERY);
+			if(createOrder.isDlvPassApplied())
+				chargeLine.setDiscount(null);//Forcing this for delivery pass issue APPDEV 5587
 			//createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());

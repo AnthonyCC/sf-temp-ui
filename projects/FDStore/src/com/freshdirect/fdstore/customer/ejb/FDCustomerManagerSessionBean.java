@@ -42,6 +42,7 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -52,6 +53,7 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliverySetting;
@@ -71,6 +73,7 @@ import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
+import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
@@ -2154,6 +2157,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				this.getSessionContext().setRollbackOnly();
 				throw new ReservationException(e.getMessage());
 			}
+			
+			//APPDEV-5587 When the DP is applied on the order, set the chargeline with DELIVERYPASS promotion information if it's not already available
+			if(createOrder.isDlvPassApplied() && EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType().HOME)) {
+				ErpChargeLineModel clm =createOrder.getCharge(EnumChargeType.DELIVERY);
+				if(clm!=null) {
+					if(clm.getDiscount()==null) {
+						clm.setDiscount(new Discount(DlvPassConstants.PROMO_CODE, EnumDiscountType.PERCENT_OFF, 1.0));
+						LOGGER.info(" Delivery Pass promotion applied for Order : " + createOrder.getId() + " and Customer ID : " +createOrder.getCustomerId());
+					}
+				} 
+			} 
+
 			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(
 					createOrder, null);
 			strategy.generateAppliedGiftCardsInfo();
@@ -2894,6 +2909,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					true);
+			
+			//APPDEV-5587 When the DP is applied on the order, set the chargeline with DELIVERYPASS promotion information, if it's not already available
+			if(order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
+				ErpChargeLineModel clm =order.getCharge(EnumChargeType.DELIVERY);
+				if(clm!=null) {
+					if(clm.getDiscount()==null) {
+						clm.setDiscount(new Discount(DlvPassConstants.PROMO_CODE, EnumDiscountType.PERCENT_OFF, 1.0));
+						LOGGER.info(" Delivery Pass promotion applied for Order : " + order.getId() + " and Customer ID : " +order.getCustomerId());
+					}
+				} 
+			} 
 
 			// Begin Handle Delivery Pass.
 			/*
