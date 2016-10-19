@@ -872,8 +872,13 @@ public class CmsFilteringFlow {
         boolean isWineDepartment = checkWineDepartment(navigationModel);
         browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
 
-        browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
-        browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
+        if (contentNodeModel instanceof CategoryModel && ((CategoryModel) contentNodeModel).getSpecialLayout() != null) {
+            if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+                browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
+            } else if (EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+                browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
+            }
+        }
 
         return browseDataContext;
     }
