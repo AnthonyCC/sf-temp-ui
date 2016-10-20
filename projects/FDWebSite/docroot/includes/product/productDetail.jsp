@@ -129,8 +129,8 @@
 			</div>
 			
 			<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
-				<% if (false) { /* excluding these for now */ %>
 					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+				<% if (false) { /* excluding these for now */ %>
 						<%-- don't show evenBetter if we're in group scale context --%>
 					<c:if test="${empty param.grpId}">
 						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />

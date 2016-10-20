@@ -58,6 +58,7 @@ var API;
 				window.top.location = '/logout.jsp';
 			});
 			
+			/*
 			API.bind( "init", function() {
 				console.log('API init event');
 			});
@@ -88,7 +89,7 @@ var API;
 			API.bind( "closedPanel", function() {
 				console.log('API closedPanel event');
 			});
-			
+			*/
 			
 			/*$('a[href="#mm-0"]').on('click', function() {
 			});*/
@@ -123,6 +124,24 @@ var API;
 			if($jq(e).find(".atc-info").attr('data-amount') != 0){
 				$jq(e).find(".addtocart").html($jq(e).find(".atc-info").attr('data-amount')).addClass("ATCHasItemsMobile");
 			}
+		});
+		
+		/* generic accords */
+
+		$jq('.gen-accord-toggler').each(function(i,e) {
+			if (!$jq(e).find('.gen-accord-toggler-arrow').length) {
+				//auto add an arrow indicator
+				$jq(e).append('<div class="gen-accord-toggler-arrow gen-accord-toggler-arrow_s"></div>');
+			}
+		});
+		$jq('.gen-accord-toggler').on('click touch', function(e) {
+			if ($jq(this).hasClass('open')) {
+				$jq(this).parent().find('.gen-accord-content').hide();
+			} else {
+				$jq(this).parent().find('.gen-accord-content').show();
+			}
+			$jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
+			$jq(this).toggleClass('open');
 		});
 	});
 }(jQuery));

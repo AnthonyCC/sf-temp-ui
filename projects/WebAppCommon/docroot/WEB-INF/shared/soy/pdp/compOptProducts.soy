@@ -7,8 +7,8 @@
 {template .compOptProducts}
 	{if $optionalProducts and length($optionalProducts) > 0}
 		<div class="pdp-compOptProducts">
-			<div class="pdp-compOptProducts-header">Optional Great Additions:</div>
-			<div class="pdp-compOptProducts-prods">
+			<div class="pdp-compOptProducts-header gen-accord-toggler">Optional Great Additions:</div>
+			<div class="pdp-compOptProducts-prods gen-accord-content" style="display: none;">
 					{call common.productList}
 						{param productList:$optionalProducts /}
 						{param mobWeb:$mobWeb /}

@@ -528,6 +528,65 @@ footer .copyright {
 	border-bottom-width: 0;
 }
 
+/* generic accord */
+	.gen-accord-toggler-arrow {
+		position: absolute;
+	    display: inline;
+	    right: 20px;
+	    left: auto;
+	}
+	.gen-accord-toggler-arrow:after { /* south, default */
+		content: "";
+		background-color: transparent;
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		
+		/* short arm */
+		width: 8px;
+		border-bottom: 2px solid #333;
+		/* long arm */
+		height: 8px;
+		border-right: 2px solid #333;
+		
+		transform: rotate(45deg);
+		-o-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		-webkit-transform: rotate(45deg);
+	}
+	.gen-accord-toggler-arrow_s:after {
+		transform: rotate(45deg);
+		-o-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		-webkit-transform: rotate(45deg);
+	}
+	.gen-accord-toggler-arrow_e:after {
+		transform: rotate(-45deg);
+		-o-transform: rotate(-45deg);
+		-ms-transform: rotate(-45deg);
+		-webkit-transform: rotate(-45deg);
+	}
+	.gen-accord-toggler-arrow_w:after {
+		transform: rotate(135deg);
+		-o-transform: rotate(135deg);
+		-ms-transform: rotate(135deg);
+		-webkit-transform: rotate(135deg);
+		left: 4px;
+	}
+	.gen-accord-toggler-arrow_n:after {
+		transform: rotate(-135deg);
+		-o-transform: rotate(-135deg);
+		-ms-transform: rotate(-135deg);
+		-webkit-transform: rotate(-135deg);
+		top: 4px;
+	}
+	.gen-accord-toggler {
+    	border-bottom: 1px solid #c0bebd !important;
+	}
+	.gen-accord-toggler.open {
+		/* border-bottom: none !important; */
+	}
+
 /* pdp */
 	.pdp {} /* detail top-level container */
 	.pdp>.prodDetail {} /* first, only child */
