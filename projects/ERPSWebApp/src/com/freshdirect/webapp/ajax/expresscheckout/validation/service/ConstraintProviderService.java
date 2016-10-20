@@ -98,7 +98,7 @@ public class ConstraintProviderService {
             put(PaymentMethodName.CARD_EXP_MONTH, new TextConstraint(false));
             put(PaymentMethodName.CARD_EXP_YEAR, new TextConstraint(false));
             put(EnumUserInfoName.BIL_COUNTRY.getCode(), new TextConstraint(false));
-            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new TextConstraint(false));
+            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new StreetTextConstraint(false));
             put(EnumUserInfoName.BIL_APARTMENT.getCode(), new TextConstraint(true));
             put(EnumUserInfoName.BIL_CITY.getCode(), new TextConstraint(false));
             put(EnumUserInfoName.BIL_STATE.getCode(), new StateConstraint(false));
@@ -116,7 +116,7 @@ public class ConstraintProviderService {
             put(PaymentMethodName.ACCOUNT_NUMBER_VERIFY, new AccountNumberConstraint(false));
             put(PaymentMethodName.ABA_ROUTE_NUMBER, new RoutingNumberConstraint(false));
             put(EnumUserInfoName.BIL_COUNTRY.getCode(), new TextConstraint(false));
-            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new TextConstraint(false));
+            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new StreetTextConstraint(false));
             put(EnumUserInfoName.BIL_APARTMENT.getCode(), new TextConstraint(true));
             put(EnumUserInfoName.BIL_CITY.getCode(), new TextConstraint(false));
             put(EnumUserInfoName.BIL_STATE.getCode(), new StateConstraint(false));
@@ -132,7 +132,7 @@ public class ConstraintProviderService {
             put(PaymentMethodName.ACCOUNT_HOLDER, new TextConstraint(false));
             put(PaymentMethodName.ACCOUNT_NUMBER, new CreditCardConstraint(false));
             put(EnumUserInfoName.BIL_COUNTRY.getCode(), new TextConstraint(false));
-            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new TextConstraint(false));
+            put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new StreetTextConstraint(false));
             put(EnumUserInfoName.BIL_APARTMENT.getCode(), new TextConstraint(true));
             put(EnumUserInfoName.BIL_CITY.getCode(), new TextConstraint(false));
             put(EnumUserInfoName.BIL_STATE.getCode(), new StateConstraint(false));
