@@ -13,7 +13,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 import com.freshdirect.webapp.autosuggest.unbxd.dto.UnbxdAutosuggestResponseRoot;
-import com.freshdirect.webapp.autosuggest.unbxd.dto.UnbxdAutosuggestResultProduct;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseRoot;
 
 public class UnbxdIntegrationService {
@@ -24,6 +23,7 @@ public class UnbxdIntegrationService {
     private static final String SEARCH_ENDPOINT = BASE_URL + "/search?q=";
     private static final String AUTOSUGGEST_ENDPOINT = BASE_URL + "/autosuggest?q=";
     private static final Integer SEARCH_ROW_SIZE = 1000;
+    private static final Integer MAX_AUTOSUGGEST_NUMBER = 20;
 
     private static final UnbxdIntegrationService INSTANCE = new UnbxdIntegrationService();
 
@@ -46,8 +46,8 @@ public class UnbxdIntegrationService {
     public List<String> suggestProducts(String term) throws IOException {
         List<String> autosuggests = new ArrayList<String>();
         UnbxdAutosuggestResponseRoot results = httpService.getData(AUTOSUGGEST_ENDPOINT + URLEncoder.encode(term, CharEncoding.UTF_8), UnbxdAutosuggestResponseRoot.class);
-        for (UnbxdAutosuggestResultProduct result : results.getResponse().getProducts()) {
-        	autosuggests.add(result.getAutosuggest());
+        for (int i = 0; i < results.getResponse().getProducts().size() && i < MAX_AUTOSUGGEST_NUMBER; i++) {
+            autosuggests.add(results.getResponse().getProducts().get(i).getAutosuggest());
         }
         return autosuggests;
     }
