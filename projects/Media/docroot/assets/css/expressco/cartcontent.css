@@ -906,7 +906,8 @@ label[for="dontupdatecartlines"] {
   vertical-align:top;
 }
 
-#transactionalPopup .productSamplingItem .portrait-item-atl{
+#transactionalPopup .productSamplingItem .cssbutton[data-component-extra="showSOButton"],
+#transactionalPopup .productSamplingItem .portrait-item-atl, #transactionalPopup .productSamplingItem .portrait-item-so-container{
 	display:none;
 }
 
