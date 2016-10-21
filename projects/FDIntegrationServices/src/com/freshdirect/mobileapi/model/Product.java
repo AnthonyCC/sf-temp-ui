@@ -1532,6 +1532,10 @@ public class Product {
         String result = "";
         String claimText="";
         String organicClaimText="";
+        String lineSeperator= "\n \n";
+        StringBuilder availabilityNoteBuilder= new StringBuilder();
+        boolean msgFlag=false;       
+
         Html desc = product.getProductModel().getProductDescription();
         if (desc != null) {
             result = ProductUtil.readHtml(desc);
@@ -1550,9 +1554,25 @@ public class Product {
 	        	result=result + "\n \n " + "Organic Claims : " + "\n \n " + organicClaimText;
 	        }
         }
-        if(getProductData()!=null && getProductData().getMsgDeliveryNote()!=null && (StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())))
-        {
-	        result=result + "\n \n " + "Availability Note : " + "\n \n " + getProductData().getMsgDeliveryNote();
+        
+        if(getProductData()!=null && getProductData().getMsgCutoffHeader()!=null && (StringUtils.isNotBlank(getProductData().getMsgCutoffHeader()))){
+        	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgCutoffHeader());
+        }
+        if(getProductData()!=null && getProductData().getMsgDayOfWeekHeader()!=null && (StringUtils.isNotBlank(getProductData().getMsgDayOfWeekHeader()))){
+        	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgDayOfWeekHeader());
+        	msgFlag=true;
+        }
+        if(getProductData()!=null && getProductData().getMsgLeadTimeHeader()!=null && (StringUtils.isNotBlank(getProductData().getMsgLeadTimeHeader()))){
+        	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgLeadTimeHeader());
+        }
+        if(getProductData()!=null && getProductData().getMsgEarliestAvailability()!=null && (StringUtils.isNotBlank(getProductData().getMsgEarliestAvailability()))){
+        	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgEarliestAvailability());
+        }    
+        if(getProductData()!=null && getProductData().getMsgDeliveryNote()!=null && (StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())) && !msgFlag){
+        	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgDeliveryNote());
+        }
+        if(availabilityNoteBuilder.length() > 0){
+        	result = result + lineSeperator + "Availability Note :" + availabilityNoteBuilder.toString();
         }
         return result;
     }
