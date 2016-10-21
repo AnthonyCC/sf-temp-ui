@@ -371,7 +371,7 @@ class SalesOrderHelper {
 			}
 			
 			public String getPickingPlantId(){
-				return "1000";
+				return sapOrder.getPlant();
 			}
 		};
 
