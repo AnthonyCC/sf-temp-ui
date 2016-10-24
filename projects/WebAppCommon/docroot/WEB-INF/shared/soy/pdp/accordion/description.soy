@@ -15,6 +15,7 @@
  * @param cheese101
  * @param buyerGuide
  * @param productAboutMedia
+ * @param? productAboutMediaPath
  * @param productDescriptionNote
  * @param productDescription
  * @param partiallyFrozenMedia
@@ -71,6 +72,7 @@
  * @param productAboutMedia
  * @param productDescriptionNote
  * @param productDescription
+ * @param? productAboutMediaPath
  */
 {template .descriptionText}
 {if $productDescription}
@@ -82,7 +84,14 @@
 {/if}
 {if $productAboutMedia}
 	<strong class="pdp-accordion-description">More About This Product</strong>
-	<div class="pdp-accordion-description pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
+	<div class="pdp-accordion-description pdp-accordion-description-about">
+		/* if this is a PDF, push it via an anchor instead of directly including in the page */
+		{if (strContains($productAboutMediaPath+'^END^', '.pdf^END^'))}
+			<a href="{if $productAboutMediaPath}javascript:popup('{$productAboutMediaPath}','large'){else}#{/if}" class="action-item"><span class="action-item-content">Click For More Info</span></a>
+		{else}
+			{$productAboutMedia|noAutoescape}
+		{/if}
+	</div>
 {/if}
 {/template}
 

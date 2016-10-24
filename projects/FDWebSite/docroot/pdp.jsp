@@ -226,7 +226,11 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	//ignore product layout and just use the default
 	boolean debugIgnoreProductLayout = request.getParameter("debugIgnoreProductLayout")!=null ? "true".equalsIgnoreCase(request.getParameter("debugIgnoreProductLayout")) : false;
 	boolean forceProductLayout = false; /* force the product to just use the normal layout instead of it's CMS-defined one */
-	if (mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL) || debugIgnoreProductLayout) {
+	if (
+		(mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL)) ||
+		(mobWeb && prodLayout.equals(EnumProductLayout.RECIPE_MEALKIT_PRODUCT)) ||
+		debugIgnoreProductLayout
+	) {
 		forceProductLayout = true;
 	}
 	
