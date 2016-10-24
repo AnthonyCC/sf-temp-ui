@@ -102,7 +102,7 @@ public class FeedUploader {
 			fis.close();
 			
 		} catch(Exception e) {
-			throw new FDResourceException("feed sftp uploadFile: "+e.getMessage(), e);
+			throw new FDResourceException("feed sftp uploadFile to "+sftpHost+": "+e.getMessage(), e);
 		} finally{
 			LOGGER.info("SFTP: Disconnecting..");
 			if(null !=sftp){
