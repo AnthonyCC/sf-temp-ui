@@ -2157,7 +2157,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				this.getSessionContext().setRollbackOnly();
 				throw new ReservationException(e.getMessage());
 			}
-			
+
 			//APPDEV-5587 When the DP is applied on the order, set the chargeline with DELIVERYPASS promotion information if it's not already available
 			if(createOrder.isDlvPassApplied() && EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType().HOME)) {
 				ErpChargeLineModel clm =createOrder.getCharge(EnumChargeType.DELIVERY);
@@ -2910,7 +2910,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					true);
 			
-			//APPDEV-5587 When the DP is applied on the order, set the chargeline with DELIVERYPASS promotion information, if it's not already available
+			//APPDEV-5587 When the DP is applied on the order, set the charge line with DELIVERYPASS promotion information, if it's not already available
 			if(order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
 				ErpChargeLineModel clm =order.getCharge(EnumChargeType.DELIVERY);
 				if(clm!=null) {

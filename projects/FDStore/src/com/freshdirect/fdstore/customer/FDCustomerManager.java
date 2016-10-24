@@ -1673,7 +1673,7 @@ public class FDCustomerManager {
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
 			ErpChargeLineModel chargeLine=createOrder.getCharge(EnumChargeType.DELIVERY);
 			if(createOrder.isDlvPassApplied())
-				chargeLine.setDiscount(null);//Forcing this for delivery pass issue APPDEV 5587
+				chargeLine.setDiscount(null);//Forcing this for delivery pass issue: APPDEV 5587
 			//createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
