@@ -1728,8 +1728,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					}
 				} else {
 					fdAmount += line.getAmount();
-					//commenting it for time being as this needs to be discussed with QA to get release version
-					//departmentLevel=true;
+					departmentLevel=true;
 				}
 			}
 			
