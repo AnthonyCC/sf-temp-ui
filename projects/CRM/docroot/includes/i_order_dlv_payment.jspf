@@ -270,7 +270,22 @@ function loadSignature(order)
 	                                    <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
 	                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%><br><%=paymentMethod.getCountry()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
 					</tr>
-					<% } %>
+					<% } else if(paymentMethod.getCardType() != null && paymentMethod.getCardType().equals(EnumCardType.PAYPAL) && !EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())){ %>
+						<tr><td colspan="2">&nbsp;</td></tr>
+						<tr>
+						<%if(EnumPaymentType.ADD_ON_ORDER.equals(paymentMethod.getPaymentType())) {%>
+							<td><b>Order Type</b></td>
+							<%}else{%>
+							<td><b>Payment</b></td>
+							<%}%>
+							<td style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></td>
+						</tr>
+						<tr>
+							<td>Referenced order</td>
+							<td><%= paymentMethod.getReferencedOrder() %></td>
+						</tr>
+					 <% }
+					%>
 					<tr>
 						<td>Billing Reference&nbsp;&nbsp;</td>
 						<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
