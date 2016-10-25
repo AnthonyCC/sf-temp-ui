@@ -16,7 +16,7 @@ public class FeaturesRedirectorService {
 		return INSTANCE;
 	}
 
-	public String getRedirectUrl(EnumRolloutFeature feature, String originalUrl, FDUserI user, Cookie[] cookies) {
+	public String getRedirectUrl(EnumRolloutFeature feature, String originalUrl, FDUserI user, Cookie[] cookies, String checkout ) {
 		String redirectUrl = null;
 		if (FeaturesService.defaultService().isFeatureActive(feature, cookies, user)) {
 			boolean standingOrderModeActive = user.getCheckoutMode() != null && user.getCheckoutMode().isStandingOrderMode() 
@@ -26,9 +26,11 @@ public class FeaturesRedirectorService {
 				if (!standingOrderModeActive) {
 					if ("/view_cart.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/view_cart.jsp";
+					} else if ("/checkout/view_cart.jsp".equals(originalUrl) && "true".equals(checkout)) {
+						redirectUrl = "/expressco/checkout.jsp";
 					} else if ("/checkout/view_cart.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/view_cart.jsp";
-					} else if ("/checkout/step_1_choose.jsp".equals(originalUrl)) {
+					}else if ("/checkout/step_1_choose.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/checkout.jsp";
 					}
 				}

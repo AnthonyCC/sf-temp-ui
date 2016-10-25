@@ -25,7 +25,7 @@ final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 <fd:CheckLoginStatus id="user" />
 <fd:EnableXCForCSR>
-<features:redirect featureName="checkout2_0" />
+<features:redirect featureName="checkout2_0" checkout="true" />
 </fd:EnableXCForCSR>
 <%
 String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();

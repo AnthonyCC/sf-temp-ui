@@ -37,5 +37,9 @@
 	       <required>true</required>
 	       <rtexprvalue>true</rtexprvalue>
 	   </attribute>
+	   	<attribute>
+			<name>checkout</name>
+			<required>false</required>
+		</attribute>
 	</tag>
 </taglib>

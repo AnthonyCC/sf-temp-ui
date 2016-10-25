@@ -21,7 +21,8 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(FeatureRedirectorTag.class);
 	private String featureName;
-
+    private String checkout;
+    
 	@Override
 	public int doStartTag() throws JspException {
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
@@ -29,7 +30,7 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		EnumRolloutFeature feature = FeaturesService.defaultService().parseFeatureName(featureName);
 		String originalUrl = request.getServletPath();
-		String redirectUrl = FeaturesRedirectorService.defaultService().getRedirectUrl(feature, originalUrl, user, request.getCookies());
+		String redirectUrl = FeaturesRedirectorService.defaultService().getRedirectUrl(feature, originalUrl, user, request.getCookies(),checkout);
 		int result = EVAL_BODY_BUFFERED;
 		if (redirectUrl != null) {
 			redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
@@ -49,5 +50,21 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
 	}
+
+	/**
+	 * @return the checkout
+	 */
+	public String getCheckout() {
+		return checkout;
+	}
+
+	/**
+	 * @param checkout the checkout to set
+	 */
+	public void setCheckout(String checkout) {
+		this.checkout = checkout;
+	}
+	
+	
 
 }
