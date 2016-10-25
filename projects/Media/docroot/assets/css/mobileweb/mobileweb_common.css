@@ -58,15 +58,20 @@ img {
 .home-page-banner-top img, .home-page-banner img {
 	width: 100%;
 }
-.home-page-banner-subtext {
-	text-align: center;
-	color: #ffffff;
-	text-transform: normal;
-	display: inline-block;
+.home-page-banner-subtext-cont {
 	position: absolute;
-	bottom: 4px;
+	bottom: 0;
 	width: 100%;
-	font-weight: normal;
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.3) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.3) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.3) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#4d000000',GradientType=0 ); /* IE6-9 */			
+}
+.home-page-banner-subtext {
+	line-height: 30px;
+	height: 30px;
+	color: #fff; 
+	text-align: center;
 }
 .navbar-brand, .navbar-nav>li>a {
 	text-shadow: 0 1px 0 rgba(255,255,255,.25);
@@ -332,7 +337,7 @@ footer .copyright {
 	text-align: center;
 }
 .pNavLoginButton a {
-	padding: 10px 10px 10px 20px;
+	padding: 9px 10px 10px 20px;
 	height: 48px;
 	padding: 0px;
 	line-height: 48px;
@@ -445,8 +450,9 @@ footer .copyright {
 	height: 23px;
 	width: 84px;
 }
-.navMenuItems-menuselect > .glBreadcrumblink { /* green right-side box */
+.mm-menu .mm-panel ul.mm-listview li.navMenuItems-menuselect > span.glBreadcrumblink { /* green right-side box */
 	border-right: 9px solid #4fa157;
+	padding: 9px 10px 10px 20px;
 }
 
 /* new nav classes */
@@ -512,7 +518,7 @@ footer .copyright {
 }
 .mm-menu .mm-panel ul.mm-listview li span.glBreadcrumblink a{
 	display: block;
-	padding: 10px 10px 10px 20px;	
+	padding: 9px 10px 10px 20px;	
 }
 .mm-menu .mm-navbar a, .mm-menu .mm-navbar>* { /* submenu title */
 	color: rgba(255,255,255,1);
