@@ -13,7 +13,7 @@
  int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) : currmonth;
  int day   = request.getParameter("day") != null ? Integer.parseInt(request.getParameter("day")) : currday;
  int year  = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) : curryear;
- String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " ";
+ //* String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " "; 
  String route = request.getParameter("route") != null ? request.getParameter("route") : " ";
  String stop1 = request.getParameter("stop1") != null ? request.getParameter("stop1") : " ";
  String stop2= request.getParameter("stop2") != null ? request.getParameter("stop2") : " ";
@@ -25,7 +25,7 @@
         var day = thisForm.day.value;
         var month = thisForm.month.value;
         var year = thisForm.year.value;
-        var wave = thisForm.wave.value;
+      //  var wave = thisForm.wave.value;
         var route = thisForm.route.value;
         var stop1 = thisForm.stop1.value;
         var stop2 = thisForm.stop2.value;
@@ -41,10 +41,10 @@
             okToSubmit = false;
         }
         
-        if(isNaN(wave)) {
+       /*  if(isNaN(wave)) {
             alert('The WAVE field is invalid. Please correct and try again.');
             okToSubmit = false;
-        }
+        } */
 		
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
@@ -105,9 +105,9 @@
                 <option value="<%= i %>" <%= (i==year)?"selected":"" %>><%= i %></option>
                             <%  } %>
             </select>
-            &nbsp;
-            <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
-            <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
+          <%--  &nbsp;
+             <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
+            <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>"> --%>
             <% if ((globalContextStore).equals("FDX")) { %></span><% } %>
             &nbsp;
            <%= ((globalContextStore).equals("FDX")) ? "Trip" : "Route" %> 

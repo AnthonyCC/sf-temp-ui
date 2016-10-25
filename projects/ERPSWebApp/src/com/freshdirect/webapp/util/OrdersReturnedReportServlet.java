@@ -133,7 +133,7 @@ public class OrdersReturnedReportServlet extends AbstractExcelReportServlet {
 		orderLine.put("AMOUNT", JspMethods.formatPrice(order.getAmount()));
 		orderLine.put("START TIME", CCFormatter.formatDeliveryTime(order.getStartTime()));
 		orderLine.put("END TIME", CCFormatter.formatDeliveryTime(order.getEndTime()));
-		orderLine.put("WAVE NUMBER", order.getWaveNum());
+		/*orderLine.put("WAVE NUMBER", order.getWaveNum());*/
 		orderLine.put("TRUCK NUMBER", order.getRouteNum());
 		return orderLine;
 	}

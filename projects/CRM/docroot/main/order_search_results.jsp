@@ -208,9 +208,9 @@ String guestView = "&for=print";
 		case 12:
             comparator = FDCustomerOrderInfo.CustomerTypeComparator;
             break;  
-        case 13:
+      /*   case 13:
             comparator = FDCustomerOrderInfo.WaveNumComparator;
-            break;
+            break; */
         default:
             comparator = FDCustomerOrderInfo.SaleIdComparator;
             break;
@@ -252,7 +252,7 @@ String guestView = "&for=print";
             <td width="13%" class="border_bottom"><%= info.getEmail() %>&nbsp;</td>
             <td width="10%" class="border_bottom"><%= info.getPhone() %>&nbsp;</td>
             <td width="9%" class="border_bottom"><%= info.getAltPhone() %>&nbsp;</td>
-            <td width="6%" class="border_bottom"><%= info.getWaveNum() %>&nbsp;</td>
+           <%--  <td width="6%" class="border_bottom"><%= info.getWaveNum() %>&nbsp;</td> --%>
             <td width="6%" class="border_bottom"><%= info.getRouteNum() %>&nbsp;</td>
             <td width="6%" class="border_bottom"><%= info.getStopSequence() %>&nbsp;</td>
             <td width="10%" class="border_bottom" style="color: red;">

@@ -313,7 +313,7 @@ public class GenericSearchDAO {
 			builder.addSql("to_date(to_char(di.endtime, 'HH:MI AM'),'HH:MI AM') <= to_date(?,'HH:MI AM')", 
 					new Object[] {endTime.toString() });
 		}
-		Object fromWaveNum = criteria.getCriteriaMap().get("fromWaveNumber");
+	/*ject fromWaveNum = criteria.getCriteriaMap().get("fromWaveNumber");
 		Object toWaveNum = criteria.getCriteriaMap().get("toWaveNumber");
 		if(fromWaveNum != null && toWaveNum != null){
 			//Searching for a range of wave numbers.
@@ -324,7 +324,7 @@ public class GenericSearchDAO {
 			builder.addSql("s.wave_number = to_number(?)", 
 					new Object[] {fromWaveNum.toString()});
 
-		}
+		} */
 		Object fromTruckNum = criteria.getCriteriaMap().get("fromTruckNumber");
 		Object toTruckNum = criteria.getCriteriaMap().get("toTruckNumber");
 		if(fromTruckNum != null && toTruckNum != null){
@@ -625,11 +625,19 @@ public class GenericSearchDAO {
 		}
 		return lst;
 	}
-	
-	private static String ORDER_SEARCH_FOR_RETURNS = 
+	/*	private static String ORDER_SEARCH_FOR_RETURNS = 
 		"SELECT "
 		+ "c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') email_type, s.id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, s.wave_number, s.truck_number "
+		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
+		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
+		+ "and s.status = 'REF' and sa.action_date = "
+		+ "(SELECT MAX(action_date) FROM cust.salesaction WHERE sale_id = s.id AND action_type IN ('CRO', 'MOD')) "
+		+ "and sa.id = di.salesaction_id"; */
+	private static String ORDER_SEARCH_FOR_RETURNS = 
+		"SELECT "
+		+ "c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
+		+ "ci.cell_phone, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') email_type, s.id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, s.truck_number "
 		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.status = 'REF' and sa.action_date = "
@@ -673,7 +681,7 @@ public class GenericSearchDAO {
 			oInfo.setAmount(rs.getDouble("AMOUNT"));
 			oInfo.setStartTime(rs.getTimestamp("STARTTIME"));
 			oInfo.setEndTime(rs.getTimestamp("ENDTIME"));
-			oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
+			//oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
 			oInfo.setRouteNum(rs.getString("TRUCK_NUMBER"));
 			
 			//TODO FDX - add these columns to query

@@ -352,7 +352,7 @@ function loadSignature(order)
 					<b>Store</b>: <%= _order.getEStoreId() %><br />
 					<b>Facility</b>: <%= _order.getDeliveryPlantInfo().getPlantId() %><br />
 				<% if (shippingInfo != null) { %>
-					<b>Wave Number</b>: <%= shippingInfo.getWaveNumber() %><br>
+				<%-- 	<b>Wave Number</b>: <%= shippingInfo.getWaveNumber() %><br> --%>
 					<b>Truck Number</b>: <%= shippingInfo.getTruckNumber() %><br>
 					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
 				<% } %>

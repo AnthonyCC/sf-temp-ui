@@ -11,7 +11,7 @@
     int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) : currmonth;
     int day   = request.getParameter("day") != null ? Integer.parseInt(request.getParameter("day")) : currday;
     int year  = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) : curryear;
-    String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " ";
+   // String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " ";
     String route = request.getParameter("route") != null ? request.getParameter("route") : null;
     String stop1 = request.getParameter("stop1") != null ? request.getParameter("stop1") : " ";
     String stop2= request.getParameter("stop2") != null ? request.getParameter("stop2") : " ";
@@ -36,7 +36,8 @@
 			Date user_date1 = format1.parse(route_date1);
 			
 			if(route != null) {
-				routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
+				//routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
+				  routeStopLines = CallCenterServices.getRouteStopReport(user_date1, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
 			} else {
 				route_error = true;
 			}
@@ -89,7 +90,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
         var day = thisForm.day.value;
         var month = thisForm.month.value;
         var year = thisForm.year.value;
-        var wave = thisForm.wave.value;
+      <!--  var wave = thisForm.wave.value; -->
         var route = thisForm.route.value;
         var stop1 = thisForm.stop1.value;
         var stop2 = thisForm.stop2.value;
@@ -104,11 +105,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             alert('The DATE field is invalid. Please correct and try again.');
             okToSubmit = false;
         }
-		
+		/* 
 		if(isNaN(wave)) {
             alert('The WAVE field is invalid. Please correct and try again.');
             okToSubmit = false;
-        }
+        } */
 
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
@@ -210,8 +211,8 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			<select id="yeardropdown" name="year">
 			</select> 
             &nbsp;
-            <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
-            Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
+          <!--  <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
+            Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>"> -->
             <% if ((globalContextStore).equals("FDX")) { %></span><% } %>
             &nbsp;
             <%= ((globalContextStore).equals("FDX")) ? "Trip" : "Route" %>
@@ -420,7 +421,6 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 	<input type="hidden" name="month" value="<%=month%>" />
     <input type="hidden" name="day" value="<%=day%>" />
     <input type="hidden" name="year" value="<%=year%>" />
-    <input type="hidden" name="wave" value="<%=wave%>" />
     <input type="hidden" name="route" value="<%=route%>" />
     <input type="hidden" name="stop1" value="<%=stop1%>" />
 	<input type="hidden" name="stop2" value="<%=stop2%>" />
@@ -449,7 +449,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			<td width="25%">Customer Name</td>
 			<td width="10%">Dlv Phone #</td>
 			<td width="25%">Email</td>
-			<td width="10%">Wave</td>
+		<!--<td width="10%">Wave</td>-->
 			<td width="10%">Route</td>
 			<td width="10%">Stop</td>
 			<td width="10%"><a href="#" onclick="checkedAll()" style="text-decoration:none;color:#ffffff;font-size:10pt;font-weight:bold;">Select All</a></td>
@@ -467,7 +467,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				<td width="25%" class="border_bottom"><%=routeStopLine.getFirstName()%> <%=routeStopLine.getLastName()%>&nbsp;</td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getPhoneNumber()%>&nbsp;</td>
 				<td width="25%" class="border_bottom"><%=routeStopLine.getEmail()%>&nbsp;</td>
-				<td width="10%" class="border_bottom"><%=routeStopLine.getWaveNumber()!=null? routeStopLine.getWaveNumber():"&nbsp;"%></td>
+			<!--	<td width="10%" class="border_bottom"><%-- <%=routeStopLine.getWaveNumber()!=null? routeStopLine.getWaveNumber():"&nbsp;"%> --%></td>-->
 				<td width="10%" class="border_bottom"><%=routeStopLine.getTruckNumber()!=null? routeStopLine.getTruckNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getStopSequence()!=null ? Integer.parseInt(routeStopLine.getStopSequence()) : "&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>|<%=routeStopLine.getStopSequence()%>|<%=routeStopLine.getTruckNumber()%>" name="selectphone<%=counter%>" checked/></td>

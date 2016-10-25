@@ -421,14 +421,6 @@ public class GenericLocatorTag extends AbstractControllerTag {
 					}
 				}
 				if(EnumSearchType.RETURN_ORDER_SEARCH.equals(criteria.getSearchType())){
-					String fromWaveNumber = NVL.apply(request.getParameter("fromWaveNumber"), "").trim();
-					String toWaveNumber = NVL.apply(request.getParameter("toWaveNumber"), "").trim();
-					if(fromWaveNumber.length() > 0){
-						criteria.setCriteriaMap("fromWaveNumber", fromWaveNumber);	
-					}
-					if(toWaveNumber.length() > 0){
-						criteria.setCriteriaMap("toWaveNumber", toWaveNumber);	
-					}
 					String fromTruckNumber = NVL.apply(request.getParameter("fromTruckNumber"), "").trim();
 					String toTruckNumber = NVL.apply(request.getParameter("toTruckNumber"), "").trim();
 					if(fromTruckNumber.length() > 0){
@@ -531,26 +523,17 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		}
 		//Special Validation for Returns Search.
 		if(EnumSearchType.RETURN_ORDER_SEARCH.getName().equals(searchParam)){
-			String fromWaveNum = NVL.apply(request.getParameter("fromWaveNumber"),"").trim();
-			String toWaveNum = NVL.apply(request.getParameter("toWaveNumber"),"").trim();
 			String fromTruckNum = NVL.apply(request.getParameter("fromTruckNumber"),"").trim();
 			String toTruckNum = NVL.apply(request.getParameter("toTruckNumber"),"").trim();
 			
-			boolean validateFromWaveNum = validateNumericField(fromWaveNum, actionResult, "From Wave Number");
-			boolean validateToWaveNum = validateNumericField(toWaveNum, actionResult, "To Wave Number");
 			boolean validateFromTruckNum = validateNumericField(fromTruckNum, actionResult, "From Truck Number");
 			boolean validateToTruckNum = validateNumericField(toTruckNum, actionResult, "To Truck Number");
-			if(!validateFromWaveNum || !validateToWaveNum || !validateFromTruckNum || !validateToTruckNum){
-				return false;
-			}
-			if(toWaveNum.length() != 0 && fromWaveNum.length() == 0){
-				LOGGER.error("From Wave number cannot be blank.");
-				actionResult.addError(true, "inputerror", "\"From\" Wave Number cannot be blank. Type in a valid Wave Number");
+			if(!validateFromTruckNum || !validateToTruckNum){
 				return false;
 			}
 			if(toTruckNum.length() != 0 && fromTruckNum.length() == 0){
 				LOGGER.error("From Truck number cannot be blank in this case.");
-				actionResult.addError(true, "inputerror", "\"From\" Truck Number cannot be blank in this case. Type in a valid Wave Number");
+				actionResult.addError(true, "inputerror", "\"From\" Truck Number cannot be blank in this case. Type in a valid Truck Number");
 				return false;
 			}
 		}

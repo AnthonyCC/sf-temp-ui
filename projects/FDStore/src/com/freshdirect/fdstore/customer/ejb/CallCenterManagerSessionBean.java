@@ -1249,7 +1249,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String LATE_DLVRY_REPORT_QRY = "select * from ( "
+/*  private static final String LATE_DLVRY_REPORT_QRY = "select * from ( "
 		+ " select create_date,s.wave_number,s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime, 'case' as source,"
 		+ "(select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
 		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
@@ -1269,7 +1269,31 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " and sa.requested_date=? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
 		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
 		+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'"
-		+ ") order by wave_number, truck_number, stop_sequence";
+		+ ") order by wave_number, truck_number, stop_sequence";*/
+  
+  private static final String LATE_DLVRY_REPORT_QRY = "select * from ( "
+		+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime, 'case' as source,"
+		+ "(select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
+		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
+		+ " from cust.case c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
+		+ " where c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
+		+ " and s.type = 'REG' "
+		+ " and sa.requested_date= ? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
+		+ " and c.case_subject in ('LDQ-005','LDQ-006','LDQ-007')"
+		+ " union all"
+		+ " select create_date,s.wave_number,s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime,'complaint' as source,"
+		+ " (select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
+		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
+		+ " from cust.complaint_dept_code cdc, cust.complaintline cl, cust.complaint c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
+		+ " where cdc.id=cl.complaint_dept_code_id and cl.complaint_id=c.id and c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
+		+ " and s.type = 'REG' "
+		+ " and sa.requested_date=? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
+		+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'"
+		+ ") order by truck_number, stop_sequence";
+
+	
 
 	public List getLateDeliveryReport(Date day1) throws FDResourceException {
 		Connection conn = null;
@@ -1294,7 +1318,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setSource(rs.getString("source"));
 				rl.setStopSequence(rs.getString("stop_Sequence"));
 				rl.setTruckNumber(rs.getString("truck_number"));
-				rl.setWaveNumber(rs.getString("wave_number"));
+				//rl.setWaveNumber(rs.getString("wave_number"));
 				rl.setTimeCaseOpened(rs.getTimestamp("create_date"));
 				rl.setStartTime(rs.getTimestamp("starttime"));
 				rl.setEndTime(rs.getTimestamp("endtime"));
@@ -1317,23 +1341,35 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String ROUTE_STOP_QRY = "select * from ( "
+/*	private static final String ROUTE_STOP_QRY = "select * from ( "
 		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
-		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
+		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";*/
 	
-	private static final String ROUTE_STOP_QRY_SMS = "select * from ( "
+	private static final String ROUTE_STOP_QRY = "select * from ( "
+			+ " select s.customer_id, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
+			+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
+			+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
+			+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
+	
+	/*private static final String ROUTE_STOP_QRY_SMS = "select * from ( "
 		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, ce.mobile_number as phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci, cust.fdcustomer_estore ce"
-		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and ce.fdcustomer_id=ci.customer_id and sa.requested_date=?";
+		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and ce.fdcustomer_id=ci.customer_id and sa.requested_date=?";*/
+	
+	private static final String ROUTE_STOP_QRY_SMS = "select * from ( "
+			+ " select s.customer_id, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, ce.mobile_number as phone, di.phone_ext,"
+			+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
+			+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci, cust.fdcustomer_estore ce"
+			+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and ce.fdcustomer_id=ci.customer_id and sa.requested_date=?";
 	
 	private static final String SMS_NOTIFICATION = " and ce.delivery_notification = 'Y' ";
 	
 	private String finalRouteStopQuery;
 
-	private static final String ROUTE_STOP_QRY_WHERE_WAVE = " and s.wave_number=LPAD(?, 6, '0')";
+	//private static final String ROUTE_STOP_QRY_WHERE_WAVE = " and s.wave_number=LPAD(?, 6, '0')";
 
 	private static final String ROUTE_STOP_QRY_WHERE_ROUTE = " and s.truck_number=LPAD(?, 6, '0')";
 
@@ -1343,11 +1379,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private static final String ROUTE_STOP_QRY_WHERE_FDX = " and (s.e_store = 'FDX')";
 	
 
-	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+/*	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
 		+ " and s.CROMOD_DATE = sa.action_date "
-		+ ") order by wave_number, truck_number, stop_sequence";
+		+ ") order by wave_number, truck_number, stop_sequence";*/
+	
+	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+			+ " and s.CROMOD_DATE = sa.action_date "
+			+ ") order by truck_number, stop_sequence";
 
-	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
+	//public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
+	
+	public List getRouteStopReport(Date date, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
 
 		Connection conn = null;
 		try {
@@ -1360,11 +1402,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				finalRouteStopQuery = ROUTE_STOP_QRY;
 			}
 
-			System.out.println("wave: " + wave +  " route: " + route + " stop: " + stop1 + " to " + stop2);
+		 //System.out.println("wave: " + wave +  " route: " + route + " stop: " + stop1 + " to " + stop2);
+			System.out.println(" route: " + route + " stop: " + stop1 + " to " + stop2);
 
-			if (wave != null && !"".equals(wave)) {
+
+			/*if (wave != null && !"".equals(wave)) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_WAVE;
-			}
+			}*/
 
 			if (route != null && !"".equals(route)) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_ROUTE;
@@ -1389,9 +1433,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			//ps.setTimestamp(index++, truncDate);
 			ps.setDate(index++, new java.sql.Date(date.getTime()));
 			
-			if (wave != null && !"".equals(wave)) {
+			/*if (wave != null && !"".equals(wave)) {
 				ps.setString(index++, wave);
-			}
+			}*/
 
 			if (route != null && !"".equals(route)) {
 				ps.setString(index++, route);
@@ -1422,7 +1466,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setDlvPhone(rs.getString("phone"));
 				rl.setDlvPhoneExt(rs.getString("phone_ext"));
 				rl.setPhoneNumber(rs.getString("phone"), rs.getString("phone_ext"));
-				rl.setWaveNumber(rs.getString("wave_number"));
+				//rl.setWaveNumber(rs.getString("wave_number"));
 				rl.setTruckNumber(rs.getString("truck_number"));
 				rl.setStopSequence(rs.getString("stop_Sequence"));
 				rl.setEmail(rs.getString("email"));

@@ -47,8 +47,8 @@
 	String toTimeSlot = NVL.apply(request.getParameter("toTimeSlot"), "");
 	String toTimePeriod = NVL.apply(request.getParameter("toTimePeriod"), "AM");
 	String filterType = NVL.apply(request.getParameter("filterType"), "");
-	String fromWaveNumber = NVL.apply(request.getParameter("fromWaveNumber"), "");
-	String toWaveNumber = NVL.apply(request.getParameter("toWaveNumber"), "");
+/* 	String fromWaveNumber = NVL.apply(request.getParameter("fromWaveNumber"), ""); 
+	String toWaveNumber = NVL.apply(request.getParameter("toWaveNumber"), "");*/
 	String fromTruckNumber = NVL.apply(request.getParameter("fromTruckNumber"), "");
 	String toTruckNumber = NVL.apply(request.getParameter("toTruckNumber"), "");
 	String notes = NVL.apply(request.getParameter("notes"), "");
@@ -113,9 +113,9 @@
 			    	document.getElementById("fromTimePeriod").value = "AM";
 			    	document.getElementById("toTimeSlot").value = "";
 			    	document.getElementById("toTimePeriod").value = "AM";
-			    	document.getElementById("fromWaveNumber").value = "";
-			    	document.getElementById("toWaveNumber").value = "";
-			    	document.getElementById("fromTruckNumber").value = "";
+			    	/* document.getElementById("fromWaveNumber").value = "";
+			    	document.getElementById("toWaveNumber").value = "";*/
+			    	document.getElementById("fromTruckNumber").value = ""; 
 			    	document.getElementById("toTruckNumber").value = "";
 			    	
 			    }
@@ -142,13 +142,13 @@
 			    
 			</script>
 		</td>
-		<td>Wave Number : </td>
+		<%-- <td>Wave Number : </td>
 		<td>From&nbsp;
 			<input type = "text" name="fromWaveNumber" value= "<%= fromWaveNumber %>" style="width: 100px;">&nbsp;
 			
 		    &nbsp;&nbsp;To&nbsp;
 			<input type = "text" name="toWaveNumber" value= "<%= toWaveNumber %>" style="width: 100px;">&nbsp;
-		</td>	
+		</td>	 --%>
 	</tr>
 	<tr>
 		<td align="bottom">Zone :(, seperated)</td>

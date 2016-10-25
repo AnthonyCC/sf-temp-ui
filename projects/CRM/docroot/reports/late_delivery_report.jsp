@@ -117,7 +117,7 @@ if ("POST".equals(request.getMethod())) {
 <tr valign="BOTTOM" >
         <td width="12%" align="left">CASE/COMPLAINT<BR>CREATED</td>
         <td width="8%" align="left">Delivery<br>Window</td>
-        <td width="6%" align="left">WAVE<br> NUMBER</td>
+   <!--  <td width="6%" align="left">WAVE<br> NUMBER</td> -->
         <td width="6%" align="left">TRUCK<br> NUMBER</td>
         <td width="8%" align="left">STOP<br>SEQUENCE</td>
         <td width="6%" align="left">ORDER<br>NUMBER</td>
@@ -136,7 +136,7 @@ if ("POST".equals(request.getMethod())) {
         <tr valign="BOTTOM" >
             <td width="12%" class="border_bottom"><%=CCFormatter.formatDateTime(lateDlvLine.getTimeCaseOpened())%>&nbsp;</td>
             <td width="8%" class="border_bottom"><%=lateDlvLine.getDisplayableStartTime()+" - "+lateDlvLine.getDisplayableEndTime()%></td>
-            <td width="6%" class="border_bottom"><%=lateDlvLine.getWaveNumber()!=null? lateDlvLine.getWaveNumber():"&nbsp;"%></td>
+        <!--<td width="6%" class="border_bottom"><%-- <%=lateDlvLine.getWaveNumber()!=null? lateDlvLine.getWaveNumber():"&nbsp;"%> --%></td> -->
             <td width="6%" class="border_bottom"><%=lateDlvLine.getTruckNumber()!=null? lateDlvLine.getTruckNumber():"&nbsp;"%></td>
             <td width="8%" class="border_bottom"><%=lateDlvLine.getStopSequence()!=null ? lateDlvLine.getStopSequence() : "&nbsp;"%></td>
             <td width="6%" class="border_bottom"><a href="/main/order_details.jsp?orderId=<%=lateDlvLine.getOrderNumber()%>"><%=lateDlvLine.getOrderNumber()%></a>&nbsp;</td>

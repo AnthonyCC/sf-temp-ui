@@ -45,7 +45,7 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Wave Number</b></span></td>	
+	<!-- <td valign="bottom" class="border_bold"><span class="detail_text"><b>Wave Number</b></span></td> -->	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Truck Number</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
@@ -100,7 +100,7 @@ function openURL(inLocationURL) {
 		<td class="border_bottom">&nbsp;</td>
 		<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(order.getEndTime()) %></span></td>
 		<td class="border_bottom">&nbsp;</td>
-		<td class="border_bottom"><span class="detail_text"><%= order.getWaveNum() %></span></td>
+<%-- 		<td class="border_bottom"><span class="detail_text"><%= order.getWaveNum() %></span></td> --%>
 		<td class="border_bottom">&nbsp;</td>
 		<td class="border_bottom"><span class="detail_text"><%= order.getRouteNum() %></span></td>
 		<td class="border_bottom">&nbsp;</td>
