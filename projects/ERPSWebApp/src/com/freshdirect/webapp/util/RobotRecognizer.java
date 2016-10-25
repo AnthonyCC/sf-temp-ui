@@ -163,32 +163,36 @@ public class RobotRecognizer {
 		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.youdao\\.com/help/webmaster/spider.*"));
 		friendlyRobotPatternSet.add(Pattern.compile("rogerbot.*"));
 		friendlyRobotPatternSet.add(Pattern.compile("Halebot.*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*pinterest*")); // Pinterest/0.2 (+http://www.pinterest.com/)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*pinterest*")); // Pinterest/0.2 (+http://www.pinterest.com/)
 		friendlyRobotPatternSet.add(Pattern.compile("adidxbot.*"));
 		
 		//START : OCT 2016 Start Blocking more bots and crawlers
-		friendlyRobotPatternSet.add(Pattern.compile("*mastercard server*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*slurp*")); // Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)
-		friendlyRobotPatternSet.add(Pattern.compile("*yandexbot*")); // Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)
-		friendlyRobotPatternSet.add(Pattern.compile("*myagent*"));	// MyAgent/1.0
-		friendlyRobotPatternSet.add(Pattern.compile("*test*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*webclient*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*adsbot*")); // AdsBot-Google (+http://www.google.com/adsbot.html)
-		friendlyRobotPatternSet.add(Pattern.compile("*twitterbot*")); // Twitterbot/1.0
-		friendlyRobotPatternSet.add(Pattern.compile("*slackbot*")); // Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)
-		friendlyRobotPatternSet.add(Pattern.compile("*feedfetcher*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*zoombot*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*dwbot*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*yisouspider*")); // YisouSpider
-		friendlyRobotPatternSet.add(Pattern.compile("*wordpress*"));
-		friendlyRobotPatternSet.add(Pattern.compile("*ccbot*")); // CCBot/2.0 (http://commoncrawl.org/faq/)
-		friendlyRobotPatternSet.add(Pattern.compile("*mj12bot*")); // Mozilla/5.0 (compatible; MJ12bot/v1.4.6; http://mj12bot.com/)
-		friendlyRobotPatternSet.add(Pattern.compile("*okhttp*"));  // okhttp/3.4.1
-		friendlyRobotPatternSet.add(Pattern.compile("*maxpointcrawler*")); // MaxPointCrawler/Nutch-1.10 (maxpoint.crawler at maxpointinteractive dot com)
-		friendlyRobotPatternSet.add(Pattern.compile("*alertbot*")); // Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; AlertBot)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*mastercard server*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*slurp*")); // Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*yandexbot*")); // Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*myagent*"));	// MyAgent/1.0
+		friendlyRobotPatternSet.add(Pattern.compile("\\*test*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*webclient*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*adsbot*")); // AdsBot-Google (+http://www.google.com/adsbot.html)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*twitterbot*")); // Twitterbot/1.0
+		friendlyRobotPatternSet.add(Pattern.compile("\\*slackbot*")); // Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*feedfetcher*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*zoombot*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*dwbot*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*yisouspider*")); // YisouSpider
+		friendlyRobotPatternSet.add(Pattern.compile("\\*wordpress*"));
+		friendlyRobotPatternSet.add(Pattern.compile("\\*ccbot*")); // CCBot/2.0 (http://commoncrawl.org/faq/)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*mj12bot*")); // Mozilla/5.0 (compatible; MJ12bot/v1.4.6; http://mj12bot.com/)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*okhttp\\*"));  // okhttp/3.4.1
+		friendlyRobotPatternSet.add(Pattern.compile("\\*maxpointcrawler*")); // MaxPointCrawler/Nutch-1.10 (maxpoint.crawler at maxpointinteractive dot com)
+		friendlyRobotPatternSet.add(Pattern.compile("\\*alertbot*")); // Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; AlertBot)
 		//END : OCT 2016 Start Blocking more bots and crawlers
     }
     
+    public static void main(String a[]) {
+    	
+    	LOGGER.info("IsFriendly Robot :"+ "okhttp/3.4.1" + RobotRecognizer.isFriendlyRobot("okhttp/3.4.1") );
+    }
     
     private final static HashSet hostileAgentSet = new HashSet();
     static {
