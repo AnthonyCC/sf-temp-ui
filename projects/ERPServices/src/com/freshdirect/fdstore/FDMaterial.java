@@ -179,7 +179,7 @@ public class FDMaterial extends FDAttributeProxy {
 	}*/
 	
 	public DayOfWeekSet getBlockedDays(String plantId){
-		return null!=materialPlants.get(plantId)?materialPlants.get(plantId).getBlockedDays():DayOfWeekSet.EMPTY;
+		return null!=materialPlants.get(plantId) && null !=materialPlants.get(plantId).getBlockedDays()?materialPlants.get(plantId).getBlockedDays():DayOfWeekSet.EMPTY;
 	}
 	
 	/*public boolean isKosherProduction(){
