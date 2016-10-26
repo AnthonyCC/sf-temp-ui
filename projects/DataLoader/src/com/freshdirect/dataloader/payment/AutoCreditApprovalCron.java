@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.EJBException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -37,6 +38,11 @@ public class AutoCreditApprovalCron {
 			FDCustomerManagerSB sb = home.create();
 			List ids = sb.getComplaintsForAutoApproval();
 			LOGGER.info("Going to AUTO approve " + ids.size() + " complaints");
+
+			StringBuffer strB=new StringBuffer();
+			strB.append("<table>");
+			boolean errorFlg=false;
+			StringWriter sw=null;
 			for (Iterator i = ids.iterator(); i.hasNext();) {
 				String complaintId = (String) i.next();
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
@@ -44,8 +50,30 @@ public class AutoCreditApprovalCron {
 					sb.approveComplaint(complaintId, true, "SYSTEM", true,ErpServicesProperties.getCreditAutoApproveAmount());
 					LOGGER.info("Auto approve FINISHED for comolaint ID : " + complaintId);
 				} catch (ErpComplaintException ex) {
-					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId);
+					errorFlg=true;
+					sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					populateErrorDetails(strB, complaintId, " Auto approve FAILED ");
+					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
+				}catch (EJBException ex) {
+					errorFlg=true;
+					sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					populateErrorDetails(strB, complaintId, " Auto approve FAILED ");
+					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
+				}catch (Exception ex) {
+					errorFlg=true;
+					sw = new StringWriter();
+					ex.printStackTrace(new PrintWriter(sw));
+					populateErrorDetails(strB, complaintId, " Auto approve FAILED " );
+					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
 				}
+			}
+			
+			if(errorFlg){
+				strB.append("<\table>");
+				email(Calendar.getInstance().getTime(), strB.toString());
+
 			}
 			LOGGER.info("AutoCreditApprovalCron-finished");
 		} catch (Exception e) {
@@ -66,6 +94,17 @@ public class AutoCreditApprovalCron {
 			}
 		}
 		
+	}
+
+	/**
+	 * @param strB
+	 * @param complaintId
+	 * @param message
+	 */
+	private static void populateErrorDetails(StringBuffer strB, String complaintId,
+			String message) {
+		strB.append("<tr>").append("<td>").append("Complaint Id :"+ complaintId).
+		append("</td>").append("<td>Error Message :: "+message).append("<\td><\tr>");
 	}
 
 	static public Context getInitialContext() throws NamingException {
