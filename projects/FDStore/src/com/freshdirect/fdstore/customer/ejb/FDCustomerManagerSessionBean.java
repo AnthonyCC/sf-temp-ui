@@ -2708,9 +2708,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType()) &&
 				order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL) &&
-					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus()) &&
-					EnumTransactionSource.SYSTEM.equals(info.getInitiator())&& !"Could not get AUTHORIZATION".equals(info.getNote())
-					) {
+					(EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus()) || EnumSaleStatus.CANCELED.equals(order.getOrderStatus())) && !"Could not get AUTHORIZATION".equals(info.getNote())) {
 				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
 			}
 			

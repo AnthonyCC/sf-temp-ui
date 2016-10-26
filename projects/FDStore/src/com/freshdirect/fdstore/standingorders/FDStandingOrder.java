@@ -318,7 +318,7 @@ public class FDStandingOrder extends ModelSupport {
 	public static final String DATE_FORMAT_SHORT = "MM/dd/yy";
 	public static final String DATE_FORMAT_LONG =  "EEEE, MMMM d., yyyy";
 
-	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d.");
+	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d");
 	private final DateFormat dateFormatterShort =  new SimpleDateFormat("MM/dd/yy");
 	private final DateFormat dayFormat =  new SimpleDateFormat("EEEE"); 
 	private final DateFormat monthDateFormat =  new SimpleDateFormat("MMMM d"); 
