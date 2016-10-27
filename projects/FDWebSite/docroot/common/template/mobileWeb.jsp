@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%@ taglib uri="fd-features" prefix="features" %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
+<%@ taglib uri='logic' prefix='logic' %>
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	String mobweb_uri = request.getRequestURI();
+	boolean isQS = (mobweb_uri.indexOf("/quickshop/") != -1) ? true : false;
+%>
+<%
+	if (isQS) {
+		%><features:isActive name="isQS20" featureName="quickshop2_0" /><%
+	}
 %>
 <html>
   <head>
@@ -46,18 +61,31 @@
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
     <jwr:style src="/mobileweb.css" media="all" />
+    <%
+		if (isQS) {
+			%><jwr:style src="/quickshop.css" media="all" /><%
+		}
+	%>
     
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
-<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><![endif]-->
-<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>"><!--<![endif]-->
-	
-    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     
+    <%
+		if (isQS) {
+			%><script type="text/javascript">
+	        	function showStandardAds(){		
+	        		$jq('#QSTop').show();
+	        	}
+        	</script><%
+		}
+	%>
+  </head>
+<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
+    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <div class="container-fluid" id="page-content"><!-- body cont s -->
     
 	   	<% if (FDStoreProperties.isAdServerEnabled()) {
@@ -76,12 +104,26 @@
     			<tmpl:get name='tabs'/>
     			<!-- end : tabs -->      
   			</section>
-			    <nav class="leftnav" style="display: none;">
-			      <!-- start : leftnav -->
-			      <tmpl:get name='leftnav'/>
-			      <!-- end : leftnav -->    
-			    </nav>
+		    <nav class="leftnav" style="display: none;">
+		      <!-- start : leftnav -->
+		      <tmpl:get name='leftnav'/>
+		      <!-- end : leftnav -->    
+		    </nav>
+		    <%
+				if (isQS) {
+					%>
+					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
+	                <div class="header">
+	                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
+	                </div><%
+				}
+			%>
 			<tmpl:get name="content" />
+		    <%
+				if (isQS) {
+					%></div><%
+				}
+			%>
 	    </div><!-- content ends above here-->
 	    
 	    <!-- bottom nav s -->
@@ -93,6 +135,13 @@
 
     <tmpl:get name="soytemplates" />
 	<tmpl:get name='soypackage'/>
+	
+	<%
+		if (isQS) { /* right place for this? */
+			%><div id="ModifyBRDContainer"></div><%
+		}
+	%>
+    
 	
     <tmpl:get name="jsmodules" />
 	<tmpl:get name='extraJsModules'/>
