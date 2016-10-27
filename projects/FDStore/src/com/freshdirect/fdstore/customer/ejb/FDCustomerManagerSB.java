@@ -875,5 +875,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<String> getShippingInfoSalesId() throws FDResourceException, RemoteException;
 	
 	public Map<String,Map<String,Integer>> getShippingInfoCartonDetails(List<String> salesIds) throws FDResourceException, RemoteException;
+	
+	public int updateShippingInfoCartonDetails() throws FDResourceException ,RemoteException;
+	
+	public int[] updateShippingInfoTruckDetails(Map<String,ErpShippingInfo> truckMap) throws FDResourceException,RemoteException;
 }
 

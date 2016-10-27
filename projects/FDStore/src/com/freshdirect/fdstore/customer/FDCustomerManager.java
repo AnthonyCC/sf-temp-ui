@@ -141,6 +141,7 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -4875,5 +4876,81 @@ public class FDCustomerManager {
 			}
 			
 			return cartonDetails;
+		}
+		
+		public static int updateShippingInfoCartonDetails() throws FDResourceException {
+
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.updateShippingInfoCartonDetails();
+				
+			} catch (RemoteException e) {
+				LOGGER.error("Error while updating the shipping info carton details "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				LOGGER.error("Error while updating the shipping info carton details "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+			
+		}
+		
+		public static int[] updateShippingInfoTruckDetails() throws FDResourceException {
+
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				
+				List<String> salesIds = sb.getShippingInfoSalesId();
+				if (null != salesIds && !salesIds.isEmpty()) {
+					
+					List<ShippingDetail> trucks  = FDDeliveryManager.getInstance().getTruckDetails();
+
+					Map<String, ErpShippingInfo> erpShippingInfoMap = mapShippingTruckDetails(salesIds, trucks);
+					
+					if (!erpShippingInfoMap.isEmpty()) {
+
+						return sb.updateShippingInfoTruckDetails(erpShippingInfoMap);
+						
+					}else{
+					    LOGGER.info(" ******* truck detail is empty  *********** ");
+					   
+					    return null;
+					}
+
+				 }				
+			} catch (RemoteException e) {
+				LOGGER.error("Error while updating the shipping info truck details "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				LOGGER.error("Error while updating the shipping info truck details "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (Exception e) {
+				LOGGER.error("Error while updating the shipping info truck details "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+			return null;
+		}
+		
+		private static Map<String, ErpShippingInfo> mapShippingTruckDetails(
+				List<String> salesId, List<ShippingDetail> trucks) {
+			Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
+			Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
+
+			for(ShippingDetail shippingDetail: trucks){
+				truckMap.put(shippingDetail.getOrderId(), shippingDetail);
+			}
+			for (String sale : salesId) {
+				ShippingDetail shippingDetail=truckMap.get(sale);
+				if (shippingDetail != null) {
+					erpShippingMap.put(sale, new ErpShippingInfo(shippingDetail.getTruckNumber(), shippingDetail.getStopSquence(),0,0,0));
+				}
+			}
+			return erpShippingMap;
 		}
 }

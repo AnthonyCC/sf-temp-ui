@@ -45,40 +45,27 @@ public class FDShippingInfoCronRunner {
 
 	public static void main(String[] args) {
 		Context ctx = null;
-		List<ShippingDetail> trucks = new ArrayList<ShippingDetail>();
 
 		try {
-
-			LOGGER.info("START ******* CRON SHIPPING INFO UPDATE *********** ");
-			// get the list of sales id to update truck and route number
-
-			List<String> salesIds = FDCustomerManager.getShippingInfoSalesId();
-
-			
-             //Testing sample data  
+			// Testing sample data
 			// populateTestingData(trucks,salesIds);
 
-			if (null != salesIds && !salesIds.isEmpty()) {
-				// get the carton details for the list of sales id's .
-				Map<String, Map<String, Integer>> cartonInfos = FDCustomerManager
-						.getShippingInfoCartonDetails(salesIds);
+			LOGGER.info(" START ******* CRON SHIPPING TRUCK  DETAILS  UPDATE *********** ");
 
-				// Logistics call returns list of sales id with truck
+			int results[] = FDCustomerManager.updateShippingInfoTruckDetails();
 
-				trucks = FDDeliveryManager.getInstance().getTruckDetails();
-				
-				Map<String, ErpShippingInfo> erpShippingInfoMap = mapShippingDetails(cartonInfos,trucks);
-				
-				if (!erpShippingInfoMap.isEmpty()) {
-					ctx = ErpServicesProperties.getInitialContext();
-					ErpCustomerManagerSB sb = lookupErpCustomer(ctx);
+			LOGGER.info(" ******* END  SHIPPING TRUCK DETAILS ROW UPDATED IS  *********** "
+					+ results);
 
-					sb.updateSalesShippingInfo(erpShippingInfoMap);
-				}
+			LOGGER.info("START ******* CRON SHIPPING CARTON DETAILS  UPDATE *********** ");
 
-			}
-		 LOGGER.info("END ******* CRON SHIPPING INFO UPDATE IS SUCCESS *********** ");
+			int result = FDCustomerManager.updateShippingInfoCartonDetails();
+
+			LOGGER.info(" ******* END  SHIPPING CARTON DETAILS ROW UPDATED IS  *********** "
+					+ result);
+
 		} catch (Exception e) {
+
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg = sw.getBuffer().toString();
@@ -97,43 +84,7 @@ public class FDShippingInfoCronRunner {
 		}
 	}
 
-	/**
-	 * @param ctx
-	 * @return
-	 * @throws NamingException
-	 * @throws CreateException
-	 * @throws RemoteException
-	 */
-	private static ErpCustomerManagerSB lookupErpCustomer(Context ctx) throws NamingException,
-			CreateException, RemoteException {
 
-		ErpCustomerManagerHome mgr = (ErpCustomerManagerHome) ctx
-				.lookup("freshdirect.erp.CustomerManager");
-		ErpCustomerManagerSB sb = mgr.create();
-
-		return sb;
-	}
-
-	private static Map<String, ErpShippingInfo> mapShippingDetails(
-			Map<String, Map<String, Integer>> cartonInfos, List<ShippingDetail> trucks) {
-		Map<String, Integer> cartons = null;
-		Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
-		ErpShippingInfo shippingInfo = null;
-
-		for (ShippingDetail truck : trucks) {
-
-			cartons = cartonInfos.get(truck.getOrderId());
-			if (cartons != null) {
-				shippingInfo = new ErpShippingInfo(truck.getTruckNumber(), truck.getStopSquence(),
-						null != cartons.get("Regular") ? cartons.get("Regular").intValue() : 0,
-						null != cartons.get("Freezer") ? cartons.get("Freezer").intValue() : 0,
-						null != cartons.get("Beer") ? cartons.get("Beer").intValue() : 0);
-
-				erpShippingMap.put(truck.getOrderId(), shippingInfo);
-			}
-		}
-		return erpShippingMap;
-	}
 
 	private static void email(Date processDate, String exceptionMsg) {
 		try {

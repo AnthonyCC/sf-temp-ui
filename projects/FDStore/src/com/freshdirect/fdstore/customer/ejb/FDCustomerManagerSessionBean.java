@@ -8300,7 +8300,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	private static final String SHIPPING_INFO_SALES_ID=" SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND "
-					+" SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN SYSDATE-1 AND SYSDATE  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM>=? "
+					+" SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN trunc(SYSDATE)-1 AND trunc(SYSDATE)  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM <= 999 "
 					+"  and S.TRUCK_NUMBER IS NULL ";
 	
 	public List<String> getShippingInfoSalesId() throws FDResourceException {
@@ -8310,9 +8310,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		List<String> shippinginfos = new ArrayList<String>();
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(SHIPPING_INFO_SALES_ID);
 			
-			pstmt.setInt(1, ErpServicesProperties.getShippingDetailRowCount());
+			pstmt = conn.prepareStatement(SHIPPING_INFO_SALES_ID);
 			
 			rset = pstmt.executeQuery();
 			
@@ -8321,6 +8320,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 		} catch (SQLException sqle) {
+			LOGGER.error("SQL exception while retreiving shipping sales id "+ sqle) ;
 			throw new FDResourceException(sqle);
 		} finally {
 			close(rset);
@@ -8367,6 +8367,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 }
 			
 		} catch (SQLException sqle) {
+			LOGGER.error("SQL exception while retreiving shipping sale"+ sqle) ;
 			throw new FDResourceException(sqle);
 		} finally {
 			close(rset);
@@ -8377,5 +8378,85 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 	}
 	
-}
 
+
+
+	private static final String UPDATE_SHIPPING_INFO_CARTON_DETAILS = "update cust.sale s1 "
+			+ " set S1.NUM_REGULAR_CARTONS =(SELECT count(1) FROM CUST.CARTON_INFO CI, CUST.SALE S  WHERE CI.SALE_ID = S.ID  AND S.ID = S1.ID and CI.CARTON_TYPE in ('Case' ,'Regular', 'Platter') ) "
+			+ " , S1.NUM_FREEZER_CARTONS =(SELECT count(1) FROM CUST.CARTON_INFO CI, CUST.SALE S  WHERE CI.SALE_ID = S.ID  AND S.ID = S1.ID and CI.CARTON_TYPE = 'Freezer' )"
+			+ " , S1.NUM_ALCOHOL_CARTONS =(SELECT count(1) FROM CUST.CARTON_INFO CI, CUST.SALE S  WHERE CI.SALE_ID = S.ID  AND S.ID = S1.ID and CI.CARTON_TYPE = 'Beer' )"
+			+ " where s1.id in (SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO','MOD') "
+			+ " AND SA.REQUESTED_DATE = trunc(SYSDATE)  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' and s.NUM_REGULAR_CARTONS = 0 and  s.NUM_FREEZER_CARTONS = 0 and s.NUM_ALCOHOL_CARTONS = 0  and rownum <=999)";
+
+	public int updateShippingInfoCartonDetails() throws FDResourceException {
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = 0;
+		try {
+			conn = getConnection();
+
+			pstmt = conn.prepareStatement(UPDATE_SHIPPING_INFO_CARTON_DETAILS);
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException sqle) {
+			LOGGER.error("SQL exception while updating shipping carton details"+ sqle) ;
+			throw new FDResourceException(sqle);
+		} finally {
+			close(pstmt);
+			close(conn);
+		}
+		return result ;
+
+	}
+	
+
+	private static final String UPDATE_SALE_SHIIPING_DETAIL = " UPDATE CUST.SALE SA  SET SA.TRUCK_NUMBER=? , SA.STOP_SEQUENCE=?  WHERE SA.ID=? ";
+
+	public int[] updateShippingInfoTruckDetails(Map<String,ErpShippingInfo> truckMap) throws FDResourceException {
+
+		PreparedStatement pst = null;
+		ErpShippingInfo shippingInfo = null;
+		Connection conn = null;
+		int result[]=null;
+		try {
+			conn = getConnection();
+			
+			pst = conn.prepareStatement(UPDATE_SALE_SHIIPING_DETAIL);
+
+			for (Map.Entry<String, ErpShippingInfo> shipping : truckMap.entrySet()) {
+				
+				shippingInfo = shipping.getValue();
+				
+				if(null!=shippingInfo.getTruckNumber()){
+					pst.setString(1, shippingInfo.getTruckNumber());
+				}else{
+					pst.setNull(1,java.sql.Types.NULL);
+
+				}if(null!=shippingInfo.getStopSequence()){
+					pst.setString(2, StringUtils.leftPad(shippingInfo.getStopSequence(), 5, "0"));
+				}else{
+					pst.setNull(2,java.sql.Types.NULL);
+
+				}
+				pst.setString(3, shipping.getKey());
+				
+				pst.addBatch();
+
+			}
+			if(!truckMap.isEmpty()){
+				 result = pst.executeBatch();
+			}
+			
+		} catch(SQLException ex ){
+			LOGGER.error("SQL exception while updating shipping truck details"+ ex) ;
+			throw new FDResourceException(ex);
+		}finally {
+			close(pst);
+			close(conn);
+		}
+		return result;
+	}
+
+	
+}
