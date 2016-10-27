@@ -276,7 +276,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public OrderHistoryI getWebOrderHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
     
 	public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType paymentType) throws ErpSaleNotFoundException, RemoteException; 
-	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException, RemoteException;
     
     public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException;
     

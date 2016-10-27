@@ -2,7 +2,6 @@ package com.freshdirect.customer.ejb;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.ejb.CreateException;
@@ -38,7 +37,5 @@ public interface ErpSaleHome extends EJBHome {
 	public Collection<PrimaryKey> findByDeliveryPassId(String dlvPassId) throws FinderException, RemoteException;
 	
 	public ErpSaleEB findByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws FinderException, RemoteException;
-	
-	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws FinderException, RemoteException;
 	
 }

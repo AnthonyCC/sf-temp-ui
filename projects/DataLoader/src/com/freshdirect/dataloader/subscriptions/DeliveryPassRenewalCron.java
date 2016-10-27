@@ -25,11 +25,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumNotificationType;
-import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -198,7 +196,7 @@ public class DeliveryPassRenewalCron {
 			return exists?_pymtMethod:null;	
 		else {
 			for (ErpPaymentMethodI temp : matchedPymtMethods) {
-				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || !isExpiredCC(temp)) {
+				if(!isExpiredCC(temp)) {
 					return temp;
 				}
 			}
@@ -219,7 +217,7 @@ public class DeliveryPassRenewalCron {
 			identity=getFDIdentity(erpCustomerID);
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
 			if(pymtMethod!=null) {
-				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
+				if(isExpiredCC(pymtMethod)) {
 					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
 					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
@@ -392,7 +390,7 @@ public class DeliveryPassRenewalCron {
 	private static FDOrderI getLastNonCOSOrderUsingCC(String erpCustomerID) throws FDResourceException {
 
 		try {
-			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
+			return FDCustomerManager.getLastNonCOSOrderUsingCC(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
 		} catch (FDResourceException e) {
 			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
 			StringWriter sw = new StringWriter();
