@@ -11,7 +11,7 @@ var API;
 					"zposition": "front"
 				},
 				"navbar": {
-					"title": "<img src=\"/media/mobileweb/images/topbar-fd-logo.png\" alt=\"FreshDirect\" class=\"img-responsive\" />"
+					"title": '<img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="navbar-brand img-responsive" />'
 				},
 				/*"navbars": [
 					{
@@ -56,6 +56,12 @@ var API;
 			});
 			$('.logout>a').on('click', function(e) {
 				window.top.location = '/logout.jsp';
+			});
+			$(".navbar-brand").on('click', function(e) {
+				e.stopPropagation();
+				e.preventDefault();
+				window.location = "/";
+				return false;
 			});
 			
 			/*
