@@ -73,7 +73,7 @@
 			<artifactId>weblogic-lib</artifactId>
 			<version>10.3.6</version>
 			<scope>system</scope>
-			<systemPath>${WL_HOME}/lib/weblogic.jar</systemPath>
+			<systemPath>${wl.home}/lib/weblogic.jar</systemPath>
 		</dependency>
 
 		<dependency>
