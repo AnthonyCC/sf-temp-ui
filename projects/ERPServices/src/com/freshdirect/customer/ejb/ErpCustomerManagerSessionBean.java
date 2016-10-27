@@ -978,7 +978,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				invoice.setCouponTransModel(transModel);
 			}
 			eb.addInvoice(invoice);
-			eb.updateShippingInfo(shippingInfo);
+//			eb.updateShippingInfo(shippingInfo);//APPDEV-5319: HRY - Invoice export changes.
 
 			LOGGER.info("Add invoice - done. saleId=" + saleId);
 
