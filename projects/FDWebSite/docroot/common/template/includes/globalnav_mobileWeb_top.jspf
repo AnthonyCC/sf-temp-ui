@@ -126,39 +126,41 @@
 		</li>
 		
 		<li class="navMenuItems-topIcons">
-			<span>
-				<div class="iconnav icon-browse-tag"></div>
-				<span class="navlabel">More ways to shop</span>
-			</span>
-			<ul class="navMenuItems-shopmore rem-navbar">
-				<li>
-					<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/browse.jsp?id=deals">Deals</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/browse.jsp?id=top_rated">Top-Rated</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="http://blog.freshdirect.com/">Ideas</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/browse.jsp?id=local">Local</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/category.jsp?catId=our_picks_gltnfr">Gluten-Free</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Organic & All-Natural</a></span>
-				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Kosher</a></span>
-				</li>
-			</ul>
+			<fd:IncludeMedia name="/media/mobileweb/nav/more_ways.ftl">
+				<span>
+					<div class="iconnav icon-browse-tag"></div>
+					<span class="navlabel">More ways to shop</span>
+				</span>
+				<ul class="navMenuItems-shopmore rem-navbar">
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=deals">Deals</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=top_rated">Top-Rated</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="http://blog.freshdirect.com/">Ideas</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=local">Local</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/category.jsp?catId=our_picks_gltnfr">Gluten-Free</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Organic & All-Natural</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Kosher</a></span>
+					</li>
+				</ul>
+			</fd:IncludeMedia>
 		</li>
 		
 		<li class="hide-on-subopen no-divider">
