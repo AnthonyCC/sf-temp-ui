@@ -231,6 +231,7 @@ import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.mail.EnumEmailType;
@@ -8392,50 +8393,96 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final String UPDATE_SALE_SHIIPING_DETAIL = " UPDATE CUST.SALE SA  SET SA.TRUCK_NUMBER=? , SA.STOP_SEQUENCE=?  WHERE SA.ID=? ";
 
-	public int[] updateShippingInfoTruckDetails(Map<String,ErpShippingInfo> truckMap) throws FDResourceException {
+	public int[] updateShippingInfoTruckDetails() throws FDResourceException {
 
 		PreparedStatement pst = null;
 		ErpShippingInfo shippingInfo = null;
 		Connection conn = null;
-		int result[]=null;
+		int result[] = null;
 		try {
-			conn = getConnection();
-			
-			pst = conn.prepareStatement(UPDATE_SALE_SHIIPING_DETAIL);
 
-			for (Map.Entry<String, ErpShippingInfo> shipping : truckMap.entrySet()) {
-				
-				shippingInfo = shipping.getValue();
-				
-				if(null!=shippingInfo.getTruckNumber()){
-					pst.setString(1, shippingInfo.getTruckNumber());
-				}else{
-					pst.setNull(1,java.sql.Types.NULL);
+			List<String> salesIds = getShippingInfoSalesId();
+            
+			Map<String, ErpShippingInfo> erpShippingInfoMap = mapShippingTruckDetails(salesIds);
 
-				}if(null!=shippingInfo.getStopSequence()){
-					pst.setString(2, StringUtils.leftPad(shippingInfo.getStopSequence(), 5, "0"));
-				}else{
-					pst.setNull(2,java.sql.Types.NULL);
+			if (!erpShippingInfoMap.isEmpty()) {
+
+				conn = getConnection();
+
+				pst = conn.prepareStatement(UPDATE_SALE_SHIIPING_DETAIL);
+
+				for (Map.Entry<String, ErpShippingInfo> shipping : erpShippingInfoMap.entrySet()) {
+
+					shippingInfo = shipping.getValue();
+
+					if (null != shippingInfo.getTruckNumber()) {
+						pst.setString(1, shippingInfo.getTruckNumber());
+					} else {
+						pst.setNull(1, java.sql.Types.NULL);
+
+					}
+					if (null != shippingInfo.getStopSequence()) {
+						pst.setString(2,
+								StringUtils.leftPad(shippingInfo.getStopSequence(), 5, "0"));
+					} else {
+						pst.setNull(2, java.sql.Types.NULL);
+
+					}
+					pst.setString(3, shipping.getKey());
+
+					pst.addBatch();
 
 				}
-				pst.setString(3, shipping.getKey());
-				
-				pst.addBatch();
+				if (!erpShippingInfoMap.isEmpty()) {
+					result = pst.executeBatch();
+				}
 
 			}
-			if(!truckMap.isEmpty()){
-				 result = pst.executeBatch();
-			}
-			
-		} catch(SQLException ex ){
-			LOGGER.error("SQL exception while updating shipping truck details"+ ex) ;
+		} catch (SQLException ex) {
+			LOGGER.error("SQL exception while updating shipping truck details" + ex);
 			throw new FDResourceException(ex);
-		}finally {
+		} finally {
 			close(pst);
 			close(conn);
 		}
 		return result;
 	}
 
+	public List<ShippingDetail> getTruckDetails() throws FDResourceException{
+		
+		return FDDeliveryManager.getInstance().getTruckDetails();
+
+	}
 	
+	
+	private Map<String, ErpShippingInfo> mapShippingTruckDetails(List<String> salesId)
+			throws FDResourceException {
+		Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
+		Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
+
+		if (salesId != null) {
+			List<ShippingDetail> shippingDetails = getTruckDetails();
+
+			if (null != shippingDetails) {
+				for (ShippingDetail shippingDetail : shippingDetails) {
+					truckMap.put(shippingDetail.getOrderId(), shippingDetail);
+				}
+				for (String sale : salesId) {
+					ShippingDetail shippingDetail = truckMap.get(sale);
+					if (shippingDetail != null) {
+						erpShippingMap.put(
+								sale,
+								new ErpShippingInfo(shippingDetail.getTruckNumber(), shippingDetail
+										.getStopSquence(), 0, 0, 0));
+					}
+				}
+			}else{
+				LOGGER.info("Shipping Info cron Truck *********** no truck details from logistic");
+
+			}
+		}else{
+			LOGGER.info("Shipping Info cron Truck *********** no sales id's to run ");
+		}
+		return erpShippingMap;
+	}
 }

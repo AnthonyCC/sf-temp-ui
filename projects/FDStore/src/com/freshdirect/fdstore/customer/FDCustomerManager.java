@@ -4886,25 +4886,9 @@ public class FDCustomerManager {
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
-				
-				List<String> salesIds = sb.getShippingInfoSalesId();
-				if (null != salesIds && !salesIds.isEmpty()) {
-					
-					List<ShippingDetail> trucks  = FDDeliveryManager.getInstance().getTruckDetails();
 
-					Map<String, ErpShippingInfo> erpShippingInfoMap = mapShippingTruckDetails(salesIds, trucks);
-					
-					if (!erpShippingInfoMap.isEmpty()) {
-
-						return sb.updateShippingInfoTruckDetails(erpShippingInfoMap);
-						
-					}else{
-					    LOGGER.info(" ******* truck detail is empty  *********** ");
-					   
-					    return null;
-					}
-
-				 }				
+						return sb.updateShippingInfoTruckDetails();
+									
 			} catch (RemoteException e) {
 				LOGGER.error("Error while updating the shipping info truck details "+ e);
 				invalidateManagerHome();
@@ -4918,23 +4902,6 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
 			}
-			return null;
 		}
 		
-		private static Map<String, ErpShippingInfo> mapShippingTruckDetails(
-				List<String> salesId, List<ShippingDetail> trucks) {
-			Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
-			Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
-
-			for(ShippingDetail shippingDetail: trucks){
-				truckMap.put(shippingDetail.getOrderId(), shippingDetail);
-			}
-			for (String sale : salesId) {
-				ShippingDetail shippingDetail=truckMap.get(sale);
-				if (shippingDetail != null) {
-					erpShippingMap.put(sale, new ErpShippingInfo(shippingDetail.getTruckNumber(), shippingDetail.getStopSquence(),0,0,0));
-				}
-			}
-			return erpShippingMap;
-		}
 }

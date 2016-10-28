@@ -103,6 +103,7 @@ import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 
 /**
  *
@@ -876,6 +877,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public int updateShippingInfoCartonDetails() throws FDResourceException ,RemoteException;
 	
-	public int[] updateShippingInfoTruckDetails(Map<String,ErpShippingInfo> truckMap) throws FDResourceException,RemoteException;
+	public int[] updateShippingInfoTruckDetails() throws FDResourceException,RemoteException;
+	
+	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
+
 }
 
