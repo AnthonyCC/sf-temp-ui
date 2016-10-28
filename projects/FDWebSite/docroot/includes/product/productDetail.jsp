@@ -111,8 +111,8 @@
 						
 						<div class="pdp-atc<%= (StandingOrderHelper.isEligibleForSo3_0(user)) ? " soShow" : "" %>">
 							<div class="pdp-atc-buttons"><%-- nice class, except the buttons AREN'T IN THIS DIV --%>
-								<div><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
-								<div><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
+								<div class="pdp-subtotal-cont"><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
+								<div class="pdp-skucontrol-cont"><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
 							</div>
 								
 							<div class="pdp-atc-buttons-cont"><%-- new class for mobWeb --%>
@@ -129,7 +129,8 @@
 			</div>
 			
 			<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
-					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+				<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+				
 				<% if (false) { /* excluding these for now */ %>
 						<%-- don't show evenBetter if we're in group scale context --%>
 					<c:if test="${empty param.grpId}">
@@ -140,6 +141,7 @@
 					</c:if>
 					<soy:render template="pdp.likethat" data="${xsell}" />
 				<% } %>
+				
 				<soy:render template="pdp.compOptProducts" data="${productExtraPotato}" />
 			</div>
 			

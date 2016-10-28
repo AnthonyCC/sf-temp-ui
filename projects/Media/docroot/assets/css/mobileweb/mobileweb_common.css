@@ -681,6 +681,7 @@ footer .copyright {
 	.pdp .prodDetail-atc .skucontrol-variations-item select {
 		max-width: 100%;
 	}
+	.prodDetail-atc .pdp-skucontrol-cont,
 	.prodDetail-atc .qtyinput {
 		display: block;
     	clear: both;
