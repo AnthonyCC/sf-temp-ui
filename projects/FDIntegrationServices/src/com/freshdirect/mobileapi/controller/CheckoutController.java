@@ -558,6 +558,7 @@ public class CheckoutController extends BaseController {
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
 
             if (isCheckLoginStatusEnable(request)) {
+                user.setUserContext();
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
                 DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();

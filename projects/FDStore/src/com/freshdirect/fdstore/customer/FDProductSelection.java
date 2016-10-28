@@ -89,13 +89,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setVariantId(variantId);
 		//For now setting the default. Need to be parameterized
 		this.orderLine.setUserContext(ctx);
-		
 		this.orderLine.setEStoreId(ctx.getStoreContext().getEStoreId());
 		this.orderLine.setPlantID(getPickingPlantId());
-		
-		
-		
-		
 	}
 
 	protected FDProductSelection(ErpOrderLineModel orderLine, final boolean lazy) {

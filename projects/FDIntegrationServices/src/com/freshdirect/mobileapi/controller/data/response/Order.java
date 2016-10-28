@@ -7,19 +7,19 @@ import com.freshdirect.mobileapi.controller.data.Message;
 
 /**
  * Order review data.
- *   
- * @author Rob
- *
  */
 public class Order extends Message implements HasCartDetailField {
 
+    private Date reservationDateTime;
+    private String reservationTimeRange;
+    private DeliveryAddress deliveryAddress;
+    private PaymentMethod paymentMethod;
+    private CartDetail cartDetail;
     private String status;
-
     private Date modificationCutoffTime;
-    
     private String deliveryZone;
-        
     private String orderNumber;
+    private boolean modifiable;
     
     public String getDeliveryZone() {
 		return deliveryZone;
@@ -36,8 +36,6 @@ public class Order extends Message implements HasCartDetailField {
     public void setModifiable(boolean modifiable) {
         this.modifiable = modifiable;
     }
-
-    private boolean modifiable;
 
     public String getModificationCutoffTime() {
         String formatterDate = null;
@@ -59,17 +57,11 @@ public class Order extends Message implements HasCartDetailField {
     public void setModificationCutoffTime(Date modificationCutoffTime) {
         this.modificationCutoffTime = modificationCutoffTime;
     }
-
-    private Date reservationDateTime;
-
-    private String reservationTimeRange;
-
-    private DeliveryAddress deliveryAddress;
-
-    private PaymentMethod paymentMethod;
-
-    private CartDetail cartDetail;
-
+    
+    public Date getModificationCutoffDate() {
+        return modificationCutoffTime;
+    }
+    
     @Override
     public String getStatus() {
         return status;
@@ -92,6 +84,10 @@ public class Order extends Message implements HasCartDetailField {
         this.reservationDateTime = reservationDateTime;
     }
 
+    public Date getReservationDate() {
+        return reservationDateTime;
+    }
+    
     public DeliveryAddress getDeliveryAddress() {
         return deliveryAddress;
     }

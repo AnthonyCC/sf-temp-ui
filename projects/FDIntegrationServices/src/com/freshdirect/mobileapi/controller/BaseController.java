@@ -735,31 +735,39 @@ public abstract class BaseController extends AbstractController implements Messa
         // populate welcome carousel image banners
         if (isWebRequest) {
             final StoreModel store = ContentFactory.getInstance().getStore();
+            List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
             List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
-            List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>(imageBanners.size());
-            for (ImageBanner imageBanner : imageBanners) {
-                cmsImageBanners.add(convertImageBanner(imageBanner));
+            if (imageBanners != null) {
+                for (ImageBanner imageBanner : imageBanners) {
+                    CMSImageBannerModel cmsImageBanner = convertImageBanner(imageBanner);
+                    if (cmsImageBanner != null){
+                        cmsImageBanners.add(cmsImageBanner);
+                    }
+                }
             }
             pageResponse.setWelcomeCarouselBanners(cmsImageBanners);
         }
     }
 
     private CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
-        CMSImageBannerModel cmsImageBanner = new CMSImageBannerModel();
-        cmsImageBanner.setComponentType(CMSComponentType.BANNER);
-        cmsImageBanner.setName(imageBanner.getName());
-        cmsImageBanner.setDescription(imageBanner.getDescription());
-        cmsImageBanner.setType(imageBanner.getType());
-        cmsImageBanner.setImage(convertImage(imageBanner.getImageBannerImage()));
-        cmsImageBanner.setTarget(convertTarget(imageBanner.getTarget()));
-        cmsImageBanner.setLinkOneTarget(convertTarget(imageBanner.getLinkOneTarget()));
-        cmsImageBanner.setLinkOneText(imageBanner.getLinkOneText());
-        cmsImageBanner.setLinkOneType(imageBanner.getLinkOneType());
-        cmsImageBanner.setLinkOneURL(imageBanner.getLinkOneURL());
-        cmsImageBanner.setLinkTwoTarget(convertTarget(imageBanner.getLinkTwoTarget()));
-        cmsImageBanner.setLinkTwoText(imageBanner.getLinkTwoText());
-        cmsImageBanner.setLinkTwoType(imageBanner.getLinkTwoType());
-        cmsImageBanner.setLinkTwoURL(imageBanner.getLinkTwoURL());
+        CMSImageBannerModel cmsImageBanner = null;
+        if (imageBanner != null){
+            cmsImageBanner = new CMSImageBannerModel();
+            cmsImageBanner.setComponentType(CMSComponentType.BANNER);
+            cmsImageBanner.setName(imageBanner.getName());
+            cmsImageBanner.setDescription(imageBanner.getDescription());
+            cmsImageBanner.setType(imageBanner.getType());
+            cmsImageBanner.setImage(convertImage(imageBanner.getImageBannerImage()));
+            cmsImageBanner.setTarget(convertTarget(imageBanner.getTarget()));
+            cmsImageBanner.setLinkOneTarget(convertTarget(imageBanner.getLinkOneTarget()));
+            cmsImageBanner.setLinkOneText(imageBanner.getLinkOneText());
+            cmsImageBanner.setLinkOneType(imageBanner.getLinkOneType());
+            cmsImageBanner.setLinkOneURL(imageBanner.getLinkOneURL());
+            cmsImageBanner.setLinkTwoTarget(convertTarget(imageBanner.getLinkTwoTarget()));
+            cmsImageBanner.setLinkTwoText(imageBanner.getLinkTwoText());
+            cmsImageBanner.setLinkTwoType(imageBanner.getLinkTwoType());
+            cmsImageBanner.setLinkTwoURL(imageBanner.getLinkTwoURL());
+        }
         return cmsImageBanner;
     }
     
@@ -774,11 +782,14 @@ public abstract class BaseController extends AbstractController implements Messa
         return encodedKey;
     }
 
-    private CMSImageModel convertImage(Image image){
-        CMSImageModel cmsImage = new CMSImageModel();
-        cmsImage.setPath(image.getPath());
-        cmsImage.setHeight(image.getHeight());
-        cmsImage.setWidth(image.getWidth());
+    private CMSImageModel convertImage(Image image) {
+        CMSImageModel cmsImage = null;
+        if (image != null) {
+            cmsImage = new CMSImageModel();
+            cmsImage.setPath(image.getPath());
+            cmsImage.setHeight(image.getHeight());
+            cmsImage.setWidth(image.getWidth());
+        }
         return cmsImage;
     }
 
@@ -809,7 +820,7 @@ public abstract class BaseController extends AbstractController implements Messa
         } else {
             pages = getCachedPages(pageRequest);
             if (isCachedPagesInvalid(pageRequest, pages)) {
-                CMSContentFactory.getInstance().cacheAllPages();
+                CMSContentFactory.getInstance().cacheAllPages(pageRequest);
                 pages = getCachedPages(pageRequest);
             }
         }

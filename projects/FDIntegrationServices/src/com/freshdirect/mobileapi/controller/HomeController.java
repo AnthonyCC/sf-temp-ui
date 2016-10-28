@@ -233,7 +233,7 @@ public class HomeController extends BaseController {
     private ModelAndView getCMSPages(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
         CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 
-        if (!pageRequest.isPreview()) {
+        if (!pageRequest.isPreview() && pageRequest.getPlantId() == null) {
             pageRequest.setPlantId(BrowseUtil.getPlantId(user));
         }
 

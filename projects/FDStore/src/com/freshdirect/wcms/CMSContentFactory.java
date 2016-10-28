@@ -99,9 +99,13 @@ public class CMSContentFactory {
 	}
 	
 	public void cacheAllPages(){
+	    CMSPageRequest pageRequest = new CMSPageRequest();
+        pageRequest.setPlantId(ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId());
+	    cacheAllPages(pageRequest);
+	}
+	
+	public void cacheAllPages(CMSPageRequest pageRequest){
 		LOG.debug("Loading all pages in cache "+ new Date());
-		CMSPageRequest pageRequest = new CMSPageRequest();
-		pageRequest.setPlantId(ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId());
 		List<CMSWebPageModel> pages = getCMSPageByParameters(pageRequest);
 		EhCacheUtil.clearCache(FEED_CACHE);
 		for(CMSWebPageModel page: pages){
@@ -110,7 +114,6 @@ public class CMSContentFactory {
 			}
 		}
 	}
-	
 	
 	public class PickListLoaderTask extends TimerTask {
 
@@ -195,8 +198,7 @@ public class CMSContentFactory {
     }
 	
 	public final CMSWebPageModel getCMSPageByName(String pageName){
-		CMSWebPageModel page = (CMSWebPageModel) EhCacheUtil.getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
-		return page;
+		return (CMSWebPageModel) EhCacheUtil.getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
 	}
 	
 	public final CMSWebPageModel getCMSPage(ContentNodeI contentNode, CMSPageRequest request){

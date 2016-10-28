@@ -595,7 +595,7 @@ function loadStuff() {
   } else if(loaddata == "SetMobilePreferencesWeb") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO" }');
-  	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"');
+  	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
 
   } else if(loaddata == "SetEmailPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setemailpreferences/");
@@ -939,6 +939,11 @@ function loadStuff() {
   } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#header").val('');
+  	$("#payload").val("");
+
+  } else if (loaddata == "HelpWeb") {
+  	$("#url").val("/help/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
   	$("#payload").val("");
 
   } else if (loaddata == "HelpContactUs") {
@@ -1692,6 +1697,7 @@ function doStuff() {
 
   <option value=""> ========== HELP ========== </option>
   <option value="Help">Help</option>
+  <option value="HelpWeb">Help Web</option>
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
   <option value="CustomerAgreement">Help - Customer Agreement</option>
