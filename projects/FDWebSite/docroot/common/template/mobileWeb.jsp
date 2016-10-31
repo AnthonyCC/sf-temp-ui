@@ -34,7 +34,8 @@
 	<meta name="fragment" content="!">
     
     <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-    	
+    
+    <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
 	<fd:LocationHandler/>
 	<%
 		AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
@@ -51,6 +52,10 @@
 		};
 	</script>
 	
+    <jwr:script src="/locabar.js" useRandomParam="false" />
+	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
+    
+    	
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -60,12 +65,13 @@
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
-    <jwr:style src="/mobileweb.css" media="all" />
+	<fd:css href="/assets/css/common/locationbar_fdx.css" />
     <%
 		if (isQS) {
 			%><jwr:style src="/quickshop.css" media="all" /><%
 		}
 	%>
+    <jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
     
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
@@ -87,18 +93,54 @@
 <!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <div class="container-fluid" id="page-content"><!-- body cont s -->
-    
-	   	<% if (FDStoreProperties.isAdServerEnabled()) {
-			%><div id="OAS_SystemMessage">
-	  			<script type="text/javascript">OAS_AD('SystemMessage');</script>
-	  		</div><% 
-	  	} %>
 		
 		<!-- top nav s -->
 		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
 		<!-- top nav e -->
 		
 		<div id="content" autoscroll="true"><!-- content starts here-->
+			<!-- popcart s -->
+				<%-- PLACEHOLDER(S) FOR NOW --%>
+			<!-- popcart e -->
+		
+		   	<!-- messages s -->
+		   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
+		  	
+		  	<% if (FDStoreProperties.isAdServerEnabled()) {
+				%><div id="OAS_SystemMessage">
+  					<script type="text/javascript">OAS_AD('SystemMessage');</script>
+  				</div>
+			<% } else { %>
+		    	<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+			    <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+			        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+			            <tr align="center">
+			                <td>
+			                    <font class="text12rbold"><%=ann.getHeader()%></font><br>
+			                    <%=ann.getCopy()%>
+			                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+			                </td>
+			            </tr>
+			            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+			        </table><br>
+			    </logic:iterate></fd:GetSiteAnnouncements></div><%
+			} %>
+
+			<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+
+    		<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
+    
+		   	<!-- messages e -->
+		   	
+		   	<!-- modorder s -->
+		   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
+		   	<div id="modifyorderalert_cont" class="NOMOBWEB">
+			   	<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+					<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+				</div>
+		   	</div>
+		   	<!-- modorder e -->
+		
 			<section class="tabs" style="display: none;">
     			<!-- start : tabs -->
     			<tmpl:get name='tabs'/>

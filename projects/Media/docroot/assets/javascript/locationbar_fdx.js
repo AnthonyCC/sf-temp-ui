@@ -1,50 +1,62 @@
 function centerLoginModal() {
-	$jq( '#login_cont_formContent' ).position({
-		my: 'center',
-		at: 'center',
-		of: window
-	});
+	if ($jq('#login_cont_formContent').length) {
+		$jq( '#login_cont_formContent' ).position({
+			my: 'center',
+			at: 'center',
+			of: window
+		});
+	}
 }
 
 /* fix cart for now, until actual solution is found */
 $jq(document).on('ready', function() {
-	$jq('#popupcart').appendTo('#locabar_popupcart');
-	
-	$jq( '#locabar_popupcart' ).position({
-		my: 'right top',
-		at: 'right bottom+8',
-		of: '#locabar_popupcart_trigger'
-	});
-	
-	//window.setTimeout(function() {
-		/* add an additional align for timing */
-		//$jq( '#locabar_popupcart' ).position({
-		//	my: 'right top',
-		//	at: 'right bottom-12',
-		//	of: '#locabar_popupcart_trigger'
-		//});
-		//if ($jq( '#locabar_popupcart' ).css('top') === '10px' 
-		//}, 1000);
+	if ($jq('#popupcart').length) {
+		$jq('#popupcart').appendTo('#locabar_popupcart');
+		
+		$jq( '#locabar_popupcart' ).position({
+			my: 'right top',
+			at: 'right bottom+8',
+			of: '#locabar_popupcart_trigger'
+		});
+		
+		//window.setTimeout(function() {
+			/* add an additional align for timing */
+			//$jq( '#locabar_popupcart' ).position({
+			//	my: 'right top',
+			//	at: 'right bottom-12',
+			//	of: '#locabar_popupcart_trigger'
+			//});
+			//if ($jq( '#locabar_popupcart' ).css('top') === '10px' 
+			//}, 1000);
+	}
 });
 
 /* right align this one arrow */
-$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
-	my: 'right top',
-	at: 'right-20 top-16',
-	of: '#locabar_popupcart'
-});
+if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
+	$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
+		my: 'right top',
+		at: 'right-20 top-16',
+		of: '#locabar_popupcart'
+	});
+}
 
 /* align to triggers */
-$jq( '#locabar_addresses' ).position({
-	my: 'center top',
-	at: 'center bottom+8',
-	of: '#locabar_addresses_trigger'
-});
-$jq( '#locabar_user' ).position({
-	my: 'center top',
-	at: 'center bottom+8',
-	of: '#locabar_user_trigger'
-});
+
+if ($jq('#locabar_addresses').length) {
+	$jq( '#locabar_addresses' ).position({
+		my: 'center top',
+		at: 'center bottom+8',
+		of: '#locabar_addresses_trigger'
+	});
+}
+
+if ($jq('#locabar_user').length) {
+	$jq( '#locabar_user' ).position({
+		my: 'center top',
+		at: 'center bottom+8',
+		of: '#locabar_user_trigger'
+	});
+}
 
 function showOverlay(zIndexVar) {
 	var zIndex = zIndexVar || 0;

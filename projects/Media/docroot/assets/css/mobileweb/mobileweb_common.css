@@ -204,7 +204,7 @@ body.no-scroll {
 	position: absolute;
 	font-size: 20px;
 	left: 10px;
-	top: 10px;
+	top: 6px;
 }
 input[type="text"], input[type="email"], input[type="password"] {
 	border-top: 2px solid #ffffff;
@@ -533,6 +533,25 @@ footer .copyright {
 .no-divider:after {
 	border-bottom-width: 0;
 }
+
+.NOMOBWEB { /* generic hidden class */
+	display: none;
+	visibility: hidden;
+}
+
+/* global nav overrides */
+	#topSearchField {
+		float: none;
+	}
+	#messages, .alert-cont {
+		width: 100%;
+	}
+
+/* OAS */
+	.oas-cnt img {
+	    max-width: 100%;
+	}
+
 
 /* generic accord */
 	.gen-accord-toggler-arrow {

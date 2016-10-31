@@ -12,6 +12,6 @@
 	<ul class="content"></ul>
 	<hr class="shadow">
 	<div class="handler close-handler" id="locabar-messages-close"></div>
-	<br />
+	<br class="NOMOBWEB" />
 </div>
 <fd:javascript src="/assets/javascript/messages.js"/>
