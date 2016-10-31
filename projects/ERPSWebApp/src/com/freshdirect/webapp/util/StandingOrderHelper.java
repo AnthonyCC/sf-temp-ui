@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -28,6 +29,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -918,17 +920,30 @@ public class StandingOrderHelper {
 	}
 	
 	public static void populateSO3TimeslotDetails(FDUserI user, String deliveryTimeSlotId,
-			ErpAddressModel erpAddress, String soNextDeliveryDate) throws ParseException, FDResourceException{
-			FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, erpAddress.getBuildingId(), true);
-			user.getCurrentStandingOrder().setNextDeliveryDate(DateUtil.parseMDY(soNextDeliveryDate));
-			FDStandingOrder so=user.getCurrentStandingOrder();
-			so.setStartTime(timeSlot.getStartTime());
-			so.setEndTime(timeSlot.getEndTime());
-			so.setTimeSlotId(timeSlot.getId());
-			Calendar c = Calendar.getInstance();
-			c.setTime(so.getNextDeliveryDate());
-			so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
+			ErpAddressModel erpAddress, String soNextDeliveryDate) throws ParseException,
+			FDResourceException {
+		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId,erpAddress.getBuildingId(), true);
+
+		FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());
+		FDStandingOrder so = user.getCurrentStandingOrder();
+		user.getCurrentStandingOrder().setNextDeliveryDate(DateUtil.parseMDY(soNextDeliveryDate));
+
+		if (null != history.getFDOrderInfos() && !history.getFDOrderInfos().isEmpty()) {
+			for (FDOrderInfoI fdOrderInfo : history.getFDOrderInfos()) {
+				if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency()>0) {
+					user.getCurrentStandingOrder().calculateNextDeliveryDate(
+							so.getNextDeliveryDate());
+					break;
+				}
+			}
 		}
+		so.setStartTime(timeSlot.getStartTime());
+		so.setEndTime(timeSlot.getEndTime());
+		so.setTimeSlotId(timeSlot.getId());
+		Calendar c = Calendar.getInstance();
+		c.setTime(so.getNextDeliveryDate());
+		so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
+	}
 	
 	public static void loadSO3CartTimeSlot(FormTimeslotData timeslotData,FDStandingOrder so) {
         if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){

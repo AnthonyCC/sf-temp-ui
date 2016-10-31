@@ -189,19 +189,19 @@ function soSaved(id, activatedAndHasAddress, isNewSO){
 		$jq(".standing-orders-3-so-new-saved").addClass("show");
 		setTimeout(function(){
 			$jq(".standing-orders-3-so-new-saved.show").removeClass("show");
-		}, 3000);
+		}, 5000);
 	} else {
 		if(activatedAndHasAddress){
 			$jq(soID).addClass("show-saved");
 			$jq(soID).addClass("show-saved-activated");
 			setTimeout(function(){
 				$jq(soID).removeClass("show-saved").removeClass("show-saved-activated").removeClass("drawer-saved").removeClass("cart-saved");
-			}, 3000);
+			}, 5000);
 		} else {
 			$jq(soID).addClass("show-saved");
 			setTimeout(function(){
 				$jq(soID).removeClass("show-saved").removeClass("drawer-saved").removeClass("cart-saved");
-			}, 3000);
+			}, 5000);
 		}
 	}
 }
@@ -294,7 +294,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 			if(data.standingOrderResponseData.activate){
     			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
 	      	}
-		}, 3000);
+		}, 7000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
 		getSOData(id, "soItemUpdate");

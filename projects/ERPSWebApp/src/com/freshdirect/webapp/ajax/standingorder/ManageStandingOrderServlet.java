@@ -224,7 +224,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					//no response
 				}
 			}else{
-				throw new ServletException("Reload the page");
+				//throw new ServletException("Reload the page");
+				response.sendRedirect(response.encodeRedirectURL("/quickshop/standing_orders.jsp")) ;
 		   }
 		} catch (FDResourceException e) {
 			throw new ServletException(e);
