@@ -221,6 +221,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 
 		//}
 		try {
@@ -272,6 +273,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setVendorEWalletID(rs.getString("VENDOR_EWALLET_ID"));
 				model.setEmailID(rs.getString("PAYPAL_ACCOUNT_ID"));
 				model.setDeviceId(rs.getString("DEVICE_ID"));
+				//model.setDebitCard((null!=rs.getString("IS_DEBIT_CARD") && rs.getString("IS_DEBIT_CARD").equals("Y"))?true:false);
 				
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());
@@ -394,6 +396,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 			ps.setString(index++, this.getPK().getId());
 
 			if (ps.executeUpdate() != 1) {
