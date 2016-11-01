@@ -610,6 +610,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public FDOrderI getLastNonCOSOrderUsingCC(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
 	
+	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
+	
 	/**
      * Place an order (send msg to SAP, persist order).
 

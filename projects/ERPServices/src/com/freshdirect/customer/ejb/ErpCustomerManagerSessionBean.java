@@ -2983,6 +2983,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		
+		/**
+		 * Get a specific sale.
+		 */
+		public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException {
+			try {
+				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType, saleStatus,pymtMethodTypes);
+
+				return (ErpSaleModel) saleEB.getModel();
+
+			} catch (FinderException fe) {
+				LOGGER.warn(fe);
+				throw new ErpSaleNotFoundException(fe);
+			} catch (RemoteException re) {
+				LOGGER.warn(re);
+				throw new EJBException(re);
+			}
+		}
+		
 		public void cutOffSale(String saleId) throws ErpSaleNotFoundException {
 			try {
 				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));

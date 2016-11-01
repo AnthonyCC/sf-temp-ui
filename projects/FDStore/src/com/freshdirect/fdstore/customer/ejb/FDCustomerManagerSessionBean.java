@@ -5749,6 +5749,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public FDOrderI getLastNonCOSOrder(String customerID,
+			EnumSaleType saleType, EnumSaleStatus saleStatus)
+			throws FDResourceException, ErpSaleNotFoundException {
+
+		try {
+			List<EnumPaymentMethodType> paymentMethodTypes = new ArrayList<EnumPaymentMethodType>();
+			paymentMethodTypes.add(EnumPaymentMethodType.CREDITCARD);
+			paymentMethodTypes.add(EnumPaymentMethodType.PAYPAL);
+			paymentMethodTypes.add(EnumPaymentMethodType.ECHECK);
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID,
+					saleType, saleStatus, paymentMethodTypes);
+			return new FDOrderAdapter(saleModel);
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 	/**
 	 * Place an order (send msg to SAP, persist order).
