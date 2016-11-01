@@ -25,6 +25,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumNotificationType;
@@ -196,7 +197,7 @@ public class DeliveryPassRenewalCron {
 			return exists?_pymtMethod:null;	
 		else {
 			for (ErpPaymentMethodI temp : matchedPymtMethods) {
-				if(!isExpiredCC(temp)) {
+				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || !isExpiredCC(temp)) {
 					return temp;
 				}
 			}
@@ -211,13 +212,13 @@ public class DeliveryPassRenewalCron {
 		FDOrderI lastOrder=null;
 		FDUser user=null;
 		CustomerRatingAdaptor cra=null;
-		lastOrder=getLastNonCOSOrderUsingCC(erpCustomerID);
+		lastOrder=getLastNonCOSOrder(erpCustomerID);
 		String orderID="";
 		if(lastOrder!=null) {
 			identity=getFDIdentity(erpCustomerID);
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
 			if(pymtMethod!=null) {
-				if(isExpiredCC(pymtMethod)) {
+				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
 					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
 					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
@@ -387,7 +388,7 @@ public class DeliveryPassRenewalCron {
 
 	}
 
-	private static FDOrderI getLastNonCOSOrderUsingCC(String erpCustomerID) throws FDResourceException {
+	private static FDOrderI getLastNonCOSOrder(String erpCustomerID) throws FDResourceException {
 
 		try {
 			return FDCustomerManager.getLastNonCOSOrderUsingCC(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
