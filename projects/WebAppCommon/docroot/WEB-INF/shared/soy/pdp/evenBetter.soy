@@ -2,20 +2,23 @@
 
 /**
  * @param productList
+ * @param? mobWeb
  */
 {template .evenBetter}
     {if $productList and length($productList) > 0}
 		<div class="pdp-evenbetter">
-			<h2>Even Better!</h2>
-			{call .evenBetterItem data="$productList[0]"/}
-      {if length($productList) > 1}
-        <hr/>
-        {call .evenBetterItem data="$productList[1]"/}
-      {/if}
-      {if length($productList) > 2}
-        <hr/>
-        {call .evenBetterItem data="$productList[2]"/}
-      {/if}
+			<h2 class="{if $mobWeb}gen-accord-toggler{/if}">Even Better!</h2>
+			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
+				{call .evenBetterItem data="$productList[0]"/}
+				{if length($productList) > 1}
+					<hr/>
+					{call .evenBetterItem data="$productList[1]"/}
+				{/if}
+				{if length($productList) > 2}
+	    			<hr/>
+					{call .evenBetterItem data="$productList[2]"/}
+				{/if}
+			</div>
 		</div>    
     {/if}
 {/template}

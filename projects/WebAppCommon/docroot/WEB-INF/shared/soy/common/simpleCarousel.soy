@@ -5,6 +5,7 @@
  * @param itemType item variant
  * @param? title optional title string
  * @param? cmEventSource optional coremetrics event source
+ * @param? mobWeb
  */
 {template .simpleCarousel autoescape="false"}
 <div data-component="carousel" class="first">
@@ -15,6 +16,7 @@
 			{delcall common.carouselItem variant="$itemType"}
 				{param item:$item /}
 				{param cmEventSource:$cmEventSource /}
+				{param mobWeb:$mobWeb /}
 			{/delcall}
 			{/foreach}
 		</ul>

@@ -131,16 +131,14 @@
 			<div class="prodDetail-xsell"><%-- group/family/evenbetter/likethat --%>
 				<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
 				
-				<% if (false) { /* excluding these for now */ %>
-						<%-- don't show evenBetter if we're in group scale context --%>
-					<c:if test="${empty param.grpId}">
-						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-						<c:if test="${empty productExtraPotato.familyProducts}">
-							<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
-						</c:if>	
-					</c:if>
-					<soy:render template="pdp.likethat" data="${xsell}" />
-				<% } %>
+				<%-- don't show evenBetter if we're in group scale context --%>
+				<c:if test="${empty param.grpId}">
+					<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+					<c:if test="${empty productExtraPotato.familyProducts}">
+						<soy:render template="pdp.evenBetter" data="${evenBetter}" />				
+					</c:if>	
+				</c:if>
+				<soy:render template="pdp.likethat" data="${xsell}" />
 				
 				<soy:render template="pdp.compOptProducts" data="${productExtraPotato}" />
 			</div>

@@ -994,6 +994,44 @@ footer .copyright {
 		font-size: 1.25em;
 		text-align: left;
 	}
+	/* carousels need width media queries */
+	@media screen and (min-width: 376px) and (max-width: 425px) {
+		.pdp .prodDetail-xsell .pdp-likethat .portrait-item {
+			width: 156px;
+		}
+	}
+	@media screen and (min-width: 321px) and (max-width: 375px) {
+		.pdp .prodDetail-xsell .pdp-likethat .portrait-item {
+			width: 134px;
+		}
+	}
+	@media screen and (max-width: 320px) {
+		.pdp .prodDetail-xsell .pdp-likethat .portrait-item {
+			width: 106px;
+		}
+	}
+	/* even better and familyprods */
+	#evenBetterPopup.shown .addtolist {
+		display: none;
+	}
+	@media screen and (min-width: 321px) and (max-width: 375px) {
+		#evenBetterPopup.shown .pdp-evenbetter-productinfo,
+		.pdp .prodDetail-xsell .pdp-evenbetter-productinfo {
+			width: 225px;
+		}
+		#evenBetterPopup.shown {
+			width: 100%;
+		}
+	}
+	@media screen and (max-width: 320px) {
+		#evenBetterPopup.shown .pdp-evenbetter-productinfo,
+		.pdp .prodDetail-xsell .pdp-evenbetter-productinfo {
+			width: 170px;
+		}
+		#evenBetterPopup.shown {
+			width: 100%;
+		}
+	}
 	
 	
 	/*PLP dirty overrides*/
