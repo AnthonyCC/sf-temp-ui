@@ -10,6 +10,7 @@ package com.freshdirect.sap.jco;
 
 import java.util.Date;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.sap.bapi.BapiOrder;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoTable;
@@ -159,7 +160,9 @@ abstract class JcoBapiOrder extends JcoBapiFunction implements BapiOrder {
 		this.orderItemIn.setValue("SALES_UNIT", item.getSalesUnit());
 		this.orderItemIn.setValue("DLV_GROUP", item.getDeliveryGroup());
 		this.orderItemIn.setValue("CUST_MAT35", item.getCustMat35());
-		this.orderItemIn.setValue("PLANT", item.getPickingPlantId());
+		if(ErpServicesProperties.isOrderLinesWithPlantToSapEnabled()){
+			this.orderItemIn.setValue("PLANT", item.getPickingPlantId());
+		}
 	}
 
 

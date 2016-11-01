@@ -185,11 +185,17 @@ public class Pricing implements Serializable {
 			zone=zone.getParentZone();
 			zpModel=_getZonePrice(zone);
 		}
-		if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isAlcohol) {
-			MaterialPrice[] baseIndicatorMaterialPrice=getBaseIndicatorMaterialPrice(zpModel.getMaterialPrices());
-			return new ZonePriceModel(zpModel.getPricingZone(),baseIndicatorMaterialPrice);
-		}else 
-			return zpModel;
+		try {
+			if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isAlcohol) {
+				MaterialPrice[] baseIndicatorMaterialPrice=getBaseIndicatorMaterialPrice(zpModel.getMaterialPrices());
+				return new ZonePriceModel(zpModel.getPricingZone(),baseIndicatorMaterialPrice);
+			}else 
+				return zpModel;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return zpModel;
 	}
 	
 	private MaterialPrice[] getBaseIndicatorMaterialPrice(MaterialPrice[] matPrice) {

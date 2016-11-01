@@ -272,6 +272,8 @@ public class ErpServicesProperties {
 	
 	public final static String PROP_SHIPPING_DETAILS_ROW_COUNT="sale.shipping.detail.row.count";
 	
+	private final static String PROP_WDC_PLANT_ORDERLINES_ENABLED = "sap.send.plant.with.orderline.enabled";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -484,6 +486,7 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_SAP_BAPI_UNATTENDED_DELIVERY,"false");
 		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,"600");
+		defaults.put(PROP_WDC_PLANT_ORDERLINES_ENABLED, "false");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1193,5 +1196,9 @@ public class ErpServicesProperties {
 	
 	public static int getShippingDetailRowCount(){
 		return Integer.valueOf(config.getProperty(PROP_SHIPPING_DETAILS_ROW_COUNT));
+	}
+	
+	public static boolean isOrderLinesWithPlantToSapEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_WDC_PLANT_ORDERLINES_ENABLED)).booleanValue();
 	}
 }

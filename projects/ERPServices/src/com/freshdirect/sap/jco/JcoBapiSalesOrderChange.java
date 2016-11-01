@@ -1,5 +1,6 @@
 package com.freshdirect.sap.jco;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoStructure;
@@ -98,7 +99,9 @@ class JcoBapiSalesOrderChange extends JcoBapiOrder implements BapiSalesOrderChan
 		this.orderItemInX.setValue("PRICE_DATE", "X");
 		this.orderItemInX.setValue("SALES_UNIT", "X");
 		this.orderItemInX.setValue("CUST_MAT35", "X");
-		this.orderItemInX.setValue("PLANT", "X");
+		if(ErpServicesProperties.isOrderLinesWithPlantToSapEnabled()){
+			this.orderItemInX.setValue("PLANT", "X");
+		}
 	}
 
 	public void addOrderScheduleInX(int itmNumber) {
