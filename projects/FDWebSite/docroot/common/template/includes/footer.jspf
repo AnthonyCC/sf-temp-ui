@@ -321,4 +321,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	%>
 		<fd:SemPixelIncludeMedia pixelNames="DiGo2" />
  --%>	<% /* Digo2 Pixel */ %>
+ 
+ <% /* Including Pinterest Pixel */ %>
+ <fd:SemPixelIncludeMedia pixelNames="Pinterest" />
 <% } %>

@@ -163,6 +163,19 @@ asyncPixelWithTimeout();
 				semPixel_DIGO2.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
 				semPixel_DIGO2.setParam("productId", semPixelData.get("productId")); // sem_productId
 				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" />
+				
+		        <%
+        /* Pinterest Pixel */
+				SemPixelModel pinterestPixel = FDSemPixelCache.getInstance().getSemPixel("Pinterest");
+		        pinterestPixel.clearParams();
+	
+		        pinterestPixel.setParam("checkout_receipt", "true");
+		        pinterestPixel.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
+		        pinterestPixel.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+		        pinterestPixel.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
+		        pinterestPixel.setParam("productId", semPixelData.get("productId")); // sem_productId
+				%><fd:SemPixelIncludeMedia pixelNames="Pinterest" />
+						
       </c:if>
     </c:if>
 

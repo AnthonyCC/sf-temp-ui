@@ -105,8 +105,21 @@ var FreshDirect = FreshDirect || {};
 				'content_name': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
 				'content_ids':[item.itemId],
 				'content_type':'product'});
-          }
-           
+          
+          
+    	  /* Pinterest Code for Add_to_Cart */
+          !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
+  		n=window.pintrk;n.queue=[],n.version="3.0";var
+  		t=document.createElement("script");t.async=!0,t.src=e;var
+  		r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+			// Insert Your Pinterest Pixel ID below.		
+			pintrk('load','2618512501957');
+			pintrk('track', 'addtocart', {'value':'0.00','currency':'USD',
+				'search_query': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
+				'line_items':[item.itemId],
+				});
+        }
+          
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
             product.remove();
             return;
