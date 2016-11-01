@@ -1,6 +1,8 @@
 package com.freshdirect.mobileapi.controller.data;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -42,8 +44,8 @@ public class Product extends Message {
             this.description = description;
         }
 
-        public enum ProductWarningMessageType {
-            PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
+		public enum ProductWarningMessageType {
+            PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE, EARLIEST_AVAILABILITY_NOTICE
         };
 
         private String title;
@@ -480,6 +482,10 @@ public class Product extends Message {
         }
         if (!product.getDeliveryNote().isEmpty()) {
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DELIVERY_NOTE, null, product.getDeliveryNote()));
+        }
+        if (null!=product.getFilteredEarliestAvailabilityDate()) {
+        	String earliestDate=new SimpleDateFormat("EEE M/dd").format(product.getFilteredEarliestAvailabilityDate());    	
+            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.EARLIEST_AVAILABILITY_NOTICE, null, earliestDate));
         }
 
         this.setTags(product.getTags());
