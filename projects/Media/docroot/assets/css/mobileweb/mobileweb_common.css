@@ -551,7 +551,34 @@ footer .copyright {
 	.oas-cnt img {
 	    max-width: 100%;
 	}
-
+/* mod order overlay */
+	#MBRDPopup1 .qs-popup {
+		width: 300px;
+		height: auto;
+	}
+	.BRD-popup-container button {
+		display: block;
+		margin: 6px auto;
+	}
+	#MBRDPopup1 .qs-popup-content {
+		padding-top: 15px;
+	}
+	#MBRDPopup2.BRD-popup-container .qs-popup {
+		width: 95%;
+		max-width: 950px;
+	}	
+	#MBRDPopup2.BRD-popup-container button {
+		display: inline-block;
+		margin: 0 4px;
+	}
+	#MBRDPopup2 .itemlist-item-header {
+		max-width: 100%;
+		width: auto;
+	}
+	#MBRDPopup2.BRD-popup-container .MBRD-order {
+		margin: -5px -15px 10px -20px;
+	}
+	
 
 /* generic accord */
 	.gen-accord-toggler-arrow {
