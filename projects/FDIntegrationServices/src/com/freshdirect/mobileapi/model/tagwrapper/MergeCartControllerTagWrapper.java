@@ -33,7 +33,7 @@ public class MergeCartControllerTagWrapper extends NonStandardControllerTagWrapp
 		
 		//AddExpectedRequest
 		addExpectedRequestValues(new String[] {}, new String[] {});
-		
+		addExpectedRequestValues(new String[] {"cartMerged"}, new String[] {"cartMerged"});
 		addSessionValue(CURRENT_CART, currentCart);
 		
 		//Set SuccessPage some NonNull Values (Fake)
