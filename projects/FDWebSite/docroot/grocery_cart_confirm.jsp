@@ -152,7 +152,7 @@ asyncPixelWithTimeout();
 				// Insert Your Pinterest Pixel ID below.		
 				pintrk('load','2618512501957');
 				<%-- should match atcInfo itemId format: "atc_cat_pid_86_HMR0065413_mls_main_chicken" --%>
-				fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
+				pintrk('track', 'addtocart', {'value':'0.00','currency':'USD',
 				'search_query': $jq.QueryString["productId"] !== undefined ? "pdp": $jq.QueryString["pageType"]||"DEFAULT" ,
 				'line_items':['<%= "atc_"+orderLine.getCategoryName()+"_"+orderLine.getSkuCode()+"_"+orderLine.getProductName() %>'],
 				});
