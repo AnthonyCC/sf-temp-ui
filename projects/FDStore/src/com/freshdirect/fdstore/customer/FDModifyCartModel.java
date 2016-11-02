@@ -91,6 +91,9 @@ public class FDModifyCartModel extends FDCartModel {
 	public void addOriginalOrderLine(FDCartLineI origLine){
 		
 		FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
+		if(null == cartLine.getPlantId()){//If the 'picking plant id' is missing in the original orderlines.
+			cartLine.setPlantId(null !=originalOrder.getDeliveryPlantInfo() ? originalOrder.getDeliveryPlantInfo().getPlantId():null);
+		}
 		Discount d = origLine.getDiscount();
 		if( d != null && !(d.getDiscountType().isSample())) {
 			cartLine.setDiscount(d);
