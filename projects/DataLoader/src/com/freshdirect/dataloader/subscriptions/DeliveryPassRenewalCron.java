@@ -391,7 +391,7 @@ public class DeliveryPassRenewalCron {
 	private static FDOrderI getLastNonCOSOrder(String erpCustomerID) throws FDResourceException {
 
 		try {
-			return FDCustomerManager.getLastNonCOSOrderUsingCC(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
+			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
 		} catch (FDResourceException e) {
 			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
 			StringWriter sw = new StringWriter();
