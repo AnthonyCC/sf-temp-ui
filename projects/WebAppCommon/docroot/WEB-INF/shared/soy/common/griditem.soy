@@ -183,10 +183,12 @@
 {let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 <li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
-    <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
-      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
-    </div>
+    <a href="{$productPageUrl}" class="portrait-item-image-link">
+      <div class="portrait-item-burst_wrapper">      
+        <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
+        {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}      
+      </div>
+    </a>
     
     
     
@@ -326,10 +328,12 @@
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
+	  <a href="{$productPageUrl}" class="portrait-item-image-link">
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
 		</div>
+	  </a>
 	</div>
 	<div class="portrait-item-header">
 	{if $brandName and $productNameNoBrand}

@@ -960,6 +960,12 @@ footer .copyright {
 	    display: table;
 	    width: 800px;
 	}
+	#nutritionPopup.mobWeb-nutritionPopup .fixedPopupContent .qs-popup-content{
+		padding: 0;
+	}
+	#nutritionPopup.mobWeb-nutritionPopup .fixedPopupContent .qs-popup-content .display{
+		padding: 3px;
+	}
 	
 	/* PDP HOLIDAY MEAL OVERRIDES */
 	.pdp .prodDetail .thxgiving-bundle,

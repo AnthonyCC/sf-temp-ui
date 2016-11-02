@@ -46,6 +46,9 @@ var FreshDirect = FreshDirect || {};
         nutritionPopup.popup.clicked=true;
         nutritionPopup.popup.show($('body'),false);
         nutritionPopup.noscroll();
+        if($('.mm-page').length){        	
+        	$('#nutritionPopup').addClass("mobWeb-nutritionPopup");
+    	}
       }
     },
     close: {
