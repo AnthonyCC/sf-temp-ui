@@ -815,6 +815,8 @@ label[for="dontupdatecartlines"] {
 
 .productSamplingItem.portrait-item .portrait-item-productimage{
   max-width:114px;
+  top: 0;
+  bottom: inherit;
 }
 
 .productSamplingItem.portrait-item .portrait-item-header,
