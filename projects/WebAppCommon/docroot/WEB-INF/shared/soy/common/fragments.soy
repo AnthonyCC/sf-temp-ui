@@ -71,6 +71,7 @@
 		{param fromProducts: $fromProducts /}
 		{param numProducts: $numProducts /}
 		{param ifSingleUL: $ifSingleUL /}
+		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}
 
@@ -120,9 +121,11 @@
 * @param? numProducts
 * @param products
 * @param? itemPerLine
+* @param? mobWeb
 */
 {template .simpleFixedProductList autoescape="false"}
 	{let $ipl: $itemPerLine ? $itemPerLine : 1 /}
+	{let $ipl: $mobWeb ? 2 : $ipl /}
 	{let $len: length($products) /}
 	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
 	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
@@ -133,5 +136,6 @@
 		{param numProducts:$nProducts /}
 		{param itemPerLine:$ipl /}
 		{param ifSingleUL:true /}
+		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}

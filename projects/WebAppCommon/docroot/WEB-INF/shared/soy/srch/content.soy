@@ -55,6 +55,7 @@
 /**
  * @param cats - cats we're treating as "sections"
  * @param? limit
+ * @param? mobWeb
  */
 {template .staffPicksContent autoescape="false"}
 	{let $l: $limit or $limit == 0 ? $limit : 25 /}
@@ -68,6 +69,7 @@
 					{call common.productList}
 						{param numProducts:$l /}
 						{param productList:$cats[$cat] /}
+						{param mobWeb:$mobWeb /}
 					{/call}
 				</div>
 			</section>

@@ -1057,38 +1057,51 @@ footer .copyright {
 	}
 	.mm-page .browseContent .sectionContent ul.products,
 	.mm-page .pdp-compOptProducts ul.products,
-	.mm-page .pdp-optProducts ul.products {
+	.mm-page .pdp-optProducts ul.products,
+	.mm-page #quickshop ul.products{
 		width: 100%;
 		margin: 8px 0 8px;
 		box-sizing: border-box;
 	}
+	.mm-page #quickshop ul.products{
+		display: flex;
+		padding: 0;		
+	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
-	.mm-page .pdp-optProducts ul.products li.portrait-item {
+	.mm-page .pdp-optProducts ul.products li.portrait-item,
+	.mm-page #quickshop ul.products li.portrait-item{
 		width: 46%;
 		margin: 0 3% 0 1%;
 		border: 0;
 		box-sizing: border-box;
 		background: #FFFFFF;
 	}
+	.mm-page #quickshop ul.products li.portrait-item{
+		vertical-align: top;
+	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item:first-child,
-	.mm-page .pdp-optProducts ul.products li.portrait-item:first-child {
+	.mm-page .pdp-optProducts ul.products li.portrait-item:first-child,
+	.mm-page #quickshop ul.products li.portrait-item:first-child{
 		margin: 0 1% 0 3%;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:last-child,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item:last-child,
 	.mm-page .pdp-optProducts ul.products li.portrait-item:last-child,
-	.browseContent .sectionContent ul.products li.portrait-item.lastInLine {
+	.browseContent .sectionContent ul.products li.portrait-item.lastInLine,
+	.mm-page #quickshop ul.products li.portrait-item:last-child{
 		padding: 0 9px 0 9px;
 		margin: 0 3% 0 1%;
 	}
-	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child{
+	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child,
+	.mm-page #quickshop ul.products li.portrait-item:first-child{
 		margin: 0 1% 0 3%;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
-	.mm-page .pdp-optProducts ul.products li.portrait-item {
+	.mm-page .pdp-optProducts ul.products li.portrait-item,
+	.mm-page #quickshop ul.products li.portrait-item{
 		max-width: none;
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item form.atc{
@@ -1110,7 +1123,7 @@ footer .copyright {
 		height: auto;
 	}
 	.mm-page .portrait-item-controls:before{
-	display: block;
+		display: block;
 	}
 	.mm-page .portrait-item-controls .qtyinput,
 	.mm-page .portrait-item-controls .addtocart .message,
@@ -1213,4 +1226,62 @@ footer .copyright {
 	.mm-page .fdwine .fdwine-continue{
 		padding: 35px 0;
 		text-align: center;
+	}
+	/* Coupons Page */
+	.mm-page .content-header-height-coupons{
+		padding-bottom: 10px;
+		background: #FFFFFF;
+	}
+	/* Top Items Reorder Page */
+	[data-viewtype="grid"] .mm-page #content{
+		background: #F2F0EF;
+	}
+	.mm-page #quickshop{
+		width: auto;
+	}
+	.mm-page #quickshop .header{
+		float: none;
+		text-align: center;
+		margin: auto;
+	}
+	.mm-page #quickshop .qs-subtitle{
+		display: block;
+	}
+	.mm-page #quickshop #productlist{
+		clear: both;
+	}
+	.mm-page #quickshop #mm-reorder-nav ul{
+		margin: 0;
+		padding: 15px 5px 20px;
+		font-size: 0;
+		list-style-type: none;
+		text-align: center;
+	}
+	.mm-page #quickshop #mm-reorder-nav ul li{
+		display: inline;
+	}
+	.mm-page #quickshop #mm-reorder-nav ul li a{
+		padding: 5px 25px;
+		border: 1px solid #a367ab;
+		border-radius: 0;
+		font-size: 14px;
+		font-weight: normal;
+		color: #a367ab;		
+	}
+	.mm-page #quickshop #mm-reorder-nav ul li:first-child a{
+		border-right: 0;
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+	.mm-page #quickshop #mm-reorder-nav ul li:last-child a{
+		border-left: 0;
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+	.mm-page #quickshop #mm-reorder-nav ul li a.mm-reorder-nav-selected{
+		color: #ffffff;
+	}
+	.mm-page #quickshop #mm-reorder-nav #mm-reorder-nav-so{
+		text-align: center;
+		padding: 0 0 15px;
 	}

@@ -113,6 +113,7 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 
 /**
 * @param? optionalProducts
+* @param? mobWeb
 */
 {template .handpickProductRecommendation autoescape="false"}
 {if $optionalProducts and length($optionalProducts)>0}
@@ -121,6 +122,7 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
     <div class="recommendation-editorial">{$rec.editorial}</div>
     {call common.productList}
       {param productList:$rec.optionalProducts /}
+      {param mobWeb:$mobWeb /}
     {/call}
   {/foreach}
 {/if}

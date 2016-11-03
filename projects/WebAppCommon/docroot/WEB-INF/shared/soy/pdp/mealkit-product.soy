@@ -84,12 +84,14 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 
 /**
 * @param? crossSellProducts
+* @param? mobWeb
 */
 {template .mealkitProductRecommendation autoescape="false"}
 {if $crossSellProducts and length($crossSellProducts)>0}
  <h2 class="mealkit-recommendation-title">You may already have</h2> 
   {call common.productList}
       {param productList:$crossSellProducts /}
+      {param mobWeb:$mobWeb /}
     {/call}
 {/if}
 {/template}
