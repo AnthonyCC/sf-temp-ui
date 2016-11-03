@@ -59,7 +59,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 
 	private static String GET_ORDER_BYID = "SELECT s.id, s.sap_number, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, "
-			+ "s.customer_id customer_id, di.first_name, di.last_name, di.phone home_phone, di.delivery_instructions "
+			+ "s.customer_id customer_id, di.first_name, di.last_name, di.phone home_phone, di.delivery_instructions, sa.source "
 			+ "from cust.sale s, cust.salesaction sa "
 			+ ", cust.deliveryinfo di "
 			+ "where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
@@ -633,6 +633,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 						address.setDeliveryInstructions(rs.getString("delivery_instructions"));
 						result.setOrderStatus(EnumSaleStatus.getSaleStatus(
 								rs.getString("status")).getName());
+						result.setSource(rs.getString("SOURCE"));
 						
 
 						return result;
