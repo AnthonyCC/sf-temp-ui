@@ -1199,3 +1199,18 @@ footer .copyright {
 	.mm-page .portrait-item-controls .select-wrapper{
 		display: none;
 	}
+	/* Health Warning Page */
+	.mm-page .fdwine .fdwine-fdwine-logo{
+		padding: 20px 10px 20px;
+	}
+	.mm-page .fdwine .fdwine-fdwine-logo img{
+		max-width: 100%;
+		height: auto;
+	}
+	.mm-page .fdwine .fdwine-container{
+		padding: 20px 10px;
+	}
+	.mm-page .fdwine .fdwine-continue{
+		padding: 35px 0;
+		text-align: center;
+	}
