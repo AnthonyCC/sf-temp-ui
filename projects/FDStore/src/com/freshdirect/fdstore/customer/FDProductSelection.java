@@ -818,7 +818,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		String pickingPlantId = null;
 		FDProductInfo prodInfo = this.lookupFDProductInfo();
 		if(null != getUserContext()){
-			if(null != prodInfo){
+			if(null != prodInfo && null !=getUserContext().getPricingContext() && null!=getUserContext().getPricingContext().getZoneInfo()){
 				pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
 			}
 			if(null == pickingPlantId && null !=getUserContext().getFulfillmentContext()){
