@@ -1,3 +1,6 @@
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -12,10 +15,22 @@
 <fd:CheckLoginStatus id="user"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 <c:set var="catId" value='${param.id!=null ? param.id : param.catId}'/>
+<%
 
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+String pageTemplate = "/common/template/browse_noleftnav_template.jsp";
+if (mobWeb) {
+	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+	String oasSitePage = (request.getAttribute("sitePage") != null) ? request.getAttribute("sitePage").toString() : "www.freshdirect.com/browse.jsp";
+	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+	}
+}
+
+%>
 <potato:browse name="browsePotato" specialLayout="true" nodeId='${catId}'/>
 
-<tmpl:insert template='/common/template/browse_noleftnav_template.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />

@@ -578,7 +578,11 @@ footer .copyright {
 	#MBRDPopup2.BRD-popup-container .MBRD-order {
 		margin: -5px -15px 10px -20px;
 	}
-	
+/* thanksgiving meal kits */
+	.mm-page .product-large {
+		width: 100%;
+		margin-right: 0;
+	}
 
 /* generic accord */
 	.gen-accord-toggler-arrow {
