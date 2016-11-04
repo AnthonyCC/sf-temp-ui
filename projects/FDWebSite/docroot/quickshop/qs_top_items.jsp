@@ -84,16 +84,6 @@
     		<script>
     			FreshDirect.modules.common.utils.createCookie('viewtype', 'grid');
     		</script>
-    		<div id="mm-reorder-nav">
-				<ul>
-					<li><a href="/quickshop/qs_top_items.jsp" class="mm-reorder-nav-selected cssbutton purple nontransparent">Items</a></li>
-					<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple transparen">Orders</a></li>
-					<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple transparen">Lists</a></li>					
-				</ul>
-				<% if (user.isEligibleForStandingOrders()) { %>
-					<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>                     
-				<%} %>
-	    	</div>
     	<% } %>
     	<div id="productlist" class="" data-cmeventsource="qs_topItems"></div>
     	<div id="productlistHeader" class=""></div>

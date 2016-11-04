@@ -1045,8 +1045,8 @@ footer .copyright {
 	
 	
 	/*PLP dirty overrides*/
-	.mm-page .pager-holder .pagination-pager-button,
-	.mm-page .pager-holder .pagination-pager-separator,
+	.mm-page .pagination .pagination-pager-button,
+	.mm-page .pagination .pagination-pager-separator,
 	.mm-page #sorter{
 		display: none;
 	}
@@ -1251,6 +1251,15 @@ footer .copyright {
 	.mm-page #quickshop .qs-subtitle{
 		display: block;
 	}
+	.mm-page #quickshop h2{
+		font-size: 26px;
+		font-family: Verdana, Arial, sans-serif;
+		font-weight: bold;
+		line-height: 1.1em;
+		color: #333;
+		margin-bottom: 10px;
+		padding-bottom: 10px;
+	}
 	.mm-page #quickshop #productlist{
 		clear: both;
 	}
@@ -1266,11 +1275,9 @@ footer .copyright {
 	}
 	.mm-page #quickshop #mm-reorder-nav ul li a{
 		padding: 5px 25px;
-		border: 1px solid #a367ab;
 		border-radius: 0;
 		font-size: 14px;
 		font-weight: normal;
-		color: #a367ab;		
 	}
 	.mm-page #quickshop #mm-reorder-nav ul li:first-child a{
 		border-right: 0;
@@ -1281,9 +1288,6 @@ footer .copyright {
 		border-left: 0;
 		border-top-right-radius: 5px;
 		border-bottom-right-radius: 5px;
-	}
-	.mm-page #quickshop #mm-reorder-nav ul li a.mm-reorder-nav-selected{
-		color: #ffffff;
 	}
 	.mm-page #quickshop #mm-reorder-nav #mm-reorder-nav-so{
 		text-align: center;

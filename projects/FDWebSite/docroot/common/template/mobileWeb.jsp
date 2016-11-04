@@ -155,16 +155,34 @@
 				if (isQS) {
 					%>
 					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
-	                <div class="header">
-	                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
-	                </div><%
+		                <div class="header">
+		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
+		                </div>
+		                <% if(false){ %>
+		                <div id="mm-reorder-nav">
+							<ul>
+								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Items</a></li>
+								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Orders</a></li>
+								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Lists</a></li>					
+							</ul>
+							<% if (user.isEligibleForStandingOrders()) { %>
+								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>                     
+							<%} %>
+				    	</div>
+				    	<%} %>
+				    		                
+	                <tmpl:get name="pagination" />
+	                
+	                <h2>Items</h2>
+	                <%
 				}
 			%>
 			<tmpl:get name="content" />
 		    <%
-				if (isQS) {
-					%></div><%
-				}
+				if (isQS) { %>
+					<tmpl:get name="pagination" />
+					</div>
+				<%}
 			%>
 	    </div><!-- content ends above here-->
 	    
