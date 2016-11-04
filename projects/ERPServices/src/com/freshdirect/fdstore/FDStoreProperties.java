@@ -860,6 +860,7 @@ public class FDStoreProperties {
     private final static String PROP_HOOK_LOGIC_CATEGORY_ENABLE = "fdstore.hooklogic.category.enabled";
     private final static String PROP_HOOK_LOGIC_ORDER_FEED_MINS = "fdstore.hooklogic.orderfeed.minutes";
     private final static String PROP_HOOK_LOGIC_ALLOW_OWN_ROWS = "fdstore.hooklogic.allow.own.rows";
+    private final static String PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS = "fdstore.hooklogic.excluded.dep.category.ids";
 
     // PayPal
     private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
@@ -4431,4 +4432,14 @@ public class FDStoreProperties {
 		
 		return materialKitsList;
 	}	
+	
+	public static List<String> getHookLogicExcludedDepOrCatIds(){
+		String excludedDeptOrCatIds = get(PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS);
+		List<String> excludedDeptOrCatIdsList = new ArrayList<String>();
+		if(excludedDeptOrCatIds !=null){
+			excludedDeptOrCatIdsList = Arrays.asList(excludedDeptOrCatIds.toLowerCase().split(","));
+		}
+		
+		return excludedDeptOrCatIdsList;
+	}
 }

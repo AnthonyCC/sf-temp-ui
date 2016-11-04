@@ -823,7 +823,7 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled()){         //if(FDStoreProperties.isHookLogicEnabled()){  
+        if(displayHookLogicProducts(nav, user, contentNodeModel)){         //if(FDStoreProperties.isHookLogicEnabled()){  
             if(null != browseDataContext){
                 String catId = nav.getId();
                 Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
@@ -883,6 +883,32 @@ public class CmsFilteringFlow {
         return browseDataContext;
     }
 
+	private boolean displayHookLogicProducts(CmsFilteringNavigator nav, FDSessionUser user,
+			ContentNodeModel contentNodeModel) {
+		return FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled() 
+				&& !isExcludedForHookLogicProducts(contentNodeModel, nav);
+	}
+
+	private boolean isExcludedForHookLogicProducts(ContentNodeModel contentNodeModel, CmsFilteringNavigator nav){
+		boolean isExcluded = false;
+		List<String> excludedDeptOrCats = FDStoreProperties.getHookLogicExcludedDepOrCatIds();
+		if(null !=excludedDeptOrCats && !excludedDeptOrCats.isEmpty()){
+			isExcluded = excludedDeptOrCats.contains(nav.getId());
+		}
+		if(!isExcluded){
+			String parentId = null;
+			while ((contentNodeModel != null && !(contentNodeModel instanceof DepartmentModel))) {
+				parentId = contentNodeModel.getParentId();
+				isExcluded = excludedDeptOrCats.contains(parentId.toLowerCase());
+				if(isExcluded){
+					break;
+				}
+				contentNodeModel = contentNodeModel.getParentNode();
+			}
+			
+		}
+		return isExcluded;
+	}
     private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
             Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext) throws FDResourceException {
         if (null != sectionContexts) {
