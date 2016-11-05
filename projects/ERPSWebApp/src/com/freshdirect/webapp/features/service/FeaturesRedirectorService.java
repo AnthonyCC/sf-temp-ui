@@ -26,7 +26,7 @@ public class FeaturesRedirectorService {
 				if (!standingOrderModeActive) {
 					if ("/view_cart.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/view_cart.jsp";
-					} else if ("/checkout/view_cart.jsp".equals(originalUrl) && "true".equals(checkout)) {
+					} else if ("/checkout/view_cart.jsp".equals(originalUrl) && "true".equals(checkout) && null==user.getMasqueradeContext()) {
 						redirectUrl = "/expressco/checkout.jsp";
 					} else if ("/checkout/view_cart.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/view_cart.jsp";
