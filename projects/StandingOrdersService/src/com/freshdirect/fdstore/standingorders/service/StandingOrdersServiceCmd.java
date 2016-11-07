@@ -258,7 +258,8 @@ public class StandingOrdersServiceCmd {
 				Map<String, InventoryMapInfoBean> unavItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getUnavProductInfoBeanList());
 				Map<String, InventoryMapInfoBean> restrictedItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getRestrictedProductInfoBeanList());
 				Map<String, InventoryMapInfoBean> atpItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getAtpFailureProductInfoBeanList());
-				
+				Map<String, InventoryMapInfoBean> tobeDiscItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getTobeDiscProductInfoBeanList());
+
 		
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<html>").append("<body>");
@@ -283,6 +284,26 @@ public class StandingOrdersServiceCmd {
 					.append("</tr>");	
 				}
 				buffer.append("</table>");
+				
+				buffer.append( "<h2 align=\"center\">TO BE DISCONTINUED PRODUCTS</h2>" );
+				buffer.append( "<div align=\"center\">");
+				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+				buffer.append("<tr>")
+				.append("<th nowrap=\"nowrap\">").append("Product Name").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
+				.append("</tr>");
+				for (Map.Entry<String, InventoryMapInfoBean> entry : tobeDiscItemDetails.entrySet()) {		
+					buffer.append("<tr>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getQnty()).append("</td>")		
+					.append("</tr>");	
+				}
+				buffer.append("</table>");
+				
 				
 				buffer.append( "<h2 align=\"center\">UNAVAILABLE PRODUCTS</h2>" );
 				buffer.append( "<div align=\"center\">");
