@@ -307,6 +307,7 @@ public class OMSController extends BaseController  {
 		}
 		order.setOrderStatus(saleInfo.getStatus().getName());
 		order.setAlcohol(f.containsAlcohol());
+		order.setSource(f.getOrderSource().toString());
 		return order;
 	}
 
