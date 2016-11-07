@@ -165,6 +165,7 @@
 		    		</div>
 		    	</div>
 		    </div>
+
 			<div class="standing-orders-3-so-settings-close">
 				<a href="javascript:closeSOSettings();">Close</a>
 			</div>
@@ -233,7 +234,7 @@
  */
 {template .soSettingsDetails}
 	<div class="standing-orders-3-so-settings-item-details-container">
-		<div class="standing-orders-3-so-settings-item-details-left">Next Delivery:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.deliveryDate and $item.deliveryTime}{$item.dayOfWeek}, {$item.deliveryDate}, {$item.deliveryTime}{else}None{/if}</div>
+		<div class="standing-orders-3-so-settings-item-details-left">Next Delivery:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
 	</div>
 	<div class="standing-orders-3-so-settings-item-details-container">
 		<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>

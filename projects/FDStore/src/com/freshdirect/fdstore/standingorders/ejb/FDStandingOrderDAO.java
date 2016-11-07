@@ -1742,7 +1742,7 @@ public class FDStandingOrderDAO {
 
 		PreparedStatement pstmt = null;
 		UnavDetailsReportingBean reportingBean = new UnavDetailsReportingBean();
-		String[] errorTypeList = new String[] {"DISC","UNAV","GENERAL","ATP"};
+		String[] errorTypeList = new String[] {"DISC","UNAV","GENERAL","ATP","TBDS"};
 		
 		try {
 
@@ -1798,6 +1798,8 @@ public class FDStandingOrderDAO {
 			}
 			else if(errorType.equalsIgnoreCase("ATP")){
 				reportingBean.getAtpFailureProductInfoBeanList().addAll(inventoryMapInfoBeanList);
+			}else if(errorType.equalsIgnoreCase("TBDS")){
+				reportingBean.getTobeDiscProductInfoBeanList().addAll(inventoryMapInfoBeanList);
 			}
 		}
 		catch (SQLException exc) {

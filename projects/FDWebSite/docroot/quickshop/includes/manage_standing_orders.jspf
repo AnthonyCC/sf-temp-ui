@@ -52,8 +52,8 @@ user.setSoTemplateCart(new FDCartModel());
 <potato:cartData standingOrder="true"/>
 <%	
 	Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
-	Collection<Map<String,Object>> soList= StandingOrderHelper.convertStandingOrderToSoy(
-	FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos), true);
+	Collection<Map<String,Object>> soList= null;// StandingOrderHelper.convertStandingOrderToSoy(
+	//FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos), true);
 	Map<String,Object> upComingDataMap = new HashMap<String,Object>();
 	Map<String,Object> standingOrderSettingDataMap = new HashMap<String,Object>();
 	upComingDataMap.put( "upComingData", soList );
@@ -64,7 +64,7 @@ user.setSoTemplateCart(new FDCartModel());
 	FreshDirect.standingorder.currentPage = "manage";
 </script>
 
-<% if(false && soList!=null && !soList.isEmpty()) { %>
+<%  if(false && soList!=null && !soList.isEmpty()) { %>
 	<div class="standing-orders-3-upcoming-deliveries">
 		<div class="standing-orders-3-edit-header">
 			Upcoming Deliveries

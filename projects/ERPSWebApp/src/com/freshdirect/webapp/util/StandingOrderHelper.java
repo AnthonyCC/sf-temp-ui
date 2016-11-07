@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -661,6 +662,9 @@ public class StandingOrderHelper {
 		map.put("cutOffDeliveryTime", FDStandingOrder.cutOffDeliveryTime);
 		map.put("tipAmount", so.getTipAmount());
 		map.put("displayCart", isValidStandingOrder(so, true));
+		map.put("currentDeliveryDate", map.get("deliveryDate"));
+		map.put("currentDeliveryTime", map.get("deliveryTime"));
+		map.put("currentDayOfWeek", map.get("dayOfWeek"));
 		return map;
 	}
 	
@@ -791,6 +795,9 @@ public class StandingOrderHelper {
 						}
 					}
 				}
+			    
+			    // TO Display current delivery date
+			    populateCurrentDeliveryDate(user,soData);
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
@@ -811,6 +818,38 @@ public class StandingOrderHelper {
 		soSettingsData.put("settingsData", allSoData);
 		
 		return soSettingsData;
+	}
+	private static void populateCurrentDeliveryDate(FDUserI user,
+			Collection<Map<String, Object>> soData) throws FDResourceException {
+		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+		for(Map<String,Object> soDataMap:soData){
+			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
+				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
+					if(!i.getStatus().isCanceled() || !new Date().after(i.getRequestedDate())){
+						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
+						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
+						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
+						
+					}
+					break a;
+				}
+			}
+		}
+	}
+	public static void populateCurrentDeliveryDate(FDUserI user,Map<String, Object> soDataMap) throws FDResourceException {
+		
+		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
+				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
+					if(!i.getStatus().isCanceled() || !new Date().after(i.getRequestedDate())){
+						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
+						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
+						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
+						
+					}
+					break a;
+			}
+		}
 	}
 	protected static Collection<FDStandingOrder> getValidSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
 		if(user.isRefreshValidSO3()){
@@ -924,10 +963,11 @@ public class StandingOrderHelper {
 			FDResourceException {
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId,erpAddress.getBuildingId(), true);
 
-		FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());
 		FDStandingOrder so = user.getCurrentStandingOrder();
 		user.getCurrentStandingOrder().setNextDeliveryDate(DateUtil.parseMDY(soNextDeliveryDate));
-
+		
+		
+/*		FDOrderHistory history = (FDOrderHistory)user.getOrderHistory();
 		if (null != history.getFDOrderInfos() && !history.getFDOrderInfos().isEmpty()) {
 			for (FDOrderInfoI fdOrderInfo : history.getFDOrderInfos()) {
 				if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency()>0) {
@@ -936,7 +976,8 @@ public class StandingOrderHelper {
 					break;
 				}
 			}
-		}
+		} */
+		
 		so.setStartTime(timeSlot.getStartTime());
 		so.setEndTime(timeSlot.getEndTime());
 		so.setTimeSlotId(timeSlot.getId());
@@ -1017,5 +1058,28 @@ public class StandingOrderHelper {
  
 private static String convert(Date time) {
 		 return FORMATTER.format(time);
+	}
+
+	public static boolean displayFirstSODelivery(FDUserI user) {
+        boolean flg=true;
+		if (isSO3StandingOrder(user)) {
+			FDStandingOrder so = user.getCurrentStandingOrder();
+			try {
+				FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+				for (ErpSaleInfo i : h.getErpSaleInfos()) {
+					if (so.getId().equalsIgnoreCase(i.getStandingOrderId())) {
+						flg=false;
+						break;
+					}
+				}
+			} catch (FDResourceException e) {
+				LOGGER.error(" Error while validating SO 3 first delivery date  :: SO Id :: "
+						+ so.getId());
+			}
+		} else {
+			flg=false;
+		}
+
+		return flg;
 	}
 }

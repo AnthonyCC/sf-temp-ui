@@ -239,12 +239,26 @@ function submitFormManageSO(id,action,name,freq){
       			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
             }
-            if('selectFreq'==action){
-            	if(typeof data.timeslot !== "undefined" && typeof data.timeslot.soFreq !== "undefined" && data.timeslot.soFreq !== null){
-      		      	document.getElementById("soFreq").selectedIndex = data.timeslot.soFreq;
-      		    	document.getElementById("soFreq2").selectedIndex = data.timeslot.soFreq;
+            if('selectFreq'==action || 'selectFreq2'==action){
+            	
+            	if('selectFreq'==action){
+            		
+            		if(typeof data.timeslot !== "undefined" && typeof data.timeslot.soFreq !== "undefined" && data.timeslot.soFreq !== null){
+      		      		document.getElementById("soFreq").selectedIndex = data.timeslot.soFreq;
+      		      		document.getElementById("soFreq2").selectedIndex = data.timeslot.soFreq;
+            		}
+            		
+            		if(typeof data.soId !== "undefined" && data.soId !== null){
+                		getSOData(data.soId, action);
+            		}
+            	} else if('selectFreq2'==action){
+             	    window.FreshDirect.expressco.data = data;
+             		FreshDirect.common.dispatcher.signal('timeslot', FreshDirect.expressco.data.timeslot);
+             		if(typeof data.standingOrderResponseData !== "undefined" && typeof data.standingOrderResponseData.id !== "undefined" && data.standingOrderResponseData.id !== null){
+            		 getSOData(data.standingOrderResponseData.id, action);
+             		}
             	}
-            	getSOData(id, action);
+
             }
             if('changename'==action){
             	soSaved(id, false, false);
@@ -313,10 +327,13 @@ function getSOData(id, action){
         type: 'GET',
         data: dataString,
         success: function(data){
-        	if('selectFreq'==action){
+        	if('selectFreq'==action || 'selectFreq2'==action){
         		soSaved(id, data.activated, false);
+
         		if(data.frequencyDesc !== null && data.dayOfWeek !== null){
         			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-frequency").html(data.frequencyDesc + " " + data.dayOfWeek + " /");
+            		updateSOItem(id, data);
+
         		}
         	}
         	if('activate'==action){
@@ -373,7 +390,8 @@ function selectFrequency(item){
 				$jq("#soFreq").val(freq);
 				$jq("#soFreq").select2("val", freq);
 			}
-			submitFormManageSO("","selectFreq",null,freq);
+			submitFormManageSO("","selectFreq2",null,freq);
+
 		}
 	}
 }

@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
@@ -46,7 +48,9 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -484,13 +488,58 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			}
 			deliveryModel.setPreReserved( false );
 			deliveryModel.setPreReserveSlotId( null );
-			
+			if(StandingOrderHelper.isSO3StandingOrder(user)){
+				calculateSOFirstDeilveryDate(so,user,deliveryModel);
+
+			}
 			// cheat the capacity
 			deliveryModel.setHasCapacity( true );
 		result.setDeliveryTimeslotModel(deliveryModel);
 		return result;
 	}
 
+	private void calculateSOFirstDeilveryDate(FDStandingOrder so, FDUserI user,
+			FDDeliveryTimeslotModel deliveryModel) throws FDResourceException {
+
+		if (user != null) {
+			boolean flg = false;
+			FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+			if (null != h.getErpSaleInfos() && !h.getErpSaleInfos().isEmpty()) {
+				for (ErpSaleInfo fdOrderInfo : h.getErpSaleInfos()) {
+					if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency() > 0 ) {
+						flg = true;
+						break;
+					}
+				}
+			}
+
+			if (flg) {
+				for (FDTimeslotUtil fdTimeslotUtil : deliveryModel.getTimeslotList()) {
+					for (FDTimeslot fdTimeslot : fdTimeslotUtil.getTimeslotsFlat()) {
+						if (null != fdTimeslot.getSoFirstDeliveryDate()) {
+							fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(
+									fdTimeslot.getSoFirstDeliveryDate(), so.getFrequency()));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public Date getSubsequentDeliveryDate(Date baseDate,int frequency) {
+		// calculate next delivery
+
+		Calendar cl = Calendar.getInstance();
+		cl.setTime(baseDate);
+		
+		cl.add(Calendar.DATE, 7*frequency);
+		
+		cl.set(Calendar.HOUR, 0);
+		cl.set(Calendar.MINUTE, 0);
+
+		return cl.getTime();
+	}
+	
 	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges, ActionResult result,
 			ErpAddressModel timeslotAddress,FDUserI user, FDDeliveryTimeslotModel deliveryModel, TimeslotEvent event, DlvTimeslotStats stats) throws FDResourceException {
 		

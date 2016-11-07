@@ -20,6 +20,7 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.logistics.delivery.model.EnumDayShift" %>
 <%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType" %>
+<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%--
@@ -51,6 +52,17 @@ boolean soType = false;
 if(request.getAttribute("isSoTemplate")!=null && (Boolean)request.getAttribute("isSoTemplate")){
 	soType = true;
 }
+
+String soFirstNextTextCell=null;
+boolean soFirstDeliv=StandingOrderHelper.displayFirstSODelivery(user);
+if(StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv){
+	soFirstNextTextCell = "Takes Effect ";
+}else if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
+	soFirstNextTextCell = "Next Delivery ";
+} else if(StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())){
+	soFirstNextTextCell = "First Delivery ";
+} 
+
 
 // [APPDEV-2149] rearrange week table to start with Monday 
 int __shift = 0;

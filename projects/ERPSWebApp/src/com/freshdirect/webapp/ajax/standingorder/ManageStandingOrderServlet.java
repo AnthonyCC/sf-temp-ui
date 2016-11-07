@@ -54,6 +54,7 @@ import com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemsPopulator;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
+import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.SuccessPageData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
@@ -77,9 +78,16 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		String soId = request.getParameter("soId");
 		if(null !=soId && !"".equals(soId)){
 			try {
-				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false, so);
-				writeResponseData( response, returnSO );;
+				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
+						new PrimaryKey(soId));
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
+				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+
+				if (u != null) {
+					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
+				}
+				writeResponseData(response, returnSO);
+				
 			} catch (FDResourceException e) {
 				LOG.error("Unable to fetch SO with Id:"+ soId, e);
 				throw new ServletException(e);
@@ -146,8 +154,10 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						
 						u.setSoTemplateCart(so.getStandingOrderCart());
 						u.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
+						/*
 						pageContext.setAttribute(pendinExternalgName,
 								SoyTemplateEngine.convertToMap(PendingExternalAtcItemsPopulator.createPendingExternalAtcItemsData(u,request)));
+						*/
 	
 						
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
@@ -163,14 +173,14 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						 
 						pageContext.setAttribute(spName, potato);
 	
-						CartData cartResult=null;
+						/*CartData cartResult=null;
 						try {
 							cartResult = CartDataService.defaultService().loadCartData(request, u);
 						} catch (com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse e) {
 							throw new ServletException(e);
 						}
 						Map<String, ?> cartPotato = SoyTemplateEngine.convertToMap(cartResult);
-						pageContext.setAttribute(cdName, cartPotato);
+						pageContext.setAttribute(cdName, cartPotato);*/
 	
 					}
 				} else if ("delete".equalsIgnoreCase(action)) {
@@ -190,7 +200,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					errorMessage=createStandingOrder(soName,u,pageContext);
 					writeResponseData( response, errorMessage );
 	
-				} else if("selectFreq".equalsIgnoreCase(action)){
+				} else if("selectFreq".equalsIgnoreCase(action) || "selectFreq2".equalsIgnoreCase(action)){
 					 if(freq!=null){
 						 u.setRefreshValidSO3(true);
 						 u.getCurrentStandingOrder();
@@ -198,7 +208,18 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
 							StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
-					//writeResponseData( response, errorMessage );
+					 if("selectFreq2".equalsIgnoreCase(action)){
+						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
+						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
+							
+						writeResponseData( response, potato );
+					 }else{
+						 SuccessPageData successData=new SuccessPageData();
+						 successData.setSoId(u.getCurrentStandingOrder().getId());
+						 writeResponseData( response, successData );
+
+					 }
+
 	
 				} else if("activate".equalsIgnoreCase(action)) {
 					    boolean flg=acitivateSO(u);

@@ -12,7 +12,7 @@ public class UnavDetailsReportingBean implements Serializable{
 	List<InventoryMapInfoBean> restrictedProductInfoBeanList = new ArrayList<InventoryMapInfoBean>();
 	List<InventoryMapInfoBean> atpFailureProductInfoBeanList = new ArrayList<InventoryMapInfoBean>();
 	List<InventoryMapInfoBean> unavProductInfoBeanList = new ArrayList<InventoryMapInfoBean>();
-	
+	List<InventoryMapInfoBean> tobeDiscProductInfoBeanList = new ArrayList<InventoryMapInfoBean>();
 	
 	public List<InventoryMapInfoBean> getDiscProductInfoBeanList() {
 		return discProductInfoBeanList;
@@ -43,6 +43,19 @@ public class UnavDetailsReportingBean implements Serializable{
 			List<InventoryMapInfoBean> unavProductInfoBeanList) {
 		this.unavProductInfoBeanList = unavProductInfoBeanList;
 	}
+	/**
+	 * @return the tobeDiscProductInfoBeanList
+	 */
+	public List<InventoryMapInfoBean> getTobeDiscProductInfoBeanList() {
+		return tobeDiscProductInfoBeanList;
+	}
+	/**
+	 * @param tobeDiscProductInfoBeanList the tobeDiscProductInfoBeanList to set
+	 */
+	public void setTobeDiscProductInfoBeanList(List<InventoryMapInfoBean> tobeDiscProductInfoBeanList) {
+		this.tobeDiscProductInfoBeanList = tobeDiscProductInfoBeanList;
+	}
+	
 	
 
 }
