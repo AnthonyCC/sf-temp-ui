@@ -6,14 +6,14 @@ import java.util.List;
 
 public class HelpTopics {
 	
-	List helpTopics =new ArrayList();
+	private List<HelpTopic> helpTopics = new ArrayList<HelpTopic>();
 
-	public List getHelpTopics() {
+	public List<HelpTopic> getHelpTopics() {
 		return helpTopics;
 	}
 
-	public void setHelpTopics(Object helpTopics) {
-		this.helpTopics.add(helpTopics);
+	public void addHelpTopics(HelpTopic helpTopic) {
+		helpTopics.add(helpTopic);
 	}
 
 }

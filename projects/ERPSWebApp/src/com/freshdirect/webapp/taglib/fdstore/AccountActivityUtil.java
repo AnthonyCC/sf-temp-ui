@@ -20,7 +20,6 @@ public class AccountActivityUtil implements SessionName {
 		EnumTransactionSource src;
 		String initiator="SYSTEM";//default
 		CrmAgentModel agent;
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		if ((app != null && app.equalsIgnoreCase("CALLCENTER")) ) {
@@ -46,6 +45,12 @@ public class AccountActivityUtil implements SessionName {
 			src = EnumTransactionSource.ANDROID_WEBSITE;
 			agent = null;
 			initiator = "CUSTOMER";
+	     } else if (app != null
+	                && app.equalsIgnoreCase(EnumTransactionSource.FOODKICK_WEBSITE
+	                        .getCode())) {
+	            src = EnumTransactionSource.FOODKICK_WEBSITE;
+	            agent = null;
+	            initiator = "CUSTOMER";
 		}else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;
@@ -95,6 +100,12 @@ public class AccountActivityUtil implements SessionName {
 			src = EnumTransactionSource.ANDROID_WEBSITE;
 			agent = null;
 			initiator = "CUSTOMER";
+	    } else if (app != null
+                  && app.equalsIgnoreCase(EnumTransactionSource.FOODKICK_WEBSITE
+                          .getCode())) {
+              src = EnumTransactionSource.FOODKICK_WEBSITE;
+              agent = null;
+              initiator = "CUSTOMER";
 		}else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;

@@ -165,12 +165,9 @@ public class RegistrationController extends BaseController implements SystemMess
 
 		Message responseMessage = null;
 		if (result.isSuccess()) {
-			if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
-    		{
-    			request.getSession().setAttribute(
-    					SessionName.APPLICATION,
-    					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-    		}
+            if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
+                request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+            }
 			user = getUserFromSession(request, response);
 			user.setUserContext();
 			user.setEligibleForDDPP();
@@ -264,12 +261,9 @@ public class RegistrationController extends BaseController implements SystemMess
             MessageResponse webResponse = new MessageResponse();
             if (isSuccess) {
                 // mark session with the right source
-            	if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
-        		{
-        			request.getSession().setAttribute(
-        					SessionName.APPLICATION,
-        					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-        		}
+                if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
+                    request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+                }
 
                 // authenticate user
                 user = getUser(request, response);
@@ -289,12 +283,9 @@ public class RegistrationController extends BaseController implements SystemMess
             responseMessage = webResponse;
 		} else {
             if (isSuccess) {
-            	if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
-        		{
-        			request.getSession().setAttribute(
-        					SessionName.APPLICATION,
-        					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-        		}
+                if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
+                    request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+                }
 
 	            user = getUserFromSession(request, response);
 	            user.setUserContext();
@@ -452,12 +443,9 @@ public class RegistrationController extends BaseController implements SystemMess
 					"N");
 		
 	
-			if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
-    		{
-    			request.getSession().setAttribute(
-    					SessionName.APPLICATION,
-    					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-    		}
+            if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
+                request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+            }
 			user = getUserFromSession(request, response);
 			user.setUserContext();
 			user.setEligibleForDDPP();

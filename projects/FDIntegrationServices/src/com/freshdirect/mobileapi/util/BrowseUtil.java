@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -1491,11 +1492,11 @@ public class BrowseUtil {
         String plantid = null;
         if (user != null) {
             String zipcode = user.getZipCode();
-            if (zipcode != null && zipcode.trim().length() > 0) {
+            UserContext userContext = user.getUserContext();
+            if (zipcode != null && zipcode.trim().length() > 0 && userContext != null && userContext.getFulfillmentContext() != null) {
                 ErpAddressModel address = new ErpAddressModel();
                 address.setZipCode(zipcode);
-                plantid =user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-                //plantid = BrowseUtil.getCatalogInfoAddr(address, user).getKey().getPlantId();
+                plantid = userContext.getFulfillmentContext().getPlantId();
             } else {
                 plantid = FDStoreProperties.getDefaultFdxPlantID();
             }

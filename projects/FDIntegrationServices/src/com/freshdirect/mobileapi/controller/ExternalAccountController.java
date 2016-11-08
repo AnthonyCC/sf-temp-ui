@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -74,27 +73,50 @@ public class ExternalAccountController extends BaseController implements SystemM
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws JsonException, FDException  {
 		//recognize Account will merge the existing accounts as well as login the user.
+	    Message message = null;
 		if(ACTION_RECOGNIZE_ACCOUNT.equals(action)){
 			ExternalAccountLogin requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
-			model = recognizeAccountAndLogin(model, user, requestMessage, request);
+			message = recognizeAccountAndLogin(user, requestMessage, request);
 		} else if (ACTION_LINK_ACCOUNT.equals(action)){
 			ExternalAccountLinkRequest requestMessage = parseRequestObject(request, response, ExternalAccountLinkRequest.class);
-			model = connectExistingAccounts(model, user, requestMessage, request);
+			message = connectExistingAccounts(user, requestMessage, request);
 		} else if(ACTION_UNLINK_ACCOUNT.equals(action)){
 			ExternalAccountLogin requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
-			model = unlinkExistingAccounts(model, user, requestMessage, request);
+			message = unlinkExistingAccounts(user, requestMessage, request);
 		} if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){
 			SocialLogin requestMessage = parseRequestObject(request, response, SocialLogin.class);
 			Map<String, String> socialUserProfile = getSocialUserProfile(requestMessage.getAccessToken(), requestMessage.getProvider());
-			model = socialConnectAccount(model, user, socialUserProfile, requestMessage.getContext(), request, response);
+			message = socialConnectAccount(user, socialUserProfile, requestMessage.getContext(), request, response);
 		} if(ACTION_SOCIAL_LOGIN.equals(action)){
 		    // use connection token for social login, which comes from oneall service
 		    Map<String, String> socialUserProfile = getSocialUserProfile(request.getParameter("connection_token"));
-			model = socialConnectAccount(model, user, socialUserProfile, request.getParameter("context"), request, response);
-			redirectAfterLogin(response, request.getParameter("redirect_url"));
+		    message = socialConnectAccount(user, socialUserProfile, request.getParameter("context"), request, response);
+		    String redirectUrl = getRedirectUrl(request, message);
+			redirectAfterLogin(response, redirectUrl);
 		}
+		setResponseMessage(model, message, user);
 		return model;
 	}
+
+    private String getRedirectUrl(HttpServletRequest request, Message message) {
+        String redirectUrl = request.getParameter("redirect_url");
+        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+            if (message instanceof SocialResponse) {
+                SocialResponse socialMessage = (SocialResponse) message;
+                redirectUrl = addParameter(redirectUrl, "action", socialMessage.getResultAction());
+            }
+        } 
+        return redirectUrl;
+    }
+
+    private String addParameter(String url, String key, String value){
+        if (url.contains("?")){
+            url = url +  "&" + key + "=" + value;
+        } else {
+            url = url +  "?" + key + "=" + value;
+        }
+        return url;
+    }
 
     private void redirectAfterLogin(HttpServletResponse response, String redirectUrl) {
         if (redirectUrl != null && !redirectUrl.isEmpty()) {
@@ -106,35 +128,28 @@ public class ExternalAccountController extends BaseController implements SystemM
         }
     }
 	
-	private ModelAndView unlinkExistingAccounts(ModelAndView model,
-			SessionUser user, ExternalAccountLogin requestMessage,
-			HttpServletRequest request) throws JsonException, FDException {
-		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(
-				user);
-		ResultBundle resultBundle = wrapper
-				.unlinkExistingAccounts(requestMessage);
+	private Message unlinkExistingAccounts(SessionUser user, ExternalAccountLogin requestMessage, HttpServletRequest request) {
+		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
+		ResultBundle resultBundle = wrapper.unlinkExistingAccounts(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
 		Message responseMessage = new ExternalAccountLoginResponse();
 		if (result.isSuccess()) {
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
-			responseMessage
-					.setSuccessMessage("User Social Account Unlinked Successfully.");
+			responseMessage.setSuccessMessage("User Social Account Unlinked Successfully.");
 		} else {
 			responseMessage.setStatus(Message.STATUS_FAILED);
 			responseMessage = getErrorMessage(result, request);
 		}
-		setResponseMessage(model, responseMessage, user);
-		return model;
+		return responseMessage;
 	}
 
-    private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request ) throws FDException, JsonException{
+    private Message recognizeAccountAndLogin(SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request) throws FDException{
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
 		propogateSetSessionValues(request.getSession(), resultBundle);
-		Message responseMessage = null;
+		Message responseMessage = new SocialLoginResponse();
 		if(result.isSuccess()){
-			responseMessage = new SocialLoginResponse();
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
 			((SocialLoginResponse) responseMessage).setUserExists(true);
 			((SocialLoginResponse) responseMessage).setLoggedInSuccess(true);
@@ -144,10 +159,8 @@ public class ExternalAccountController extends BaseController implements SystemM
 			responseMessage.setSuccessMessage("User was recognized and successfully logged in");
 		} else {
 			 responseMessage =  getErrorMessage(result, request);
-			
 		}
-		setResponseMessage(model, responseMessage, user);
-		return model;
+		return responseMessage;
 	}
 
     private Map<String, String> getSocialUserProfile(String accessToken, String providerName) {
@@ -171,10 +184,8 @@ public class ExternalAccountController extends BaseController implements SystemM
     }
 
 	//Social Connect for handling Social login/signup
-	private ModelAndView socialConnectAccount(ModelAndView model, SessionUser user, 
-	        Map<String, String> socialUser, String context,
+	private Message socialConnectAccount(SessionUser user, Map<String, String> socialUser, String context,
 			HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-		
 		String userToken = null;
 		String userId = null;
 		String socialEmail = null;
@@ -182,12 +193,9 @@ public class ExternalAccountController extends BaseController implements SystemM
 		Message responseMessage = null;
 		HttpSession session = request.getSession();
 		
-		if(request.getSession().getAttribute(SessionName.APPLICATION) == null)
-		{
-			request.getSession().setAttribute(
-					SessionName.APPLICATION,
-					EnumTransactionSource.IPHONE_WEBSITE.getCode());
-		}
+        if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
+            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+        }
 		
 		if(socialUser!=null){
 			userToken = socialUser.get("userToken");
@@ -198,8 +206,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 				// no email address found for social login
 				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND);
 				((SocialResponse) responseMessage).setResultAction("CANCELED");
-				setResponseMessage(model, responseMessage, user);
-				return model;
+				return responseMessage;
 			}else if(userToken!=null && (!userToken.equalsIgnoreCase(""))) {
 //				requestMessage.setUserToken(userToken);
 			} else {
@@ -207,26 +214,20 @@ public class ExternalAccountController extends BaseController implements SystemM
 				// user token not valid
 				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_INVALID_USERTOKEN);
 				((SocialResponse) responseMessage).setResultAction("CANCELED");
-				setResponseMessage(model, responseMessage, user);
-				return model;
+				return responseMessage;
 			}
 		} else {
 			// social profile not found
 			responseMessage = new SocialResponse();
 			((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_PROFILE_NOT_FOUND);
 			((SocialResponse) responseMessage).setResultAction("CANCELED");
-			setResponseMessage(model, responseMessage, user);
-			return model;
+			return responseMessage;
 		}		
 		
 		//get user id from EXTERNAL_ACCOUNT_LINK table using user token
 		 userId = ExternalAccountManager.getUserIdForUserToken(userToken);
 		
 		try {
-			
-
-
-			
 			if(context.equalsIgnoreCase("CREATE") || context.equalsIgnoreCase("SIGNIN")) {
 
 				// when user id from EXTERNAL_ACCOUNT_LINK do login
@@ -251,7 +252,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						// FD Account and No Social link
 						SessionUser sessionUser = getUserFromSession(request, response);
 						if(sessionUser.isLoggedIn()){
-							logout(model, user, request, response);
+							logout(user, request, response);
 						}
 						userLogin(socialEmail, session, request, response);		
 						user = getUserFromSession(request, response);
@@ -276,7 +277,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						//if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getUserId()!=null) {
 						SessionUser sessionUser = getUserFromSession(request, response);
 						if(sessionUser.isLoggedIn()){
-							logout(model, user, request, response);
+							logout(user, request, response);
 						}
 						userLogin(socialEmail, session, request, response);
 						user = getUserFromSession(request, response);
@@ -330,12 +331,9 @@ public class ExternalAccountController extends BaseController implements SystemM
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
 								((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 								checkTermsCond(user,responseMessage);
-
 							}
 						}
-
 					}
-
 				}
 			} else if (context.equalsIgnoreCase("LINK")) {
 				// unlink if there is any link available for the same social network
@@ -363,47 +361,28 @@ public class ExternalAccountController extends BaseController implements SystemM
 				((SocialResponse) responseMessage).setLoggedInSuccess(true);
 				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_UNLINKED);
 				((SocialResponse) responseMessage).setResultAction("UNLINKED");
-
 			}
 		} catch (Exception e) {
-			//TODO: Handle the runtime exception
-			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}		
-		setResponseMessage(model, responseMessage, user);
-		return model;
+		return responseMessage;
 	}
 
-	private ModelAndView connectExistingAccounts(ModelAndView model, SessionUser user,ExternalAccountLinkRequest requestMessage, HttpServletRequest request ) throws FDException, JsonException{
+	private Message connectExistingAccounts(SessionUser user,ExternalAccountLinkRequest requestMessage, HttpServletRequest request) throws FDException{
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
-		//ResultBundle resultBundle = wrapper.connectExistingAccounts(requestMessage);
 		ResultBundle resultBundle = wrapper.connectExistingAccounts(requestMessage);
-		
 		ActionResult result = resultBundle.getActionResult();
-		//Message responseMessage = null;
-		
 		Message responseMessage = new ExternalAccountLoginResponse();
-		
 		if(result.isSuccess()){
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
-			
 			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(true);
-			
 			responseMessage.setSuccessMessage("User Social Account Linked Successfully.");
 		} else {
-			 //responseMessage = getErrorMessage(result, request);
 			responseMessage.setStatus(Message.STATUS_FAILED);
-			
 			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(false);
-			
-			//responseMessage.setSuccessMessage("Unable to Link User's Social Account.");
-			
 			responseMessage =  getErrorMessage(result, request);
-			
 		}
-		
-		setResponseMessage(model, responseMessage, user);
-		
-		return model;
+		return responseMessage;
 	}
 
 	private Message setCurrentCartToTheUser(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException{
@@ -601,20 +580,12 @@ public class ExternalAccountController extends BaseController implements SystemM
 		return resultBundleOne;
 	}
 	
-	private ModelAndView logout(ModelAndView model, SessionUser user,
-			HttpServletRequest request, HttpServletResponse response)
-			throws JsonException {
-
+	private Message logout(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
 		removeUserInSession(user, request, response);
-
-		Message responseMessage = Message
-				.createSuccessMessage("User logged out successfully.");
-		setResponseMessage(model, responseMessage, user);
-		return model;
+		return Message.createSuccessMessage("User logged out successfully.");
 	}
 	
 	private void checkTermsCond(SessionUser user, Message responseMessage){
-		((LoggedIn) responseMessage).setTcAcknowledge(user
-				.getTcAcknowledge());
+		((LoggedIn) responseMessage).setTcAcknowledge(user.getTcAcknowledge());
 	}
 }

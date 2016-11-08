@@ -64,10 +64,7 @@ public class EmailCaptureController extends BaseController {
         Message responseMessage = null;
         if (EmailUtil.isValidEmailAddress(emailAddress)) {
         	String source = getPostData(request, response);
-        	EnumTransactionSource srcEnum = EnumTransactionSource.IPHONE_WEBSITE;
-        	if(source != null && source.indexOf(PARAM_SOURCE_ANDROID) > 0 ) {
-        		srcEnum = EnumTransactionSource.ANDROID_WEBSITE;
-        	}
+        	EnumTransactionSource srcEnum = getTransactionSourceEnum(request, source);
             if (EnumIPhoneCaptureType.UNREGISTERED.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress, srcEnum))) {
 				LOGGER.info("controller: email is unregistered " + emailAddress);
                 responseMessage = Message.createSuccessMessage("Email address has been submitted successfully.");

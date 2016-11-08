@@ -465,14 +465,28 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected void createUserSession(User user, String source, HttpServletRequest request, HttpServletResponse response) throws FDResourceException {
         //Order is important here as "UserUtil.createSessionUser" will refer to the code set in the previous step
-    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
-    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
-    	} else {
-    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
-    	}
+        request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, source));
         UserUtil.createSessionUser(request, response, user.getFDUser());
     }
 
+    protected String getTransactionSourceCode(HttpServletRequest request, String source) {
+        return getTransactionSourceEnum(request, source).getCode();
+    }
+
+    protected EnumTransactionSource getTransactionSourceEnum(HttpServletRequest request, String source) {
+        EnumTransactionSource srcEnum = null;
+        if (source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
+            srcEnum = EnumTransactionSource.getTransactionSource(source);
+        } else {
+            if (isCheckLoginStatusEnable(request)) {
+                srcEnum = EnumTransactionSource.FOODKICK_WEBSITE;
+            } else {
+                srcEnum = EnumTransactionSource.IPHONE_WEBSITE;
+            }
+        }
+        return srcEnum;
+    }
+    
     protected void setUserInSession(SessionUser sessionUser, HttpServletRequest request, HttpServletResponse response) {
         request.getSession().setAttribute(SessionName.USER, sessionUser.getFDSessionUser());
     }
@@ -704,8 +718,6 @@ public abstract class BaseController extends AbstractController implements Messa
             }
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
         }
-        // ensure usercontext update with FD/FDX values
-        fdSessionUser.resetUserContext();
         ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
         return SessionUser.wrap(fdSessionUser);
     }

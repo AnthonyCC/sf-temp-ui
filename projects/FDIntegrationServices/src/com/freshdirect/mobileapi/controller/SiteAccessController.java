@@ -88,7 +88,7 @@ public class SiteAccessController extends BaseController implements SessionName 
         Message responseMessage = null;
         SessionUser user = null;
         if (result.isSuccess()) {
-       		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
+            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
             user = getUserFromSession(request, response);
             user.setUserContext();
             user.setEligibleForDDPP();
@@ -123,16 +123,15 @@ public class SiteAccessController extends BaseController implements SessionName 
 		Message responseMessage = null;
 		SessionUser user = null;
 		if (result.isSuccess()) {
-			request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
-		user = getUserFromSession(request, response);
-		user.setUserContext();
-		user.setEligibleForDDPP();
-		//Create a new Visitor object.
-		responseMessage = formatVisitorMessage(user, requestMessage, resultBundle);
-		resetMobileSessionData(request);
-		
+		    request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+		    user = getUserFromSession(request, response);
+		    user.setUserContext();
+		    user.setEligibleForDDPP();
+		//    Create a new Visitor object.
+		    responseMessage = formatVisitorMessage(user, requestMessage, resultBundle);
+		    resetMobileSessionData(request);
 		} else {
-		responseMessage = getErrorMessage(result, request);
+		    responseMessage = getErrorMessage(result, request);
 		}
 		responseMessage.addWarningMessages(result.getWarnings());
 		setResponseMessage(model, responseMessage, user);

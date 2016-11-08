@@ -1,6 +1,10 @@
 package com.freshdirect.mobileapi.controller.data;
 
 public class SafetyDetails {
+    private String title;
+    private String path;
+    private String entries;
+
 	public String getTitle() {
 		return title;
 	}
@@ -19,8 +23,5 @@ public class SafetyDetails {
 	public void setDetail(String detail) {
 		this.entries = detail;
 	}
-	private String title;
-	private String path;
-	private String entries;
 
 }

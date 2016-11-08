@@ -114,7 +114,7 @@ public class CmsFilteringFlow {
             if (!nav.isPdp()) {
                 EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
             }
-
+            
             // -- SORTING -- (not on pdp or super department page)
             if (!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)) {
                 // process sort options
@@ -979,15 +979,16 @@ public class CmsFilteringFlow {
         if (sectionContexts != null && !sectionContexts.isEmpty()) {
             SectionContext mainSectionContext = sectionContexts.get(0);
             SectionContext mergedSectionContext = new SectionContext();
+            List<FilteringProductItem> productItems = new ArrayList<FilteringProductItem>();
             mergedSectionContext.setCatId("");
-            mergedSectionContext.setProductItems(new ArrayList<FilteringProductItem>());
+            mergedSectionContext.setProductItems(productItems);
             collectCategoryProducts(nav, mainSectionContext, mergedSectionContext);
             List<SectionContext> subSectionContexts = mainSectionContext.getSectionContexts();
-            if (subSectionContexts != null) {
+            if (subSectionContexts != null && !productItems.isEmpty()) {
                 subSectionContexts.clear();
                 subSectionContexts.add(mergedSectionContext);
             }
-            ProductService.defaultService().removeSkuDuplicates(mergedSectionContext.getProductItems());
+            ProductService.defaultService().removeSkuDuplicates(productItems);
         }
     }
 

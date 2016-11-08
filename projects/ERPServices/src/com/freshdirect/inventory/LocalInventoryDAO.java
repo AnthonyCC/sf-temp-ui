@@ -31,6 +31,7 @@ public class LocalInventoryDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+		    String plantId = sapOrder.getPlant();
 		Date requestedDate = sapOrder.getRequestedDate();
 		List<String> materialList = new ArrayList<String>();
 		StringBuffer strBuf = new StringBuffer(FETCH_INVENTORY_BY_MATERIAL_PLANT);
@@ -50,7 +51,7 @@ public class LocalInventoryDAO {
 			if(!materialMap.containsKey(materialNumber)){
 				materialMap.put(materialNumber, new ArrayList<ErpInventoryEntryModel>());
 			}
-			materialMap.get(materialNumber).add(new ErpInventoryEntryModel(rs.getDate("START_DATE"), rs.getDouble("QUANTITY")));
+			materialMap.get(materialNumber).add(new ErpInventoryEntryModel(rs.getDate("START_DATE"), rs.getDouble("QUANTITY"), plantId));
 		}
 			
 		strBuf = new StringBuffer(COUNT_SALE_INVENTORY_BY_MATERIAL_REQ_DATE_AND_PLANT);
@@ -58,7 +59,7 @@ public class LocalInventoryDAO {
 		strBuf.append(" GROUP BY MATERIAL_SAP_ID");
 		ps = conn.prepareStatement(strBuf.toString());
 		ps.setDate(1, new java.sql.Date(requestedDate.getTime()));
-		ps.setString(2, sapOrder.getPlant());
+		ps.setString(2, plantId);
 
 		rs = ps.executeQuery();
 		
@@ -86,12 +87,12 @@ public class LocalInventoryDAO {
 				}
 
 				if(cumlQty >= requestedQty) {
-					olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
+					olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty, plantId));
 				} else {
-					olInv.add(new ErpInventoryEntryModel(requestedDate, cumlQty >= 0 ? cumlQty : 0));
+					olInv.add(new ErpInventoryEntryModel(requestedDate, cumlQty >= 0 ? cumlQty : 0, plantId));
 				}
 			} else { // if the material is not in inventory table then consider it to be unlimited.
-				olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty));
+				olInv.add(new ErpInventoryEntryModel(requestedDate, requestedQty, plantId));
 			}
 			
 			

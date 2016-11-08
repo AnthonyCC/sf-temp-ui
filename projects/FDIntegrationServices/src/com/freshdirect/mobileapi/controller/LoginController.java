@@ -397,11 +397,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			//instead of above Call Make a call to UserUtil.loginUser
 			
 			// APPDEV-4627
-	    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
-	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
-	    	} else {
-	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
-	    	}
+		    if (request.getSession().getAttribute(SessionName.APPLICATION) == null){
+		        request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, source));
+		    }
 	    	// end APPDEV-4627
 	    	
 			ActionResult actionResult = new ActionResult();

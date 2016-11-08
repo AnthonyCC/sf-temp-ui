@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -75,12 +76,14 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
+import com.freshdirect.mobileapi.model.data.Unavailability.Line;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
+import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -1421,8 +1424,17 @@ public class CheckoutController extends BaseController {
         final boolean isWebRequest = isCheckLoginStatusEnable(request);
         final Checkout checkout = new Checkout(user);
         SubmitOrderExResult message = new SubmitOrderExResult();
-
         final FDUserI fdUser = user.getFDSessionUser();
+
+        if (isWebRequest) {
+            FDCartModel cart = fdUser.getShoppingCart();
+            List<FDCartLineI> orderLines = cart.getOrderLines();
+            List<FDCartLineI> invalidLines = OrderLineUtil.getInvalidLines(orderLines, fdUser.getUserContext());
+            for (FDCartLineI invalidLine : invalidLines) {
+                CartOperations.removeCartLine(fdUser, cart, invalidLine, request.getServerName());
+            }
+        }
+
         if (null != fdUser.getGiftCardList()) {
             fdUser.getShoppingCart().setSelectedGiftCards(fdUser.getGiftCardList().getSelectedGiftcards());
         }

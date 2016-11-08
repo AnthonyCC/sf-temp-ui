@@ -10,8 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -50,41 +48,23 @@ public class CartController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(CartController.class);
 
     private static final String PARAM_PROMO_ID = "promoId";
-    
     private static final String PARAM_COUPON_ID = "couponId";
-
     private static final String PARAM_CART_LINE_ID = "cartLineId";
-    
     private static final String PARAM_TIP_AMOUNT = "tipAmount";
-
     private static final String ACTION_REMOVE_ALCOHOL = "removealcoholfromcart";
-
     private static final String ACTION_REMOVE_PROMO = "removepromo";
-
     private static final String ACTION_APPLY_PROMO = "applypromo";
-    
     private static final String ACTION_APPLY_CODE = "applycode";
-
     private static final String ACTION_REMOVE_ALL_ITEMS_FROM_CART = "removeallitems";
-
     private static final String ACTION_REMOVE_ITEM_FROM_CART = "removeitem";
-
     private static final String ACTION_UPDATE_ITEM_IN_CART = "updateitem";
-
     private static final String ACTION_ADD_ITEM_TO_CART = "additem";
-
     private static final String ACTION_GET_CART_DETAIL = "getcartdetail";
-
     private static final String ACTION_ADD_MULTIPLE_ITEMS_TO_CART = "addmultipleitems";
-
     private static final String ACTION_REMOVE_MULTIPLE_ITEMS_TO_CART = "removemultipleitems";
-    
     private static final String ACTION_COUPON_CLIP = "clipcoupon";
-    
     private static final String ACTION_VIEW_CARTLINE = "viewitem";
-    
     private static final String ACTION_SET_TIP = "settip";
-
     private static final String ACTION_SAVE_CART = "save";
     
     @Override

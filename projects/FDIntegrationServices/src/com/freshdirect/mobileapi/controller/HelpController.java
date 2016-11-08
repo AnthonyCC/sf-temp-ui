@@ -1,19 +1,14 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
-import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.multistore.MultiStoreProperties;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SafetyDetails;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -37,7 +32,6 @@ public class HelpController extends BaseController {
     private static final String ALCOHOL_RESTRICTIONS_ACTION = "alcoholrestrictions";
     private static final String ALCOHOL_AGE_VERIFICATION_ACTION = "alcoholageverification";
     private static final String BACKUP_DELI_AUTHORIZATION_ACTION = "backupdeliveryauthorization";
-    
     private static final String HELP_PATH = "/media/mobile/iphone/help/help.json";
     private static final String FDX_HELP_PATH = "/media/mobile/iphone/help/help_fdx.json";
     private static final String FDX_WEB_HELP_PATH = "/media/mobile/mobile_web/help/help_fdx.json";
@@ -62,178 +56,82 @@ public class HelpController extends BaseController {
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
         String data = "";
-        URL remoteUrl = null;
-        Html html = null;
-        String mediaPath = FDStoreProperties.getMediaPath();
         
         if (CONTACT_US_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + COSTUMER_SERVICE_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
+            data = ProductUtil.readContent(COSTUMER_SERVICE_PATH);
         } else if (LEARN_MORE_PROMO_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + LEARN_MORE_PROMO_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
+            data = ProductUtil.readContent(LEARN_MORE_PROMO_PATH);
         } else if (TERMS_OF_USE_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + CUSTOMER_AGREEMENT_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
+            data = ProductUtil.readContent(CUSTOMER_AGREEMENT_PATH);
         } else if (SMS_TERMS_OF_USE_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + SMS_TERMS_OF_USE_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
-            
+            data = ProductUtil.readContent(SMS_TERMS_OF_USE_PATH);
         } else if (ALCOHOL_RESTRICTIONS_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + ALCOHOL_RESTRICTIONS_PATH);                
-                data = ProductUtil.readContent(remoteUrl);                
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
-            
+            data = ProductUtil.readContent(ALCOHOL_RESTRICTIONS_PATH);
         } else if (ALCOHOL_AGE_VERIFICATION_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + ALCOHOL_AGE_VERIFICATION_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
-            
+            data = ProductUtil.readContent(ALCOHOL_AGE_VERIFICATION_PATH);
         } else if (BACKUP_DELI_AUTHORIZATION_ACTION.equals(action)) {
-            try {
-                remoteUrl = new URL(mediaPath + BACKUP_DELIVERY_AUTHORIZATION_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
-            
+            data = ProductUtil.readContent(BACKUP_DELIVERY_AUTHORIZATION_PATH);
         } else if (DP_TERMS_AND_CONDITIONS_ACTION.equalsIgnoreCase(action)) {
+            data = ProductUtil.readContent(DP_AGREEMENT_PATH);
+        } else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
             try {
-                remoteUrl = new URL(mediaPath + DP_AGREEMENT_PATH);
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
-            }
-        }else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
-            try {
-            	HelpTopics helpTopics = new HelpTopics();
-            	HelpTopic foodSafety = new HelpTopic();
-            	SafetyDetails sfd = null;
-            	 foodSafety.setTitle("Food Safety");
-                 foodSafety.setPath("foodSafety");
-             	
-                 sfd = renderHTMLContent( new Html (mediaPath + PRODUCT_RECALLS_PATH), "prodRecall");
-                 if(sfd!=null)
-                 foodSafety.setEntries(sfd);
-                 
-                 sfd = renderHTMLContent( new Html (mediaPath + COOKING_STOREAGE_PATH), "storage");
-                 if(sfd!=null)
-                 foodSafety.setEntries(sfd);
-                 
-                 sfd = renderHTMLContent( new Html (mediaPath + HANDLING_FOOD_SAFETY_PATH), "foodSafety");
-                 if(sfd!=null)
-                 foodSafety.setEntries(sfd);
-                 
-                 helpTopics.setHelpTopics(foodSafety);
-                 data =getJsonString(helpTopics);
-                 
+                String recallContent = ProductUtil.readContent(PRODUCT_RECALLS_PATH);
+                StringBuilder sb = new StringBuilder(recallContent);
+                recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
+                SafetyDetails prodRecall = createSafetyDetails("Product Recalls", "prodRecall", recallContent);
+                SafetyDetails cookingStorage = createSafetyDetails("Cooking & Storage", "cookStorage", ProductUtil.readContent(COOKING_STOREAGE_PATH));
+                SafetyDetails foodSafety = createSafetyDetails("Handling Food Safety", "foodSafety", ProductUtil.readContent(HANDLING_FOOD_SAFETY_PATH));
+                HelpTopic foodSafetyTopic = createHelpTopic("Food Safety", "foodSafety", prodRecall, cookingStorage, foodSafety);
+                data = getJsonString(createHelpTopics(foodSafetyTopic));
             } catch (Exception e) {
-                LOGGER.warn("Unable to rerieve data from ");
+                LOGGER.warn("Unable to serialize data", e);
                 data = "";
             }
         }else if (ABOUT_US_ACTION.equalsIgnoreCase(action)) {
             try {
-            	HelpTopics helpTopics = new HelpTopics();
-            	HelpTopic aboutUs = new HelpTopic();
-            	
-            	
-             	html = new Html (mediaPath + ABOUT_US_PATH);
-                String  htmlData =  ProductUtil.readHtml(html);
-                
-                aboutUs.setTitle("About Us");
-            	aboutUs.setPath("aboutUs");
-                aboutUs.setEntries(htmlData);
-
-                 helpTopics.setHelpTopics(aboutUs);
-                 data =getJsonString(helpTopics);
-                 
+                HelpTopic aboutUs = createHelpTopic("About Us", "aboutUs", ProductUtil.readContent(ABOUT_US_PATH));
+                data = getJsonString(createHelpTopics(aboutUs));
             } catch (Exception e) {
-                LOGGER.warn("Unable to rerieve data from " + html.toString());
+                LOGGER.warn("Unable to serialize data", e);
                 data = "";
             }
         } else {
-            try {
-                if (isCheckLoginStatusEnable(request)) {
-                    remoteUrl = new URL(mediaPath + FDX_WEB_HELP_PATH);
+            if (isCheckLoginStatusEnable(request)) {
+                data = ProductUtil.readContent(FDX_WEB_HELP_PATH);
+            } else {
+                if (EnumEStoreId.FDX.equals(CmsManager.getInstance().getEStoreEnum())) {
+                    data = ProductUtil.readContent(FDX_HELP_PATH);
                 } else {
-                    if (EnumEStoreId.FDX.getContentId().equals(MultiStoreProperties.getCmsStoreId())) {
-                        remoteUrl = new URL(mediaPath + FDX_HELP_PATH);
-                    } else {
-                        remoteUrl = new URL(mediaPath + HELP_PATH);
-                    }
+                    data = ProductUtil.readContent(HELP_PATH);
                 }
-                data = ProductUtil.readContent(remoteUrl);
-            } catch (IOException e) {
-                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
-                data = "";
             }
         }
-        model.addObject("data", data);
 
+        model.addObject("data", data);
         return model;
     }
 
-    private SafetyDetails renderHTMLContent(Html html, String saftyType){
-    	SafetyDetails safetyDetails = null;
-    	try {
-    	String  data =  ProductUtil.readHtml(html);
-    	
-    	if(saftyType.equalsIgnoreCase("prodRecall")){
-	        StringBuilder sb=new StringBuilder(data);
-	        data = sb.substring(sb.indexOf("<table")-1, sb.indexOf("</table"));
-	        data = data+"</table>";
-	        safetyDetails = new SafetyDetails();
-	        safetyDetails.setTitle("Product Recalls");
-	        safetyDetails.setPath("prodRecall");
-	        safetyDetails.setDetail(data);
-	    	}
-    	else if(saftyType.equalsIgnoreCase("storage")){
-	        safetyDetails = new SafetyDetails();
-	        safetyDetails.setTitle("Cooking & Storage");
-	        safetyDetails.setPath("cookStorage");
-	        safetyDetails.setDetail(data);
-	    	}
-    	else if(saftyType.equalsIgnoreCase("foodSafety")){
-	        safetyDetails = new SafetyDetails();
-	        safetyDetails.setTitle("Handling Food Safety");
-	        safetyDetails.setPath("foodSafety");
-	        safetyDetails.setDetail(data);
-	    	}
-    	 } catch (Exception e) {
-             LOGGER.warn("Unable to rerieve data from " + html.toString());
-             
-         }
-    	return safetyDetails;
+    private HelpTopic createHelpTopic(String title, String path, Object... htmlDatas) {
+        HelpTopic helpTopic = new HelpTopic();
+        helpTopic.setTitle(title);
+        helpTopic.setPath(path);
+        for (Object htmlData : htmlDatas) {
+            helpTopic.addEntries(htmlData);
+        }
+        return helpTopic;
     }
-    
+
+    private HelpTopics createHelpTopics(HelpTopic helpTopic) {
+        HelpTopics helpTopics = new HelpTopics();
+        helpTopics.addHelpTopics(helpTopic);
+        return helpTopics;
+    }
+
+    private SafetyDetails createSafetyDetails(String title, String path, String detail) {
+        SafetyDetails safetyDetails = new SafetyDetails();
+        safetyDetails.setTitle(title);
+        safetyDetails.setPath(path);
+        safetyDetails.setDetail(detail);
+        return safetyDetails;
+    }
 }

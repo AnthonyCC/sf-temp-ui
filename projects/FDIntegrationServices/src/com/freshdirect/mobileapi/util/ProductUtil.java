@@ -53,15 +53,21 @@ public class ProductUtil {
         in.close();
         return out.toString();
     }
+    
+    public static String readContent(String path) {
+        String result = null;
+        try {
+            result = readContent(resolve(path));
+        } catch (IOException e) {
+            LOG.warn("Unable to retrieve data from " + path);
+        }
+        return result;
+    }
 
     public static String readHtml(Html htmlContent){
-        String result = "";
+        String result = null;
         if ((htmlContent != null) && (htmlContent.getPath() != null)) {
-            try {
-                result = readContent(ProductUtil.resolve(htmlContent.getPath()));
-            } catch (IOException e) {
-                LOG.warn("HTML Content filr " + htmlContent.getPath() + " not found");
-            }
+            result = readContent(htmlContent.getPath());
         }
         return result;
     }

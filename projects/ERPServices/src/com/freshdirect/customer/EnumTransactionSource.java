@@ -13,8 +13,8 @@ public enum EnumTransactionSource {
 	ANDROID_WEBSITE("ANW", "Android"),
 	ANDROID_PHONE("ANP", "FDX Android"),
 	FDX_IPHONE("IFX", "FDX iPhone"),
-	FRIDGE("FDG", "FRIDGE");
-	;
+	FRIDGE("FDG", "FRIDGE"),
+	FOODKICK_WEBSITE("FKW", "FK Web");
 
 	EnumTransactionSource(String code, String name) {
 		this.code = code;
@@ -53,6 +53,8 @@ public enum EnumTransactionSource {
 				return FRIDGE;	
 			case 10:
 				return ANDROID_PHONE;
+            case 11:
+                return FOODKICK_WEBSITE;
 			default:
 				return null;
 		}
@@ -80,6 +82,8 @@ public enum EnumTransactionSource {
 			return FRIDGE;
 		}else if(ANDROID_PHONE.getCode().equalsIgnoreCase(code)){
 			return ANDROID_PHONE;
+	     }else if(FOODKICK_WEBSITE.getCode().equalsIgnoreCase(code)){
+	            return FOODKICK_WEBSITE;
 		}else{
 			try {
 				return getTransactionSource( Integer.parseInt(code) );

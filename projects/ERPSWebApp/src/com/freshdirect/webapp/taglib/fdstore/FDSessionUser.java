@@ -224,6 +224,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	            src = EnumTransactionSource.FDX_IPHONE;
 	        } else if (EnumTransactionSource.ANDROID_PHONE.getCode().equals(app)) {
 	            src = EnumTransactionSource.ANDROID_PHONE;
+	        } else if (EnumTransactionSource.FOODKICK_WEBSITE.getCode().equals(app)) {
+                src = EnumTransactionSource.FOODKICK_WEBSITE;
 	        } //else get defaulted to website
 	    }
 		this.user.setApplication(src);
