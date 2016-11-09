@@ -1,7 +1,11 @@
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <% //expanded page dimensions
 final int W_DAY_OF_WEEK_NOTICE_TOTAL = 601;
+boolean mobWeb_dayofweek_notice = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 %>
 
 <%-- requires productNode --%>
@@ -48,7 +52,7 @@ final int W_DAY_OF_WEEK_NOTICE_TOTAL = 601;
 		
 		
 		%>
-		<table width="<%=W_DAY_OF_WEEK_NOTICE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+		<table width="<%= (mobWeb_dayofweek_notice) ? "100%" : W_DAY_OF_WEEK_NOTICE_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 			</tr>

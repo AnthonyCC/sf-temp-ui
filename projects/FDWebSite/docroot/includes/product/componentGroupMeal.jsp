@@ -13,6 +13,9 @@
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -42,7 +45,9 @@ FDCartLineI templateLine = (FDCartLineI) request.getAttribute("templateLine");
 ActionResult result = (ActionResult)request.getAttribute("actionResult");
 if (result == null || productNode==null || cartMode==null || user==null ){
    throw new JspException(" One or several required request attributes are missing. ");
-}
+}  
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
 %>
 <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%
@@ -174,14 +179,14 @@ if (pgErrs.size()>0) {
 	
 	if(request.getAttribute("newLeftNav")==null){
 	%>
-  <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+  <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td align="left">
 	<%@ include file="/includes/i_error_messages.jspf" %>
 	</td></tr>
   </table>
   <% } else { %>
   <!-- TODO: keep the below error message if new leftNav shown -->
-  <div style="width:<%=W_COMPONENT_GROUP_MEAL_TOTAL%>px;margin-bottom:15px;margin-top:15px">
+  <div style="width:<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL+"px" %>;margin-bottom:15px;margin-top:15px">
     <div class="errormessage"><div class="errcontent"><%= errorMsg %></div></div>
   </div>
 	<% } }   
@@ -197,9 +202,8 @@ if (pgErrs.size()>0) {
 
 	String prodSubtitle=productNode.getSubtitle();
 %>
-
 <%-- start display of product --%>
-  <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+  <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td valign="top" align="center" colspan="3">
 	  <span class="title18"><%=productNode.getFullName()%></span><br>
   <%      if (prodSubtitle!=null && !"".equals(prodSubtitle)) { %>
@@ -236,12 +240,12 @@ if (pgErrs.size()>0) {
 
 <%
 int prodCount = 1;
-if (isAvailable ) { 
+if (isAvailable ) {
 	int numProducts=0;
 	int compGrpIdx = 0;
 	for (Iterator cgItr = componentGroups.iterator(); cgItr.hasNext(); compGrpIdx++) {
 		ComponentGroupModel compGroup = (ComponentGroupModel) cgItr.next();
-		
+
 		//  dont show this component group stuff if it is for popup only 
 		if (compGroup.isShowInPopupOnly()) continue;
 		
@@ -292,12 +296,14 @@ if (isAvailable ) {
 
 		//show ComponentGroup  Header Image and Editorial if there are characteristics names
 		if (matCharNames.size()>0) { 	%>
-		   <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		   <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left"><FONT CLASS="space4pix"><BR><BR></FONT>
 		<%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
 		<%	if (mediaPath!=null) { %><br><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 			<BR></td></tr>
 		   </table>
+
+
 	<%      }  
 	  	numProducts =prodList.size(); 
 		boolean tagIsOpen = false;
@@ -309,11 +315,11 @@ if (isAvailable ) {
 			Image prodImage =oneProd.getCategoryImage();
 			String imgName = "prodImg_"+compGrpIdx;
 			String imgRollOver = "";   %>
-			<table  width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+			<table  width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			  <tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="95" height="6"></td>
 				<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="<%= (mobWeb) ? "" : W_COMPONENT_GROUP_MEAL_TOTAL-115 %>" height="1"></td>
 			  </tr>
    			  <tr>
 <%			if (paintDropdownVertical) { %>
@@ -429,13 +435,13 @@ if (isAvailable ) {
 		   DisplayObject dispObj = JspMethods.loadLayoutDisplayStrings(response, optProd.getParentNode().getContentName(),optProd,"full",true,false,"",true);
 		   if (!headingDone) {
 		 	   headingDone = true;  %>
-		      <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		      <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left">
 	<%	      if (imgMedia!=null) {   %><img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
 	<%	      if (mediaPath!=null) { %><br><bt><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 		       <br><br></td></tr>
 		    </table>
-		    <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		    <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<%         }  
 	
 	    	  if (!paintOptionalVertical) {  // paint the optional category using the Horizontal style
@@ -545,11 +551,11 @@ if (isAvailable ) {
         List catMidMedias = parentCat.getMiddleMedia();
         if (catMidMedias != null && catMidMedias.size()>0) {  %>
             <FONT CLASS="space4pix"><br><br></FONT>
-            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>">
+            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>">
                <TR VALIGN="TOP">
                   <TD align="center">
             <BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
               <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
@@ -565,15 +571,15 @@ if (isAvailable ) {
 <%      }
 
 	 if (prodCount > 0) {  %>
-	<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+	<table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr><td><BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR><br>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR><br>
         </td></tr>
     </table>
     
 <%
     if (productNode.hasTerms()) { %>
-    <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+    <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td align="left"><fd:IncludeMedia name='<%= productNode.getProductTerms().getPath()%>' /></td></tr>
         <tr><td align="left">
     		<fd:ErrorHandler result='<%=result%>' name='agreeToTerms'>
@@ -588,121 +594,102 @@ if (isAvailable ) {
 
 <% }%>
     
-	<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+	<table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr valign="top">
-		  <td>
-        <div class="qtyinput">
-          <span class="qtymessage">Quantity</span>
-          <a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-          <input type="text" CLASS="qty" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
-          <a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
-          <span class="qtyprice">Price</span>
-          <input class="qtypriceinput" type="text" name="price" size="6" onChange="" onFocus="blur()" value=""/>
-        </div>
-      </td>
-
-                   <td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-257%>" align="right">
-	<% if(CartName.MODIFY_CART.equals(cartMode) ) {
-			String referer = request.getParameter("referer");
-			if (referer==null) referer = request.getHeader("Referer");
-			if (referer==null) referer = "/view_cart.jsp";			%>
-			<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
-       		<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/>
-			<input type="hidden" name="referer" value="<%= referer %>">
-			<a class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><BR>
-        <% } else if (CartName.MODIFY_LIST.equals(cartMode) ||
-	              CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
-
-	        String referer = request.getParameter("referer");
-		if (referer==null) referer = request.getHeader("Referer");
-		if (referer == null) referer = "/quickshop/all_lists.jsp";
-	        String ccListIdVal = (String)request.getAttribute(CclUtils.CC_LIST_ID);
-	        String lineId = (String)request.getAttribute("lineId");
-        %>
+			<td<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? " colspan=\"2\"" : "" /* single column */ %>>
+				<div class="qtyinput">
+					<span class="qtymessage">Quantity</span>
+					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+					<input type="text" CLASS="qty" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
+					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+					<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? "<br />" : "" %>
+					<span class="qtyprice">Price</span>
+					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput" type="text" name="price" size="6" onChange="" onFocus="blur()" value=""/>
+				</div>
+			<% if (mobWeb && CartName.MODIFY_CART.equals(cartMode)) { %>
+				<%-- do nothing, but make the row a single column (above), the divs will handle the split --%>
+			<% } else { %>
+			</td>
+			<td width="<%= (mobWeb) ? "" : W_COMPONENT_GROUP_MEAL_TOTAL-257 %>" align="right">
+			<% } %>
+				<% if (CartName.MODIFY_CART.equals(cartMode) ) {
+					String referer = request.getParameter("referer");
+					if (referer==null) referer = request.getHeader("Referer");
+					if (referer==null) referer = "/view_cart.jsp";
+					%>
+					<div class="prodMod-buttons-cont">
+						<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br />
+       					<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br />
+						<input type="hidden" name="referer" value="<%= referer %>">
+						<a class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><br />
+					</div>
+				<% } else if (CartName.MODIFY_LIST.equals(cartMode) || CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
 	
-	
-	<% {
-	     String prodLink = (String)request.getAttribute("productLink");
-	     if (prodLink != null && !"".equals(prodLink)) {
-	%>
-	     <input type="hidden" name="productLink" value="<%=prodLink%>">
-	<%
-             } // if
-           } // local block
-	%>
-
-	
-	       <input type="hidden" name="list_action" value="">
-
-               <%
-	       if (CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
-	       %>
-	       <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br/><br/>
-	       <%
-	       } else {
-	       %>
-	       <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES"  onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br/><br/>
-           <button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button" onclick="document.productForm.list_action.value='remove';document.productForm.submit();">Remove Item</button><br/><br/>
-               <%
-	       } // cartMode
-	       %>
-
-              <input type="hidden" name="referer" value="<%= referer %>">
-	      <input type="hidden" name="<%=CclUtils.CC_LIST_ID%>" value="<%=ccListIdVal%>">
-	      <input type="hidden" name="originalSku" value="<%=skuCode%>">
-	      <input type="hidden" name="lineId" value="<%=lineId%>">
-	      <% if (request.getParameter("recipeId") != null) { %>
-	      <input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
-	      <% } %>
-    
-              <a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><BR><BR>
-	
-	<% } else {   %>
-		<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
-	<%  } %>
-		</td>
+						String referer = request.getParameter("referer");
+						if (referer==null) referer = request.getHeader("Referer");
+						if (referer == null) referer = "/quickshop/all_lists.jsp";
+						String ccListIdVal = (String)request.getAttribute(CclUtils.CC_LIST_ID);
+						String lineId = (String)request.getAttribute("lineId");
+	        		%>
+					<% {
+		     			String prodLink = (String)request.getAttribute("productLink");
+		     			if (prodLink != null && !"".equals(prodLink)) { 
+		     				%><input type="hidden" name="productLink" value="<%=prodLink%>"><%
+	             		} /* if */
+	           		} /* local block */ %>
+					<input type="hidden" name="list_action" value="">
+					<% if (CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) { %>
+						<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br /><br />
+					<% } else { %>
+						<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES"  onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br /><br />
+						<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button" onclick="document.productForm.list_action.value='remove';document.productForm.submit();">Remove Item</button><br /><br />
+					<% } /* cartMode */ %>
+					<input type="hidden" name="referer" value="<%= referer %>">
+					<input type="hidden" name="<%=CclUtils.CC_LIST_ID%>" value="<%=ccListIdVal%>">
+					<input type="hidden" name="originalSku" value="<%=skuCode%>">
+					<input type="hidden" name="lineId" value="<%=lineId%>">
+					<% if (request.getParameter("recipeId") != null) { %>
+						<input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
+					<% } %>
+					<a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><BR><BR>
+				<% } else { %>
+					<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
+				<% } %>
+			</td>
 		</tr>
-		<tr>
-		 <td colspan="4" align="right">
-<%
-		if (cartMode.equals(CartName.QUICKSHOP)) {
-			%>
+		<% if (cartMode.equals(CartName.QUICKSHOP)) { %>
+			<tr>
+				<td colspan="2" align="right">
 					<fd:QuickShopController id="quickCart">
 					<fd:GetBackToListLink id='backToList' quickCart='<%= quickCart %>' deptId='<%=request.getParameter("qsDeptId")%>'>
 					<a href="<%=backToList.toString()%>"><img src="/media_stat/images/buttons/back_to_list.gif" width="99" height="21" border="0" alt="Back to List" vspace="2"></a><br>
 					</fd:GetBackToListLink>
 					</fd:QuickShopController>
-			<%
-		}   %>
-		</td>
-	</tr>
+				</td>
+			</tr>
+		<% } %>
         <tr>
-		<td colspan="4">
-		<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
-		</td>
-        </tr><tr></tr><tr></tr>
-<%
-        if (!CartName.MODIFY_CART.equals(cartMode) && !CartName.MODIFY_LIST.equals(cartMode)) {
-%>
-        <tr>
-<fd:CCLCheck>
-        <td colspan="9" align="right"> 
-	<br/>
-	<div>
-	    <a id="ccl-add-action" href="/unsupported.jsp" 
-		      onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
-		<div style="text-align: right; margin-bottom: 1ex;"></div>
-    </div>
-    <br/>
-    <br/>
-    </td>
-</fd:CCLCheck>
+			<td colspan="2">
+				<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+			</td>
         </tr>
-<%
-       } // if not modify cart or modify list
-%>
+		<% if (!CartName.MODIFY_CART.equals(cartMode) && !CartName.MODIFY_LIST.equals(cartMode)) { %>
+		<fd:CCLCheck>
+        	<tr>
+        		<td colspan="2" align="right"> 
+					<br />
+					<div>
+	    				<a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
+						<div style="text-align: right; margin-bottom: 1ex;"></div>
+    				</div>
+    				<br />
+    				<br />
+    			</td>
+        	</tr>
+		</fd:CCLCheck>
+		<% } /* if not modify cart or modify list */ %>
 	</table>
-	<br> 
+	<br />
 	<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 		<script language="javascript">
 		<!--
@@ -779,7 +766,7 @@ if (isAvailable ) {
 	</form>
 	<% }
 } else {  %>
-<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
+<table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
       <td width="100%">
 	<div align="center"><font class="text12" color="#999999">
@@ -791,11 +778,11 @@ if (isAvailable ) {
 	List catBottomMedias = parentCat.getBottomMedia();
 	if (catBottomMedias != null && catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
     %>
-    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>">
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>">
        <TR VALIGN="TOP">
           <TD align="center">
 			<BR>
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 			<FONT CLASS="space4pix"><br><br></FONT>
        </TD>
        <TR><TD align="center">

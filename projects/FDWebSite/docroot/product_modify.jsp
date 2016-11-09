@@ -5,6 +5,9 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -43,7 +46,17 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 		catId = templateLine.getCategoryName();
 		productId = templateLine.getProductName();
 	}
-
+	
+	
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = "/common/template/no_nav.jsp";
+	if (mobWeb) {
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = (request.getAttribute("sitePage") != null) ? request.getAttribute("sitePage").toString() : "www.freshdirect.com/product_modify.jsp";
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
 %>
 <fd:ProductGroup id='productNode' categoryId='<%= catId %>' productId='<%= productId %>' skuCode='<%= skuCode%>'>
 <%
@@ -77,7 +90,7 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= tagAction %>' successPage='<%= successPage %>'>
-<tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
 
     <tmpl:put name='title' direct='true'>FreshDirect - Modify Item in Cart <% // productNode.getFullName() %></tmpl:put>
 
@@ -85,39 +98,42 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
     </tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_PRODUCT_MODIFY_TOTAL %>">
-<TR VALIGN="TOP">
-  <TD WIDTH="<%= W_PRODUCT_MODIFY_TOTAL %>">
-<img src="/media_stat/images/navigation/modify_item_in_cart.gif" width="367" height="25" border="0" alt="MODIFY ITEM IN CART" style="margin: 0 auto; display: block;"><BR>
-<FONT CLASS="space4pix"><BR></FONT>
-This item is now in your cart. After making changes to it, click "save changes" below. To remove it from your cart, click "remove item." To return to the page where you bought it, <A HREF="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</A>.<br><br>
-<%@ include file="/includes/product/cutoff_notice.jspf" %>
-<%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
-<br>
-</TD>
-</TR>
-</TABLE>
-<%
-	request.setAttribute("actionResult", result);
-	request.setAttribute("user", user);
-	request.setAttribute("productNode", productNode);
-	request.setAttribute("cartMode",cartMode);
-	request.setAttribute("templateLine",templateLine);
-
-EnumProductLayout prodPageLayout = productNode.getProductLayout();
-
-// if this is the wine product layout, then modification always uses the perishable product layout
-if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
-
-// if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
-if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT) || 
-        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) {
-    prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
-}
-
-String productPage = prodPageLayout.getLayoutPath();
-%>
-<jsp:include page="<%=productPage%>" flush="false"/>
+	<div style="width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>" class="prodMod-cont">
+		<div class="center modProd-banner" style="margin-bottom: 6px;"><span>MODIFY ITEM IN CART</span></div>
+		
+		<div class="text12px prodMod-modLink" style="margin-bottom: 6px;">
+			This item is now in your cart. After making changes to it, click "save changes" below. 
+			To remove it from your cart, click "remove item." To return to the page where you bought it, 
+			<a href="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</a>.
+		</div>
+		<div class="" style="margin-bottom: 6px;">
+			<%@ include file="/includes/product/cutoff_notice.jspf" %>
+			<%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
+		</div>
+			
+		<%
+			request.setAttribute("actionResult", result);
+			request.setAttribute("user", user);
+			request.setAttribute("productNode", productNode);
+			request.setAttribute("cartMode",cartMode);
+			request.setAttribute("templateLine",templateLine);
+		
+		EnumProductLayout prodPageLayout = productNode.getProductLayout();
+		
+		// if this is the wine product layout, then modification always uses the perishable product layout
+		if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
+		
+		// if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
+		if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT) || 
+		        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) {
+		    prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
+		}
+		
+		String productPage = prodPageLayout.getLayoutPath();
+		%>
+		<jsp:include page="<%=productPage%>" flush="false"/>
+		
+	</div>
 </tmpl:put>
 
 </tmpl:insert>

@@ -65,7 +65,7 @@ var FreshDirect = FreshDirect || {};
         //   };
         // });
 
-        fd.components.AddToCart.triggerATC(items,{newOrder:true}, $(this.placeholder), this.data.eventSource);
+        fd.components.AddToCart.triggerATC(items,{newOrder:true}, $(this.placeholder), this.data.eventSource, (this.data.mobWeb) ? true : this.data.ignoreRedirect);
 
         this.close();
       }
@@ -121,7 +121,7 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var items = fd.modules.common.productSerialize(this.data.pendingItems);
 
-        fd.components.AddToCart.triggerATC(items,{newOrder:true}, $(this.placeholder), this.data.eventSource);
+        fd.components.AddToCart.triggerATC(items,{newOrder:true}, $(this.placeholder), this.data.eventSource, (this.data.mobWeb) ? true : this.data.ignoreRedirect);
         this.close();
       }
     },
@@ -130,7 +130,7 @@ var FreshDirect = FreshDirect || {};
         var items = fd.modules.common.productSerialize(e.target);
         var orderId = $(this.orderInput).val();
 
-        fd.components.AddToCart.triggerATC(items,{orderId:orderId}, $(this.placeholder), this.data.eventSource);
+        fd.components.AddToCart.triggerATC(items,{orderId:orderId}, $(this.placeholder), this.data.eventSource, (this.data.mobWeb) ? true : this.data.ignoreRedirect);
         this.close();
       }
     },

@@ -248,6 +248,9 @@ input[type="text"], input[type="email"], input[type="password"] {
 .fnt-18 {
 	font-size: 18px;
 }
+.wid56 {
+	width: 56%;
+}
 .wid57 {
 	width: 57%;
 }
@@ -435,7 +438,7 @@ footer .copyright {
 .pull-right {
 	float: right!important;
 }
-.close-x {
+.close-x, #messages.open .close-handler {
 	top: 0;
 	bottom: initial;
 	left: initial;
@@ -559,7 +562,9 @@ footer .copyright {
 	#topSearchField {
 		float: none;
 	}
-	#messages, .alert-cont {
+	#messages,
+	#messages ul,
+	.alert-cont {
 		width: 100%;
 	}
 
@@ -1308,4 +1313,29 @@ footer .copyright {
 	.mm-page #quickshop #mm-reorder-nav #mm-reorder-nav-so{
 		text-align: center;
 		padding: 0 0 15px;
+	}
+
+/* CHECKOUT */
+	.mm-page .prodMod-buttons-cont button, .mm-page .prodMod-buttons-cont a {
+	    width: 100%;
+	}
+	.mm-page .modProd-banner {
+		background-color: #F93;
+	}
+	.mm-page .modProd-banner>span {
+		color: #fff;
+		font-size: 24px;
+	}
+	.mm-page .prodMod-modLink {
+		padding: 0 3px;
+	}
+	.mm-page .prodLayout-mainTable-cont {
+		padding: 0 4px;
+	}
+	.mm-page .prodLayout-dispInBlock {
+		width: 100%;
+		display: block;
+	}
+	.mm-page .prodMod-cont .qtyinput {
+    	margin-bottom: 10px;
 	}

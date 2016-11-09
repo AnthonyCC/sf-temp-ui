@@ -1,9 +1,14 @@
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.framework.util.TimeOfDay'%>
 <%@ page import='com.freshdirect.webapp.util.RestrictionUtil'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <% //expanded page dimensions
 final int W_CUTOFF_NOTICE_TOTAL = 601;
+boolean mobWeb_cutoff_notice = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
 %>
 
 <%-- CUTOFF NOTICE requires productNode --%>
@@ -26,7 +31,7 @@ final int W_CUTOFF_NOTICE_TOTAL = 601;
 			bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
 		}
 		%>
-		<table width="<%=W_CUTOFF_NOTICE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+		<table width="<%= (mobWeb_cutoff_notice) ? "100%" : W_CUTOFF_NOTICE_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 			</tr>

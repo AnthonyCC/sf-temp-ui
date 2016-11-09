@@ -157,6 +157,8 @@ A.list		    { line-height: 12px; }
 .title18or	     { font-size: 18px; color: #f93; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .title24 	     { font-size: 24px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title30 	     { font-size: 30px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title32 	     { font-size: 32px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text10 .Container_Top_help {
     font-family: Verdana Reg;
@@ -3251,4 +3253,11 @@ div#i_viewcart td {
 	color: #5d5f36;
 	font-family: Verdana Reg;
     font-size: 16px;
+}
+
+.modProd-banner>span {
+	color: #F93;
+	font-size: 32px;
+    font-weight: bold;
+    font-family: Verdana, Arial, sans-serif;
 }
