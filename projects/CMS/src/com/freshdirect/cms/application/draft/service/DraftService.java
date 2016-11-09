@@ -14,8 +14,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.ehcache.config.CacheConfiguration;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
@@ -26,6 +24,8 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
+
+import net.sf.ehcache.config.CacheConfiguration;
 
 public class DraftService {
 
@@ -47,7 +47,7 @@ public class DraftService {
 
         @Override
         public int compare(DraftChange o1, DraftChange o2) {
-            return (int) (o1.getCreatedAt() - o2.getCreatedAt());
+            return Long.valueOf(o1.getCreatedAt()).compareTo(Long.valueOf(o2.getCreatedAt()));
         }
     };
 

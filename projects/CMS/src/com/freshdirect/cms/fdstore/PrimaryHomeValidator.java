@@ -10,6 +10,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.node.ChangedContentNode;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
@@ -21,35 +22,42 @@ import com.freshdirect.cms.validation.ContentValidatorI;
 public class PrimaryHomeValidator implements ContentValidatorI {
 	
     @Override
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
-		final boolean isPublish = (request == null);
-		
-		if (!FDContentTypes.PRODUCT.equals( node.getKey().getType()) || isPublish) {
-			// not a product, skip ...
-			// auto-fix has been moved to SingleStoreFilterHelper class
-			return;
-		}
+    public void validate(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+        final boolean isPublish = (request == null);
 
-		@SuppressWarnings("unchecked")
-		// pick original homes
-		List<ContentKey> homes = (List<ContentKey>) node.getAttributeValue("PRIMARY_HOME");
-		if (homes == null) {
-			homes = Collections.EMPTY_LIST;
-		}
+        if (!FDContentTypes.PRODUCT.equals(node.getKey().getType()) || isPublish) {
+            // not a product, skip ...
+            // auto-fix has been moved to SingleStoreFilterHelper class
+            return;
+        }
 
-		Set<ContentKey> validHomeKeys = PrimaryHomeUtil.fixPrimaryHomes(node, service, draftContext, null);
-		if (validHomeKeys == null) {
-			// internal error occurred, abort the validation now.
-			return;
-		}
+        @SuppressWarnings("unchecked")
+        // pick original homes
+        List<ContentKey> homes = (List<ContentKey>) node.getAttributeValue("PRIMARY_HOME");
+        if (homes == null) {
+            homes = Collections.emptyList();
+        }
 
-		// check if homes set is changed
-		if (!validHomeKeys.containsAll(homes) || !homes.containsAll(validHomeKeys)) {
-			// make the change
-			ContentNodeI clone = node.copy();
-			clone.setAttributeValue("PRIMARY_HOME", new ArrayList<ContentKey>( validHomeKeys ) );
+        Set<ContentKey> validHomeKeys = PrimaryHomeUtil.fixPrimaryHomes(node, service, draftContext, null);
+        if (validHomeKeys == null) {
+            // internal error occurred, abort the validation now.
+            return;
+        }
 
-			request.addNode(clone);
-		}
-	}
+        // check if homes set is changed
+        if (!validHomeKeys.containsAll(homes) || !homes.containsAll(validHomeKeys)) {
+            // make the change
+            ContentNodeI clone;
+            if (draftContext != DraftContext.MAIN) {
+                clone = new ChangedContentNode(node);
+
+            } else {
+                clone = node.copy();
+            }
+
+            clone.setAttributeValue("PRIMARY_HOME", new ArrayList<ContentKey>(validHomeKeys));
+
+            request.addNode(clone);
+        }
+    }
 }

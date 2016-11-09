@@ -99,11 +99,55 @@ public class DraftHandlingContentService implements ContentServiceI {
         // build parent index from draft nodes
         Map<ContentKey, Set<ContentKey>> draftParentIndex = ContentNodeUtil.getParentIndex(nodes);
         if (draftParentIndex.containsKey(key)) {
-            parentKeys = draftParentIndex.get(key); //if there is parent info on the draft then we don't need it from 'MAIN'
+            parentKeys = clearUpParentKeysOnDraft(key, parentKeys, draftParentIndex.get(key), nodes);
+            parentKeys.addAll(draftParentIndex.get(key));
         }
-
+        
         return parentKeys;
     }
+    
+
+    private Set<ContentKey> clearUpParentKeysOnDraft(ContentKey keyOfQuestion, Set<ContentKey> parentKeysFromMain, Set<ContentKey> parentKeysOnDraft, List<ContentNodeI> draftNodes){
+        Set<ContentKey> parentKeys = new HashSet<ContentKey>();
+        Set<ContentKey> changedParents = new HashSet<ContentKey>(parentKeysFromMain);
+        changedParents.retainAll(collectKeysOfNodes(draftNodes)); // resulting those parents which changed on draft
+        
+        for(ContentKey key : changedParents){
+            ContentNodeI contentNode = getNodeByKey(draftNodes, key);
+            //check if the changed 'parent' is still a parent of the node
+            if(contentNode.getChildKeys().contains(keyOfQuestion)){
+                parentKeys.add(key);
+            }
+        }
+        
+        //we need the parent keys from MAIN which are not changed on draft - they are still parents of the node
+        for(ContentKey key : parentKeysFromMain){
+            if(!changedParents.contains(key)){
+                parentKeys.add(key);
+            }
+        }
+        
+        return parentKeys;
+    }
+    
+    private ContentNodeI getNodeByKey(List<ContentNodeI> nodes, ContentKey key){
+        ContentNodeI contentNode = null;
+        for(ContentNodeI node : nodes){
+            if(node.getKey().equals(key)){
+                contentNode = node;
+                break;
+            }
+        }
+        return contentNode;
+    }
+    
+    private Set<ContentKey> collectKeysOfNodes(List<ContentNodeI> nodes){
+        Set<ContentKey> contentKeys = new HashSet<ContentKey>();
+        for(ContentNodeI node : nodes){
+            contentKeys.add(node.getKey());
+        }
+        return contentKeys;
+    }                                                  
 
     @Override
     public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext) {
