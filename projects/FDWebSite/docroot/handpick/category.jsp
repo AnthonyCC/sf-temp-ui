@@ -1,3 +1,7 @@
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -14,8 +18,20 @@
 <c:set var="catId" value='${param.id!=null ? param.id : param.catId}'/>
 
 <potato:browse name="browsePotato" specialLayout="true" nodeId='${catId}'/>
+<c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
+<%
+String template = "/common/template/browse_noleftnav_template.jsp";
+String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/handpick/category.jsp" : request.getAttribute("sitePage").toString();
 
-<tmpl:insert template='/common/template/browse_noleftnav_template.jsp'>
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+if (mobWeb) {
+	template = "/common/template/mobileWeb.jsp"; //mobWeb template
+	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+	}
+}
+%>
+<tmpl:insert template='<%= template %>'>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
