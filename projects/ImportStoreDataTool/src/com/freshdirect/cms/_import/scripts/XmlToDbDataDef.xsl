@@ -355,29 +355,20 @@ with
 
 
 <xsl:template name="insert_lookuptypes">
-<xsl:for-each select="//CMS:EnumDef">
-    <!-- the insert header -->
-    <xsl:text>INSERT INTO lookuptype (CODE,NAME,DESCRIPTION) VALUES (</xsl:text>
-    
-    <!-- code, which is: contenttype_id.enum_name -->
-    <xsl:value-of select="concat(&quot;'&quot;, ../../@name, '.', @name, &quot;',&quot;)"/>
-
-    <!-- name, which is: contenttype_id.enum_name, same as above -->
-    <xsl:value-of select="concat(&quot;'&quot;, ../../@name, '.', @name, &quot;',&quot;)"/>
-
-    <!-- description, always NULL -->
-    <xsl:text>NULL</xsl:text>
-
-    <!-- lookup_source, always NULL -->
-    <xsl:text>NULL</xsl:text>
-
-    <!-- query, always NULL -->
-    <xsl:text>NULL</xsl:text>
-
-    <!-- the end of the statement, including a linefeed -->
-    <xsl:text>);
-</xsl:text>
-</xsl:for-each>
+	<xsl:for-each select="//CMS:EnumDef">
+	    <!-- the insert header -->
+	    <xsl:text>INSERT INTO lookuptype (CODE,NAME) VALUES (</xsl:text>
+	    
+	    <!-- code, which is: contenttype_id.enum_name -->
+	    <xsl:value-of select="concat(&quot;'&quot;, ../../@name, '.', @name, &quot;',&quot;)"/>
+	
+	    <!-- name, which is: contenttype_id.enum_name, same as above -->
+	    <xsl:value-of select="concat(&quot;'&quot;, ../../@name, '.', @name, &quot;'&quot;)"/>
+	
+	    <!-- the end of the statement, including a linefeed -->
+	    <xsl:text>);
+	    </xsl:text>
+	</xsl:for-each>
 </xsl:template>
 
 
