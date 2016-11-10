@@ -23,13 +23,14 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms._import.dao.CMSInfrastructureDao;
-import com.freshdirect.cms._import.dao.DbContentService;
 import com.freshdirect.cms.application.CmsRequest;
+import com.freshdirect.cms.application.CmsRequestI.Source;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.UserI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.db.DbContentService;
 import com.freshdirect.cms.application.service.db.DbTypeService;
 import com.freshdirect.cms.application.service.media.MediaService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -398,7 +399,7 @@ public class ImportTool {
     	int b=1;
     	
     	Iterator<ContentKey> cit = allKeys.iterator();
-		CmsRequest req = new CmsRequest(MASTER);
+		CmsRequest req = new CmsRequest(MASTER, Source.STORE_IMPORT);
 
     	while (cit.hasNext()) {
 			req.addNode(inStoreManager.getContentNode(cit.next(), DraftContext.MAIN));
@@ -461,13 +462,14 @@ public class ImportTool {
 		
 		LOGGER.info("Import media objects ("+inMediaManager.getContentKeys(DraftContext.MAIN).size()+")");
 		
-		CmsRequest req = new CmsRequest(MASTER);
+		CmsRequest req = new CmsRequest(MASTER, Source.STORE_IMPORT);
 		
 		long t0 = System.currentTimeMillis();
 		for (ContentKey cKey : inMediaManager.getContentKeys(DraftContext.MAIN)) {
 			final ContentNodeI mediaNode = inMediaManager.getContentNode(cKey, DraftContext.MAIN);
 			req.addNode(mediaNode);
 		}
+		// FIXME: media manager does not save anything ...
 		outMediaManager.handle(req);
 		long t1 = System.currentTimeMillis();
 		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");

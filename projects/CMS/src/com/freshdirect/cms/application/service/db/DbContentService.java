@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,6 +69,77 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     private ContentNodeGenerator generator;
 
+    private class AddNodeBatch {
+        boolean bulkInsertMode;
+        
+        // batches
+        
+        PreparedStatement delAttrStmt;
+        PreparedStatement delRelshipStmt;
+        PreparedStatement insertNodeStmt;
+        PreparedStatement insertAttrStmt;
+        PreparedStatement insertRelshipStmt;
+        PreparedStatement delPrevOtherRelshipStmt;
+
+        public AddNodeBatch(Connection conn, boolean bulkInsertMode) throws SQLException {
+            // this.conn = conn;
+            this.bulkInsertMode = bulkInsertMode;
+
+            // Create batches
+            /* if (!bulkInsertMode) {
+                this.delAttrStmt = conn.prepareStatement(DELETE_ATTRIBUTE);
+                this.delRelshipStmt = conn.prepareStatement(DELETE_RELATIONSHIP);
+                this.delPrevOtherRelshipStmt = conn.prepareStatement(DELETE_PREV_OTHER_REL);
+            } */
+            this.insertNodeStmt = conn.prepareStatement(INSERT_NODE);
+
+            this.insertAttrStmt = conn.prepareStatement(INSERT_ATTRIBUTE);
+            this.insertRelshipStmt = conn.prepareStatement(INSERT_RELATIONSHIP);
+        }
+        
+        
+        public void addNode(ContentNodeI node) throws SQLException {
+            /* if (!bulkInsertMode) {
+                delAttrStmt.setString(1, node.getKey().getEncoded());
+                delAttrStmt.addBatch();
+    
+                delRelshipStmt.setString(1, node.getKey().getEncoded());
+                delRelshipStmt.addBatch();
+            } */
+
+            addNodeToBatch(node,
+                    insertNodeStmt, insertAttrStmt,
+                    insertRelshipStmt, delPrevOtherRelshipStmt,
+                    bulkInsertMode);
+        }
+
+
+        public void execute() throws SQLException {
+            /* if (!bulkInsertMode) {
+                delAttrStmt.executeBatch();
+                delAttrStmt.close();
+                
+                delRelshipStmt.executeBatch();
+                delRelshipStmt.close();
+            } */
+
+            insertNodeStmt.executeBatch();
+            insertNodeStmt.close();
+
+            insertAttrStmt.executeBatch();
+            insertAttrStmt.close();
+
+            if (!bulkInsertMode) {
+                delPrevOtherRelshipStmt.executeBatch();
+                delPrevOtherRelshipStmt.close();
+            }
+            
+            insertRelshipStmt.executeBatch();
+            insertRelshipStmt.close();
+        }
+    }
+    
+    
     public DbContentService() {
         super();
     }
@@ -295,7 +365,6 @@ public class DbContentService extends AbstractContentService implements ContentS
     private final static String DELETE_PREV_OTHER_REL = "delete from cms_relationship where def_name = ? and def_contenttype = ? and child_contentnode_id = ? and ordinal = ?";
 
     private void storeContentNode(ContentNodeI node) {
-        // System.out.println("Storing content node in DB: " + node.getKey());
         Connection conn = null;
         try {
             conn = getConnection();
@@ -384,6 +453,61 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     }
 
+    // BULK-INSERT
+    protected void addNodeToBatch(ContentNodeI node,
+            PreparedStatement insertNodeStmt, PreparedStatement insertAttrStmt,
+            PreparedStatement insertRelshipStmt,
+            PreparedStatement delPrevOtherRelshipStmt,
+            boolean bulkInsertMode) throws SQLException {
+        if (node.getKey().getType()==ContentType.NULL_TYPE) {
+            // LOGGER.warn("trying to insert null content node:" + node + " key : " + node.getKey());
+        } else {
+            // [1] Add content node
+            addInsertNodeToBatch(insertNodeStmt, node.getKey());
+
+            // [2] Add attributes and relationships
+            
+            //Map attrMap = node.getAttributes();
+            Set<String> names = node.getDefinition().getAttributeNames();
+            for (String name : names) {
+                Object value = node.getAttributeValue(name);
+                // System.out.println("Saving attribute - " + node.getKey() +
+                // ":"+ attr.getName());
+                if (value == null) {
+                    continue;
+                }
+                AttributeDefI def = node.getDefinition().getAttributeDef(name);
+                if (def instanceof RelationshipDefI) {
+                    if (((RelationshipDefI) def).isCalculated()) {
+                        continue;
+                    }
+                    if (EnumCardinality.ONE.equals(def.getCardinality())) {
+                        ContentKey k = (ContentKey) value;
+                        addInsertNodeToBatch(insertNodeStmt, k);
+                        addRelBatch(insertRelshipStmt, node.getKey(), name, k, 0);
+                        if (!bulkInsertMode && def instanceof BidirectionalRelationshipDefI) {
+                            addInverseDelBatch(delPrevOtherRelshipStmt, name, k, 0);
+                        }
+                    } else {
+                        List<ContentKey> l = (List<ContentKey>) value;
+                        for (int m = 0; m < l.size(); m++) {
+                            ContentKey k = l.get(m);
+                            addInsertNodeToBatch(insertNodeStmt, k);
+                            addRelBatch(insertRelshipStmt, node.getKey(), name, k, m);
+                        }
+                    }
+                } else {
+                    insertAttrStmt.setString(1, node.getKey().getEncoded());
+                    insertAttrStmt.setString(2, name);
+                    insertAttrStmt.setString(3, node.getKey().getType().getName());
+                    insertAttrStmt.setString(4, ContentTypeUtil.attributeToString(def, value));
+                    insertAttrStmt.setInt(5, 0);
+                    insertAttrStmt.addBatch();
+                }
+            }
+        }
+    }
+
     private void addInverseDelBatch(PreparedStatement delInvPs, String relationshipName, ContentKey destKey, int ordinal) throws SQLException {
         delInvPs.setString(1, relationshipName);
         delInvPs.setString(2, destKey.getType().getName());
@@ -414,6 +538,18 @@ public class DbContentService extends AbstractContentService implements ContentS
         }
         relPs.setInt(5, ordinal);
         relPs.addBatch();
+    }
+
+    // BULK-INSERT MODE
+    private void addInsertNodeToBatch(PreparedStatement insPs, ContentKey key) throws SQLException {
+        if (key.getType() == ContentType.NULL_TYPE) {
+            return;
+        }
+        String id = key.getEncoded();
+        insPs.setString(1, id);
+        insPs.setString(2, key.getType().getName());
+        insPs.setString(3, id);
+        insPs.addBatch();
     }
 
     @Override
@@ -479,12 +615,51 @@ public class DbContentService extends AbstractContentService implements ContentS
         node.setAttributeValue(attrName, ContentTypeUtil.convertAttributeValues(aDef, value));
     }
 
+
+    // BULK-INSERT MODE
+    private void storeContentNodes(Collection<ContentNodeI> nodes) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            conn.setReadOnly(true);
+            
+            // CREATE BATCHES
+            AddNodeBatch anb = new AddNodeBatch(conn, true);
+            
+            for (ContentNodeI node : nodes) {
+                // FILL BATCHES
+                anb.addNode(node);
+            }
+
+            // EXECUTE BATCHES
+            anb.execute();
+
+            conn.commit();
+        } catch (Exception exc) {
+            throw new CmsRuntimeException(exc);
+        } finally {
+            close(conn);
+        }
+    }
+    
+    
     @Override
     public CmsResponseI handle(CmsRequestI request) {
-        // TODO distinguish create/update/delete
-        for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-            ContentNodeI node = (ContentNodeI) i.next();
-            storeContentNode(node);
+        
+        if (request != null) {
+            if (CmsRequestI.Source.STORE_IMPORT == request.getSource()) {
+                // bulk import operation
+                storeContentNodes( request.getNodes() );
+
+            } else {
+                // Basic save / update operation
+                
+                for (ContentNodeI node : request.getNodes()) {
+                    storeContentNode(node);
+                }
+            
+            }
         }
         return new CmsResponse();
     }

@@ -27,6 +27,7 @@ public interface CmsRequestI {
         AUTO_ASSOCIATE, // media handler facility
         OVERVIEW,       // draft changes overview page, verify intent 
         MERGE,          // merge draft to main
+        STORE_IMPORT,   // store import tool
         ELSE            // unknown or unspecified
     }
 
