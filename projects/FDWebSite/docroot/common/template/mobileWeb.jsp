@@ -52,7 +52,7 @@
 		};
 	</script>
 	
-    <jwr:script src="/locabar.js" useRandomParam="false" />
+	<fd:javascript src="/assets/javascript/locationbar.js" />
 	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
     
     	

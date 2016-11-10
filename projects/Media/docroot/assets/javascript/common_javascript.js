@@ -1477,7 +1477,7 @@ function checkBatch() {
 					$jq('.cDetToolTipClickToApply').each(function (i, e){
 						$jq(e).hide();
 					});
-					window.parent['qbClippedSuccess']('input[name="fdCoupon_'+couponId+'_cb"]');
+					window.parent['qbClippedSuccess']('[name="fdCoupon_'+couponId+'_cb"]');
 					try {
 						if (data && data.cartData) {
 							FreshDirect.common.dispatcher.signal('cartData', data.cartData);
@@ -1486,9 +1486,10 @@ function checkBatch() {
 				},
 				error: function() {
 					/* clear check box(es) */
-					$jq('input[name="fdCoupon_'+couponId+'_cb"]:checked').each(function (i, e){
+					$jq('[name="fdCoupon_'+couponId+'_cb"]:checked').each(function (i, e){
 						$jq(e).attr('checked', false);
 						$jq(e).attr('disabled', false);
+						$jq(e).removeClass('disabled');
 					});
 				},
 				complete: function() {
@@ -1503,6 +1504,7 @@ function checkBatch() {
 			if ($jq(e).parent('div').hasClass('fdCoupon_prodBox')) {
 				$jq(e).addClass('isClipped');
 			}
+			$jq(e).addClass('disabled');
 			$jq(e).prop('checked', true);
 			$jq(e).prop('disabled', true);
 		});

@@ -64,6 +64,7 @@ h1.pdpTitle,
 	font-size:30px;
 	color:#333;
 	margin:15px 0 20px 0;
+	display: inline;
 }
 
 span.cssbutton.annotation,

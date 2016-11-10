@@ -75,7 +75,7 @@
 			<div class="prodDetail-nrp"><%-- name/ratings/prices --%>
 				<soy:render template="pdp.productName" data="${productPotato}" />
 				
-				<c:if test="${productPotato.available}">			
+				<c:if test="${productPotato.available}">
 					<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
 					<div class="pdp-ratings"><soy:render template="pdp.ratings" data="${productPotato}" /></div>
 					<div class="pdp-price">
@@ -95,7 +95,7 @@
 					
 					<soy:render template="common.soPdp" data="${productPotato}" />
 					
-				</c:if>			
+				</c:if>
 				<c:if test="${not productPotato.available }">
 					<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
 				</c:if>

@@ -248,11 +248,14 @@ input[type="text"], input[type="email"], input[type="password"] {
 .fnt-18 {
 	font-size: 18px;
 }
-.wid56 {
+.wid56 { /* obs */
 	width: 56%;
 }
-.wid57 {
+.wid57 { /* obs */
 	width: 57%;
+}
+.navbar-header-left {
+	width: 55%;
 }
 footer .anchors {
 	-webkit-column-count: 2;
@@ -734,6 +737,7 @@ footer .copyright {
 	.pdp .prodDetail h1.pdpTitle,
 	.pdp .prodDetail h1 {
 		font-size: 1.25em;
+		display: inline-block;
 	}
 
 	.prodDetail-footer {
@@ -992,6 +996,15 @@ footer .copyright {
 		padding: 3px;
 	}
 	
+	.mm-page .so-results-content {
+		box-sizing: border-box;
+	}
+	@media screen and (max-width: 320px) {
+		.mm-page .so .cssbutton[data-component="addToSOButton"] {
+			width: 90px;
+		}
+	}
+	
 	/* PDP HOLIDAY MEAL OVERRIDES */
 	.pdp .prodDetail .thxgiving-bundle,
 	.pdp .prodDetail .thxgiving-includes,
@@ -1064,6 +1077,11 @@ footer .copyright {
 		}
 	}
 	
+/* PLP special pages */
+	.mm-page .mealkit-products-list-item {
+		width: 100%;
+		margin-right: 0;
+	}	
 	
 	/*PLP dirty overrides*/
 	.mm-page .pagination .pagination-pager-button,

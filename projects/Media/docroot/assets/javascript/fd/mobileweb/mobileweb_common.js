@@ -149,5 +149,7 @@ var API;
 			$jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
 			$jq(this).toggleClass('open');
 		});
+		
 	});
+	
 }(jQuery));

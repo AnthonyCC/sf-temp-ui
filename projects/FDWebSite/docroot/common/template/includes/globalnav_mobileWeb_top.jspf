@@ -4,7 +4,7 @@
 	<%-- TODO : copypasta from tech refresh, needs more fixing --%>
 	<nav class="navbar">
 		<div class="navbar-header">
-			<div class="pull-left wid56">
+			<div class="pull-left navbar-header-left">
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
 					<span class="icon-bar"></span>
 				</button>
