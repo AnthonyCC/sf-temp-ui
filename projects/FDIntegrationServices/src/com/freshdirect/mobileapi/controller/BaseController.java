@@ -716,6 +716,7 @@ public abstract class BaseController extends AbstractController implements Messa
             } else {
                 fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
             }
+            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
         }
         ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
