@@ -260,16 +260,6 @@ public class CMSInfrastructureDao {
 		}
 		return true;
 	}
-
-
-	public void rebuildAllNodesTable() {
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("alter table ALL_NODES nologging");
-		cmds.add("call DBMS_MVIEW.refresh('ALL_NODES','C')");
-		cmds.add("alter table ALL_NODES logging");
-
-		safeExecuteCommands(cmds, false);
-	}
 	
 	
 	

@@ -433,13 +433,6 @@ public class ImportTool {
     	// Create indices #2
     	outDao.createStoreIndicesPhaseTwo();
 		outDao.analyzeStoreTables();
-		
-		// Rebuild ALL_NODES materialized view
-		LOGGER.info("Rebuild ALL_NODES view");
-		long t0 = System.currentTimeMillis();
-		outDao.rebuildAllNodesTable();
-		long t1 = System.currentTimeMillis();
-		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
 
 		LOGGER.info("Import Store content finished");
 	}
