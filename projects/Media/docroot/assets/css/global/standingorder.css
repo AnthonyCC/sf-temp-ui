@@ -187,13 +187,7 @@
 		height: auto !important;
 		margin: 0 !important;
 	}
-	.thxgiving-addtocart .quantity_minus, .thxgiving-addtocart .quantity_plus {
-		margin-top: 0;
-	}
-	.thxgiving-addtocart input.qty {
-		line-height: 17px !important;
-		height: 38px !important;
-	}
+
 	.qs-content .lineitems22 .itemlist-item-controls.smaller {
 		width: 264px;
 	}
