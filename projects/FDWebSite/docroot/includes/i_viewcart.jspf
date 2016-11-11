@@ -116,18 +116,6 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
  .dept-name-cart a{color:#FF9933; font-weight:bold; font-size: 10px;}
  .dept-name-cart a:hover{text-decoration:none;}
 </style>
-<!-- APPDEV-4287 Dstillery Pixel Swap -->
-<script type="text/javascript" async>
-function asyncPixelWithTimeout() {
-var img = new Image(1, 1);
-img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26209&pcv=49';
-setTimeout(function ()
-{ if (!img.complete) img.src = ''; //kill the request
-
-}, 33);
-};
-asyncPixelWithTimeout();
-</script>
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>

@@ -60,19 +60,6 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 
 <form name="address" method="post">
 
-<!-- APPDEV-4287 Dstiller Pixel Swap -->
-<script type="text/javascript" async>
-function asyncPixelWithTimeout() {
-var img = new Image(1, 1);
-img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26206&pcv=46';
-setTimeout(function ()
-{ if (!img.complete) img.src = ''; /*kill the request*/ }
-
-, 33);
-};
-asyncPixelWithTimeout();
-</script>
-
 <table width="<%=W_CHECKOUT_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr><td width="<%=W_CHECKOUT_SIGNUP_TOTAL-175%>" class="text13">
 

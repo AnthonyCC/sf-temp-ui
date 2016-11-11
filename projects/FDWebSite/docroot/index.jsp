@@ -279,28 +279,10 @@ request.setAttribute("noyui", true);
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
 				<%-- END MAIN CONTENT--%> 
-			<!-- end of APPDEV-4287 -->
-				
+						
 			</div>
 			</fd:GetSegmentMessage>
 		<% } %>
-		
-		
-				
-		<!-- Dstillery pixel swap -->	
-			<!--commented as a part of APPDEV-4287 <script src="//action.media6degrees.com/orbserv/hbjs?pixId=26207&pcv=47" type="text/javascript" async></script>-->
-		<!-- start of APPDEV-4287 -->	
-		<script type="text/javascript" async>
-			function asyncPixelWithTimeout() {
-			var img = new Image(1, 1);
-			img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26207&pcv=47';
-			setTimeout(function ()
-			{ if (!img.complete) img.src = ''; /*kill the request*/ }
-			
-			, 33);
-			};
-			
-			asyncPixelWithTimeout();
-		</script>
+
 </tmpl:put>
 </tmpl:insert>

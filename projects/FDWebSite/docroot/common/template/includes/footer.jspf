@@ -94,19 +94,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-			<!--  APPDEV-4287 Dstillery Pixel Swap -->
-			<script type="text/javascript" async>
-			function asyncPixelWithTimeout() {
-			var img = new Image(1, 1);
-			img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26205&pcv=45';
-			setTimeout(function ()
-			{ if (!img.complete) img.src = ''; /*kill the request*/ }
-
-			, 33);
-			};
-			asyncPixelWithTimeout();
-			</script>
-						
 			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
 				<script type="text/javascript">
 					FreshDirect = FreshDirect || {};

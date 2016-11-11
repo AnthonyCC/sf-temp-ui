@@ -82,15 +82,6 @@ var FreshDirect = FreshDirect || {};
           }
           
           if (item.status === "SUCCESS"){
-        	  // Dstillery Script Pixel
-        	 //APPDEV-4287  
-        	  (function(){
-        		  var img = new Image(1, 1);
-            	  img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
-            	  setTimeout(function ()
-	            	  { if (!img.complete) img.src = ''; //kill the request
-	            	  }, 33);
-        	  })();
               
         	  /* Facebook Conversion Code for Add_to_Cart */
         	!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?

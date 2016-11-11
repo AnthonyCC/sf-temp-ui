@@ -68,17 +68,6 @@
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-    <!-- start of Dstillery pixel swap APPDEV-4287-->
-    
-	<script type="text/javascript" async>
-		function asyncPixelWithTimeout() {
-			var img = new Image(1, 1);
-			img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26206&pcv=46';
-			setTimeout(function () { if (!img.complete) img.src = ''; /*kill the request*/ }, 33);
-		};
-		asyncPixelWithTimeout();
-	</script>
-<!-- end of dstillery pixel swap  APPDEV-4287 -->
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />

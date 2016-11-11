@@ -18,20 +18,6 @@
 	<tmpl:put name="jsmodules">
 		<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 		<jwr:script src="/expressco.js" useRandomParam="false" />
-		
-		<!-- APPDEV-4287  Dstillery pixel -->
-		      <script type="text/javascript" async>
-		function asyncPixelWithTimeout() {
-		var img = new Image(1, 1);
-		img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26209&pcv=49';
-		setTimeout(function ()
-		{ if (!img.complete) img.src = ''; /*kill the request*/ }
-		
-		, 33);
-		};
-		asyncPixelWithTimeout();
-		</script>	
-		
 	</tmpl:put>
 
   
