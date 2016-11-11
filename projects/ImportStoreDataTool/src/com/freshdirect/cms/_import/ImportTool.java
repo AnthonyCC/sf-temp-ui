@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -159,6 +160,7 @@ public class ImportTool {
 				case importData:
 					importTool.init();
 					importTool.initSrcFiles();
+                    importTool.initStoreDefFile();
 					importTool.doImportData();
 					break;
 				case switchCms:
@@ -360,7 +362,7 @@ public class ImportTool {
 	
 	public void doImportData() {
 		doImportStore();
-		doImportMedia();
+		// doImportMedia();
 		doPostOperations();
 	}
 	
@@ -409,22 +411,20 @@ public class ImportTool {
 	    		LOGGER.info("Write out batch "+b+"/"+n_batches+" ("+req.getNodes().size()+" nodes)");
 	    		
 	    		long t0 = System.currentTimeMillis();
-				// outStoreManager.handle(req, true);
 				outStoreManager.handle(req);
 	    		long t1 = System.currentTimeMillis();
 	    		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
 	    		
-				req = new CmsRequest(MASTER);
+				req = new CmsRequest(MASTER, Source.STORE_IMPORT);
 				
 				b++;
 			}
     	}
-    	
+
     	if (req.getNodes().size() > 0) {
     		LOGGER.info("Write out last batch of nodes ("+req.getNodes().size()+")");
 
     		long t0 = System.currentTimeMillis();
-			// outStoreManager.handle(req, true);
 			outStoreManager.handle(req);
     		long t1 = System.currentTimeMillis();
     		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
@@ -441,6 +441,7 @@ public class ImportTool {
 
 	/**
 	 * Imports media entries from Media.xml to database
+	 * FIXME: it currently does nothing!
 	 */
 	protected void doImportMedia() {
 		LOGGER.info("Import Media content");
@@ -518,7 +519,7 @@ public class ImportTool {
 	}
 	
 	
-	protected ContentServiceI getImportManager(String defPath, File inFile) {
+	protected ContentServiceI getImportManager(String defPath, File inFile) throws MalformedURLException {
         List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
         list.add(new XmlTypeService(defPath));
 
@@ -526,25 +527,35 @@ public class ImportTool {
 
         XmlContentService service = new XmlContentService(typeService,
         		new FlexContentHandler(),
-        		"file:"+inFile.getPath());
+        		inFile.toURI().toURL().toString());
 
         return service;
 	}
 	
 
 	/**
-	 * Returns cms manager having Store.xml imported
+	 * Returns CMS manager having Store.xml imported
+	 * @throws MalformedURLException 
 	 */
 	protected ContentServiceI getStoreManager() {
-		return getImportManager("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml", storeFile);
+		try {
+            return getImportManager(storeDefFile.toURI().toURL().toString(), storeFile);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Failed to initialize store service!", e);
+        }
 	}
 
 
 	/**
 	 * Returns cms manager having Store.xml imported
+	 * @throws MalformedURLException 
 	 */
 	protected ContentServiceI getMediaManager() {
-		return getImportManager("classpath:/com/freshdirect/cms/resource/MediaDef.xml", mediaFile);
+		try {
+            return getImportManager("classpath:/com/freshdirect/cms/resource/MediaDef.xml", mediaFile);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Failed to initialize media service!", e);
+        }
 	}
 
 
