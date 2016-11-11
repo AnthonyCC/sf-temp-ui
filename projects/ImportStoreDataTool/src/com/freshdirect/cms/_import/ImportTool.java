@@ -269,9 +269,7 @@ public class ImportTool {
 			"01_create_typedefs.sql",
 			"02_create_content.sql",
 			"03_create_publish.sql",
-			"031_create_drafts.sql",
 			"04_create_indices.sql",
-			"031_grant_drafts.sql.input",
 			"05_grant_typedefs.sql.input",
 			"06_grant_content.sql.input",
 			"07_grant_publish.sql.input"
@@ -293,11 +291,10 @@ public class ImportTool {
 		final CMSInfrastructureDao dao = new CMSInfrastructureDao(outDataSource);
 		
 		final String[] scripts = {
-		    "99_drop_indices.sql",
+			"99_drop_indices.sql",
 			"98_drop_publish.sql",
 			"97_drop_content.sql",
-			"96_drop_typedefs.sql",
-			"95_drop_drafts.sql"
+			"96_drop_typedefs.sql"
 		};
 		
 		for (String script : scripts) {
