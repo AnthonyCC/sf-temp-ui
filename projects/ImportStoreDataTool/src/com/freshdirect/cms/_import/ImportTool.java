@@ -64,10 +64,6 @@ public class ImportTool {
 	};
 	
 	private String basePath;
-	@Deprecated
-	private File storeFile; // File pointing to 'Store.xml.gz'
-    @Deprecated
-	private File mediaFile; // File pointing to 'Media.xml.gz'
 	private File storeDefFile; // File pointing to 'CMSStoreDef.xml'
 	private DataSource outDataSource;
 	private Properties toolProps;
@@ -164,7 +160,6 @@ public class ImportTool {
 					break;
 				case importData:
 					importTool.init();
-					importTool.initSrcFiles();
                     importTool.initStoreDefFile();
 					importTool.doImportData();
 					break;
@@ -217,12 +212,6 @@ public class ImportTool {
 			throw new RuntimeException(fBase + "/" + fileName + " is not a file or does not exist");
 		}
 		return file;
-	}
-	
-	@Deprecated
-	private void initSrcFiles(){
-		storeFile = getFile("Store.xml.gz");
-		mediaFile = getFile("Media.xml.gz");
 	}
 
 	private void initStoreDefFile(){
@@ -386,7 +375,6 @@ public class ImportTool {
             LOGGER.error("Failed to import store", e);
         }
 
-		// doImportMedia();
 		doPostOperations();
 	}
 	
@@ -398,8 +386,8 @@ public class ImportTool {
 	protected void doImportStore() throws MalformedURLException, IOException {
 		LOGGER.info("Import Store content");
 		
-        final String xmlStoreDef = ResourceUtil.readResource(storeDefFile.toURI().toURL().toString());
-        final ContentTypeServiceI typeService = new XmlTypeService( xmlStoreDef );
+        // final String xmlStoreDef = ResourceUtil.readResource(storeDefFile.toURI().toURL().toString());
+        final ContentTypeServiceI typeService = new XmlTypeService( storeDefFile.toURI().toURL().toString() );
 		final ContentServiceI tmpStoreManager = new SimpleContentService( typeService ); 
 		
 		// -- load phase --
@@ -515,44 +503,6 @@ public class ImportTool {
 
 		LOGGER.info("Import Store content finished");
 	}
-
-	
-
-	/**
-	 * Imports media entries from Media.xml to database
-	 * FIXME: it currently does nothing!
-	 */
-	protected void doImportMedia() {
-		LOGGER.info("Import Media content");
-		ContentServiceI inMediaManager = getMediaManager();
-		ContentServiceI outMediaManager = getMediaExportManager(outDataSource);
-		
-		final CMSInfrastructureDao outDao = new CMSInfrastructureDao(outDataSource);
-		
-		LOGGER.info("Flush media table");
-		outDao.dropMediaIndex();
-		outDao.flushMediaTable();
-		
-		LOGGER.info("Import media objects ("+inMediaManager.getContentKeys(DraftContext.MAIN).size()+")");
-		
-		CmsRequest req = new CmsRequest(MASTER, Source.STORE_IMPORT);
-		
-		long t0 = System.currentTimeMillis();
-		for (ContentKey cKey : inMediaManager.getContentKeys(DraftContext.MAIN)) {
-			final ContentNodeI mediaNode = inMediaManager.getContentNode(cKey, DraftContext.MAIN);
-			req.addNode(mediaNode);
-		}
-		// FIXME: media manager does not save anything ...
-		outMediaManager.handle(req);
-		long t1 = System.currentTimeMillis();
-		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
-
-		
-		LOGGER.info("Enable media index");
-		outDao.addMediaIndex();
-		LOGGER.info("Import Media content finished");
-	}
-
 	
 	private void doPostOperations() {
 		LOGGER.info("Adjust System Sequence Value");
@@ -624,20 +574,6 @@ public class ImportTool {
         }
 	}
 
-
-	/**
-	 * Returns cms manager having Store.xml imported
-	 * @throws MalformedURLException 
-	 */
-	protected ContentServiceI getMediaManager() {
-		try {
-            return getImportManager("classpath:/com/freshdirect/cms/resource/MediaDef.xml", mediaFile);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Failed to initialize media service!", e);
-        }
-	}
-
-
 	protected ContentServiceI getStoreExportManager(DataSource ds) {
 		if (ds == null)
 			return null;
@@ -662,18 +598,4 @@ public class ImportTool {
 		
 		return dbContentService;
 	}
-	
-	
-	
-
-
-	protected void addNode(ContentNodeI node, CmsRequest req, ContentServiceI inManager) {
-		req.addNode(node);
-
-		for (ContentKey subKey : node.getChildKeys()) {
-			req.addNode(inManager.getContentNode(subKey, DraftContext.MAIN));
-		}
-	}
-	
-
 }
