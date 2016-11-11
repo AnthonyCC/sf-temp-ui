@@ -602,6 +602,16 @@ footer .copyright {
 	#MBRDPopup2.BRD-popup-container .MBRD-order {
 		margin: -5px -15px 10px -20px;
 	}
+	#MBRDPopup2.BRD-popup-container .qs-popup {
+		width: 90%;
+	    height: 80%;
+	    margin: 5%;
+	}
+	#MBRDPopup2 .qs-popup-content {
+		height: 75%;
+		overflow: auto;
+	}
+
 /* thanksgiving meal kits */
 	.mm-page .product-large {
 		width: 100%;
