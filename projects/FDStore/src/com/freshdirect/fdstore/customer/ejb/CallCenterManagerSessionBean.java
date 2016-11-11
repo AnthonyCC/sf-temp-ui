@@ -1282,7 +1282,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
 		+ " and c.case_subject in ('LDQ-005','LDQ-006','LDQ-007')"
 		+ " union all"
-		+ " select create_date,s.wave_number,s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime,'complaint' as source,"
+		+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime,'complaint' as source,"
 		+ " (select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
 		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
 		+ " from cust.complaint_dept_code cdc, cust.complaintline cl, cust.complaint c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
