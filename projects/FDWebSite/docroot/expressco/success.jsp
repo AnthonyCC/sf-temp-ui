@@ -28,19 +28,6 @@
       }());
     </script>
     
-     <!-- APPDEV-4287  Dstillery pixel -->
-  <script type="text/javascript" async>
-function asyncPixelWithTimeout() {
-var img = new Image(1, 1);
-img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26210&pcv=42';;
-setTimeout(function ()
-{ if (!img.complete) img.src = ''; /*kill the request*/ }
-
-, 33);
-};
-asyncPixelWithTimeout();
-</script>
-
   </tmpl:put>
 
   <tmpl:put name="globalnav">
@@ -164,7 +151,7 @@ asyncPixelWithTimeout();
 				semPixel_DIGO2.setParam("productId", semPixelData.get("productId")); // sem_productId
 				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" />
 				
-		        <%
+		 <%
         /* Pinterest Pixel */
 				SemPixelModel pinterestPixel = FDSemPixelCache.getInstance().getSemPixel("Pinterest");
 		        pinterestPixel.clearParams();
@@ -175,6 +162,20 @@ asyncPixelWithTimeout();
 		        pinterestPixel.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
 		        pinterestPixel.setParam("productId", semPixelData.get("productId")); // sem_productId
 				%><fd:SemPixelIncludeMedia pixelNames="Pinterest" />
+				
+	
+		 <%
+        /* Kenshoo Pixel */
+				SemPixelModel kenshooPixel = FDSemPixelCache.getInstance().getSemPixel("Kenshoo");
+		 		kenshooPixel.clearParams();
+	
+		 		kenshooPixel.setParam("checkout_receipt", "true");
+		 		kenshooPixel.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
+		 		kenshooPixel.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+		 		kenshooPixel.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
+		 		kenshooPixel.setParam("productId", semPixelData.get("productId")); // sem_productId
+				%><fd:SemPixelIncludeMedia pixelNames="Kenshoo" />			
+				
 						
       </c:if>
     </c:if>
