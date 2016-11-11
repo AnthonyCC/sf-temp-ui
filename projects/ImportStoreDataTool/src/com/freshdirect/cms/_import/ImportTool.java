@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms._import.dao.CMSInfrastructureDao;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsRequestI.Source;
@@ -31,12 +32,14 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.UserI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.SimpleContentService;
 import com.freshdirect.cms.application.service.db.DbContentService;
 import com.freshdirect.cms.application.service.db.DbTypeService;
 import com.freshdirect.cms.application.service.media.MediaService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.conf.ResourceUtil;
 import com.freshdirect.framework.xml.XSLTransformer;
 
@@ -61,7 +64,9 @@ public class ImportTool {
 	};
 	
 	private String basePath;
+	@Deprecated
 	private File storeFile; // File pointing to 'Store.xml.gz'
+    @Deprecated
 	private File mediaFile; // File pointing to 'Media.xml.gz'
 	private File storeDefFile; // File pointing to 'CMSStoreDef.xml'
 	private DataSource outDataSource;
@@ -214,6 +219,7 @@ public class ImportTool {
 		return file;
 	}
 	
+	@Deprecated
 	private void initSrcFiles(){
 		storeFile = getFile("Store.xml.gz");
 		mediaFile = getFile("Media.xml.gz");
@@ -313,7 +319,14 @@ public class ImportTool {
 		
 		Reader reader = null;
 		try {
-			InputStream stream = ImportTool.class.getClassLoader().getResourceAsStream("com/freshdirect/cms/_import/scripts/" + script);
+		    final String path = "com/freshdirect/cms/_import/scripts/" + script;
+			InputStream stream = ImportTool.class.getClassLoader().getResourceAsStream(path);
+			if (stream == null) {
+			    LOGGER.error("Script could not be loaded " + script);
+			    return false;
+			}
+			
+			
 			reader = new InputStreamReader(stream);
 			if (script.endsWith(".input")) {
 				reader = new PlaceholderResolver(reader, toolProps).getReader();
@@ -364,25 +377,90 @@ public class ImportTool {
 	}
 	
 	public void doImportData() {
-		doImportStore();
+	    
+		try {
+            doImportStore();
+        } catch (MalformedURLException e) {
+            LOGGER.error("Failed to import store", e);
+        } catch (IOException e) {
+            LOGGER.error("Failed to import store", e);
+        }
+
 		// doImportMedia();
 		doPostOperations();
 	}
 	
 	/**
 	 * Imports CMS Nodes from Store.xml to database
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 */
-	protected void doImportStore() {
+	protected void doImportStore() throws MalformedURLException, IOException {
 		LOGGER.info("Import Store content");
-		ContentServiceI inStoreManager = getStoreManager();
-		ContentServiceI outStoreManager = getStoreExportManager(outDataSource);
 		
-		final CMSInfrastructureDao outDao = new CMSInfrastructureDao(outDataSource);
-		// DROP INDICES
+        final String xmlStoreDef = ResourceUtil.readResource(storeDefFile.toURI().toURL().toString());
+        final ContentTypeServiceI typeService = new XmlTypeService( xmlStoreDef );
+		final ContentServiceI tmpStoreManager = new SimpleContentService( typeService ); 
+		
+		// -- load phase --
+		
+		File base = getBasePath();
+		File storedata = new File(base, "storedata");
+		if (storedata.isDirectory()) {
+		    base = storedata;
+		}
+
+
+		int importedStores = 0;
+		for (EnumEStoreId eStore : EnumEStoreId.values()) {
+		    final File storeContainer = new File(base, eStore.getContentId());
+
+		    LOGGER.info("Looking for store file for "+eStore.getContentId()+" ...");
+		    
+		    // store container does not exist or not a folder, skip
+		    if (!storeContainer.isDirectory()) {
+		        continue;
+		    }
+		    
+		    File storeXMLFile = new File(storeContainer, "Store.xml.gz");
+		    if (!storeXMLFile.isFile()) {
+		        continue;
+		    }
+		    
+	        final ContentServiceI inStoreManager = getStoreManager(storeXMLFile);
+	        LOGGER.info("Loading nodes from " + storeXMLFile + " ...");
+	        
+	        final Set<ContentType> types = inStoreManager.getTypeService().getContentTypes();
+	        for (final ContentType t : types) {
+	            final Set<ContentKey> keysForType = inStoreManager.getContentKeysByType(t, DraftContext.MAIN);
+	            CmsRequest req = new CmsRequest(MASTER);
+
+	            // load nodes
+	            for (final ContentKey k : keysForType) {
+	                final ContentNodeI n = inStoreManager.getContentNode(k, DraftContext.MAIN);
+	                req.addNode(n);
+	            }
+	            
+	            // store loaded nodes
+	            tmpStoreManager.handle(req);
+
+	            LOGGER.debug(".. loaded " + req.getNodes().size() + " nodes with type:"+t.toString()+" ...");
+	        }
+	        
+		    importedStores++;
+		}
+
+		LOGGER.info("Loaded " + importedStores + " store contents into memory");
+
+
+		// -- save phase --
+		
+        final CMSInfrastructureDao outDao = new CMSInfrastructureDao(outDataSource);
+
+        // DROP INDICES
 		LOGGER.info("Drop indices");
 		outDao.dropStoreIndices();
 
-		
 		// Flush tables
 		{
 			LOGGER.info("Cleanup CMS tables");
@@ -392,12 +470,8 @@ public class ImportTool {
     		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
 		}
 		
-    	// Create indices #1
-		LOGGER.info("Create indices (phase one)");
-		outDao.createStoreIndicesPhaseOne();
-		outDao.analyzeStoreTables();
-		
-    	final Set<ContentKey> allKeys = inStoreManager.getContentKeys(DraftContext.MAIN);
+	    final ContentServiceI outStoreManager = getStoreExportManager(outDataSource);
+        final Set<ContentKey> allKeys = tmpStoreManager.getContentKeys(DraftContext.MAIN);
     	
     	final int n_batches = (int) Math.ceil( (((double)allKeys.size()) / BATCH_SIZE ));
     	int k=0;
@@ -407,7 +481,7 @@ public class ImportTool {
 		CmsRequest req = new CmsRequest(MASTER, Source.STORE_IMPORT);
 
     	while (cit.hasNext()) {
-			req.addNode(inStoreManager.getContentNode(cit.next(), DraftContext.MAIN));
+			req.addNode(tmpStoreManager.getContentNode(cit.next(), DraftContext.MAIN));
 			k++;
 			
 			if (k>0 && k%BATCH_SIZE == 0) {
@@ -433,7 +507,9 @@ public class ImportTool {
     		LOGGER.debug(" ... it took " + Math.round((t1-t0)/1000) + " secs");
     	}
 	
-    	// Create indices #2
+        // Create indices #1
+        LOGGER.info("Create indices (phase one)");
+        outDao.createStoreIndicesPhaseOne();
     	outDao.createStoreIndicesPhaseTwo();
 		outDao.analyzeStoreTables();
 
@@ -540,9 +616,9 @@ public class ImportTool {
 	 * Returns CMS manager having Store.xml imported
 	 * @throws MalformedURLException 
 	 */
-	protected ContentServiceI getStoreManager() {
+	protected ContentServiceI getStoreManager(File storeXMLFile ) {
 		try {
-            return getImportManager(storeDefFile.toURI().toURL().toString(), storeFile);
+            return getImportManager(storeDefFile.toURI().toURL().toString(), storeXMLFile);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Failed to initialize store service!", e);
         }
