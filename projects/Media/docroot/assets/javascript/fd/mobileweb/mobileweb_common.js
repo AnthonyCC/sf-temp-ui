@@ -100,7 +100,7 @@ var API;
 			/*$('a[href="#mm-0"]').on('click', function() {
 			});*/
 		/* PDP */
-			$jq('.pdp-ecoupon').find('.fdCoupon_data:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>')
+			$jq('.pdp-ecoupon').find('.fdCoupon_data:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>');
 			$('.pdp-ecoupon').on('click', function(e) {
 				e.stopPropagation();
 				var $this = $(this);
@@ -121,6 +121,31 @@ var API;
 				var couponId = $(e.currentTarget).closest('[data-component="ecoupon"]').data('ecouponid');
 				if(couponId && fdCouponClip) {
 					if (fdCouponClip(couponId)) {
+						$(this).addClass('disabled');
+					}
+				}
+			});
+			$jq('.portrait-item-coupon').find('.fdCoupon_cont:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>');
+			$('.portrait-item-coupon').on('click', function(e) {
+				e.stopPropagation();
+				var $this = $(this);
+				$this.find('.fdCoupon_collapseArrow').toggleClass('fdCoupon_arrow_n');
+				$this.find('.fdCoupon_detContent').show();
+				var $saveBtn = $this.find('.fdCoupon_detContent_saveButton');
+				if ($this.find(".fdCoupon_cont").hasClass('isClipped')) {
+					$saveBtn.addClass('disabled');
+				}
+				$saveBtn.show();
+				$(this).toggleClass('open');
+				
+			});
+			$('.portrait-item-coupon .fdCoupon_detContent_saveButton').on('click', function(e) {
+				e.stopPropagation();
+				e.preventDefault();
+
+				var couponId = $(e.currentTarget).closest('[data-component="ecoupon"]').data('ecouponid');
+				if(couponId && fdCouponClip) {
+					if (fdCouponClip(couponId)) {						
 						$(this).addClass('disabled');
 					}
 				}
