@@ -80,3 +80,4 @@ where rdef.name = r.def_name (+)
 with
   read only;
 
+CREATE OR REPLACE SYNONYM "CMS_NAVTREE" FOR "NAVTREE";
