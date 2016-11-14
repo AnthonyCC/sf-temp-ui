@@ -17,11 +17,14 @@
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String mobweb_uri = request.getRequestURI();
 	boolean isQS = (mobweb_uri.indexOf("/quickshop/") != -1) ? true : false;
+	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
+	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 <%
 	if (isQS) {
 		%><features:isActive name="isQS20" featureName="quickshop2_0" /><%
 	}
+
 %>
 <html>
   <head>
@@ -51,6 +54,14 @@
 			address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
 		};
 	</script>
+	<%
+		if (isCheckout) {
+			%><fd:javascript src="/assets/javascript/prototype.js"/>
+			<%-- when upgrading scriptaculous please create a new directory for the version --%>
+			<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+			<fd:javascript src="/assets/javascript/modalbox.js"/><%
+		}
+	%>
 	
 	<fd:javascript src="/assets/javascript/locationbar.js" />
 	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
@@ -69,6 +80,11 @@
     <%
 		if (isQS) {
 			%><jwr:style src="/quickshop.css" media="all" /><%
+		}
+	%>
+    <%
+		if (isCheckout) {
+			%><jwr:style src="/expressco.css" media="all" /><%
 		}
 	%>
     <jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
