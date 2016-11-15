@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -20,14 +17,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms._import.ImportTool;
 import com.freshdirect.cms._import.PlaceholderResolver;
 import com.freshdirect.cms._import.dao.CMSInfrastructureDao;
-import com.freshdirect.cms.application.ContentServiceI;
-import com.freshdirect.cms.application.ContentTypeServiceI;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.db.DbContentService;
-import com.freshdirect.cms.application.service.db.DbTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 
 import oracle.jdbc.pool.OracleDataSource;
 
@@ -103,49 +92,7 @@ public abstract class TaskBase implements ToolTask {
     }
 
     
-    protected ContentServiceI getImportManager(String defPath, File inFile) throws MalformedURLException {
-        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
-        list.add(new XmlTypeService(defPath));
 
-        CompositeTypeService typeService = new CompositeTypeService(list);
-
-        XmlContentService service = new XmlContentService(typeService,
-                new FlexContentHandler(),
-                inFile.toURI().toURL().toString());
-
-        return service;
-    }
-    
-
-
-    /**
-     * Returns CMS manager having Store.xml imported
-     * @throws MalformedURLException 
-     */
-    protected ContentServiceI getStoreManager(File storeDefFile, File storeXMLFile ) {
-        try {
-            return getImportManager(storeDefFile.toURI().toURL().toString(), storeXMLFile);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Failed to initialize store service!", e);
-        }
-    }
-
-    
-    protected ContentServiceI getStoreExportManager(DataSource ds) {
-        if (ds == null)
-            return null;
-        
-        DbTypeService dbService = new DbTypeService();
-        dbService.setDataSource(ds);
-        dbService.initialize();
-        
-        DbContentService dbContentService = new DbContentService();
-        dbContentService.setContentTypeService(dbService);
-
-        dbContentService.setDataSource(ds);
-        
-        return dbContentService;
-    }
     
 
     protected boolean runScript(final CMSInfrastructureDao dao, String script) {
