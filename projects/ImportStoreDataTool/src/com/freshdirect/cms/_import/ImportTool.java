@@ -32,6 +32,8 @@ public class ImportTool {
 				cmd = Command.loadDefinition;
 			} else if ("--import_data".equalsIgnoreCase(arg)) {
 				cmd = Command.importData;
+            } else if ("--import_media".equalsIgnoreCase(arg)) {
+                cmd = Command.importMedia;
 			} else if ("--switch_cms".equalsIgnoreCase(arg)) {
 				cmd = Command.switchCms;
 			} else {

@@ -8,7 +8,7 @@ public class ToolTaskFactory {
     private ToolTaskFactory() {}
     
     public enum Command {
-        newUser, createSchema, dropSchema, loadDefinition, importData, switchCms
+        newUser, createSchema, dropSchema, loadDefinition, importData, importMedia, switchCms
     }
     
     public static ToolTask createTask(Command cmd, String basePath) {
@@ -32,6 +32,10 @@ public class ToolTaskFactory {
 
             case importData:
                 task = new ImportStoreDataTask(basePath);
+                break;
+
+            case importMedia:
+                task = new ImportMediaDataTask(basePath);
                 break;
 
             case switchCms:
