@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
@@ -31,24 +32,7 @@ public class MediaDao {
 					"INSERT INTO CMS_MEDIA (ID, URI, WIDTH, HEIGHT, TYPE, MIME_TYPE, LAST_MODIFIED) " +
 							"VALUES (?, ?, ?, ?, ?, ?, ?)");
 
-		ps.setString(1, m.getPK().getId());
-		ps.setString(2, m.getUri());
-
-		if(m.getWidth() == null){
-			ps.setNull(3, Types.INTEGER);
-		} else {
-			ps.setInt(3, m.getWidth().intValue());
-		}
-		
-		if(m.getHeight() == null){
-			ps.setNull(4, Types.INTEGER);
-		} else {
-			ps.setInt(4, m.getHeight().intValue());
-		}
-		
-		ps.setString(5, m.getType().getName());
-		ps.setString(6, m.getMimeType());
-		ps.setTimestamp(7, new Timestamp(m.getLastModified().getTime()));
+		populateInsertStatement(m, ps);
 		
 		ps.execute();
 		ps.close();
@@ -56,6 +40,68 @@ public class MediaDao {
 		return m;
 	}
 
+
+
+	private void populateInsertStatement(Media m, PreparedStatement ps) throws SQLException {
+        ps.setString(1, m.getPK().getId());
+        ps.setString(2, m.getUri());
+
+        if(m.getWidth() == null){
+            ps.setNull(3, Types.INTEGER);
+        } else {
+            ps.setInt(3, m.getWidth().intValue());
+        }
+        
+        if(m.getHeight() == null){
+            ps.setNull(4, Types.INTEGER);
+        } else {
+            ps.setInt(4, m.getHeight().intValue());
+        }
+        
+        ps.setString(5, m.getType().getName());
+        ps.setString(6, m.getMimeType());
+        ps.setTimestamp(7, new Timestamp(m.getLastModified().getTime()));	    
+	}
+
+
+
+	/**
+	 * Bulk-insert mode for mass inserts
+	 * 
+	 * @param conn
+	 * @param batch
+	 */
+    public void insertBatch(Connection conn, Collection<Media> batch) {
+
+        PreparedStatement ps = null;
+
+        try {
+            ps = conn.prepareStatement("INSERT INTO CMS_MEDIA (ID, URI, WIDTH, HEIGHT, TYPE, MIME_TYPE, LAST_MODIFIED) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+            for (final Media media : batch) {
+                populateInsertStatement(media, ps);
+
+                ps.addBatch();
+            }
+            
+            ps.executeBatch();
+
+        } catch (SQLException e) {
+            LOGGER.error("SQL error during media insert", e);
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    LOGGER.error("SQL error while closing prep stmt", e);
+                }
+            }
+        }
+
+    }
+	
+	
 	public void update(Connection conn, Media media) throws SQLException {
     	LOGGER.debug("-->update()");
 		PreparedStatement ps = conn.prepareStatement("Update CMS_Media set Uri=?,width=?,height=?,type=?,mime_type=?,last_modified=? Where uri = ?");

@@ -3,6 +3,7 @@ package com.freshdirect.cms._import.tasks;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -56,16 +57,24 @@ public class ImportMediaDataTask extends CMSTaskBase {
         // flush media table
         infraDao.flushMediaTable();
         
+        final MediaDao dao = new MediaDao();
+
         final Collection<ContentKey> allKeys = storeManager.getContentKeys(DraftContext.MAIN);
 
         Connection connection = null;
         try {
-            connection = outDataSource.getConnection();
+            Collection<Media> mcoll = new ArrayList<Media>();
+            
+            int n = 1;
+            int max = allKeys.size() / BATCH_SIZE;
+            
+            LOGGER.info("Start writing out " + max + " batches");
             
             for (final ContentKey contentKey : allKeys) {
                 ContentNodeI mediaNode = storeManager.getContentNode(contentKey, DraftContext.MAIN);
                 
-                final PrimaryKey pk = new PrimaryKey(contentKey.getId());
+                final String id = contentKey.getId();
+                final PrimaryKey pk = new PrimaryKey(id);
                 final String uri = (String) mediaNode.getAttributeValue("path");
                 final ContentType t = contentKey.getType();
                 final Date stamp = new Date();
@@ -85,10 +94,44 @@ public class ImportMediaDataTask extends CMSTaskBase {
                     m = new Media(pk, uri, t, null, null, null, stamp);
                 }
                 
-                if (m != null) {
-                    new MediaDao().insert(connection, m);
+                if (m == null) {
+                    continue;
+                }
+
+                mcoll.add(m);
+
+                if (mcoll.size() >= BATCH_SIZE) {
+                    LOGGER.info("Writing out batch " + n + "/" + max + " ("+mcoll.size()+")");
+
+                    connection = outDataSource.getConnection();
+                    connection.setAutoCommit(false);
+                    connection.setReadOnly(true);
+                    
+                    dao.insertBatch(connection, mcoll);
+                    connection.commit();
+
+                    mcoll.clear();
+
+                    n++;
                 }
             }
+
+            
+            // write out the rest
+            if (! mcoll.isEmpty()) {
+                LOGGER.info("Writing out the last batch ("+mcoll.size()+")");
+
+                connection = outDataSource.getConnection();
+                connection.setAutoCommit(false);
+                connection.setReadOnly(true);
+                
+                dao.insertBatch(connection, mcoll);
+                connection.commit();
+
+                mcoll.clear();
+            }
+
+            LOGGER.info("Media import ended");
 
         } catch (SQLException e) {
             LOGGER.error("Exception raised during media insert", e);
