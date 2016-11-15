@@ -53,19 +53,19 @@ public class AutoCreditApprovalCron {
 					errorFlg=true;
 					sw = new StringWriter();
 					ex.printStackTrace(new PrintWriter(sw));
-					populateErrorDetails(strB, complaintId, " Auto approve FAILED ");
+					populateErrorDetails(strB, complaintId, sw.toString().substring(0,sw.toString().length()>500?500:sw.toString().length()));
 					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
 				}catch (EJBException ex) {
 					errorFlg=true;
 					sw = new StringWriter();
 					ex.printStackTrace(new PrintWriter(sw));
-					populateErrorDetails(strB, complaintId, " Auto approve FAILED ");
+					populateErrorDetails(strB, complaintId, sw.toString().substring(0,sw.toString().length()>500?500:sw.toString().length()));
 					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
 				}catch (Exception ex) {
 					errorFlg=true;
 					sw = new StringWriter();
 					ex.printStackTrace(new PrintWriter(sw));
-					populateErrorDetails(strB, complaintId, " Auto approve FAILED " );
+					populateErrorDetails(strB, complaintId, sw.toString().substring(0,sw.toString().length()>500?500:sw.toString().length()) );
 					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId +"::  "+ sw.toString());
 				}
 			}
