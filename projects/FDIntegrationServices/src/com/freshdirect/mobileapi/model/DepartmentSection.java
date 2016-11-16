@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DepartmentSection  {
 
-	List<Category> categories = new ArrayList<Category>();
+	private List<Category> categories = new ArrayList<Category>();
 	
 	private String sectionHeader;
 

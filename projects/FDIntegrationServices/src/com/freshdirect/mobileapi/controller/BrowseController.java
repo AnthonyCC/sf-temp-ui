@@ -62,13 +62,6 @@ public class BrowseController extends BaseController {
 		return false;
 	}
 
-    public void addSections(SessionUser user, DepartmentModel storeDepartment, Department result, boolean isExtraResponse) {
-    	//Department sections are added here
-    	//Call BrowseUtil to populate all the categories.
-	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(user, storeDepartment, isExtraResponse);
-	   result.setSections(departmentSections);
-    }
-
 	/* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */
@@ -103,33 +96,24 @@ public class BrowseController extends BaseController {
         
         BrowseResult result = new BrowseResult();
         
-        if(ACTION_NAVIGATION.equals(action)) {
-        	GlobalNavResult res = new GlobalNavResult();
-        	StoreModel store = ContentFactory.getInstance().getStore();
-        	boolean isExtraResponse = isCheckLoginStatusEnable(request);
-        	//DepartmentNameComparator departmentNameComparator = new DepartmentNameComparator();
-        	List<Department> departments = new ArrayList<Department>();
-        	Department dpt = null;
-	           if(store != null) {
-	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
-	        	   if(storeDepartments != null) {
-		        	   for(DepartmentModel storeDepartment : storeDepartments) {
-		        		   if(storeDepartment.getContentKey() != null
-		        				   && !storeDepartment.isHidden()
-		        				   && !storeDepartment.isHideIphone()) {
-		        			   //Add logic to populate departmentSections
-		        			   dpt = Department.wrap(storeDepartment);
-		        			   addSections(user, storeDepartment, dpt, isExtraResponse);
-		        			   departments.add(dpt);
-		        		   }
-		        	   }
-	        	   }
-	           }
-	       /* if(store!=null && store.getContentKey()!=null && store.getContentKey().getId()!=null && store.getContentKey().getId().equals(MobileApiProperties.getStoreId())) {
-	        	Collections.sort(departments, departmentNameComparator);
-	        }*/
-        	res.setDepartments(departments);
-        	setResponseMessage(model, res, user);
+        if (ACTION_NAVIGATION.equals(action)) {
+            GlobalNavResult res = new GlobalNavResult();
+            StoreModel store = ContentFactory.getInstance().getStore();
+            boolean isExtraResponse = isCheckLoginStatusEnable(request);
+            List<Department> departments = new ArrayList<Department>();
+            for (DepartmentModel storeDepartment : store.getDepartments()) {
+                if (storeDepartment.getContentKey() != null && !storeDepartment.isHidden() && !storeDepartment.isHideIphone()) {
+                    // Add logic to populate departmentSections
+                    List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(user, storeDepartment, isExtraResponse);
+                    if (!departmentSections.isEmpty()) {
+                        Department department = Department.wrap(storeDepartment);
+                        department.setSections(departmentSections);
+                        departments.add(department);
+                    }
+                }
+            }
+            res.setDepartments(departments);
+            setResponseMessage(model, res, user);
             return model;
         }
 

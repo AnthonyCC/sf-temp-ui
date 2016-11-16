@@ -659,84 +659,54 @@ public class BrowseUtil {
 	     * Populate the department section for a given department 
 	     * @return
 	     */
-	    public static List<DepartmentSection> getDepartmentSections(SessionUser sessionUser, DepartmentModel storeDepartment, boolean isExtraResponse){
-	    	FDUserI user = sessionUser.getFDSessionUser();
-	    	List<DepartmentSection> departmentSections = new ArrayList<DepartmentSection>();
-	    	
-	    	//get all the categories
-	    	List<CategoryModel> allCategories = storeDepartment.getCategories();
-	    	
-	    	List<CategorySectionModel> categorySections = emptyList();
-	    	categorySections = new ArrayList<CategorySectionModel>(storeDepartment.getCategorySections());
-	    	//Preference categories do not have any section Header
-    		String sectionHeaderPref = storeDepartment.getPreferenceCategoriesNavHeader();
-    		String sectionNamePref = isNotBlank(sectionHeaderPref) ? sectionHeaderPref : storeDepartment.getFullName();
-    		//Normal categories have department name as section header.
-    		String sectionHeaderNormal = storeDepartment.getRegularCategoriesNavHeader();
-    		String sectionNameNormal = isNotBlank(sectionHeaderNormal) ? sectionHeaderNormal : storeDepartment.getFullName();
-	    	//if category sections is empty all categories under one section Header 
-	    	if(categorySections==null || categorySections.isEmpty()){
-	    		//Two possibilities preference category or normal category
-	    		
-	    		
-	    		Map<String, List<CategoryModel>> nosectionCatMap = getNoSectionCategories(allCategories, null);
-	    		for(Map.Entry<String, List<CategoryModel>> entry :nosectionCatMap.entrySet()){
-	    			DepartmentSection section = new DepartmentSection();
-	    			//create department section for nosectionCategories for preference categories
-	    			if(entry.getKey().equals("prefCat")){
-	    				List<Category> selectedcategories = buildcategories(user, entry.getValue(), isExtraResponse);
-			    		section.setCategories(selectedcategories);
-			    		section.setSectionHeader(sectionNamePref);
-			    		departmentSections.add(section);
-	    			} else if(entry.getKey().equals("normalCat")){
-	    				List<Category> selectedcategories = buildcategories(user, entry.getValue(), isExtraResponse);
-	    				section.setCategories(selectedcategories);
-	    				section.setSectionHeader(sectionNameNormal);
-	    				departmentSections.add(section);
-	    			}
-		    		
-	    		}
-	    		
-	    	} else{
-	    		//for each section header we add those categories to categoryList
-	    		Map<String, List<CategoryModel>> nosectionCatMap = getNoSectionCategories(allCategories, categorySections);
-	    		for(CategorySectionModel catSection : categorySections){
-	    			DepartmentSection section = new DepartmentSection();
-	    			section.setSectionHeader(catSection.getHeadline());
-	    			//Call build categories with selected categories as argument and add it to categories of departmentsection
-	    			List<Category> selectedcategories = buildcategories(user, catSection.getSelectedCategories(), isExtraResponse);
-	    			section.setCategories(selectedcategories);
-	    			departmentSections.add(section);
-	    		}
-	    		
-	    		for(Map.Entry<String, List<CategoryModel>> entry :nosectionCatMap.entrySet()){
-	    			DepartmentSection section = new DepartmentSection();
-	    			//create department section for nosectionCategories for preference categories
-	    			if(entry.getKey().equals("prefCat")){
-	    				List<Category> selectedcategories = buildcategories(user, entry.getValue(), isExtraResponse);
-			    		section.setCategories(selectedcategories);
-			    		section.setSectionHeader(sectionNamePref);
-			    		departmentSections.add(section);
-	    			} else if(entry.getKey().equals("normalCat")){
-	    				List<Category> selectedcategories = buildcategories(user, entry.getValue(), isExtraResponse);
-	    				section.setCategories(selectedcategories);
-	    				section.setSectionHeader(sectionNameNormal);
-	    				departmentSections.add(section);
-	    			}
-		    		
-	    		}
-	    		
-	    		
-	    	}
-	    	
-	    	return departmentSections;
-	    }
+    public static List<DepartmentSection> getDepartmentSections(SessionUser sessionUser, DepartmentModel storeDepartment, boolean isExtraResponse) {
+        FDUserI user = sessionUser.getFDSessionUser();
+        List<DepartmentSection> departmentSections = new ArrayList<DepartmentSection>();
+        List<CategoryModel> allCategories = storeDepartment.getCategories();
+        List<CategorySectionModel> categorySections = storeDepartment.getCategorySections();
+
+        // for each section header we add those categories to categoryList
+        for (CategorySectionModel categorySection : categorySections) {
+            // Call build categories with selected categories as argument and add it to categories of department section
+            List<Category> selectedCategories = buildCategories(user, categorySection.getSelectedCategories(), isExtraResponse);
+            if (!selectedCategories.isEmpty()) {
+                departmentSections.add(createSection(categorySection.getHeadline(), selectedCategories));
+            }
+        }
+
+        // Preference categories do not have any section Header
+        String sectionHeaderPref = storeDepartment.getPreferenceCategoriesNavHeader();
+        String sectionNamePref = isNotBlank(sectionHeaderPref) ? sectionHeaderPref : storeDepartment.getFullName();
+        List<CategoryModel> preferenceSectionCategories = getPreferenceSectionCategories(allCategories, categorySections);
+        List<Category> selectedCategories = buildCategories(user, preferenceSectionCategories, isExtraResponse);
+        if (!selectedCategories.isEmpty()) {
+            departmentSections.add(createSection(sectionNamePref, selectedCategories));
+        }
+
+        // Normal categories have department name as section header.
+        String sectionHeaderNormal = storeDepartment.getRegularCategoriesNavHeader();
+        String sectionNameNormal = isNotBlank(sectionHeaderNormal) ? sectionHeaderNormal : storeDepartment.getFullName();
+        List<CategoryModel> normalSectionCategories = getNormalSectionCategories(allCategories, categorySections);
+        List<Category> selectedCategories1 = buildCategories(user, normalSectionCategories, isExtraResponse);
+        if (!selectedCategories1.isEmpty()) {
+            departmentSections.add(createSection(sectionNameNormal, selectedCategories1));
+        }
+
+        return departmentSections;
+    }
+
+    private static DepartmentSection createSection(String sectionHeader, List<Category> categories) {
+        DepartmentSection section = new DepartmentSection();
+        section.setSectionHeader(sectionHeader);
+        section.setCategories(categories);
+        return section;
+    }
 	    
 	    /**
 	     * This should be a recursive call to build the tree of categories from CMS
 	     * @return
 	     */
-	    private static List<Category> buildcategories(FDUserI user, List<CategoryModel> selectedCategories, boolean isExtraResponse){
+	    private static List<Category> buildCategories(FDUserI user, List<CategoryModel> selectedCategories, boolean isExtraResponse){
 	    	long startTime = System.currentTimeMillis();
 	    	List<Category> categories = new ArrayList<Category>();
 	    	for(CategoryModel model : selectedCategories){
@@ -749,18 +719,6 @@ public class BrowseUtil {
         	long totalTime = endTime - startTime;
         	LOG.debug("Time to construct  categories :" +totalTime);
 	    	return categories;
-	    }
-	    
-	    private static void sortByName(List<Category> categories){
-	    	if(categories==null || categories.isEmpty()){
-	    		return;
-	    	} else {
-	    		NameComparator nameComparator = new NameComparator();
-		    	Collections.sort(categories, nameComparator);
-		    	for(Category cat : categories){
-		    		sortByName(cat.getCategories());
-		    	}
-	    	}
 	    }
 	    
 	    private static Category buildCategoryData (FDUserI user, CategoryModel model, boolean isExtraResponse){
@@ -779,55 +737,44 @@ public class BrowseUtil {
 	    	return category;
 	    }
 	    
-	    /**
-	     * This method will separate categories into separate lists for adding to department section
-	     * @param allCategories
-	     * @param categorySections
-	     */
-	    private static Map<String, List<CategoryModel>> getNoSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections){
-	    	
-	    	List<CategoryModel> noSectionCats = new ArrayList<CategoryModel>();
-	    	List<CategoryModel> noSectionPrefCats = new ArrayList<CategoryModel>();
-	    	Map<String, List<CategoryModel>> nosectionCatMap = new HashMap<String, List<CategoryModel>>();
-	    	if(categorySections==null || categorySections.isEmpty()){
-	    		for(CategoryModel itemInAllCategories : allCategories){
-	    			if(itemInAllCategories.isPreferenceCategory()){
-	    				noSectionPrefCats.add(itemInAllCategories);
-	    			} else {
-	    				noSectionCats.add(itemInAllCategories);
-	    			}
-	    		}
-	    		nosectionCatMap.put("normalCat", noSectionCats);
-		    	nosectionCatMap.put("prefCat", noSectionPrefCats);
-		    	return nosectionCatMap;
-	    	}
-	    	for(CategoryModel itemInAllCategories : allCategories){
-	    		boolean present = true;
-	    		for(CategorySectionModel catSection : categorySections){
-	    			if(catSection.getSelectedCategories().contains(itemInAllCategories)){
-	    				present = true;
-	    				break;
-	    			} else {
-	    				present = false;
-	    			}
-	    		}
-	    		if(!present){
-	    			//need to check if this is a preference category or normal category
-	    			if(itemInAllCategories.isPreferenceCategory()){
-	    				noSectionPrefCats.add(itemInAllCategories);
-	    			} else {
-	    				noSectionCats.add(itemInAllCategories);
-	    			}
-	    			
-	    		}
-	    		
-	    	}
-	    	nosectionCatMap.put("normalCat", noSectionCats);
-	    	nosectionCatMap.put("prefCat", noSectionPrefCats);
-	    	
-	    	return nosectionCatMap;
-	    }
-	  //----------------------------------------getAllProducts-----------------------------------------------------
+    private static List<CategoryModel> getNormalSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections) {
+        List<CategoryModel> categories = new ArrayList<CategoryModel>();
+        for (CategoryModel allCategory : allCategories) {
+            if (!isPresent(categorySections, allCategory)) {
+                if (!allCategory.isPreferenceCategory()) {
+                    categories.add(allCategory);
+                }
+            }
+        }
+        return categories;
+    }
+
+    private static List<CategoryModel> getPreferenceSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections) {
+        List<CategoryModel> categories = new ArrayList<CategoryModel>();
+        for (CategoryModel allCategory : allCategories) {
+            if (!isPresent(categorySections, allCategory)) {
+                if (allCategory.isPreferenceCategory()) {
+                    categories.add(allCategory);
+                }
+            }
+        }
+        return categories;
+    }
+
+    private static boolean isPresent(List<CategorySectionModel> categorySections, CategoryModel category) {
+        boolean present = false;
+        for (CategorySectionModel catSection : categorySections) {
+            if (catSection.getSelectedCategories().contains(category)) {
+                present = true;
+                break;
+            } else {
+                present = false;
+            }
+        }
+        return present;
+    }
+
+  //----------------------------------------getAllProducts-----------------------------------------------------
     public static List<Product> getAllProducts(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) {
         String contentId = null;
         // products.clear();
