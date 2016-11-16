@@ -507,7 +507,7 @@
 			{/if}
 		</div>
 	{/if}
-	{if $relatedItem}
+	{if $relatedItem and not $mobWeb}
 		<ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
 			{call common.transactionalGridItem}
 				{param item:$relatedItem /}
@@ -516,7 +516,7 @@
 			{/call}
 		</ul>
 	{/if}
-	{if $useReplacement and $replacement}
+	{if $useReplacement and $replacement and not $mobWeb}
 		<ul class="relatedItem" data-component="relateditem">
 			{call common.transactionalGridItem}
 				{param item:$replacement /}
