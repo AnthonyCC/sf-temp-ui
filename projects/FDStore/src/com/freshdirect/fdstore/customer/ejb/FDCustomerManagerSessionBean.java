@@ -2707,13 +2707,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
 			}
 			
+			//START APPDEV-5657 
+			// removed this from if statement EnumTransactionSource.SYSTEM.equals(info.getInitiator())&& !"Could not get AUTHORIZATION".equals(info.getNote())
 			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType()) &&
 				order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL) &&
-					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus()) &&
-					EnumTransactionSource.SYSTEM.equals(info.getInitiator())&& !"Could not get AUTHORIZATION".equals(info.getNote())
+					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus()) 
 					) {
 				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
-			}
+			} //END :: APPDEV-5657
 			
 			//End:: Add FDX SMSfor order Cancelled
 			return isRestored ? order.getDeliveryReservation() : null;
