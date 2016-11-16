@@ -79,8 +79,11 @@ Argument         | Description
 --load_definition: Imports CMS data definitions into the DB from the CMSStoreDef.xml. Needs to be called
                    with or after --create_schema option.
 
---import_data    : Imports CMS data into the DB from the Store.xml.gz and Media.xml.gz files. Needs to be
-                   called with or after --load_definition option.
+--import_data    : Imports CMS data of all stores into the DB from the Store.xml.gz files under 'storedata' folder.
+                   Needs to be called with or after --load_definition option.
+
+--import_media   : Imports CMS media into the DB from the Media.xml.gz.
+                   Needs to be called with or after --load_definition option.
 
 --switch_cms     : Prints several scripts for changing the linked CMS user in the DB and for adjusting
                    permissions. After this all systems using this DB will use this user as source of CMS
