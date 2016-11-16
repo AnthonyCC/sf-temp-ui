@@ -49,7 +49,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
         try {
-            final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
+            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
             final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
 
             writeResponseData(response, result);

@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.CharEncoding;
 import org.apache.http.HttpHeaders;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -37,7 +38,7 @@ public class CmsFilteringNavigator {
     private String catId;
 
     // paging
-    private int pageSize = FDStoreProperties.getBrowsePageSize();
+    private int pageSize;
     private int activePage = 1;
 
     // sorting
@@ -96,31 +97,25 @@ public class CmsFilteringNavigator {
     /**
      * Creates a CmsFilteringNavigator instance out of request parameter map.
      * 
-     * @param paramMap
-     *            - @see javax.servlet.http.HttpServletRequest#getParameterMap()
      * @return CmsFilteringNavigator
-     * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
-     * @throws InvalidFilteringArgumentException
      * @throws FDResourceException
-     * @throws HttpErrorResponse
+     * @throws InvalidFilteringArgumentException
      */
     public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
 
         try {
-            request.setCharacterEncoding("UTF-8");
+            request.setCharacterEncoding(CharEncoding.UTF_8);
         } catch (UnsupportedEncodingException uee) {
             throw new FDResourceException(uee);
         }
+        
         @SuppressWarnings("unchecked")
         Map<String, String[]> paramMap = request.getParameterMap();
         Set<String> paramNames = new TreeSet<String>(paramMap.keySet());
         CmsFilteringNavigator cmsFilteringNavigator = null;
-        Integer parsedPageSize = null;
         if (paramMap.get("data") != null && !"".equals(paramMap.get("data"))) {
 
-            try {
+            try {   
                 cmsFilteringNavigator = JsonHelper.parseRequestData(request, CmsFilteringNavigator.class);
             } catch (JsonParseException e) {
                 throw new InvalidFilteringArgumentException(e, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
@@ -139,64 +134,37 @@ public class CmsFilteringNavigator {
                 for (String paramValue : paramValues) {
 
                     if ("pageSize".equalsIgnoreCase(param)) {
-                        parsedPageSize = Integer.parseInt(paramValue);
+                        cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
                     } else if ("all".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setAll(Boolean.parseBoolean(paramValue.toLowerCase()));
-
                     } else if ("activePage".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setActivePage(Integer.parseInt(paramValue));
-
                     } else if ("sortBy".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setSortBy(paramValue);
-
                     } else if ("orderAsc".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setOrderAscending(Boolean.parseBoolean(paramValue.toLowerCase()));
-
                     } else if ("id".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setId(paramValue);
-
                     } else if ("catId".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setId(paramValue);
-
                     } else if ("searchParams".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setSearchParams(paramValue);
-
                     } else if ("listSearchParams".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setListSearchParams(paramValue);
-
                     } else if ("ppPreviewId".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setPpPreviewId(paramValue);
-
                     } else if ("activeTab".equalsIgnoreCase(param)) {
-
                         cmsFilteringNavigator.setActiveTab(paramValue.toLowerCase());
-
                     } else if ("picksId".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPicksId(paramValue);
-
                     } else if ("pageType".equalsIgnoreCase(param)) {
-
                         // Do nothing but exclude from 'filtering params'
-
                     } else { // No match for any other CmsFilteringNavigator property => must be a filtering domain
-
                         String filteringDomainId = param;
                         String[] filteringIds = paramValue.split("\\|\\|");
-
                         List<String> filteringIdList = new ArrayList<String>();
                         Collections.addAll(filteringIdList, filteringIds);
-
                         cmsFilteringNavigator.getRequestFilterParams().put(filteringDomainId, filteringIdList);
-
                     }
                 }
             }
@@ -205,8 +173,8 @@ public class CmsFilteringNavigator {
         String id = cmsFilteringNavigator.getId();
         cmsFilteringNavigator.parseFilteringFlowType(request);
         int pageSpecificPageSize;
-        if (parsedPageSize != null) {
-            pageSpecificPageSize = parsedPageSize;
+        if (cmsFilteringNavigator.getPageSize() != 0) {
+            pageSpecificPageSize = cmsFilteringNavigator.getPageSize();
         } else {
             switch (cmsFilteringNavigator.pageType) {
                 case NEWPRODUCTS:

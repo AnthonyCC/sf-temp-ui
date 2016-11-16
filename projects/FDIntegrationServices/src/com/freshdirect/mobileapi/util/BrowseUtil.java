@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
@@ -103,6 +104,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.NavDepth;
+import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -645,22 +648,15 @@ public class BrowseUtil {
 	    	return sortedCategories;
 	    	
 	    }
-	    
-	    public static List<DepartmentSection> getDepartmentSectionsEX(DepartmentModel dept){
-	    	List<DepartmentSection> sectionList = new ArrayList<DepartmentSection>();
-	    	
-	    	List<CategoryModel> categories = dept.getCategories();
-	    	
-	    	return sectionList;
-	    }
-	    
-//-------------------------------------------browse/Navigation-----------------------------------------------------------------------------	    
+
+	    //-------------------------------------------browse/Navigation-----------------------------------------------------------------------------	    
 	    /**
 	     * Populate the department section for a given department 
-	     * @return
 	     */
     public static List<DepartmentSection> getDepartmentSections(SessionUser sessionUser, DepartmentModel storeDepartment, boolean isExtraResponse) {
         FDUserI user = sessionUser.getFDSessionUser();
+        boolean isWineDepartment = WineUtil.getWineAssociateId().equalsIgnoreCase(storeDepartment.getContentKey().getId());
+
         List<DepartmentSection> departmentSections = new ArrayList<DepartmentSection>();
         List<CategoryModel> allCategories = storeDepartment.getCategories();
         List<CategorySectionModel> categorySections = storeDepartment.getCategorySections();
@@ -668,75 +664,75 @@ public class BrowseUtil {
         // for each section header we add those categories to categoryList
         for (CategorySectionModel categorySection : categorySections) {
             // Call build categories with selected categories as argument and add it to categories of department section
-            List<Category> selectedCategories = buildCategories(user, categorySection.getSelectedCategories(), isExtraResponse);
-            if (!selectedCategories.isEmpty()) {
-                departmentSections.add(createSection(categorySection.getHeadline(), selectedCategories));
-            }
+            String sectionHeader = categorySection.getHeadline();
+            List<CategoryModel> selectedCategories = categorySection.getSelectedCategories();
+            buildDepartmentSection(departmentSections, user, sectionHeader, isWineDepartment, selectedCategories, isExtraResponse);
         }
 
         // Preference categories do not have any section Header
-        String sectionHeaderPref = storeDepartment.getPreferenceCategoriesNavHeader();
-        String sectionNamePref = isNotBlank(sectionHeaderPref) ? sectionHeaderPref : storeDepartment.getFullName();
+        String preferenceSectionHeader = storeDepartment.getPreferenceCategoriesNavHeader();
+        String preferenceSectionName = isNotBlank(preferenceSectionHeader) ? preferenceSectionHeader : storeDepartment.getFullName();
         List<CategoryModel> preferenceSectionCategories = getPreferenceSectionCategories(allCategories, categorySections);
-        List<Category> selectedCategories = buildCategories(user, preferenceSectionCategories, isExtraResponse);
-        if (!selectedCategories.isEmpty()) {
-            departmentSections.add(createSection(sectionNamePref, selectedCategories));
-        }
+        buildDepartmentSection(departmentSections, user, preferenceSectionName, isWineDepartment, preferenceSectionCategories, isExtraResponse);
 
         // Normal categories have department name as section header.
         String sectionHeaderNormal = storeDepartment.getRegularCategoriesNavHeader();
         String sectionNameNormal = isNotBlank(sectionHeaderNormal) ? sectionHeaderNormal : storeDepartment.getFullName();
         List<CategoryModel> normalSectionCategories = getNormalSectionCategories(allCategories, categorySections);
-        List<Category> selectedCategories1 = buildCategories(user, normalSectionCategories, isExtraResponse);
-        if (!selectedCategories1.isEmpty()) {
-            departmentSections.add(createSection(sectionNameNormal, selectedCategories1));
-        }
+        buildDepartmentSection(departmentSections, user, sectionNameNormal, isWineDepartment, normalSectionCategories, isExtraResponse);
 
         return departmentSections;
     }
 
-    private static DepartmentSection createSection(String sectionHeader, List<Category> categories) {
+    private static void buildDepartmentSection(List<DepartmentSection> departmentSections, FDUserI user, String sectionHeader, boolean isWineDepartment, List<CategoryModel> categories, boolean isExtraResponse) {
+        List<Category> selectedCategories = buildCategories(user, sectionHeader, categories, isExtraResponse);
+        if (!selectedCategories.isEmpty() || !isExtraResponse) {
+            departmentSections.add(createSection(sectionHeader, isWineDepartment, selectedCategories));
+        }
+    }
+    
+    private static DepartmentSection createSection(String sectionHeader, boolean isWineDepartment, List<Category> categories) {
         DepartmentSection section = new DepartmentSection();
         section.setSectionHeader(sectionHeader);
+        section.setWineDepartment(isWineDepartment);
         section.setCategories(categories);
         return section;
     }
-	    
-	    /**
-	     * This should be a recursive call to build the tree of categories from CMS
-	     * @return
-	     */
-	    private static List<Category> buildCategories(FDUserI user, List<CategoryModel> selectedCategories, boolean isExtraResponse){
-	    	long startTime = System.currentTimeMillis();
-	    	List<Category> categories = new ArrayList<Category>();
-	    	for(CategoryModel model : selectedCategories){
-	    		Category cat = buildCategoryData(user, model, isExtraResponse);
-	    		if (cat != null){
-	    		    categories.add(cat);
-	    		}
-	    	}
-	    	long endTime   = System.currentTimeMillis();
-        	long totalTime = endTime - startTime;
-        	LOG.debug("Time to construct  categories :" +totalTime);
-	    	return categories;
-	    }
-	    
-	    private static Category buildCategoryData (FDUserI user, CategoryModel model, boolean isExtraResponse){
-	        Category category = null;
-	    	if (model != null && (!NavigationUtil.isCategoryHiddenInContext(user, model) || !isExtraResponse)){
-	    	    category = Category.wrap(model);
-	    	    if(model.getSubcategories()!=null && !model.getSubcategories().isEmpty()){
-	    	        for(CategoryModel subcat : model.getSubcategories()){
-	    	            Category subCategory = buildCategoryData(user, subcat, isExtraResponse);
-	    	            if (subCategory != null){
-	    	                category.addCategories(subCategory);
-	    	            }
-	    	        }
-	    	    }
-	    	}
-	    	return category;
-	    }
-	    
+
+    /**
+     * This should be a recursive call to build the tree of categories from CMS
+     */
+    private static List<Category> buildCategories(FDUserI user, String header, List<CategoryModel> selectedCategories, boolean isExtraResponse) {
+        long startTime = System.currentTimeMillis();
+        List<Category> categories = new ArrayList<Category>();
+        for (CategoryModel model : selectedCategories) {
+            Category cat = buildCategoryData(user, model, isExtraResponse);
+            if (cat != null) {
+                categories.add(cat);
+            }
+        }
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        LOG.debug("Time to construct categories of " + header + " : " + totalTime + " ms");
+        return categories;
+    }
+
+    private static Category buildCategoryData(FDUserI user, CategoryModel model, boolean isExtraResponse) {
+        Category category = null;
+        if (model != null && (!NavigationUtil.isCategoryHiddenInContext(user, model) || !isExtraResponse)) {
+            category = Category.wrap(model);
+            if (model.getSubcategories() != null && !model.getSubcategories().isEmpty()) {
+                for (CategoryModel subcat : model.getSubcategories()) {
+                    Category subCategory = buildCategoryData(user, subcat, isExtraResponse);
+                    if (subCategory != null) {
+                        category.addCategories(subCategory);
+                    }
+                }
+            }
+        }
+        return category;
+    }
+
     private static List<CategoryModel> getNormalSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections) {
         List<CategoryModel> categories = new ArrayList<CategoryModel>();
         for (CategoryModel allCategory : allCategories) {

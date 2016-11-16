@@ -7,9 +7,9 @@ import java.util.List;
 
 public class DepartmentSection  {
 
-	private List<Category> categories = new ArrayList<Category>();
-	
+    private List<Category> categories = new ArrayList<Category>();
 	private String sectionHeader;
+	private boolean isWineDepartment;
 
 	public List<Category> getCategories() {
 		return categories;
@@ -26,7 +26,13 @@ public class DepartmentSection  {
 	public void setSectionHeader(String sectionHeader) {
 		this.sectionHeader = sectionHeader;
 	}
-	
-	
 
+    public boolean isWineDepartment() {
+        return isWineDepartment;
+    }
+
+    public void setWineDepartment(boolean isWineDepartment) {
+        this.isWineDepartment = isWineDepartment;
+    }
+	
 }

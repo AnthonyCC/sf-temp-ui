@@ -993,6 +993,10 @@ public class CmsFilteringFlow {
     }
 
     private void collectCategoryProducts(CmsFilteringNavigator nav, SectionContext actualSectionContext, SectionContext mergedSectionContext) {
+        if (actualSectionContext.getProductItems() != null && nav.isAggregateCategories()){
+            mergedSectionContext.getProductItems().addAll(actualSectionContext.getProductItems());
+            actualSectionContext.getProductItems().clear();
+        }
         List<SectionContext> childSectionContexts = actualSectionContext.getSectionContexts();
         if (childSectionContexts != null) {
             for (SectionContext childSectionContext : childSectionContexts) {

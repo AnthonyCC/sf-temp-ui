@@ -2,25 +2,18 @@ package com.freshdirect.common.context;
 
 import java.io.Serializable;
 
-import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.StringUtil;
-
-
-
-
 
 public class FulfillmentContext implements Serializable {
 	
-	
 	private static final long serialVersionUID = -5918599113189069637L;
-	private boolean alcoholRestricted; //default is false
+
+	private static final String DEFAULT_PLANT="1000";
+
+	private boolean alcoholRestricted;
 	private String plantId;
 	private String salesOrg;
 	private String distChannel;
-	
-	private static final String DEFAULT_PLANT="1000";
-	public static final String BROOKLYN_DEFAULT_PLANT_ID = "1300";
-	public static final String MANHATTAN_DEFAULT_PLANT_ID = "1310";
 	
 	public String getPlantId() {
 		return StringUtil.isEmpty(plantId)?DEFAULT_PLANT:plantId;
@@ -91,6 +84,5 @@ public class FulfillmentContext implements Serializable {
 		return "FulfillmentContext [alcoholRestricted=" + alcoholRestricted
 				+ ", plantId=" + plantId + "]";
 	}
-	
 	
 }
