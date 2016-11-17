@@ -35,7 +35,7 @@ public class TaxFactoryImpl implements TaxFactory {
 			else{
 				LOGGER.info("Avalara call attempted but there are missing fields: Orderlines are: "+avalaraContext.getCart().getOrderLines() 
 						+"  and delivery address is: "+avalaraContext.getCart().getDeliveryAddress() + 
-						" for order: "+((null!=avalaraContext.getCart().getOrderLines() && null!=avalaraContext.getCart().getOrderLines().get(0))?avalaraContext.getCart().getOrderLines().get(0).getOrderId():null));
+						" for order: "+((null!=avalaraContext.getCart().getOrderLines() && !avalaraContext.getCart().getOrderLines().isEmpty() && null!=avalaraContext.getCart().getOrderLines().get(0))?avalaraContext.getCart().getOrderLines().get(0).getOrderId():null));
 			}
 			return response;
 		} catch(FDException e){
