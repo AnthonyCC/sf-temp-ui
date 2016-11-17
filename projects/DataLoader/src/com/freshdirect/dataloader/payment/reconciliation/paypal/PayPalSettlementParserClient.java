@@ -131,7 +131,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 		}
 		
 		if (null == PayPalSettlementTransactionCodes.EnumPPIgnoreableEventCode.getEnum(txEventCode)) {
-			if (record.getInvoiceId() == null || StringUtil.isEmpty(record.getInvoiceId())) {
+			if (record.getInvoiceId() == null || StringUtil.isEmpty(record.getInvoiceId())) {				
 				throw new RuntimeException("Unrecognized order id " + record.getInvoiceId());
 			} else {
 				String orderId = record.getInvoiceId().substring(0, record.getInvoiceId().indexOf("X"));
@@ -178,8 +178,8 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 		settlementDetails = new ArrayList<ErpSummaryDetailModel>();
 		if (totalCredits != currSectionTotalTransactionCredits ||
 				totalDebits != currSectionTotalTransactionDebits ||
-				record.getTotalTransactionFeeCredits() != currSectionTotalFeeCredits ||
-				record.getTotalTransactionFeeDebits() != currSectionTotalFeeDebits) {
+				record.getTotalTransactionFeeCredits() != currSectionTotalFeeCredits){ 
+				// APPDEV-5531 || record.getTotalTransactionFeeDebits() != currSectionTotalFeeDebits) {
 			StringBuffer buffer = new StringBuffer(300);
 			buffer.append("PayPal :: Amounts of Section with Account Id ");
 			buffer.append(currAccountId );
@@ -269,15 +269,22 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	}
 	
 	public void process(ReportRecordCntDataRecord record) {
-		if (!(currReportRowCnt == record.getRowCount())) {
-			LOGGER.error("Rows of Report " + currAccountId +
-					" do not match with Sections. Settlement File of " + batchDate + " " + "may be corrupted");
-		} else if (record.getRowCount() > 0){
+	
+	 // START APPDEV-5531 
+		if (record.getRowCount() > 0){
+    	 
+			if (!(currReportRowCnt == record.getRowCount())) {
+				LOGGER.warn("Rows of Report " + currAccountId +
+						" do not match with Sections. Settlement File of " + batchDate + " " + "may be corrupted");
+			}
+			
 			try {
 				settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
 			}
+				
+			// END APPDEV-5531 
 		} else if (record.getRowCount() == 0) {
 			
 			StringBuilder msg= new StringBuilder(300);

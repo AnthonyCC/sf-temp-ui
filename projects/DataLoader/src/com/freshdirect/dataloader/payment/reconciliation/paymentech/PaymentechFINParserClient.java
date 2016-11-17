@@ -441,6 +441,10 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		if (totalTrxns <= 0)
 			return 0;
 		ErpPPSettlementInfo txFeeInfo = new ErpPPSettlementInfo("FeeTrxnNOInvoice", ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
+		//As part of APPDEV-5531  accumulate misc and transaction fee and send to SAP
+		if(miscFee>0){
+			txFee=txFee+miscFee;
+		}
 		txFeeInfo.setAmount(new Money(txFee).getDollar());
 		txFeeInfo.setTxEventCode(ReconciliationConstants.FEE_KEY);
 		if (txFee < 0)
@@ -448,6 +452,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		else
 			settlementInfos.add(txFeeInfo);
 		
+		// As part of APPDEV-5531 : No need to send Misc fee to SAP 
+		/*
 		ErpPPSettlementInfo miscFeeInfo = new ErpPPSettlementInfo("FeeTrxnNOInvoice", ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
 		miscFeeInfo.setAmount(new Money(miscFee).getDollar());
 		miscFeeInfo.setTxEventCode(ReconciliationConstants.MISC_FEE_KEY);
@@ -455,6 +461,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 			LOGGER.error("Unexpected Misc fee in settlement ");
 		else if (miscFee > 0)
 			settlementInfos.add(miscFeeInfo);
+		*/
+		
 		return totalTrxns;
 	}
 }
