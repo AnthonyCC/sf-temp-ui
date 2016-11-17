@@ -233,7 +233,9 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         	 CrmAgentHome home = this.getCrmAgentHome();
              CrmAgentEB agentEB = home.findByPrimaryKey(caseModel.getAssignedAgentPK());
              CrmAgentModel agent = (CrmAgentModel) agentEB.getModel();
-        	 this.actionAllowed(agent.getRole().getCode(), caseModel.getSubject().getCode(),
+             String agentRoleCode = (null!=agent && null!=agent.getRole() && null!=agent.getRole().getCode())?agent.getRole().getCode():null;
+             String subjectCode = (null!=caseModel.getSubject() && null!=caseModel.getSubject().getCode())?caseModel.getSubject().getCode():null;
+        	 this.actionAllowed(agentRoleCode, subjectCode,
         			 CrmCaseState.CODE_NEW, CrmCaseActionType.CODE_NOTE);
             return getCrmCaseHome().create(caseModel).getPK();
         }catch(CreateException e){
