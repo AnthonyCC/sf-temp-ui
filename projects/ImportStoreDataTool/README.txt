@@ -81,6 +81,8 @@ Argument         | Description
 
 --import_data    : Imports CMS data of all stores into the DB from the Store.xml.gz files under 'storedata' folder.
                    Needs to be called with or after --load_definition option.
+                   The permission and draft related tables have to be filled with data manually. An example
+                   script can be found in the cmsadmin project under src/main/resources/import.sql
 
 --import_media   : Imports CMS media into the DB from the Media.xml.gz.
                    Needs to be called with or after --load_definition option.

@@ -50,6 +50,11 @@ CREATE TABLE "USERPERSONA"
 	  REFERENCES "PERSONA" ("ID") ENABLE
 );
 
+-- sequences
+create sequence DRAFT_CHANGE_SEQUENCE start with 1 increment by 1;
+create sequence DRAFT_SEQUENCE start with 1 increment by 1;
+create sequence PERSONA_ID_SEQ start with 1 increment by 1;
+
 -- synonyms
 CREATE OR REPLACE SYNONYM "CMS_DRAFT" FOR "DRAFT";
 CREATE OR REPLACE SYNONYM "CMS_DRAFTCHANGE" FOR "DRAFTCHANGE";
