@@ -1419,3 +1419,123 @@ footer .copyright {
 	.mm-page .prodMod-cont .qtyinput {
     	margin-bottom: 10px;
 	}
+	
+	/* VIEW CART */
+	.mm-page .container.mobweb-checkout{
+		width: 100%;
+	}
+	.mm-page .container.mobweb-checkout .warningBox{
+		width: 100%;
+		box-sizing: border-box;
+	}
+	.mm-page #cartcontent{
+		border-top: 1px solid #BBBBBB;
+	}
+	.mm-page #cartcontent .cartsection__cartline{
+		margin: 0;
+		padding: 0;
+		border-bottom: 1px solid #BBBBBB;
+	}
+	.mm-page .container #cartheader .cartheader{
+		padding: 20px 10px;
+	}
+	.mm-page .container #questions{
+		padding: 0 10px;
+	}
+	.mm-page .container #questions .questions__left,
+	.mm-page .container #questions .questions__right{
+		line-height: normal;
+	}
+	.mm-page .container #cartheader .cartheader .cartheader__action{		
+		width: 100%;
+		padding: 10px 0 0;
+		text-align: center;
+	}
+	.mm-page #cartcontent .cartsection .cartsection__title{
+		background: #F2F0EF;
+		margin: 0;
+		padding: 20px;
+		border-bottom: 1px solid #BBBBBB;
+	}
+	.mm-page #cartcontent .cartsection .cartsection__title [data-component="removeRecipeButton"]{
+		display: block;
+		float: none;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-imageholder{
+		width: 30%;
+		max-width: none;
+		margin: 20px 0 0;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-title{
+		width: 70%;
+		margin: 20px 0 0;
+		padding: 10px 5px 0 10px;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-delete{
+		width: 30%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-quantity{
+		width: 30%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-price{
+		width: 30%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-legend{
+		width: 10%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder{
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon{
+		float: none;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon span[data-component="ecoupon-status"]{
+		display: block;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .select-wrapper .salesunit{
+		min-width: initial;
+		max-width: 100%;
+	}
+	.mm-page #cartcontent .cartsection .cartsection__totalwrapper{
+		padding: 30px 5px;
+	}
+	
+	.mm-page #cartcontent .total .total-left,
+	.mm-page #cartcontent .total .total-right,
+	.mm-page #cartcontent .total .total-right .subtotalboxes,
+	.mm-page #cartcontent .footer .footer__left,
+	.mm-page #cartcontent .footer .footer__right{
+		width: auto;
+	}
+	.mm-page #cartcontent .total{
+		padding: 5px;
+	}
+	.mm-page #cartcontent .total .total-right{
+		float: right;
+	}
+	.mm-page #cartcontent .total .total-right .subtotalboxes .subtotal__rowcell-left{
+		width: 140px;
+		margin-right: 8px;
+	}
+	.mm-page #cartcontent .total .total-right .subtotalboxes .subtotal__rowcell-mid{
+		padding-left: 2px;
+	}
+	.mm-page #cartcontent .total__promotion .promotion-item{
+		display: block;
+		margin: auto;
+	}
+	.mm-page #cartcontent .total__promotion .promotion-item .promotion-input{
+		float: left;
+	}
+	.mm-page #cartcontent .footer{
+		margin: 0 0 30px;
+	}
+	.mm-page #cartcontent .footer .footer__left{
+		padding: 10px;
+	}
+	.mm-page #cartcontent .footer .footer__right{
+		width: 100%;
+	}
+	.mm-page #cartcontent .footer .footer__right .footer__button{
+		display: block;
+		margin: 15px auto 0;
+	}
