@@ -28,6 +28,9 @@
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
 %><%@ page import='com.freshdirect.fdstore.zone.FDZoneInfoManager'
 %><%@ page import='com.freshdirect.fdstore.ZonePriceListing'
+%><%@ page import='com.freshdirect.webapp.util.JspMethods' 
+%><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
+%><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%!
 
@@ -406,6 +409,11 @@
 		if(user != null) {
 			queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
 		}
+		
+		if (user != null) {
+			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
+		}
+		
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"

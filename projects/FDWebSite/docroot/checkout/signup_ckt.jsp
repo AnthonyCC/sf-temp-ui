@@ -5,6 +5,9 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods'%>
 <%@ page import="com.freshdirect.webapp.util.AccountUtil" %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -31,7 +34,14 @@ final int W_CHECKOUT_SIGNUP_TOTAL = 970;
 	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 	
 	CmRegistrationTag.setRegistrationLocation(session,"checkout");
+	
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, usery) && JspMethods.isMobile(request.getHeader("User-Agent"));
 %>
+<%
+	if (mobWeb) {
+		response.sendRedirect("/social/signup_lite.jsp?successPage=/expressco/view_cart.jsp"); /* signup doesn't actually take successPage, but jic */
+	}
+--%>
 <fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
 <%
 ActionResult ar= new ActionResult();

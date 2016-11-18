@@ -13,12 +13,12 @@ var API;
 				"navbar": {
 					"title": '<img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="navbar-brand img-responsive" />'
 				},
-				/*"navbars": [
+				"navbars": [
 					{
 						"position": "bottom",
-						"content": (FreshDirect && FreshDirect.locabar && FreshDirect.locabar.hasFdxServices) ? "<div class='navbar-cont'><a href='https://foodkick.freshdirect.com' class='locabar-tab locabar-tab-fdx-cont'><div class='locabar-tab-fdx'></div></a></div>" : ""
+						"content": (FreshDirect && FreshDirect.locabar && FreshDirect.locabar.hasFdxServices) ? "<div class='navbar-cont'><a href='https://www.foodkick.com' class='locabar-tab locabar-tab-fdx-cont'><div class='locabar-tab-fdx'></div></a></div>" : ""
 					}
-				],*/
+				],
 				"iconPanels": true,
 				"screenReader": true,
 				"setSelected": {
@@ -174,6 +174,22 @@ var API;
 			$jq(this).toggleClass('open');
 		});
 		
+		/* timeslots */
+		/* use pre-init to set mobweb to true */
+		window['fdTSDisplayPreInitializeFuncs'] = window['fdTSDisplayPreInitializeFuncs'] || [];
+		window['fdTSDisplayPreInitializeFuncs'].push(function(argsObj) {
+			argsObj.thisObj.opts.isMobWeb = true;
+			
+		});
+
+		/* use init to set all days as expanded */
+		window['fdTSDisplayInitializeFuncs'] = window['fdTSDisplayInitializeFuncs'] || [];
+		window['fdTSDisplayInitializeFuncs'].push(function(argsObj) {
+			for (var dayId in argsObj.thisObj.dayObjs) {
+				argsObj.thisObj.setDayAsExpanded(dayId);
+			}
+			
+		});
 	});
 	
 }(jQuery));

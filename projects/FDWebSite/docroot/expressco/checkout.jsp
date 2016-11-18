@@ -1,5 +1,8 @@
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -14,15 +17,23 @@
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+String pageTemplate = "/expressco/includes/ec_template.jsp";
+if (mobWeb) {
+	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+	String oasSitePage = request.getAttribute("sitePage").toString();
+	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+	}
+}
 %>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
 <potato:cartData />
 
-<input type="hidden" id="ppDeviceId" value="">
-<input type="hidden" name="isPayPalDown" id= "isPayPalDown" value="false">
 
-<tmpl:insert template='/expressco/includes/ec_template.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 
   <tmpl:put name="jsmodules">
@@ -139,6 +150,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
   
 <!-- This change is for Voucher Redemption. We are hiding the change control for these particular voucher users -->
   <tmpl:put name="extraCss">
+    <jwr:style src="/expressco.css" media="all" />
   	<% if (user.isVoucherHolder() && null == masqueradeContext) { %>
 	  	<style>
 	  		[data-drawer-id="address"]>button {

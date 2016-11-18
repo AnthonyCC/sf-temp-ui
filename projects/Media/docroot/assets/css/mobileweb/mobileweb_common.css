@@ -1,4 +1,3 @@
-
 body {
 	font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
@@ -1396,6 +1395,174 @@ footer .copyright {
 	}
 
 /* CHECKOUT */
+	.mm-page .cartheader__action_w_subtotal {
+		width: 100%;
+		text-align: center;
+	}
+	.mm-page .etipping-addtip-text {
+		padding-right: 0;
+	}
+	.mm-page #expresscheckout .container {
+		width: 100%;
+	}
+	.mm-page [data-drawer-content="address"] [data-component="addresschangebutton"],
+	.mm-page [data-drawer-content="timeslot"] [data-component="timeslotchangebutton"] {
+		float: none;
+		width: 100%;
+	}
+	.mm-page .drawer__item__action .action {
+		margin-right: 0;
+	}
+	.mm-page .drawer-content {
+		clear: both;
+	}
+	.mm-page .drawer-content>ul,
+	[data-drawer-id], 
+	[data-drawer-disabled] {
+		list-style-type: none;
+	}
+	[data-drawer-id] h2 {
+		/*display: inline-block;*/
+	}
+	/* drawer content popups */
+		#addaddresspopup .ec-popup.addaddresspopup {
+			width: 100%;
+		}
+		#addaddresspopup .ec-popup [data-show="addaddress_home"] #addaddress_home,
+		#addaddresspopup .ec-popup [data-show="addaddress_office"] #addaddress_office,
+		#addpaymentmethodpopup .addpaymentmethodpopup form {
+			padding: 20px 3px;
+		}
+		#addaddresspopup .ec-popup label.tabs {
+			width: 30%;
+		}
+		#addaddresspopup .ec-popup label[for="addaddress_home_last_name"], 
+		#addaddresspopup .ec-popup label[for="addaddress_home_bd_last_name"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_last_name"],
+		#addaddresspopup .ec-popup span[fdform-error-for="last_name"],
+		#addaddresspopup .ec-popup span[fdform-error-for="phone_ext"],
+		#addaddresspopup .ec-popup span[fdform-error-for="alt_phone_ext"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_apartment"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_apartment"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_zip"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_state"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_phone_ext"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_bd_phone_ext"],
+		#addaddresspopup .ec-popup label[for="addaddress_home_alt_phone_ext"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_alt_phone_ext"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_zip"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_state"],
+		#addaddresspopup .ec-popup label[for="addaddress_office_phone_ext"],
+		#addaddresspopup .ec-popup span[fdform-error-for="apartment"],
+		#addpaymentmethodpopup .ec-popup label[for="CC_cardMonth"],
+		#addpaymentmethodpopup .ec-popup label[for="CC_cardYear"],
+		#addpaymentmethod_ebt .ec-popup span[fdform-error-for="cardYear"],
+		#addpaymentmethodpopup .ec-popup label[for="CC_bil_state"],
+		#addpaymentmethod_bank .ec-popup label[for="EC_bil_state"],
+		#addpaymentmethod_ebt .ec-popup label[for="ET_bil_state"],
+		#addpaymentmethodpopup .ec-popup label[for="CC_bil_zipcode"],
+		#addpaymentmethod_bank .ec-popup label[for="EC_bil_zipcode"],
+		#addpaymentmethod_ebt .ec-popup label[for="ET_bil_zipcode"],
+		#addpaymentmethod_ebt .ec-popup span[fdform-error-for="bil_apartment"],
+		#addpaymentmethodpopup .ec-popup label[for="CC_bil_apartment"],
+		#addpaymentmethod_bank .ec-popup label[for="EC_bil_apartment"],
+		#addpaymentmethod_ebt .ec-popup label[for="ET_bil_apartment"],
+		#addpaymentmethod_ebt .ec-popup span[fdform-error-for="bil_apartment"],
+		#addpaymentmethod_bank .ec-popup span[fdform-error-for="bil_apartment"]
+		{
+			margin-left: 6px;
+		}
+		#addaddresspopup .ec-popup .buttons [type="submit"],
+		#addpaymentmethodpopup .ec-popup .buttons [type="submit"] {
+			width: 55%;
+		}
+		.drawer__item {
+			word-break: break-word;
+		}
+		.total__gogreen {
+			clear: both;
+		}
+		.gogreen-text {
+		    margin: 0 6px;
+		}
+		.eTippingEnabled #subtotalbox1 {
+		    margin-left: 0 !important;
+		} 
+		/* timeslots */
+		
+			
+			.tsTable {
+				width: 100% !important;
+			}
+			.tsTable .ts_d {
+			    display: block;
+			    width: 100% !important;
+			}
+			
+			[data-drawer-content="timeslot"] [data-component="timeselectorcontent"] {
+				overflow-x: auto;
+				border: 1px solid #ccc;
+    			max-height: 100%;
+			}
+			td.tsHeaderE_top, .footer_container>div {
+				display: none; /* rounded corners */
+			}
+			#tsContainer .float_children, div.tsHeaderE {
+				width: 100% !important;
+			}
+			div.tsHeaderE {
+				height: 32px;
+			}
+			.tsHeadE {
+				vertical-align: middle;
+				line-height: 20px;
+			}
+			div.tsDayNameE, div.tsDayDateE {
+				display: inline-block !important;
+				font-size: 20px !important;
+				height: 20px;
+    			vertical-align: middle;
+			}
+			.tsDayNameE:after {
+				content: ',';
+			}
+			.tsDayDateE {
+				padding-left: 6px;
+			}
+			.tsContainerE.tsContainerBGE {
+			    height: 32px !important; /* eliminate alignment padding */
+			    border-bottom: 1px solid #ccc !important; /* add border since there's no footer now */
+			}
+			.cutoffLR, .tsContainerE {
+			    border-left: none !important;
+    			border-right: none !important;
+			}
+			#legendCheckout {
+			    position: absolute;
+			    bottom: 0px;
+			    right: 0px;
+			    background-color: #fff;
+			    padding: 5px;
+			    box-sizing: border-box;
+			    border: 1px solid #ccc;
+			}
+			.geowarn-table {
+				border-bottom: 1px solid #ccc;
+			}
+			.geowarn-table img {
+			    display: none;
+			}
+			.geowarn-table img.geowarn-table-title-img {
+			    display: block;
+			}
+			.geowarn-table td {
+			    display: block;
+			    height: auto !important;
+			}
+			.geowarn-table-title-cont {
+			    margin: 0 !important;
+			}
+	
 	.mm-page .prodMod-buttons-cont button, .mm-page .prodMod-buttons-cont a {
 	    width: 100%;
 	}

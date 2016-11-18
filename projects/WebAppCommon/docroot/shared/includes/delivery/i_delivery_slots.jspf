@@ -257,7 +257,7 @@ if (timeslots.size() > 0) {
 		}
 	}
 
-	stringBuffer.append("				<td valign=\"top\">\n")
+	stringBuffer.append("				<td class=\"ts_d\" valign=\"top\">\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >\n")
 				.append("						<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")

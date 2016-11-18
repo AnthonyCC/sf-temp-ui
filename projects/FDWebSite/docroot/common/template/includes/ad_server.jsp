@@ -1,5 +1,5 @@
-<%@ page import="com.freshdirect.fdstore.customer.ExternalCampaign"%>
-<%@ page import='com.freshdirect.framework.util.NVL'
+<%@ page import="com.freshdirect.fdstore.customer.ExternalCampaign"
+%><%@ page import='com.freshdirect.framework.util.NVL'
 %><%@ page import='org.apache.commons.lang.StringUtils'
 %><%@ page import='java.util.*'
 %><%@ page import='java.net.*'
@@ -29,12 +29,12 @@
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
 %><%@ page import='com.freshdirect.fdstore.zone.FDZoneInfoManager'
 %><%@ page import='com.freshdirect.fdstore.ZonePriceListing'
-
+%><%@ page import='com.freshdirect.webapp.util.JspMethods' 
+%><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
+%><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
+%><%@ page import='com.freshdirect.common.context.UserContext'
 %><%@ taglib prefix="fd" uri="freshdirect"
-%>
-<%@ page import='com.freshdirect.common.context.UserContext'%>
-
-<%!
+%><%!
 
 	private final static String CCL_NONELIGIBLE = "0";
 	private final static String CCL_INEXPERIENCED = "1";
@@ -489,6 +489,11 @@
 			    					user.getOrderHistory().getValidMasterPassOrderCount());
   				    			
   				    		}
+
+	  				  		if (user != null) {
+	  				  			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
+	  				  		}
+	  				  		
   				    		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
   				    				: (String) request.getAttribute("sitePage");
   				    		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
