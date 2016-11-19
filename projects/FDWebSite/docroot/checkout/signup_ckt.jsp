@@ -41,7 +41,7 @@ final int W_CHECKOUT_SIGNUP_TOTAL = 970;
 	if (mobWeb) {
 		response.sendRedirect("/social/signup_lite.jsp?successPage=/expressco/view_cart.jsp"); /* signup doesn't actually take successPage, but jic */
 	}
---%>
+%>
 <fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
 <%
 ActionResult ar= new ActionResult();
