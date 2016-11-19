@@ -1489,8 +1489,6 @@ footer .copyright {
 		    margin-left: 0 !important;
 		} 
 		/* timeslots */
-		
-			
 			.tsTable {
 				width: 100% !important;
 			}
@@ -1562,6 +1560,81 @@ footer .copyright {
 			.geowarn-table-title-cont {
 			    margin: 0 !important;
 			}
+		/* ATP */
+			#atpfailure .warningBox {
+				width: 100% !important;
+			}
+			#atpfailure .lineHeaderLeft {
+				padding-left: 0 !important;
+				text-indent: 10px;
+			}
+			#atpfailure .lineHeaderLeft,
+			#atpfailure .lineHeaderRight {
+				width: 100% !important;
+				font-size: 13px !important;
+				display: block !important;
+			}
+			
+			#atpfailure .lineDetails,
+			#atpfailure .lineRight {
+				width: 100% !important;
+				display: block !important;
+			}
+			
+			#atpfailure .lineDetails h1 {
+				font-size: 18px !important;
+			}
+			#atpfailure .footer__button {
+				width: 100% !important;
+			}
+			/* make two columns */
+			#atpfailure .line-cont {
+				float: left;
+				width: 50%;
+			}
+			#atpfailure .pic-cont {
+				float: right;
+				width: 50%;
+			}
+			#atpfailure .lineDetails .pic {
+				max-width: 100%; /* size image to column */
+				max-height: auto !important;
+			}
+			
+			/* this requires px width */
+				@media screen and (width: 320px) {
+					#atpfailure .replacements {
+						width: 260px !important;
+						margin: 0 10px;
+					}
+					#atpfailure [data-component="carousel"] ul li.portrait-item {
+						width: 166px !important;
+					}
+					#atpfailure .lineHeaderLeft,
+					#atpfailure .lineHeaderRight {
+						font-size: 12px !important;
+					}
+				}
+				@media screen and (min-width: 321px) and (max-width: 375px) {
+					#atpfailure .replacements {
+						width: 320px !important;
+					}
+					#atpfailure [data-component="carousel"] ul li.portrait-item {
+						width: 226px !important;
+					}
+				}
+				@media screen and (min-width: 376px) and (max-width: 425px) {
+					#atpfailure .replacements {
+						width: 375px !important;
+					}
+					#atpfailure [data-component="carousel"] ul li.portrait-item {
+						width: 132px !important;
+					}
+					#atpfailure .lineHeaderLeft,
+					#atpfailure .lineHeaderRight {
+						font-size: 15px !important;
+					}
+				}
 	
 	.mm-page .prodMod-buttons-cont button, .mm-page .prodMod-buttons-cont a {
 	    width: 100%;

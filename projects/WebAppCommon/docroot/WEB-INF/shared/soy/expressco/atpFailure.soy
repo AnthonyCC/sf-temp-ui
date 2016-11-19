@@ -61,12 +61,16 @@
 */
 {template .product autoescape="false"}
   {if $name}<h1>{$name}</h1>{/if}
-  {if $recipe}<p class='strong'>RECIPE: {$recipe}</p>{/if}
-  {if $quantity}<p>Quantity: {$quantity}</p>{/if}
-  {if $options}<p>Options: {$options}</p>{/if}
-  {if $price}<p>Estimated Price: {$price}</p>{/if}
+  <div class="line-cont">
+  	{if $recipe}<p class='strong'>RECIPE: {$recipe}</p>{/if}
+  	{if $quantity}<p>Quantity: {$quantity}</p>{/if}
+  	{if $options}<p>Options: {$options}</p>{/if}
+  	{if $price}<p>Estimated Price: {$price}</p>{/if}
+  </div>
   {if $imageUrl}
-   <p><img class="pic" src="{$imageUrl}" alt="Product {$name}" /></p>
+    <div class="pic-cont">
+		<p><img class="pic" src="{$imageUrl}" alt="Product {$name}" /></p>
+	</div>	
   {/if}
 {/template}
 
