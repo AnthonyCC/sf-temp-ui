@@ -1600,6 +1600,13 @@ footer .copyright {
 				max-width: 100%; /* size image to column */
 				max-height: auto !important;
 			}
+			button.modifyorder-cancelbutton {
+				position: relative;
+				width: 100%;
+				right: auto;
+				top: auto;
+				float: none;
+			}
 			
 			/* this requires px width */
 				@media screen and (width: 320px) {

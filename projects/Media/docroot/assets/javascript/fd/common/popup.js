@@ -136,7 +136,8 @@ var FreshDirect = FreshDirect || {};
                         helpTemplate: this.helpTemplate,
                         helpHeader: this.helpHeader,
                         customClass: this.customClass,
-                        bodyContent: bt({data: data || {}})
+                        bodyContent: bt({data: data || {}}),
+                        mobWeb: ((data && data.hasOwnProperty('mobWeb')) ? data.mobWeb : false)
                     }));
                     this.initTrigger();
                 }else{
