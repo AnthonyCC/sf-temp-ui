@@ -440,7 +440,7 @@ footer .copyright {
 .pull-right {
 	float: right!important;
 }
-.close-x, #messages.open .close-handler {
+.close-x, #messages.open .close-handler, #modifyorderalert .alert-closeHandler {
 	top: 0;
 	bottom: initial;
 	left: initial;
@@ -1393,6 +1393,43 @@ footer .copyright {
 		text-align: center;
 		padding: 0 0 15px;
 	}
+
+/* modify order bar */
+	.modify-order-alert-table {
+		padding: 6px 0 6px 0;
+    	border-bottom: 1px solid #ccc;
+	}
+	.modify-order-alert-table-actions {
+		padding: 5px 0 0 0;
+	}
+	.modify-order-alert-table-delails,
+	.modify-order-alert-table-modify {
+		display: inline-block;
+	    width: 46%;
+	    text-align: center;
+	}
+	
+	#modifyorderalert .modify-order-alert-table .modify-order-alert-table-status-img {
+	    float: left;
+	    background-image: url(/media/layout/nav/globalnav/fdx/locabar-modify-green.png);
+	    height: 24px;
+	    width: 25px;
+	    background-repeat: no-repeat;
+		margin: 6px 10px;
+	}
+	#modifyorderalert .modify-order-alert-table .modify-order-alert-table-date-and-time .modify-order-alert-table-date {
+		padding-right: 10px;
+	}
+	#modifyorderalert .modify-order-alert-table .modify-order-alert-table-status .modify-order-alert-table-status-text {
+	    font-weight: bold;
+	    font-size: 13px;
+	    line-height: 16px;
+	}
+	.modify-order-alert-table-status,
+	.modify-order-alert-table-name-text {
+		display: inline-block;
+	}
+	
 
 /* CHECKOUT */
 	.mm-page .cartheader__action_w_subtotal {

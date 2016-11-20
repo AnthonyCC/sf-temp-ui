@@ -150,7 +150,7 @@
 		   	
 		   	<!-- modorder s -->
 		   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
-		   	<div id="modifyorderalert_cont" class="NOMOBWEB">
+		   	<div id="modifyorderalert_cont" class="">
 			   	<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
 					<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
 				</div>
