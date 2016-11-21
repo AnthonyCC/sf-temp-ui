@@ -1,3 +1,6 @@
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -5,15 +8,23 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-
+<fd:CheckLoginStatus id="userCOSuccess" guestAllowed="false" recognizedAllowed="false" />
 <%  //--------OAS Page Variables-----------------------
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
+  
+  boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, userCOSuccess) && JspMethods.isMobile(request.getHeader("User-Agent"));
+  String pageTemplate = "/expressco/includes/ec_template.jsp";
+  if (mobWeb) {
+  	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+  	String oasSitePage = request.getAttribute("sitePage").toString();
+  	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+  		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+  	}
+  }
 %>
-
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <potato:singlePageCheckoutSuccess />
-<tmpl:insert template='/expressco/includes/ec_template.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 
   <tmpl:put name="jsmodules">

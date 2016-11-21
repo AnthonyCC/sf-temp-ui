@@ -1429,7 +1429,27 @@ footer .copyright {
 	.modify-order-alert-table-name-text {
 		display: inline-block;
 	}
+
+/* VIEW CART */
 	
+	@media screen and (max-width: 560px) { /* default li width is 282px */
+		.product-sample-carousel,
+		#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
+			width: 100%;
+		}
+		.product-sample-carousel h2.product-sample-header {
+			padding-right: 50px;
+		}
+	}
+
+/* RECEIPT */
+	.mm-page #successpage .container {
+		width: 100%;
+	}
+	.mm-page #successpage .successtotal-left, .successtotal-right {
+	    display: block;
+	    width: 100%;
+	}
 
 /* CHECKOUT */
 	.mm-page .cartheader__action_w_subtotal {
