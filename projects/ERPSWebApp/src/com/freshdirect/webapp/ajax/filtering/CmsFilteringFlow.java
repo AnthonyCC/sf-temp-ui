@@ -899,9 +899,11 @@ public class CmsFilteringFlow {
 			String parentId = null;
 			while ((contentNodeModel != null && !(contentNodeModel instanceof DepartmentModel))) {
 				parentId = contentNodeModel.getParentId();
-				isExcluded = excludedDeptOrCats.contains(parentId.toLowerCase());
-				if(isExcluded){
-					break;
+				if(null != parentId ){
+					isExcluded = excludedDeptOrCats.contains(parentId.toLowerCase());
+					if(isExcluded){
+						break;
+					}
 				}
 				contentNodeModel = contentNodeModel.getParentNode();
 			}
