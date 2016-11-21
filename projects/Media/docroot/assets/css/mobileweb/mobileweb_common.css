@@ -1546,6 +1546,20 @@ footer .copyright {
 		    margin-left: 0 !important;
 		} 
 		/* timeslots */
+			.mm-page .tsAdvanceHeader-cont {
+				width: 100%;
+			}
+			.mm-page .timeslot-note .note-message {
+				width: 100%;
+				position: relative;		
+			}
+			.mm-page .timeslot-note .note-content {
+				margin-left: 0;
+				width: 100%;
+			}
+			.tsDivHide {
+				display: none;
+			}
 			.tsTable {
 				width: 100% !important;
 			}
@@ -1561,6 +1575,9 @@ footer .copyright {
 			}
 			td.tsHeaderE_top, .footer_container>div {
 				display: none; /* rounded corners */
+			}
+			#tsContainer .float_children {
+				height: auto !important;
 			}
 			#tsContainer .float_children, div.tsHeaderE {
 				width: 100% !important;
