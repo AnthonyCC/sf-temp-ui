@@ -128,6 +128,10 @@ var FreshDirect = FreshDirect || {};
                   return;
                 }
 
+            	if ($jq('.mm-page').length) {
+            		data.mobWeb = true;
+            	}
+
                 if($popupBody.length===0){
                     $(this.placeholder).append(this.template({
                         popupId: this.popupId,
@@ -158,6 +162,11 @@ var FreshDirect = FreshDirect || {};
         },
         refreshBody:{
             value:function(data,template,header){
+            	if ($jq('.mm-page').length) {
+            		$jq('#'+this.popupId).addClass('mm-page-ifr');
+            	} else {
+            		$jq('#'+this.popupId).removeClass('mm-page-ifr');
+            	}
                 if(template){
                     this.bodyTemplate=template;
                 }
