@@ -2377,16 +2377,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error Sending email for Order Confirmantion: "+ pk.getId(), e);
 			}
-			try {
-				FDOrderI order = getOrder(pk.getId());
-				if(FDStoreProperties.getSmsOrderConfirmation() && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices()))
-				 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId(), EnumEStoreId.FDX.name());
-				
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				LOGGER.warn("Error Sending FDXSMS for Order Confirmantion: ", e);
-			}		
-		
+			
+			if(FDStoreProperties.getSmsOrderConfirmation() && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices())){
+				final FDOrderI orderSMSCreate = getOrder(pk.getId());
+				final FDActionInfo infoSMS = info;
+				final String orderMobileNumberSMS = orderMobileNumber;
+				new Thread(new Runnable(){
+				 public void run(){
+					try {
+						SMSAlertManager.getInstance().smsOrderConfirmation(infoSMS.getFdUserId(), orderMobileNumberSMS, orderSMSCreate.getErpSalesId(), EnumEStoreId.FDX.name());
+					} catch (FDResourceException e) {
+						LOGGER.warn("Error Sending FDXSMS for Order Confirmantion: ", e);
+					}
+					}
+				}).start();
+			}
 			
 			try {
 				if(null!=createOrder.getCouponTransModel()){
@@ -2699,13 +2704,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			
 			
-			try {
-				if(FDStoreProperties.getSmsOrderCancel() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
-					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId, EnumEStoreId.FDX.name());
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
+			if(FDStoreProperties.getSmsOrderCancel() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions())){
+				final FDActionInfo infoSMS = info;
+				final String orderMobileNumberSMS = orderMobileNumber;
+				final String saleIdSMS = saleId;
+				new Thread(new Runnable(){
+					public void run(){
+						try{
+							SMSAlertManager.getInstance().smsOrderCancel(infoSMS.getFdUserId(), orderMobileNumberSMS, saleIdSMS, EnumEStoreId.FDX.name());
+						} catch (FDResourceException e) {
+							LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
+						}
+					}
+				}).start();
 			}
+		
 			
 			//START APPDEV-5657 
 			// removed this from if statement EnumTransactionSource.SYSTEM.equals(info.getInitiator())&& !"Could not get AUTHORIZATION".equals(info.getNote())
@@ -3186,12 +3199,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 			// Order Modification for SMS
-			try {
-				if(FDStoreProperties.getSmsOrderModification() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().getContentId()) && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
-					 isSent = SMSAlertManager.getInstance().smsOrderModification(info.getFdUserId() ,orderMobileNumber, saleId, EnumEStoreId.FDX.name());
-				} catch (FDResourceException e) {
-				LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
-				}
+			if(FDStoreProperties.getSmsOrderModification() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().getContentId()) && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions())){
+				final FDActionInfo infoSMS = info;
+				final String orderMobileNumberSMS = orderMobileNumber;
+				final String saleIdSMS = saleId;
+				new Thread(new Runnable(){
+					public void run(){
+						try{
+							SMSAlertManager.getInstance().smsOrderModification(infoSMS.getFdUserId() ,orderMobileNumberSMS, saleIdSMS, EnumEStoreId.FDX.name());
+						} catch (FDResourceException e) {
+							LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
+						}
+					}
+				}).start();
+			}
 
 			try {
 				if(null!=order.getCouponTransModel()){
