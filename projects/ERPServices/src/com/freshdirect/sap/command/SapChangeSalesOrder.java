@@ -230,7 +230,8 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		// order no (10) + X + 9 spaces + X + 1 space + X
 		bapi.addExtension("BAPE_VBAKX", salesDocumentNumber
 				+ "X" // recipe chg flag
-				+ StringUtils.repeat(" ", 4)
+				+ "X" // goGreen flag
+				+ "X" // unattendedDeliveryFlag
 				+ "X" //gcAmount
 				+ StringUtils.repeat(" ", 4)
 				+ "X"
