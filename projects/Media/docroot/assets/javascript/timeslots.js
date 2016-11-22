@@ -60,7 +60,9 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		premSlotsDpTcElem: 'premDpTc', //the container for the dp t&c
 		premDcTpAgreed: false, //has user agreed to dctp
 		intializeEventFuncs: this.refId+'InitializeFuncs', //check for, and run if found, function on an initialize (passes fdTSDisplay obj in as argsObj.thisObj)
-		tsSpecialMsgs: {} //special messaging object (taken from window in construct, set in addEvents)
+		preInitializeEventFuncs: this.refId+'PreInitializeFuncs', //check for, and run if found, function(s) before initialize (passes fdTSDisplay obj in as argsObj.thisObj)
+		tsSpecialMsgs: {}, //special messaging object (taken from window in construct, set in addEvents)
+		isMobWeb: false /* do mobWeb functionality - MUST BE SET TO TRUE ON INIT (VIA INIT FUNCS) */
 	};
 
 	this.extendQueue = {};
@@ -243,7 +245,6 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					//lastCO.style.height = this.getCalcdRowHeight(2, null, false, 1);
 				}
 			}
-;
 			if (window['tsSpecialMsgs']) {
 				this.opts.tsSpecialMsgs = window.tsSpecialMsgs;
 			}
@@ -481,7 +482,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 				if (fdTSDisplay.opts.clickOnly) {
 					//remove class for contracted gradient
-					fdTSDisplay.dayObjs[dayId].hCext.className = fdTSDisplay.dayObjs[dayId].hCext .className.replace(' tsHeaderCMouseOver', '');
+					fdTSDisplay.dayObjs[dayId].hCext.className = fdTSDisplay.dayObjs[dayId].hCext.className.replace(' tsHeaderCMouseOver', '');
 				}
 
 				//don't clear on child elems
@@ -1165,7 +1166,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 			logMsg = ' '+logMsg;
 
 			if (this.opts.debug && window.console) {
-				//console.log(new Date().toLocaleTimeString(), logMsg);
+				console.log(new Date().toLocaleTimeString(), logMsg);
 			}
 		}
 
@@ -2001,6 +2002,8 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 	/* expand/contract setters */
 		/* set day as expanded */
 			this.setDayAsExpanded = function(dayIdArg) {
+				//if (this.opts.isMobWeb) { return true; }
+
 				var prevExpandedDayId = this.opts.expandedDayId;
 				var dayId = dayIdArg || '';
 
@@ -2069,6 +2072,8 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 			}
 		/* set day as contracted */
 			this.setDayAsContracted = function(dayIdArg) {
+				if (this.opts.isMobWeb) { return true; }
+
 				var dayId = dayIdArg || '';
 				if (this.dayObjs[dayId]) {
 					
@@ -2201,6 +2206,27 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 			}
 		}
+	
+	/* pre-initializer */
+		this.preInit = function() {
+			/* check for additional initialized events */
+			if (window[this.opts.preInitializeEventFuncs]) {
+				var preInitializeEventFuncs = window[this.opts.preInitializeEventFuncs];
+				this.log('Found preInitializeEventFuncs Array...')
+					for (var i = 0; i < preInitializeEventFuncs.length; i++) {
+						this.log("\tRunning preInitializeEventFuncs["+i+']...');
+						try {
+							this.log("\t\tRunning preInitializeEventFuncs["+i+']');
+							preInitializeEventFuncs[i]({'thisObj': this});
+						} catch (e) {
+							this.log("\t\tError in preInitializeEventFuncs["+i+']!');
+							this.log("---\n"+e.name + ": " + e.message+"\n---");
+						}
+						this.log("\t... preInitializeEventFuncs["+i+'] finished.');
+					}
+				this.log('...Finished preInitializeEventFuncs');
+			}
+		}
 
 	/* --- SETUP --- */
 	
@@ -2229,6 +2255,13 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 	/* detect IE version */
 		this.detectIEVersion();
+
+	/* run pre-init */
+		this.startTimer();
+			this.log('Starting preIntialize...');
+				this.preInit();
+			this.log('...preInitialize completed.');
+		this.endTimer();
 
 	/* setup TSDisplay */
 		this.startTimer();
@@ -2367,6 +2400,7 @@ window.fdTSDisplay = FreshDirect.fdTSDisplay;
 
 /* initializer array */
 var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
+var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [];
 
 
 /* initialize the TS display */
