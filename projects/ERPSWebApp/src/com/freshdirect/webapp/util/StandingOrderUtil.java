@@ -18,6 +18,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -567,8 +568,8 @@ public class StandingOrderUtil {
 		// ==========================
 		String internalMessage = null;
 		double cartPrice = cart.getSubTotal();
-		double hardLimit = FDStoreProperties.getStandingOrderHardLimit();
-		double softLimit = FDStoreProperties.getStandingOrderSoftLimit();
+		double hardLimit = ErpServicesProperties.getStandingOrderHardLimit();
+		double softLimit = ErpServicesProperties.getStandingOrderSoftLimit();
 		if ( cartPrice < hardLimit ) {
 			//Display soft limit info for user. He doesn't know about hard limit. 
 			String msg = "The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum.";

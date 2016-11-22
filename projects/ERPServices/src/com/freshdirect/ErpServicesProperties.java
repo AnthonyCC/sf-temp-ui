@@ -274,6 +274,20 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_WDC_PLANT_ORDERLINES_ENABLED = "sap.send.plant.with.orderline.enabled";
 	
+	//Added by Smerugu
+	private final static String PROP_MINIMUM_ORDER_AMOUNT = "erpservices.minimum.order.amount";
+	private final static String PROP_FDX_MINIMUM_ORDER_AMOUNT ="erpservices.fdx.minimum.order.amount";
+	private final static String PROP_MIN_CORP_ORDER_AMOUNT ="erpservices.min.corp.order.amount";
+	private final static String PROP_BASE_DELIVERY_FEE ="erpservices.base.delivery.fee";
+	private final static String PROP_CORP_DELIVERY_FEE ="erpservices.corp.delivery.fee";
+	private final static String PROP_CORP_DELIVERY_FEE_MONDAY ="erpservices.corp.delivery.fee.monday";
+	private final static String PROP_STANDING_ORDER_SOFT_LIMIT ="erpservices.standingorder.softlimit";
+	private final static String PROP_STANDING_ORDER_HARD_LIMIT ="erpservices.standingorder.hardlimit";
+	private final static String PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT="erpservices.suffolk.county.minimum.order.amount";
+ 
+	
+	
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -487,7 +501,18 @@ public class ErpServicesProperties {
 		defaults.put(PROP_SAP_BAPI_UNATTENDED_DELIVERY,"false");
 		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,"600");
 		defaults.put(PROP_WDC_PLANT_ORDERLINES_ENABLED, "false");
-		
+
+		//Added by Smerugu
+		defaults.put(PROP_MINIMUM_ORDER_AMOUNT, "30.0");
+		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT, "20.0");
+		defaults.put(PROP_MIN_CORP_ORDER_AMOUNT, "50.0");
+		defaults.put(PROP_BASE_DELIVERY_FEE, "4.99");
+		defaults.put(PROP_CORP_DELIVERY_FEE, "9.99");
+		defaults.put(PROP_CORP_DELIVERY_FEE_MONDAY, "14.99");
+		defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
+        defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
+        defaults.put(PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT, "99.0");
+        
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
 	}
@@ -1201,4 +1226,34 @@ public class ErpServicesProperties {
 	public static boolean isOrderLinesWithPlantToSapEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_WDC_PLANT_ORDERLINES_ENABLED)).booleanValue();
 	}
+	
+	//Added by Smerugu
+	public static double getMinimumOrderAmount() {
+        return Double.parseDouble(config.getProperty(PROP_MINIMUM_ORDER_AMOUNT));
+    }
+	public static double getFDXMinimumOrderAmount() {
+        return Double.parseDouble(config.getProperty(PROP_FDX_MINIMUM_ORDER_AMOUNT));
+    }
+	public static double getMinCorpOrderAmount() {
+        return Double.parseDouble(config.getProperty(PROP_MIN_CORP_ORDER_AMOUNT));
+    }
+	public static double getBaseDeliveryFee() {
+        return Double.parseDouble(config.getProperty(PROP_BASE_DELIVERY_FEE));
+    }
+	public static double getCorpDeliveryFee() {
+        return Double.parseDouble(config.getProperty(PROP_CORP_DELIVERY_FEE));
+    }
+	public static double getCorpDeliveryFeeMonday() {
+        return Double.parseDouble(config.getProperty(PROP_CORP_DELIVERY_FEE_MONDAY));
+    }
+	public static double getStandingOrderHardLimit() {
+        return Double.parseDouble(config.getProperty(PROP_STANDING_ORDER_HARD_LIMIT));
+    }
+	public static double getStandingOrderSoftLimit() {
+        return Double.parseDouble(config.getProperty(PROP_STANDING_ORDER_SOFT_LIMIT));
+    }
+	public static double getSufFolkCountyMinimumOrderAmount() {
+        return Double.parseDouble(config.getProperty(PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT));
+    }
+	
 }

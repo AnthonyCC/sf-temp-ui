@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -182,7 +183,7 @@ public class CartDataService {
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 final HttpSession session = request.getSession();
                 FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-                if (cart.getTotal() >= FDStoreProperties.getStandingOrderSoftLimit()) {
+                if (cart.getTotal() >= ErpServicesProperties.getStandingOrderSoftLimit()) {
                     StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] { "MINORDER", "TIMESLOT_MINORDER" });
                 }
                 FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
@@ -568,8 +569,8 @@ public class CartDataService {
                 cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             }
             cartData.setDisplayCheckout(StandingOrderHelper.isSO3StandingOrder(user) ? false : true);
-            cartData.setSoftLimit(StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()));
-            cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
+            cartData.setSoftLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()));
+            cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
             

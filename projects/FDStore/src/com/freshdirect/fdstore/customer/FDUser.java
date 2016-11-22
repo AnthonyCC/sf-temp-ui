@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.FulfillmentContext;
@@ -906,14 +907,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 				String zip = getShoppingCart().getDeliveryAddress().getZipCode();
 				String zipcodes = FDStoreProperties.getSuffolkZips();
 				if("SUFFOLK".equalsIgnoreCase(county) && (zipcodes.indexOf(zip)==-1) ){
-					return 99;
+					return ErpServicesProperties.getSufFolkCountyMinimumOrderAmount();
 				}
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}
 		}
-		return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? MIN_CORP_ORDER_AMOUNT 
-							: ((EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) ? FDX_MINIMUM_ORDER_AMOUNT : MINIMUM_ORDER_AMOUNT);
+		return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? ErpServicesProperties.getMinCorpOrderAmount() 
+							: ((EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) ? ErpServicesProperties.getFDXMinimumOrderAmount(): ErpServicesProperties.getMinimumOrderAmount());
 	}
     
 	public float getQuantityMaximum(ProductModel product) {
@@ -1598,19 +1599,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public double getBaseDeliveryFee() {
-		return BASE_DELIVERY_FEE;
+		 return ErpServicesProperties.getBaseDeliveryFee();
 	}
 
 	public double getMinCorpOrderAmount() {
-		return MIN_CORP_ORDER_AMOUNT; 
+		return ErpServicesProperties.getMinCorpOrderAmount();
 	}
 
 	public double getCorpDeliveryFee() {
-		return CORP_DELIVERY_FEE;
+		 return ErpServicesProperties.getCorpDeliveryFee();
+		
 	}
 
 	public double getCorpDeliveryFeeMonday() {
-		return CORP_DELIVERY_FEE_MONDAY;
+		 return ErpServicesProperties.getCorpDeliveryFeeMonday();
 	}
 
 	public int getUsableDeliveryPassCount() {
@@ -3008,13 +3010,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 				String zip = getShoppingCart().getDeliveryAddress().getZipCode();
 				String zipcodes = FDStoreProperties.getSuffolkZips();
 				if("SUFFOLK".equalsIgnoreCase(county) && (zipcodes.indexOf(zip)==-1) ){
-					return 99;
+					return ErpServicesProperties.getSufFolkCountyMinimumOrderAmount();
 				}
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}
 		}
-		return MINIMUM_ORDER_AMOUNT;
+		return ErpServicesProperties.getMinimumOrderAmount();
 	
 	}
 

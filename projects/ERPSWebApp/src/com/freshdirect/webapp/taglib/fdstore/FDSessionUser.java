@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.MasqueradeContext;
@@ -618,7 +619,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	 */
 	private Double getOverrideMinimumAmount(){
 		if (getCheckoutMode().isStandingOrderMode()){
-			return FDStoreProperties.getStandingOrderSoftLimit();
+			return ErpServicesProperties.getStandingOrderSoftLimit();
 		}
 		return null;
 	}

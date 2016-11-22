@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
@@ -637,7 +638,7 @@ public class StandingOrderHelper {
 		if(null!=so.getLastError()){
 			map.put("lastError", so.getLastError().name());
 		} else {
-			String lastError= isValidStandingOrder(so, false) && amount<FDStoreProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
+			String lastError= isValidStandingOrder(so, false) && amount<ErpServicesProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
 			if("MINORDER".equals(lastError)){
 				map.put("errorHeader", FDStandingOrder.ErrorCode.MINORDER.getErrorHeader());
 				map.put("errorDetails",FDStandingOrder.ErrorCode.MINORDER.getErrorDetail(null));
@@ -773,8 +774,8 @@ public class StandingOrderHelper {
 		HashMap<String, Object> soSettings = new HashMap<String, Object>();
 		soSettings.put("isEligibleForStandingOrders", isEligibleForSo3_0(user));
 		soSettings.put("isContainerOpen", ((FDSessionUser)user).isSoContainerOpen()); /* replace with real value - get from fdsessionuser */
-		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
-		soSettings.put("soSoftLimit", (int)(FDStoreProperties.getStandingOrderSoftLimit()));
+		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
+		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */
@@ -882,10 +883,10 @@ public class StandingOrderHelper {
 				if (isPdp) {
 					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
 					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
-					if (orderResponseData.getAmount() <= FDStoreProperties.getStandingOrderSoftLimit()) {
+					if (orderResponseData.getAmount() <= ErpServicesProperties.getStandingOrderSoftLimit()) {
 						orderResponseData.setMessage(" Add $"
-								+ StandingOrderHelper.formatDecimalPrice((FDStoreProperties.getStandingOrderSoftLimit() - orderResponseData.getAmount()))
-								+ " to meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) + " minimum");
+								+ StandingOrderHelper.formatDecimalPrice((ErpServicesProperties.getStandingOrderSoftLimit() - orderResponseData.getAmount()))
+								+ " to meet the $" + StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) + " minimum");
 					} else {
 						orderResponseData
 								.setMessage("Changes will begin with your "
@@ -894,11 +895,11 @@ public class StandingOrderHelper {
 					}
 				} else {
 					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
-						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderSoftLimit()) {
+						if (getTotalAmountForSoSettings(so) >= ErpServicesProperties.getStandingOrderSoftLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {
 							orderResponseData
-							.setMessage("Must add items to cart and meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) + " minimum to receive a delivery");
+							.setMessage("Must add items to cart and meet the $" + StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) + " minimum to receive a delivery");
 						}
 					} else {
 						orderResponseData

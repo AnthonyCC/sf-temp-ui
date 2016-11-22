@@ -490,8 +490,8 @@ public class FDStoreProperties {
     private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
     private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
 
-    private final static String PROP_STANDING_ORDER_SOFT_LIMIT = "fdstore.standingorder.softlimit";
-    private final static String PROP_STANDING_ORDER_HARD_LIMIT = "fdstore.standingorder.hardlimit";
+/*    private final static String PROP_STANDING_ORDER_SOFT_LIMIT = "fdstore.standingorder.softlimit";
+    private final static String PROP_STANDING_ORDER_HARD_LIMIT = "fdstore.standingorder.hardlimit";*/
 
     private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED = "fdstore.mktadmin.auto.upload.report.email.enabled";
     private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO = "fdstore.mktadmin.auto.upload.report.email.to";
@@ -860,7 +860,6 @@ public class FDStoreProperties {
     private final static String PROP_HOOK_LOGIC_CATEGORY_ENABLE = "fdstore.hooklogic.category.enabled";
     private final static String PROP_HOOK_LOGIC_ORDER_FEED_MINS = "fdstore.hooklogic.orderfeed.minutes";
     private final static String PROP_HOOK_LOGIC_ALLOW_OWN_ROWS = "fdstore.hooklogic.allow.own.rows";
-    private final static String PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS = "fdstore.hooklogic.excluded.dep.category.ids";
 
     // PayPal
     private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
@@ -905,6 +904,11 @@ public class FDStoreProperties {
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
     
+    //Go Green
+    
+    private static final String PROP_IS_GOGREEN_ENABLED = "fdstore.gogreen.enabled";
+    
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1400,8 +1404,8 @@ public class FDStoreProperties {
         defaults.put(PROP_PHONE_STANDING_ORDER_CS, "");
         defaults.put(PROP_PRODUCTPROMO_INFO_HOME, "freshdirect.fdstore.ProductPromotionInfoManager");
         // APPDEV-2252 Standing Order - Order Minimum Failure Threshold
-        defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
-        defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
+     /*   defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
+        defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");*/
 
         defaults.put(PROP_WEBPURIFY_URL, "https://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
         defaults.put(PROP_WEBPURIFY_KEY, "1c7d26c10e564e6629234974ff556aa0");
@@ -1610,7 +1614,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Choose 2.");
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
 
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
@@ -1704,14 +1708,14 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
-
-        defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
+        
+        defaults.put(PROP_IS_GOGREEN_ENABLED, "false");
 
         // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
-        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "MKT9000210,MKT9000211,MKT9000212,MKT9000213");
 
         refresh();
     }
@@ -3389,19 +3393,19 @@ public class FDStoreProperties {
      * 
      * @return Soft limit. Default is $50.
      */
-    public static double getStandingOrderSoftLimit() {
+  /*  public static double getStandingOrderSoftLimit() {
         return Double.parseDouble(get(PROP_STANDING_ORDER_SOFT_LIMIT));
-    }
+    }*/
 
     /**
      * Used at processing Standing Orders. After removing discontinued products from the cart, sum must be higher than this value.
      * 
      * @return Hard limit. Default is $50.
      */
-    public static double getStandingOrderHardLimit() {
+   /* public static double getStandingOrderHardLimit() {
         return Double.parseDouble(get(PROP_STANDING_ORDER_HARD_LIMIT));
     }
-
+*/
     public static String getProductPromotionInfoHome() {
         return get(PROP_PRODUCTPROMO_INFO_HOME);
     }
@@ -4422,24 +4426,10 @@ public class FDStoreProperties {
 	public static String getPropDonationProductSamplesId() {
 		return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
 	}
-	
-	public static List<String> getMealKitMaterialGroup(){
-		String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);
-		List<String> materialKitsList = new ArrayList<String>();
-		if(materialKits !=null){
-			materialKitsList = Arrays.asList(materialKits.split(","));
-		}
-		
-		return materialKitsList;
-	}	
-	
-	public static List<String> getHookLogicExcludedDepOrCatIds(){
-		String excludedDeptOrCatIds = get(PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS);
-		List<String> excludedDeptOrCatIdsList = new ArrayList<String>();
-		if(excludedDeptOrCatIds !=null){
-			excludedDeptOrCatIdsList = Arrays.asList(excludedDeptOrCatIds.toLowerCase().split(","));
-		}
-		
-		return excludedDeptOrCatIdsList;
-	}
+	 public static List<String> getMealKitMaterialGroup(){
+	    	return null != config.get("PROP_MEAL_KIT_MATERIAL_GROUP")? (List<String>) config.get("PROP_MEAL_KIT_MATERIAL_GROUP"):null;
+	    }
+	public static boolean isGoGreenEnabled() {
+        return Boolean.valueOf(get(PROP_IS_GOGREEN_ENABLED)).booleanValue();
+    }
 }

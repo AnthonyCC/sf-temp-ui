@@ -52,7 +52,7 @@ public interface FDUserI extends java.io.Serializable {
 
 
     /** order minimum (before taxes and promotions are applied) */
-    public final static double MINIMUM_ORDER_AMOUNT = 30.00;
+   /* public final static double MINIMUM_ORDER_AMOUNT = 30.00;
     public final static double FDX_MINIMUM_ORDER_AMOUNT = 20.00;
     public final static double MIN_CORP_ORDER_AMOUNT = 50.00;
    //TODO : need to check with Tiru
@@ -61,7 +61,7 @@ public interface FDUserI extends java.io.Serializable {
     public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
     public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text
     public final static double CORP_DELIVERY_FEE_MONDAY = 14.99;  // Used for site text
-    public final static int CHEFS_TABLE_ORDER_COUNT_QUALIFIER = 12;
+*/    public final static int CHEFS_TABLE_ORDER_COUNT_QUALIFIER = 12;
     public final static double CHEFS_TABLE_ORDER_TOTAL_QUALIFIER = 1500.00;
     public final static int CHEFS_TABLE_GETTING_CLOSE_COUNT = 5;
     public final static double CHEFS_TABLE_GETTING_CLOSE_TOTAL = 625.00;

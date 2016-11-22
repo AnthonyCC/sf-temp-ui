@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -140,13 +141,13 @@ public class ShoppingListValidator {
 			AddressModel address = davResponse.getAddress();
 			String county = FDDeliveryManager.getInstance().getCounty(address);
 			if ("SUFFOLK".equalsIgnoreCase(county)) {
-				return 100.0;
+				return ErpServicesProperties.getSufFolkCountyMinimumOrderAmount();
 			}
 
 		} catch (FDInvalidAddressException e) {
 			//throw new FDResourceException(e);
 			LOGGER.info("ignore invalid address exception");
 		}
-		return EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType()) ? FDUserI.MIN_CORP_ORDER_AMOUNT : FDUserI.MINIMUM_ORDER_AMOUNT;
+		return EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType()) ? ErpServicesProperties.getMinCorpOrderAmount() : ErpServicesProperties.getMinimumOrderAmount();
 	}
 }

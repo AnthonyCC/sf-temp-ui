@@ -20,6 +20,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
@@ -478,7 +479,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 				promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 				promotion.setCombineOffer(true);
-				promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
+				promotion.setMinSubtotal(String.valueOf(ErpServicesProperties.getMinimumOrderAmount()));
 				promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
 				promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));

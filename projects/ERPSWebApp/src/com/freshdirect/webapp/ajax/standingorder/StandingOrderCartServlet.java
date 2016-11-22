@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.common.pricing.PricingException;
@@ -102,7 +103,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						 if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							 so.getStandingOrderCart().refreshAll(true);
 						 }
-						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=FDStoreProperties.getStandingOrderSoftLimit()){    
+						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=ErpServicesProperties.getStandingOrderSoftLimit()){    
 							 StandingOrderHelper.clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"}) ;
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
 						 } if("Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
