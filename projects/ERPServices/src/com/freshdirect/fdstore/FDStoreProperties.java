@@ -1610,7 +1610,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Choose 2.");
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
@@ -1704,12 +1704,14 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
+
+        defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
 
         // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
-        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "MKT9000210,MKT9000211,MKT9000212,MKT9000213");
+        defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
 
         refresh();
     }
