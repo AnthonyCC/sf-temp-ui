@@ -22,15 +22,15 @@
 	FDSessionUser user_youract = (FDSessionUser)session.getAttribute(SessionName.USER);
 
 	String dlvInfoLinkActLinks = "";
-    if (user.isPickupOnly()) {
+    if (user_youract.isPickupOnly()) {
     	dlvInfoLinkActLinks = "/help/delivery_lic_pickup";
-    } else if (user.isDepotUser()) {
+    } else if (user_youract.isDepotUser()) {
     	dlvInfoLinkActLinks = "/help/delivery_info_depot";
-    } else if (user.getAdjustedValidOrderCount() >= 1) {
+    } else if (user_youract.getAdjustedValidOrderCount() >= 1) {
     	dlvInfoLinkActLinks = "/your_account/delivery_info_avail_slots";
     } else {
     	dlvInfoLinkActLinks = "/help/delivery_info";
-            if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+            if (EnumServiceType.CORPORATE.equals(user_youract.getSelectedServiceType())) {
             	dlvInfoLinkActLinks += "_cos";
             }
     }
