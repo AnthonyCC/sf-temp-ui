@@ -1398,6 +1398,7 @@ footer .copyright {
 	.modify-order-alert-table {
 		padding: 6px 0 6px 0;
     	border-bottom: 1px solid #ccc;
+    	background-color: #fff;
 	}
 	.modify-order-alert-table-actions {
 		padding: 5px 0 0 0;
@@ -1452,6 +1453,24 @@ footer .copyright {
 	}
 
 /* CHECKOUT */
+	/* overlays */
+		#restrictionpopup.mm-page-ifr .ec-popup.restrictionpopup {
+			width: 100%;			
+		}
+		#restrictionpopup.mm-page-ifr .ec-popup.restrictionpopup .restrictionpopup__buttons button {
+			display: block;
+			margin: 0 auto 10px auto !important;
+		}
+		
+	[data-drawer-active="address"] [data-drawer-content="address"],
+	[data-drawer-active="timeslot"] [data-drawer-content="timeslot"],
+	[data-drawer-active="payment"] [data-drawer-content="payment"]
+	{
+		max-height: 90%;
+		border: 1px solid #ccc;
+		overflow-y: auto;
+	}
+	
 	.mm-page .cartheader__action_w_subtotal {
 		width: 100%;
 		text-align: center;
