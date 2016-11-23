@@ -24,6 +24,7 @@ import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
@@ -1008,8 +1009,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				LOGGER.warn("DeliveryPlantInfo is null.Setting it for user:"+user.getPrimaryKey());
 				cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			}
-		if(cart.getEStoreId() == null)
+		if(cart.getEStoreId() == null){
 			cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+		}
+		ErpDeliveryPlantInfoModel dpInfoModel = FDUserUtil.getDeliveryPlantInfo(user);
+		if(null !=dpInfoModel && !dpInfoModel.equals(cart.getDeliveryPlantInfo())){
+			String customerId =cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
+			LOGGER.warn("DeliveryPlantInfo is not matching for customer: "+customerId +" and eStore :"+cart.getEStoreId());
+			LOGGER.warn("In FDUser:"+dpInfoModel);
+			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());			
+		}
 
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 
