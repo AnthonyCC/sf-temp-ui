@@ -1462,6 +1462,10 @@ footer .copyright {
 			margin: 0 auto 10px auto !important;
 		}
 		
+		.ec-popup.textalertpopup {
+			width: 100%;
+		}
+
 	[data-drawer-active="address"] [data-drawer-content="address"],
 	[data-drawer-active="timeslot"] [data-drawer-content="timeslot"],
 	[data-drawer-active="payment"] [data-drawer-content="payment"]
