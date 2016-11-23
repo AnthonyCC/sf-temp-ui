@@ -9,11 +9,19 @@
 <%@ page import='com.freshdirect.framework.util.StringUtil'%>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType'%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
+<%
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+%>
+
 <html>
 <head>
+<% if(mobWeb){ %><jwr:style src="/mobileweb.css" media="all" /><% } %>
 <title></title>
 
   <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
@@ -83,7 +91,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 
 
 
-<body>
+<body class="social_login_jsp <%= (mobWeb) ? "mm-page" : "" %>">
 	<center>
 		<div id="sulCont" class="signup-style-social social-singin">
 

@@ -1898,3 +1898,21 @@ footer .copyright {
 		display: block;
 		margin: 15px auto 0;
 	}
+	#ifrPopup.mm-page-ifr .fixedPopupHelper{
+		height: auto;
+	}
+	#ifrPopup.mm-page-ifr .qs-popup-content iframe{
+		width: 100% !important;
+	}
+	.social_login_jsp{
+		display: block !important;
+	}
+	.social_login_jsp.mm-page #sulCont.social-singin .social-login-headerscr-social{
+		width: auto;
+	}
+	.social_login_jsp.mm-page #sulCont .social-login-line-separator{
+		width: 44px;
+	}
+	.social_login_jsp.mm-page #sulCont .social-login-or-separator{
+		padding: 0 10px;
+	}
