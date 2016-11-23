@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.ErpServicesProperties"%>
 <%@ page import='java.lang.*'  %>
 <%@ page import='java.lang.Math'  %>
 <%@ page import='java.text.*'  %>
@@ -74,7 +75,7 @@ boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : fal
 		%>
 		<tr>
 			<td colspan="2"></td>
-			<td class="text12">$<%=(int)rule.getMaxAmount()%> off your <%=NUMERALS[count-1]%> order ($<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? (int)FDUserI.MINIMUM_ORDER_AMOUNT:(int)rule.getMinSubtotal()%> min. order)
+			<td class="text12">$<%=(int)rule.getMaxAmount()%> off your <%=NUMERALS[count-1]%> order ($<%=rule.getMinSubtotal() <= ErpServicesProperties.getMinimumOrderAmount() ? (int)ErpServicesProperties.getMinimumOrderAmount():(int)rule.getMinSubtotal()%> min. order)
 			</td>
 		</tr>
 		<% } %>
@@ -139,7 +140,7 @@ boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : fal
 						<tr>
 							<td><%=NUMERALS[count-1]%> order</td>
 							<td align="center">$<%=(int)rule.getMaxAmount()%> off</td>
-							<td align="center"><%=(int)rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? "(":""%>$<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? (int)FDUserI.MINIMUM_ORDER_AMOUNT:(int)rule.getMinSubtotal()%> minimum<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? ")":""%></td>
+							<td align="center"><%=(int)rule.getMinSubtotal() <= ErpServicesProperties.getMinimumOrderAmount() ? "(":""%>$<%=rule.getMinSubtotal() <= ErpServicesProperties.getMinimumOrderAmount() ? (int)ErpServicesProperties.getMinimumOrderAmount():(int)rule.getMinSubtotal()%> minimum<%=rule.getMinSubtotal() <= ErpServicesProperties.getMinimumOrderAmount() ? ")":""%></td>
 						</tr>
 						<% } %>
 					</table>

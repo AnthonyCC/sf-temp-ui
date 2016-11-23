@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.ErpServicesProperties"%>
 <%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
 <%@page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode"%>
@@ -60,7 +61,7 @@ user.setSoTemplateCart(new FDCartModel());
 	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false));
 %>
 <script>
-	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) %>
+	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) %>
 	FreshDirect.standingorder.currentPage = "manage";
 </script>
 
