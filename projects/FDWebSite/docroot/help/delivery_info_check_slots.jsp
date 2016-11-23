@@ -12,6 +12,9 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 
@@ -53,9 +56,18 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
    if(fldCity==null) fldCity="";
    if(fldState==null) fldState="";
 
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = "/common/template/delivery_info_nav.jsp";
+	if (mobWeb) {
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/help/delivery_info_check_slots.jsp" : request.getAttribute("sitePage").toString();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
   
 %>
-<tmpl:insert template='/common/template/delivery_info_nav.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
 	<tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="delivery_info_check_slots"></fd:SEOMetaTag>
 	</tmpl:put>

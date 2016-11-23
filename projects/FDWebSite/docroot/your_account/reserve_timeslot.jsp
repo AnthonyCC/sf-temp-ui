@@ -14,11 +14,13 @@
 <%@ page import="com.freshdirect.fdlogistics.model.FDTimeslot" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
-
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
@@ -44,15 +46,35 @@ if(!user.isEligibleForPreReservation()) {
 TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS; 
 String actionName = request.getParameter("actionName");
 
+
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+String pageTemplate = "/common/template/dnav.jsp";
+String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/your_account/reserve_timeslot.jsp" : request.getAttribute("sitePage").toString();
+
+if (mobWeb) {
+	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+	}
+}
+
 %>
 
-<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Reserve Timeslot</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="reserve_timeslot"></fd:SEOMetaTag>
 	</tmpl:put>
 
-
+	<tmpl:put name="extraCss">
+	  <fd:css href="/assets/css/timeslots.css" media="all" />
+	</tmpl:put>
+	<tmpl:put name="extraJs">
+	  <fd:javascript src="/assets/javascript/timeslots.js" />
+	</tmpl:put>
+  	<tmpl:put name="jsmodules">
+    	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+	</tmpl:put>
 	
     <tmpl:put name='content' direct='true'>
 	<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
@@ -78,9 +100,9 @@ String actionName = request.getParameter("actionName");
 	
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 		<%//Reservation stuff%>
-		<table width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+		<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
+				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" height="1"></td>
 			</tr>
 			<tr>
 				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservation Type"></td> -->

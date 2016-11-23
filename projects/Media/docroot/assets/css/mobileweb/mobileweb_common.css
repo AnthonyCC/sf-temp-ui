@@ -1546,6 +1546,25 @@ footer .copyright {
 		    margin-left: 0 !important;
 		} 
 		/* timeslots */
+			.timeslot-header,
+			.timeslot-error-messages,
+			.timeslot-holiday-warning,
+			.geowarn-table {
+			}
+		
+			.mm-page .address_finder td {
+				display: block;
+				width: 100%;
+			}
+			.mm-page #addressForm {
+			    text-align: center;
+			}
+			.mm-page #addressId {
+			    width: 95% !important;
+			}
+			.mm-page #tsContainer {
+				width: 100%;
+			}
 			.mm-page .tsAdvanceHeader-cont {
 				width: 100%;
 			}
@@ -1618,20 +1637,20 @@ footer .copyright {
 			    box-sizing: border-box;
 			    border: 1px solid #ccc;
 			}
-			.geowarn-table {
+			.geowarn-table, .timeslot-holiday-warning {
 				border-bottom: 1px solid #ccc;
 			}
-			.geowarn-table img {
+			.geowarn-table img, .timeslot-holiday-warning img {
 			    display: none;
 			}
-			.geowarn-table img.geowarn-table-title-img {
+			.geowarn-table img.geowarn-table-title-img, .timeslot-holiday-warning img.timeslot-holiday-warning-title-img {
 			    display: block;
 			}
-			.geowarn-table td {
+			.geowarn-table td, .timeslot-holiday-warning td {
 			    display: block;
 			    height: auto !important;
 			}
-			.geowarn-table-title-cont {
+			.geowarn-table-title-cont, .timeslot-holiday-warning-title-cont  {
 			    margin: 0 !important;
 			}
 		/* ATP */

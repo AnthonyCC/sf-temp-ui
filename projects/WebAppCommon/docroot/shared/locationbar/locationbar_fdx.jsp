@@ -37,16 +37,16 @@ try {
 %>
 <fd:LocationHandler/>
 <%
-FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+FDSessionUser user_locationbar_fdx = (FDSessionUser)session.getAttribute(SessionName.USER);
 AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
 String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
 Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED_ATTR);
-MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+MasqueradeContext masqueradeContext = user_locationbar_fdx.getMasqueradeContext();
 boolean hasFdxServices = true;//LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 boolean hasFdServices = LocationHandlerTag.hasFdService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
 
-List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
-List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+List<ErpAddressModel> allHomeAddresses = user_locationbar_fdx.getAllHomeAddresses();
+List<ErpAddressModel> allCorporateAddresses = user_locationbar_fdx.getAllCorporateAddresses();
 List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 
 %>
@@ -90,7 +90,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	%>
 		<tmpl:put name="topwarningbar">
 			<div id="topwarningbar">
-				You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
+				You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user_locationbar_fdx.getUserId()%> (Store: <%= user_locationbar_fdx.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user_locationbar_fdx.getUserContext().getFulfillmentContext().getPlantId() %>)
 				<%if (makeGoodFromOrderId!=null) {%>
 					<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
 					(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
@@ -116,7 +116,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<div class="section-header">
-						<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
+						<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
 					</div>
 				</div>
 			</div>
@@ -167,14 +167,14 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		AddressModel userReservervationAddressModel = null; //matched by id, may still end up null
 		
 	
-		if (user!=null && user.getLevel() != FDUserI.GUEST) {
+		if (user_locationbar_fdx!=null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) {
 			zipAddDisplayString = "View Delivery Timeslots";
-			isEligibleForPreReservation = user.isEligibleForPreReservation();
+			isEligibleForPreReservation = user_locationbar_fdx.isEligibleForPreReservation();
 			
 			
 			/* reservation logic */
 			if (isEligibleForPreReservation) {
-				userReservervation = user.getReservation();
+				userReservervation = user_locationbar_fdx.getReservation();
 			}
 			
 			
@@ -324,7 +324,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			String shortAddress = LocationHandlerTag.formatAddressShortText( ((selectedAddress!=null) ? selectedAddress : null) );
 			if (hasFdServices) { //non-recognized and in deliverable zip
 				%><tmpl:put name="address">
-					<% if (user == null || user.getLevel() == FDUserI.GUEST) { %>
+					<% if (user_locationbar_fdx == null || user_locationbar_fdx.getLevel() == FDUserI.GUEST) { %>
 						<div class="locabar_addresses-anon-deliverable">
 							<div class="locabar_addresses-anon-deliverable-header">About FreshDirect Delivery</div>
 							<div class="locabar_addresses-anon-deliverable-item-icon-truck">
@@ -362,7 +362,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<tmpl:get name="address_change_zip"/>
 					
 					<div class="nodeliver-form">
-						<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
+						<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 							<form class="n">
 								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
@@ -387,7 +387,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
-								<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
+								<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
 										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Notify me when service comes to my area.</label></div>
 										<div>
@@ -403,16 +403,16 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		}
 		
     	String dlvInfoLink = "";
-    	if (user != null) {
-	        if (user.isPickupOnly()) {
+    	if (user_locationbar_fdx != null) {
+	        if (user_locationbar_fdx.isPickupOnly()) {
 	            dlvInfoLink = "/help/delivery_lic_pickup";
-	        } else if (user.isDepotUser()) {
+	        } else if (user_locationbar_fdx.isDepotUser()) {
 	            dlvInfoLink = "/help/delivery_info_depot";
-	        } else if (user.getAdjustedValidOrderCount() >= 1) {
+	        } else if (user_locationbar_fdx.getAdjustedValidOrderCount() >= 1) {
 	            dlvInfoLink = "/your_account/delivery_info_avail_slots";
 	        } else {
 	            dlvInfoLink = "/help/delivery_info";
-	                if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+	                if (EnumServiceType.CORPORATE.equals(user_locationbar_fdx.getSelectedServiceType())) {
 	                    dlvInfoLink += "_cos";
 	                }
 	        }
@@ -427,7 +427,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<div class="locabar-addresses-addzip">
 							<%
 							/* it's possible to not have the selected address in the address list, so check that as well */
-							if (user!=null && user.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
+							if (user_locationbar_fdx!=null && user_locationbar_fdx.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
 								<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>
 							<% } else { %>
 								<%= selectedAddress.getCity() %> (<%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %>)
@@ -444,18 +444,18 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				<div id="locabar_addresses" class="locabar_addresses locabar_triggers_menu posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
-					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
+					<% if (user_locationbar_fdx != null &&  user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %>
 						<div class="section-header">
 							DELIVERY ADDRESSES
-							<% if (user != null && user.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
+							<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
 						</div>
 					<% } %>
 					<tmpl:get name="address" />
 					
-					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
+					<% if (user_locationbar_fdx != null &&  user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %>
 						<%
 							String temp_delivery_link = "";
-							if (user.getLevel() >= FDUserI.RECOGNIZED) {
+							if (user_locationbar_fdx.getLevel() >= FDUserI.RECOGNIZED) {
 								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
 							} else {
 								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
@@ -482,7 +482,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 											<%-- This text is also in locationbar_fdx.js --%>
 											<div class="locabar_addresses-reservation-make-notFor">Not for <%= ("PICKUP".equals(foundSelectedAddressType)) ? "Pickup Option" : ("COS".equals(foundSelectedAddressType)) ? "Office Delivery" : "&nbsp;" %></div>
 										</div>
-									<% } else { %>
+									<% } else {
+										request.setAttribute("temp_delivery_link_attrib", "/your_account/reserve_timeslot.jsp");
+									%>
 										<div class="locabar_addresses-reservation-make-cont">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">Make a Reservation</a>
 											<div class="locabar_addresses-reservation-make-notFor">&nbsp;</div>
@@ -528,14 +530,14 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			String greetingsString = "Hi";
 			boolean signedIn = false; //used for js logic for hover/click event results
 			boolean recog = false; //used for js logic for hover/click event results
-			if (user != null && user.getLevel() != FDUserI.GUEST) {
+			if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) {
 				actionString = "Your Account";
-				greetingsString += " "+user.getFirstName();
+				greetingsString += " "+user_locationbar_fdx.getFirstName();
 				
-				if (user.getLevel() == FDUserI.SIGNED_IN) {
+				if (user_locationbar_fdx.getLevel() == FDUserI.SIGNED_IN) {
 					signedIn = true;
 				}
-				if (user.getLevel() == FDUserI.RECOGNIZED) {
+				if (user_locationbar_fdx.getLevel() == FDUserI.RECOGNIZED) {
 					recog = true;
 				}
 			}
@@ -575,8 +577,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<%
 							String temp_delivery_link = "/help/delivery_info_check_slots.jsp";
 						
-							if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
-								if (user.getLevel() >= FDUserI.RECOGNIZED) {
+							if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() >= FDUserI.RECOGNIZED) {
+								if (user_locationbar_fdx.getLevel() >= FDUserI.RECOGNIZED) {
 									temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
 								} else {
 									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
@@ -616,7 +618,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					</div>
 					<hr class="line-divider" />
 					<div class="section-cont locabar-user-signout">
-						<div class="footer-item"><%= ((user != null) ? ("Not " + user.getFirstName() + "?") : "") %></div>
+						<div class="footer-item"><%= ((user_locationbar_fdx != null) ? ("Not " + user_locationbar_fdx.getFirstName() + "?") : "") %></div>
 						<div class="footer-item">
 							<a href="#" class="cssbutton green transparent cssbutton-flat locabar-logout">Sign out</a>
 						</div>
@@ -685,15 +687,15 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	</tmpl:put>
 		
 <%-- OUT OF AREA ALERT --%>
-	<% if (user != null && user.getLevel() == FDUserI.GUEST) { %>
+	<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() == FDUserI.GUEST) { %>
 	<% } %>
 
 <%-- SO ALERTS --%>
 
 	<%
-	  if(user.isNewSO3Enabled()) {
+	  if(user_locationbar_fdx.isNewSO3Enabled()) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
-		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user, false));
+		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
 	%>
 	<tmpl:put name="error_so_alerts">
 		<div id="errorsoalerts" class="alerts invisible" data-type="errorsoalerts">
@@ -703,7 +705,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 	<%
 		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
-		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user, false));
+		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
 	%>
 	<tmpl:put name="activate_so_alerts">
 		<div id="activatesoalert" class="alerts invisible" data-type="activatesoalert">
@@ -715,7 +717,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 	<tmpl:put name="modify_order_alerts">
 		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
-			<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
 		</div>
 	</tmpl:put>
 </tmpl:insert>

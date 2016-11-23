@@ -8,9 +8,14 @@
 <%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <% //expanded page dimensions
 final int W_ADDRESS_FINDER_TOTAL = 970;
+boolean mobWeb_address_finder = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
 %>
 
 <fd:LocationHandler/>
@@ -47,7 +52,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br/>
 
-<table width="<%=W_ADDRESS_FINDER_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+<table style="width: <%= (mobWeb_address_finder) ? "100%": W_ADDRESS_FINDER_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0" class="address_finder">
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){ %>
 
 			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
@@ -219,7 +224,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	){
 %>
 
-<table width="<%=W_ADDRESS_FINDER_TOTAL%>" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;text-align:center;">
+<table style="width: <%= (mobWeb_address_finder) ? "100%": W_ADDRESS_FINDER_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;text-align:center;">
 
 	<tr>
 		<td colspan="7">

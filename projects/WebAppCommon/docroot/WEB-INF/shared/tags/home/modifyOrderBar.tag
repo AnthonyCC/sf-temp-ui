@@ -18,6 +18,8 @@
 attribute name="htmlId" required="true" rtexprvalue="true" type="java.lang.String" %><%@
 attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.lang.Boolean"
 %><%
+
+	boolean inMobWebTemplate = (request.getAttribute("inMobWebTemplate") != null) ? (Boolean)request.getAttribute("inMobWebTemplate") : false;
 	boolean mobWebModifyOrderTag = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 					if(user.getLevel() >= FDUserI.RECOGNIZED){
 							int pendingOrderCount = 0;
@@ -45,7 +47,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 										$jq("#locabar_modify_order_trigger #locabar-modify-order-count").html("<%= validPendingOrders.size() %>");
 										$jq("#locabar_modify_order_trigger .locabar-modify-order-container .locabar-modify-order-container-message").html("<%= new SimpleDateFormat("EEE").format(validPendingOrders.get(0).getRequestedDate()) %> <%=FDTimeslot.format(validPendingOrders.get(0).getDeliveryStartTime(),validPendingOrders.get(0).getDeliveryEndTime())%>");
 									</script>
-									<% if (mobWebModifyOrderTag) { %>
+									<% if (inMobWebTemplate && mobWebModifyOrderTag) { %>
 									
 										<%
 											String orderName;

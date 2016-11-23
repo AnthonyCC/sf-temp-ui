@@ -13,15 +13,11 @@
 
 Logger LOGGER = LoggerFactory.getInstance("locationhandler.jsp");
 
-LOGGER.debug("karl's silly test: ");
-
 // serve only AJAX requests
 if (request.getHeader("X-Requested-With") != null) {
 	// Prevent caching AJAX responses on browser-side
 	response.setHeader("Cache-Control", "no-cache");
 	response.setHeader("Pragma", "no-cache");
-	
-	LOGGER.debug("karl's other test ");
 	
 	try{
 		String action = request.getParameter("action");
@@ -29,8 +25,6 @@ if (request.getHeader("X-Requested-With") != null) {
 		String serverError = (String)pageContext.getAttribute(LocationHandlerTag.SERVER_ERROR_ATTR);
 		if(serverError == null) {
 			ActionResult result = (ActionResult)pageContext.getAttribute(LocationHandlerTag.ACTION_RESULT_ATTR);
-			
-			LOGGER.debug("karl's test with line 33, action = " + action);
 			
 			if (result.isFailure()){
 				response.setStatus(400);
@@ -45,11 +39,7 @@ if (request.getHeader("X-Requested-With") != null) {
 				LocationHandlerTag x = new LocationHandlerTag();
 				//out.println( x.zipper(zipcode_temp) );
 				
-				LOGGER.debug("karl's test with line 48, zipcode_temp = " + zipcode_temp);
-				
 				out.println( x.hasFdxService(zipcode_temp) );
-				
-				LOGGER.debug("karl's test with line 52, x.hasFdxService(zipcode_temp) = " + x.hasFdxService(zipcode_temp));
 				
 				return;
 				
@@ -63,7 +53,6 @@ if (request.getHeader("X-Requested-With") != null) {
 				} 
 			}		
 		} else {
-			LOGGER.debug("what the hell, there was an error? it seems to consist of: " + serverError);
 			
 			response.setStatus(400);
 			%><div class="invisible error message" data-type="error"><div class="error-message"><p><%= serverError  %></p></div></div><%

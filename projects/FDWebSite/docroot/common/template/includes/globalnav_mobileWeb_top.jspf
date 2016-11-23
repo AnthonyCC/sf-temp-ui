@@ -1,7 +1,9 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='java.util.*' %>
 <div>
-	<%-- TODO : copypasta from tech refresh, needs more fixing --%>
+	<div class="locationbar" style="display: none;">
+		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>
+	</div>
 	<nav class="navbar">
 		<div class="navbar-header">
 			<div class="pull-left navbar-header-left">
@@ -17,7 +19,7 @@
 				<div class="navbar-ecomvalue">
 				
 					<%
-						String temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+					String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 					
 						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
 							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
@@ -28,6 +30,12 @@
 							} else {
 								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 							}
+							
+							//now check if they can go to reservation instead
+							if (user.isEligibleForPreReservation()) {
+								temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
+							}
+							
 							//check if user has addresses besides pickup
 							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
 								//nope, change url

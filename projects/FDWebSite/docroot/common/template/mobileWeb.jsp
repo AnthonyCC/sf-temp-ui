@@ -19,6 +19,9 @@
 	boolean isQS = (mobweb_uri.indexOf("/quickshop/") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
+	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
+	
+	request.setAttribute("inMobWebTemplate", true);
 %>
 <%
 	if (isQS) {
@@ -39,27 +42,16 @@
     <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
     
     <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
-	<fd:LocationHandler/>
-	<%
-		AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
-		boolean hasFdxServices = true; /* just true in locationbar as well */  //LocationHandlerTag.hasFdxService( ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) );
-	%>
 	<script>
 		FreshDirect = FreshDirect || {};
 		FreshDirect.locabar = FreshDirect.locabar || {};
-		FreshDirect.locabar.zipcode = <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : null) %>;
-		FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
-		FreshDirect.locabar.selectedAddress = {
-			type: null,
-			address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
-		};
+		FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
+		$jq.fn.messages = function( method ) {};
 	</script>
 	<%
-		if (isCheckout) {
-			%><fd:javascript src="/assets/javascript/prototype.js"/>
-			<%-- when upgrading scriptaculous please create a new directory for the version --%>
-			<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-			<fd:javascript src="/assets/javascript/modalbox.js"/><%
+		//any page that has timeslots needs prototype
+		if (isCheckout || (mobweb_uri.indexOf("/your_account/reserve_timeslot.jsp") != -1) || (mobweb_uri.indexOf("/your_account/delivery_info_avail_slots.jsp") != -1)) {
+			%><jwr:script src="/fdproto.js" useRandomParam="false" /><%
 		}
 	%>
 	

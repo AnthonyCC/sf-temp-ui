@@ -12,6 +12,9 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 
@@ -45,14 +48,23 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
     } if (fldAddress1 == null) fldAddress1 = "";
 	  if(fldApartment==null) fldApartment = "";
 
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = "/common/template/delivery_info_nav.jsp";
+	if (mobWeb) {
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/your_account/delivery_info_check_slots.jsp" : request.getAttribute("sitePage").toString();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
 %>
-<tmpl:insert template='/common/template/delivery_info_nav.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
 	<tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-<table width="<%= W_YA_DELIVERY_INFO_CHKSLOTS %>" cellpadding="0" cellspacing="0" border="0">
+<table style="width: <%= (mobWeb) ? "100%" : W_YA_DELIVERY_INFO_CHKSLOTS+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
 <tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
 <tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
@@ -108,8 +120,10 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 	}
 %>
 </fd:CheckAvailableTimeslots>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="120" height="24"></td>
-<td><img src="/media_stat/images/layout/clear.gif" width="573" height="24"></td></tr>
+	<tr class="NOMOBWEB">
+		<td><img src="/media_stat/images/layout/clear.gif" width="120" height="24"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="573" height="24"></td>
+	</tr>
 </table>
 </tmpl:put>
 </tmpl:insert>

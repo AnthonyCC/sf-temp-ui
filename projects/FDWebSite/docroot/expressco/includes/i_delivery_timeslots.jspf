@@ -79,6 +79,10 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		pageContext.setAttribute("advancedTimeslotMediaEnabled", advancedTimeslotMediaEnabled, PageContext.REQUEST_SCOPE);
 	%>
 
+<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
+		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
+<% } %>
+
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 <table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
 	
@@ -87,7 +91,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		<% gridMediaIncludePath = "/media/editorial/timeslots/grid_media_"+idx.intValue()+".html"; %>
 		<% if(timeslotList.size() > 1 && idx.intValue() > 0) { /* //standard TS, HAS AO, show media for grids above 0 */ %>
 			<tr>
-				<td colspan="2"><fd:IncludeMedia name="<%= gridMediaIncludePath %>" /></td>
+				<td colspan="2"><div class="tsAdvanceHeader-cont"><fd:IncludeMedia name="<%= gridMediaIncludePath %>" /></div></td>
 			</tr>
 		<% } %>
 		<tr>
@@ -109,7 +113,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 			/* no media include */
 		} else if((timeslotList.size() > 1 && idx.intValue()==0)) { //standard TS, HAS AO
 	%>
-			<div>
+			<div class="tsAdvanceHeader-cont">
 				<span class="title13 tsAdvanceHeader">Standard Delivery Timeslots<br /></span>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0" alt="" /><br />
 				<fd:IncludeMedia name="<%= gridMediaIncludePath %>" />
