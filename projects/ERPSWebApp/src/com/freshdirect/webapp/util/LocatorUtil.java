@@ -5,7 +5,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
@@ -13,6 +12,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -77,13 +77,17 @@ public class LocatorUtil {
     	FDSessionUser user = null;
     	
     	try {
+    	    EnumEStoreId eStoreId = StoreContextUtil.getStoreContext(session).getEStoreId();
     		boolean useIpLocatorData = IpLocatorUtil.validate(ipLocatorData);
-	    	String zipCode = useIpLocatorData ? ipLocatorData.getZipCode() : FDStoreProperties.getDefaultPickupZoneId();
-	    	
+    		String zipCode = (EnumEStoreId.FD == eStoreId) ? FDStoreProperties.getDefaultPickupZoneId() : FDStoreProperties.getDefaultFdxZoneId();
+    		if (useIpLocatorData){
+    		    zipCode = ipLocatorData.getZipCode();
+    		}
+
 	    	newSession(session, request, response);
 	    	address = new AddressModel(); // was this. from CheckLoginStatusTag
 	    	address.setZipCode(zipCode);
-	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, StoreContextUtil.getStoreContext(session).getEStoreId()).getAvailableServices();
+            Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, eStoreId).getAvailableServices();
 	    	
 	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
 	    	//City and State information will be appended to user.address.

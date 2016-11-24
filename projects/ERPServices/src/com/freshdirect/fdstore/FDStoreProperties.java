@@ -377,7 +377,9 @@ public class FDStoreProperties {
     private final static String MOBILE_ANDROID_LANDING_PAGE = "fdstore.mobile.Android.landingPage";
     private final static String PROP_GC_NSM_AUTHSKIP_SECS = "fdstore.gcnsm.authskip.secs";
     private final static String PROP_GC_NSM_FREQ_SECS = "fdstore.gcnsm.frequency.secs";
+
     private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
+    private final static String PROP_FDX_ZONE_ZIPCODE = "fdstore.fdx.zone.zipcode";
 
     // Windows steering
     private final static String WINDOW_STEERING_PROMOTION_PREFIX = "fdstore.windowsteering.promo.prefix";
@@ -1230,6 +1232,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ZONE_PRICING_ENABLED, "true");
         defaults.put(PROP_ZONE_PRICING_AD_ENABLED, "true");
         defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
+        defaults.put(PROP_FDX_ZONE_ZIPCODE, "10036");
 
         // Window Steering
         defaults.put(WINDOW_STEERING_PROMOTION_PREFIX, "WS_");
@@ -2790,6 +2793,10 @@ public class FDStoreProperties {
 
     public static String getDefaultPickupZoneId() {
         return get(PROP_ZONE_PICKUP_ZIPCODE);
+    }
+
+    public static String getDefaultFdxZoneId() {
+        return get(PROP_FDX_ZONE_ZIPCODE);
     }
 
     public static int getNSMAuthSkipSecsForGC() {
