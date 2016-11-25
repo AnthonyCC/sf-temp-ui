@@ -1454,12 +1454,13 @@ footer .copyright {
 
 /* CHECKOUT */
 	/* overlays */
-		#restrictionpopup.mm-page-ifr .ec-popup.restrictionpopup {
-			width: 100%;			
+		.ec-popup.restrictionpopup {
+		    width: 100% !important;
 		}
-		#restrictionpopup.mm-page-ifr .ec-popup.restrictionpopup .restrictionpopup__buttons button {
-			display: block;
-			margin: 0 auto 10px auto !important;
+		
+		.ec-popup.restrictionpopup .restrictionpopup__buttons button {
+		    display: block;
+		    margin: 0 auto 10px auto !important;
 		}
 		
 		.ec-popup.textalertpopup {
