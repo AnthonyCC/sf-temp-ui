@@ -1,0 +1,184 @@
+/* colors, backgrounds, borders, link indication */ 
+
+body {
+ 	background-color: #fff;
+ 	color: #000; 	
+ }
+
+.apptitle {
+	font-size: 150%;
+	font-family: Verdana, Arial, Helvetica,sans-serif;
+	background-color:#e7e7d6;	
+	height:82px;
+}
+
+.appframe {
+	vertical-align:top;
+}
+
+.navlist a {
+	font-size: 90%;
+	font-family: Verdana, Arial, Helvetica,sans-serif;
+	text-decoration: none;
+}
+
+.footer {
+	font-size: 60%;
+	font-family: Verdana, Arial, Helvetica,sans-serif;
+}
+
+.separator {
+	clear: both;
+}
+
+.navtbl {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 70%;
+	font-weight: bold;
+	padding:1px 1px 1px 1px;
+	margin:1px 1px 1px 1px;
+	table-layout:fixed;
+	height:20px;
+}
+
+.filtertitle { 
+	font-size: 8pt; font-family: Verdana, Arial, sans-serif; 
+}
+
+.filtercontrol { 
+	font-size: 8pt; font-family: Verdana, Arial, sans-serif; 
+}
+
+.filterlabel {
+	font-size: 11pt;font-weight: bold; font-family: Verdana, Arial, sans-serif; 
+}
+
+.formtitle {
+	font-weight: bold;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 14pt;
+	vertical-align: middle;
+}
+	
+.datalistchx { 
+	width : 1.0em ; 
+	height : 0.8em ;   
+}
+
+.tableRegion tr.rowMouseOver {
+	background-color: #b5cfff;
+	cursor: pointer;
+}
+
+.screenpane {
+	vertical-align:top;
+	width:100%;
+	height:80%;
+	padding-top:5px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+.screentitle {
+	width:100%;
+	height:20px;	
+	vertical-align:top;
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 14px; 
+	font-weight: bold; 
+	text-align: center;
+	background-color: #f7f7f7;
+}
+
+.screenmessages {
+	width:100%;	
+	height:20px;	
+	vertical-align: middle;
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 11px; 
+	font-weight: bold; 
+	text-align: center;
+	color: blue;
+}
+
+
+.screencontent {
+	width:100%;
+	height:80%;
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 9pt;
+	vertical-align:top;
+	padding-top:2px;
+	text-align: center;
+}
+
+.forms1 {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 9pt; 
+	font-weight: normal;
+}
+
+.forms1 {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+}
+
+
+.forms1 tr td {
+	padding-top:10px;
+	padding-left:10px;
+}
+
+.forms1 tr td input.small {
+	width: 85px;
+}
+
+.forms1 tr td input.datebox {
+	width: 85px;
+}
+
+.forms1 tr td select,.forms1 tr td select.small,.forms1 tr td select.verysmall {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 8pt; 
+}
+
+.forms1 tr td select {
+	width: 200px;
+	
+}
+
+.forms1 tr td span {
+	color: red;
+	font-size: 7pt;
+}
+
+.forms1 tr td textarea {	
+	font-size: 6pt; 
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+}
+
+.forms1 tr td textarea.large {	
+	font-size: 8pt; 
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+}
+
+.forms1 tr td select.small {
+	width: 85px;	
+}
+
+.forms1 tr td select.verysmall {
+	width: 45px;
+}
+
+.forms1 tr td select.verylarge {
+	width: 255px;
+}
+
+.errortxt {
+	color: red;
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 11pt; 
+}
+
+

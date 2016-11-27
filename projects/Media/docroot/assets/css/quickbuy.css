@@ -1,0 +1,316 @@
+.mask {
+	z-index:99 ;
+}
+
+.qbBody {
+	margin: 0;
+	width: 450px;
+}
+
+.qbContainer {
+  overflow: hidden;
+}
+
+.qbLaunchButton {
+	border: 0;
+	width: 103px;
+	height: 22px;
+	
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -51px;
+	cursor: pointer;
+	
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.qbButton {
+	border: 0;
+	width: 103px;
+	height: 22px;
+	
+	cursor: pointer;
+	
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.qbButtonLarge {
+	border: 0;
+	width: 137px;
+	height: 43px;
+	
+	cursor: pointer;
+	
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+
+.qbTxControl {
+	overflow: hidden;
+	text-align: left;
+	clear:both;
+}
+
+.qbTxName {
+	line-height: 26px;
+	float: right;	
+}
+
+.qbTxName2 {
+	float: right;	
+	line-height: 18px;
+}
+
+.qbTxControl table {
+	float: right;
+	width: 50px;
+}
+
+.qbTxTotal {
+	overflow: hidden;
+	text-align: left;
+	clear:both;
+}
+
+.qbTxTotal input {
+	float: right;
+	width: 50px;
+}
+
+.yui-panel-container.quickbuy-dialog {
+	width: 454px;
+	padding:0px !important;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	border:transparent;
+	-webkit-box-shadow:4px 4px 10px #999999;
+	-moz-box-shadow:4px 4px 10px #999999;
+}
+
+.yui-panel-container {
+	z-index:100;
+}
+
+.yui-panel-container.quickbuy-dialog .yui-panel {
+	border:transparent;
+	background:transparent;
+}
+
+.yui-panel-container.quickbuy-dialog .yui-panel .hd {
+	line-height: 21px;
+	border:2px solid #7f7f7f;
+	border-bottom:none;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+}
+
+.hd_bg_normal {
+	background: #ff9933 url('/media_stat/images/quickbuy/quickbuy_hdr_ovrlay.gif') no-repeat 10px center !important;
+}
+
+.hd_bg_wine {
+	background: #635245 url('/media/images/quickbuy/quickbuy_wine_hdr.gif') no-repeat 10px center !important;
+}
+
+.hd_bg_ddpp {
+	background-color: transparent !important;
+}
+
+.yui-panel-container.quickbuy-dialog .yui-panel .bd {
+	border:2px solid #7f7f7f;
+	border-top:none;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
+	padding:0px;
+}
+
+.yui-panel-container.quickbuy-dialog .price div {
+	font-size:14px !important;
+	font-weight:normal !important;
+}
+
+.quickbuy-dialog .yui-panel .container-close {
+	width:18px;
+	height:17px;
+	top:8px;
+	right:8px;
+	border:none;	
+}
+
+.container-close_normal {
+	background:#ff9933 url('/media_stat/images/quickbuy/quickbuy_close.gif') no-repeat center center !important;
+}
+
+.container-close_wine {
+	background:#635245 url('/media_stat/images/quickbuy/quickbuy_wine_close.gif') no-repeat center center !important;
+}
+
+.container-hd_bg_ddpp {
+	height: 20px !important;
+	width: 19px !important;
+	background: transparent url('/media_stat/images/buttons/x_green.gif') no-repeat center center !important;
+}
+
+
+.yui-panel-container.quickbuy-dialog .qbLeft {
+	float:left;
+	margin:10px;
+	_margin:5px;
+	width:220px;
+	text-align: right;
+}
+
+.qbBody .qbLeft {
+	float:left;
+	margin: 10px 10px 0;
+	_margin:5px;
+	width:220px;
+	text-align: right;
+}
+
+.yui-panel-container.quickbuy-dialog .qb-separator {
+	height:1px;
+	border-bottom:1px solid black;
+	margin-bottom:8px;
+}
+
+.yui-panel-container.quickbuy-dialog .qbRight {
+	float:right;
+	margin:10px;
+	_margin:5px;
+	width:190px;
+}
+
+.qbBody .qbRight {
+	float:right;
+	margin:10px;
+	_margin:5px;
+	width:190px;
+}
+
+
+.yui-panel-container.quickbuy-dialog .info {
+	color:#ff9933;
+	font-weight:bold;
+	margin-bottom:1em;
+}
+
+.yui-panel-container.quickbuy-dialog .prodframe {
+	width: 450px;
+	/* height: 420px; */
+	border: 0;
+	padding: 0;
+	overflow: hidden;
+	position:relative;
+	background:white;
+	top:-53px;
+	margin-bottom:-53px;
+}
+
+.quickbuy-dialog .close {
+	cursor: pointer;
+	background:url('/media_stat/images/quickbuy/close.gif') no-repeat;
+	width:85px;
+	height:22px;
+	
+	position: absolute;
+	left: 12px;
+	bottom: 12px;
+}
+
+
+.yui-panel-container.quickbuy-dialog .overbox {
+	width: 450px;
+	bottom: 100%;
+	left: 0px;
+	position: absolute;
+	right: 0px;
+	visibility: visible;
+}
+
+
+/* rounded box decoration with shadow */
+.yui-panel-container.quickbuy-dialog .overbox .roundedbox
+{
+	-webkit-box-shadow: #999 4px 4px 10px;
+	-moz-box-shadow: #999 4px 4px 10px;
+	background: white;
+	border: 2px solid #7F7F7F;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+/* ERRORS BUBBLE */
+.yui-panel-container.quickbuy-dialog .alerts {
+	margin-bottom: 10px;
+	padding: 8px;
+	
+	display: none;
+}
+
+
+.yui-panel-container.quickbuy-dialog .boxTitle {
+	color: #990000;
+}
+
+/* NEW FEATURE BUBBLE */
+.yui-panel-container.quickbuy-dialog .nfeat {
+	margin-bottom: 10px;
+	padding: 8px;
+	
+	display: none;
+}
+
+.yui-panel-container.quickbuy-dialog .nfeat .bframe {
+	height: 30px;
+}
+
+.yui-panel-container.quickbuy-dialog .nfeat img {
+	cursor: pointer;
+	padding-top: 8px;
+	float: right;
+}
+
+
+.disableScroll {
+	overflow:hidden;
+}
+
+.quickbuy-dialog .yui-panel .quickbuy-noheader {
+	background:white;
+}
+
+.quickbuy-dialog .yui-panel .quickbuy-noheader-close {
+	background: white url('/media_stat/images/buttons/x_green.gif') no-repeat center center;
+	height: 20px;
+	width: 19px;
+}
+
+.quickbuy-dialog .quickbuy-loading {
+	font-size:32px;
+	text-align:center;
+	margin-bottom:16px;
+	height:37px;
+	overflow:hidden;
+}
+
+
+.qb-bottom-button {
+	text-align: center;
+	vertical-align: middle;
+
+	width: 100%;
+	height: 29px;
+}
+
+.qb-bottom-button img {
+	display: inline;
+}

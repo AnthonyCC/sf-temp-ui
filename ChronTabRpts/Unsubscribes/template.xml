@@ -1,0 +1,44 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select trunc(ci.UNSUBSCRIBE_DATE) as unsubcribe_date, count(distinct ci.customer_id) as customers 
+from cust.customerinfo ci, cust.activity_log al where ci.customer_id = al.customer_id and al.activity_id = 'Create Acct'
+and trunc(ci.unsubscribe_date) != trunc(al.timestamp) 
+and ci.unsubscribe_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+group by trunc(ci.UNSUBSCRIBE_DATE)
+order by trunc(ci.UNSUBSCRIBE_DATE) desc
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

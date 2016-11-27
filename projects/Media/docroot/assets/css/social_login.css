@@ -1,0 +1,449 @@
+@CHARSET "ISO-8859-1";
+
+#sulCont.signup-style-social {
+	/*padding-left: 18px;*/
+	width: 100%;
+	height: auto;
+	/*overflow: hidden;*/
+}
+#sulCont.signin-social-forgot-pass{
+	padding-bottom: 30px;
+}
+
+#sulCont .signup-style{
+  width:500px; 
+  height:auto; 
+  overflow:hidden;
+}
+
+#sulCont .alignment{
+  width:350px;
+  float:left;
+  margin-left:10px;
+  margin-bottom:10px;
+}
+
+#sulCont .form-side{
+  width:180px;
+  float:left;
+  margin-right:40px;
+}
+
+
+#sulCont .social-login-headerscr{
+  width:225px;
+  float:right;
+}
+
+#sulCont .social-login{
+  width:210px;
+  float:right;
+}
+
+#sulCont .social-loginscr{
+  width:200px;
+  float:right;
+}
+
+#sulCont .clear{clear:both;}
+
+#sulCont input[type="submit"],
+#sulCont .social-login-green-button{
+  	width: 238px;
+	height: 44px;
+	border: 0;
+  	padding: 10px;
+  	margin-top: 0px;
+  	color: #ffffff;
+  	text-align: center;  
+  	border-radius: 5px;
+  	font-family: Verdana;
+	font-size: 18px;
+	background: #6fa738;
+	background: -webkit-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
+	background: -moz-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
+	background: -o-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
+	background: -ms-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
+	background: linear-gradient(0deg, #598b2a 0%, #6fa738 100%);
+	cursor: pointer;
+}
+#sulCont a.social-login-continue-button:hover{
+	text-decoration: none;
+}
+
+#sulCont .bottom-contents{
+  	text-align:center;
+  	margin-bottom: 10px;
+}
+
+#sulCont input[disabled="disabled"]{
+	background: rgb(204,204,204);
+	background: -moz-linear-gradient(top,  rgba(204,204,204,1) 0%, rgba(194,194,194,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,1)), color-stop(100%,rgba(194,194,194,1)));
+	background: -webkit-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: -o-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: linear-gradient(to bottom,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#c2c2c2',GradientType=0 ); 
+}
+
+#sulCont .error,
+#sulCont .error-message,
+#sulCont .errMsg .text11rbold{
+  text-align:left;
+  font-size: 12px;
+  font-family:"Verdana", Georgia, Serif;
+  font-weight: normal;
+  color: #FF0000;  
+}
+
+#sulCont .errMsg,
+#sulCont .error-message{
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+#sulCont .errMsg{
+	/*width: 292px;*/
+}
+
+#sulCont span.error_img {
+  /* background:url( "/media_stat/images/common/red_arrow.png") no-repeat; */
+  display:block;
+  width:17px;
+  height:12px;
+}
+
+#sulCont .form-side-social #litesignup,
+#sulCont .form-side-social #fd_login,
+#sulCont.login-page #fd_login{
+	margin-left: -22px;
+	margin-top:40px;
+}
+
+#sulCont .form-side-social #litesignup,
+#sulCont .form-side-social #fd_login table,
+#sulCont.login-page #fd_login table{
+	margin:auto;
+}
+
+#sulCont .password-class{
+  position:relative;
+}
+
+#sulCont span.show_bg_arrow {
+	margin: 25px 5px 15px 0;
+  	background:url( "/media_stat/images/common/red_arrow.png") no-repeat;
+}
+
+#sulCont .show-password{
+  	position: absolute;
+	bottom: 10px;
+    right: 8px;
+    width: 33px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 12px;
+    background: #A4A5A4;
+    color: #fff;
+    padding: 6px 9px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#sulCont.social-singin .social-login-headerscr-social{
+	width: 440px;
+	margin:auto;
+}
+
+input[type="socialButton"] {
+	width: 130px;
+	padding: 10px;
+	margin-top: 0px;
+	background-color: #00B800;
+	color: #ffffff;
+	text-align: center;
+	border-radius: 5px;
+}
+
+.social-login-social{
+	width: 238px;
+	/*width: initial;*/
+	min-height: 152px;
+	margin:auto;
+}
+#sulCont .form-side-social-header,
+#sulCont .signin-social-forgot-pass-header-message{
+	padding: 29px 0 33px;
+	font-family: Verdana;
+	color:  #333333;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 16px;
+	text-align: center;
+}
+
+#sulCont.signin-social-forgot-pass .form-side-social-header,
+#sulCont.signin-social-forgot-pass .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-forgot-pass-confirm .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-forgot-pass-confirm .form-side-social-header{
+	padding: 29px 0 15px 14px;
+	text-align: left;
+}
+
+#sulCont .signin-social-forgot-pass-header-message{
+	padding-top: 0px;
+	font-weight: normal;
+}
+
+#sulCont .form-side-social input.padding-input-box,
+#sulCont #lost_password input.padding-input-box,
+#sulCont #fd_login input.padding-input-box{
+	height: 27px;
+	width: 206px;
+	color: #000000;
+	padding: 8px 15px;
+    border: 1px solid #c2c2c2;
+    box-sizing: content-box;
+    background-color: #ffffff;
+    font-family: Verdana;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    
+}
+#sulCont .form-side-social input.error,
+#sulCont #lost_password input.error,
+#sulCont #fd_login input.error{
+  border-color:#FF6C47;
+  background-color:#FFE0E0;
+}
+#sulCont .padding-input-box#password1{
+	padding-right: 59px;
+    width: 160px;
+}
+#sulCont .form-side-social #litesignup td.errMsg,
+#sulCont .form-side-social #fd_login td.errMsg{
+    width: 238px;
+}
+#sulCont.social-singup .social-login-headerscr-social{
+	padding: 32px 0;
+}
+#sulCont.social-singin .social-login-headerscr-social{
+	padding: 20px 0 32px;
+}
+#sulCont .social-login-or-separator{
+	display: inline-block;
+	padding: 0 90px;
+	font-family: Verdana;
+	color:  #333333;
+	font-size: 16px;
+	line-height: 16px;
+	font-weight: 700;
+}
+
+#sulCont .social-login-line-separator{
+	display: inline-block;
+	width: 116px;
+	height: 1px;
+	margin-bottom: 3px;
+	background-color: #c2c2c2;
+}
+
+#sulCont #social_login_demo iframe{
+	display: block;
+}
+
+#sulCont .bottom-contents .bottom-contents-terms{
+	width: 238px;
+	margin: auto;
+}
+
+#sulCont .bottom-contents .bottom-contents-terms-text{
+	padding-right: 30px;
+    color: #888888;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: left;
+}
+#sulCont .bottom-contents .bottom-contents-terms-text a{
+	color: #888888;
+	text-decoration: underline;
+}
+#sulCont .bottom-contents .bottom-links{
+	padding: 20px 0 0;
+    font-size: 14px;
+    line-height: 17px;
+}
+#sulCont .bottom-contents .bottom-links a{
+	font-family: Verdana;
+    color: #669933;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#sulCont.social-singin .social-login-pass-forgot{
+	padding-top:15px;
+	text-align: center;
+}
+
+#sulCont.social-singin .social-login-pass-forgot a{
+	font-family: Verdana;
+	color:  #888888;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 12px;
+}
+#sulCont form#lost_password {
+    padding-top: 18px;
+}
+
+#sulCont form#lost_password input#altEmail[type="checkbox"]{
+	margin: 0;
+	vertical-align: text-bottom;
+}
+
+#sulCont form#lost_password .input-email-send-message{
+	font-family: Verdana;
+	color:  #888888;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 12px;
+	text-align: left;
+}
+
+#sulCont.signin-social-forgot-pass-confirm .form-side-social-header{
+	padding-top: 120px;
+}
+#sulCont.signin-social-forgot-pass-confirm .signin-social-forgot-pass-header-message{
+	padding-bottom: 120px;
+}
+#sulCont.signup-social-account-exist .signin-social-forgot-pass-header-message,
+#sulCont.signup-social-address-notification .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-login-not-recognized .signin-social-forgot-pass-header-message{
+	text-align: center;
+}
+#sulCont.signin-social-login-not-recognized .form-side-social-header{
+	padding: 29px 0 15px 14px;
+}
+#sulCont.signup-social-account-exist .social-login-green-button,
+#sulCont.signup-social-address-notification .social-login-green-button{
+	margin: 15px auto 30px;
+}
+#sulCont.signin-social-login-not-recognized .social-login-green-button{
+	width: 182px;
+}
+#sulCont.signin-social-login-not-recognized .social-login-green-button-space {
+	width: 50px;
+    display: inline-block;
+}
+.social-login-spinner img.fleft{
+	position: absolute;
+	left: 50%;
+	margin-left: -25px;
+}
+
+.new_cust{
+	text-align: center;
+    display: block;
+}
+br.new_cust{
+	display:none;
+}
+
+#fd_login .error{
+	margin-left: 0px;
+}
+#fd_login div.error{
+	margin-top: -3px;
+}
+
+#sul_type_fields {
+	text-align: center;
+}
+#sul_type_fields, #sul_cos_fields>div {
+	margin: 7px 0;
+}
+
+#sul_cos_fields {
+	margin-bottom: 20px;
+}
+
+#sul_type_fields input[type="radio"] {
+    position: absolute;
+    left: -999em;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+#sul_type_fields label, #sul_type_fields .legend {
+    font-size: 16px;
+    font-family: verdana;
+    color: #888;
+}
+#sul_type_fields .legend {
+	display: inline-block;
+	margin: 0 10px 0 20px;
+}
+#sul_type_fields input[type="radio"] + label {
+    cursor: pointer;
+    display: inline-block;
+    text-align: left;
+    min-width: 95px;
+}
+
+#sul_type_fields input[type="radio"] + label::before {
+    background: #fafafa;
+    box-shadow: 0 0 0 1px #c2c2c2;
+    content: '\a0';
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
+    line-height: 14px;
+    margin-right: 10px;
+    vertical-align: 2px;
+}
+#sulCont input:focus, #sul_type_fields input, #sul_cos_fields input {
+	border-width: 2px !important;
+}
+#sulCont input:focus, #sul_type_fields input:focus, #sul_cos_fields input:focus {
+    border-color: #68aa6d !important;
+    box-shadow: none;
+    outline: none;
+}
+#sul_type_fields input[type="radio"]:checked + label::before, #sul_cos_fields input[type="radio"]:checked + label::before {
+    background: #4fa157;
+    box-shadow: 0 0 0 1px #4fa157;
+}
+#sul_type_fields input[type="radio"]:focus + label::before, #sul_cos_fields input[type="radio"]:focus + label::before {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+
+
+#sulCont .social-login-or-separator-cont-v2 {
+	display: block;
+	position: relative;
+	text-align: center;
+	margin: 20px 0 32px;
+}
+#sulCont .social-login-line-separator-v2 {
+	position: absolute;
+	top: 0.75em;
+	left: 0;
+	height: 1px;
+	background-color: #ccc;
+	width: 100%;
+}
+#sulCont .social-login-or-separator-v2 {
+	position: relative;
+	display: inline-block;
+	background-color: #fff;
+	height: 1em;
+	font-family: Verdana;
+	color: #333333;
+	font-size: 16px;
+	line-height: 16px;
+	font-weight: 700;
+	padding: 0 20px;
+}

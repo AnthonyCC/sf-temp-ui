@@ -1,0 +1,11 @@
+				<% if(showOrderCutOffReportSection) { %>
+				<td width="">
+					<%@ include file="/includes/order_cutoff_report.jspf"%>
+				</td>
+				<% } %>
+				<% if(showOrderSummaryReportSection) { %>
+				<td width="25%">
+			
+					<%@ include file="/includes/order_summary_report.jspf"%>
+				</td>
+				<% } %>

@@ -1,0 +1,10 @@
+ORD	REQ	SECTION	SKU_CODE	QUANTITY	SALES_UNIT	CONFIGURATION	DESCRIPTION	CONFIGURATION_DESC	MATERIAL_ID	PRICE	
+1	YES	Main	FRU0005384	6	EA		Anjou Pear	"Farm Fresh, Med"			
+2		Main	SPE0067909	1	EA		Back to Basics Domaine de Rochebin Bourgogne Rouge 2003	750mL			
+3		Main	FRU0005131	3	EA		Lemons	"Farm Fresh, Med"			
+4		Main	GRO002527	1	EA		Spice Supreme Whole Cloves	1.75oz			
+5		Main	GRO002590	1	EA		Domino Granulated White Sugar	2lb box			
+6		Main	SPE0062700	1	EA		Nielsen-Massey Madagascar Bourbon Vanilla Beans	2 beans	
+7		Main	GRO001177	1	EA		Spice Select Pure Vanilla Extract	2oz			
+8		Main	SPE0058931	1	EA		Vanns Cinnamon Stick	1.5oz	
+9		Main	VEG0011096	1	EA		Mint	Farm Fresh			

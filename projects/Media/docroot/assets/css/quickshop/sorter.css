@@ -1,0 +1,109 @@
+.sorter {
+	font-family: Verdana,sans-serif;
+	font-size:12px;
+	color:#333;
+}
+
+.sorter strong {
+	margin-right:16px;
+	vertical-align: middle;
+  display:inline-block;
+}
+
+.sorter-element_list {
+	display:inline-block;
+	white-space: nowrap;
+}
+.sorter-element {
+	padding:0;
+	margin:0;
+	color:#360;
+	background:transparent;
+	border:0px;
+	vertical-align:middle;
+	position:relative;
+	cursor: pointer;
+	font-family: Verdana,sans-serif;
+	font-size:inherit;
+}
+
+.sorter-element:before {
+	display:inline-block;
+	content:'•';
+	width:2.5em;
+	font-weight: normal;
+	text-align: center;
+  color:#666;
+}
+
+.sorter-element:first-child {
+	margin-left:0;
+}
+
+.sorter-element:first-child::before {
+	content: none;
+}
+
+/* custom select in sorter */
+.sorter-element .fdselect {
+  display: inline-block;
+  overflow: hidden;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.cssbutton.sortSelectButton {
+  height: 30px;
+  line-height: 16px;
+}
+
+.cssbutton.sortSelectButton:after {
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+  width: 15px;
+  padding-top: 3px;
+}
+
+[data-feature-quickshop="2_0"] .sortSelectButton {
+  height: 30px;
+  line-height: 16px;
+}
+
+[data-feature-quickshop="2_0"] .sortSelectButton:after {
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+  width: 15px;
+}
+
+.sortSelectButton .title {
+  width: 129px;
+  line-height: 13px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sortSelectButton span > span.popupcontent {
+  display: none;
+}
+
+/* IE8 */
+.sorter-element.first {
+	margin-left:0;
+}
+
+.sorter-element.first:before {
+	content: none;
+}
+
+.sorter-element.selected {
+	font-weight: bold;
+}
+
+.no-touch .sorter-element:hover > span,
+.no-touch .sorter-element:focus > span {
+	text-decoration: underline;
+}

@@ -1,0 +1,233 @@
+.BRD-popup-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20000;
+}
+
+.BRD-popup-container:before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+}
+
+.BRD-popup-container .qs-popup {
+	display: block;
+	position: relative;
+	width: 950px;
+	margin: 50px auto;
+	border-radius: 10px;
+	border-color: #75a5d6;
+	overflow: hidden;
+}
+
+#MBRDPopup1 .qs-popup {
+	top: 50%;
+	width: 600px;
+	height: 120px;
+	margin-top: -60px;
+}
+
+.BRD-popup-container .qs-popup-header {
+	background: #75a5d6;
+	color: #fff;
+	text-shadow: none;
+}
+
+
+#MBRDPopup1 .qs-popup-content {
+	text-align: center;
+	padding-top: 30px;
+}
+
+.BRD-popup-container button {
+	display: inline-block;
+	background: #e48e25;
+	color: #fff;
+	font-weight: bold;
+	border: 1px solid #dc851a;
+	border-bottom: 1px solid #dc851a;
+	border-radius: 3px;
+	cursor: pointer;
+	text-shadow: 1px 1px #a16b23;
+	margin: 0 4px;
+	padding: 0 4px;
+}
+
+#MBRDPopup1 .MBRD-neworder,
+#MBRDPopup1 .MBRD-modify {
+	width: 180px;
+	height: 30px;
+	line-height: 25px;
+	font-size: 12px;
+}
+
+#MBRDPopup2 .MBRD-cancel,
+#MBRDPopup2 .MBRD-modify {
+	height: 30px;
+	line-height: 25px;
+	font-size: 12px;
+}
+
+#MBRDPopup1 .MBRD-neworder,
+#MBRDPopup2 .MBRD-cancel {
+	background: #999967;
+	border-color: #7e7e66;
+	text-shadow: 1px 1px #5C5C53;
+}
+
+.BRD-popup-container .MBRD-close {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	background: url(/media_stat/images/buttons/round_x.png) transparent center center no-repeat;
+	border: none;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
+	text-indent: 20px;
+}
+
+.BRD-popup-container .MBRD-order {
+	background: #e8e8e8;
+	padding: 10px;
+	margin: -25px -15px 20px -20px;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.BRD-popup-container h3 {
+	margin: 0;
+	line-height: 1.2em;
+	font-weight: bold;
+	color: orange;
+	font-size: 12px;
+	padding: 0.5em 0;
+	text-transform: uppercase;
+}
+
+.BRD-popup-container .itemlist-item {
+	border: none;
+}
+
+#MBRDCartdata {
+	max-height: 180px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin: 0 0 20px 0;
+	border: 1px solid lightgray;
+	position: relative;
+}
+
+#MBRDCartdata>div {
+	position: relative;
+}
+#MBRDCartdata>div:before {
+	content: '';
+	display: inline-block;
+	position: absolute;
+	width: 33%;
+	left: 33%;
+	top: 0;
+	height: 100%;
+	border-left: 1px dashed lightgrey;
+	border-right: 1px dashed lightgrey;
+}
+
+#MBRDCartdata .col {
+	position: relative;
+	width: 33%;
+	display: inline-block;
+	vertical-align: top;
+	margin: 0;
+	padding: 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#MBRDCartdata .itemlist-item-productimage_wrapper {
+	width: 50px;
+	display: inline-block;
+	float: none;
+	vertical-align: middle;
+	margin: 0 1em;
+}
+#MBRDCartdata input {
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+#MBRDCartdata .itemlist-item-header {
+	margin: 0px;
+	display: inline-block;
+	width: 180px;
+	vertical-align: middle;
+}
+#MBRDCartdata .itemlist-item-header-name {
+	font-size: 10px;
+}
+#MBRDCartdata .itemlist-item-controls,
+#MBRDPendingdata .itemlist-item-controls,
+#MBRDCartdata .itemlist-item-details {
+	display: none;
+}
+
+#MBRDPendingdata {
+	max-height: 180px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#MBRDPendingdata.multi {
+	margin: 0 0 20px 0;
+	border: 1px solid lightgray;
+	position: relative;
+}
+#MBRDPendingdata.multi .col {
+	display: inline-block;
+	width: 50%;
+	vertical-align: top;
+	margin: 0;
+	padding: 0;
+}
+
+#MBRDPendingdata input {
+	display: none;
+}
+
+#MBRDPendingdata .itemlist-item-productimage_wrapper {
+	width: 50px;
+}
+#MBRDPendingdata .itemlist-item-details {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#MBRDPendingdata .itemlist-item-header {
+	margin-top: 10px;
+	margin-left: 60px;
+}
+
+#MBRDPopup2 .MBRD-selectbuttons {
+	margin: 15px 0 10px;
+}
+.MBRD-selectbuttons button {
+	font-weight: normal;
+	padding: 2px 5px;
+}
+.MBRD-buttons {
+	text-align: right;
+}
+
+

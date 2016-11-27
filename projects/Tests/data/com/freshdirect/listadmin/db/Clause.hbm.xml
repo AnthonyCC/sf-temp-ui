@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.listadmin.db">
+  <class name="Clause" table="list_clause" lazy="false">
+    <id name="clauseId" column="id" unsaved-value="null" length="16">
+      <generator class="uuid" />
+    </id>
+
+    <discriminator type="string" column="TYPE"/>
+    
+    <property name="templateId"  column="template_id"/>
+    <property name="column"      column="column_name"/>
+    <property name="operatorId"  column="operator_id"/>
+    <property name="param"/>
+    
+    <subclass name="ConstantClause" discriminator-value="CONSTANT">
+      <join table="list_constant_clause">
+        <key column="id" foreign-key="id"/>
+        <property name="constant"/>
+      </join>
+    </subclass>
+
+    <subclass name="ParamClause" discriminator-value="PARAM">
+      <join table="list_param_clause">
+        <key column="id" foreign-key="id"/>
+      </join>
+    </subclass>
+
+    <subclass name="StaticDropdownClause" discriminator-value="STATIC_DROPDOWN">
+      <join table="list_static_dropdown_clause">
+        <key column="id" foreign-key="id"/>
+        <property name="options"/>
+      </join>
+    </subclass>
+
+    <subclass name="SelectDropdownClause" discriminator-value="SELECT_DROPDOWN">
+      <join table="list_select_dropdown_clause">
+        <key column="id" foreign-key="id"/>
+        <property name="tableName"   column="table_name"/>
+        <property name="nameColumn"  column="name_column"/>
+        <property name="valueColumn" column="value_column"/>
+      </join>
+    </subclass>
+
+    <subclass name="QueryDropdownClause" discriminator-value="QUERY_DROPDOWN">
+      <join table="list_query_dropdown_clause">
+        <key column="id" foreign-key="id"/>
+        <many-to-one name="query" class="StoredQuery" column="query_id"/>
+      </join>
+    </subclass>
+
+    <subclass name="EnumDropdownClause" discriminator-value="ENUM_DROPDOWN">
+      <join table="list_enum_dropdown_clause">
+        <key column="id" foreign-key="id"/>
+        <property name="className" column="class_name"/>
+      </join>
+    </subclass>
+	
+
+    <subclass name="JoinClause" discriminator-value="JOIN">
+      <join table="list_join_clause">
+        <key column="id" foreign-key="id"/>
+        <property name="parentColumn" column="parent_column"/>
+        <property name="childColumn"  column="child_column"/>
+      </join>
+    </subclass>
+  </class>
+</hibernate-mapping>

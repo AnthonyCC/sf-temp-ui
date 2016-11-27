@@ -1,0 +1,22 @@
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	THIS INCLUDE REQUIRES:
+	- FDCartI order
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
+<table width="100%" cellpadding="2" cellspacing="0" border="0" class="list_header">
+		<tr>
+			<td class="list_header_detail" style="padding: 2px; padding-left: 6px;">CUSTOMER INVOICE MESSAGE</td>
+		</tr>
+</table>
+<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order_detail">
+<TR>
+<TD WIDTH="3%">&nbsp;</TD>
+<TD><br>
+<%	if (order instanceof FDOrderI) { %>
+	<%= order.getCustomerServiceMessage() %>
+<%	} else { %>
+	Enter message here: <INPUT TYPE="text" NAME="csr_message" SIZE="55" value="<%= request.getParameter("csr_message") %>">
+<%	} %>
+</TD>
+</TR>
+</TABLE><br>

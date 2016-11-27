@@ -1,0 +1,148 @@
+.atlpopupoverlay {
+  background: #fff;
+  opacity: .5;
+}
+
+.qs-popup.addtolistpopup {
+  z-index: 2003;
+}
+
+.addtolistpopup label,
+.saverecipepopup label {
+  display: block;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.addtolistpopup .addtolist-or {
+  margin: 20px 0;
+  border-top: 1px dashed #ccc;
+  position: relative;
+}
+
+.addtolistpopup .addtolist-or span {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-transform: uppercase;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #a172a1;
+  background: #f8f8f8;
+  width: 2em;
+  text-align: center;
+}
+
+.addtolistpopup p button,
+.addtolistpopup .buttons button {
+  margin-left: 8px;
+}
+
+.saverecipepopup .buttons button {
+  display: inline-block;
+	padding: 0;
+	border: none;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+  margin-left: 8px;
+}
+
+.saverecipepopup p button {
+	margin-left: 8px;
+}
+
+.addtolistpopup p,
+.saverecipepopup p {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+.saverecipepopup p.desc {
+  padding-bottom: 20px;
+}
+.addtolistpopup p a.quickshop {
+  display: inline-block;
+}
+
+.addtolistpopup p a.quickshop:before {
+  content: ' ';
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  background: url(/media_stat/images/quickshop/bullet-purple.png) no-repeat;
+  margin-right: 4px;
+}
+
+.addtolistpopup .buttons,
+.saverecipepopup .buttons {
+  text-align: right;
+}
+
+.editinlistpopup p,
+.deletefromlistpopup p {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+
+.editinlistpopup .buttons,
+.deletefromlistpopup .buttons {
+  text-align: center;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.editinlistpopup .buttons button {
+  display: inline-block;
+	padding: 0;
+	border: none;
+	text-indent: -9000px;
+	overflow: hidden;
+	cursor: pointer;
+  margin-left: 8px;
+}
+
+.addtolistpopup .error {
+  font-weight:bold;
+}
+
+.saverecipepopup .buttons button.addtolist-button-ok,
+.editinlistpopup .buttons button.editinlist-button-save {
+  background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+.saverecipepopup p button.saverecipe-button-go:hover,
+.saverecipepopup p button.saverecipe-button-go:focus {
+    background-position: -100px -253px;
+}
+
+.saverecipepopup .buttons button.addtolist-button-ok {
+    width: 35px;
+    height: 27px;
+    background-position: -145px -253px;
+}
+.saverecipepopup .buttons button.addtolist-button-ok:hover,
+.saverecipepopup .buttons button.addtolist-button-ok:focus {
+    background-position: -190px -253px;
+}
+
+.deletefromlistpopup .qs-popup-header {
+  display: none;
+}
+
+.deletefromlistpopup p[data-item] {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.editinlistpopup .buttons button.editinlist-button-save {
+    width: 75px;
+    height: 27px;
+    background-position: -5px -336px;
+}
+.editinlistpopup .buttons button.editinlist-button-save:hover,
+.editinlistpopup .buttons button.editinlist-button-save:focus {
+    background-position: -90px -336px;
+}

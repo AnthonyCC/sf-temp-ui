@@ -1,0 +1,83 @@
+
+[data-component="liverecommender"] {
+	white-space:nowrap;
+	overflow:hidden;
+	position:relative;
+	margin:15px 0;
+	padding:0;
+	list-style-type:none;
+	height: 300px;
+
+	border: 1px solid #CCC;
+	border-radius: 6px;
+}
+[data-component="liverecommender"][data-direction="vertical"] {
+	width: 189px;
+	height: auto;
+	white-space: normal;
+}
+
+[data-component="liverecommender"] h2 {
+	color: #6F4473;
+	font-weight: bold;
+	font-size: 15px;
+	margin-bottom: 4px;
+	padding: 4px 0;
+	background: #E2DBE3;
+	text-align: center;
+}
+
+[data-component="liverecommender-mask"] {
+	overflow:hidden;
+}
+[data-component="liverecommender"] ul {
+	margin:0;
+	padding:0;
+	display:inline-block;
+	position:absolute;
+	right: 0;
+	min-width: 100%;
+	text-align: right;
+}
+[data-component="liverecommender"][data-direction="vertical"] ul {
+	position: relative;
+	right: auto;
+}
+
+[data-component="liverecommender"] [data-component="product"] {
+	text-indent:0;
+	opacity: 0;
+	width: 0;
+	margin-left: 0;
+	margin-right: 0;
+	-webkit-transition: opacity .5s;
+	-moz-transition: opacity .5s;
+	-o-transition: opacity .5s;
+	-ms-transition: opacity .5s;
+	transition: opacity .5s;
+}
+[data-component="liverecommender"] .live {
+	opacity: 1;
+	width: 174px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+[data-component="liverecommender"][data-direction="vertical"] [data-component="product"] {
+	width: 153px;
+	margin-top: 0;
+	margin-bottom: 0;
+	height: 0;
+	display: block;
+	overflow: hidden;
+}
+[data-component="liverecommender"][data-direction="vertical"] .portrait-item-header,
+[data-component="liverecommender"][data-direction="vertical"] .portrait-item-price {
+	float: none;
+}
+[data-component="liverecommender"][data-direction="vertical"] .live {
+	height: auto;
+	margin: 20px auto 30px;
+}
+
+

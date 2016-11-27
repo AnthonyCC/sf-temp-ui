@@ -1,0 +1,222 @@
+
+/* HANDPICK SPECIFIC STYLE */
+
+.mealkit-product {
+  width:775px;
+  font-family: Verdana,Geneva,sans-serif;
+  color:#333;
+  font-size:16px;
+}
+
+#mealkit-product-left {
+	width: 530px;
+	margin-top: 20px;
+	display: inline-block;
+}
+
+#mealkit-product-right {
+	width: 235px;
+	display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.mealkit-product-title {
+  padding-right:25px;
+  overflow:hidden;
+  word-wrap:break-word;
+  font-size:26px;
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0;
+  line-height: 37px;
+  vertical-align:middle;
+}
+
+.mealkit-product-subtitle {
+	font-size: 30px;
+	margin: 0;
+	line-height: 20px;	
+}
+
+.mealkit-product-image {
+  display:inline-block;
+  width:774px;
+  height: 611px;
+  margin:0;
+  padding:0;
+  vertical-align: top;
+}
+
+.mealkit-product-actions .action-item {
+  color:#458b4c;
+  font-size:16px;
+  margin:2.5em 0 0;
+  display:inline-block;
+}
+
+.mealkit-product-actions .action-item-content{
+  vertical-align: top;
+  display:inline-block;
+  margin-left:15px;
+  width:245px;
+}
+
+.mealkit-product-actions .action-item:before{
+  display:inline-block;
+  font-size:40px;
+  padding-right:0;
+}
+
+.mealkit-product-actions .action-item.meal-details:before{
+  font-size:45px;
+  margin-left:5px;
+}
+
+.mealkit-product-actions .action-item:hover {
+  text-decoration: none;
+}
+
+.mealkit-product-actions .action-item:hover .action-item-content{
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+.mealkit-price {
+	font-size: 26px;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.mealkit-product-addtocart {
+  padding: 15px 10px;
+  background-color: #f7f3f0;
+}
+
+.mealkit-product-addtocart button.cssbutton[data-component].addtocart-button {
+  width:162px;
+  height: 38px;
+  display: inline-block;
+  margin: 0 0 10px 0;
+}
+
+.mealkit-product-addtocart .addtocart-button.icon-cart-before:before{
+  padding-right:1em;
+}
+
+.mealkit-product-addtocart .subtotal{
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.mealkit-product-addtocart.subtotal,
+.mealkit-product-addtocart .subtotal-inner {
+	font-weight: normal;
+	font-size: 14px;
+	padding-left: 0 !important;
+}
+
+.center-content{
+  text-align:center;
+}
+
+.mealkit-product-addtocart .atc-button-wrapper{
+  display:block;
+}
+
+.mealkit-product-addtocart input.qty{
+  height:48px;
+  width:54px;
+  line-height:48px;
+  font-size:18px;
+  font-weight:700;
+}
+
+.mealkit-product-addtocart .qtyinput input[type="text"].qty {
+	width: 3em;
+	font-size: 21px;
+	height: 38px;
+}
+
+.mealkit-product-addtocart .quantity_minus,
+.mealkit-product-addtocart .quantity_plus{
+    margin-top:0px;
+    background-image: none;
+    height: 38px;
+    vertical-align: middle;
+    margin-top: 0;
+    font-size: 24px;
+    line-height: 16px;
+    font-weight: bold;
+    width: 39px;
+    padding: 0;
+}
+
+.mealkit-product-addtocart .quantity_minus {
+	border-radius: 50px 0 0 50px;
+	left: 0;
+}
+
+.mealkit-product-addtocart .quantity_plus {
+	border-radius: 0 50px 50px 0;
+    right: 0;
+}
+
+.mealkit-product-content{
+    font-family: Verdana,Geneva,sans-serif;
+    font-size:16px;
+    color:#333;
+}
+
+.mealkit-product-addtocart[data-addtocart-functionality="disabled"] [data-component="ATCButton"]{
+  cursor:default;
+  background:#AAA;
+}
+
+.mealkit-product-addtocart button.cssbutton[data-component="ATCButton"],
+.mealkit-product-addtocart button.cssbutton.incart[data-component="ATCButton"]{
+  color:#FFF;
+  text-shadow:1px 1px #555555;
+}
+
+.mealkit-product-addtocart .qtyinput {
+  width: auto;
+}
+
+.mealkit-recommendations {
+	margin-top: 25px;
+}
+
+.mealkit-recommendation-title {
+  border-bottom: 1px dashed #333;
+  padding-bottom: 4px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.mealkit-recommendations li.portrait-item {
+  width: 136px;
+  max-width: 136px;
+  padding: 0 9px 0 9px;
+  margin: 0;
+  border-right: 1px solid #ddd;
+  display: table-cell;
+}
+
+.mealkit-recommendations li.portrait-item.lastInLine {
+  padding-right: 0;
+  margin-right: 0;
+  border: none;
+}
+
+/*
+.thxgiving-bundle-modify-title{
+  font-size: 30px;
+  text-transform:uppercase;
+  color:#FF9933;
+  font-weight: bold;
+  margin: 15px 0;
+  text-align: center;
+}
+*/

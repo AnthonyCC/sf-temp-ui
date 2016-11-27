@@ -1,0 +1,177 @@
+/* --------------------------------------------------------------
+
+   typography.css
+   * Sets up some sensible default typography.
+
+-------------------------------------------------------------- */
+
+/* Default font settings.
+   The font-size percentage is of 16px. (0.75 * 16px = 12px) */
+html { font-size:100.01%; }
+body {
+  font-size: 70%;
+  color: #333;
+  background: #fff;
+  font-family: Verdana, "DejaVu Sans", sans-serif;
+}
+
+/* Link colors */
+a, a:link { color: #458b4c; text-decoration: none; }
+a:visited { color: #777;text-decoration: none; }
+a:hover, a:active, a:focus { color: #5fb069; text-decoration: underline; }
+
+/* Headings
+-------------------------------------------------------------- */
+
+h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #111; }
+
+h1 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
+h2 { font-size: 1.8em; margin-bottom: 0.75em; }
+h3 { font-size: 1.5em; line-height: 1; margin-bottom: 1em; }
+h4 { font-size: 1.2em; line-height: 1.25; margin-bottom: 1.25em; }
+h5 { font-size: 1em; font-weight: bold; margin-bottom: 1.5em; }
+h6 { font-size: 1em; font-weight: bold; }
+
+h1 img, h2 img, h3 img,
+h4 img, h5 img, h6 img {
+  margin: 0;
+}
+
+
+/* Text elements
+-------------------------------------------------------------- */
+
+p           { margin: 1.5em 0; }
+/* 
+	These can be used to pull an image at the start of a paragraph, so 
+	that the text flows around it (usage: <p><img class="left">Text</p>) 
+ */
+.left  			{ float: left !important; }
+p .left			{ margin: 1.5em 1.5em 1.5em 0; padding: 0; }
+.right 			{ float: right !important; }
+p .right 		{ margin: 1.5em 0 1.5em 1.5em; padding: 0; }
+
+blockquote  { margin: 1.5em; color: #666; font-style: italic; }
+strong,dfn	{ font-weight: bold; }
+em,dfn      { font-style: italic; }
+sup, sub    { line-height: 0; }
+
+abbr,
+acronym     { border-bottom: 1px dotted #666; }
+address     { margin: 0 0 1.5em; font-style: italic; }
+del         { color:#666; }
+
+pre         { margin: 1.5em 0; white-space: pre; }
+pre,code,tt { font: 1em 'andale mono', 'lucida console', monospace; line-height: 1.5; }
+
+
+/* Lists
+-------------------------------------------------------------- */
+
+li ul,
+li ol       { margin: 0; }
+ul, ol      { margin: 0 1.5em 1.5em 0; padding-left: 1.5em; }
+
+ul          { list-style-type: disc; }
+ol          { list-style-type: decimal; }
+
+dl          { margin: 0 0 1.5em 0; }
+dl dt       { font-weight: bold; }
+dd          { margin-left: 1.5em;}
+
+/* Input elements
+-------------------------------------------------------------- */
+
+input.ph_active { color: #aaa; }
+
+/* Misc classes
+-------------------------------------------------------------- */
+
+.small      { font-family: Verdana Reg;font-size: 10px;	color: #333; margin-bottom: 1.875em; line-height: 1.875em; }
+.large      { font-size: 1.2em; line-height: 2.5em; margin-bottom: 1.25em; }
+.hide       { display: none; }
+
+.quiet      { color: #666; }
+.loud       { color: #000; }
+.highlight  { background:#ff0; }
+.added      { background:#060; color: #fff; }
+.removed    { background:#900; color: #fff; }
+
+.first      { margin-left:0; padding-left:0; }
+.last       { margin-right:0; padding-right:0; }
+.top        { margin-top:0; padding-top:0; }
+.bottom     { margin-bottom:0; padding-bottom:0; }
+.center     { text-align: center; }
+
+.bold { font-weight:bold }
+
+.no-margin { margin:0; }
+
+.no-decor,.no-decor:hover,.no-decor:active{ text-decoration:none; }
+
+.offscreen{ position:absolute; left: -99999px; }
+
+/* Welcome section related 
+-------------------------------------------------------------- */
+#welcome-section-container{
+	margin-top: 10px;
+	text-align: left;
+}
+
+.welcome-msg-title-big {
+	font-size: 1.7em;
+}
+
+.welcome-msg-title-small {
+	font-size: 1.5em;
+	margin-bottom: 15px;
+}
+
+/* HELPER classes 
+-------------------------------------------------------------- */
+.text-left {
+	text-align: left;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.fl-left {
+	float: left;
+}
+
+.fl-right {
+	float: right;
+}
+
+.inline{
+	display: inline-block;
+}
+
+.block {
+	display: block;
+}
+
+.small-text {
+	font-size: 1.2em;
+}
+
+.offscreen {
+	position: absolute;
+	clip: rect(1px 1px 1px 1px); /* for Internet Explorer */
+	clip: rect(1px, 1px, 1px, 1px);
+	padding: 0;
+	border: 0;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+}

@@ -1,0 +1,412 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+ <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>4</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+SELECT COUNT(1) FROM cust.PROFILE p WHERE p.PROFILE_NAME= 'EcpPromo'
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>5</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+SELECT COUNT(1) FROM cust.paymentmethod pm WHERE pm.payment_method_type ='EC'
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>10</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+SELECT 
+profile_promo.profile_value AS profile_value, 
+profile_promo_1_order.first_promotion_desc AS first_promo_desc, 
+profile_promo.num_profiles AS total_num_profiles, 
+NVL(profile_all_custs.num_profiles, 0) AS num_custs, 
+NVL(profile_ecp_custs.num_profiles, 0) AS num_ecp_custs,
+profile_ecp_custs.num_profiles / profile_all_custs.num_profiles as first_time_penetration,
+profile_2_or_more_order_custs.num_profiles as num_2_or_more_custs,
+profile_2_or_more_ecp_custs.num_profiles as num_2_or_more_ecp_custs,
+profile_2_or_more_ecp_custs.num_profiles / profile_2_or_more_order_custs.num_profiles as repeat,
+NVL(profile_promo_1_order.num_profiles, 0) AS num_profiles_1_order, 
+NVL(profile_promo_2_orders.num_profiles, 0) AS num_profiles_2_orders, 
+NVL(profile_promo_3_more_orders.num_profiles, 0) AS num_profiles_3_more_orders, 
+ecp_orders.num_ecp_orders AS num_ecp_orders, 
+ecp_orders.amount_ecp_orders AS amount_ecp_orders, 
+all_orders.num_all_orders AS num_all_orders
+FROM 
+( 
+SELECT 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p 
+WHERE p.PROFILE_NAME='EcpPromo' 
+GROUP BY p.profile_value 
+) profile_promo, 
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS first_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND pi.PAYMENT_METHOD_TYPE = 'EC' 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY c.id 
+HAVING COUNT(s.id) = 1 
+) 
+GROUP BY p.profile_value 
+) profile_promo_1_order, 
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS second_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND pi.PAYMENT_METHOD_TYPE = 'EC' 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY c.id 
+HAVING COUNT(s.id) = 2 
+) 
+GROUP BY p.profile_value 
+) profile_promo_2_orders, 
+( 
+SELECT 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND pi.PAYMENT_METHOD_TYPE = 'EC' 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY c.id 
+HAVING COUNT(s.id) > 2 
+) 
+GROUP BY p.profile_value 
+) profile_promo_3_more_orders, 
+( 
+SELECT p.PROFILE_VALUE profile_value, 
+COUNT(s.id) AS num_ecp_orders, 
+sum(sa.amount) AS amount_ecp_orders 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND pi.PAYMENT_METHOD_TYPE = 'EC' 
+AND p.profile_name = 'EcpPromo' 
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY p.profile_value 
+)  ecp_orders, 
+( 
+SELECT p.PROFILE_VALUE profile_value, 
+COUNT(s.id) AS num_all_orders 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND p.profile_name = 'EcpPromo' 
+AND s.id=sa.sale_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY p.profile_value 
+)  all_orders,
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS first_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+) 
+GROUP BY p.profile_value 
+) profile_all_custs, 
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS first_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND pi.PAYMENT_METHOD_TYPE = 'EC'
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+) 
+GROUP BY p.profile_value 
+) profile_ecp_custs,
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS first_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+select next_order.customer_id
+from
+(select s.customer_id, sa.sale_id
+from
+cust.profile p,
+cust.salesaction sa,
+cust.sale s,
+cust.fdcustomer fd
+where sa.requested_date > '28-AUG-2005'
+and sa.action_type in ('CRO','MOD')
+and sa.action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id = sa.sale_id)
+and sa.sale_id = s.id
+and s.status in ('STL','PPG','ENR')
+and s.customer_id = fd.erp_customer_id
+and fd.id = p.customer_id
+and p.profile_name = 'EcpPromo') next_order,
+(select s.customer_id, min(abs(sa.sale_id)) as sale_id
+from
+cust.profile p,
+cust.salesaction sa,
+cust.paymentinfo pi,
+cust.sale s,
+cust.fdcustomer fd
+where sa.requested_date > '28-AUG-2005'
+and sa.action_type in ('CRO','MOD')
+and sa.action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id = sa.sale_id)
+and sa.id = pi.salesaction_id
+and pi.payment_method_type = 'EC'
+and sa.sale_id = s.id
+and s.status in ('STL','PPG','ENR')
+and s.customer_id = fd.erp_customer_id
+and fd.id = p.customer_id
+and p.profile_name = 'EcpPromo'
+group by s.customer_id) ec_order
+where ec_order.customer_id = next_order.customer_id
+and abs(next_order.sale_id) > abs(ec_order.sale_id)
+group by next_order.customer_id
+having count(*) >= 1
+) 
+GROUP BY p.profile_value 
+) profile_2_or_more_order_custs, 
+( 
+SELECT 
+DECODE(p.profile_value 
+, '11', 'free delivery' 
+, '12', '$1 off' 
+) AS first_promotion_desc, 
+p.profile_value AS profile_value, 
+COUNT(p.profile_value) num_profiles 
+FROM cust.PROFILE p, cust.fdcustomer fdc, cust.customer c 
+WHERE p.PROFILE_NAME='EcpPromo' 
+AND p.customer_id=fdc.id 
+AND fdc.erp_customer_id=c.id 
+AND c.id IN ( 
+SELECT c.id 
+FROM 
+cust.PROFILE p 
+,cust.fdcustomer fdc 
+,cust.customer c 
+,cust.sale s 
+,cust.salesaction sa 
+,cust.paymentinfo pi 
+WHERE 
+s.status in ('PPG', 'ENR', 'STL')
+AND sa.ACTION_TYPE IN ('CRO', 'MOD') 
+AND sa.ACTION_DATE = (SELECT MAX(sa2.action_date) FROM cust.salesaction sa2 WHERE s.ID = sa2.sale_id AND sa2.action_type IN ('CRO', 'MOD')) 
+AND p.profile_name = 'EcpPromo' 
+AND sa.REQUESTED_DATE > '28-AUG-2005' 
+AND pi.PAYMENT_METHOD_TYPE = 'EC'
+AND s.id=sa.sale_id 
+AND sa.id=pi.salesaction_id 
+AND s.customer_id=c.id 
+AND c.id=fdc.erp_customer_id 
+AND fdc.id=p.customer_id 
+GROUP BY c.id 
+HAVING COUNT(s.id) > 1 
+) 
+GROUP BY p.profile_value 
+) profile_2_or_more_ecp_custs
+WHERE profile_promo.profile_value=ecp_orders.profile_value 
+AND profile_promo.profile_value=all_orders.profile_value 
+AND profile_promo.profile_value=profile_promo_1_order.profile_value(+) 
+AND profile_promo.profile_value=profile_promo_2_orders.profile_value(+) 
+AND profile_promo.profile_value=profile_promo_3_more_orders.profile_value(+) 
+AND profile_promo.profile_value=profile_all_custs.profile_value(+) 
+AND profile_promo.profile_value=profile_ecp_custs.profile_value(+) 
+AND profile_promo.profile_value=profile_2_or_more_order_custs.profile_value(+) 
+AND profile_promo.profile_value=profile_2_or_more_ecp_custs.profile_value(+) 
+ORDER BY TO_NUMBER(profile_promo.profile_value)
+     </param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

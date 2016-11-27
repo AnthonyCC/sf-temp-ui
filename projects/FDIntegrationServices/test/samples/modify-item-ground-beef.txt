@@ -1,0 +1,12 @@
+cartLine=1018576650&
+CCL_COPY_TYPE=SINGLE&
+CCListId=&
+productId=bgrnd_bgrnd&
+catId=bgrnd&
+skuCode=MEA0004635&
+quantity=3&
+EST_QTY=3.00+lb&
+PRICE=%2417.97&
+save_changes.x=75&
+save_changes.y=9&
+referer=http%3A%2F%2Fwww.freshdirect.com%2Fview_cart.jsp%3Ftrk%3Dgnav

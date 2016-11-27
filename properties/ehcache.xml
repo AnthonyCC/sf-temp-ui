@@ -1,0 +1,98 @@
+<ehcache>
+
+    <defaultCache
+           maxEntriesLocalHeap="100"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="3600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </defaultCache>
+
+
+	<!-- QuickShop caches -->
+    <cache name="pastOrdersCache"
+           maxEntriesLocalHeap="100"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="3600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
+	<cache name="yourListsCache"
+           maxEntriesLocalHeap="100"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="3600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
+	<cache name="fdListsCache"
+           maxEntriesLocalHeap="100"
+           eternal="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
+
+	<!-- Browse caches --> 
+	<!-- TODO fine tune cache sizes, max: 7300 categories, 60 Prizing zones-->
+	<cache name="cmsOnlyProductGrabberCache"
+           maxEntriesLocalHeap="500"
+           eternal="true"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+	<cache name="erpsProductGrabberCache"
+           maxEntriesLocalHeap="500"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+	<cache name="erpsZoneProductGrabberCache"
+           maxEntriesLocalHeap="5000"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+	<cache name="staticProductsInSubTreeCache"
+           maxEntriesLocalHeap="2000"
+           eternal="true"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+	<cache name="categorySubTreeHasProductsCache"
+           maxEntriesLocalHeap="10000"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+	<!-- TODO fine tune cache size, max: 35 calls/minute on category.jsp-->
+	<cache name="userRefinementCache"
+           maxEntriesLocalHeap="50"
+           timeToIdleSeconds="180"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+
+    <cache name="UNBXDVisitorCache"
+           maxEntriesLocalHeap="100"
+           timeToLiveSeconds="900"
+           memoryStoreEvictionPolicy="LRU">    
+    </cache>
+
+    <!-- CMS Page Cache -->
+    <cache name="cmsPageCache"
+           maxEntriesLocalHeap="50"
+           eternal="true"
+           memoryStoreEvictionPolicy="LFU">
+           <cacheLoaderFactory class="com.freshdirect.wcms.FDCacheLoaderFactory"
+                               properties="some_property=1, some_other_property=2" />
+           <cacheDecoratorFactory class="net.sf.ehcache.constructs.refreshahead.RefreshAheadCacheFactory"
+                                  properties="name=myCacheRefresher,timeToRefreshSeconds=200,batchSize=10,numberOfThreads=4,maximumBacklogItems=100,evictOnLoadMiss=true" />
+    </cache>
+</ehcache>

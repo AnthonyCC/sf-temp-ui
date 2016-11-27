@@ -1,0 +1,449 @@
+<%
+
+	//var defines
+
+	//perRowPP = target number of products to hit
+
+	int ppVeg = 0; //counter for vegetables
+	int ppVegTarget = perRowPP/2;
+	int ppFru = 0; //counter for fruit
+	int ppFruTarget = perRowPP/2;
+	
+	int tempCounter = 0; //reusable temp counter
+
+	
+	boolean skipExecution = false; //used for skipping sections of code
+
+	Collection vegColl = new ArrayList();
+	Collection fruColl = new ArrayList();
+
+	rowColl = new ArrayList();
+	rowCollIds = new ArrayList(); //holds each prodId to check for dupes
+	//check if we've processed this row already
+	if (globalRowColl.get(curRow) != null) {
+		//we have, fetch the contents used from before
+		rowCollIds.addAll((ArrayList)globalRowColl.get(curRow));
+	}
+  
+	currentFolder = ContentFactory.getInstance().getContentNode(catId);
+	isDept = (currentFolder instanceof DepartmentModel);
+	isCat = (currentFolder instanceof CategoryModel);
+	trkCode= "";
+
+	//needed for transactional
+		impressions = new ArrayList();
+		pi = null;
+		nConfProd = 0;
+	
+		confContext = new ConfigurationContext();
+		confContext.setFDUser(user);
+		cUtil = SmartStoreConfigurationStrategy.getInstance();
+
+		// added rowId here to keep these unique in case the same cat is used again
+		TX_FORM_NAME        = catId+rowId+"_form"; // impression form name
+		TX_JS_NAMESPACE     = catId+rowId+"_JSnamespace"; // impression javascript namespace
+  
+	/* pass the code that should be used as the tracking code */
+	if (isDept) {
+		trkCode = "dpage";
+		request.setAttribute("trk","dpage");
+	} else if(isCat) {
+		trkCode = "cpage";
+		request.setAttribute("trk","cpage");
+	}
+%>
+
+<% log(myDebug, "ROW "+curRow+": in peak produce row currentFolder : "+currentFolder); %>
+<% log(myDebug, "ROW "+curRow+": isDept : "+isDept); %>
+<% log(myDebug, "ROW "+curRow+": isCat : "+isCat); %>
+
+<%
+	layoutSettings = new Settings();
+	layoutSettings.setGrabberDepth(grabberDepth); //use passed value
+	layoutSettings.setIgnoreDuplicateProducts(true);
+	layoutSettings.setIgnoreShowChildren(false);
+	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+	layoutSettings.setReturnHiddenFolders(true);
+
+	List tmpList=new ArrayList();
+%>
+	<fd:PendingOrderChecker/>
+	<fd:ItemGrabber
+		category='<%=currentFolder %>' 
+		id='rtnColl' 
+		depth='<%=layoutSettings.getGrabberDepth()%>'
+		ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+		filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+		returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+		ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+		returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+		returnSkus='<%=layoutSettings.isReturnSkus()%>'
+		workSet='<%=tmpList%>'
+	>
+		<%
+			sortedColl = rtnColl;
+			request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+		%>
+	</fd:ItemGrabber>
+ 
+	<% log(myDebug, "ROW "+curRow+": in peak produce row : "); %>
+	<% log(myDebug, "ROW "+curRow+": in peak produce row sortedColl: "+sortedColl); %>
+
+<%
+	/*
+	 *	sortedColl should now contain the subcats
+	 *	iterate through and determine fru or veg
+	 */
+%>
+<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+	<%
+		if (contentNode instanceof CategoryModel) {
+			if ((contentNode.toString().toLowerCase()).indexOf("fru")>-1) {
+				//fruit subcat
+				log(myDebug, "ROW "+curRow+": in peak produce row fruit subcat found : "+contentNode);
+					catId = contentNode.toString();
+					currentFolder = ContentFactory.getInstance().getContentNode(catId);
+					tmpList=new ArrayList();
+					
+				/* check if we only want featured items */
+				if (featuredOnly) {
+					//featured only
+
+					currentCAT = (CategoryModel)currentFolder; fruColl = currentCAT.getFeaturedProducts();
+					log(myDebug, "ROW "+curRow+": FRU feats list : "+fruColl);
+
+				}else{
+					//all products
+			%>
+					<fd:ItemGrabber
+						category='<%=currentFolder %>' 
+						id='FRUrtnColl' 
+						depth='<%=layoutSettings.getGrabberDepth()%>'
+						ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+						filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+						returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+						ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+						returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+						returnSkus='<%=layoutSettings.isReturnSkus()%>'
+						workSet='<%=tmpList%>'
+					>
+						<% fruColl = FRUrtnColl; %>
+					</fd:ItemGrabber>
+			<%
+				}
+				log(myDebug, "ROW "+curRow+": in peak produce row fruColl : "+fruColl);
+			}else if ((contentNode.toString().toLowerCase()).indexOf("veg")>-1) {
+				//veg subcat
+				log(myDebug, "ROW "+curRow+": in peak produce row veg subcat found : "+contentNode);
+
+				catId = contentNode.toString();
+				currentFolder = ContentFactory.getInstance().getContentNode(catId);
+
+				tmpList=new ArrayList();
+					
+				/* check if we only want featured items */
+				if (featuredOnly) {
+					//featured only
+
+					currentCAT = (CategoryModel)currentFolder; vegColl = currentCAT.getFeaturedProducts();
+					log(myDebug, "ROW "+curRow+": VEG feats list : "+vegColl);
+
+				}else{
+					//all products
+			%>
+					<fd:ItemGrabber
+						category='<%=currentFolder %>' 
+						id='VEGrtnColl' 
+						depth='<%=layoutSettings.getGrabberDepth()%>'
+						ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+						filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+						returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+						ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+						returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+						returnSkus='<%=layoutSettings.isReturnSkus()%>'
+						workSet='<%=tmpList%>'
+					>
+						<% vegColl = VEGrtnColl; %>
+					</fd:ItemGrabber>
+			<%
+				}
+				log(myDebug, "ROW "+curRow+": in peak produce row vegColl : "+vegColl);
+			}else{
+				//other subcat
+				log(myDebug, "ROW "+curRow+": in peak produce row other subcat found : "+contentNode);
+			}
+		}
+	%>
+</logic:iterate>
+
+<% log(myDebug, "peak produce sortedColl"+sortedColl); %>
+<% log(myDebug, "peak produce fruColl"+fruColl); %>
+<% log(myDebug, "peak produce vegColl"+vegColl); %>
+
+<%
+	//iterate over vegColl and remove dupes contained in fruColl or globalColl
+	Iterator iteratorVeg = vegColl.iterator();
+	while (iteratorVeg.hasNext()) {
+		Object element = iteratorVeg.next();
+		if (fruColl.contains(element) || globalColl.contains(element) || rowCollIds.contains(element.toString())) {
+			iteratorVeg.remove();
+		}
+	}
+
+	//now iterate over fruColl and remove dupes contained in globalColl
+	Iterator iteratorFru = fruColl.iterator();
+	while (iteratorFru.hasNext()) {
+		Object element = iteratorFru.next();
+		if (globalColl.contains(element) || rowCollIds.contains(element.toString())) {
+			iteratorFru.remove();
+		}
+	}
+
+	//set sizes
+	ppVeg = vegColl.size();
+	ppFru = fruColl.size();
+
+	int offBy = (perRowPP-(ppFruTarget+ppVegTarget));
+
+	//logic to determine products from each cat/dept to show
+	if (ppVeg > ppVegTarget) {
+		if (ppFru > ppFruTarget){
+			//veg = perRowPP/2, fru = perRowPP/2
+			ppFru = ppFruTarget;
+			ppVeg = ppVegTarget;
+		}else{
+			ppVeg = perRowPP-ppFru;
+		}
+	}else{
+		ppFru = perRowPP-ppVeg;
+	}
+	int k = 10; //k is a killswitch jik to prevent runaway while
+	while (offBy>0 && k > 0) {
+		if ( (ppFru+ppVeg) < perRowPP ) {
+			if ( fruColl.size() >= (ppFru+1) ) {
+				ppFru++;
+			}else{
+				if ( vegColl.size() >= (ppVeg+1) ) {
+					ppVeg++;
+				}
+			}
+			offBy--;
+		}
+		k--;
+	}
+%>
+
+<% log(myDebug, "ROW "+curRow+": fruColl.size()"+ fruColl.size()+" using "+ppFru); %>
+<% log(myDebug, "ROW "+curRow+": vegColl.size()"+ vegColl.size()+" using "+ppVeg); %>
+<% log(myDebug, "ROW "+curRow+": ppFru+ppVeg:"+(ppFru+ppVeg)+" min: "+minForRowVisibility); %>
+
+<% if (ppFru+ppVeg > minForRowVisibility) { // min to require to display section %>
+	<logic:iterate id="contentNode" collection="<%= fruColl %>" type="java.lang.Object" indexId="idx">
+		<%
+			// skip if more than we want for fruit, is a category or already used on page
+			if (tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
+			ProductModel pm = (ProductModel) contentNode;
+			//skip if discontinued or unavailable
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+			//if dealsOnly is true, skip if not a deal
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+
+			//add to global collection for dupe check
+			globalColl.add(contentNode);
+			//add to pageColl for prices ref
+			rowColl.add(contentNode);
+			//add to rowCollIds for ROW dupe check
+			rowCollIds.add(contentNode.toString());
+
+
+			//needed for transactional
+				pi = cUtil.configure((ProductModel) pm, confContext);
+				impressions.add(pi);
+				
+				if (pi.isTransactional()) {
+					++nConfProd;
+				}
+
+			tempCounter++;
+		%>
+	</logic:iterate>
+
+	<% tempCounter = 0; %>
+
+	<logic:iterate id="contentNode" collection="<%= vegColl %>" type="java.lang.Object" indexId="idx">
+		<%
+			// skip if more than we want for fruit, is a category or already used on page
+			if (tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
+			ProductModel pm = (ProductModel) contentNode;
+			//skip if discontinued or unavailable
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+			//if dealsOnly is true, skip if not a deal
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+
+			//add to global collection for dupe check
+			globalColl.add(contentNode);
+			//add to pageColl for prices ref
+			rowColl.add(contentNode);
+			//add to rowCollIds for ROW dupe check
+			rowCollIds.add(contentNode.toString());
+
+
+			//needed for transactional
+				pi = cUtil.configure((ProductModel) pm, confContext);
+				impressions.add(pi);
+				
+				if (pi.isTransactional()) {
+					++nConfProd;
+				}
+
+			tempCounter++;
+		%>
+	</logic:iterate>
+
+	<%-- PRICING PART --%>
+	<fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= user %>" impressions="<%= impressions %>"/>
+	<%
+		//needed for transactional
+		String base_url = request.getParameter("base_url");
+		if (base_url == null) {
+			base_url = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
+		}
+	%>
+
+	<%
+		//rowColl should now have the collection of products to use
+
+		//if we have enough items to show, display them
+		if (rowColl.size() > minForRowVisibility) {
+	%>
+
+		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+		<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRN_above.html"/>
+
+		<% if (isTransactionalRow) { %>
+			<form id="<%= TX_FORM_NAME %>" class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+			<fd:AddToCartPending id="<%= TX_FORM_NAME %>"/>
+			<fd:CmFieldDecorator/>
+			<input name="catId" type="hidden" value="<%=catId%>" />
+		<% } %>
+			<table border="0" width="100%">
+			<tr valign="bottom" style="width:100%;">
+
+				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+
+				<%
+					log(myDebug, "ROW "+curRow+": contentNode : "+contentNode);
+					log(myDebug, "ROW "+curRow+": instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "ROW "+curRow+": globalColl.contains : "+globalColl.contains(contentNode));
+					
+					//we don't need checks here, we did it previously
+
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,false);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+
+					//product image coupon
+					FDCustomerCoupon curProdImgCoupon = null;
+
+					if ( pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null ) {
+						curProdImgCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+					}
+					String productImageClassName = "productImage";
+					if (curProdImgCoupon != null) {
+						productImageClassName += " couponLogo";
+					}
+				%>
+
+					<td style="padding-left:5px; padding-right:5px;">
+						<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" className="<%= productImageClassName %>" coupon="<%= curProdImgCoupon %>" />
+					</td>
+				
+				</logic:iterate>
+			</tr>
+			<tr>
+				<% int txCount = 0; %>
+				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+				<%
+
+					log(myDebug, "ROW "+curRow+": contentNode2 : "+contentNode);
+					log(myDebug, "ROW "+curRow+": contentNode2 : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "ROW "+curRow+": instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+				%>
+
+					<td  align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+						<div class="WG_deals">
+							<%
+								FDCustomerCoupon curCoupon = null;
+							%>
+							<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
+								<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
+								
+								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
+								<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
+									<fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
+<%
+									if ( ((TransactionalProductImpression) impressions.get(idx)).getSku() != null && ((TransactionalProductImpression) impressions.get(idx)).getSku().getProductInfo() != null ) {
+										curCoupon = user.getCustomerCoupon(((TransactionalProductImpression) impressions.get(idx)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+									}
+								%>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_dynrowTrans"></display:FDCoupon>
+<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>" --><fd:PopupHandler id="<%= TX_FORM_NAME %>" tagCounter="<%= txCount%>" skuCode="<%=((TransactionalProductImpression) impressions.get(idx)).getSku().getSkuCode()%>"/>
+<%--input type="hidden" name='<%="alcoholic_" + txCount %>' id='<%="alcoholic_" + txCount %>' value='<%="quantity_" + txCount %>'/ --%>
+<!-- /fd:IsAlcoholic -->
+							<% 
+								txCount++;
+							} else { %>
+								<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
+
+								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
+								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
+								<%
+									if ( pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null ) {
+										curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+									}
+								%>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_dynrow"></display:FDCoupon>
+							<% } %>
+						</div>
+					</td>
+				</logic:iterate>
+			</tr>
+			<% if (isTransactionalRow) { %>
+			<tr>
+				<td class="wgd_addtocart" class="text11bold" colspan="<%= perRowPP %>">
+					<table width="100%">
+						<tr>
+							<td align="center">
+								<input type="hidden" name="itemCount" value="<%= nConfProd %>">
+								<input type="image" id="addMultipleToCart_np" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+								<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<% } %>
+			</table>
+
+		<% if (isTransactionalRow) { %>
+			<!-- fd:IsAlcoholic -->
+				<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart_np" quantityCheck="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
+			<!-- /fd:IsAlcoholic -->
+			</form><% } %>
+		<% } %>
+<% } %>
+
+<%
+	//add row collection to global storage
+	globalRowColl.put(curRow, rowCollIds);
+%>

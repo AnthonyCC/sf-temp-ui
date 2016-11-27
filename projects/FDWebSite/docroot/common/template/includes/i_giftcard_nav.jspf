@@ -1,0 +1,258 @@
+<%@page import="com.freshdirect.giftcard.EnumGiftCardType"%>
+<%@ page import='java.util.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+
+<%@ taglib prefix="fd" uri="freshdirect"%>
+<%@ taglib prefix="logic" uri="logic" %>
+
+<% //expanded page dimensions
+final int W_GIFTCARD_NAV_TOTAL = 970;
+%>
+
+
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+<div id="toptoolbar">
+<jsp:include page="/shared/locationbar/locationbar.jsp" />
+<jsp:include page="/shared/messages/messages.jsp" />
+</div>
+
+<%
+	//giftcard top nav
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+%>
+<% if (user != null) {
+				// ads are enabled
+				if (FDStoreProperties.isAdServerEnabled()) {
+					request.setAttribute("listPos", "SystemMessage");
+					%><div id="OAS_SystemMessage">
+						  <script type="text/javascript">OAS_AD('SystemMessage');</script>
+  					</div><% 
+  				} else { %>
+					<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+							<table width="<%=W_GIFTCARD_NAV_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+								<tr align="center">
+									<td>
+										<font class="text12rbold"><%=ann.getHeader()%></font><br />
+										<%=ann.getCopy()%><br />
+										<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+									</td>
+								</tr>
+								<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
+							</table><br />
+						</logic:iterate>
+					</fd:GetSiteAnnouncements></div>
+				<% } %>
+				
+			<% } %>
+<table width="<%=W_GIFTCARD_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="bottom" width="182">
+			<% if (user != null) {%>					
+				<% if (user.isDepotUser()) { %>
+					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
+				 <% } else { %>
+	    		<a href="/index.jsp"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+				 <% } %>
+			<% } else { %>
+	    	<a href="/index.jsp"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+			<% } %>
+	    </td>
+		<td valign="bottom" align="right">
+			<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
+				<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
+			<% } else if (user.isDlvPassActive()) { %>
+				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
+			<% } %>
+			
+		</td>
+	</tr>
+</table>
+
+<%
+
+	EnumGiftCardType giftType = user.getGiftCardType();
+
+	//	/media_stat/images/giftcards/nav/
+
+	//logic needs to be added here for which step we're on, right now changing step fakes it
+	int step = 0;
+	/*
+	 *	0 = HOME
+	 *	1 = GIFT & RECIP OPTIONS
+	 *	2 = PAYMENT INFO
+	 *	3 = CONFIRMATION
+	 */
+
+	// setup name/ids
+	String step0_id = "step0";
+	String step1_id = "step1";
+	String step2_id = "step2";
+	String step3_id = "step3";
+
+	// setup img properties
+	String step0_attribs = "height=\"30\" width=\"27\" alt=\"Gift Card Home\" name=\""+step0_id+"\" id=\""+step0_id+"\"";
+	String step1_attribs = "height=\"16\" width=\"160\" alt=\"Gift and Recipient Options\" name=\""+step1_id+"\" id=\""+step1_id+"\"";
+	String step2_attribs = "height=\"16\" width=\"95\" alt=\"Payment Info\" name=\""+step2_id+"\" id=\""+step2_id+"\"";
+	String step3_attribs = "height=\"16\" width=\"100\" alt=\"Confirmation\" name=\""+step3_id+"\" id=\""+step3_id+"\"";
+
+	// setup normal (off) images
+	String step0_img = "/media_stat/images/giftcards/nav/nav_gift_home_off.gif";
+	String step1_img = "/media_stat/images/giftcards/nav/nav_gift_opt_off.gif";
+	String step2_img = "/media_stat/images/giftcards/nav/nav_payment_info_off.gif";
+	String step3_img = "/media_stat/images/giftcards/nav/nav_confirm_off.gif";
+
+	// setup rollover (on) images
+	String step0_img_r = "/media_stat/images/giftcards/nav/nav_gift_home_on.gif";
+	String step1_img_r = "/media_stat/images/giftcards/nav/nav_gift_opt_on.gif";
+	String step2_img_r = "/media_stat/images/giftcards/nav/nav_payment_info_on.gif";
+	String step3_img_r = "/media_stat/images/giftcards/nav/nav_confirm_on.gif";
+
+	// setup links to each step (used for step check)
+	String step0_link = "/gift_card/purchase/landing.jsp";
+	String step1_link = "/gift_card/purchase/add_giftcard.jsp";
+
+	if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftType))	{
+		step1_link = "/gift_card/purchase/add_donation_giftcard.jsp";
+	}
+	String step2_link = "/gift_card/purchase/purchase_giftcard.jsp";
+		String step2b_link = "/gift_card/purchase/register_and_purchase.jsp"; // step 2 has two pages
+		String step2c_link = "/gift_card/purchase/includes/gc_add_creditcard.jsp"; // step 2 has three pages
+		String step2d_link = "/your_account/edit_creditcard.jsp"; // step 2 has four pages
+	String step3_link = "/gift_card/purchase/receipt.jsp";
+
+	// setup display (just the images by default)
+	String step0_disp = "<img src=\""+step0_img+"\" "+step0_attribs+" />";
+	String step1_disp = "<img src=\""+step1_img+"\" "+step1_attribs+" />";
+	String step2_disp = "<img src=\""+step2_img+"\" "+step2_attribs+" />";
+	String step3_disp = "<img src=\""+step3_img+"\" "+step3_attribs+" />";
+
+	// based on the current step (via jsp name in URI) set the appropriate image for the steps
+	String globalUri = request.getRequestURI().toLowerCase();
+
+	if (globalUri.indexOf(step0_link) > -1) { step = 0; }
+	if (globalUri.indexOf("/gift_card/purchase/tac.jsp") > -1) { step = 0; }
+	if (globalUri.indexOf(step1_link) > -1) { step = 1;}
+	if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftType))	{
+		step1_link = step1_link+"?gcDonId="+request.getParameter("gcDonId");
+	}
+	if (globalUri.indexOf(step2_link) > -1) { step = 2; }
+		if (globalUri.indexOf(step2b_link) > -1) { step = 2; }
+		if (globalUri.indexOf(step2c_link) > -1) { step = 2; }
+		if (globalUri.indexOf(step2d_link) > -1) { step = 2; }
+	if (globalUri.indexOf(step3_link) > -1) { step = 3; }
+
+	if ( step == 0 ) { step0_disp = "<img src=\""+step0_img_r+"\" "+step0_attribs+" />"; }
+	if ( step == 1 ) { step1_disp = "<img src=\""+step1_img_r+"\" "+step1_attribs+" />"; }
+	if ( step == 2 ) { step2_disp = "<img src=\""+step2_img_r+"\" "+step2_attribs+" />"; }
+	if ( step == 3 ) { step3_disp = "<img src=\""+step3_img_r+"\" "+step3_attribs+" />"; }
+	
+	// as we pass each step, we make it a link and allow mouse overs
+	if ( step > 0 ) {
+		// this setup is extra complicated because of the rounded corners
+		step0_disp = "<a href=\""+response.encodeURL(step0_link)+"\"" + "onMouseOver=\"swapImage('"+step0_id+"','" + step0_img_r + "');swapImage('gc_nav_topLf','/media_stat/images/giftcards/nav/nav_corner_top_lf_on.gif');swapImage('gc_nav_botLf','/media_stat/images/giftcards/nav/nav_corner_bot_lf_on.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#360';});\" onMouseOut=\"swapImage('"+step0_id+"','" + step0_img + "');swapImage('gc_nav_topLf','/media_stat/images/giftcards/nav/nav_corner_top_lf_off.gif');swapImage('gc_nav_botLf','/media_stat/images/giftcards/nav/nav_corner_bot_lf_off.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#693';});\"" + "><img src=\""+step0_img+"\" "+step0_attribs+" /></a>";
+	}
+	if ( step > 1 ) {
+		step1_disp = "<a href=\""+response.encodeURL(step1_link)+"\"" + "onMouseOver=\"swapImage('"+step1_id+"','" + step1_img_r + "');$('td_step1').style.backgroundColor='#360';\" onMouseOut=\"swapImage('"+step1_id+"','" + step1_img + "');$('td_step1').style.backgroundColor='#693';\"" + "><img src=\""+step1_img+"\" "+step1_attribs+" /></a>";
+	}
+	if ( step > 2 ) {
+		//step2_disp = "<a href=\""+response.encodeURL(step2_link)+"\"" + "onMouseOver=\"swapImage('"+step2_id+"','" + step2_img_r + "');$('td_step2').style.backgroundColor='#360';\" onMouseOut=\"swapImage('"+step2_id+"','" + step2_img + "');$('td_step2').style.backgroundColor='#693';\"" + "><img src=\""+step2_img+"\" "+step2_attribs+" /></a>";
+		step1_disp = "<img src=\""+step1_img+"\" "+step1_attribs+" />";
+		step2_disp = "<img src=\""+step2_img+"\" "+step2_attribs+" />";
+	}
+%>
+
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+  <div class="globalNavigation">
+    <ul class="menu basic-skin green-skin">
+      <% if(step == 3) {%>
+      <li class="menu-header item-skin-hover">
+          <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
+      </li><!--
+    --><li class="menu-item item-skin">      
+          <span class="gf-item">gift & recipient options</span>
+      </li><!--
+      --><li class="menu-item item-skin">
+          <span class="gf-item">payment info</span>
+      </li><!--
+      --><li class="menu-item item-skin item-skin-hovered">
+        <span class="gf-item">confirmation</span>
+      </li>
+      <%} else {%>
+      <li class="menu-header <% if (step == 0) { %> item-skin-hovered <% } %> <% if (step > 0) { %> item-skin-hover <% } %>">
+      
+        <% if (step > 0) { %>
+          <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
+        <%} else {%>
+          <span class="header-skin">gift cards</span>
+        <%}%>
+      </li><!--
+    --><li class="menu-item item-skin <% if (step == 1) { %> item-skin-hovered <% } %> <% if (step > 1) { %> item-skin-hover <% } %>">      
+        
+        <% if (step > 1) { %>
+          <a class="gf-item reset-link" href="<%= step1_link %>">gift & recipient options</a>
+        <%} else {%>
+          <span class="gf-item">gift & recipient options</span>
+        <%}%>
+      </li><!--
+      --><li class="menu-item item-skin <% if (step == 2) { %> item-skin-hovered <% } %> <% if (step > 2) { %> item-skin-hover <% } %>">
+        
+        <% if (step > 2) { %>
+          <a class="gf-item reset-link" href="<%= step2_link %>">payment info</a>
+        <%} else {%>
+          <span class="gf-item">payment info</span>
+        <%}%>
+      </li><!--
+      --><li class="menu-item item-skin">
+        <span class="gf-item">confirmation</span>
+      </li>
+      <%}%>
+    </ul>
+  </div>
+<%} else {%>
+  <img width="1" height="6" alt="" src="/media_stat/images/layout/clear.gif" />
+  
+  <table class="GC_nav_table">
+    <tr>
+      <% if (step == 0) { %>
+        <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
+      <% } else { %>
+        <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
+      <% } %>
+        <td rowspan="3" class="GC_nav_item GC_nav_item_xtraPad<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_2"><%= step0_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 1) {%> GC_nav_on<%} %>" id="td_step1"><%= step1_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 2) {%> GC_nav_on<%} %>" id="td_step2"><%= step2_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 3) {%> GC_nav_on<%} %>" id="td_step3"><%= step3_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+      <td rowspan="3" class="GC_nav_spring_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+      <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_rt_off.gif" /></td>
+    </tr>
+    <tr>
+      <td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>    
+      <td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+    </tr>
+    <tr>
+      <% if (step == 0) { %>
+        <td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
+      <% } else { %>
+        <td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
+      <% } %>
+      <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_rt_off.gif" /></td>
+    </tr>
+  </table>
+<%}%>
+
+	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
+
+<img width="1" height="3" alt="" src="/media_stat/images/layout/clear.gif" />

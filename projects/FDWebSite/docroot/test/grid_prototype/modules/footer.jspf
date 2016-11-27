@@ -1,0 +1,52 @@
+<%@ include file="/test/grid_prototype/modules/footerlinks.jspf" %>
+<%@ include file="/test/grid_prototype/modules/shopbylinks.jspf" %>
+<div id="tagline">
+  <div class="container clearfix">
+    <div class="column span-24 center"><img src="img/tagline.png"></div>
+  </div>
+</div>
+<div id="bottomlinks" class="footergreen">
+  <div class="container clearfix">
+    <div class="column span-8">
+      <h4 class="clearfix">FD Feed<span class="right">go to our blog »</span><hr class="green"></h4>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu augue turpis, vitae egestas risus. Vivamus adipiscing dui et urna elementum non interdum tortor pretium. Duis ultrices iaculis velit, in accumsan purus dignissim id. Vestibulum est massa, posuere id tristique at, fermentum ac quam. Duis tincidunt iaculis nisi, nec tempus leo pretium at. Nam justo nisi, consequat eu auctor eget, dapibus id justo. Aenean pulvinar tempus quam at gravida. Ut enim metus, pharetra sed volutpat eu, pretium consequat est. Nam ac dui molestie sem tristique pellentesque vehicula in nisi. Praesent nisi tellus, scelerisque ut cursus non, sodales non leo.</p>
+    </div>
+    <div class="column span-8">
+      <h4 class="clearfix">our customers love us!<span class="right">read more »</span><hr class="green"></h4>
+    </div>
+    <div class="column span-8 last">
+      <h4 class="clearfix">did you know?<hr class="green"></h4>
+    </div>
+    <div class="column span-8">
+      <hr class="green">
+      <h4 class="clearfix">mobile</h4>
+    </div>
+    <div class="column span-8 last">
+      <hr class="green">
+      <h4 class="clearfix">love freshdirect</h4>
+    </div>
+  </div>
+</div>
+<div id="marquee" class="footergreen">
+  <div class="container clearfix">
+    <hr class="green">
+    <ul class="column span-24 center">
+      <li>Cheesy Chicken Parm & Fusili</li>
+      <li>Kid Power Cheese-Stuffed Jumbo! Shells</li>
+      <li>Kid Power Megaroni & Beef</li>
+      <li>Kid Power Sunny Falafel & Hummus</li>
+      <li>Kid Power Turkey Sweet-ish Meat</li>
+    </ul>
+    <hr class="green">
+  </div>
+</div>
+<div id="quicklinks" class="footergreen">
+  <div class="container clearfix">
+    <div class="column span-24 center">Home | Site Map | Privacy Policy | Customer Agreement | A note on images for AOL users</div>
+  </div>
+</div>
+<div id="copyright" class="footergreen">
+  <div class="container clearfix">
+    <div class="column span-24 center">© 2002-2011 FreshDirect. All Rights Reserved</div>
+  </div>
+</div>

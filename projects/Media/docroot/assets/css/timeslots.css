@@ -1,0 +1,1091 @@
+.tsCol {
+	margin-top/**/: 20px;
+	border: 1px solid #ccc;
+}
+#timeslots_grid_CRef, #timeslots_gridAdv_CRef, #timeslots_gridAdvNew_CRef {
+	display: none;
+	width: 107px;
+}
+#timeslots_grid_ERef, #timeslots_gridAdv_ERef, #timeslots_gridAdvNew_ERef {
+	display: none;
+	width: 223px;
+}
+
+#timeslot-tab-content input[type="radio"] {
+	height: 13px;
+}
+
+table.tsContainer td {
+	border: 1px solid #ccc;
+}
+
+.tsTable {
+	border-collapse: collapse;
+	cursor: pointer;
+}
+
+.float_children {
+	border: 0px solid #ccc;
+	width: 875px; /* this should be at LEAST (CRefx6)+ERef to fit the whole grid width */
+	overflow-x: hidden;
+}
+
+.float_children_noborder{
+	border: 0px solid #ccc;	
+	padding-left: 4px;
+}
+
+.tsHeaderC {
+	height: 56px;
+	width: 107px;
+	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-x;
+	cursor: pointer;
+}
+.tsHeaderE {
+	height: 96px;
+	overflow-x: hidden;
+}
+.tsHeadE {
+	width: 100%;
+}
+.tsHeaderE_top, .tsHeaderE_topC {
+	height: 6px;
+	line-height: 6px;
+}
+.tsHeaderE_topC {
+	width: 100%;
+}
+.tsHeaderE_top {
+	width: 6px;
+}
+
+table.tsHeaderC, .tsHeaderC {
+	border: 1px solid #ccc;
+	height: 56px;
+	width: 107px;
+	background-color: #FBFBFB;
+	padding-top: 0px;
+}
+
+.tsHeaderC td {
+	border:0px solid #ccc;
+	height:56px;
+	width: 107px;
+	background-color:#FBFBFB;
+	padding-top:0px;
+}
+
+table.tsHeaderE, .tsHeaderE {
+	border: 0px solid #ccc;
+	height: 66px;
+	width: 100%;
+	background-color: #78ABDC;
+	padding-top: 0px;
+}
+
+td.footer_container {
+	/*width: 88px;*/
+}
+
+td.footer_container td {
+  line-height: 0;
+}
+
+.tsFooter table {
+	width: 100%;
+	text-align: center;
+}
+.tsContainerC {
+	height: 31px;
+	width: 108px;
+	cursor: pointer;
+	padding: 0;
+}
+.tsContCon table, .tsContExp table {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	border-collapse: collapse;
+	vertical-align: middle;
+}
+.tsRadioCont {
+	height: 100%;
+	float: left;
+	width: 20px;
+	padding-right: 6px;
+	position: relative;
+	top: 5px;
+}
+.tsDayHeaderC, .tsDayHeaderE {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 20px;
+	color: #333;
+	width: 100%;
+}
+.tsDayHeaderC, .tsDayHeaderE {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+.tsDayNameC {
+	font-size:16px;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsDayDateC {
+	font-size:11px;
+	font-family: Verdana, Arial, sans-serif;
+}
+div.tsDayNameE {
+	font-size:24px;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family: Verdana, Arial, sans-serif;
+	/*padding-top:8px;*/
+	/*margin-left: 20%;*/
+}
+.tsDayDateE {
+	font-size:12px;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family: Verdana, Arial, sans-serif;
+	overflow: hidden;
+}
+
+.tsContainerE {
+	padding: 0;
+}
+
+.tsContentC a, .tsContainerE a {
+	height: 100%;
+	width: 100%;
+	color: #333;
+	cursor: default;
+}
+
+.tsCol div.tsContent {
+	display: block;
+	height: 31px;
+	text-decoration: none;
+	color: #333;
+	cursor: pointer;
+	overflow: hidden;
+	padding-left: 5px;
+}
+.tsCol div.tsContent div {
+	/* height: 12px; */
+	margin-right: 1px;
+	text-align: left;
+}
+
+.tsCol .tsContent .tsCont, .tsCol div.tsContent div.msgCont {
+	padding-top: 10px;
+}
+td.tsContainerBGE div.tsContent div.tsCont {
+	margin-left: 4px;
+}
+td.tsContainerBGC div.tsContent div.tsCont {
+	margin-left: 1px;
+}
+
+div.tsContent {
+	overflow-y: hidden;
+}
+
+.cutoff {
+	background-color: #fff;
+	font-weight: bold;
+	text-align: center;
+	height: 27px;
+	display: block;
+}
+
+.cutoff div, .cutoffDisp div {
+	text-decoration: none;
+	color: #333;
+	cursor: default;
+	height: 100%;
+	width: 100%;
+	line-height: 27px;
+}
+
+.cutoffDisp div {
+	background-color:#F7F7F7;
+}
+.cutoffDispBGC div {
+	text-decoration: none;
+	color: #333;
+	cursor: default;
+	height: 100%;
+	width: 100%;
+	line-height: 27px;
+}
+
+.cutoffDispBGC div.cutoffDispChild {
+	overflow: hidden;
+}
+.cutoffDispBGC {
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	text-align:center;
+}
+.cutoffDisp div.cutoffDispChild {
+	overflow: hidden;
+}
+
+.cutoff div.cutoffwBorder {
+	border: 1px solid #ccc;
+}
+.fleft {
+	float: left;
+}
+
+.ts_rb {
+	padding-top:6px;
+	width: 21px;
+	display: none;
+}
+.ts_rb input {
+	cursor: pointer;
+}
+
+.tsFooterC {
+	display: none;
+}
+.tsTopModuleHeader {
+	font-size:12px;
+	font-weight:bold;
+	color:#333333;
+}
+
+.tsBottomModuleHeader {
+	font-size:10px;
+	font-weight:bold;
+}
+
+a.tsHiperlink {
+	color:#669933;
+	font-size: 10px;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+div.content_fixed td{
+	font-family:Verdana,Arial,sans-serif;
+	font-size:10px;
+}
+
+a.tsCTBenefits {
+	color: #77A642;
+}
+
+a.tsNCBenefits {
+	color: #006400;
+}
+div.learnMoreTimeslot {
+	display:none;
+}
+
+div.holidayContent {
+	line-height: 10px;
+	text-align: center;
+	padding-left: 3px;
+	margin-top: 5px;
+}
+
+a.holidayLearnMore {
+	color:#77A642;
+	cursor:pointer;
+}
+div#MB_caption {
+	font: bold 12px "Lucida Grande",Arial,sans-serif;
+	padding:0.5em 2em 0.5em 0;
+}
+
+div#MB_content {
+	font: normal 10px "Lucida Grande",Arial,sans-serif;
+}
+
+.tsBordDefault {
+	border:1px solid #F8F8F8;
+}
+
+.tsBordDefaultExp {
+	border:1px solid #FFFFFF;
+}
+
+.tsBordDefaultExp div {
+	margin-top:8px;
+}
+
+a.tsDivHide {
+	color:#669933;
+	padding:0 20px 0 0;
+	font-size: 11px;
+	font-weight: normal;
+}
+span.tsAdvanceHeader {
+	padding:0 0 0 20px;
+}
+.tsTable td div div, td.tsFooter, .tsTable td div {
+	border: 0 none;
+} 
+table.tsTable td table.tsTable td {
+	border-top: 1px solid #ccc;
+}
+
+.tsTable td .tsTable td {
+	margin-left: 0;
+	margin-right: 0;
+}
+.tsHeaderC td {
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	background-color: transparent;
+}
+.tsFooter div {
+    margin: -1px 0 -1px -1px;
+}
+div.tsHeaderE {
+	/*margin-top: -10px;*/
+	min-width: 100px;
+}
+div.tsHeaderC {
+	margin-top: 10px;
+}
+.cutoffDisp {
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	text-align:center;
+}
+
+.tsContainerBGC {
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
+	background-color: #F7F7F7;
+	
+}
+.tsContainerBGE {
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
+	background-color: #FFFFFF;
+	vertical-align: top;
+}
+
+.tsContainerNoDelBGC {
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
+	background-color: #E2E2E2;
+	border-collapse: separate;
+}
+
+/*Steering Discount slot*/
+.tsDiscountE {
+	color: #E99722;
+	font-weight: bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsDiscountPropE {
+	overflow: hidden;
+	margin-top: 2px;
+	text-align: right;
+	padding: 2px 0px 0 0;
+}
+
+.tsCol div.tsContent div.tsDiscountPropE {
+	height: 28px;
+}
+.tsDiscountC {
+	color: #e99722;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	float: left;
+}
+.tsDiscountPropC {
+	padding:2px 0 0 4px;
+}
+
+/*Variable minimum order slot*/
+.tsMinOrderE {
+	color: #E99722;
+	font-weight: bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsMinOrderPropE {
+	overflow: hidden;
+	margin-top: 2px;
+	text-align: right;
+	padding: 2px 0px 0 0;
+}
+
+.tsCol div.tsContent div.tsMinOrderPropE {
+	height: 28px;
+}
+.tsMinOrderC {
+	color: #e99722;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	float: left;
+}
+.tsMinOrderPropC {
+	padding:2px 0 0 4px;
+}
+
+.tsCTStar {
+	margin-right:3px;
+}
+
+.tsDiscountPropE div div { 
+	float: left;
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+.tsDiscountPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+/* variable min order */
+.tsMinOrderPropE div div { 
+	float: left;
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+.tsMinOrderPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+/* same day */
+.tsPremiumE {
+	color: #78ABDC;
+	font-weight: bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsPremiumPropE {
+	overflow: hidden;
+	margin-top: 2px;
+	text-align: right;
+	padding: 2px 0px 0 0;
+}
+
+.tsCol div.tsContent div.tsPremiumPropE {
+	height: 28px;
+}
+.tsPremiumC {
+	color: #78ABDC;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	float: left;
+}
+.tsPremiumPropC {
+	padding:2px 0 0 4px;
+}
+.tsPremiumPropE div div { 
+	float: left;
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+.tsPremiumPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+.cutoffLR .cutoffDispChild div.premSlotTimer,
+.cutoffLR .cutoffDispChild div.premSlotMsg {
+}
+.premSlotTimer {
+	font-size: 18px;
+	line-height: 18px;
+	color: #d33;
+}
+.premSlotMsg {
+	font-size: 15px;
+	line-height: 15px;
+	color: #555;
+	font-weight: bold;
+}
+
+/*Reservation slot*/
+.tsContentResC {
+	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
+}
+.tsContentResE {
+	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
+}
+.tsReservationE {
+	color:#666666;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsReservationPropE {
+	overflow: hidden;
+	padding:5px 5px 0 0;
+	text-align:right;
+}
+.tsCol div.tsContent div.tsReservationPropE {
+	height:28px;
+}
+.tsReservationTimeE {
+	color:#333333;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+
+/*Chefstable slot*/
+.tsChefstableE {
+	color:#794E79;
+	font-weight:bold;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsChefstablePropE {
+	overflow: hidden;
+	text-align:right;
+	padding-top:2px;
+	width: 92px;
+}
+
+.tsCol div.tsContent div.tsChefstablePropE {
+	height: 28px;
+}
+
+.tsChefstablePropE div div { 
+	padding:6px 0 0 0px;
+}
+
+.tsChefstablePropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+/*SoldOut and Unavail slot*/
+.tsSoldoutE, .tsUnavailE {
+	color:#666666;
+	font-weight:normal;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsCol div.tsContent div.tsSoldoutPropE, .tsCol div.tsContent div.tsUnavailPropE {
+	height: 28px;
+}
+.tsSoldoutPropE, .tsUnavailPropE {
+	overflow: hidden;
+	padding: 0px 10px 0 0;
+	text-align: right;
+}
+
+.tsSoldoutC, .tsUnavailC {
+	text-decoration:line-through;
+}
+.tsSoldoutPropE div div, .tsUnavailPropE div div { 
+	float: left; 
+	margin-top: 10px; 
+	margin-left: 3px; 
+	width: 60px;
+}
+
+.tsSoldoutPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+.tsUnavailPropE div img { 
+	display: none;
+}
+
+/*EcoFriendly slot*/
+.tsEcoFriendlyE {
+	color:#666666;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsEcoFriendlyPropE {
+	overflow: hidden;
+	text-align:right;
+	padding-top:4px;
+}
+.tsEcoFriendlyPropC {
+	text-align:right;
+	margin-top:5px;
+}
+
+.tsCol div.tsContent div.tsEcoFriendlyPropE {
+	height:28px;
+}
+.tsDivHide a, .tsDivHide div {
+	color:#669933;
+	text-align:right;
+	font-weight:normal;
+	font-size:11px;
+}
+
+.tsEcoFriendlyTimeC {
+	color:#54821E;
+}
+
+/*EarlyAM Timeslot */
+
+.tsEarlyAmE {
+	color:#666666;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
+	vertical-align: bottom;
+}
+.tsEarlyAmPropE {
+	overflow: hidden;
+	text-align:right;
+	padding-top:10px;
+}
+.tsEarlyAmPropC {
+	text-align:right;
+	margin-top:7px;
+	
+}
+
+.tsCol div.tsContent div.tsEarlyAmPropE {
+	height:28px;
+}
+.tsDivHide a, .tsDivHide div {
+	color:#669933;
+	text-align:right;
+	font-weight:normal;
+	font-size:11px;
+}
+
+.tsEarlyAmTimeC {
+	color:#54821E;
+}
+
+/*Neighbourhood slot*/
+.tsNeighbourhoodE {
+	color:#666666;
+	font-size: 8px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsNeighbourhoodPropE {
+	overflow: hidden;
+	text-align:right;
+}
+.tsNeighbourhoodPropC {
+	text-align:right;
+	padding-top:2px;
+}
+
+.tsCol div.tsContent div.tsNeighbourhoodPropE {
+	height:28px;
+}
+
+.tsNeighbourhoodTimeC {
+	color:#D6736E;
+}
+
+.tsNeighbourhoodPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+.tsNeighbourhoodPropE div div { 
+	float: left; 
+	margin-top: 5px; 
+	margin-left: 3px; 
+	width: 70px;
+}
+
+/*Alcohol Restriction*/
+.tsAlcoholResE {
+	color:#800000;
+	font-weight:bold;
+	font-size: 8px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsAlcoholResPropE {
+	overflow: hidden;
+	padding-top:6px;
+	text-align:center;
+}
+
+.tsCol div.tsContent div.tsAlcoholResPropE {
+	height:28px;
+}
+
+/*Selected slot*/
+.tsContentSelE {
+	background: transparent url('/media/editorial/timeslots/images/selectedSlotBGC.gif') repeat-x left top;
+	color:#333333;
+}
+
+.tsSelectedSlotE {
+	float: left;
+	color: #666666;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	padding-top: 5px;
+}
+
+.tsSelectedSlotPropE {
+	overflow: hidden;
+	padding:5px 5px 0 0;
+	text-align:right;
+}
+.tsSelectedSlotPropE img {
+	float: left;
+}
+
+.tsCol div.tsContent div.tsSelectedSlotPropE {
+	height:28px;
+}
+
+.tsContentSelC {
+	color:#333333;
+	font-weight:bold;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;	
+}
+
+td.noTopBorder {
+    border-top: 0 none;
+}
+
+.tsContainerBGC div.tsContent div.tsDiscountTimeC {
+	padding-top:3px;
+}
+
+.tsContainerNoDelBGC div.tsContent div.tsDiscountTimeC {
+	padding-top:3px;
+}
+
+.tsContainerBGC div.tsContent div.tsPremiumTimeC {
+	padding-top:3px;
+}
+
+.tsContainerNoDelBGC div.tsContent div.tsPremiumTimeC {
+	padding-top:3px;
+}
+
+.tsForceC {
+	text-align:right;
+	padding:10px 10px 0 0;
+}
+#tsContainer {
+	overflow-x: hidden;
+	/* width: 730px; */
+}
+
+#tsContainer table, #timeslotloyalityHeader, #legendCheckout {
+  text-align: left;
+}
+
+#tsContainer td, #timeslotloyalityHeader td, #timeslotloyalityHeader font, #legendCheckout td {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 9px;
+}
+
+.tsFooter td {
+	line-height: 0px;
+	font-size: 1px !important;
+}
+
+#legendCheckout td {
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 11px;
+	color:#669933;
+	cursor:pointer;
+	text-decoration:none;
+}
+#legendCheckout .so-timeslot-legend-first-next{
+	display: none;
+}
+.ecofriendlyImage {
+	padding-top:4px;
+}
+.dayPart {
+	cursor: pointer;
+}
+.dayPart td {
+	font-size: 1px;
+	line-height: 1px;
+	background-color: #ccc;
+	padding: 0px;
+}
+.tsCont {
+	width: 60px;
+	white-space: nowrap;
+}
+.emptyDayCont {
+	border: 0 none;
+}
+.tsEcoFriendlyPropC {
+	padding-top: 4px;
+}
+.tsEarlyAmPropC {
+	padding-top: 4px;
+}
+.tsChefstablePropC {
+	padding-top: 6px;
+}
+.tsSelectedSlotPropC {
+	padding-top: 8px;
+}
+.tsChefstablePropE div, .tsEcoFriendlyPropE div, .tsNeighbourhoodPropE div, .tsReservationPropE div, .tsSelectedSlotPropE div, .tsSoldoutPropE div{
+	height: 30px;
+}
+
+.tsEcoFriendlyPropE div img, .tsNeighbourhoodPropE div img, .tsReservationPropE div img, .tsSelectedSlotPropE div img, .tsSoldoutPropE div img {
+	margin-top: 5px;
+	margin-bottom: -5px;
+}
+
+.tsNeighbourhoodPropE div img {
+	float: left;
+	margin-top: 5px;
+	margin-bottom: -5px;
+}
+.tsNeighbourhoodPropE div div {
+	float: left;
+	margin-top: 5px;
+	margin-left: 3px;
+	width: 70px;
+}
+.tsNeighbourhoodPropC {
+	margin-top: 5px;
+}
+
+.tsCol div.tsContent div.tsNoDeliv {
+	height: 100%;
+	margin-left: 8px;
+	line-height: 14px;
+}
+
+.tcSelectionBGC {
+	font-weight: bold;
+	background: transparent url('/media/editorial/timeslots/images/selectedBGC.gif') repeat-x left top;
+}
+
+/* contracted */
+.tsContainerBGC .tsAlcoholResPropC,
+.tsContainerBGC .tsAlcoholResPropE, 
+.tsContainerBGE .tsChefstablePropC, 
+.tsContainerBGC .tsChefstablePropE, 
+.tsContainerBGE .tsDiscountPropC,
+.tsContainerBGC .tsDiscountPropE, 
+.tsContainerBGE .tsEcoFriendlyPropC, 
+.tsContainerBGC .tsEcoFriendlyPropE,
+.tsContainerBGE .tsEarlyAmPropC, 
+.tsContainerBGC .tsEarlyAmPropE, 
+.tsContainerBGE .tsNeighbourhoodPropC, 
+.tsContainerBGC .tsNeighbourhoodPropE, 
+.tsContainerBGE .tsPremiumPropC,
+.tsContainerBGC .tsPremiumPropE,  
+.tsContainerBGE .tsReservationPropC, 
+.tsContainerBGC .tsReservationPropE, 
+.tsContainerBGE .tsSelectedSlotPropC, 
+.tsContainerBGC .tsSelectedSlotPropE, 
+.tsContainerBGC .tsSoldoutE_cont, 
+.tsContainerBGC .tsUnavailE_cont, 
+.tsContainerBGE .tsMinOrderPropC,
+.tsContainerBGC .tsMinOrderPropE, 
+.tsContainerBGC .ts_rb
+{
+	display: none;
+}
+
+/* expanded */
+.tsContainerBGE .tsAlcoholResPropE,
+.tsContainerBGC .tsChefstablePropC, 
+.tsContainerBGE .tsChefstablePropE, 
+.tsContainerBGE .tsCont, 
+.tsContainerBGC .tsDiscountPropC,
+.tsContainerBGE .tsDiscountPropE,
+.tsContainerBGC .tsEcoFriendlyPropC, 
+.tsContainerBGE .tsEcoFriendlyPropE,
+.tsContainerBGC .tsEarlyAmPropC, 
+.tsContainerBGE .tsEarlyAmPropE, 
+.tsContainerBGC .tsNeighbourhoodPropC, 
+.tsContainerBGE .tsNeighbourhoodPropE, 
+.tsContainerBGC .tsPremiumPropC,
+.tsContainerBGE .tsPremiumPropE, 
+.tsContainerBGC .tsReservationPropC, 
+.tsContainerBGE .tsReservationPropE, 
+.tsContainerBGC .tsSelectedSlotPropC, 
+.tsContainerBGE .tsSelectedSlotPropE, 
+.tsContainerBGE .tsSoldoutE_cont,
+.tsContainerBGE .tsUnavailE_cont,
+.tsContainerBGC .tsMinOrderPropC,
+.tsContainerBGE .tsMinOrderPropE,
+.tsContainerBGE .ts_rb
+{
+	display: block;
+}
+
+.tsContainerBGC .tsChefstablePropC {
+	float: left;
+}
+
+.cutoffLR, .cutoffLR .cutoffDispChild {
+	background-color: #f7f7f7;
+	font-weight: bold;
+	text-align: center;
+	height: 27px;
+}
+.cutoffLR .cutoffDispChild div {
+	padding-top: 8px;
+}
+
+.cutoffLR {
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.tsTableC {
+	width: 107px;
+	border-bottom: 1px solid #ccc;
+}
+
+.tsContainerBGC .ts_rb {
+	width: 0px;
+}
+
+.clickOnlyMouseOver {
+	background: transparent url('/media/editorial/timeslots/images/mouseOverBGC.gif') repeat-x left top;
+}
+
+.tsHeaderCMouseOver {
+	background: transparent url('/media/editorial/timeslots/images/date_gradient_mouseOver.gif') repeat-x left top;
+}
+
+/* modalbox rounded corner and drop shadow
+	#MB_frame {
+		
+		-webkit-border-bottom-left-radius: 4px;
+		-webkit-border-bottom-right-radius: 4px;
+		-webkit-border-top-left-radius: 4px;
+		-webkit-border-top-right-radius: 4px;
+
+		-moz-border-radius-bottomleft: 4px;
+		-moz-border-radius-bottomright: 4px;
+		-moz-border-radius-topleft: 4px;
+		-moz-border-radius-topright: 4px;
+
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+	#MB_window {
+		background-color: transparent;
+		-webkit-box-shadow: 0 0 4px 4px #333; 
+		-moz-box-shadow: #333 0 0 4px 4px; 
+		box-shadow: 0 0 4px 4px #333;
+	}
+*/
+
+.premSlotDpTc {
+	background-color: #fff;
+	position: absolute;
+}
+
+[data-component="timeselectorcontent"] .timeslot-note {
+  display: none;
+}
+
+.timeslot-note {
+  position: relative;
+  margin: 10px 0;
+  border: 1px solid #e7e5e4;
+}
+
+.timeslot-note .note-message {
+  width: 20%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  font-size: 18px;
+  font-weight: bold;
+  color: #f90;
+  text-transform: capitalize;
+  height: 1.5em;
+  text-align: center;
+}
+
+.timeslot-note .note-content {
+  box-sizing: border-box;
+  width: 80%;
+  margin-left: 20%;
+  background-color: #efefec;
+  padding: 10px;
+}
+
+#messages .cutoff {
+	height:auto;
+	text-align:left;
+	line-height:1.4em;
+	font-weight:normal;
+}
+
+#disablecheckout{
+    text-decoration:none;
+    color: #ccc;
+}
+
+[data-component="timeselectorcontent"] {
+	overflow: auto;
+}
+
+.tsContainerNoDelBGE{
+	background: #FFFFFF;
+}
+
+#tsContainer input[type="radio"] {
+    position: absolute;
+    left: -999em;
+}
+
+#tsContainer input:focus, [data-component="timeselectorcontent"] textarea:focus {
+    border-top: 2px solid #68aa6d;
+    border-right: 2px solid #68aa6d;
+    border-bottom: 2px solid #68aa6d;
+    border-left: 2px solid #68aa6d;
+    box-shadow: none;
+    outline: none;
+}
+#tsContainer input[type="radio"]:checked + label::before {
+    background: #4fa157;
+    box-shadow: 0 0 0 1px #4fa157;
+}
+#tsContainer input[type="radio"]:focus + label::before {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+#tsContainer input[type="radio"] + label::before {
+    background: #fafafa;
+    box-shadow: 0 0 0 1px #c2c2c2;
+    content: '\a0';
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
+    line-height: 14px;
+    margin-right: 10px;
+    vertical-align: 2px;
+}

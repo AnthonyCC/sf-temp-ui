@@ -1,0 +1,14 @@
+<%
+if (fdprd != null && fdprd.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {
+	%>
+	<table BORDER="0" CELLSPACING="0" CELLPADDING="1">
+		<tr VALIGN="top">
+			<td class="title12">Heating Instructions</td>
+		</tr>
+		<tr>
+			<td><%= fdprd.getNutritionInfoString(ErpNutritionInfoType.HEATING) %></td>
+		</tr>
+	</table>
+	<%
+}
+%>

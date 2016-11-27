@@ -1,0 +1,18 @@
+imp.rb is a simple utility written in Ruby language.
+To obtain a Ruby interpreter, please visit http://www.ruby-lang.org/en/
+
+For a test ride, issue the following command:
+
+  ruby imp.rb -s -i test.csv
+
+
+This utility transforms product attribute rows to a bulk of SQL commands.
+The input is a CSV file containing 4-tuples:
+
+  product ID, attribute name, attribute type, value
+
+Use quote mark to quote fields in CSV and separate them with comma.
+A sample line should be like this:
+
+  "Product:apl_mac","WINE_IMPORTER","STRING","Hungarovin"
+

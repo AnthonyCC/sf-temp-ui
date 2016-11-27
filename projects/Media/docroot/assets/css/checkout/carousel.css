@@ -1,0 +1,7 @@
+.atpfailure [data-component="carousel"] ul li.portrait-item {
+  width: 114px;
+}
+
+.atpfailure [data-component="carousel"]{
+  padding-bottom:15px;
+}

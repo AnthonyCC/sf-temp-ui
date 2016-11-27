@@ -1,0 +1,4 @@
+"ProductID","Attribute","Attribute Type","Value"
+"Product:apl_mac","WINE_IMPORTER","STRING","Hungarovin"
+"Product:apl_mac","RATING2","RELATIONSHIP","DomainValue:baking_false"
+"Product:apl_mac","PROD_IMAGE_TEST","MEDIA","/media/images/product/fruit/apples/apl_mac_c.jpg"

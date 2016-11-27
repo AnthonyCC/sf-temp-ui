@@ -1,0 +1,26 @@
+<%--
+	Requires:
+		imports: FDStoreProperties
+		taglibs: fd
+		
+--%><% if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
+	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+	
+	<div id="toptoolbar">
+		<div class="container">
+			<jsp:include page="/shared/locationbar/locationbar_optimized.jsp" />
+			<%-- removed /shared/messages/messages.jsp - html is now below --%>
+		</div>
+		<div id="messages">
+			<div class="container">
+				<ul class="content"></ul>
+			</div>
+			<hr class="shadow">
+			<div class="handler open-handler">show messages</div>
+			<div class="handler close-handler">hide messages</div>
+		</div>
+	</div>
+	<%-- this bundle needs to be included BEFORE any ads pos's are called in the page, but AFTER the toolbar is defined --%>
+	<jwr:script src="/locabar.js" useRandomParam="false" />
+<% } %>

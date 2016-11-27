@@ -1,0 +1,20 @@
+	<h2><%=deptModel.getFullName()%></h2>
+	<div style="border: 1px orange solid; margin:15px">
+	<h3>Featured Recommender: <%=deptModel.getFeaturedRecommenderTitle()%></h3>
+	<%FDSessionUser FDuser = (FDSessionUser) session.getAttribute(SessionName.USER); %>
+	<%for (ProductModel p : ProductRecommenderUtil.getFeaturedRecommenderProducts(deptModel, FDuser, session, null)) {%>
+		<div style="display: inline-block;width: 120px"">
+			<display:ProductImage product='<%=p%>' />
+			<display:ProductName product='<%=p%>' />
+		</div>
+	<%}%>
+	</div>
+	<div style="border: 1px orange solid; margin:15px">
+	<h3>Merchant Recommender: <%=deptModel.getMerchantRecommenderTitle()%></h3>
+	<%for (ProductModel p : ProductRecommenderUtil.getMerchantRecommenderProducts(deptModel)) {%>
+		<div style="display: inline-block;width: 120px"">
+			<display:ProductImage product='<%=p%>' />
+			<display:ProductName product='<%=p%>' />
+		</div>
+	<%}%>
+	</div>

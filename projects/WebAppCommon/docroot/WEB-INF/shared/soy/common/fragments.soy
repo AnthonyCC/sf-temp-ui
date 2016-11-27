@@ -1,0 +1,141 @@
+{namespace common}
+
+/**
+ * @param price
+ */
+{template .formatDecimalPrice}
+	{if $price - floor($price) == 0}
+		${floor($price)}.00
+	{elseif $price * 10 - floor($price * 10) == 0}
+		${$price}0
+	{else}
+		${$price}
+	{/if}
+{/template}
+
+/**
+ * @param price
+ * @param? wasPrice wasPrice
+ * @param? aboutPriceText aboutPriceText
+ * @param? scaleUnit
+ */
+{template .price autoescape="false"}
+	{if $wasPrice}
+		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>${$wasPrice}</s>
+	{else}
+		{call common.formatDecimalPrice}{param price:$price /}{/call}{if $scaleUnit}/{$scaleUnit}{/if}
+	{/if}
+	{if $aboutPriceText}
+		<span class="about-price">{$aboutPriceText}</span>
+	{/if}
+{/template}
+
+/**
+* @param? fromProducts
+* @param? numProducts
+* @param productList
+* @param? mobWeb
+*/
+{template .flexProductList autoescape="false"}
+{let $len: length($productList) /}
+{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+{let $fProducts: $fromProducts ? $fromProducts : 0 /}
+{let $l: $nProducts - $fProducts /}
+<ul class="products flex">
+  {for $n in range(0, $nProducts)}
+    {let $product: $productList[$fProducts + $n] /}
+    {call common.transactionalGridItem}
+      {param item:$product /}
+      {param mobWeb:$mobWeb /}
+    {/call}
+  {/for}
+</ul>
+{/template}
+
+/**
+* @param? fromProducts
+* @param? numProducts
+* @param productList
+* @param? showConfig
+* @param? abFeatures
+* @param? ifSingleUL
+* @param? mobWeb
+*/
+{template .productList autoescape="false"}
+	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
+	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 5 /}
+	{let $itemPerLineFinal: $mobWeb ? 2 : $itemPerLineFinal /}
+	{call common.fixedProductList data="all"}
+		{param itemPerLine:$itemPerLineFinal /}
+		{param showConfig: $showConfig /}
+		{param fromProducts: $fromProducts /}
+		{param numProducts: $numProducts /}
+		{param ifSingleUL: $ifSingleUL /}
+		{param mobWeb:$mobWeb /}
+	{/call}
+{/template}
+
+/**
+* @param? fromProducts
+* @param? numProducts
+* @param productList
+* @param? itemPerLine
+* @param? showConfig
+* @param? isHookLogic
+* @param? mobWeb
+*/
+{template .fixedProductList autoescape="false"}
+
+	{let $ipl: $itemPerLine ? $itemPerLine : 4 /}
+	{let $len: length($productList) /}
+	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
+	{let $l: $nProducts - $fProducts /}
+	{let $lines: ceiling($l / $ipl) /}
+	{for $line in range(0, $lines)}
+		<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+  		{for $col in range(0, $ipl)}
+      		{if $fProducts + $col + $line * $ipl < $nProducts}
+	        	{let $product: $productList[$fProducts + $col + $line * $ipl] /}
+	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
+	        	{if $product.productId == '!_SPACER_!'}
+	        		/* SPACER */
+	        		<li class="portrait-item data-component="product" data-transactional-trigger="false"><!-- {$product.productId} --></li>
+	        	{else}
+		        	{call common.transactionalGridItem}
+		          		{param item:$product /}
+		          		{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine') /}
+		          		{param showConfig: $showConfig /}
+		          		{param mobWeb:$mobWeb /}
+		        	{/call}
+	        	{/if}
+      		{/if}
+    	{/for}
+    	</ul>
+	{/for}
+{/template}
+
+
+/**
+* @param? fromProducts
+* @param? numProducts
+* @param products
+* @param? itemPerLine
+* @param? mobWeb
+*/
+{template .simpleFixedProductList autoescape="false"}
+	{let $ipl: $itemPerLine ? $itemPerLine : 1 /}
+	{let $ipl: $mobWeb ? 2 : $ipl /}
+	{let $len: length($products) /}
+	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
+	{let $l: $nProducts - $fProducts /}
+	{call common.fixedProductList}
+		{param productList:$products /}
+		{param isHookLogic:true /}
+		{param numProducts:$nProducts /}
+		{param itemPerLine:$ipl /}
+		{param ifSingleUL:true /}
+		{param mobWeb:$mobWeb /}
+	{/call}
+{/template}

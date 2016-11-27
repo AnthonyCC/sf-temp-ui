@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+  <Store id="FreshDirect">
+  	<departments>
+      <Department ref="mock_dept"/>
+    </departments>
+  </Store>
+
+  <Department id="mock_dept">
+  	<categories>
+      <Category ref="mock_category"/>
+	</categories>
+  </Department>
+
+  <Category id="mock_category">
+    <products>
+      <Product ref="a1"/>
+      <Product ref="a2"/>
+      <Product ref="a3"/>
+      <Product ref="b1"/>
+      <Product ref="bbb"/>
+    </products>
+  </Category>
+
+ <Product id="a1">
+    <FULL_NAME>A1</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="PRD01"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="mock_category"/></PRIMARY_HOME>
+  </Product>
+
+ <Product id="a2">
+    <FULL_NAME>A2</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="PRD02"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="mock_category"/></PRIMARY_HOME>
+  </Product>
+
+ <Product id="a3">
+    <FULL_NAME>A3</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="PRD03"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="mock_category"/></PRIMARY_HOME>
+  </Product>
+
+ <Product id="b1">
+    <FULL_NAME>B1</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="PRD04"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="mock_category"/></PRIMARY_HOME>
+  </Product>
+
+ <Product id="bbb">
+    <FULL_NAME>BBB</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="PRD05"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="mock_category"/></PRIMARY_HOME>
+  </Product>
+
+  <Sku id="PRD01">
+  </Sku>
+
+  <Sku id="PRD02">
+  </Sku>
+
+  <Sku id="PRD03">
+  </Sku>
+
+  <Sku id="PRD04">
+  </Sku>
+
+  <Sku id="PRD05">
+  </Sku>
+</Content>

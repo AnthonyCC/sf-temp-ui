@@ -1,0 +1,138 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editIssueSubTypePanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editIssueSubTypePanel = new YAHOO.widget.Panel("issueSubTypepanel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+	        //initCustomCalendar("trigger_lDate","createdDate","calContainer");
+		fillOptions("subTypeCreatedBy");
+	}
+
+     function fillOptions(dest) {
+	document.getElementById(dest).value = '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>';
+     }
+
+     function showissueSubTypeForm() {
+          addSysMessage("", false);
+          editIssueSubTypePanel.render(document.body);
+          editIssueSubTypePanel.show();
+     }
+             
+      function sendIssueSubTypeForm() {
+      	  
+    	  var iStype_createDate = YAHOO.util.Dom.get("createdDate").value;
+	  var iStype_createdBy = YAHOO.util.Dom.get("subTypeCreatedBy").value;
+	  var iStype_name = YAHOO.util.Dom.get("issueSubTypeName").value;
+	  var iStype_desc = YAHOO.util.Dom.get("issueSubTypeDesc").value;
+	  var issue_type = YAHOO.util.Dom.get("issueType").value;
+
+       	  var isActive_checkBox = 'false'; 
+
+          if(YAHOO.util.Dom.get("isActiveCheckBox").checked==true){
+        	  isActive_checkBox= 'true';
+          }  
+
+		  if(iStype_name.trim().length == 0 || iStype_desc.trim().length == 0 || issue_type == 0) {
+      	  		addSysMessage("Please enter/choose the required values", true);
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.addIssueSubType(sendIssueSubTypeFormCallback, iStype_createDate ,iStype_createdBy,iStype_name,iStype_desc,isActive_checkBox,issue_type);
+	  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendIssueSubTypeFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');
+              return;
+          }
+          if(result) {
+          	addSysMessage("Issue SubType added successfully", false);
+          	editIssueSubTypePanel.hide();
+          	location.href = location.href;
+          }else {
+          	addSysMessage("Issue SubType failed to add", true);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+      	  editIssueSubTypePanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="issueSubTypepanel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Add Issue Sub Type</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	<tr>
+		              <td>Date Created</td>
+		              <td>
+		                  	<div id="calContainer"></div>
+		                  	<span><input maxlength="10" size="10" name="createdDate" id="createdDate" value='<c:out value="${currentDate}"/>' readonly="readonly"/></span>
+				</td>
+		         </tr>
+			 <tr>
+		                  <td>Created By</td>
+		                  <td><input type="text" size="30" id="subTypeCreatedBy" value="" readonly="readonly"/></td> 
+		         </tr>
+			 <tr>
+		                  <td>IssueSubType Name</td>
+		                  <td><input type="text" size="30" id="issueSubTypeName" value=""/></td> 
+		         </tr>
+			 <tr>
+		                  <td>IssueSubType Description</td>
+		                  <td><input type="text" size="30" id="issueSubTypeDesc" value=""/></td> 
+		         </tr>
+		         <tr>
+		                  <td>Is Active</td>
+		                  <td><INPUT type="checkbox" name="isActiveCheckBox" id="isActiveCheckBox"></td>
+		         </tr>
+			 <tr>
+		                  <td>Issue Type</td>
+		                  <td>
+		                  	<select id="issueType" name="issueType" >
+		                  		<option value="<c:out value=""/>">--Please Select</option>
+						 	<c:forEach var="issueType" items="${issueTypes}">
+						 		<option value="<c:out value="${issueType.issueTypeName}"/>"><c:out value="${issueType.issueTypeName}"/></option>
+			        			</c:forEach>
+						</select>
+	                    	 </td>
+		         </tr>
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendIssueSubTypeForm()" /> </td>
+		         </tr>  
+		      </table>   
+	      </div>      
+        </div>
+    </div>
+    </div>

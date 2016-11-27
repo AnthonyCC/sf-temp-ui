@@ -1,0 +1,74 @@
+<%@page import="java.text.NumberFormat"%>
+<%@page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Date"%>
+<%@taglib uri='freshdirect' prefix='fd' %>
+
+<%-- required vairables: so, soAvailableProductCnt --%>
+
+<style type="text/css">
+#so_orders {
+	width: 100%;
+}
+
+#so_orders th {
+	font-weight: bold;
+	width: 20%;
+	text-align:left; 
+}
+
+#so_orders .th_last {
+	width: 40%; 
+}
+
+#so_orders td {
+	padding-top: 5px;
+}
+</style>
+
+<table id="so_orders">
+	<tr>
+		<th>Date</th>
+		<th>Details</th>
+		<th>Order #</th>
+		<th class="th_last">Options</th>
+	</tr>
+
+<% 
+	List<FDOrderInfoI> allOrders = so.getAllUpcomingOrders();
+
+	final DateFormat DATE_FORMATTER =  new SimpleDateFormat("M/d/y EEE");
+	FDStandingOrderList shoppingList = so.getCustomerList();
+
+	if ( allOrders != null && allOrders.size() > 0 ) { 
+		Collections.sort( allOrders, FDOrderInfoI.COMPARE_BY_REQUESTED_DATE ); %>
+		<!--List of all upcoming orders related to this standing order :-->
+			<% for ( FDOrderInfoI order : allOrders ) { %>
+				<fd:GetOrder id='fdOrder' saleId='<%= order.getErpSalesId() %>'>
+					<tr>
+						<td><%= DATE_FORMATTER.format( order.getRequestedDate() ) %></td>
+						<%int lineCnt = fdOrder.getLineCnt();%>
+						<td><%=lineCnt%> Item<%=lineCnt>1? "s":""%>, <b>$<%=order.getTotal()%></b></td>
+						<td><b><a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>"><%= order.getErpSalesId() %></a></b></td>
+						<td><span class="text11" style="font-weight: normal;">
+							<% if(order.isModifiable()) { %>
+								<button class="imgButtonOrange" onclick="document.location='/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">modify order</button>
+								<button class="imgButtonRed" onclick="document.location='/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>'; return false;">cancel order</button>
+							<% } else {%>
+								<button class="imgButtonOrange" onclick="document.location='/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">view order</button>
+							<% } %>
+						</span></td>
+					</tr>
+				</fd:GetOrder>
+			<% } %>
+	<% } else {	%>
+		<tr>
+			<td><%= DATE_FORMATTER.format(so.getNextDeliveryDate()) %></td>
+			<td><%=soAvailableProductCnt%> Item<%=soAvailableProductCnt>1? "s":""%>, <span id="notYetAvailableOrderTotalPrice" style="font-weight:bold;"></span></td>
+			<td><i>Not yet available</i></td>
+			<td><i>Use next section to make changes</i></td>
+		</tr>
+<% 	} %>
+</table>

@@ -1,0 +1,11 @@
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ page import='java.util.*' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="fk_core_settings.jspf" %>
+<%@ include file="fk_methods.jspf" %>
+
+<%
+pageContext.setAttribute("FK_EDITORIAL_DIR", FK_EDITORIAL_DIR);
+%>

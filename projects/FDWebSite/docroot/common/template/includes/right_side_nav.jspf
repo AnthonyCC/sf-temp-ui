@@ -1,0 +1,217 @@
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import='java.net.URLEncoder' %>
+<%@ page import='java.util.Locale' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel" %>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.framework.util.*" %>
+<%@ page import='java.net.URLEncoder' %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.common.pricing.PricingContext"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<% try{ %>
+<div align="right"><tmpl:get name='banner'/></div>
+<%@ include file="/includes/i_promotion_counter.jspf" %>
+<fd:Parameters id="params">
+<%
+if (FDStoreProperties.isAdvertisingTileEnabled() &&
+		( params.getDepartment() != null
+		  || request.getRequestURI().startsWith("/wine") )) {
+%>
+<%@ include file="/common/template/includes/i_right_side_tile.jspf" %>
+<%  } else { %>
+	<!-- advertising tile not enabled -->
+    <table border="0" cellspacing="0" cellpadding="0" width="155">
+       <tr>
+            <td align="right">
+                <% if (FDStoreProperties.isAdServerEnabled()) { %>
+                    <script type="text/javascript">
+                    OAS_AD("LittleRandy");
+                    </script>                    
+                <%}%>
+            </td>
+        </tr>
+    </table>
+	<br>
+<%
+}
+
+ContentNodeModel cnm = params.getContentNode();
+if (cnm != null) {
+	boolean hasPromotions = params.getUser() != null && params.getUser().getMaxSignupPromotion() > 0;
+	List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : Collections.<ProductModel>emptyList());
+	List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : Collections.<ProductModel>emptyList());
+    if ( (!hasPromotions) && (weRecommendImgProds.size()>0  || weRecommendTextProds.size()>0) ){
+%>
+    <table border="0" cellspacing="0" cellpadding="0" width="140">
+        <tr>
+            <td colspan="3" width="140"><img src="/media_stat/images/template/lists/we_recommend_hdr.gif" width="140" height="18" border="0" alt="WE RECOMMEND"><br></td>
+        </tr>
+        <tr>
+            <td bgcolor="#996699" valign="bottom" width="1"><img src="/media_stat/images/layout/996699.gif" 
+			    width="1" height="1"><br></td>
+			<td align="center" width="138"><img src="/media_stat/images/layout/clear.gif" ALT="" 
+			    width="138" height="3"><br>
+<table border="0" cellspacing="0" cellpadding="0" width="130">
+				    <tr valign="top">
+					    <td width="12" align="RIGHT"><br></td>
+						<td width="118" class="text10bold" align="left" colspan="2">Popular Picks<br>
+						    <font class="space4pix"><br></font></td>
+				    </tr>
+<%// get the we_recommend_text stuff..only display 3 items.
+int weRecCount = 0; 
+if(weRecommendTextProds.size() > 0) {
+
+%>
+    <tr valign="top">
+            <td width="12">&nbsp;</td>
+            <td width="118" colspan="2" class="text9_lh12">
+<%
+
+    weRecCount = 0;
+    String prdURL=null;
+    for(Iterator<ProductModel> wrItr=weRecommendTextProds.iterator();wrItr.hasNext() && weRecCount<3;) {
+        ProductModel prdMdl = wrItr.next();
+        if (prdMdl!=null) {
+            if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
+            // build the link so that it would also work for the grocery categories
+            if (prdMdl.isGrocery()) {
+               prdURL= response.encodeUrl("/category.jsp?catId="+prdMdl.getParentId()+"&prodCatId="+prdMdl.getParentId()+"&productId="+prdMdl.getContentKey().getId()+"&trk=promo");
+            } else {
+               prdURL= response.encodeUrl("/product.jsp?catId="+prdMdl.getParentId()+"&productId="+prdMdl.getContentKey().getId()+"&trk=promo");
+            }
+%>
+<div style="margin-left: 8px; text-indent: -8px;"><A HREF="<%=prdURL%>"><%=prdMdl.getGlanceName()%></a><br></div>
+<%      weRecCount++;
+        }
+    }
+    if(weRecCount>0) { 
+%>
+<font class="space4pix"><br><br></font>
+<%  } %>
+</td></tr>
+<%}
+
+if(weRecommendImgProds.size() > 0) {
+   weRecCount = 0;
+   SkuModel weRecSku = null;
+   String prdURL=null;
+    for(Iterator<ProductModel> wrItr=weRecommendImgProds.iterator();wrItr.hasNext() && weRecCount<2;) {
+        ProductModel prdMdl = wrItr.next();
+        if (prdMdl!=null) { 
+            if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
+            String prdCatID = prdMdl.getParentNode().getContentName();
+            // build the link so that it would also work for the grocery categories
+            if (prdMdl.isGrocery()) {
+               prdURL= response.encodeUrl("/category.jsp?catId="+prdCatID+"&prodCatId="+prdCatID+"&productId="+prdMdl+"&trk=promo");
+            } else {
+               prdURL= response.encodeUrl("/product.jsp?catId="+prdCatID+"&productId="+prdMdl+"&trk=promo");
+            }
+            String prdImgPath = "/media_stat/images/layout/clear.gif";
+            Image prdImg = prdMdl.getThumbnailImage();
+            String prdImgDim = "width=\"30\" height=\"30\"";
+            if (prdImg!=null) {
+                prdImgPath = prdImg.getPath();
+                prdImgDim = "width=\""+prdImg.getWidth()+"\" height=\""+prdImg.getHeight()+"\" ";
+            }
+            weRecSku = prdMdl.getDefaultSku();
+            String weRecPrice = null;
+            if (weRecSku==null) continue;
+            
+            weRecPrice = JspMethods.formatPrice(weRecSku.getProductInfo(), params.getUser() != null ? params.getUser().getPricingContext() : PricingContext.DEFAULT);
+%>						
+        <tr valign="top"><td width="12"><br></td>
+            <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>
+            <td width="83"><div style="margin-left: 8px text-indent: -8px;"><A HREF="<%=prdURL%>"><%=prdMdl.getGlanceName()%></A><br></div><%=weRecPrice%><br><br><font class="space4pix"><br></font></td>
+        </tr>
+<%      weRecCount++;
+        }
+    }
+    if(weRecCount>0) {
+%>
+<font class="space4pix"><br><br></font>
+<%  } %>
+</td></tr>
+<%}%>
+  </table>
+		    </td>
+		    <td width="1" bgcolor="#996699" valign="bottom"><img 
+		        src="/media_stat/images/layout/996699.gif" width="1" height="1"></td>
+	    </tr>
+	    <tr valign="top">
+	        <td width="140" colspan="3"><img src="/media_stat/images/template/lists/we_recommend_btm_crnrs.gif" width="140" height="5" border="0"></td>
+	    </tr>
+    </table>
+	<br>
+<% } %> 
+<% } %>
+<%
+	boolean isDeptPage = false;
+	boolean isProdPage = false;
+	boolean isCatPage = false;
+    boolean isWineOrRecipe = false;
+	boolean isCartConfirmPage = request.getAttribute("isCartConfirmPage")=="true";
+
+	String deptName = null;
+	if (cnm instanceof DepartmentModel) {
+		deptName = cnm.getFullName();
+		isDeptPage = true;
+		if ( cnm.getContentName().equals( "rec" ) || cnm.getContentName().equals( JspMethods.getWineAssociateId().toLowerCase() ) )
+			isWineOrRecipe = true;
+	} else if (cnm instanceof RecipeCategory) {
+		deptName = "Recipes";
+		isWineOrRecipe = true;
+	} else if (cnm instanceof CategoryModel) {
+		final DepartmentModel p =  ( (CategoryModel) cnm).getDepartment();
+		if (p != null)
+			deptName = p.getFullName();
+		isCatPage = true;
+		if ( p.getContentName().equals( "rec" ) || p.getContentName().equals( JspMethods.getWineAssociateId().toLowerCase() ) )
+			isWineOrRecipe = true;
+	} else if (cnm instanceof ProductModel ) {
+		isProdPage = true;
+	}
+
+	if (deptName == null) {
+		deptName = "";
+	} else {
+		deptName = URLEncoder.encode(deptName, "UTF-8").replace("%27","\\%27");
+	}
+%>
+
+<% if ( isCatPage || isCartConfirmPage ) { %>
+	<%-- display nothing --%>
+<% } else if ( isWineOrRecipe ) { %>
+	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
+<% } else if ( isDeptPage ) { %>
+	<comp:recommenderBox siteFeature="RIGHT_NAV_RLTD" currentNode="<%= (DepartmentModel)cnm %>" />
+<% } else if ( isProdPage ) { %>
+	<comp:recommenderBox siteFeature="BRWS_PRD_LST" currentNode="<%= (ProductModel)cnm %>" />
+<% } else { %>
+	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
+<% } %>
+	
+<p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
+
+	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<script type="text/javascript">
+                OAS_AD("SideCartBottom");
+      	</script>
+      	<br><br>
+	 <% } %>
+</fd:Parameters>
+<%
+}catch(Throwable t){
+	t.printStackTrace();
+}
+%>

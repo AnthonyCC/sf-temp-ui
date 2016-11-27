@@ -1,0 +1,71 @@
+<%@ page import='java.util.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='java.net.*'
+%><%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'
+%><%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'
+%>
+<%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+
+<potato:navigationhighlight/>
+<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); 
+/* move global nav to media
+ *	this may need code support from time to time (when new items are added)
+ */
+ String navigation = pageContext.getAttribute("navigation").toString();
+	
+%>
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) {
+	//System.out.println("globalnav_optimized.jspf");
+	%>
+	<script type="text/javascript">
+		FreshDirect = FreshDirect || {};
+		FreshDirect.globalnav = FreshDirect.globalnav || {};
+		FreshDirect.globalnav.curNav = '<%=navigation%>';
+		<% if (user != null) {
+			if (user.isGlobalNavTutorialSeen()) {
+				%>FreshDirect.globalnav.showTutorial = false;<%	
+			} else {
+				//only turn on if it's avail to user
+				boolean onNonShowPage = (request.getRequestURI().indexOf("login") != -1 || request.getRequestURI().indexOf("quickshop/index_guest.jsp") != -1);
+				if ( ( user.RECOGNIZED == user.getLevel() || user.SIGNED_IN == user.getLevel() ) && !onNonShowPage  && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnavtut2014, (FDUserI)session.getAttribute(SessionName.USER))) {
+					%>FreshDirect.globalnav.showTutorial = true;<%
+					user.setGlobalNavTutorialSeen(true);
+				}
+			}
+		} %>
+		
+	</script>
+	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
+<% } else { %>
+
+<% //expanded page dimensions
+final int W_GLOBAL_NAV_TOTAL = 970;
+%>
+<center>
+
+<%@ include file="/common/template/includes/globalnav_top_optimized.jspf" %>
+
+<oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'>
+<% try { 
+	Map<String, String> params = new HashMap<String, String>();
+	params.put("curNav", navigation);
+%>
+<table width="<%=W_GLOBAL_NAV_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+<tr><td>
+<fd:IncludeMedia name="/media/layout/nav/top_nav.ftl" parameters="<%= params %>">
+	<%-- no media, include code version --%>
+	<%@ include file="/common/template/includes/globalnav_table.jspf" %>
+</fd:IncludeMedia>
+</td></tr><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%><oscache:usecached />
+<% } %></oscache:cache>
+</center>
+<% }
+%>

@@ -1,0 +1,166 @@
+/* 
+................................................
+GLOBAL NAV DROPDOWNS
+................................................
+*/
+
+.dropdown-container {
+	width: 1000px;
+	position: absolute;
+	top: 50px;
+	left: -17px;
+	z-index: 25;
+	overflow: hidden;
+	margin-left: 1px;
+	display: none;
+}
+
+.top-item, .top-item-w-sub {
+	display: block;
+}
+
+
+.secondary-item {
+	position: relative;
+	display: block;
+	float: left;
+}	
+	
+.dropdown  {
+	width: 968px;
+	position: absolute;
+	top: -1200px;
+	left: -1px;
+	z-index: 20;
+   background-color: #fff;
+   -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
+      -moz-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
+           box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
+	border-top: none;
+	color: #414141;
+	text-align: left;
+	margin: 0 0 0 17px;
+	overflow: hidden;
+	font-family: Verdana, 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
+	text-shadow: 0 1px 2px #fff;
+	text-transform: none;
+	font-size: 12px;
+	padding-bottom: 40px;
+}
+
+
+.top-nav-items  {
+	width: 1000px;
+	position: absolute;
+	z-index: 35;
+}
+
+
+.dropdown-column {
+	float: left;
+	position: relative;
+	height: auto;
+/*	overflow: auto;
+	margin-bottom: -99999px;
+	padding-bottom: 99999px;
+	background: #fff url('img/drop-shadow.png') no-repeat top center;
+*/
+}
+
+
+.dropdown-column ul {
+	list-style-type: none;
+}
+
+
+.dropdown-column li {
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+}
+
+.column-heading  {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 23px 42px 10px 25px;
+	display: block;
+	text-indent: -10px;
+	margin-left: 10px;
+}
+
+.department.noheadertext .column-heading{
+	height:14px;
+}
+
+.dropdown-column li a:link,
+.dropdown-column li a:visited,
+.dropdown-column li a:hover,
+.dropdown-column li a:active
+{
+	color:#000;
+	display: block;
+	padding-left: 26px;
+	padding-right: 28px;
+	margin: 0;
+	height: 20px;
+	line-height: 20px;
+}
+
+.dropdown-column li a:visited {color:#000;}
+.dropdown-column li a:hover {color:#000; background-color: #e3ecd5;}
+.dropdown-column li a:active {color:#000;}
+.dropdown-column li a.viewall  {color: #693;text-decoration: underline;}
+
+
+.fruit .dropdown {
+	height: 330px;
+}
+
+.icon-new {
+	position: relative;
+	left: 3px;
+	top: 1px;
+}
+
+.icon-organic {
+	position: relative;
+	left: 3px;
+}
+
+.icon-rating {
+	position: relative;
+	left: 3px;
+	padding-right: 3px;
+}
+
+.icon-kosher {
+	position: relative;
+	top: 2px;
+	left: 2px;
+}
+
+.icon-local {
+	position: relative;
+	top: 2px;
+}
+
+.icon-gluten {
+	position: relative;
+	top: 2px;
+	left: 1px;
+}
+
+.icon-save {
+	position: relative;
+	top: 1px;
+	left: 2px;
+}
+
+.arrow {
+	position: absolute;
+	left: 50%;
+	top: 29px;
+	z-index: 100;
+	margin-left: -10px;
+	display: none;
+}

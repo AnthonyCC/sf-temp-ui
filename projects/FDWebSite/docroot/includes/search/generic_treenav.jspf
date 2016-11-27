@@ -1,0 +1,85 @@
+<%@	page import="java.util.Iterator"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree.TreeElement"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%
+	CategoryNodeTree categoryTree = newProds.getCategoryTree();
+	int noOfProds = newProds.getNoOfProducts();
+%> 
+
+
+<div id="categoryPanel" style="width:150px;">
+	<div id="catSum" class="text15" style="background-color: #999967; color: white; padding: 5px 5px 5px 10px; width: 135px; text-align: center">
+		<div style="width: 135px; text-align: left; margin-left: auto; margin-right: auto; padding-bottom: 5px;">
+			<%= categoryTree.getCategoryCount() %> categories have
+			<div style="font-weight: bold">new products</div>
+		</div>
+	</div>
+	<%
+		if (noOfProds > 0 && (nav.getDepartment() != null || nav.getCategory() != null)) {
+	%>
+	<div class="text11bold" style="margin: 0px; padding: 1em 5px 0 5px; background-color: #E0E3D0; width: 140px ! important">
+		<a href="<%= nav.getUnfilteredPageAction() %>">Show all products</a> <span style="color: grey">(<%=noOfProds%>)</span>
+	</div>
+	<%
+		}
+	%> 
+	<%
+ 	String selectedDept = nav.getDepartment();
+	if (selectedDept == null && nav.getCategory() != null) {
+ 		CategoryModel cm = (CategoryModel) ContentFactory.getInstance().getContentNode(nav.getCategory());
+ 		if (cm != null)
+ 			selectedDept = cm.getDepartment().getContentKey().getId();
+ 	}
+ 	%>
+	<fd:ContentTreeTag contentNodeName="te" expandToDepth="1" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount">
+		<%
+			int d = depth.intValue();
+			if (d == 0) { // department node
+		%>
+		<div class="text12bold" style="margin: 0px; padding: 1em 5px 0px 10px; background-color: #E0E3D0; width: 135px ! important">
+			<a href="<%=nav.getDepartmentAction(te.getContentKey().getId())%>"><%=te.getFullName().toUpperCase()%></a>&nbsp;<span style="color: grey">(<%=childCount%>)</span>
+		</div>
+		<%
+			} else { // category
+				String parentDeptId = "";
+				if (te instanceof CategoryModel) {
+					CategoryModel cm = (CategoryModel) te;
+					parentDeptId = cm.getDepartment().getContentName();
+				}
+				if (selectedDept != null && selectedDept.equals(parentDeptId)) {
+		%>
+		<div style="font-weight: <%=selected.booleanValue() ? "bold" : "normal"%>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 130px ! important">
+			<a style="margin-left: <%=d - 1%>em;" href="<%=nav.getCategoryAction(te.getContentKey().getId())%>"><%=te.getFullName()%></a>&nbsp;<span style="color: grey">(<%=childCount%>)</span>
+		</div>
+		<%
+				}
+			}
+		%>
+	</fd:ContentTreeTag>
+	<div class="text12bold" style="background-color: #E0E3D0;">&nbsp;</div>
+</div>
+<%
+	if (FDStoreProperties.isAdServerEnabled()) { %>
+<%--
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+<script type="text/javascript">
+	OAS_AD('LittleRandy');
+</script>
+</div>
+--%>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+	<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
+</div>
+<%
+	}
+%>
+
+

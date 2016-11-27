@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title><tmpl:get name="title" /></title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+    <jwr:style src="/grid.css" media="all" />
+    <jwr:style src="/oldglobal.css" media="all" />
+    <jwr:style src="/global.css" media="all" />
+    <jwr:style src="/expressco.css" media="all" />
+    <tmpl:get name="extraCss"/>
+    <tmpl:get name="extraJs"/>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
+<!--[if lte IE 9]><body class="ie" data-ec-page="<tmpl:get name="ecpage" />"> <![endif]-->
+<!--[if gt IE 9]><!--><body data-ec-page="<tmpl:get name="ecpage" />"><!--<![endif]-->
+    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
+    <tmpl:get name="globalnav" />
+
+    <div id="content">
+      <%-- TODO --%>
+      <tmpl:get name="content" />
+
+      <!-- content ends above here-->
+    </div>
+
+    <tmpl:get name="bottomnav" />
+
+    <tmpl:get name="soytemplates" />
+    <tmpl:get name="jsmodules" />
+  </body>
+</html>

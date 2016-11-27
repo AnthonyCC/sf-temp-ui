@@ -1,0 +1,140 @@
+<%@   page import="java.util.List"
+%><%@ page import="java.util.Map"
+%><%@ page import="java.util.Date"
+%><%@ page import="java.util.ArrayList"
+%><%@ page import="java.util.Locale"
+%><%@ page import="java.util.Iterator"
+%><%@ page import="java.text.SimpleDateFormat"
+%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="com.freshdirect.fdstore.customer.FDIdentity"
+%><%@ page import="com.freshdirect.fdstore.lists.FDListManager"
+%><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
+%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
+%><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
+%><%@ page import="com.freshdirect.fdstore.util.NewProductsGrouping"
+%><%@ page import="com.freshdirect.fdstore.util.TimeRange"
+%><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%>
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<%
+int row_cnt = 0;
+final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
+int n_rows = 0; // number of rows
+%>
+<table style="width:100%; margin-top: 10px;">
+<%
+
+boolean shouldRenderBlankCells = false; //blank cells off by default
+int i = 0;
+
+for (TimeRange tr : newProds.getGroupings().keySet()) {
+	List<ProductModel> groupedProducts = newProds.getGroupings().get(tr);
+	n_rows += groupedProducts.size() / GRID_ROW_SIZE;
+	if (groupedProducts.size() % GRID_ROW_SIZE != 0)
+		n_rows++;
+}
+
+for (TimeRange tr : newProds.getGroupings().keySet()) {
+%>
+<%
+List<ProductModel> groupedProducts = newProds.getGroupings().get(tr);
+
+if (groupedProducts.isEmpty())
+	continue;
+
+if(newProds.getGroupings().size() > 1) {
+%>
+<tr><td colspan="4"><div class="title12" style="text-align: left; margin: 14x 14x 0px;"><%= tr.getDescription()  %>&nbsp;(<%= groupedProducts.size() %>)<br/></div></td></tr>
+<tr><td colspan="4"><hr size="1" style="color:#ccc; background: #ccc;"></td></tr>
+<%
+}
+%>
+<%
+// turn products into product impressions
+
+List<ProductImpression> impressions = new ArrayList<ProductImpression>();
+for (ProductModel product : groupedProducts) {
+	impressions.add( new ProductImpression(product) );
+}
+
+
+boolean singleRow = (impressions.size() <= GRID_ROW_SIZE); // product list fits into just one row
+int rank = nav.getPageOffset()+1;
+
+shouldRenderBlankCells |= (i < newProds.getGroupings().keySet().size() - 1); //check if blanks need to be rendered
+%>
+
+	<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= singleRow %>">
+		<tr>
+			<% int colCount = 0; %>
+			<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= shouldRenderBlankCells %>"><%
+				// product to render
+				ProductModel productNode = pi.getProductModel();
+						
+				boolean isYourFave = DYFUtil.isFavorite(productNode, user);
+		
+				// URI that points to product page
+				String prdURI = FDURLUtil.getProductURI(newProds.getParentContainer(), productNode, trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+			
+				//long w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE) /* = 100/4 */;
+				long w = 100/GRID_ROW_SIZE;
+				if (!shouldRenderBlankCells) { w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE); }
+
+				if (isBlankCell) {
+					%><td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 10px;" :""%> 
+						<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" ><!-- blank --></td><%
+				}else{
+				%>
+					<td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 10px;" :""%> 
+						<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
+						
+						<%-- Product Image --%>
+						<table align="center" width="100%">
+							<tr>
+								<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+									<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" newProductPage="true" />
+								</td>
+							</tr>
+						</table>
+						<% if (pi.getProductModel().isFullyAvailable()) { %>	
+							<display:ProductRating product="<%= productNode %>"/>
+							<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
+						<% } else { %>
+							<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
+						<% } %>
+						
+
+                    <%
+					// Configuration description
+					//
+					if (pi.getConfigurationDescription() != null) {
+						%><div style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
+					<% } %>
+                    <display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
+                    <%
+					rank++;
+                    
+						%>
+					</td>
+				<% } %>
+			</fd:PIPRow>
+		</tr>
+		<%
+			// don't display the bar below the last product
+			if (row_cnt < n_rows - 1) {
+				%><tr><td colspan="4"><hr size="1" style="color:#ccc; background: #ccc;"></td></tr><%
+			}
+			row_cnt++;
+		%>
+	</fd:PIPLayout>
+
+<%
+	i++;
+}
+%>
+</table>

@@ -1,0 +1,347 @@
+<%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
+<%@ page import="com.freshdirect.affiliate.ErpAffiliate" %>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<% //expanded page dimensions
+final int W_YA_OD_CART_DETAILS_TOTAL = 970;
+%>
+<%! private final static java.text.DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##"); %>
+<%
+boolean isEBTPayment_cd = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));%>
+
+<%@page import="com.freshdirect.payment.EnumPaymentMethodType"%>
+<table border="0" cellspacing="0" cellpadding="1" width="<%= W_YA_OD_CART_DETAILS_TOTAL %>" align="center">
+<tr>
+	<td width="120"></td>
+  <td width="<%= W_YA_OD_CART_DETAILS_TOTAL - 455 %>"></td>
+	<td width="70"></td>
+	<td width="70"></td>
+	<td width="70"></td>
+	<td width="80"></td>
+	<td width="15"></td>
+	<td width="15"></td>
+	<td width="15"></td>
+</tr>
+
+<%
+if(cart.hasInvoice()) {
+	%>
+	<tr><td colspan="9"><br></td></tr>
+	<tr align="center">
+		<td><b>Quantity<br><font class="text10">Ordered/Delivered<%= cart.hasSettledReturn() ? "<span style='color:#cc0000'>/Returned</span>":""%></font></b></td>
+		<td>&nbsp;</td>
+		<td><b>Final<br>Weight</b></td>
+		<td><b>Unit<br>Price</b></td>
+		<td><b>Options<br>Price</b></td>
+		<td align="right"><b>Final<%=cart.hasSettledReturn()?"*":""%><br>Price</b></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+%>
+
+<logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
+	<%
+	WebOrderViewI invoiceView = null;
+	if(cart.hasInvoice()) {
+		invoiceView = cart.getInvoicedOrderView(view.getAffiliate());
+	}
+	String lastDept = null;
+	boolean firstRecipe = true;
+	double tax = 0.0;
+	double deposit = 0.0;
+
+	if (!"".equals(view.getDescription())) {
+		%>
+		<tr><td colspan="9">
+			<br>
+			<div class="orderViewHeader"><%= view.getDescription().toUpperCase() %></div>
+			<%
+			if (!view.isDisplayDepartment()) {
+				%><br><%
+			}
+			%>
+		</td></tr>
+		<%
+	}
+	%>
+	<%@ include file="/includes/your_account/i_orderline_detail.jspf" %>
+
+</logic:iterate>
+
+<tr>
+	<td colspan="9"><div class="orderSeparator" /></td>
+</tr>
+
+<tr>
+	<td colspan="2" rowspan="12"></td>
+	<td colspan="7"></td>
+</tr>
+
+<tr class="orderSummary" align="right">
+	<td colspan="3" align="right">Order Subtotal:</td>
+	<td align="right"><%=currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal())%></td>
+	<td align="center"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+	<td colspan="2"></td>
+</tr>
+
+<tr align="right" class="orderSummary">
+	<% if(!isEBTPayment_cd){
+		if (cart.isDlvPassApplied()) {
+	%>
+
+		<td colspan="3" align="right">Delivery Fee:</td>
+		<td align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+	<%
+	}
+	else if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
+		%>
+		<td colspan="3" align="right">Delivery Fee (waived):</td>
+		<td align="right">$0.00</td>
+		<%
+	} else {
+		%>
+		<td colspan="3" align="right">Delivery Fee:</td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliverySurcharge() : cart.getChargeAmount(EnumChargeType.DELIVERY)) %></td>
+	<%}%>
+	<td align="center"><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
+	<td colspan="2"></td>
+</tr>
+
+<% if(cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0){ %>
+<tr align="right" class="orderSummary">
+<%
+	if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+		%>
+		<td colspan="3" align="right">Delivery Premium (waived):</td>
+		<td align="right">$0.00</td>
+		<%
+	} else {
+		%>
+		<td colspan="3" align="right">Delivery Premium (Hamptons):</td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryPremium() : cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>
+	<%}%>
+	<td align="center"><b><%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+	<td colspan="2"></td>
+</tr>
+<%} %>
+
+<% if (cart.getMiscellaneousCharge() > 0.0) {%>
+		<tr valign="top" class="orderSummary" align="right">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= currencyFormatter.format(cart.getMiscellaneousCharge()) %><%}%></td>
+		    <td align="center"><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
+			<td colspan="2"></td>
+		</tr>
+	<%  } %>
+
+<%
+if (cart.getTaxValue() > 0) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3" align="right">Total Tax:</td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedTaxValue() : cart.getTaxValue()) %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+} else { %>
+<tr valign="top" class="orderSummary">
+			<td colspan="4" align="right">Delivery Fee(waived):</td>
+			<td width="30%" align="right">$0.00</td>
+			<td></td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<tr valign="top" class="orderSummary">
+			<td colspan="4" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a>(waived):</td>
+			<td align="right">$0.00</td>
+			<td colspan="3"></td>		    	
+			
+		</tr>
+		<tr valign="top" class="orderSummary">
+			<td colspan="4" align="right">Total Tax (waived):</td>
+			<td align="right">$0.00</td>
+			<td colspan="3"></td>
+		</tr>
+<%}
+if (cart.getDepositValue() > 0) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">State Bottle Deposit:</td>
+		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDepositValue() : cart.getDepositValue()) %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+%>
+
+<% if (cart.isChargeWaived(EnumChargeType.PHONE)) { %>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">Phone Handling Charge (waived):</td>
+		<td>$0.00</td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+<% } else if (cart.getPhoneCharge() > 0) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">Phone Handling Charge:</td>
+		<td><%= currencyFormatter.format(cart.getPhoneCharge()) %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<% } %>
+
+<%  
+double discountAmt = 0.0;
+List discounts = null;
+if (cart.hasInvoice()) {
+ 	discountAmt = cart.getActualDiscountValue();
+ 	discounts = cart.getActualDiscounts(); 	
+} else { 	 
+ 	discountAmt = cart.getTotalDiscountValue();
+ 	discounts = cart.getDiscounts(); 	
+} 	 
+if (discountAmt > 0) {
+	for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+		ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+		Discount discount = discountLine.getDiscount();
+		PromotionI promotion =  PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+		String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3"><%=desc%>:</td>
+		<td>-<%= currencyFormatter.format(discount.getAmount()) %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+	}
+}
+	//MNT-111 Bug Fix
+	String desc = cart.getRedeemedSampleDescription();
+	if(desc != null && !desc.equals("NONE")) {
+%>
+	<tr align="right" class="orderSummary">
+	    <td colspan="3"><%=desc%>:</td>
+	    <td>FREE!</td>
+	    <td colspan="3">&nbsp;</td>
+	</tr>	
+<%
+	}
+	String exDpdesc = cart.getExtendDPDiscountDescription();
+	if(exDpdesc != null && !exDpdesc.equals("NONE")) {
+%>
+	<tr align="right" class="orderSummary">
+	    <td colspan="3"><%=exDpdesc%>:</td>
+	    <td>Pass extension</td>
+	    <td colspan="3">&nbsp;</td>
+	</tr>	
+<%
+	}
+if (cart.getCustomerCreditsValue() > 0) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">Credits:</td>
+		<td>-<%=currencyFormatter.format(cart.getCustomerCreditsValue())%></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<% 
+}
+
+double restockingFee = 0.0;
+if (cart.hasSettledReturn()) {
+	restockingFee = cart.getRestockingCharges();
+	if (restockingFee > 0) {
+		%>
+		<tr align="right" class="orderSummary">
+			<td colspan="3">Restocking Fees:</td>
+			<td><%=currencyFormatter.format(restockingFee)%></td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<%
+	}
+}
+
+if (FDStoreProperties.isETippingEnabled()) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">Optional Tip:</td>
+		<td><%=currencyFormatter.format(cart.getTip())%></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+
+%>
+<tr class="orderTotal">
+	<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED <% } %>ORDER TOTAL:</b></td>
+	<td align="right">
+		<b><%=currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedTotal() : cart.getTotal())%></b>
+	</td>
+	<td align="center"><%=cart.isEstimatedPrice() ? "*" : ""%></td>
+	<td colspan="2"></td>
+</tr>
+<% 
+Double ebtPurchaseAmount = cart.getEbtPurchaseAmount();
+if(ebtPurchaseAmount != null){ %>
+<tr>
+	<td colspan="4" align="right"><a href="/help/delivery_info.jsp">EBT Purchase Total</a></td>
+	<td align="right">
+		<b><%=currencyFormatter.format(ebtPurchaseAmount.doubleValue())%></b>
+	</td>
+</tr>
+<% } %><%
+if (EnumPaymentType.MAKE_GOOD.equals(cart.getPaymentMethod().getPaymentType())) {
+	%>
+	<tr>
+		<td align="left" colspan="7"><br><br><b>Please note that you are not being charged for this order. The amount displayed above, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours.</b></td>
+	</tr>
+	<%
+}
+%>
+
+<% if (user.isCheckEligible()) { %>
+<tr><td colspan="7">
+	<div class="orderSeparator"></div>
+</td></tr>
+
+<%  if (cart.hasChargeInvoice()) { %>
+<tr align="right">
+	<td colspan="3">Returned Check Fee:</td>
+	<td><%=JspMethods.formatPrice(cart.getChargeInvoiceTotal())%></td>
+	<td colspan="3"></td>
+</tr>
+<% } %>
+
+<% } %>
+
+<tr>
+	<td align="right" colspan="7"><br><br><b>T = Taxable Item<br>S = Special Price<br>D = State Bottle Deposit</b></td>
+</tr>
+<% if (cart.isEstimatedPrice()) { %>
+	<tr>
+		<td align="right" colspan="7"><br>* Find out more about <a href="javascript:popup('/help/estimated_price.jsp','small')">estimated</a> prices.</td>
+	</tr>
+<% } %>
+<%
+if(cart.hasSettledReturn()) {
+	%>
+	<tr>
+		<td align="right" colspan="7">* Final prices and subtotal include only delivered items.</td>
+	</tr>
+	<%
+	if (restockingFee > 0) {
+		%>
+		<tr>
+			<td align="right" colspan="7">** A restocking fee was charged for the quantity of this item that was returned.<br>
+				(Restocking fees are based on item price: 100% for perishables, 50% for beer and 25% for packaged items.)
+			</td>
+		</tr>
+		<%
+	}
+}
+%>
+</table>

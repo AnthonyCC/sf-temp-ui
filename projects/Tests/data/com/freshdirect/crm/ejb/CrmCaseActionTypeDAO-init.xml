@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.CASEACTION_TYPE CODE="CREA" NAME="Create" DESCRIPTION="Create Description"/>
+<CUST.CASEACTION_TYPE CODE="NOTE" NAME="Note" DESCRIPTION="Note Description"/>
+
+</dataset>

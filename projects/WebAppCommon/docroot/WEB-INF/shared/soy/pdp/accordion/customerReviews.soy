@@ -1,0 +1,13 @@
+{namespace pdp.accordion}
+
+/**
+ * @param productId	
+ * @param bazaarVoice
+ */
+{template .customerReviews}
+{if $bazaarVoice}
+<li class="pdp-accordion-customerReview pdp-accordion-item"><input type="checkbox" id="pdp-customerReview" data-component="customercm"><label for="pdp-customerReview"><span class="pdp-accordion-item-carrot"></span>Customer Reviews</label><div class="customer-review">
+<div id="BVRRContainer" data-productid="{$productId}"></div>
+</div></li>
+{/if}
+{/template}

@@ -1,0 +1,16 @@
+@cr-4509-add_rows_to_campaign.sql
+@cr4509-customerinfo_add_col.sql
+@cr-4509-promotion_add_alter_cols.sql
+@cr-4509-promo_customer_add_col.sql
+@cr4509-referral_add_idx.sql
+@cr-4509-discountline.sql
+@cr-4509-populate_discountline.sql
+@cr4509-profile_attr_name.sql
+@cr4509-alert.sql
+@cr-4603-fix-current-promo-exp-date
+@cr-4607-create_fnc_rows_2_column.sql
+@cr4607-populate_customeralert.sql
+@cr-4624-add_url_rewrite_rules-table.sql
+@cr4549-listadmin.sql
+@cr4619-cust-store_gl-code_on_salesaction.sql
+@cr4667-cust-ocf_recoverable_errors.sql

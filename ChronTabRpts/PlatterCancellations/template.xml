@@ -1,0 +1,175 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>5</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+     select to_char(next_day(trunc(sysdate) - 1, 'Sunday') -7, 'DD-MON-YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>5</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select sa.sale_id as OrderNumber, 
+	   ci.first_name, 
+	   ci.last_name, 
+	   ci.email,
+	   foundsx.amount as Price, 
+	   to_char(sa.action_date, 'DD-MON-YYYY hh24:mi:ss') as Cancelled,
+	   to_char(foundsx.requested_date, 'DD-MON-YYYY hh24:mi:ss') as ForDeliveryOn, 
+	   sa.source as CancelledBy
+ from cust.salesaction sa, cust.sale s, cust.customerinfo ci, dlv.restricted_days rd,
+   (select sa.sale_id, sa.requested_date, sum(ol.price) amount from cust.salesaction sa, cust.orderline ol, cust.sale s, cust.customerinfo  ci
+   where sa.id = ol.salesaction_id
+         and (ol.material_number between '000000000300800008' and '000000000300899999' or
+ol.material_number between '000000000300720000' and '000000000300729999')
+		 and sa.sale_id = s.id 
+		 and s.customer_id = ci.customer_id
+		 and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) 
+		 and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+	group by sa.sale_id, sa.requested_date) foundsx 
+where rd.type = 'PTR'
+and to_char(foundsx.requested_date, 'D') = rd.day_of_week
+and to_number(to_char(sa.action_date, 'hh24')) >= to_number(to_char(rd.start_time, 'hh24'))
+and to_date(trunc(sa.action_date)) = to_date(trunc(foundsx.requested_date)) - 1
+and sa.action_type = 'CAO'
+and sa.sale_id = s.id
+and s.customer_id = ci.customer_id
+and sa.sale_id = foundsx.sale_id
+    </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>13</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select distinct sa1.sale_id, ci.first_name, ci.last_name, ci.email, 
+sa1.requested_date prev_requested_date, sa1.action_date prev_action_date, 
+sa2.requested_date new_requested_date, max(sa2.action_date) new_action_date 
+from cust.customerinfo ci, cust.sale s, dlv.restricted_days rd,
+(select sa.sale_id, sa.action_date, sa.requested_date from cust.salesaction sa,
+(select sa.sale_id, sa.action_type, sa.action_date, sa.requested_date, sum(ol.price) amount 
+from cust.salesaction sa, cust.orderline ol, cust.sale s, cust.customerinfo ci
+   where sa.id = ol.salesaction_id
+         and (ol.material_number between '000000000300800008' and '000000000300899999' or
+ol.material_number between '000000000300720000' and '000000000300729999')
+		 and sa.sale_id = s.id 
+		 and s.customer_id = ci.customer_id
+		 and action_type = 'MOD'
+		 and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+	group by sa.sale_id, sa.action_type, sa.action_date, sa.requested_date) s
+where sa.sale_id = s.sale_id
+and sa.action_type in ('CRO', 'MOD')) sa1,
+(select sa.sale_id, sa.action_date, sa.requested_date from cust.salesaction sa,
+(select sa.sale_id, sa.action_type, sa.action_date, sa.requested_date, sum(ol.price) amount 
+from cust.salesaction sa, cust.orderline ol, erps.material m, cust.sale s, cust.customerinfo ci
+   where sa.id = ol.salesaction_id
+   		 and (ol.material_number between '000000000300800008' and '000000000300899999' or
+ol.material_number between '000000000300720000' and '000000000300729999')
+		 and sa.sale_id = s.id 
+		 and s.customer_id = ci.customer_id
+		 and action_type = 'MOD'
+		 and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+	group by sa.sale_id, sa.action_type, sa.action_date, sa.requested_date) s
+where sa.sale_id = s.sale_id
+and sa.action_type in ('CRO', 'MOD')) sa2
+where rd.type = 'PTR'
+and to_char(sa2.requested_date, 'D') = rd.day_of_week
+and to_number(to_char(sa2.action_date, 'hh24')) >= to_number(to_char(rd.start_time, 'hh24'))
+and sa1.sale_id = sa2.sale_id
+and trunc(sa1.requested_date) = trunc(sa2.action_date) + 1
+and trunc(sa2.requested_date) >= trunc(sa1.requested_date) + 1  
+and to_number(to_char(sa2.action_date, 'hh24')) >= 17
+and ci.customer_id = s.customer_id
+and s.id = sa1.sale_id
+group by sa1.sale_id, ci.first_name, ci.last_name, ci.email, 
+sa1.requested_date, sa1.action_date, sa2.requested_date
+      </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>21</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select distinct sa.sale_id, ci.first_name, ci.last_name, ci.email
+from cust.customerinfo ci, 
+(
+select sale_id, customer_id from (
+select sa.sale_id, s.customer_id, sa.action_date, sa.requested_date from cust.salesaction sa,
+(select sa.sale_id, s.customer_id, sa.action_type, sa.action_date, sa.requested_date, sum(ol.price) amount 
+from cust.salesaction sa, cust.orderline ol,  cust.sale s, cust.customerinfo ci
+   where sa.id = ol.salesaction_id
+		 and sa.sale_id = s.id 
+		 and s.customer_id = ci.customer_id
+		 and action_type = 'MOD'
+		 and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+	group by sa.sale_id, s.customer_id, sa.action_type, sa.action_date, sa.requested_date) s
+where sa.sale_id = s.sale_id
+and sa.action_date = (select max(action_date) from cust.salesaction, dlv.restricted_days rd where sale_id = s.sale_id
+                          and rd.type = 'PTR' 
+						  and to_char(requested_date, 'D') = rd.day_of_week
+                          and action_date &lt; trunc(sa.requested_date) - 1 + to_number(to_char(rd.start_time, 'hh24'))/24 
+						  and sa.action_type in ('CRO', 'MOD') )
+)
+MINUS
+select sale_id, customer_id from (
+select sa.sale_id, s.customer_id, sa.action_date, sa.requested_date from cust.salesaction sa,
+(select sa.sale_id, s.customer_id, sa.action_type, sa.action_date, sa.requested_date, sum(ol.price) amount 
+from cust.salesaction sa, cust.orderline ol, cust.sale s, cust.customerinfo ci
+   where sa.id = ol.salesaction_id
+		 and sa.sale_id = s.id 
+		 and s.customer_id = ci.customer_id
+		 and action_type = 'MOD'
+		 and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+	group by sa.sale_id, s.customer_id, sa.action_type, sa.action_date, sa.requested_date) s
+where sa.sale_id = s.sale_id
+and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.sale_id and action_type in ('CRO', 'MOD') )
+)
+) sa
+where ci.customer_id = sa.customer_id
+    </param>
+   </dataSource>
+  </sheet>
+
+
+ </populate>
+</xlsReporting>

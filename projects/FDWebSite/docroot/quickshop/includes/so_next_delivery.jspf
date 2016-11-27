@@ -1,0 +1,20 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Date"%>
+<% 
+	FDOrderInfoI lastOrder = so.getLastOrder( user );
+%>
+
+<% if ( lastOrder != null && lastOrder.getRequestedDate().after( new Date() ) ) { %>
+	<div>The next delivery is scheduled for <%= new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( lastOrder.getRequestedDate() ) %></div>
+	<div><a href="/your_account/order_details.jsp?orderId=<%= lastOrder.getErpSalesId() %>">Click here to <%= lastOrder.isModifiable() ? "modify or cancel" : "view" %> this specific order</a></div>
+	
+<% } else { %>
+
+	<div style="text-align: left; font-weight: bold">Your next delivery is scheduled for <%= so.getNextDeliveryString() %></div>					
+	
+<% } %>

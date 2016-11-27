@@ -1,0 +1,59 @@
+/* glue: 0.3 hash: b3e63eda0f */
+.sprite-icons-minfail_newwindow_f2,
+.sprite-icons-minfail_newwindow_f1,
+.sprite-icons-CCP_continue_shopping_f2,
+.sprite-icons-CCP_continue_shopping_f1,
+.sprite-icons-CCP_checkout_f2,
+.sprite-icons-CCP_checkout_f1,
+.sprite-icons-PLP_addtocart_f2,
+.sprite-icons-PLP_addtocart_f1,
+.sprite-icons-CCP_edit_item_f2,
+.sprite-icons-CCP_edit_item_f1,
+.sprite-icons-PLP_add_to_list_f2,
+.sprite-icons-PLP_add_to_list_f1,
+.sprite-icons-carousel-r,
+.sprite-icons-carousel-r-hover,
+.sprite-icons-carousel-l,
+.sprite-icons-carousel-l-hover,
+.sprite-icons-qty_-_f2,
+.sprite-icons-qty_-_f1,
+.sprite-icons-qty__f2,
+.sprite-icons-qty__f1,
+.sprite-icons-hover-more-info,
+.sprite-icons-accordion-open,
+.sprite-icons-accordion-closed,
+.sprite-icons-button-list,
+.pdp-accordion-item-carrot,
+.sprite-icons-button-back{background-image:url('/media_stat/pdp/icons.png');background-repeat:no-repeat}
+.sprite-icons-minfail_newwindow_f2{background-position:0px 0px;width:307px;height:35px;}
+.sprite-icons-minfail_newwindow_f1{background-position:0px -35px;width:307px;height:35px;}
+.sprite-icons-CCP_continue_shopping_f1{background-position:0px -105px;width:200px;height:35px;}
+.sprite-icons-CCP_checkout_f1{background-position:-150px -140px;width:150px;height:35px;}
+
+.sprite-icons-PLP_addtocart_f1{background-position:-112px -175px;width:112px;height:27px;}
+.sprite-icons-CCP_edit_item_f1{background-position:-200px -105px;width:77px;height:27px;}
+.sprite-icons-PLP_add_to_list_f1{background-position:0px -202px;width:71px;height:27px;}
+.sprite-icons-carousel-r{background-position:0px -229px;width:25px;height:37px;}
+.sprite-icons-carousel-r-hover{background-position:-25px -229px;width:25px;height:37px;}
+.sprite-icons-carousel-l{background-position:-50px -229px;width:25px;height:37px;}
+.sprite-icons-carousel-l-hover{background-position:-75px -229px;width:25px;height:37px;}
+.sprite-icons-qty_-_f2{background-position:-277px -70px;width:27px;height:27px;}
+.sprite-icons-qty_-_f1{background-position:-277px -105px;width:27px;height:27px;}
+.sprite-icons-qty__f2{background-position:-71px -202px;width:27px;height:27px;}
+.sprite-icons-qty__f1{background-position:-98px -202px;width:27px;height:27px;}
+.sprite-icons-hover-more-info{background-position:-125px -202px;width:25px;height:21px;}
+.sprite-icons-accordion-open{background-position:-150px -202px;width:17px;height:17px;}
+.sprite-icons-accordion-closed{background-position:-167px -202px;width:17px;height:17px;}
+.sprite-icons-button-list{background-position:-184px -202px;width:13px;height:16px;}
+.sprite-icons-button-back{background-position:-300px -140px;width:7px;height:10px;}
+
+/* HOVER differs from generated sprite files! */
+.sprite-icons-CCP_continue_shopping_f1:hover{background-position:0px -70px;width:200px;height:35px;}
+.sprite-icons-CCP_checkout_f1:hover{background-position:0px -140px;width:150px;height:35px;}
+.sprite-icons-PLP_addtocart_f1:hover{background-position:0px -175px;width:112px;height:27px;}
+.sprite-icons-PLP_add_to_list_f1:hover{background-position:-224px -175px;width:71px;height:27px;}
+.sprite-icons-CCP_edit_item_f1:hover{background-position:-200px -70px;width:77px;height:27px;}
+.sprite-icons-accordion-open:hover{background-position:-150px -219px;width:17px;height:17px;}
+.sprite-icons-accordion-closed:hover{background-position:-167px -219px;width:17px;height:17px;}
+
+/* HOVER differs from generated sprite files! */

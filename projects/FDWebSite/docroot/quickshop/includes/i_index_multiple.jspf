@@ -1,0 +1,89 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<% //expanded page dimensions
+final int W_QUICKSHOP_INDEX_MULTIPLE_TOTAL = 750;
+final int W_QUICKSHOP_INDEX_MULTIPLE_FHALF = 359;
+final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
+%>
+<% Integer maxQuickshopItems = 10; %>
+<table width="<%= W_QUICKSHOP_INDEX_MULTIPLE_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+	<tr valign="top">
+    <td width="<%= W_QUICKSHOP_INDEX_MULTIPLE_FHALF %>" class="text12">
+			<font class="text14"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
+			<div class="title11" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
+			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
+			
+			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
+			<fd:GetCustomerRecipeList id="recipes">
+				<div class="text14" style="font-weight: bold;">Your Recipes</div>
+				<div class="title11" style="padding-top: 2px; color: #FF9933">REORDER YOUR FAVORITES:</div>
+				<div style="font-weight: bold; padding: 1em 0 2em 0"><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></div>
+			</fd:GetCustomerRecipeList>
+		</td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+
+    <td width="<%= W_QUICKSHOP_INDEX_MULTIPLE_LHALF %>" class="text13">
+			<% if ( user.isEligibleForStandingOrders() ) { maxQuickshopItems = null; %>					
+				<!-- STANDING ORDERS SECTION -->
+				<div id="standingorders-section" style="background-color: #e0e3d0; padding:20px 10px;">
+					<div class="text14" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
+					<div class="title11" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
+					<%@ include file="/quickshop/includes/so_lists.jspf" %>
+				</div>
+				<div style="height: 15px"></div>
+				<hr style="color: #CCCCCC; height: 1px;"/>
+				<div style="height: 20px"></div>
+			<% } %>
+			<!-- SHOPPING LISTS SECTION -->
+			<div id="shopping-list-section">
+				<fd:CCLCheck>			
+					<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
+					<font class="space2pix"><br><br></font>
+					<font class="title11" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+					<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+				</fd:CCLCheck>
+			</div>
+			<div style="height: 25px"></div>
+			<div id="eieo-section">
+				<div class="text14" style="font-weight: bold;">Everything You've<br>Ever Ordered!</div>
+				<font class="space2pix"><br><br></font>
+				<font class="title11" color="#FF9933">CHOOSE DEPARTMENT: </font>
+				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
+				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
+					<OPTION>Choose Department...
+					<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
+				</SELECT>
+			</div>
+		</td>
+	</tr>
+	<tr><td colspan="5"><br></td></tr>
+	<tr><td colspan="5" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	<tr><td colspan="5" align="center"><font class="space4pix"><br><br></font>            
+                <font class="space2pix"><br><br><br></font>
+        </td></tr>
+	</table>
+	
+	<div class="cnt-qs-idx-container">
+		<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+	</div>
+
+<BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<%
+	int barWidth = 693;
+	if(request.getRequestURI().indexOf("quickshop") > -1) {
+		barWidth = 535;
+	}
+	%>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=barWidth%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<% } %>
+					

@@ -1,0 +1,465 @@
+<%@ page import="java.util.*"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType"%>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import ='com.freshdirect.fdlogistics.model.FDReservation'%>
+<%@ page import='com.freshdirect.fdlogistics.model.*'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.fdstore.survey.*'%>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="java.text.MessageFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.GoogleAnalyticsCartProduct' %>
+<%@ page import='java.util.*'  %>
+<%@ page import="java.text.*" %>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_RECEIPT_TOTAL = 970;
+final int W_YA_ORDER_DETAILS_TOTAL = 970;
+%>
+
+<%-- This page is included by step_4_receipt.jsp --%>
+<%
+ 
+
+    // FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+    FDIdentity identity  = user.getIdentity();
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MM/dd/yy");
+
+    ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
+
+	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+    boolean isEBTPayment = false;
+%>
+<fd:GetOrder id='cart' saleId='<%= orderNumber %>'>
+<%
+	FDReservation reservation = cart.getDeliveryReservation();
+	ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
+	ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
+	ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
+	FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+	
+	String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpperCase();
+	String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
+	 
+	boolean modifyOrderMode = cart.isModifiedOrder();
+	request.setAttribute("modifyOrderMode", Boolean.toString(cart.isModifiedOrder())); //for sem use
+	
+	boolean displayReminder = false;
+	if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 0){
+	    displayReminder = true;
+	}
+
+    boolean isDepotAddress = false;
+    ErpDepotAddressModel depotAddress = null;
+	String depotCode = null;
+    String depotName = "";
+	String hamptonsDepotCode = "HAM";
+    
+    if (cart instanceof FDOrderI) {
+    	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) ((FDOrderI)cart).getDeliveryAddress() ;
+    	}
+    } else {
+    	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
+    	}    	
+    }
+	if (isDepotAddress && depotAddress != null) {
+		if(depotAddress.isPickup()){
+			FDDeliveryDepotModel depotModel = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+			if (depotModel!=null) {
+				depotName = depotModel.getName();
+				depotCode = depotModel.getDepotCode();
+			}
+		}
+    }
+	
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = cart.getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
+
+	// INCLUDE STANDING ORDER HEADER
+	if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL) { %>
+		<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL%>px; padding-top: 15px; font-size: 10px;">
+			<%@ include file="../../includes/i_so_header.jspf" %>
+		</div>
+		<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL-200%>px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
+		<% 
+			// standing orders - return to normal mode
+			user.setCurrentStandingOrder(null);
+			user.setCheckoutMode( EnumCheckoutMode.NORMAL );
+			session.setAttribute( "checkout_mode", EnumCheckoutMode.NORMAL );
+	}
+%>
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_RECEIPT_TOTAL%>" class="receipt_details">
+	<tr><%-- first row (line) --%>
+		<td class="<%=(cart.isModifiedOrder()) ? "modOrderBGColor" : "regOrderBGColor" %>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" /></td>
+	</tr>
+	<tr valign="top"><%-- spacer --%>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></td>
+	</tr>
+	<tr><%-- main content --%>
+	<td class="receipt_rightColumn"><%-- right column, order details (price, address, etc) --%>
+		  <div class="receipt_body">
+			<div class="success leftPad rightPad">
+				<img src="/media_stat/images/layout/checkmark_green.gif" height="18" width="19" alt="" />SUCCESS!
+				<div class="text14bold">
+					<%= (cart.isModifiedOrder()) ? "Order has been modified." : "Order has been placed." %>
+				</div>
+			</div>
+			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+			<div class="hline" id=""><!-- --></div>
+			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+			<div>
+				<table class="sumTable">
+					<tr>
+						<td class="aleft text12 leftPad">
+							Order Number:
+						</td>
+						<td class="aleft text12 rightPad gbold" colspan="2">
+							<a href="/your_account/order_details.jsp?orderId=<%= orderNumber %>" class="orderNumb"><%= orderNumber %></a>
+						</td>
+					</tr>
+					<tr>
+						<td class="aleft text12 label leftPad">Order Subtotal:</td>
+						<td class="aright text12"><%= JspMethods.formatPrice(cart.getSubTotal()) %></td>
+						<td class="aleft text12 rightPad"><% if (cart.isEstimatedPrice()) { %>&nbsp;*<% } %></td>
+					</tr>
+					<% if (cart.isDlvPassApplied()) { %>
+					<tr>
+						<td class="aleft text12 leftPad rightPad" colspan="3">Delivery Fee:
+							<div class="fright text12"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></div>
+							<div class="fclear"></div>
+						</td>
+					</tr>
+					<% } else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) { %>
+					<tr>
+						<td class="aleft text12 label leftPad">Delivery Fee<% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %> (waived)<% } %>:</td>
+						<td class="aright text12"><% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY)) %><% } %></td>
+						<td class="aleft text12 rightPad"><%= cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></td>
+					</tr>
+					<% } if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) { %>
+					<tr>
+					<td class="aleft text12 label leftPad">Delivery Premium (Hamptons)<% if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) { %> (waived)<% } %>:</td>
+					<td class="aright text12"><% if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %><% } %></td>
+					<td class="aleft text12 rightPad"><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></td>
+				</tr>
+				<% }if (cart.getMiscellaneousCharge() > 0.0) { %>
+					<tr>
+						<td class="aleft text12 label leftPad"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if (cart.isMiscellaneousChargeWaived()) {%> (waived)<% } %>:</td>
+						<td class="aright text12"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><% } %></td>
+						<td class="aleft text12 rightPad"><%= cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></td>
+					</tr>
+					<%  } %>
+					<% if (cart.getTaxValue() > 0) { %>
+					<tr>
+						<td class="aleft text12 label leftPad">Total Tax:</td>
+						<td class="aright text12"><%= JspMethods.formatPrice(cart.getTaxValue()) %></td>
+						<td class="aleft text12 rightPad"></td>
+					</tr>
+					<% } %>
+					<% if (cart.getDepositValue() != 0) { %>
+					<tr>
+						<td class="aleft text12 label leftPad">State Bottle Deposit:</td>
+						<td class="aright text12"><%= JspMethods.formatPrice(cart.getDepositValue()) %></td>
+						<td class="aleft text12 rightPad"></td>
+					</tr>
+					<% } %>
+					<% if (cart.getTotalDiscountValue() >= 0) {
+						List discounts = cart.getDiscounts();
+						for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+							ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+							Discount discount = discountLine.getDiscount();
+							PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+							String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
+							%>
+					<tr>
+						<td class="aleft text12 label leftPad">Discount:</td>
+						<td class="aright text12">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
+						<td class="aleft text12 rightPad"></td>
+					</tr>
+					<tr>
+						<td class="aleft text12 label italic leftPad rightPad" colspan="3"><%= desc %></td>
+					</tr>
+						<% }
+					} %>
+					<%
+						//MNT-111 Bug Fix
+						String descSample = cart.getRedeemedSampleDescription();
+						if (descSample != null && !descSample.equals("NONE")) { 
+					%>
+					<tr>
+						<td class="aleft text12 label leftPad"><%= descSample %>:</td>
+						<td class="aright text12">FREE!</td>
+						<td class="aleft text12 rightPad"></td>
+					</tr>
+					<% } %>
+					<%
+						String extendDPDescTop = cart.getExtendDPDiscountDescription();
+						if (extendDPDescTop != null && !extendDPDescTop.equals("NONE")) {
+					%>
+					<tr>
+						<td class="aleft text12 label leftPad"><%= extendDPDescTop %>:</td>
+						<td class="aright text12 rightPad" colspan="2">Pass extension</td>
+					</tr>
+					<% } %>
+					<% if (cart.getCustomerCreditsValue() > 0) { %>
+					<tr>
+						<td class="aleft text12 label leftPad">Credit Applied:</td>
+						<td class="aright text12">-<%= JspMethods.formatPrice(cart.getCustomerCreditsValue()) %></td>
+						<td class="aleft text12 rightPad"></td>
+					</tr>
+					<%  } %>
+					<tr>
+						<td class="aleft" colspan="3">
+							<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+							<div class="hline" id=""><!-- --></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="aleft orderTotal text14bold label leftPad"><% if (cart.isEstimatedPrice()) { %>Estimated<% } else { %>Order<% } %> Total:</td>
+						<td class="aright orderTotal text14bold"><%= JspMethods.formatPrice(cart.getTotal()) %></td>
+						<td class="aleft orderTotal text14bold rightPad"><% if (cart.isEstimatedPrice()) { %>&nbsp;*<% } %></td>
+					</tr>
+				</table>
+			</div>
+			<div class="hline" id=""><!-- --></div>
+			<div class="leftPad rightPad">
+				<% if (cart.getTaxValue() > 0 || cart.isEstimatedPrice()) { %>
+					<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+				<% } %>
+				<% if (cart.getTaxValue() > 0) { %>
+					<div class="aright"><strong>T</strong> = Taxable Item</div>
+				<% } %>
+				<% if (cart.isEstimatedPrice()) { %>
+					<div class="aright"><strong>*</strong> = Estimated price</div>
+				<% } %>
+				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+				<div class="text12bold">
+					Time:
+				</div>
+				<div>
+					<%= fmtDlvDateTime %><br />
+					<%= deliveryTime %>
+				</div>
+				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+			</div>
+			<div class="hline" id=""><!-- --></div>
+			<div class="leftPad rightPad">
+				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+				<div class="text12bold">
+					Address:
+				</div>
+				<div>
+					<%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br />
+	            	<% if (depotName != null || depotName.length() > 1) { %><%= depotName %><br /><% } %>         
+	            	<%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getApartment()%><% } %><br />
+					<% if (dlvAddress.getAddress2()!= null && dlvAddress.getAddress2().trim().length() > 0) {
+						%><%= dlvAddress.getAddress2() %><br />
+					<% }%>
+	            	<%= dlvAddress.getCity() %>, <%= dlvAddress.getState() %> <%= dlvAddress.getZipCode() %><br />
+	            	<br />
+	            	<% if (dlvAddress.getPhone() != null && !"".equals(dlvAddress.getPhone())) { %>
+	            		<div>
+	            			Phone: <%= dlvAddress.getPhone().getPhone() %> <%if ( !"".equals(dlvAddress.getPhone().getExtension()) ) { %>Ext. <%= dlvAddress.getPhone().getExtension() %><% } %>
+	            		</div>
+	            	<% } %>
+					<% if (dlvAddress.getAltContactPhone() != null && !"".equals(dlvAddress.getAltContactPhone().getPhone())) { %>
+	            		<div>
+	            			Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <% if ( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ) { %>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %><% } %>
+	            		</div>
+	            	<% } %>
+	            	<br />
+			        <% if (!isDepotAddress) { %>    
+	            		<% if (dlvAddress.getInstructions() != null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())) { %>  
+	                		<font class="text12bold">Special Delivery Instructions:</font><br />
+	                		<%= dlvAddress.getInstructions() %><br /><br />
+	            		<% } %>
+	            		<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>  
+	                		<font class="text12bold">Unattended Delivery:</font><br />
+	                		<%= NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"") %><br /><br />
+	            		<% } %>       
+					<% } else { %>      
+	            		<% if (depotAddress.getInstructions() != null && !depotAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(depotAddress.getInstructions())) { %>    
+	            			<b>Pickup Instructions:</b><br />
+	                		<%= depotAddress.getInstructions() %><br /><br />
+	            		<% } %>
+	        		<% } %>
+	        		<% if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
+	            		<font class="text12bold">Alternate delivery</font>:<br />
+	            		<%= dlvAddress.getAltDelivery().getName()%><br /><br /> 
+				
+						<% if ("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) { %>
+			               <%= dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName() %><br />
+			               <% if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%= dlvAddress.getAltApartment()%><br />
+			               <% if (dlvAddress.getAltPhone()!= null) { %><%= dlvAddress.getAltPhone().getPhone() %> <%if ( !"".equals(dlvAddress.getAltPhone().getExtension()) ){ %>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <% }} %><br />
+			           <% } %>
+			       <% } %>
+	            	<br />
+					<%
+						boolean isPickup = (cart instanceof FDOrderI) 
+							? EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() )
+							: dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup();
+	                	
+	                    if (isPickup) {
+							if (hamptonsDepotCode.equalsIgnoreCase(depotCode)) { %>
+	                         <a href="javascript:popup('/delivery_popup.jsp?location=hamptons','large')">Get Directions</a><br />
+						<% } else { %>
+							<a href="javascript:popup('/delivery_popup.jsp','large')">Get Directions</a><br />
+						<% } %>
+					<% } %>
+				</div>
+			</div>
+			<div class="hline" id=""><!-- --></div>
+			<div class="leftPad rightPad">
+				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+				<div class="orderDetails">			
+						<a id="printable_version" href="step_4_receipt_printable.jsp" class="orderNumb">printable version</a>
+						<a>|</a>
+						<a href="/your_account/order_details.jsp?orderId=<%= orderNumber %>" class="orderNumb fright">view order details</a>
+					<div class="fclear"></div>
+				</div>
+			</div>
+			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+		  </div>
+		</td>
+		<td class="receipt_leftColumn"><%-- left column, text and ad --%>				
+			<div class="text14bold" style="margin-bottom: 10px;">
+				<% if(cart.isModifiedOrder()) { %>
+					Thank you! Your modification is complete.
+				<% } else { %>
+					Your order has been placed.
+				<% } %>
+			</div>			
+			
+			<div>
+				<script type="text/javascript">
+					OAS_AD('ReceiptTop');
+				</script>
+			</div>
+			<div class="text12">
+				Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the <br>"<a href="/your_account/order_history.jsp">Your Orders</a>" section of Your Account.
+				<br /><br />
+				Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt<%= !customerModel.isGoGreen()?" and include a printed copy with your order":"" %>.
+				
+				<%
+					boolean pickupOrder = EnumDeliveryType.PICKUP.equals( cart.getDeliveryType() ); 
+			    	boolean isHomeOrder = EnumDeliveryType.HOME.equals( cart.getDeliveryType() );
+					boolean isCorporateOrder = EnumDeliveryType.CORPORATE.equals( cart.getDeliveryType() );
+					if (pickupOrder) {
+						FDDeliveryDepotModel dm =  com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
+						String depotCodePU = (dm != null) ? dm.getDepotCode() : null;
+						%><br /><br />
+	                  	<% if ("HAM".equalsIgnoreCase(depotCodePU)) { %>
+							If you get lost call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+						<% } else { %>
+							<span style="font-weight: bold;">New!</span> Call our Order Pickup desk at 718-928-1575 five to ten minutes before you arrive and we'll have your order ready and waiting when you pull up. If you get lost - or have questions about your account or previous orders - call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+						<% }
+					}
+				%>
+			</div>
+			<%-- default (tipping) message --%>
+			<div class="text12" style="margin-top: 10px;">
+				<b>Tipping policy:</b> You are under no obligation to tip but have the option of providing 
+				a tip if you feel that you've received exceptional service. 
+				FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. 
+				The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise 
+				involved with the delivery of your order and will not be given to any such employee as a gratuity.<br />
+				<font class="space8px"><br /></font>
+			</div>
+			
+			<div id="modifyOrderSection" style="display:none;">
+				<div class="hline" id="" style="margin-top:20px; margin-bottom: 3px;"><!-- --></div>
+				<div class="hline" id="" style="margin-bottom:10px;"><!-- --></div>
+				<div class="fleft text14bold">Forget something?</div>
+				<div class="fright"><a class="imgButtonOrange" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderNumber %>&amp;action=modify">modify order</a></div>
+				<div style="clear: both;"></div>
+				<div class="text12" style="margin-top: 10px;">Add items to your order as often as you want, for no extra delivery fee, until <b><%= DateUtil.getReceiptCutoffDate(cart.getDeliveryReservation().getCutoffTime()) %>.</b></div>			
+				<div class="hline" id="" style="margin-top:10px; margin-bottom: 3px;"><!-- --></div>
+				<div class="hline" id="" style="margin-bottom:20px;"><!-- --></div>
+			</div>
+			
+			<script type="text/javascript">
+				FreshDirect.ATC_Pending.checkOrderStatus('<%= orderNumber %>', 'modifyOrderSection');
+			</script>
+			
+			<div class="text12"><%-- unattended message --%>
+				<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
+					<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/receipt_notice.html" />
+				<% } %>
+			</div>
+			<div><%-- reservation message --%>
+				<% if (user.isEligibleForPreReservation() && user.getReservation() == null && EnumReservationType.STANDARD_RESERVATION.equals(reservation.getReservationType()) && custInfo.getRsvAddressId() == null) { %>
+					<form method="POST" name="updateWeeklyReservation">
+						<table border="1" cellspacing="0" cellpadding="0" width="100%">
+							<tr>
+								<td align="left">
+									<br />
+									<span style="font-weight: bold;">May we hold this time for you?</span><br />
+									Use the "Reserve Delivery" function in Your Account to reserve a delivery time.
+									Please note that you can update or cancel your timeslot reservation at any time.<br />
+									<a href="/your_account/reserve_timeslot.jsp?addressId=<%=fdCustomer.getDefaultShipToAddressPK()%>">Click here to reserve a delivery time.</a><br />
+								</td>
+							</tr>
+						</table>
+					</form>
+					<br />
+				<% } %>
+			</div>
+			<div><%-- pickup message --%>
+				<% if (!isHomeOrder && !isCorporateOrder) { %>
+					<table width="100%" cellpadding="2" cellspacing="0" border="0">
+						<tr>
+							<td bgcolor="#FFFFFF" style="padding-top: 8px;" class="text12">
+								<span style="font-weight: bold;">Please bring photo ID when picking up your order.</span><br />
+								Before releasing your order to you - or your authorized representative - our dispensing agents are required to ask for photo ID as proof of identity.
+							</td>
+						</tr>
+					</table>
+					<br />
+				<% } %>
+			</div>
+			<div><%-- survey --%>
+				<%-- INCLUDE RECEIPT PAGE SURVEY, let include figure out show/ not --%>
+				<%@ include file="/survey/includes/post_order.jspf" %><br />
+				<%-- END INCLUDE SURVEY --%>
+			</div>
+		</td>
+	</tr>
+</table>
+	
+	<%-- cart details --%>
+	<div align="left" style="width: <%= W_YA_ORDER_DETAILS_TOTAL %>px; margin-top: 20px;">
+		<b>CART DETAILS</b>
+		<hr class="line996" style="margin: 4px 0px;"/>
+	</div>
+	<div>
+		<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
+	</div>
+
+</fd:GetOrder>

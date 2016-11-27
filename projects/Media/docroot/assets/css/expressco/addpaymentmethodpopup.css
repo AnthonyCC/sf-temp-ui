@@ -1,0 +1,142 @@
+.ec-popup.addpaymentmethodpopup {
+  position: static;
+  display: inline-block;
+  text-align: left;
+  overflow: auto;
+  max-width:650px;
+  box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.13);
+  border: none;
+}
+.addpaymentmethodpopup form {
+	background: #fefefe;
+	padding: 60px;
+}
+
+.addpaymentmethodpopup input,
+.addpaymentmethodpopup select {
+	width: 100%
+}
+
+.ec-popup.addpaymentmethodpopup .ec-popup-header {
+  display: none;
+}
+
+#addpaymentmethodpopup form {
+  display: none;
+}
+
+#addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] #addpaymentmethod_creditcard {
+  display: block;
+}
+
+
+#addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] label[for="addpaymentmethod_creditcard_selector"],
+#addpaymentmethodpopup [data-show="addpaymentmethod_bank"] label[for="addpaymentmethod_bank_selector"],
+#addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"] {
+	background: #fff;
+	font-weight: bold;
+	color: #4fa157;
+}
+
+#addpaymentmethodpopup [data-show="addpaymentmethod_bank"] #addpaymentmethod_bank {
+  display: block;
+}
+
+#addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] #addpaymentmethod_ebt {
+  display: block;
+}
+
+addpaymentmethodpopup .buttons [fdform-button="cancel"] {
+	margin-top: 10px;
+}
+
+#addpaymentmethodpopup .buttons [type="submit"]{
+  float: right;
+  width: 260px;
+}
+
+#addpaymentmethodpopup label[for="CC_cardMonth"],
+#addpaymentmethodpopup label[for="CC_cardYear"],
+#addpaymentmethod_ebt span[fdform-error-for="cardYear"] {
+	margin-left: 0.75em;
+}
+
+#addpaymentmethodpopup label[for="CC_bil_state"],
+#addpaymentmethod_bank label[for="EC_bil_state"],
+#addpaymentmethod_ebt label[for="ET_bil_state"],
+#addpaymentmethodpopup label[for="CC_bil_zipcode"],
+#addpaymentmethod_bank label[for="EC_bil_zipcode"],
+#addpaymentmethod_ebt label[for="ET_bil_zipcode"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_apartment"],
+#addpaymentmethodpopup label[for="CC_bil_apartment"],
+#addpaymentmethod_bank label[for="EC_bil_apartment"],
+#addpaymentmethod_ebt label[for="ET_bil_apartment"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_apartment"],
+#addpaymentmethod_bank span[fdform-error-for="bil_apartment"] {
+	margin-left: 1.5em;
+}
+
+#addpaymentmethod_creditcard span[fdform-error-for="bil_zipcode"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_zipcode"], 
+#addpaymentmethod_bank span[fdform-error-for="bil_zipcode"] {
+	margin-left: 5em;
+}
+
+#addpaymentmethod_creditcard .buttons,
+#addpaymentmethod_ebt .buttons,
+#addpaymentmethod_bank .buttons{
+  padding-top:40px;
+}
+
+#addpaymentmethod_bank h1{
+  font-size:24px;
+  font-weight:bold;
+  color:#333;
+  margin-bottom: 5px;
+}
+
+#addpaymentmethod_bank h2 {
+  font-size:19px;
+  font-weight:bold;
+  border-bottom:1px solid #aaa;
+  color:#333;
+  margin-bottom: 20px;
+}
+
+.learn-more {
+	margin-top: 0;
+	font-size: 13px;
+}
+
+.account-helper {
+	font-size: 13px;
+} 
+
+h2#account_address_title {
+	border-bottom: none;
+	margin-top: 20px;
+}
+
+/* fix for APPBUG-4455 */
+
+#CC_cardHolderName,
+#CC_phone, 
+#EC_cardHolderName, 
+#EC_bankName, 
+#EC_cardNum, 
+#EC_abaRouteNumber,
+#EC_phone, 
+#ET_cardHolderName, 
+#ET_cardNum,
+#ET_phone,
+#EC_cardNumVerify
+{ display: block; }
+
+.selector-decoration > .tabs {
+	margin-top: 0;
+}
+
+.selector-decoration > label[for="addpaymentmethod_bank_selector"] {
+	position: relative;
+}
+

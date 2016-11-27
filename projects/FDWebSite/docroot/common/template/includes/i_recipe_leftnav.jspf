@@ -1,0 +1,74 @@
+<%@ taglib uri='logic' prefix='logic' %>
+
+<%@ page import='com.freshdirect.fdstore.util.RecipesUtil' %>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+
+<% //expanded page dimensions
+final int W_RECIPE_LEFTNAV_TOTAL = 150;
+%>
+
+
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_RECIPE_LEFTNAV_TOTAL%>">
+<tr><td width="10"></td>
+<td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>"><%-- spacer 135x1 --%></td>
+<td width="5"><%-- spacer 5x1 --%></td></tr>
+<%
+ String lnav_catId = request.getParameter("catId");
+ RecipeCategory rcpCategory = null;
+ if (lnav_catId!=null && !"".equals(lnav_catId.trim())) {
+   rcpCategory = (RecipeCategory) ContentFactory.getInstance().getContentNode(lnav_catId);
+ }
+ 
+ //try again,if no cat and a recipe id is in URL
+ if (rcpCategory==null && request.getParameter("recipeId") !=null) {
+   Recipe lnav_recipe = (Recipe) ContentFactory.getInstance().getContentNode(request.getParameter("recipeId"));
+   if (lnav_recipe!=null ) {
+       RecipeSubcategory rcpSubcat = lnav_recipe.getPrimarySubcategory();
+       rcpCategory = rcpSubcat!=null ? (RecipeCategory)rcpSubcat.getParentNode() : null;
+   }
+ }
+ 
+ if (rcpCategory!=null) {
+//attribute doesn't exist yet using zoomLabel temporarily
+   Image catImage = rcpCategory.getZoomLabel();
+   if (catImage!=null) {
+	%>
+	<tr><td width="10"></td><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
+	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br/>&nbsp;
+	</td><td width="5"></td></tr>
+<% 
+   }   %>
+<logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+     <tr><td width="10"></td><td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>">
+       <div style="margin-left: 8px; text-indent: -8px; font-weight: bold; ">
+      <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
+      	<%
+      		if(recipeSubcategory.getContentName().equals(request.getParameter("subCatId"))){
+      	    	List<DomainValue> filterByKeys = recipeSubcategory.getFilterBy();
+      	    	filterByKeys = filterByKeys == null ? Collections.<DomainValue>emptyList() : new ArrayList<DomainValue>(filterByKeys);
+      	      	//Map groupByMap = RecipesUtil.findRecipes(recipeSubcategory, RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
+      			%>
+      			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
+      			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">
+	      				<a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav&filter="+filter.getContentName())%>">
+	      					<%= filter.getLabel() %>
+	      				</a>
+      			</div>
+      			</logic:iterate>
+      			<%
+      		}
+      	%>
+      </div>
+     </td><td width="5"></td></tr>
+
+</logic:iterate>
+<% } %>
+</table><br/>

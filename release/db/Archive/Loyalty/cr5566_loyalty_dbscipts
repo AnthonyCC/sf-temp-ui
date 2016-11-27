@@ -1,0 +1,253 @@
+CREATE TABLE DLV.SESSION_LOG (
+    ID                NUMBER(16, 0) NOT NULL,
+    ROLE              VARCHAR2(16)  NOT NULL,
+    USER_ID           VARCHAR2(32)  NOT NULL,
+    SESSION_ID        VARCHAR2(128) NOT NULL,
+    START_DATETIME    DATE          NOT NULL,
+    END_DATETIME      DATE,
+    LASTINTERACTION_DATETIME DATE   NOT NULL
+);
+
+GRANT select, insert, update, delete on DLV.SESSION_LOG to FDSTORE_PRDA;
+
+GRANT select, insert, update, delete on DLV.SESSION_LOG to FDSTORE_PRDB;
+
+ALTER TABLE DLV.RESERVATION ADD (
+        CHEFSTABLE CHAR(1) default ' ' not null
+);  
+
+ALTER TABLE DLV.TIMESLOT ADD (
+        CT_CAPACITY number(10,0) default 0 not null 
+);
+
+ALTER TABLE DLV.ZONE ADD (
+        CT_ACTIVE varchar2(1) default ' ' not null,
+        CT_RELEASE_TIME number(4,0) default 0 not null
+);
+
+CREATE TABLE DLV.CAPACITY_SNAPSHOT(
+    ID                       NUMBER(16, 0)    NOT NULL,
+    SNAPSHOT_TIME            DATE             NOT NULL,
+    DELIVERY_DATE            DATE             NOT NULL,
+    ZONE_CODE                CHAR(3)          NOT NULL,
+    TIMESLOT_START           DATE             NOT NULL,
+    TIMESLOT_END             DATE             NOT NULL,
+    CUTOFF_TIME              DATE             NOT NULL,
+    LOYAL_RELEASE_TIME       DATE             NOT NULL,
+    CAPACITY_TOTAL           NUMBER(10, 0)    NOT NULL,
+    CAPACITY_BASE            NUMBER(10, 0)    NOT NULL,
+    CAPACITY_LOYAL           NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_REG_STD_COMM    NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_REG_STD_UNCO    NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_REG_PRE_COMM    NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_REG_PRE_UNCO    NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_CT_STD_COMM     NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_CT_STD_UNCO     NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_CT_PRE_COMM     NUMBER(10, 0)    NOT NULL,
+    RSV_BASE_CT_PRE_UNCO     NUMBER(10, 0)    NOT NULL,
+    RSV_LOYAL_CT_STD_COMM    NUMBER(10, 0)    NOT NULL,
+    RSV_LOYAL_CT_STD_UNCO    NUMBER(10, 0)    NOT NULL,
+    CONSTRAINT PK165 PRIMARY KEY (ID)
+);
+
+
+
+GRANT select, insert, update, delete on DLV.CAPACITY_SNAPSHOT to FDSTORE_PRDA;
+
+GRANT select, insert, update, delete on DLV.CAPACITY_SNAPSHOT to FDSTORE_PRDB;
+
+--job_timeslot_snapshot.job  (this job run by FDSTORE user)
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+    ( job       => X 
+     ,what      => 'DLV.TIMESLOT_SNAPSHOT;'
+     ,next_date => to_date('12/03/2007 17:29:00','dd/mm/yyyy hh24:mi:ss')
+     ,interval  => 'SYSDATE+30/1440 '
+     ,no_parse  => TRUE
+    );
+  SYS.DBMS_OUTPUT.PUT_LINE('Job Number is: ' || to_char(x));
+END;
+/
+
+--timeslot_snapshot.prc
+CREATE OR REPLACE PROCEDURE DLV.TIMESLOT_SNAPSHOT IS
+BEGIN
+INSERT INTO DLV.CAPACITY_SNAPSHOT 
+	   (ID,
+	   SNAPSHOT_TIME,
+	   DELIVERY_DATE,
+	   ZONE_CODE,
+	   TIMESLOT_START,
+	   TIMESLOT_END,
+	   CUTOFF_TIME,
+	   LOYAL_RELEASE_TIME,
+	   CAPACITY_TOTAL,
+	   CAPACITY_BASE,
+	   CAPACITY_LOYAL,
+	   RSV_BASE_REG_STD_COMM,
+	   RSV_BASE_REG_STD_UNCO,
+	   RSV_BASE_REG_PRE_COMM,
+	   RSV_BASE_REG_PRE_UNCO,
+	   RSV_BASE_CT_STD_COMM,
+	   RSV_BASE_CT_STD_UNCO,
+	   RSV_BASE_CT_PRE_COMM,
+	   RSV_BASE_CT_PRE_UNCO,
+	   RSV_LOYAL_CT_STD_COMM,
+	   RSV_LOYAL_CT_STD_UNCO)
+select 
+  DLV.SYSTEM_SEQ.nextval as ID,
+  sysdate as SNAPSHOT_TIME,
+  ts.BASE_DATE as DELIVERY_DATE,
+  z.zone_code as ZONE_CODE,
+  TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.start_time, 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') as TIMESLOT_START,
+  TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.end_time, 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') as TIMESLOT_END,
+  TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time, 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') as CUTOFF_TIME,
+  TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') as LOYAL_RELEASE_TIME,
+  ts.CAPACITY as CAPACITY_TOTAL,
+  ts.CAPACITY - ts.CT_CAPACITY as CAPACITY_BASE,
+  ts.CT_CAPACITY as CAPACITY_LOYAL,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 10 and chefstable = ' ' and type='STD') -(select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 10 and chefstable = ' ' and type='STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_REG_STD_COMM,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 5  and chefstable = ' ' and type='STD') - (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 5  and chefstable = ' ' and type='STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1')as RSV_BASE_REG_STD_UNCO,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 10 and type<>'STD') -(select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 10 and type<>'STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_REG_PRE_COMM,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 5  and type<>'STD') - (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 5  and type<>'STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_REG_PRE_UNCO,
+  (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 10 and chefstable = ' ' and type='STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_CT_STD_COMM,
+  (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 5  and chefstable = ' ' and type='STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_CT_STD_UNCO,
+  (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 10 and type<>'STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_CT_PRE_COMM,
+  (select count(*) from dlv.reservation r, cust.profile p, cust.fdcustomer f where timeslot_id=ts.id and status_code = 5  and type<>'STD' and p.customer_id=f.id and f.erp_customer_id =r.customer_id and p.profile_name= 'ChefsTable' and profile_value='1') as RSV_BASE_CT_PRE_UNCO,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 10 and chefstable = 'X' and type='STD') as RSV_LOYAL_CT_STD_COMM,
+  (select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = 5  and chefstable = 'X' and type='STD') as RSV_LOYAL_CT_STD_UNCO
+from 
+  dlv.TIMESLOT ts,
+  dlv.ZONE z
+where
+  ts.base_date >= trunc(sysdate)+1 and z.id=ts.zone_id;
+
+END TIMESLOT_SNAPSHOT;
+/
+
+
+GRANT EXECUTE ON DLV.TIMESLOT_SNAPSHOT TO FDSTORE_PRDA;
+
+GRANT EXECUTE ON DLV.TIMESLOT_SNAPSHOT TO FDSTORE_PRDB;
+
+
+CREATE OR REPLACE PROCEDURE "RESOURCE_CRON" (zone_code_in IN varchar2, zone_id_in varchar2)
+	   IS
+	   	BEGIN
+		 	  DECLARE
+
+					 CURSOR resource_cur(day_in PLANNING_RESOURCE.DAY%TYPE) is
+					 		SELECT * FROM PLANNING_RESOURCE
+							WHERE day = day_in and zone_code = zone_code_in;
+
+					 CURSOR timeslot_cur (resource_id_in TIMESLOT.RESOURCE_ID%TYPE) is
+					 		SELECT BASE_DATE, START_TIME, END_TIME, CUTOFF_TIME, STATUS, CAPACITY, PLANNED_CAPACITY, TRAFFIC_FACTOR, ZONE_ID, CT_CAPACITY
+							FROM TIMESLOT
+							WHERE RESOURCE_ID = resource_id_in;
+
+					 CURSOR truck_cur (resource_id_in TRUCK_RESOURCE.RESOURCE_ID%TYPE) is
+					 		SELECT TRUCK_TYPE, TRUCK_COUNT, TRUCK_CAPACITY
+							FROM TRUCK_RESOURCE
+							WHERE RESOURCE_ID = resource_id_in;
+
+					 CURSOR sequence_cur is
+					 		SELECT SYSTEM_SEQ.NEXTVAL FROM DUAL;
+
+					 work_date DATE;
+					 resource_id varchar2(16);
+					 resource_rec PLANNING_RESOURCE%ROWTYPE;
+					 timeslot_rec timeslot_cur%ROWTYPE;
+					 truck_rec truck_cur%ROWTYPE;
+
+
+					 BEGIN
+					 	  work_date := to_date(to_char(sysdate+7, 'MM/DD/YY'), 'MM/DD/YY');
+
+						  IF NOT resource_cur%ISOPEN
+						  THEN
+						  	  OPEN resource_cur(work_date);
+						  END IF;
+
+						  FETCH resource_cur into resource_rec;
+						  IF resource_cur%NOTFOUND
+						  THEN
+						  	  IF resource_cur%ISOPEN
+							  THEN
+								CLOSE resource_cur;
+								resource_rec := null;
+							  END IF;
+							  DBMS_OUTPUT.PUT_LINE('NO resource was found for '||to_char(work_date, 'DAY MM/DD/YYYY'));
+
+							  IF NOT resource_cur%ISOPEN
+							  THEN
+							  	  OPEN resource_cur(to_date(to_char(sysdate, 'MM/DD/YY'), 'MM/DD/YY'));
+							  END IF;
+							  FETCH resource_cur into resource_rec;
+							  WHILE resource_cur%FOUND
+							  LOOP
+							  	  DBMS_OUTPUT.PUT_LINE('Now working date is '|| resource_rec.DAY);
+								  -- Getting the new resource id from sequence
+								  IF NOT sequence_cur%ISOPEN
+								  THEN
+								  	  OPEN sequence_cur;
+								  END IF;
+								  FETCH sequence_cur into resource_id;
+								  IF sequence_cur%ISOPEN
+								  THEN
+								  	  CLOSE sequence_cur;
+								  END IF;
+
+								  INSERT INTO PLANNING_RESOURCE (ID, ZONE_CODE, DAY, PEOPLE, DELIVERY_RATE, NAME)
+								  VALUES(resource_id, resource_rec.ZONE_CODE, work_date, resource_rec.PEOPLE, resource_rec.DELIVERY_RATE, resource_rec.NAME);
+
+								  -- Getting timeslots for last same day and inserting as as new resource for 8 day
+								  IF NOT timeslot_cur%ISOPEN
+								  THEN
+								  	  OPEN timeslot_cur(resource_rec.ID);
+								  END IF;
+								  FETCH timeslot_cur into timeslot_rec;
+								  WHILE timeslot_cur%FOUND
+								  LOOP
+								  	  INSERT INTO TIMESLOT(ID, RESOURCE_ID, BASE_DATE, START_TIME, END_TIME, CUTOFF_TIME, STATUS, CAPACITY, PLANNED_CAPACITY, TRAFFIC_FACTOR, ZONE_ID, CT_CAPACITY)
+									  VALUES(SYSTEM_SEQ.NEXTVAL, resource_id, work_date, timeslot_rec.START_TIME, timeslot_rec.END_TIME, timeslot_rec.CUTOFF_TIME, timeslot_rec.STATUS, timeslot_rec.CAPACITY, timeslot_rec.PLANNED_CAPACITY, timeslot_rec.TRAFFIC_FACTOR, zone_id_in, timeslot_rec.CT_CAPACITY);
+
+								  	  FETCH timeslot_cur into timeslot_rec;
+								  END LOOP;
+
+								  IF timeslot_cur%ISOPEN
+								  THEN
+								  	 CLOSE timeslot_cur;
+									 timeslot_rec := null;
+								  END IF;
+
+								  -- Getting truck resources for last same day and inserting as new resource for 8 day
+								  IF NOT truck_cur%ISOPEN
+								  THEN
+								  	  OPEN truck_cur(resource_rec.ID);
+								  END IF;
+								  FETCH truck_cur into truck_rec;
+								  WHILE truck_cur%FOUND
+								  LOOP
+								  	  INSERT INTO TRUCK_RESOURCE(ID, RESOURCE_ID, TRUCK_TYPE, TRUCK_COUNT, TRUCK_CAPACITY)
+									  VALUES (SYSTEM_SEQ.NEXTVAL, resource_id, truck_rec.TRUCK_TYPE, truck_rec.TRUCK_COUNT, truck_rec.TRUCK_CAPACITY);
+
+									  FETCH truck_cur into truck_rec;
+								  END LOOP;
+								  IF truck_cur%ISOPEN
+								  THEN
+								  	  CLOSE truck_cur;
+									  truck_rec := null;
+								  END IF;
+								  FETCH resource_cur into resource_rec;
+							  END LOOP;
+
+						  END IF;
+
+						  COMMIT;
+					 END;
+
+		END;
+/
+

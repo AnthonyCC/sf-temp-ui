@@ -1,0 +1,171 @@
+{namespace common}
+
+/**
+ * Globalnav top menu
+ * @param abstractDepartments list of departments (menu items)
+ * @param media globalNav media template
+ */
+{template .globalnav autoescape="false"}
+  <!-- GLOBALDEBUG -->
+  {if not $media}
+    {foreach $menuitem in $abstractDepartments}
+      <li class="menuitem" data-component="globalnav-item" data-id="{$menuitem.id}">
+        <a href="{$menuitem.url ? $menuitem.url : '/browse.jsp?id='+$menuitem.id}">
+          {$menuitem.name ? $menuitem.name : $menuitem.id}
+        </a>
+      </li>
+    {/foreach}
+    <li class="justifyme"></li>
+  {/if}
+{/template}
+
+/**
+ * Globalnav top menu popups
+ * @param abstractDepartments list of departments (menu items)
+ */
+{template .globalnavPopups autoescape="false"}
+<ul style="display:none" class="globalnavPopups" data-component="globalnav-popups">
+  {foreach $menuitem in $abstractDepartments}
+    {call .globalnavMenuItem}
+     {param menuitem: $menuitem/}
+    {/call}
+  {/foreach}
+</ul>
+{/template}
+
+/**
+ * Globalnav top menu popup content
+ * @param menuitem menu item content
+ */
+{template .globalnavMenuItem autoescape="false"}
+{if $menuitem.departments}
+  {if not $menuitem.hideDropDown}
+  <li data-component="globalnav-popup-body" data-id="{$menuitem.id}" data-popup-type="superdepartment">
+    //{call .globalnavSuperDepartment data="$menuitem" /}
+        <!-- SUPERDEPARTMENT - {$menuitem.id} -->
+        <div class="subdepartments_cont">
+        <ul class="subdepartments">
+      {foreach $department in $menuitem.departments}
+            <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+              <span class="submenuitem-link">
+                <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
+              </span>
+              <div class="arrow-down"></div>
+            </li>
+          {/foreach}
+        </ul>
+      </div>
+  </li>
+  {/if}
+  {foreach $department in $menuitem.departments}
+    {call .globalnavDepartment}
+     {param department: $department/}
+    {/call}
+  {/foreach}
+{else}
+  {call .globalnavDepartment}
+   {param department: $menuitem/}
+  {/call}
+{/if}
+{/template}
+
+/**
+* Global nav super department (second level) CONTAINER template
+* @param departments List of department objects
+*/
+{template .globalnavSuperDepartment autoescape="false"}
+<div class="sub-container">
+ <ul class="secondary-items">
+    {foreach $department in $departments}
+      {call .globalNavSuperDeptItem data="$department" /}
+    {/foreach}
+ </ul>
+</div>
+{/template}
+
+/**
+* Global nav super department (second level) ITEM template
+* @param id department id
+*/
+{template .globalNavSuperDeptItem autoescape="false"}
+ <li class="secondary-item"> /* deli-meat?? */
+  <a class="secondary-link">
+    {$id}
+    <!-- div class="arrow" style="display: none;"><img src="img/dropdown-arrow.png" alt="" width="21" height="10"></div -->
+  </a>
+ </li>
+{/template}
+
+/**
+ * Globalnav top menu popup content - department
+ * @param department menu item content
+ */
+{template .globalnavDepartment autoescape="false"}
+{let $hasCategories:$department.dropDownCategories and length($department.dropDownCategories) > 0 /}
+{let $hasPrefCategories:$department.preferenceCategories and length($department.preferenceCategories) > 0 /}
+
+{if not $department.hideDropDown}
+<li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
+  <div class="deptcontainer">
+    {if $department.heroImage}
+      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
+    {/if}
+    {if $hasCategories or $hasPrefCategories}
+      <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
+        {if $hasCategories}
+            {foreach $column in $department.dropDownCategories}
+              <div class="dropdown-column">
+                {foreach $elem in $column}
+                  <h3 class="column-heading">{$elem.headline}</h3>
+                  <ul>
+                    {foreach $category in $elem.categories}
+                      <li>
+                        {call .categoryLink data="$category" /}
+                      </li>
+                    {/foreach}
+                    {if isLast($column) and isLast($elem)}
+                      <li><a href="/browse.jsp?id={$department.id}">VIEW ALL</a></li>
+                    {/if}
+                  </ul>
+                {/foreach}
+              </div>
+            {/foreach}
+        {/if}
+        {if $hasPrefCategories}
+          <div class="dropdown-column">
+            <h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
+            <ul>
+              {foreach $category in $department.preferenceCategories}
+                <li>
+                  {call .categoryLink data="$category" /}
+                </li>
+              {/foreach}
+            </ul>
+          </div>
+        {/if}
+        {if $department.seasonalMedia}
+          <div class="seasonal-media">{$department.seasonalMedia}</div>
+        {/if}
+      </div>
+    {/if}
+  </div>
+</li>
+{/if}
+{/template}
+
+/**
+* @param id
+* @param globalNavShortName
+* @param available
+* @param globalNavPostNameImage
+*/
+{template .categoryLink autoescape="false"}
+  {if $available}
+    <a href="/browse.jsp?id={$id}">
+      {$globalNavShortName}
+      {if $globalNavPostNameImage}
+        <img src="{$globalNavPostNameImage}" alt="" class="smallicon" />
+      {/if}
+    </a>
+  {/if}
+{/template}

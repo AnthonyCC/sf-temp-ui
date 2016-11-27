@@ -1,0 +1,23 @@
+{namespace pdp.accordion}
+
+/**
+ * @param ingredients	
+ */
+{template .ingredients}
+{if $ingredients}
+<li class="pdp-accordion-ingredients pdp-accordion-item"><input type="checkbox" id="pdp-ingredients"><label for="pdp-ingredients"><span class="pdp-accordion-item-carrot"></span>Ingredients</label>
+<div>
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+<table><tr><td>
+{$ingredients}
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+</td></tr></table>
+</div></li>
+{/if}
+{/template}

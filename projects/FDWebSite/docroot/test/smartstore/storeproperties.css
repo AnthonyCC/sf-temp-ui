@@ -1,0 +1,67 @@
+body{
+  padding:10px;
+}
+
+#storeprop{
+  margin:30px;
+  font-size:18px;
+}
+
+#storeprop table {
+  color: #333;
+  font-family: Helvetica, Arial, sans-serif;
+  width: 640px;
+  border-collapse:
+  collapse; border-spacing: 0;
+  margin-top:30px;
+}
+
+#storeprop td, th {
+  border: 1px solid transparent;
+  height: 30px;
+  transition: all 0.3s;
+}
+
+#storeprop th {
+  background: #DFDFDF;
+  font-weight: bold;
+}
+
+#storeprop td {
+  background: #FAFAFA;
+  text-align: left;
+}
+
+#storeprop tr:nth-child(even) td { background: #F1F1F1; }
+
+#storeprop tr:nth-child(odd) td { background: #FEFEFE; }
+
+#storeprop .propValue,
+#storeprop .propName{
+  overflow:auto;
+  word-wrap:break-word;
+  min-width:500px;
+  max-width:500px;
+}
+
+.actions{
+  font-size: 18px;
+  line-height: 18px;
+  height: 18px;
+  padding-bottom:30px;
+}
+
+input[name="searchInput"]{
+  width: 500px;
+  font-size: 18px;
+  padding: 10px 0 10px 10px;
+}
+
+.actions-reset,
+.actions-refresh{
+  vertical-align:middle;
+}
+
+.actions-refresh{
+  margin-left:50px;
+}

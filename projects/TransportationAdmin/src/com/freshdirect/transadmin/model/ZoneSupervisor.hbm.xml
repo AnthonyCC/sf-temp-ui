@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.ZoneSupervisor" table="ZONE_SUPERVISOR">
+        <id name="id" type="string">
+            <column name="ID" length="16" />
+            <generator class="sequence">
+    			<param name="sequence">DEFAULTSUPERVISORSEQ</param>
+			</generator>
+        </id>        
+        <property name="dayPart" type="string">
+            <column name="DAY_PART" length="8" not-null="true"/>
+        </property>        
+        <property name="supervisorId" type="string">
+            <column name="SUPERVISOR_ID" length="10" not-null="true"/>
+        </property>
+        <property name="effectiveDate" type="date">
+            <column name="EFFECTIVE_DATE" not-null="true" />
+        </property>
+        
+        <many-to-one name="zone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
+            <column name="ZONE_CODE" length="5" />
+        </many-to-one>       
+        
+    </class>
+</hibernate-mapping>

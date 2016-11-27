@@ -1,0 +1,175 @@
+<%@ page import="java.text.SimpleDateFormat"
+%><%@ page import='java.util.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
+%><%@ taglib prefix="fd" uri="freshdirect"
+%><%@ taglib prefix="logic" uri="logic" %>
+
+<% //expanded page dimensions
+final int W_GLOBAL_NAV_TOP_TOTAL = 970;
+%>
+
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+<div id="toptoolbar">
+<jsp:include page="/shared/locationbar/locationbar.jsp" />
+<jsp:include page="/shared/messages/messages.jsp" />
+</div>
+<%
+//*****************************************************************
+//FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+
+if(user != null) {
+	//	Defaults to Guest User;
+	String yourImageButton = "/media_stat/images/navigation/global_nav/nav_button_sign_up.gif";
+	String validURLForButton = "/registration/signup.jsp";
+	String depotName = "";
+	if(user.isDepotUser()){
+		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
+	}
+	
+	
+	request.setAttribute("listPos", "SystemMessage");
+	%><% 
+	if (FDStoreProperties.isAdServerEnabled()) { 
+  %><div id="OAS_SystemMessage">
+  <script type="text/javascript">OAS_AD('SystemMessage');</script>
+  </div><% 
+    } else { %>
+        <div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+        
+            <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+                <table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+                    <tr align="center">
+                        <td>
+                            <font class="text12rbold"><%=ann.getHeader()%></font><br>
+                            <%=ann.getCopy()%>
+                            <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+                        </td>
+                    </tr>
+                    <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+                </table><br>
+            </logic:iterate>
+        </fd:GetSiteAnnouncements></div><%
+    } %>
+<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+<%  if (!cutoffInfoDisplayed) { 
+    %><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
+      <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+}
+    String uri = request.getRequestURI().toLowerCase();
+%>
+    <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
+    
+    <!-- Adding Skip to Navigation : Start-->
+    <a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+    <!-- Adding Skip to Navigation : End-->
+    
+  <!-- GLOBALNAV TOP -->
+  <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
+  <%
+    if(user.isDepotUser()){%>
+        <a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
+    <% } else { %>
+      <a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+    <% } %>
+    <%
+        String hasEcouponsClass="";
+        if(user.isEligibleForCoupons()) hasEcouponsClass="hasecoupons";
+    %>
+  <div class="nav <%= hasEcouponsClass %>">
+    <fd:GetCart id="cart">
+    <div id="sidecartbuttons">
+      <div class="buttons">
+        <a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+      </div>
+      <div class="summary">
+        <span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
+      </div>
+    </div>
+    <div id="popupcart">
+        <div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
+        <div class="header"><span class="quantity">QTY</span><span class="item">ITEM</span><span class="price">PRICE</span></div>
+        <div class="body">
+            <table class="content"></table>
+            <p class="emptymsg">Your cart is empty.</p>
+            <p class="spinner">Loading cart...</p>
+        </div>
+        <div class="footer"><span class="subtotal">SUBTOTAL: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
+      <span class="close"></span>
+      <a class="cart" href="/view_cart.jsp"><div class="vahidden">view cart</div></a>
+      <a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+    </div>
+    </fd:GetCart>
+
+        <% String dlvInfoLink = ""; 
+            if (user.isPickupOnly()) {
+                dlvInfoLink = "/help/delivery_lic_pickup";
+            } else if (user.isDepotUser()) {
+                dlvInfoLink = "/help/delivery_info_depot";
+            } else if (user.getAdjustedValidOrderCount() >= 1) {
+                dlvInfoLink = "/your_account/delivery_info_avail_slots";
+            } else {
+                dlvInfoLink = "/help/delivery_info";
+                    if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+                        dlvInfoLink += "_cos";
+                    } 
+            }
+        %>
+    <div class="topnavitem">
+      <a href="/help/index.jsp?trk=gnav" onMouseover="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help_r.gif')" onMouseout="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_get_help.gif" name="NAV_HELP_IMG" width="54" height="26" alt="GET HELP" border="0"></a>
+    </div>
+    <div class="topnavitem">
+      <a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a>
+    </div>
+        <div class="topnavitem" id="topnav_ecoupons"><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&refinement=1"><img src="/media/images/ecoupon/coupon_savings.gif" name="NAV_COUPON_IMG" width="71" height="27" alt="COUPON SAVINGS" border="0" /></a></div>
+    <div class="topnavitem">
+      <a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a>
+    </div>
+    <div class="topnavitem">
+      <a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a>
+    </div>
+    <div>
+    <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+                <label>
+          <a href="/search.jsp">
+            <div class="spritediv sprite-nav-nav_button_search" style="margin: 1px 4px">Search</div>
+          </a>
+        </label>
+<%
+    {
+        String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
+%>
+                            <input type="text" id="topSearchField" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+<%
+}
+%>
+      <button type="submit" id="topInputFindButton" class="cssbutton khaki">Find</button>
+        </form>
+        </div>
+
+
+  </div>
+  </div>
+<% } else { %>
+    <table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="182" ROWSPAN="3" valign="BOTTOM">
+    
+        <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0" alt=""></td>
+    </tr>
+    </table>
+<%} %>  
+</div>
+
+<!-- Changes for Skip to Content Fix -->
+<div tabindex="0" id="skip_to_content"></div>

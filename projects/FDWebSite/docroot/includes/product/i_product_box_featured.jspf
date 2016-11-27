@@ -1,0 +1,19 @@
+<% /* 
+	
+	input parameters:
+		@productModelAdapter - ProductModelPromotionAdapter - product model
+		@pi - ProductImpression - product impression constructed from product model using DefaultProductConfigurationStrategy
+		@trk - String - tracking code
+ */ 
+/* simple check for a valid value */
+if ( productModelAdapter != null && productModelAdapter instanceof ProductModelPromotionAdapter ) {
+				ProductModelPromotionAdapter pmPA = (ProductModelPromotionAdapter)productModelAdapter;
+			
+				if (pmPA != null && pmPA.getFeaturedHeader() != null && pmPA.getFeaturedHeader().length() == 3) { %>
+					<div class="ddpp_feat_ribbon"><img src="/media/images/ddpp_ribbons/<%= pmPA.getFeaturedHeader() %>.png" alt="" /></div>
+	<% } %>
+<% } %>
+			
+<% if ( pi != null && productModelAdapter != null ) { %>
+	<%@ include file="/includes/product/i_product_box.jspf" %>
+<% } %>

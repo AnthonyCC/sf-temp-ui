@@ -1,0 +1,61 @@
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.DisplayObject"%>
+<%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.util.*' %>
+<%@ page import='com.freshdirect.common.pricing.ZoneInfo'%>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_UNAVAILABLE = 601;
+%>
+
+<%
+//**************************************************************
+//***          Unavailable display                           ***
+//**************************************************************
+List unAvailableList = new ArrayList();
+List unAvailSortStrategy = new ArrayList();
+
+String unAvailableHdrImg = "/media_stat/images/template/currently_not_available21.gif";
+String unAvailTxtImg = "/media_stat/images/template/not_available.gif";
+for(Iterator availItr = sortedColl.iterator();availItr.hasNext();) {
+    Object availObject = availItr.next();
+    if (availObject instanceof ProductModel && ((ProductModel)availObject).isUnavailable()) {
+        unAvailableList.add(availObject);
+    } 
+}
+
+String altText=null;
+String organicFlag = "";
+
+String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
+unAvailSortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, prodNameAttribute, false));
+
+DisplayObject displayObj = null;
+if (unAvailableList.size() > 0) {
+%>
+<table width="<%=W_UNAVAILABLE%>">
+	<TR VALIGN="TOP"><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/cccccc.gif" height="1" width="<%=W_UNAVAILABLE%>"></TD></TR>
+	<TR><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"><br></td></tr>
+	<TR><TD WIDTH="<%=W_UNAVAILABLE%>" align="Left"><br><br><img src="<%=unAvailableHdrImg%>" border="0" alt=""><br><br></td></tr>
+	<fd:ItemSorter nodes='<%= unAvailableList %>' strategy='<%= unAvailSortStrategy %>'/>
+	<logic:iterate id="displayThing" collection="<%= unAvailableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+    	<fd:FDProductInfo id="productInfo" skuCode="<%=((ProductModel)displayThing).getSku(0).getSkuCode()%>">
+<%
+    	displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute);
+%>
+		<tr><td>&nbsp;&nbsp;&nbsp;<a href="<%=displayObj.getItemURL()%>" style="color:#999999;"><%=displayObj.getItemName()%></a>
+		<% if(null !=user && null != user.getUserContext()){
+			ZoneInfo zoneInfo = user.getUserContext().getPricingContext().getZoneInfo(); %>
+		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason(zoneInfo.getSalesOrg(),zoneInfo.getDistributionChanel())? "(out of season)" : "")%></font><br></td></tr>
+		<% } else { %>
+		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason(null,null)? "(out of season)" : "")%></font><br></td></tr>
+		<%} %>
+    	</fd:FDProductInfo>
+	</logic:iterate>
+</table>
+<% } %>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.listadmin.db">
+  <class name="StoredQuery" table="list_stored_query" lazy="false">
+    <id name="storedQueryId" column="id" unsaved-value="null" length="16">
+      <generator class="uuid" />
+    </id>
+
+    <property name="name"/>
+    <property name="dataSourceName" column="datasource_name"/>
+
+    <many-to-one name="template" class="Template" column="template_id" lazy="false"/>
+        
+    <set name="values" inverse="true" lazy="false" cascade="save-update">
+      <key column="stored_query_id"/>
+      <one-to-many class="StoredQueryValue"/>
+    </set>
+  </class>
+</hibernate-mapping>

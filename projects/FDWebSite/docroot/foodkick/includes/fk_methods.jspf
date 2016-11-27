@@ -1,0 +1,18 @@
+<%!
+public final String svg_src(String svg_f){
+	return IMAGES_DIR + "/s.jsp?f=" + svg_f;
+}
+public final String svg_obj(String svg_f){
+	return "<object data=\""+ SVG_SRC + svg_f +"\" type=\"image/svg+xml\"><img src=\""+ SVG_SRC + svg_f +"\" /></object>";
+}
+public final String svg_bg(String svg_f){
+	return "background-image:url(" + SVG_SRC + svg_f + ")";
+}
+public final String iosapp_button(String link, String label, String css_classes){
+	css_classes = css_classes != null ? css_classes : "";
+	
+	//"<button class='download_button "+css_classes+"' onclick='location.href=" + link + ">Download the APP</button>";
+	
+	return "<a class='download_button "+css_classes+"' href='" + link + "' role='button'>" + label + "</a>";
+}
+%>

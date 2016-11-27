@@ -1,0 +1,91 @@
+@CHARSET "UTF-8";
+
+body,input {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+}
+
+p {
+	padding: 5px 0px 0px;
+	margin: 0px;
+}
+
+.body {
+	width: 980px;
+	margin: 0px auto;
+	text-align: center;
+}
+
+table {
+	table-layout: auto;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+.section {
+	margin: 20px 0px;
+}
+
+.section-header {
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0px 0px 10px;
+}
+
+.section-body {
+	
+}
+
+.subsection-header {
+	font-size: 13px;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px 0px 10px;
+}
+
+.subsubsection-header {
+	font-size: 13px;
+	margin: 0px 0px 10px;
+}
+
+.label {
+	font-weight: bold;
+}
+
+.value {
+	
+}
+
+.table th,
+.table td {
+	border: 1px solid #000;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}
+
+.float-right {
+	float: right;
+}
+
+.float-left {
+	float: left;
+}
+
+.float-close {
+	clear: both;
+	font-size: 0px;
+}
+
+.left-column {
+	margin-right: 25px;
+}
+
+.padded {
+	padding: 2px;
+}

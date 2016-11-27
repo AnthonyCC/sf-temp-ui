@@ -1,0 +1,40 @@
+<%-- include after i_javascript.jspf --%>
+<%@page import="java.util.Map"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%
+/* 
+	this is NOT a generic include for GA custom vars
+	also with universal, not just any value can be sent, names ened to be pre-defined. These previous values go away.
+	-BA 20140318
+*/
+{
+	Map<String, String> vars = (Map<String, String>) pageContext.getRequest().getAttribute(SessionName.GA_CUSTOM_VARIABLES);
+	
+	if (vars != null && !FDStoreProperties.isGoogleAnalyticsUniversal()) {
+		int slotNumber = 2;
+		// Mike Wendel's request was to move the search variables starting with slot #2
+		// since Refer-a-Friend already uses slot 1
+		%>
+		<script type="text/javascript">
+		        var _gaq = _gaq || [];
+		<%
+				for (Map.Entry<String, String> var : vars.entrySet()) {
+		%>
+				_gaq.push(['_setCustomVar', <%= slotNumber %>,
+		        	'<%= StringEscapeUtils.escapeJavaScript(var.getKey()) %>',
+		        	'<%= StringEscapeUtils.escapeJavaScript(var.getValue()) %>',
+		        	3]);
+		<%
+					slotNumber++;
+					if (slotNumber > 5)
+						break;
+				}
+		%>
+				_gaq.push(['_trackEvent', 'Search', 'Product/recipe Search']);
+		</script>
+		<%
+	}
+}
+%>

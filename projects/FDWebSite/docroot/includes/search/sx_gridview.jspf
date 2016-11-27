@@ -1,0 +1,151 @@
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
+
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<%--
+
+Smart Search Grid View
+======================
+
+@author segabor
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Tracking code (String)
+@input results		Search results
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+
+// turn products into product impressions
+
+List<ProductImpression> impressions = new ArrayList<ProductImpression>(search.getPageProducts().size());
+for (Iterator<ProductModel> it=search.getPageProducts().iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression( it.next()) );
+}
+
+final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
+
+boolean singleRow = (impressions.size() <= GRID_ROW_SIZE); // product list fits into just one row
+
+int row_cnt = 0;
+int n_cols = (int) Math.ceil((float)impressions.size()/GRID_ROW_SIZE); // number of columns
+
+
+int rank = nav.getPageOffset()+1;
+%>
+
+<table style="width:100%">
+	<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= false %>">
+		<tr>
+			<% int colCount = 0; %>
+			<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= false %>"><%
+				// product to render
+				ProductModel productNode = pi.getProductModel();
+%><%@ include file="/includes/search/price_info.jspf" %><%	
+				
+		
+				// URI that points to product page
+				String prdURI = FDURLUtil.getProductURI(search.getParentContainer(), productNode, (String)trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+			
+				long w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE) /* = 100/4 */;
+				%>
+				<td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 5px;" :""%> 
+					<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
+					
+					<%-- Product Image --%>
+					<table align="center" width="100%">
+						<tr>
+							<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+								<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" />
+							</td>
+						</tr>
+					</table>
+					<% if (pi.getProductModel().isFullyAvailable()) { %>	
+						<display:ProductRating product="<%= productNode %>"/>
+						<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
+					<% } else { %>
+						<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
+					<% } %>
+                    <%
+					// Configuration description
+					//
+					if (pi.getConfigurationDescription() != null) {
+						%><div style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
+					<%	
+					 }  
+	
+					// Default price
+					//
+					String scaledPrices[] = pi.getScaledPrices();
+					if (defaultPrice != null) { %>
+						<div class="normal-price">
+						<% if (hasWas) { %>
+							<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+							</div>
+							<div style="white-space: nowrap;">
+							<span class="save-base-price">
+								(<font style="text-decoration: line-through;"><%=JspMethods.formatPrice(basePrice) %></font>)
+							</span>
+						<% } else { %>
+								<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+						<% } %>
+						</div>
+					<% }
+					boolean isGrpScale = false;
+					FDGroup group = pi.getFDGroup(); 
+					if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+						isGrpScale = true;	
+					}
+					if(isGrpScale) {
+					%>
+						<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+					<% 
+					} else {
+						// Scaled prices
+						//
+						if (!isGrpScale && scaledPrices != null && scaledPrices.length > 0) { %>
+							<div class="save-price">
+								<% for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { %>
+									<%= scaledPrices[ymalSci] %><br/>
+								<% } %>
+							</div><%
+						}
+						rank++;
+					}                    
+					%>
+                    
+				</td>
+			</fd:PIPRow>
+		</tr>
+		<%
+			// don't display the bar below the last product
+			if (row_cnt < n_cols-1) {
+				%><tr><td colspan="4"><hr size="1" style="color:#E0E3D0; background-color: #E0E3D0; margin-top: 10px; margin-bottom: 10px;"></td></tr><%
+			}
+			row_cnt++;
+		%>
+	</fd:PIPLayout>
+</table>

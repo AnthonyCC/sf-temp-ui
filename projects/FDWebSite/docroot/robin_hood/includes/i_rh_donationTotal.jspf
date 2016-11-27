@@ -1,0 +1,69 @@
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='java.util.List'%>
+<%@ page import='java.util.ListIterator'%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
+
+<% //expanded page dimensions
+final int W_RH_DONATION_TOTAL_TOTAL = 970;
+%>
+
+<%
+	FDProductInfo productInfo = FDCachedFactory
+			.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+	Integer totalQuantity = user.getDonationTotalQuantity();
+	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice();
+%>
+<table width="<%=W_RH_DONATION_TOTAL_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td class="text11" width="<%=W_RH_DONATION_TOTAL_TOTAL-95%>">
+			<span class="title18">Create an Account</span><br />
+			To complete your donation, please enter the necessary personal and payment info below.
+		</td>
+		<td width="60" valign="middle" align="right" class="text10bold">
+			<input type="image" vspace="2" border="0" alt="CONTINUE TO CHECKOUT" src="/media_stat/images/buttons/continue_orange.gif" name="submit_top_text" id="submit_top_text" onclick="displayStatus();$('address').submit();" />
+		</td>
+		<td width="35" valign="middle" align="RIGHT">
+			<input type="image" vspace="2" border="0" alt="GO" src="/media_stat/images/buttons/checkout_arrow.gif" name="submit_top_img" id="submit_top_img"  onclick="displayStatus();$('address').submit();" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style="padding: 2px 0px;">
+			<img style="margin: 2px 0;" width="<%=W_RH_DONATION_TOTAL_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style="padding: 2px 0px;">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+		</td>
+	</tr>
+</table>
+<table width="<%=W_RH_DONATION_TOTAL_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td style="padding: 2px 0px;" align="right">
+			<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
+		</td>
+	</tr>
+	<tr>
+		<td style="padding: 2px;">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+		</td>
+	</tr>
+	<tr>
+		<td style="padding: 2px;" align="right">
+			<span class="text11bold">Robin Hood</span> Donation Subtotal (<%=totalQuantity%> Meals):
+			<%=JspMethods.formatPrice(totalPrice)%>
+		</td>
+	</tr>
+	<tr>
+		<td style="padding: 2px;" align="right">
+			<span class="text13bold">TOTAL:	<%=JspMethods.formatPrice(totalPrice)%></td>
+	</tr>
+	<tr>
+		<td style="padding: 2px;">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" /><br />
+		</td>
+	</tr>
+</table>
+

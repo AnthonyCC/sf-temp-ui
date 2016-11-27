@@ -1,0 +1,104 @@
+
+/* tabs */
+#quickshop .tabs {
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+#quickshop .qs-tabs {
+	border-bottom: 1px solid #c1b5c1;
+}
+#quickshop > .tabs li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+	min-width: 174px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+	text-align: center;
+	margin-right: -1px;
+	background: #996699;
+	border: 1px solid #7a4b70;
+	border-bottom: none;
+	box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3), inset -1px 0px 4px rgba(0,0,0,0.3);
+	cursor: pointer;
+	border-radius: 8px 8px 0 0;
+  text-transform: capitalize;
+}
+[data-feature-quickshop="2_0"] #quickshop > .tabs li {
+  text-transform: lowercase;
+}
+#quickshop .qs-tabs li {
+  padding: 0 10px;
+	min-width: 139px;
+}
+#quickshop .qs-tabs li .count {
+	font-weight: normal;
+}
+.no-touch #quickshop > .tabs li:hover strong,
+.no-touch #quickshop > .tabs li:focus strong {
+	text-decoration: underline;
+}
+#quickshop .qs-tabs li:hover,
+#quickshop .qs-tabs li:focus,
+#quickshop .qs-tabs a:hover,
+#quickshop .qs-tabs a:focus {
+	text-decoration: none;
+}
+#quickshop > .tabs li a,
+#quickshop > .tabs li button {
+	display: block;
+	width: 100%;
+	color: #fff;
+}
+#quickshop > .tabs li.selected,
+#quickshop > .tabs li .selected {
+	font-size: 21px;
+}
+#quickshop .qs-tabs li a.selected {
+	width: auto;
+	padding: 0 15px;
+	line-height: 42px;
+	height: 42px;
+	margin: -7px -11px -1px;
+	position: relative;
+	background: #eedfee;
+	color: #764077;
+	border: 1px solid #c1b5c1;
+	border-radius: 8px 8px 0 0;
+	text-shadow: none;
+	-webkit-box-shadow: 3px 4px 5px rgba(0,0,0,0.33);
+	box-shadow: 3px 4px 5px rgba(0,0,0,0.33);
+}
+#quickshop .qs-tabs li a.selected strong {
+	font-family: Verdana, Arial, sans-serif;
+	font-weight: bold;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;		
+}
+
+#quickshop .qs-tabs .fd {
+	display: inline-block;
+	width: 36px;
+	height: 21px;
+	overflow: hidden;
+	text-align: left;
+	text-indent: 100%;
+	white-space: nowrap;
+	background: url(/media_stat/images/quickshop/tab-fd.png) no-repeat 50% 50%;
+	vertical-align: middle;
+}
+#quickshop .qs-tabs .selected .fd {
+	width: 47px;
+	height: 27px;
+	background: url(/media_stat/images/quickshop/tab-fd-selected.png) no-repeat 50% 50%;
+}
+
+#quickshop .tabbed-carousel [data-component="carousel"] .portrait-item {
+	width:159px;
+}
+

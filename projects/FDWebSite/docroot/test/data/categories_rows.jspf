@@ -1,0 +1,4 @@
+
+      <li><label><input type="checkbox" name="featured" value="true"/> Featured category</label>, <i>and</i>
+      <li><label><input type="checkbox" name="secondary" value="true"/> Secondary category.</label>
+

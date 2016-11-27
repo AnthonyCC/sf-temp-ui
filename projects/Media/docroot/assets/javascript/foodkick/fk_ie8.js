@@ -1,0 +1,1 @@
+'article aside footer figure figcaption header nav section time'.replace(/\w+/g,function(n){document.createElement(n)});

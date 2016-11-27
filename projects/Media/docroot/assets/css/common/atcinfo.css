@@ -1,0 +1,47 @@
+.atc-info .incart-info {
+  display: block;
+	font-family:Verdana, sans-serif;
+	color:#6baa4e;
+	font-weight:bold;
+	font-size:9px;
+	text-align: center;
+  line-height: 16px;
+}
+.atc-info .incart-message {
+	display: none;
+	font-family:Verdana, sans-serif;
+	color:#6baa4e;
+	font-weight:bold;
+	font-size:9px;
+	text-align: center;
+	line-height: 16px;
+}
+.atc-info-message .incart-info {
+  display: none;
+}
+.atc-info-message .incart-message {
+  display: block;
+}
+
+[data-productdata-name].missing-data {
+	border:2px solid red;
+}
+
+.atc-info .incart-message.ERROR {
+	color:#c00;
+}
+
+.incart-message.SUCCESS:before {
+	content: "";
+	display: inline-block;
+	background: url('/media_stat/images/search/checkmark_green_15x10.png') left center no-repeat;
+	width: 16px;
+	height: 11px;
+	vertical-align: top;
+}
+
+.atc-info .incart-message.ERROR:before {
+	color:#c00;
+	background:none;
+	width:0;	
+}

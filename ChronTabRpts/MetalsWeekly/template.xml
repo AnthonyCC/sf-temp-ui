@@ -1,0 +1,69 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>MKTDW1</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )</url>
+    <user>dw_owner</user>
+    <password>dw_owner</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>raw_data</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>MKTDW1</name>
+     <param>
+select next_day(trunc(o.order_date)-1,'Sunday'), ca.cat, sum(o.sub_total), count(o.order_id), count(distinct o.customer_id)
+from orders o, customer_attribs ca, order_delivery d
+where trunc(o.order_date) between next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')-55 and next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')
+and o.order_id = d.order_id
+and d.delivery_type = 'H'
+and o.customer_id = ca.cid
+and ca.run_num = (select run_num from run_dates where last_day(trunc(o.order_date)) + 1 = run_date)
+group by next_day(trunc(o.order_date)-1,'Sunday'), ca.cat
+     </param>
+   </dataSource>
+  </sheet>
+
+<sheet>
+   <name>neighborhoods</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>MKTDW1</name>
+     <param>
+select y.*, nvl(x.sales,0) as sales, nvl(x.orders,0) as orders, nvl(x.customers,0) as customers
+from
+(select next_day(trunc(o.order_date)-1,'Sunday') week_ending, ca.cat, z.neighborhood, sum(o.sub_total) as sales, count(o.order_id) as orders, count(distinct o.customer_id) as customers
+from orders o, customer_attribs ca, order_delivery d, neighborhood_zips z
+where trunc(o.order_date) between next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')-55 and next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')
+and o.customer_id = ca.cid
+and ca.run_num = (select run_num from run_dates where last_day(trunc(o.order_date)) + 1 = run_date)
+and o.order_id = d.order_id
+and d.delivery_type = 'H'
+and d.zip = z.zip
+group by next_day(trunc(o.order_date)-1,'Sunday'), ca.cat, z.neighborhood) x,
+(select distinct w.week_ending, c.cat_id, z.neighborhood 
+from fd_weeks w, neighborhood_zips z, neighborhood_cats c
+where w.week_ending between next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')-55 and next_day(to_date(to_char(trunc(sysdate),'MM/YYYY'),'MM/YYYY')-7,'Sunday')) y
+where y.week_ending = x.week_ending(+)
+and y.cat_id = x.cat(+)
+and y.neighborhood = x.neighborhood(+)
+     </param>
+   </dataSource>
+  </sheet>
+
+
+ </populate>
+</xlsReporting>

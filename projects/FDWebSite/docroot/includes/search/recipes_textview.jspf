@@ -1,0 +1,118 @@
+<%@	  page import="java.util.*"%><%@ page
+	import="com.freshdirect.fdstore.content.Recipe"%><%@ page
+	import="com.freshdirect.framework.util.StringUtil"%><%@page
+	import="com.freshdirect.fdstore.content.DomainValue"%>
+
+<a name="recipes"></a>
+<%
+	if (nav.isTextViewDefault()) {
+		Iterator<DomainValue> it = search.getRecipeClassificationsMap().keySet().iterator();
+		int i = 0;
+		String fromDym = "";
+		if (nav.isFromDym())
+			fromDym = "&amp;fromDym=1";
+		while (it.hasNext()) {
+			DomainValue dv = it.next();
+%>
+	<div class="text13bold"<% if (i > 0) { %> style="margin-top: 10px;"<% } %>>
+		<a href="/search.jsp?searchParams=<%= StringEscapeUtils.escapeHtml(criteria) %>&amp;view=text&amp;deptId=rec&amp;classification=<%= dv.getContentKey().getId() %><%= fromDym %>&amp;refinement=1"><%= dv.getLabel() %></a>
+	</div>
+<%
+			Set<Recipe> recipes = search.getRecipeClassificationsMap().get(dv);
+			int j = 0;
+			for (Recipe recipe : recipes) {
+%>
+		<div style="padding: 0px 10px;<% if (j > 0) { %> margin-top: 10px;"<% } %>">
+			<%
+				if (recipe.getSource() != null) {
+			%>
+			<b><a href="/recipe_search.jsp?recipeSource=<%= recipe.getSource().getContentKey().getId() %>&amp;trk=<%=trk%>"><%=recipe.getSource().getName()%></a></b>
+			<br>
+			<%
+				}
+			%>
+			<a href="/recipe.jsp?recipeId=<%=recipe.getContentName()%>&amp;trk=<%=trk%>"><%=recipe.getName()%></a>
+		</div>
+<%
+				j++;
+			}
+			i++;
+		}
+%>
+<%
+	} else {
+%>
+	<div>
+		<%
+		Iterator<Recipe> ri = search.getRecipes().iterator();
+		int c = 0;
+		while (ri.hasNext() && (search.isShowOnlyRecipes() || nav.isTextViewDefault() || c < 5)) {
+			++c;
+	
+			Recipe recipe = ri.next();
+			StringBuffer line = new StringBuffer();
+		%>
+		<div style="padding: 0px 10px;">
+			<span class="bold"><a href="/recipe.jsp?recipeId=<%=recipe.getContentName()%>&amp;trk=<%=trk%>"><%=recipe.getName()%></a></span>
+		<%
+			if (recipe.getSource() != null) {
+		%> from <a href="#" onclick="popup('/recipe_source.jsp?recipeId=<%=recipe.getContentName()%>&amp;trk=<%=trk%>', 'large_long'); return false;"><%=recipe.getSource().getName()%></a>
+		<%
+			}
+		%>
+		</div>
+		<%
+		}
+		%>
+		<div id="all_link" style="display: none">
+			<%
+			while (ri.hasNext()) {
+				Recipe recipe = (Recipe) ri.next();
+				StringBuffer line = new StringBuffer();
+			%>
+			<div style="padding: 0px 10px;"><span class="bold"><a href="/recipe.jsp?recipeId=<%=recipe.getContentName()%>&amp;trk=<%=trk%>"><%=recipe.getName()%></a></span>
+				<%
+				if (recipe.getSource() != null) {
+				%> from <a href="#" onclick="popup('/recipe_source.jsp?recipeId=<%=recipe.getContentName()%>&amp;trk=<%=trk%>', 'large_long'); return false;"><%=recipe.getSource().getName()%></a>
+				<%
+				}
+				%>
+			</div>
+			<%
+				++c;
+			}
+		%>
+		</div>
+		<%
+		if (!search.isShowOnlyRecipes()) {
+		%>
+			<script type="text/javascript">
+			var allShown = false;
+			
+			function showAllRecipes() {
+				allShown = false;
+				toggleRecipes();
+			}
+			
+			function toggleRecipes() {
+				var contents = document.getElementById('all_link');
+				var label = document.getElementById('recipe_label');
+			
+				if (allShown) {
+					contents.style.display = "none";
+					label.innerHTML = "All";
+				} else {
+					contents.style.display = "";
+					label.innerHTML = "First 5";
+				}
+			
+				allShown = !allShown;
+			}
+			</script>
+		<%
+	 	}
+	 %>
+	</div>
+<%
+	}
+%>

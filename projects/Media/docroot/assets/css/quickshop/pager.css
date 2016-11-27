@@ -1,0 +1,179 @@
+.pagination {
+	font-family:Verdana,sans-serif;
+	font-size: 12px;
+	color:#333;	
+  padding:10px 0;
+  text-align:right;
+}
+
+[data-feature-quickshop="2_0"] .pagination {
+  padding: 0;
+}
+
+#quickshop .pagination{
+  border-bottom:1px solid #e0e3d0;
+  clear: both;
+}
+
+#quickshop .pagination:last-child {
+  border-top:1px solid #e0e3d0;
+  border-bottom: none;
+}
+
+[data-feature-quickshop="2_0"] #quickshop .pagination {
+  border: none;
+  clear: right;
+}
+
+.pagination strong {
+	font-weight: bold;
+}
+
+.pagination-text {
+	margin:0 12px;
+	width:auto;
+	text-align: right;
+}
+
+[data-feature-quickshop="2_0"] .pagination-text {
+  margin: 0 10px 0 0;
+  width: 180px;
+}
+
+.pagination-text,
+.pagination-pager {
+	display:inline-block;
+	vertical-align: center;
+}
+
+.pagination-pager-prev,
+.pagination-pager-next,
+.pagination-pager-separator,
+.pagination-pager-button {
+  display:inline-block;
+  height:27px;
+  width:33px;
+  line-height:27px;
+  text-align:center;
+  background: transparent;
+  border-radius: 3px;
+  border:1px solid #693;  
+  padding:0;
+  margin:0;
+  box-sizing:border-box;
+  font-size:12px;
+  margin-left:12px;
+  color:#693;
+}
+
+[data-feature-quickshop="2_0"] .pagination-pager-prev,
+[data-feature-quickshop="2_0"] .pagination-pager-next,
+[data-feature-quickshop="2_0"] .pagination-pager-separator,
+[data-feature-quickshop="2_0"] .pagination-pager-button {
+	height:20px;
+	line-height:20px;
+	border-radius: 2px;
+	border:1px solid transparent;	
+	box-sizing:content-box;
+  margin-left: 0;
+  color: inherit;
+  font-size: 13px;
+}
+
+.pagination-pager-separator{
+  border:0;
+  width:12px;
+  color:#000;
+}
+
+.no-touch[data-feature-quickshop="2_0"] .pagination-pager-button:hover{
+  background-color: transparent;
+  color: inherit;
+}
+
+.pagination-pager-prev,
+.pagination-pager-next,
+.pagination-pager-button {
+	cursor:pointer;
+}
+
+.pagination-pager-prev.hidden,
+.pagination-pager-next.hidden {
+	visibility:hidden;
+}
+
+button.cssbutton[data-component="pager-prev"],
+button.cssbutton[data-component="pager-next"]{
+  height:27px;
+  padding: 0 1em;
+}
+
+button.cssbutton[data-component="pager-next"]{
+  margin-left:12px;
+}
+
+.pagination .cssbutton.gray{
+  cursor:auto;
+}
+
+[data-feature-quickshop="2_0"] .pagination-pager-button.selected {
+	background:#666;
+	color:white;
+	border-radius: 2px;
+	border-color:#666;
+  font-weight:normal;
+}
+
+.pagination-showall-noimage {
+  background: #693;
+  color: #fff;
+  height: 24px;
+  line-height: 22px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 8px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 3px;
+	margin:none;
+	cursor: pointer;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.8);
+  box-shadow: inset -2px -2px 2px rgba(0,0,0,.3), inset 2px 2px 2px rgba(255,255,255,.3);
+}
+
+button.pagination-showall-cssbutton.cssbutton {
+  height: 27px;
+  width:84px;
+  line-height: 22px;
+  padding: 0 8px;
+  margin-left: 8px;
+}
+
+.pagination-showall-noimage:hover {
+  box-shadow: inset -2px -2px 2px rgba(255,255,255,.3), inset 2px 2px 2px rgba(0,0,0,.3);
+}
+
+.pagination-showall {
+	background:url(/media_stat/images/quickshop/buttons-sprite.png) -5px -373px no-repeat;
+	width:68px;
+	height:22px;
+	border:none;
+	margin:none;
+	cursor: pointer;
+	text-indent:68px;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.pagination-showall:hover,
+.pagination-showall:focus {
+    background-position: -83px -373px;
+}
+
+.pagination-showall.showten {
+    background-position: -160px -373px;
+}
+
+.pagination-showall.showten:hover,
+.pagination-showall.showten:focus {
+    background-position: -240px -373px;
+}

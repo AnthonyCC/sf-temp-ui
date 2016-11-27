@@ -1,0 +1,1 @@
+    INSERT INTO cms.lookup (LOOKUPTYPE_CODE,CODE,LABEL,DESCRIPTION,ORDINAL) VALUES ('Product.LAYOUT','42','Bakery department','Bakery department',31);

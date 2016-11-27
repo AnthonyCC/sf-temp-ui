@@ -1,0 +1,5 @@
+ORD	REQ	SECTION	SKU_CODE	QUANTITY	SALES_UNIT	CONFIGURATION	DESCRIPTION	CONFIGURATION_DESC	MATERIAL_ID	PRICE	
+		Main	DAI0008771	1	EA		Breakstone's All Natural Unsalted Butter	2 sticks		
+		Main	DAI0008769	1	EA		Hotel Bar Unsalted Butter	4 sticks		
+		Main	DAI0059803	1	EA		Land O'Lakes Unsalted Butter	4 sticks		
+		Main	DAI0058107	1	EA		Horizon Organic Unsalted Butter	4 sticks		

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
+
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{DATE} %t %p] %c{3} - %m %n" />
+		</layout>
+	</appender>
+
+	<!--
+	<appender name="network" class="org.apache.log4j.net.SocketAppender">
+		<param name="Threshold" value="INFO" />
+		<param name="Port" value="10000" />
+		<param name="RemoteHost" value="appdev2k15" />
+		<param name="ReconnectionDelay" value="5000" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{DATE} %t %p] %c{3} - %m %n" />
+		</layout>
+	</appender>
+	-->
+
+	<!-- 
+	send an email on ERROR level, but include the last 100 DEBUG messages 
+	<appender name="email" class="org.apache.log4j.net.SMTPAppender">
+		<param name="Threshold" value="DEBUG" />
+		<param name="BufferSize" value="100" />
+		<param name="From" value="log4j@freshdirect.com" />
+		<param name="To" value="vszathmary@freshdirect.com" />
+		<param name="Subject" value="[log4j] Error occured in domain ${weblogic.Domain}, server ${weblogic.Name}" />
+		<param name="SMTPHost" value="ns1.nyc1.freshdirect.com" />
+		<layout class="org.apache.log4j.HTMLLayout" />
+	</appender>
+	-->
+
+	<!--
+	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="email"/>
+		<appender-ref ref="network"/>
+	</appender>
+	-->
+	
+	<!--
+	<appender name="syslog" class="org.apache.log4j.net.SyslogAppender">
+		<param name="Facility" value="USER"/>
+		<param name="SyslogHost" value="172.16.40.134"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%c:%m%n"/>
+		</layout>
+	</appender>
+	
+	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="syslog"/>
+	</appender>
+	-->
+
+	<category name="com.freshdirect.webapp.taglib.fdstore.CartLineTag">
+		<priority value="info" />
+	</category>
+
+	<category name="net.sf.tapestry">
+		<priority value="info" />
+	</category>
+
+	<category name="org">
+		<priority value="info" />
+	</category>
+
+	<category name="net.sf.swarmcache">
+		<priority value="info" />
+	</category>
+
+	<category name="com.p6spy">
+		<priority value="error" />
+	</category>
+	<category name="com.irongrid">
+		<priority value="error" />
+	</category>
+	<category name="httpclient">
+		<priority value="info" />
+	</category>
+	
+	<root>
+		<priority value="debug"/>
+		<appender-ref ref="stdout" />
+		<!--
+		<appender-ref ref="ASYNC" />
+		-->
+	</root>
+
+</log4j:configuration>

@@ -1,0 +1,30 @@
+{
+	"requestNotification" : "true",
+	"recipeId" : "rec_rs_vietnams_bf_sld",
+	"agreeToTerms" : "yes",
+	"trackingCode" : "c_ymal",
+	"trackingCodeEx" : "deals",
+	"impressionId" : "74832939_p4",
+	"smartStoreConfiguration" : {
+	    "variant" : "c_ymal_1",
+	    "siteFeature" : "C_YMAL",
+	    "recProductIds" : "fru_apl_fji_4pk,trp_kiwi,fru_apl_gala_4pk,pr_asian,mln_hdw",
+	    "recCurrentNode" : "ban_yllw",
+	    "recYmalSource" : "ban_yllw",
+	    "recRefreshable" : "true",
+	    "recSmartSavings" : "false"
+	},
+	"productConfiguration" : {
+		"product" : { 
+			"id" : "bstk_rbeye_bnls", 
+			"categoryId" : "bgril", 
+			"sku" : {
+				"code" : "MEA0004676" 
+			}
+		},
+		"quantity" : "2",
+		"salesUnit" : "E02",
+		"options" : { "C_MT_BF_MAR" : "N" , "C_MT_BF_PAK" : "ST" } 
+	}
+}
+	

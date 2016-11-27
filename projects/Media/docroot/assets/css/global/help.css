@@ -1,0 +1,135 @@
+/* help page related 
+-------------------------------------------------------------- */
+#help-page {
+	width: 970px;
+	text-align: left;
+	margin-top: 10px;
+}
+
+.purple-text {
+	color: #996699;
+	font-size: 18px;
+	font-family: Verdana;
+	font-weight:bold;
+	margin-top: 10px;
+}
+
+#timeslotloyalityHeader {
+	width: 100%;
+	height: 25px;
+	background: #999966;
+	color: #fff;
+	border-radius: 10px;
+	padding: 0 2px 0 10px;
+	line-height: 2.4em;
+	box-sizing: border-box;
+}
+
+#timeslotloyalityHeader.black {
+	background: #333433;
+}
+
+.help-heading {
+	color: #333333;
+    margin: 8px 0;
+    font-family: Verdana Regular;
+    font-size: 16px;
+}
+
+.help-subheading {
+	color: #6f6f6f;
+	margin-top: 1.5em;
+	font-family: Verdana;
+    font-weight: Bold;
+    font-size: 12px;
+}
+
+.underline {
+	border-bottom: 1px solid #669933;
+	margin: 32px 0;
+}
+
+.underline h4 {
+	margin-bottom: .5em;
+	font-family: Verdana;
+    font-weight: Bold;
+	font-size: 14px;
+	color: #333;
+}
+
+.help-aside {
+	border-right: 1px solid #ccc; 
+	padding-right: 10px;
+	width: 34%;
+	margin: 16px 0;
+}
+
+.help-main {
+	width: 62%;
+	padding-left: 10px;
+	margin: 16px 0;
+}
+
+#search-faq,
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+	width: 250px;
+}
+
+#search-faq {
+	height: 25px;
+}
+
+#help-page label{
+	width: 150px;
+    padding-right: 10px;
+    vertical-align: middle;
+    text-align: right;
+}
+
+#msg-textarea-label {
+	 vertical-align: top;
+}
+
+.from-elements-wrapper {
+	width: 100%;
+	font-size: 1.2em;
+}
+
+.form-group {
+    margin-bottom: 10px; 
+}
+
+#home-phone-ext-field,
+#work-phone-ext-field,
+#other-phone-ext-field {
+	width: 40px;
+}
+
+.bordered-box {
+	width: 100%;
+    float: left;
+    border-top: 1px solid #ccc;
+    margin: 30px auto;
+    padding-top: 15px;
+}
+
+.separator {
+	margin: 30px 0;
+}
+
+.trisect {
+	width : 33%;
+	float: left;
+}
+
+.bordered-bottom {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.error {
+	color: #cc0000;
+	/*margin-left: 165px;*/
+}

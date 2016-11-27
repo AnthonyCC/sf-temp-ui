@@ -1,0 +1,7 @@
+productId=veg_org_brcclni&
+catId=broc&
+skuCode=VEG0074091&
+quantity=2&
+PRICE=%243.98&
+add_to_cart.x=38&
+add_to_cart.y=10

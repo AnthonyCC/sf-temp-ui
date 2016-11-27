@@ -1,0 +1,134 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory"%>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+</script>
+<script language="JavaScript" type="text/javascript">
+	function doCancel(promoId) {
+		var doConfirm = confirm ("Are you sure you want to Cancel the Promotion?");
+		if(doConfirm == false){
+			return;
+		}            
+		document.frmPromoWSView.promoCode.value = promoId;
+		document.frmPromoWSView.actionName.value = "cancel";
+		document.frmPromoWSView.submit();
+	}
+</script>
+
+<%
+	DecimalFormat df = new DecimalFormat("0.00");
+%>
+<logic:present name="promotions">
+<table width="100%" border="0" cellspacing="5" cellpadding="5">
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Promotion ID</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Date</b></span></td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Day</b></span></td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b>Zone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Window Type</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Discount</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Redemption Limit</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Redemptions (across all days)</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Status</b></span></td>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold">&nbsp;</td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold">&nbsp;</td>
+	<% } %>
+	</tr>
+	
+	<%
+		
+		if(promotions == null || promotions.size() == 0) {
+	%>
+	<tr><td><span class="error">No Windows Steering Promotion found.</span></td></tr>
+	
+	<%
+		} else {
+	%>	
+	<logic:iterate id="promotion" collection="<%= promotions %>" type="com.freshdirect.fdstore.promotion.management.WSPromotionInfo" indexId="cnt">
+	<tr>
+	<td class="border_bottom"><span class="detail_text"><b>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
+	<a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;">
+		<%= promotion.getPromotionCode() %>
+	</a>
+	<% } else { %>
+		<%= promotion.getPromotionCode() %>
+	<% } %>
+	</b></span></td>	
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEffectiveDate() != null ? CCFormatter.formatDateMonth(promotion.getEffectiveDate()) : null %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getDayOfWeekStr() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStartDate() != null ? CCFormatter.formatCaseDate(promotion.getStartDate()) : null %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndDate() != null ? CCFormatter.formatCaseDate(promotion.getEndDate()) : null %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getZoneCode() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStartTime() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndTime() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getWindowTypeStr() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= null !=promotion.getWaiveChargeType() && "DLV".equalsIgnoreCase(promotion.getWaiveChargeType())? "FREE Delivery" :"$"+df.format(promotion.getDiscount()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getRedeemCount() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= PromotionFactory.getInstance().getRedemptions(promotion.getPromotionCode(), null) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStatus().getName() %></span></td>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
+		<td class="border_bottom">&nbsp;</td>
+		<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;">EDIT</a></b></span></td>
+		<td class="border_bottom">&nbsp;</td>
+		<td class="border_bottom">
+			<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="javascript:doCancel('<%= promotion.getPromotionCode() %>');" >
+		</td>
+	<% } %>
+	</tr>
+	</logic:iterate>
+	<%
+		}
+	%>	
+	
+</table>
+</logic:present>

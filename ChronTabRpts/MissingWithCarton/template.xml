@@ -1,0 +1,82 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>8</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select distinct  cd.carton_number, s.id WEBID, s.sap_number, sa.requested_date, ci.first_name, ci.last_name, 
+	   s.truck_number, s.stop_sequence, c.status, c.amount, mg.amount MAKEGOOD, count(*) as ItemCount 
+from     cust.sale s, cust.salesaction sa, 
+		 cust.complaint c, cust.customerinfo ci, 
+		 cust.complaint_dept_code cdc,  cust.complaint_code cc, cust.complaint_dept cd, 
+		 cust.orderline ol, cust.carton_detail cd, cust.complaintline cl, 
+  (SELECT sa.sale_id, s.customer_id, pi.referenced_order AS referenced, pi.NAME, 
+       pi.address1, pi.apartment, pi.city, pi.state, sa.action_type, 
+       sa.amount, s.status, sa.action_date, s.sap_number, rs.truck_number, 
+       rs.stop_sequence 
+  FROM cust.paymentinfo pi, 
+       cust.salesaction sa, 
+       cust.sale s, 
+       cust.sale rs 
+ WHERE pi.referenced_order IS NOT NULL 
+   AND pi.salesaction_id = sa.ID 
+   AND sa.sale_id = s.ID 
+   AND rs.ID = pi.referenced_order 
+   AND sa.action_date = 
+                     (SELECT MAX (action_date) 
+                        FROM cust.salesaction 
+                       WHERE sale_id = s.ID AND action_type IN ('CRO', 'MOD')) 
+   AND sa.action_date BETWEEN SYSDATE - 1 AND SYSDATE) MG 
+where s.id = sa.sale_id 
+  and s.id = c.sale_id 
+  and s.customer_id = ci.customer_id 
+  and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) 
+  and sa.requested_date between 
+      to_date(to_char(sysdate - 1, 'DD-MON-YYYY'), 'DD-MON-YYYY') and 
+      to_date(to_char(sysdate - 1, 'DD-MON-YYYY') || ' 11:59:00PM', 'DD-MON-YYYY HH:MI:SSPM') 
+  and c.status != 'REJ' 
+  and s.id = MG.referenced (+) 
+  and ol.salesaction_id = sa.id 
+  and sa.sale_id = cd.sale_id 
+  and c.id = cl.complaint_id 
+  and cl.complaint_dept_code_id = cdc.id 
+  and cc.code = cdc.comp_code 
+  and cd.code = cdc.comp_dept 
+  and cdc.comp_code in ('MISBOX', 'MISFRZ') 
+  and cl.orderline_id = ol.id (+) 
+  and ol.orderline_number = cd.orderline_number(+) 
+group by cd.carton_number, s.id, s.sap_number, sa.requested_date, ci.first_name, ci.last_name, 
+	   s.truck_number, s.stop_sequence, c.status, c.amount, mg.amount 
+order by s.id
+       </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

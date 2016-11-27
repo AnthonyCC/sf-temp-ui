@@ -1,0 +1,1 @@
+alter table CUST.PROMOTION_NEW modify MAX_USAGE number(4);

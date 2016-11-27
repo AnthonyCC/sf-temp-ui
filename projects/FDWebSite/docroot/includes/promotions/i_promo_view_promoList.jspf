@@ -1,0 +1,65 @@
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType"%>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" class="promo_table1" style="table-layout:fixed; word-break:break-all; word-wrap:break-word;">
+	
+	<fd:GetAllPromotionsNew id = "promoRows" filter="<%= promoFilter %>">
+<% EnumPromotionType lastPromoType = null; %>
+<% if(promoRows.isEmpty()){ %>
+<tr valign="top" style="color:#CC0000; font-weight: bold;"><td colspan="11" align="center">No matching promotions found.</td></tr>
+<%} %>
+<logic:iterate id="p" collection="<%= promoRows %>" type="com.freshdirect.webapp.taglib.promotion.PromoNewRow" indexId="idx">
+<% 
+	EnumPromotionType ptype = p.getType();
+	if (lastPromoType==null || !lastPromoType.equals(ptype)) {
+       		lastPromoType = ptype;
+%>
+     		<!-- <tr bgcolor="#DDDDDD" class="list_content"><td colspan="10">&nbsp;<a name="<%=ptype.getName().toLowerCase()%>"></a><i>Promotion Type:</i> <b><%=ptype.getName()%></b></td></tr> --> 
+<%
+    	}
+	EnumPromotionStatus pStatus = p.getStatus();
+%>
+<% 
+		  	String rCode = p.getRedemptionCode();
+			Date expire = p.getExpire();
+		%>
+		<% if("LIVE".equalsIgnoreCase(pStatus.getName())){ %>
+		<tr valign="top" class="BG_live">
+		<% }else if("EXPIRED".equalsIgnoreCase(pStatus.getName()) || "CANCELLED".equalsIgnoreCase(pStatus.getName()) ||"CANCELLING".equalsIgnoreCase(pStatus.getName())){ %>
+		<tr valign="top" class="BG_exp">
+		<% } else{ %>
+		<tr valign="top" class="BG_test">
+		<% } %>
+		<!-- <tr valign="top" class="list_content" <%--= counter % 2 == 0 ? "class='list_odd_row'" : "" --%> style="padding-top: 3px; padding-bottom: 3px;"> -->
+			<td class="border_bottom" style="width: 16px;">&nbsp;</td>
+			<td class="border_bottom" style="width: 200px;" style="font-weight: normal"><div style="width:180px;"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>" title="<%= p.getCode() %>"><%=p.getName()%></a></div>			
+                <% if(p.isChef()){ %>
+                <div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/purple_star.gif" /></div>
+                <% } %>
+                <% if(p.isNewCust()){ %>
+				<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/orange_o.gif" /></div>
+				<% } %>
+                <% if(p.isCos()){ %>
+				<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/blue_building.gif" /></div>
+				<% } %>
+                <% if(p.isDp()){ %>
+				<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/green_truck.gif" /></div>
+				<% } %>
+                <% if(p.isMktg()){ %>
+				<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/pink_heart.gif" /></div>
+				<% } %>
+				</td>
+			<td class="border_bottom" style="font-weight: normal; width: 150px;"><%=(rCode != null && !rCode.equals(""))? rCode.toUpperCase() : "N/A" %></td>
+			<td class="border_bottom" style="font-weight: normal; width: 100px;"><%=ptype.getName()%></td>
+			<td class="border_bottom" style="font-weight: normal; width: 300px; word-wrap:break-word;"><%=p.getDescription() %></td>
+			<td class="border_bottom" style="font-weight: normal; width: 125px;"><%=CCFormatter.formatDate(p.getStart())%></td>
+			<td class="border_bottom" style="font-weight: normal; width: 150px;"><%= expire != null ? CCFormatter.formatDate(expire) : ""%></td>
+			<td class="border_bottom" style="font-weight: normal; width: 100px;"><%= null!=pStatus ? pStatus.getDescription():" " %></td>
+			<td class="border_bottom" style="font-weight: normal; width: 75px;"><%= (null!=p.getCreatedBy()?p.getCreatedBy():"") %></td>
+			<td class="border_bottom" style="font-weight: normal; width: 75px;"><%= (null !=p.getModifiedBy()?p.getModifiedBy():"") %></td>
+			<td class="border_bottom" style="font-weight: normal; width: 75px;"><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=p.getCode()%>','small');">Details</a></td>
+			<td class="border_bottom" style="font-weight: normal">&nbsp;</td>
+		</tr>
+
+</logic:iterate>
+</fd:GetAllPromotionsNew>
+</table>

@@ -1,0 +1,29 @@
+{
+    "productsConfiguration" : [
+        {
+            "product" : {
+                "id" : "bstk_rbeye_bnls",
+                "categoryId" : "bgril",
+                "sku" : {
+                    "code" : "MEA0004676" 
+                }
+            },
+            "quantity" : "2",
+            "salesUnit" : "E02",
+            "options" : {
+                "C_MT_BF_MAR" : "N" ,
+                "C_MT_BF_PAK" : "ST" 
+            } 
+        },
+        {
+            "product" : {
+                "id" : "usq_chi_alfa_merl",
+                "categoryId" : "usq_red",
+                "sku" : {
+                    "code" : "WIN0073196" 
+                }
+            },
+            "quantity" : "1"
+        }
+    ]
+}

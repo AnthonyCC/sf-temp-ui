@@ -1,0 +1,10 @@
+<div id="topbar">
+  <div class="container clearfix">
+     <div class="column span-2 border">contact us</div>
+     <div class="column span-2 border">help/FAQs</div>
+     <div class="column span-12 border textright"><div  id="welcome">Welcome Ruchi (not ruchi?)</div></div>
+     <div class="column span-2 border">log out</div>
+     <div class="column span-2 border">my account</div>
+     <div class="column span-4 last">notifications</div>
+  </div>
+</div>

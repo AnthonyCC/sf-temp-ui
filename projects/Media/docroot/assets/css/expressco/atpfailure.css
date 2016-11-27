@@ -1,0 +1,258 @@
+#atpfailure .warningBox {
+  margin: 20px auto;
+  padding-left:10px;
+  width:960px;
+  box-sizing:border-box;
+}
+
+#atpfailure .warningBox:before{
+  display:none;
+}
+
+#atpfailure .lineContents {
+  padding: 10px 0;
+}
+
+#atpfailure .lineHeader {
+  color: white;
+  line-height:32px;
+}
+
+#atpfailure .lineHeaderLeft,
+#atpfailure .lineHeaderRight{
+  font-size:19px;
+  padding:3px 0;
+  font-weight:bold;
+}
+
+#atpfailure .lineHeaderLeft {
+  display: inline-block;
+  width: 448px;
+  background-color: #797A5B;
+  text-align:left;
+  padding-left:10px;
+}
+
+#atpfailure .lineHeaderRight {
+  display: inline-block;
+  width: 502px;
+  background-color: #9C9B65;
+  text-align:center;
+}
+
+#atpfailure .lineDetails {
+  display: inline-block;
+  width: 480px;
+}
+
+#atpfailure .lineDetails h1,
+#atpfailure .lineDetails p{
+  color:#666;
+}
+
+#atpfailure .lineDetails h1{
+  font-size: 26px;
+  font-weight:bold;
+}
+
+#atpfailure .lineDetails p{
+  margin:0;
+  padding:0;
+  font-size:14px;
+}
+
+#atpfailure .lineDetails .pic{
+  max-height:190px;
+  -moz-opacity: 0.50;
+  -khtml-opacity: 0.50;
+  opacity: 0.50;
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=50);
+}
+
+#atpfailure .lineDetails .strong{
+  font-weight:bold;
+}
+
+#atpfailure .lineRight {
+  display: inline-block;
+  width: 480px;
+  vertical-align: top;
+}
+
+#atpfailure .amountOptions {
+  border: solid 1px #9C9B65;
+  border-radius: 5px;
+  color: #9C9B65;
+  font-weight: bold;
+  text-align:left;
+  font-size:15px;
+  padding:5px;
+  margin-bottom:10px;
+  width:468px;
+}
+
+#atpfailure .amountOptions div{
+  margin-bottom:5px;
+  color:#797A5B;
+}
+
+#atpfailure .amountOptionsNote {
+  color: grey;
+}
+
+#atpfailure .replacements {
+  border:1px solid #DCD2DC;
+  border-radius: 10px;
+  display: inline-block;
+  width:478px;
+}
+
+#atpfailure .replacements [data-component="carousel"] ul.pager{
+  display:block;
+}
+
+#atpfailure .ie8 .replacements [data-component="carousel"] ul.pager{
+  display:none;
+}
+
+#atpfailure .replacements [data-component="carousel"] ul.pager li span{
+  width:11px;
+  height:11px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+#atpfailure .replacements [data-component="carousel"] ul.pager li.current{
+  position:relative;
+}
+
+#atpfailure .replacements [data-component="carousel"] ul.pager li.current span{
+  background-color:#fff;
+}
+
+#atpfailure .replacements [data-component="carousel"] ul.pager li.current:before{
+  width:5px;
+  height:5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  content: ' ';
+  background-color:#669933;
+  display: inline-block;
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  margin:auto;
+}
+
+#atpfailure .text-left{
+  text-align:left;
+}
+
+#atpfailure .v-center{
+  text-align:center;
+}
+
+#atpfailure .navigationLine{
+  text-align:right;
+}
+
+#atpfailure .link .cssbutton,
+#atpfailure .navigationLine .cssbutton{
+  font-size:15px;
+}
+
+#atpfailure .navigationLine .cssbutton.green{
+  margin-right:18px;
+}
+
+#atpfailure .arrow_box {
+  position: relative;
+}
+
+#atpfailure .arrow_box:before {
+  left: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+
+  border-color: rgba(194, 225, 245, 0);
+  border-left-color: #797A5B;
+  border-width: 19px;
+  margin-top: -35px;
+}
+
+#atpfailure #atpfailureform{
+  display:none;
+}
+
+#atpfailure .noAlcohol{
+  width:970px;
+}
+
+#atpfailure .noAlcohol h1{
+  font-size:14px;
+  font-weight:bold;
+  color:#333;
+  indent-size:2px;
+  text-indent:1em;
+  display:inline;
+  vertical-align:middle;
+}
+
+#atpfailure .noAlcohol .title{
+  float:left;
+  line-height:30px;
+  vertical-align:middle;
+  display:inline-block;
+  font-size:18px;
+}
+
+#atpfailure .noAlcohol .navigationLine{
+  line-height:30px;
+}
+
+#atpfailure .atpfailure [data-component="carousel"] ul li.portrait-item {
+  width: 114px;
+}
+
+#atpfailure .atpfailure [data-component="carousel"]{
+  padding-bottom:15px;
+}
+
+#atpfailure [data-component="carousel"] ul li.portrait-item {
+  width: 114px;
+}
+
+#atpfailure [data-component="carousel"]{
+  padding-bottom:15px;
+}
+
+#atpfailure .text-right{
+  text-align:right;
+}
+
+#atpfailure .fixedPopupContent{
+  max-width:none;
+}
+
+.popupcontentoverlay.atpFailureOverlay{
+  background-color: #fff;
+  opacity: .7;
+}
+
+#atpfailure .continue-top{
+  margin:10px 0;
+  text-align:right;
+}
+
+#atpfailure .continue-top + [fdform="atpfail"]{
+  display:none;
+}

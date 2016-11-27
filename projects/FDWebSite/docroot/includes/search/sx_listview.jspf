@@ -1,0 +1,154 @@
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
+
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+<%--
+
+Smart Search List View
+======================
+
+@author gmark
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Tracking code (String)
+
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+
+%>
+<table style="width:100%"><%
+int row_cnt = 0;
+
+int rank = nav.getPageOffset()+1;
+
+%><logic:iterate id="productNode" collection="<%= search.getPageProducts() %>" type="com.freshdirect.fdstore.content.ProductModel">
+<%
+	ProductImpression pi = new ProductImpression(productNode);
+	Image prodImage = pi.getProductModel().getSourceProduct().getCategoryImage();
+%><%@ include file="/includes/search/price_info.jspf" %><%	
+	
+	String actionURL = FDURLUtil.getProductURI(search.getParentContainer(), pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+%>
+<tr>
+	<td style="width: <%=prodImage.getWidth() %>px;text-align: center">
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURL %>" />
+	</td>
+	<td style="vertical-align: middle; text-align:left">
+		<div class="text13" style="padding-left:10px; text-indent: -10px;">
+			<%
+			if (pi.getProductModel().isFullyAvailable()) {
+			%>
+				<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" />
+			<%
+			} else {
+			%>
+				<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" style="color: #999999;"/>
+			<%
+			} 
+			%>
+			<span style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">
+			<% if (pi.getConfigurationDescription() != null && !pi.getConfigurationDescription().equals("")) {%>
+				- <%=pi.getConfigurationDescription() %>
+			<% } %>
+			</span>
+		</div>
+		<%
+		// Various labels
+		//	 AKA name
+		if (pi.getProductModel().getAka() != null && pi.getProductModel().getAka().length() != 0) {
+		%>
+			<div class="text13">"<%= pi.getProductModel().getAka() %>"</div>
+		<%
+		}		
+		if (pi.getProductModel().getProductRating() != null && pi.getProductModel().getProductRating().length() != 0) {
+		%>
+			<div style="margin-left:10px; margin-top:5px;"><display:ProductRating product="<%= productNode %>" noBr="true" leftAlign="true" /></div>
+		<%
+		}		
+		%>
+
+	</td>
+	<td style="text-align: right">
+		<div style="white-space: nowrap" class="text13">
+		<%
+			String scaledPrices[] = pi.getScaledPrices();
+			if (defaultPrice != null) {
+				if (hasWas) {
+		%>
+			<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+		</div>
+		<div style="white-space: nowrap" class="text13">
+					<span class="save-base-price">
+						(<font style="text-decoration: line-through;"><%=JspMethods.formatPrice(basePrice) %></font>)
+					</span>
+		<%				
+				} else {
+		%>
+				<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+		<%
+				}
+			}
+		%>
+		</div>
+		<%
+		// Scaled prices
+		//
+		boolean isGrpScale = false;
+		FDGroup group = pi.getFDGroup(); 
+		if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+			isGrpScale = true;	
+		}
+		if(isGrpScale) {
+		%>
+			<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+		<% } else { 
+		//show regular scale pricing
+				
+				if (scaledPrices != null && scaledPrices.length > 0) {
+					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+				%>
+				<div style="white-space: nowrap" class="text13 save-price">
+					<%= scaledPrices[ymalSci] %>
+				</div>
+				<%
+					}
+				}					
+			}
+		%>		
+	</td>
+</tr>
+
+<%
+// don't display the bar below the last product
+if (row_cnt < search.getPageProducts().size() - 1) {
+	%><tr><td colspan="3"><div style="border-top: 1px solid #b7b793;margin-top: 5px;margin-bottom:5px;">&nbsp;</div></td></tr><%
+}
+row_cnt++;
+rank++;
+%></logic:iterate>
+
+</table>

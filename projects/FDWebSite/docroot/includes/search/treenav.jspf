@@ -1,0 +1,106 @@
+<%@	  page import="java.util.Iterator"
+%><%@ page import="java.util.List"
+%><%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
+%><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
+%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
+%><%@ page import="com.freshdirect.fdstore.content.CategoryNodeTree"
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='logic' prefix='logic'
+%><%-- 
+
+Category Navigator Panel - Search Page
+This file is included by /search.jsp
+
+@param categoryTree	CategoryNodeTree
+@param nav			SearchNavigator instance
+@param results		List of found results
+
+--%><%
+final int noOfProducts	= search.getNoOfProducts(); // number of all products
+final int noOfRecipes	= search.getNoOfRecipes(); // number of all recipes
+final int noOfItems 	= noOfProducts + noOfRecipes;
+CategoryNodeTree categoryTree = search.getCategoryTree();
+int noOfClassifications = search.getRecipeClassificationsMap().size();
+
+%>
+<div id="categoryPanel" style="width:150px">
+	<div id="catSum" class="text15" style="background-color: #999967; color: white; padding: 5px 5px 5px 10px;width:135px;text-align: center">
+		<div style="width:135px;text-align: left;margin-left:auto;margin-right: auto; padding-bottom: 5px;">
+			<%= categoryTree.getCategoryCount() + noOfClassifications %> categories have matches for
+			<div style="font-weight: bold"><%= StringEscapeUtils.escapeHtml(criteria) %></div>
+		</div>
+	</div>
+<%
+
+	// 'show all products' action
+	if (noOfItems > 0 && (nav.getDepartment() != null || nav.getCategory() != null)) {
+%>
+ 	<div class="text11bold" style="margin: 0px; padding: 1em 5px 0 10px; background-color: #E0E3D0;width: 135px ! important">
+ 		<a href="<%= nav.getUnfilteredPageAction() %>">Show all
+ 			<% if (noOfProducts > 0) { %>products<% } %>
+ 			<% if (noOfProducts > 0 && noOfRecipes > 0) { %>and<% } %>
+ 			<% if (noOfRecipes > 0) { %>recipes<% } %>
+ 		</a>
+ 		<span style="color:grey; font-weight: normal;">(<% if (noOfProducts > 0) { %><%= noOfProducts %><% } 
+ 			%><% if (noOfProducts > 0 && noOfRecipes > 0) { %>+<% }
+ 			%><% if (noOfRecipes > 0) { %><%= noOfRecipes %><% } %>)</span>
+ 	</div>
+<%
+	}
+%>
+ <fd:ContentTreeTag contentNodeName="te" expandToDepth="1" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount" sortDeptsByProductCount="true">
+<% int d=depth.intValue(); if (d==0) {
+		// department node
+%>		<div class="text12bold" style="margin: 0px; padding: 1em 10px 2px 5px; background-color: #E0E3D0;width: 135px ! important">
+			<a href="<%= nav.getDepartmentAction(te.getContentKey().getId()) %>"><%= te.getFullName().toUpperCase() %></a>
+		</div>
+<%
+	} else {
+%>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding: 0 5px 0 25px;text-indent:-10px;width: 120px ! important">
+			<a style="margin-left: <%= d-1 %>em;" href="<%= nav.getCategoryAction(te.getContentKey().getId()) %>"><%= te.getFullName() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
+		</div>
+<% 
+	} 
+
+	%>
+</fd:ContentTreeTag>
+<%-- RECIPES PART --%><%
+	if (search.getNoOfRecipes() > 0) {
+%>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 0 10px; background-color: #E0E3D0;width: 135px ! important">
+			<a href="<%= nav.getRecipesAction() %>">RECIPES</a>
+		</div>
+<%
+		if (noOfClassifications > 0) {
+			String f = nav.getRecipeFilter();
+			for(DomainValue dv : search.getRecipeClassificationsMap().keySet()) {
+				int count = search.getRecipeClassificationsMap().get(dv).size();
+				%>
+			<div style="font-weight: <%= f != null && f.equals(dv.getContentKey().getId()) ? "bold" : "normal"  %>; margin: 0px;background-color: #E0E3D0;padding: 0 5px 0 20px;text-indent:-10px;width: 125px ! important">
+				<a href="<%= nav.getJumpToFilteredRecipesAction(dv.getContentKey().getId()) %>"><%= dv.getLabel() %></a>&nbsp;<span style="color:grey">(<%= count %>)</span>
+			</div>
+<%
+				
+			}
+		}
+	}
+%>
+	<div class="text12bold" style="background-color: #E0E3D0;">&nbsp;</div> 
+</div>
+
+<%--
+	if (FDStoreProperties.isAdServerEnabled()) { %>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+<script type="text/javascript">
+	OAS_AD('LittleRandy');
+</script>
+</div>
+<%
+	}
+--%>
+
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+	<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
+</div>
+
+

@@ -1,0 +1,147 @@
+.successtotal{
+  padding:40px 20px;
+  box-sizing:border-box;
+  border-top:1px solid #e0e3d0;
+}
+
+.successtotal-left,
+.successtotal-right{
+  display:inline-block;
+  vertical-align:top;
+}
+
+.successtotal-left{
+  width:450px;
+}
+
+.successtotal-right{
+  width:480px;
+}
+
+.orderbox{
+  font-size:14px;
+  color:#666;
+  outline:1px solid #aaa;
+  background:#f7f7f7;
+  padding:10px 15px;
+}
+
+.orderbox .orderid{
+  font-size:16px;
+  font-weight:bold;
+}
+
+.orderbox .standing-order-3-receiptBox{
+  color: #666;
+  font-weight: normal;
+  font-size: 0.95em;
+}
+
+.orderbox ul{
+  padding:0;
+  margin:0;
+}
+
+.orderbox ul.ordertotal li {
+  position: relative;
+  display: block;
+  height: 1.5em;
+}
+
+.orderbox ul.ordertotal li:before {
+  content: ' ';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+.orderbox .receipt-text {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-right: .3em;
+  background: #f7f7f7;
+}
+
+.orderbox .receipt-price {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 95px;
+  padding-left: .3em;
+  background: #f7f7f7;
+}
+
+.orderbox .estimated{
+  color:#693;
+  font-size:15px;
+  text-align:right;
+  font-weight:bold;
+  margin:0.5em 0;
+}
+
+.tips{
+  margin:10px 30px;
+  font-size:12px;
+}
+
+.tips li{
+  margin:10px 0;
+}
+
+.tips .next{
+  font-size:16px;
+  font-weight:bold;
+}
+
+.tips .tips-link{
+  font-weight:bold;
+  text-decoration:none;
+}
+
+.successtimeslot {
+  text-align: center;
+  margin-top: 2em;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.successtimeslot .successtimeslot_date {
+  font-size: 1.25em;
+  white-space: nowrap;
+}
+
+.successtimeslot .successtimeslot_time {
+  color: #693;
+  font-size: 1.25em;
+  white-space: nowrap;
+}
+
+[data-receipt-id="automaticheaderdiscount"] .receipt-price,
+[data-receipt-id="redemptionPromo"] .receipt-price,
+[data-receipt-id="freefood"] .receipt-price,
+[data-receipt-id="discount"] .receipt-price,
+[data-receipt-id="redemptionfailure"] .receipt-price,
+[data-receipt-id="giftcardbalance"] .receipt-price,
+[data-receipt-id="credits"] .receipt-price {
+  color: #693;
+}
+
+#successpage h2.inyourorder {
+  font-weight: bold;
+  line-height: 44px;
+  border-bottom: 1px solid #ddd;
+}
+
+.successmodifyorder-cont {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.successmodifyorderbutton-cont {
+	text-align: center;
+}

@@ -1,0 +1,70 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>survey data</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select distinct c.first_name || ' ' || c.last_name as NAME, sv.create_date, di.zone, sd.question, sd.answer
+from cust.survey sv,
+         cust.customerinfo c,
+         cust.surveydata sd,
+         cust.fdcustomer fdc,
+         cust.deliveryinfo di,
+         cust.salesaction sa,
+         cust.sale sale
+where sv.survey_name = 'MorningDelivery'
+  and sv.id = sd.survey_id
+  and sv.customer_id = fdc.id
+  and fdc.erp_customer_id = c.customer_id
+  and sale.customer_id = c.customer_id
+  and sale.id in
+  (select max(to_number(s.id))
+        from cust.sale s, cust.salesaction sa, cust.fdcustomer fdc
+        where s.id = sa.sale_id
+          and sa.action_date = (select max(action_date)
+                                          from cust.salesaction sz
+                                          where sz.action_type in ('CRO','MOD')
+                                          and sz.sale_id = s.id)
+      and s.customer_id = fdc.erp_customer_id
+      and s.customer_id = c.customer_id)
+  and sa.sale_id = sale.id
+  and sa.action_date = (select max(action_date)
+                                          from cust.salesaction sz
+                                          where sz.action_type in ('CRO','MOD')
+                                          and sz.sale_id = sale.id)
+  and sa.id = di.salesaction_id
+  order by sv.create_date asc
+     </param>
+     <param>MorningDeliveryTimeslot,MorningDeliveryOption,MorningDelivery695,MorningDelivery3Hour,MorningDelivery8Cutoff,MorningDeliveryOrder,MorningDeliveryPurchase,MorningDeliveryRecipient,MorningDeliveryBuy</param>
+     <!--param>printHeader</param-->
+   </dataSource>
+  </sheet>
+
+
+ </populate>
+</xlsReporting>

@@ -1,0 +1,1 @@
+drop table "CUST"."COREMETRICS_USERINFO"

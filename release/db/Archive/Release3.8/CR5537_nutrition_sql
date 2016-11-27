@@ -1,0 +1,7 @@
+alter table erps.nutrition add DATE_MODIFIED DATE;
+
+update erps.nutrition set DATE_MODIFIED=sysdate where DATE_MODIFIED is null;
+
+alter table erps.nutrition_info add DATE_MODIFIED DATE; 
+
+update erps.nutrition_info set DATE_MODIFIED=sysdate where DATE_MODIFIED is null;

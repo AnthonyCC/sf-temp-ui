@@ -1,0 +1,164 @@
+{namespace srch}
+/**
+ * @param? searchParams
+ * @param? pageType
+ */
+{template .searchParams autoescape="false"}
+  {if $pageType == 'SEARCH'}
+  <section class="tabcontent">
+    <input class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off" value="{if $searchParams}{$searchParams}{/if}"/>
+    <button class="cssbutton khaki searchbutton">search</button>
+  </section>
+  {/if}
+{/template}
+
+/**
+ * @param? tabs
+ */
+{template .searchTabs autoescape="false"} 
+  {if $tabs and length($tabs) > 0}
+    {foreach $tab in $tabs}
+      <li id="tab{index($tab)}" role="tab" tabindex="0" aria-controls="searchPanel" {if $tab.active}class="active" aria-selected="true"{/if} data-type="{$tab.type}"><span>{$tab.label}</span>{sp}<i>({$tab.filteredHits})</i></li>
+    {/foreach}
+  {/if}
+{/template}
+
+/**
+ * @param? searchParams
+ * @param? searchTerm
+ * @param? suggestions
+ * @param? tabs
+ * @param? listSearchParams
+ */
+{template .searchSuggestions autoescape="false"}
+    {if $tabs and length($tabs) > 0}
+      <div class="top-marg left-marg">
+        {foreach $tab in $tabs}
+          {if $tab.active}
+            {call .searchDescription}
+              {param hits:$tab.hits /}
+              {param itemType:$tab.type /}
+              {param searchTerm:$searchTerm /}
+              {param searchParams:$searchParams /}
+            {/call}
+          {/if}
+        {/foreach}
+      </div>
+    {/if}
+    {if $suggestions and length($suggestions) > 0}
+  <div class="left-marg">
+    Did you mean {foreach $term in $suggestions}
+      {if $listSearchParams}
+      	<a href="/srch.jsp?searchParams={$term}&listSearchParams={$listSearchParams}">{$term}</a>
+      {else}
+      	<a href="/srch.jsp?searchParams={$term}">{$term}</a>
+      {/if}
+      {if index($term) < length($suggestions) - 2}, {/if}
+      {if index($term) == length($suggestions) - 2} or {/if}
+    {/foreach}?
+  </div>
+  {/if}
+{/template}
+
+
+/**
+* @param? itemType
+* @param? hits
+* @param? searchTerm
+* @param? searchParams
+*/
+{template .searchDescription autoescape="false"}
+
+{if $searchParams and $searchTerm}
+  <b>0</b> {$itemType} found for <b>{$searchParams}</b>{sp}|{sp}
+  {call .hitsDescriptor}
+    {param hits:$hits /}
+    {param itemType:$itemType /}
+    {param text:$searchTerm /}
+  {/call}
+{/if}
+
+{if $searchParams and not $searchTerm}
+  {call .hitsDescriptor}
+    {param hits:$hits /}
+    {param itemType:$itemType /}
+    {param text:$searchParams /}
+  {/call}
+{/if}
+{/template}
+
+/**
+* @param? itemType
+* @param? hits
+* @param? text
+*/
+{template .hitsDescriptor}
+Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$text}</b>
+{/template}
+
+/**
+ * @param? pageType
+ */
+{template .header autoescape="false"}
+  {if $pageType == 'NEWPRODUCTS'}
+    <h1 class="orange-title">New Products</h1>
+  {elseif $pageType == 'SEARCH'}
+    <h1 class="orange-title">Search Results</h1>
+  {elseif $pageType == 'PRES_PICKS' or $pageType == 'STAFF_PICKS'}
+    <div class="oas-cnt PPHeader" id="oas_b_PPHeader">
+      <script type="text/javascript">
+          OAS_AD('PPHeader');
+      </script>
+    </div>
+    
+    <div class="oas-cnt PPHeader2" id="oas_b_PPHeader2">
+      <script type="text/javascript">
+          OAS_AD('PPHeader2');
+      </script>
+    </div>
+  {/if}
+{/template}
+
+/**
+* @param? searchParams
+* @param? listSearchParams
+* @param? listSearchParamsList
+*/
+{template .listSearch autoescape="false"}
+
+{if $listSearchParams and $listSearchParamsList}
+   {foreach $listSearchParamsHit in $listSearchParamsList}
+     <div class="listSearchHit"> 
+      {if $listSearchParamsHit == $searchParams}
+      	<b>{$listSearchParamsHit}</b>
+      {else}
+      	<a href="/srch.jsp?searchParams={$listSearchParamsHit}&listSearchParams={$listSearchParams}">{$listSearchParamsHit}</a>
+      {/if}
+     </div>
+   {/foreach}
+   </h2>
+{/if}
+{/template}
+
+/**
+ * @param? products
+ */
+{template .ddppWrapper autoescape="false"}
+{if $products and length($products) > 0}
+  <div class="ddpp-list">
+    <div class="ddpp transactional" data-transactional-align="true">
+    {foreach $product in $products}
+      <div class="ddpp-item radius-border border-green">
+        {if $product.featuredHeader}<img class="ddpp-ribbon" data-transactional-trigger="true" src="/media/images/ddpp_ribbons/{$product.featuredHeader}.png" alt="">{/if}
+        {call common.transactionalGridItem}
+          {param item:$product /}
+        {/call}
+      </div>
+      {if (index($product)+1) % 4 == 0}/* start new line */
+      	</div><div class="ddpp transactional" data-transactional-align="true">
+      {/if}
+    {/foreach}
+    </div>
+  </div>
+{/if}
+{/template}

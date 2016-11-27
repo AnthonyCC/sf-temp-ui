@@ -1,0 +1,25 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@dss1.nyc2.freshdirect.com:1521:STSTO01</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>select to_char(sysdate - 1, 'MM/DD/YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

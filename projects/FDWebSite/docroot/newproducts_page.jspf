@@ -1,0 +1,246 @@
+<%@page import="com.freshdirect.customer.EnumATCContext"%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
+<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
+<%@ page import="com.freshdirect.fdstore.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.text.DecimalFormat"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
+<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="com.freshdirect.fdstore.util.NewProductsNavigator"%>
+<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
+<%@ page import="com.freshdirect.fdstore.util.NewProductsGrouping"%>
+<%@ page import="com.freshdirect.fdstore.util.TimeRange"%>
+<%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='bean' prefix='bean'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<% //expanded page dimension
+final int W_INDEX_TOTAL = 970;
+final int W_INDEX_CENTER_PADDING = 20;
+final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
+%>
+
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.NEWPRODUCTS%>"/>
+
+<%  
+
+	// copied from the old search.jsp:
+	
+	final String trk = "srch"; // tracking code
+
+	// OAS AD settings
+	request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
+	request.setAttribute("listPos", "PPSuperBuy,SystemMessage,LittleRandy,CategoryNote");
+	pageContext.setAttribute("ATCCONTEXT",EnumATCContext.NEWPRODUCTS.getName());
+	// default sort
+	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
+
+
+	// storing the view settings in the session
+	FilteringNavigator searchNav = new FilteringNavigator(request,20);
+  request.setAttribute("filternav", searchNav);
+	if(isDFGS) {
+		searchNav.setDeptFilter(request.getParameter("deptId"));
+		searchNav.saveState();
+	}
+	
+	final int DEFAULT_PAGE_SIZE = searchNav.getDefaultPageSize();
+
+	ConfigurationContext confContext = new ConfigurationContext();
+	confContext.setFDUser(user);
+	ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
+	
+	
+	if ( qc.getParameter("sort") == null ) {
+		searchNav.setSortBy(SearchSortType.BY_RECENCY);
+	}
+	if ( qc.getParameter("pageSize") == null ) {
+		searchNav.setPageSize(DEFAULT_PAGE_SIZE);
+	}
+	
+	
+	final int hideAfter = 8;
+	boolean otherFilters=false;
+%>
+<fd:GetNewProductsSimple id="newProds" nav="<%= searchNav %>" featuredCategory="featuredCat"/>
+<fd:ProductsFilter results="<%= newProds %>" nav="<%= searchNav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
+<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= searchNav %>" groupingsId="groups">
+<bean:define id="activeTabVal" value='products' />
+
+<tmpl:insert template='/common/template/newproducts.jsp'>
+	<tmpl:put name="customCss">
+		<fd:css href="/assets/css/common/grid_supplement.css"></fd:css>
+		<fd:css href="/assets/css/common/product_grid.css"></fd:css>
+		<fd:css href="/assets/css/search.css"></fd:css>
+		<fd:css href="/assets/css/newproducts.css"></fd:css>
+		<style type="text/css">
+			.product-grid { width:803px; }
+			.items { width:804px; }
+			.grid-view .grid-item-container { width:201px; }
+		</style>
+	</tmpl:put>
+	<tmpl:put name="customJs">
+		<script>
+			$jq(document).ready(function(){
+
+				fixGridFeatRowHeights('.ddpp_feat_prod_cont', 'div.featurebox', '.grid-item'); <%-- moved to common_javascript --%>
+			});
+		</script>
+	</tmpl:put>
+	<tmpl:put name="customJsBottom">
+	</tmpl:put>
+
+	<tmpl:put name="title" direct="true">FreshDirect - New products</tmpl:put>
+	<tmpl:put name="activeView">grid</tmpl:put>
+	<tmpl:put name="noResult"><%= itemCount == 0 ? "noresult" : "hasresults" %></tmpl:put>
+	<tmpl:put name="startPage"><%= searchNav.getSearchTerm()==null || searchNav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
+
+	<tmpl:put name="deptnav-header">
+		<% if ( isDFGS ) { %>
+		<%@ include file="/common/template/includes/deptnav.jspf"%>
+		<hr />
+		<% } %>
+	</tmpl:put>
+	<tmpl:put name="content-title">New Products</tmpl:put>
+
+	<tmpl:put name="content-header">
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_filter" searchNavigator="<%= searchNav %>" />
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_sort" searchNavigator="<%= searchNav %>" />
+	</tmpl:put>
+
+	<tmpl:put name="count-header">
+		<strong><%= itemCount %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!
+	</tmpl:put>
+	
+	
+	<% if ( isDFGS && user.getIdentity()!=null ) { %>
+	<tmpl:put name="dfgs-container-class"> newprod-dfgs</tmpl:put>
+	
+	<tmpl:put name="your-cart">
+		<div id="cart-container">
+			<comp:recommenderBox siteFeature="SCR_PERSONAL" />			
+			<p class="product-request"><a href="javascript:pop('/request_product.jsp', 400, 585);">Product Request? Click here.</a></p>
+		</div>
+	</tmpl:put>
+	<% } %>
+
+	<tmpl:put name="content" direct="true">
+	<%	
+	
+	for (Iterator it=groups.keySet().iterator() ; it.hasNext();) {
+		TimeRange groupTime = (TimeRange) it.next();
+		List<ProductModel> groupedList = (List<ProductModel>) groups.get(groupTime);
+		if (groupedList.size() > 0 && searchNav.getSortBy() == SearchSortType.BY_RECENCY && searchNav.getFilterValues().isEmpty()  )  {
+		%>
+		<h3 class="grouping-header"><%= groupTime.getDescription() %></h3>
+		<%
+		}
+		for (Iterator<ProductModel> groupedIt=groupedList.iterator() ; groupedIt.hasNext();) {
+			ProductImpression pi = confStrat.configure(groupedIt.next(), confContext);
+			%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
+		}
+	}
+	%>
+	</tmpl:put>
+
+
+<% searchNav.resetState(); %>
+<tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
+	<% ArrayList selection = new ArrayList();  %>
+
+	<tmpl:put name="toolbar">
+	<% searchNav.resetState(); %>
+		<div id="sorter" class="span-10">
+			<span class="label">Sort:</span>
+			<display:SortBar defaultSort="recency" sortItems="<%= new SearchSortType[] {SearchSortType.BY_RECENCY, SearchSortType.BY_NAME, SearchSortType.BY_PRICE, SearchSortType.BY_SALE} %>">
+				<a href="<%= currentUrl %>" class="sortitem <%= isSelected ? "sortitem-selected" : ""%> <%= currentIndex==1 ? "nodot" : ""%>"><%= currentText%></a>
+			</display:SortBar>					
+		</div>
+	</tmpl:put>
+
+<% if (!isDFGS) { %>
+  <% 
+  	request.setAttribute("filtermenus", menus); 
+	request.setAttribute("newprodpage", true); 
+  %>
+  <tmpl:put name='filterNavigator'>
+    <tmpl:insert template='/common/template/filter_navigator.jsp'>
+
+      <tmpl:put name="sidebarOther">
+      <div class="new_product_request_button">
+        <a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/prodrequest.png" width="156" height="135"></a>
+      </div>
+      </tmpl:put>
+      
+    </tmpl:insert>
+  </tmpl:put>
+<% } %>
+	
+	<tmpl:put name="selection-header" direct="true">		
+	</tmpl:put>
+
+	<tmpl:put name="selection-list" direct="true">		
+	</tmpl:put>
+
+	<tmpl:put name="viewAll">
+<% 	if( itemCount > DEFAULT_PAGE_SIZE) {
+		if(searchNav.getPageSize() == 0) { 
+			searchNav.resetState();
+			searchNav.setPageSize(DEFAULT_PAGE_SIZE);
+%>
+		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show <%= DEFAULT_PAGE_SIZE %></a>
+<%		} else {
+			searchNav.resetState();
+			searchNav.setPageSize(0);
+%>
+		<a href="<%= searchNav.getLink() %>" class="button middle white bold view-all">Show all</a>
+<%	} 
+}	%>
+	</tmpl:put>
+	
+	<tmpl:put name="pagerTop">
+		<% searchNav.resetState(); %>
+		<div class="results">
+			<span>Results: </span>
+			<span class="results-current"><%= ((searchNav.getPageNumber())*searchNav.getPageSize())+1  %>-<%= searchNav.getPageSize()==0 ? 
+						itemCount : Math.min((searchNav.getPageNumber()+1)*searchNav.getPageSize(),itemCount)  %></span>
+			<span>of</span>
+			<span class="results-all"><%= itemCount %></span>
+		</div>
+		<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= searchNav %>"/><tmpl:get name="viewAll" /></div>
+	</tmpl:put>
+
+	<tmpl:put name="pagerBottom">
+		<% searchNav.resetState(); %>
+		<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= searchNav %>"/><tmpl:get name="viewAll" /></div>
+		<div class="back-to-top"><a href="#content_top">back to top</a></div>
+	</tmpl:put>
+	
+	<% if (!isDFGS && featuredCat != null && featuredCat.getFeaturedNewProdBrands().size() > 0 ) { %>
+	<tmpl:put name='featured' direct='true'>
+		<h2 class="featured-header">Our favorite new additions</h2>
+		<%@ include file="/includes/i_featured_products_new.jspf"%>
+	</tmpl:put>
+	<% } %>
+
+</tmpl:insert>
+</fd:ProductsGroupingAndPaging>
+</fd:ProductsFilter>

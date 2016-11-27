@@ -1,0 +1,73 @@
+
+c:\freshdirect\scripts\src>perl masscredit.pl
+PerlConfig is successfully loaded!
+Common is successfully loaded!
+Execsql is successfully loaded!
+debug: configfile= ..\perlscripts.windows.cfg
+debug: in get_highest_suffix_file: file= c:\freshdirect\scripts\data\mc.in, ext= in
+**Common=HASH(0x229c84)c:\freshdirect\scripts\data\mc.in1
+debug: in make_suffix_file: file= c:\freshdirect\scripts\data\mc.in, ext= in i= 1
+debug: in make_suffix_file: returning file= c:\freshdirect\scripts\data\mc.in
+**Common=HASH(0x229c84)c:\junk\mc.out1
+debug: in make_suffix_file: file= c:\junk\mc.out, ext= out i= 1
+debug: in make_suffix_file: returning file= c:\junk\mc.out
+**Common=HASH(0x229c84)c:\junk\mc.sql1
+debug: in make_suffix_file: file= c:\junk\mc.sql, ext= sql i= 1
+debug: in make_suffix_file: returning file= c:\junk\mc.sql
+debug: dbname= DEVINT
+debug: dbuser= fdstore_prda
+debug: appuser=
+debug: infile= c:\freshdirect\scripts\data\mc.in
+debug: outfile= c:\junk\mc.out
+debug: sqloutfile= c:\junk\mc.sql
+debug: password=fdstore_prda
+debug: dbname= DEVINT
+
+
+c:\freshdirect\scripts\src>perl dlvpass.pl
+PerlConfig is successfully loaded!
+Common is successfully loaded!
+Execsql is successfully loaded!
+debug: configfile= ..\perlscripts.windows.cfg
+debug: in get_highest_suffix_file: file= c:\freshdirect\scripts\data\dp.in, ext= in
+**Common=HASH(0x229c84)c:\freshdirect\scripts\data\dp.in1
+debug: in make_suffix_file: file= c:\freshdirect\scripts\data\dp.in, ext= in i= 1
+debug: in make_suffix_file: returning file= c:\freshdirect\scripts\data\dp.in
+**Common=HASH(0x229c84)c:\junk\dp.out1
+debug: in make_suffix_file: file= c:\junk\dp.out, ext= out i= 1
+debug: in make_suffix_file: returning file= c:\junk\dp.out
+**Common=HASH(0x229c84)c:\junk\dp.sql1
+debug: in make_suffix_file: file= c:\junk\dp.sql, ext= sql i= 1
+debug: in make_suffix_file: returning file= c:\junk\dp.sql
+debug: dbname= DEVINT
+debug: dbuser= fdstore_prda
+debug: infile= c:\freshdirect\scripts\data\dp.in
+debug: outfile= c:\junk\dp.out
+debug: sqloutfile= c:\junk\dp.sql
+debug: activity_id=
+debug: source=
+debug: initiator=
+debug: note=
+debug: reason=
+debug: password=fdstore_prda
+
+
+c:\freshdirect\scripts\src>perl peakproduce.pl -f peakproduce_inductees.dat
+PerlConfig is successfully loaded!
+Common is successfully loaded!
+Execsql is successfully loaded!
+debug: configfile= ..\perlscripts.windows.cfg
+debug: dbname= DEVINT
+debug: dbuser= fdstore_prda
+debug: infile= c:\freshdirect\scripts\data\peakproduce_inductees.dat
+debug: outfile= C:\junk\peakproduce_inductees.dat.out
+debug: sqloutfile= C:\junk\peakproduce_inductees.dat.sql
+debug: updatemode=0
+debug: password=fdstore_prda
+debug: trying DBI->connect('dbi:Oracle:DEVINT', fdstore_prda, fdstore_prda)...
+debug2: infile= c:\freshdirect\scripts\data\peakproduce_inductees.dat
+debug: cust_id= 273864 promotion_id= 145369150
+debug: tcustprom->rows= 0
+
+
+c:\freshdirect\scripts\src>

@@ -1,0 +1,26 @@
+
+/* Colors
+-------------------------------------------------------------- */
+.orange { color:#e89138; }
+.orange_bg { background-color:#e89138; }
+
+.brown { color:#999966; }
+.brown_bg {	background-color:#999966; }
+
+.white { color:white; }
+.white_bg { background-color:white; }
+
+
+/* Vertical alignments 
+-------------------------------------------------------------- */
+.top { vertical-align:top; }
+.middle { vertical-align:middle; }
+.baseline { vertical-align:baseline; }
+.bottom { vertical-align:bottom; }
+
+
+
+.content-header {
+	font-size:32px;
+	line-height:40px;
+}

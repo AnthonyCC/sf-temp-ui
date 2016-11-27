@@ -1,0 +1,33 @@
+/* Custom fonts
+-------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'EagleRegular';
+    src: url('/assets/css/fonts/eagle-light-webfont.eot');
+    src: url('/assets/css/fonts/eagle-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/css/fonts/eagle-light-webfont.woff') format('woff'),
+         url('/assets/css/fonts/eagle-light-webfont.ttf') format('truetype'),
+         url('/assets/css/fonts/eagle-light-webfont.svg#EagleRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.eagle {
+	font-family:'EagleRegular'
+}
+
+@font-face {
+    font-family: 'BebasNeueRegular';
+    src: url('/assets/css/fonts/bebasneue-webfont.eot');
+    src: url('/assets/css/fonts/bebasneue-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/css/fonts/bebasneue-webfont.woff') format('woff'),
+         url('/assets/css/fonts/bebasneue-webfont.ttf') format('truetype'),
+         url('/assets/css/fonts/bebasneue-webfont.svg#BebasNeueRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.bebas {
+    font-family: 'BebasNeueRegular';
+}

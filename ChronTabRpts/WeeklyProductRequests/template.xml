@@ -1,0 +1,42 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+   select to_char(request_date, 'DD-MON-YYYY') RequestedDate, info_line1 as "Dept Entered", info_line2 || '; ' || info_line3 || '; ' || info_line4 as Requests 
+   from cust.customer_request 
+   where request_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7
+   order by request_date
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

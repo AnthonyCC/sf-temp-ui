@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.CASE_ORIGIN CODE="MAIL" NAME="Email" DESCRIPTION="Email Origin"/>
+<CUST.CASE_ORIGIN CODE="SYS" NAME="System" DESCRIPTION="System Origin" OBSOLETE="X"/>
+
+</dataset>

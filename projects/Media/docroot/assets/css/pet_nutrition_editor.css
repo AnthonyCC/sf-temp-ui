@@ -1,0 +1,114 @@
+.editorcontainer {
+  display: block;
+  width: 1280px;
+  overflow: hidden;
+}
+
+.editor {
+	width:840px;
+  float: left;
+  margin-left: 8px;
+}
+
+.editor .toolbar {
+  background:lightgray;
+  padding-left: 5px;
+}
+
+.editor .drugpanel {
+	line-height:2.5em;
+	border-bottom:2px solid black;
+}
+
+.editor .drugsection {
+	border-collapse:collapse;
+	border:2px solid black;
+	border-bottom:none;
+}
+
+.editor .drugitem {
+	overflow:hidden;
+}
+
+.editor .toolbar button {
+	line-height:16px;
+	vertical-align:bottom;
+}
+
+.editor .drugsection>.toolbar {
+	background:#C88686;
+}
+
+.editor .drugsection .drugitem:nth-child(even) {
+	background-color:#E1D6B6;
+}
+
+.editor .drugsection .drugitem:nth-child(odd) {
+	background-color:white;
+}
+
+.editor .drugpanel,
+.editor .drugsection {
+	border-color: #814141;
+}
+
+
+.editor .drugitem hr {
+	display:inline-block;
+	width:440px;
+}
+
+.editor input[type="text"],
+.editor input[type="number"] {
+		border:1px solid #999;
+		margin:2px;
+		padding:1px;
+}
+
+.editor input,
+.editor select,
+.editor button {
+	vertical-align:middle;
+}
+
+.editor .itemtoolbar {
+	display:inline-block;
+	float:right;
+	font-size:10px;
+}
+
+.editor .toggle {
+	padding-right:1em;
+}
+
+.editor .draghandle {
+	display:inline-block;
+	text-align:center;
+	cursor:move;
+	vertical-align:middle;
+}
+
+.editor .addItem {
+	float: right;
+}
+
+.editor .type_FREETEXT .drugitem input[type=text] {
+	width:440px;
+}
+
+.editor .type_TABLE .drugitem input[type=text] {
+	width:210px;
+}
+
+.editor .type_INGREDIENT .drugitem input[name=ingredientValue] {
+	width:80px;
+	text-align:right;
+}
+
+.editor .type_INGREDIENT .drugitem input[name=uom] {
+	width:40px;
+}
+
+.editor .type_INGREDIENT .drugitem input[name=value2] {
+	text-align:right;
+}

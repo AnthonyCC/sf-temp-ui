@@ -1,0 +1,107 @@
+@CHARSET "ISO-8859-1";
+
+a:hover {
+	text-decoration: none;
+}
+
+.alignment {
+	width: 350px;
+	float: left;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+.social-loginscr {
+	width: 200px;
+	float: right;
+}
+
+.bottom-links {
+	font-size: 11px;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.clear {
+	clear: both;
+}
+
+input[type="submit"] {
+	width: 200px;
+	padding: 10px;
+	margin-top: 0px;
+	background-color: #00B800;
+	color: #ffffff;
+	text-align: center;
+	border-radius: 5px;
+}
+
+input[type="submit"]:hover {
+	color: #000;
+}
+
+input[type="submit1"] {
+	width: 200px;
+	padding: 10px;
+	margin-top: 0px;
+	background-color: #00B800;
+	color: #ffffff;
+	text-align: center;
+	border-radius: 5px;
+}
+
+input[type="submit1"]:hover {
+	color: #000;
+}
+
+.bottom-contents-social {
+	width: 500px;
+	margin-top: 10px;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
+input[disabled="disabled"] {
+	background-color: #D6D6C2;
+}
+
+.error {
+	text-align: left;
+	font-size: 12px;
+	font-family: "Verdana", Georgia, Serif;
+	color: red;
+}
+
+input.error {
+	width: 200px;
+	padding: 9px;
+	border-radius: 2px;
+	border-color: #FF6C47;
+	background-color: #FFE0E0;
+}
+
+span.error_img {
+	/*background:url( "/media_stat/images/common/red_arrow.png") no-repeat;*/
+	display: block;
+	width: 17px;
+	height: 12px;
+}
+
+.password-class {
+	position: relative;
+}
+
+span.show_bg_arrow {
+	background: url( "/media_stat/images/common/red_arrow.png") no-repeat;
+}
+
+.show-password {
+	position: fixed;
+	top: 317px;
+	fron-size: 10px;
+	right: 290px;
+	background: #A4A5A4;
+	color: #fff;
+	padding: 5px 10px;
+	cursor: pointer;
+	border-radius: 3px;
+}

@@ -1,0 +1,39 @@
+
+
+In freshdirect.registry:
+
+remove these:
+
+classpath:/com/freshdirect/fdstore/rules/dlv/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/misc/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/echeck/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/referral/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/promotion/hivemodule-prd.xml
+
+add:
+
+classpath:/com/freshdirect/fdstore/rules/dlv/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/misc/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/echeck/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/referrer/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/promotion/hivemodule-prd.xml
+
+
+In freshdirect.properties:
+
+remove these:
+
+com.freshdirect.fdstore.dlv.rulesLocation=file:/home/fdadmin/rules/DLV-rules.xml
+com.freshdirect.fdstore.misc.rulesLocation=file:/home/fdadmin/rules/MISC-rules.xml
+com.freshdirect.fdstore.echeck.rulesLocation=file:/home/fdadmin/rules/ECHECK-rules.xml
+com.freshdirect.fdstore.promotion.rulesLocation=file:/home/fdadmin/rules/PROMOTION-ules.xml
+com.freshdirect.fdstore.referral.rulesLocation=file:/home/fdadmin/rules/REFERRER-ules.xml
+
+add:
+
+com.freshdirect.fdstore.rules.referrer.location=file:/home/fdadmin/rules/REFERRER-rules.xml
+com.freshdirect.fdstore.rules.dlv.location=file:/home/fdadmin/rules/DLV-rules.xml
+com.freshdirect.fdstore.rules.echeck.location=file:/home/fdadmin/rules/ECHECK-rules.xml
+com.freshdirect.fdstore.rules.misc.location=file:/home/fdadmin/rules/MISC-rules.xml
+com.freshdirect.fdstore.rules.promotion.location=file:/home/fdadmin/rules/PROMOTION-rules.xml
+

@@ -1,0 +1,163 @@
+.cnt-flatbox-full, .cnt-flatbox-half {
+	border: 0; 
+	min-height: 250px;
+}
+
+.cnt-flatbox-half  {
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.cnt-flatbox-column {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	min-height: 250px;
+	
+	width: 40px;
+}
+
+.cnt-flatbox-column .cnt-sep-top {
+	width: 100%;
+	height: 30px;
+	
+	display: inline-block;
+}
+
+
+.cnt-flatbox-column .cnt-sep-bar {
+	width: 100%;
+	height: 273px;
+
+	border-right: 1px dotted gray;
+	
+	display: inline-block;
+}
+
+.lt-ie7 .cnt-flatbox-column .cnt-sep-bar {
+	border: 0;
+	
+	background: url('/media_stat/images/layout/grey_dotted_line_h.gif') repeat-y right;
+	
+}
+
+.cnt-flatbox-full h2.centerline, .cnt-flatbox-half h2.centerline {
+	text-align: center;
+}
+
+.cnt-flatbox-full div.tab_text_descr, .cnt-flatbox-half div.tab_text_descr {
+	display: none;
+}
+
+.cnt-flatbox-left-inner {
+	padding: 0;
+	margin: 0;
+}
+
+.cnt-flatbox-center-left
+{
+	margin-right: 10px;
+}
+
+.cnt-flatbox-center-right
+{
+	margin-left: 10px;
+}
+
+.cnt-flatbox-header {
+	text-align: center;
+	vertical-align: middle;
+	height: 20px;
+	
+	padding: 20px 0 20px 0;
+}
+
+.cnt-flatbox-pager-button {
+	position: absolute;
+	top: 50%;
+	margin-top: -11px;
+	
+	width: 22px;
+	height: 22px;
+	
+	cursor: pointer;
+	
+	background-image: url(/media_stat/carousel/prev_button.gif);
+}
+
+
+.cnt-content {
+	margin: 0 24px;
+    
+	display: block;
+	clear: none;
+}
+
+.lt-ie8 .cnt-content {
+	zoom: 1;
+}
+
+
+.cnt-content .cnt-bottom-panel {
+	text-align: center;
+}
+
+.cnt-pager-left, .cnt-pager-right, .cnt-pager-left-off, .cnt-pager-right-off {
+    padding: 0;
+    border: 0;
+    
+    width: 22px;
+    height: 22px;
+
+    margin-top: 125px;
+}
+
+.cnt-pager-left {
+	background-image: url(/media_stat/carousel/prev_button.gif);
+	float: left;
+	cursor: pointer;
+}
+
+.cnt-pager-right {
+	background-image: url(/media_stat/carousel/next_button.gif);
+    float: right;
+	cursor: pointer;
+}
+
+.cnt-pager-left-off {
+	background-image: url(/media_stat/carousel/prev_button_disabled.gif);
+	float: left;
+	cursor: normal;
+}
+
+.cnt-pager-right-off {
+	background-image: url(/media_stat/carousel/next_button_disabled.gif);
+    float: right;
+	cursor: normal;
+}
+
+
+.cartntabs .prod-descr-box {
+	height: 110px;
+}
+
+/* narrow space must be tolerated with bigger height */
+.quickshop .cartntabs .prod-descr-box {
+	height: 125px;
+}
+
+.prod-descr-box a {
+	display: inline-block;
+	
+	line-height: 1.5em;
+	max-height: 4.5em; /* 3 rows */
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.lt-ie7 .prod-descr-box a {
+	height: 4.5em; /* 3 rows */
+}

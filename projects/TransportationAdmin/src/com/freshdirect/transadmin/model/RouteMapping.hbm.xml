@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 20, 2008 2:33:07 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.RouteMapping" table="ROUTE_MAPPING">
+        <composite-id name="routeMappingId" class="com.freshdirect.transadmin.model.RouteMappingId">
+            <key-property name="routeDate" type="date">
+                <column name="ROUTE_DATE" length="7"/>
+            </key-property>
+            <key-property name="cutOffId" type="string">
+                <column name="CUTOFF_ID" length="16" />
+            </key-property>
+            <key-property name="groupCode" type="string">
+                <column name="GROUP_CODE" length="8" />
+            </key-property>
+            <key-property name="routeID" type="string">
+                <column name="ROUTE_ID" length="18" />
+            </key-property>
+            <key-property name="routingRouteID" type="string">
+                <column name="ROUTING_ROUTE_ID" length="18" />
+            </key-property>
+        </composite-id>        
+        <property name="routingSessionID" type="string">
+            <column name="ROUTING_SESSION_ID" length="256" />
+        </property>        
+    </class>
+</hibernate-mapping>

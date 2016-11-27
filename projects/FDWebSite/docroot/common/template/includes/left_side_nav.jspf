@@ -1,0 +1,196 @@
+<!-- Left side nav -->
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="java.util.*"%>
+
+<%! //expanded page dimensions
+private static final int W_LEFT_NAV_TOTAL = 150;
+private static final int W_LEFT_NAV_CENTER = 135;
+private static final int W_LEFT_NAV_LEFT_PADDING = 10;
+private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
+%>
+
+<body onload="javascript:changeClass('<%=request.getParameter("id")%>')">
+	
+<%!
+
+	/** @return number of displayed rows */
+	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable) {
+
+		int displayedRows = 0;
+		//buf.append("<tr><td>"+breakDepths+"</td></tr>");
+		boolean paintBreak = nl.breakBefore();
+
+		// !!! VS: the breakdepths implementation seems pretty inefficient
+		for (Iterator j = breakDepths.iterator(); j.hasNext(); ) {
+			int lastBreakDepth = ((Integer) j.next()).intValue();
+			if (lastBreakDepth >= nl.getDepth()) {
+				//We're back on the level of what we wanted to break on
+				j.remove();
+				paintBreak = true;
+			}
+		}
+
+		if (nl.breakAfter()) {
+			breakDepths.add(new Integer( nl.getDepth() ));
+			paintBreak=true;
+		}
+
+		if (paintBreak) {
+			buf.append("<tr><td>&nbsp;</td></tr>");
+			displayedRows++;
+		}
+
+		displayedRows++;
+		buf.append("<tr><td width=\"" + (W_LEFT_NAV_CENTER) + "\"><div style=\"margin-left:");
+		buf.append((nl.getDepth() * 4) + 8);
+		buf.append("px; text-indent: -8px;\">");
+		String str=nl.getURL().substring(20).split("&")[0];
+		
+		if (nl.isBold()) buf.append("<b>");
+		if (nl.showLink()) {
+			
+			buf.append("<a name=\"leftLink\" href=\"");
+			
+			buf.append(nl.getURL());
+			buf.append("\"");
+				if (isUnavailable) {
+					buf.append(" style=\"color:green\"");
+				}
+			buf.append("id='"+str+"'>");
+		}
+
+	        buf.append(nl.getDisplayString());
+
+		if (nl.showLink()) {
+			buf.append("</a>");
+		}
+		if (nl.isBold()) buf.append("</b>");
+
+
+		buf.append("</div></td></tr>\n");
+
+		return displayedRows;
+	}
+
+%>
+<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='1'>
+<% try { %>
+
+<fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems">
+
+<script type="text/javascript">
+
+function changeClass(value) {
+	
+	var availableOptions =  document.getElementsByName("leftLink");
+	for (var j = 0; j < availableOptions.length; j++) {		
+		if (availableOptions[j] && availableOptions[j].id == value) {	
+			availableOptions[j].className="lNavTableItemSelected";	
+			} else {
+			availableOptions[j].style.color="link";						
+		}		
+	}
+}
+
+</script>
+
+<%
+int displayedRows = 1;
+StringBuffer buf = new StringBuffer(10000);
+String topCatLink="";
+
+ContentNodeModel aliasNode = topCategory.getAlias();
+if (aliasNode !=null ) {
+    if (aliasNode instanceof ProductModel) {
+        topCatLink="/product.jsp?catId="+aliasNode.getParentNode()+"&productId="+aliasNode;
+    } else if(aliasNode instanceof CategoryModel) {
+        topCatLink="/category.jsp?catId="+aliasNode;
+    } else if(aliasNode instanceof DepartmentModel){
+        topCatLink="/department.jsp?deptId="+aliasNode;
+    }
+}
+if (aliasNode!=null) {
+} else {
+  topCatLink = "/category.jsp?catId="+topCategory;
+}
+Image catImage = topCategory.getCategoryTitle();
+if (catImage!=null) {
+	buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\" class=\"lNavTableCatTitleText\"><a href=\"");
+	buf.append(topCatLink);
+	buf.append("&trk=snav\">");
+
+	/* buf.append("<IMG SRC=\"").append(catImage.getPath()); */
+	/* buf.append("\" WIDTH=\"").append(catImage.getWidth());
+	buf.append("\" HEIGHT=\"").append(catImage.getHeight());
+	buf.append("\" border=\"0\">"); */
+	/*buf.append("<div>ABOUT US </div>"); */ /* NO! bad dev! go to your corner */
+	buf.append("<div>"+topCategory.getFullName()+"</div>");
+	
+	buf.append("</a></td></tr>");
+
+	displayedRows++;
+}
+
+// if this page contains groceryVirtual in the request then paint a fake link
+
+// !!! implement grocery
+boolean showAnAllFldrLink = topCategory.getFakeAllFolders();
+if (showAnAllFldrLink) {
+    buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\"><div style=\"margin-left:");
+    buf.append(8);
+    buf.append("px; text-indent: -8px;\">");
+
+    buf.append("<b>");
+    buf.append("<a href=\"");
+    buf.append(response.encodeURL(topCatLink+"&groceryVirtual=All&trk=snav"));
+    buf.append("\">");
+    buf.append("All "+topCategory.getFullName());
+    buf.append("</a>");
+    buf.append("</b>");
+    buf.append("</div></td></tr>");
+    buf.append("\n");
+    displayedRows++;
+}
+
+
+List breakDepths = new LinkedList();
+
+for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
+	displayedRows += appendElement(buf, breakDepths, (NavigationElement) i.next(), false);
+}
+
+if (unavailableNavItems.size()>0) {
+	displayedRows++;
+	buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\">");
+	buf.append("<br><b>Currently Not Available</b>");
+	buf.append("</td></tr>\n");
+	breakDepths = new LinkedList();
+	for (Iterator i = unavailableNavItems.iterator(); i.hasNext(); ) {
+		displayedRows += appendElement(buf, breakDepths, (NavigationElement) i.next(), true);
+	}
+}
+
+if (displayedRows > 0) {
+%>
+<table border="0" cellspacing="26" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>" class="lNavTable">
+<tr><td width="<%=W_LEFT_NAV_LEFT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%>
+</td><td width="<%=W_LEFT_NAV_CENTER%>"><%-- spacer 120x1 --%></td>
+<td width="<%=W_LEFT_NAV_RIGHT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td></tr>
+<%= buf.toString() %>
+</table><br>
+<%-- spacer 130x20 --%>
+
+<%
+}
+%>
+</fd:SideNav>
+
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%>
+	<oscache:usecached />
+<% } %>
+</oscache:cache>
+</body>
+<!-- END YOUR STORE table -->

@@ -1,0 +1,80 @@
+<%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+
+<% //expanded page dimensions
+final int W_DAY_OF_WEEK_NOTICE_TOTAL = 601;
+boolean mobWeb_dayofweek_notice = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+%>
+
+<%-- requires productNode --%>
+<%
+{
+/*
+ * if the Number of days available is 3 or less, then 
+ *   show message; This item is ONLY available for delivery on ...
+ * Else 
+ *  show message:This item is Not available for delivery on ....
+ *  
+ *  Days orders is from Monday-Sunday, and must be in the plural form
+ *
+*/
+
+	DayOfWeekSet blockedDays = productNode.getBlockedDays();
+	if (!blockedDays.isEmpty()) {
+		int numOfDays=0;
+		StringBuffer daysStringBuffer = null;
+		boolean isInverted=true;
+		
+		if (blockedDays.size() > 3) {
+			numOfDays = (7-blockedDays.size() );
+		 	daysStringBuffer= new StringBuffer(blockedDays.inverted().format(true));
+		} else {
+			isInverted=false;
+		  	daysStringBuffer = new StringBuffer(blockedDays.format(true));
+			numOfDays = blockedDays.size();
+		}
+		
+		
+		if (numOfDays > 1 ) {
+			//** make sundays the last day, if more than one in the list 
+			if (daysStringBuffer.indexOf("Sundays, ")!=-1)  {
+				daysStringBuffer.delete(0,9);
+				daysStringBuffer.append(" ,Sundays");
+			}
+			
+			//replace final comma with "and" or "or"
+			int li = daysStringBuffer.lastIndexOf(",");
+			daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
+		}
+		
+		
+		
+		%>
+		<table width="<%= (mobWeb_dayofweek_notice) ? "100%" : W_DAY_OF_WEEK_NOTICE_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td align="center">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+					<span class="text11orbold">SPECIALLY PREPARED ITEM - LIMITED AVAILABILITY</span><br>
+					This item is <b><%=isInverted?"only" : "not"%></b> available for delivery on <b><%= daysStringBuffer.toString() %></b>.<br>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+			</tr>
+		</table>
+		<%
+	}
+}
+%>

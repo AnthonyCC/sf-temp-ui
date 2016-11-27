@@ -1,0 +1,129 @@
+.ec-popup.deliverypasspopup {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+  width:780px;
+  max-width:780px;
+  box-sizing:border-box;
+  padding:60px 40px;
+  font-family:Verdana,Genava,sans-serif;
+  font-size:12px;
+  color:#333;
+}
+
+.deliverypasspopup__header{
+  background-image: url(/media_stat/images/expressco/deliverypass_popup_header.png);
+  background-repeat:no-repeat;
+  background-position:top center;
+  width:100%;
+  height:97px;
+  border-bottom:1px solid #e1e0de;
+  padding-bottom:30px;
+}
+
+.deliverypasspopup__title{
+  font-size:22px;
+  font-weight:bold;
+  margin:60px 0 50px 0;
+  text-align:center;
+}
+
+.deliverypasspopup_boxes {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.deliverypasspopup__option{
+  display:inline-block;
+  overflow:visible;
+  background-color:#fff;
+  border:1px solid #c7cabc;
+  margin:0 10px 40px 10px;
+  padding:10px 10px 10px 35px;
+  width:210px;
+  box-sizing:border-box;
+  vertical-align:top;
+  border-radius:5px;
+}
+
+body.ie .deliverypasspopup__option {
+  min-height:120px;
+}
+
+.deliverypasspopup__option span.saving {
+  font-weight: bold;
+  color: red;
+}
+
+.deliverypasspopup__option .save{
+  color:#fe0100;
+  font-weight:bold;
+}
+
+.deliverypasspopup__option-title,
+.deliverypasspopup__option-desc{
+  margin:0;
+}
+
+.deliverypasspopup__option-title{
+  font-size:15px;
+  font-weight:bold;
+}
+
+.deliverypasspopup__option-desc{
+  font-size:11px;
+}
+
+.deliverypasspopup__label > .fake-radio-wrapper,
+.deliverypasspopup__radio,
+.ec-popup [fdform] .deliverypasspopup__radio{
+  margin-left:-25px;
+  float:left;
+}
+
+.deliverypasspopup__label > .fake-radio-wrapper > .fake-radio:before {
+  margin-right: 5px;
+}
+
+.deliverypasspopup__footer{
+  width:100%;
+  text-align:center;
+}
+
+.deliverypasspopup__submit{
+  width:220px;
+  height:40px;
+  font-size:14px;
+}
+
+.deliverypasspopup__back{
+  height:40px;
+  font-size:14px;
+  float:left;
+}
+
+.deliverypasspopup__terms{
+  margin-top:25px;
+  color:#666;
+  font-weight:normal;
+}
+
+.deliverypasspopup__total{
+  font-weight:normal;
+}
+
+.deliverypasspopup__termspage{
+  display:none;
+}
+
+.deliverypasspopup__label{
+  cursor:pointer;
+}
+
+.deliverypasspopup_product {
+  display: none;
+}

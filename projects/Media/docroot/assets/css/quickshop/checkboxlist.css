@@ -1,0 +1,66 @@
+.checkboxlist {
+	list-style-type: none;
+	margin:5px -1px 20px;
+	padding:10px 5px;
+	border:1px solid #b293b2;
+	background:#fff;
+	box-shadow: 0 3px #fff, 0 4px #d8c4d8;
+}
+
+.checkboxlist li {
+	margin-top:10px;
+	position: relative;
+}
+
+.no-touch .checkboxlist li:hover label span {
+	text-decoration: underline;
+}
+.checkboxlist li:hover span.noitem span {
+	text-decoration: none;
+}
+
+.checkboxlist li:first-child {
+	margin-top:0;
+}
+
+.checkboxlist input {
+	vertical-align: top;
+	position: absolute;
+}
+.checkboxlist label {
+	display: block;
+	vertical-align: baseline;
+	cursor: pointer;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 2px 0 2px 20px;
+	line-height: 15px;
+	font-size: 9px;
+	color: #606060;
+	overflow:hidden;
+}
+
+
+.checkboxlist label span {
+	font-size: 13px;
+	color: #333;
+}
+
+.checkboxlist input[checked] + label span {
+	font-weight: bold;
+}
+
+.checkboxlist span.noitem input {
+  visibility: hidden;
+}
+
+.checkboxlist span.noitem label {
+  color: #ccc;
+  cursor:default;
+}
+.checkboxlist span.noitem label span {
+	color: #ccc;
+}
+

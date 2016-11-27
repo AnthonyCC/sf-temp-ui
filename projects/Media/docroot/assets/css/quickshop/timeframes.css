@@ -1,0 +1,10 @@
+.timeframes-list {
+	overflow:auto;
+}
+
+.timeframes-list-all_frame label span {
+	font-family: Verdana,sans-serif;
+	font-size:12px;
+	color:#333;
+	text-transform: uppercase;
+}

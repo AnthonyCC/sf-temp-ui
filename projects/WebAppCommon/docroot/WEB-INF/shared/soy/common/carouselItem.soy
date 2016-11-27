@@ -1,0 +1,22 @@
+{namespace common}
+/**
+ * @param item some path, list of items
+ * @param? cmEventSource optional coremetrics event source
+ * @param? mobWeb
+ * 
+ */
+{deltemplate common.carouselItem variant="'grid'"}
+{call common.transactionalGridItem data="all"}
+	{param extraClass:'carouselTransactionalItem' /}
+	{param cmEventSource:$cmEventSource /}
+	{param mobWeb:$mobWeb /}
+{/call}
+{/deltemplate}
+
+/**
+ * @param item some path, list of items
+ * 
+ */
+{deltemplate common.carouselItem variant="'line'"}
+{call quickshop.item data="all" /}
+{/deltemplate}

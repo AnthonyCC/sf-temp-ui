@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.DEPARTMENT CODE="DA" NAME="Dept A" DESCRIPTION="Department A"/>
+<CUST.DEPARTMENT CODE="DB" NAME="Dept B" DESCRIPTION="Department B" OBSOLETE="X"/>
+
+</dataset>

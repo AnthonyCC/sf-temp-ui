@@ -1,0 +1,50 @@
+
+.ui-widget-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;	
+	background: #666666 none 50% 50% repeat;
+	opacity: .50;
+	filter: Alpha(Opacity=50);
+}
+
+.ui-dialog {
+	-webkit-box-shadow: 7px 7px 5px rgba(50, 50, 50, 0.5);
+	-moz-box-shadow:    7px 7px 5px rgba(50, 50, 50, 0.5);
+	box-shadow:         7px 7px 5px rgba(50, 50, 50, 0.5);
+	border: 2px solid #333;
+	border-radius: 16px;
+	padding:8px;
+	background:white;
+}
+
+.ui-dialog-titlebar {
+	margin-bottom:8px;
+	overflow:hidden;
+}
+
+.ui-dialog-title {
+	float:left;
+}
+
+.ui-dialog-titlebar-close {
+	text-decoration:none;
+	float:right;
+}
+
+.ui-dialog-titlebar-close .ui-icon {
+	color:white;
+	font-weight:bold;
+	font-size:18px;
+	line-height:18px;
+	background:#333;
+	text-align:center;
+	display:inline-block;
+	width:21px;
+	height:20px;
+	font-family:Verdana;
+}
+
+.ui-dialog-content {
+	clear:both;
+}

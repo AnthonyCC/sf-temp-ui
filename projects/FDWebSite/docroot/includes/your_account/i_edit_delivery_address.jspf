@@ -1,0 +1,132 @@
+<%@taglib uri='freshdirect' prefix='fd' %>
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<% //expanded page dimensions
+final int W_YA_EDIT_DELIVERY_ADDR = 970;
+%>
+<script language="javascript">
+    function setDlvAction(frmObj,actionName) {
+        if (frmObj.dlvActionName==null) return;
+        frmObj.dlvActionName.value=actionName;
+    }
+    
+    function setIdToDelete(frmObj,dlvID) {
+        if (frmObj.deleteShipToAddressId==null) return;
+        frmObj.deleteShipToAddressId.value=dlvID;
+    }
+</script>
+<%
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity = user.getIdentity();
+
+Map addresses = new HashMap();
+
+for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.hasNext(); ){
+	ErpAddressModel address = (ErpAddressModel) i.next();
+	if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+		List cl = (List)addresses.get(EnumServiceType.CORPORATE);
+		if(cl == null){
+			cl = new ArrayList();
+			addresses.put(EnumServiceType.CORPORATE, cl);
+		}
+		cl.add(address);
+	}else {
+		List hl = (List)addresses.get(EnumServiceType.HOME);
+		if(hl == null){
+			hl = new ArrayList();
+			addresses.put(EnumServiceType.HOME, hl);
+		}
+		hl.add(address);
+	}
+}
+
+String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
+%>
+
+<%
+	if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) { 
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2"
+	WIDTH="<%=W_YA_EDIT_DELIVERY_ADDR%>">
+	<TR VALIGN="TOP">
+		<TD><span class="text13">If you need to enter a different address:</span> <a href="<%=response
+						.encodeURL("/your_account/add_delivery_address.jsp")%>"><img
+				src="/media_stat/images/buttons/add_new_address.gif"
+				alt="Add a new address" WIDTH="106" HEIGHT="16" VSPACE="3"
+				HSPACE="4" ALIGN="middle" border="0"></a></TD>
+	</TR>
+</TABLE>
+
+<%
+	}
+%>
+
+<%-- <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+<TR VALIGN="TOP">
+    <TD>
+        <span class="text13">If you need to enter a different address:</span> <a href="<%=response.encodeURL("/your_account/add_delivery_address.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a new address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a>
+    </TD>
+</TR>
+</TABLE> --%>
+<br>
+<%
+// BEGINING D E P O T   L O C A T I O N S
+if(user.isDepotUser()){
+	boolean allowSelection = false;
+%>
+    <%@ include file="/shared/includes/i_depot_locations.jspf" %><br>
+<%
+// END D E P O T   L O C A T I O N S
+}%> 
+
+
+<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="deliveryAddress">
+	<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+	<script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
+		<%// BEGINING C O R P ADDRESSES
+			boolean showingCorporateAddress = false;
+			List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
+			if (shipToAddresses != null && !shipToAddresses.isEmpty() && !(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
+				showingCorporateAddress = true;
+				%>
+				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
+					<TR VALIGN="TOP">
+						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+							<!-- <img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp; -->
+							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Corporate Delivery</span><br>
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+						</td>
+					</tr>
+				</TABLE>
+				<br>
+				<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+				<%
+			}%>
+		<%// END C O R P ADDRESSES%>
+		
+		<%// BEGINING H O M E ADDRESSES
+			shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
+			if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+				showingCorporateAddress = false;
+				%>
+				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
+					<TR VALIGN="TOP">
+						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+							<!-- <img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp; -->
+							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Home Delivery</span><br>
+							
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+						</td>
+					</tr>
+				</TABLE>
+				<br>
+				<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+				<%
+			}%>
+		<%// END H O M E ADDRESSES%>
+	</fd:GetStandingOrderHelpInfo>
+</fd:GetStandingOrderDependencyIds>
+
+    <input type="hidden" name="deleteShipToAddressId" value="">
+    <input type="hidden"  name="dlvActionName" value="">

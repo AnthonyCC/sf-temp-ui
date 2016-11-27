@@ -1,0 +1,55 @@
+.qtyinput {
+	display:inline-block;
+	white-space: nowrap;
+	width:96px;
+	text-align:center;
+	overflow:visible;
+}
+
+.pdp-atc .qtyinput {
+  width: 105px;
+  height:30px;
+}
+
+.pdp-atc .qtyinput input.qty {
+   width:3em;
+   font-size:16px;	 
+   color: #333;	 
+   font-family: Verdana, Arial, sans-serif;
+}
+
+.invalidQty .pdp-atc .qtyinput input.qty {
+  border-color: red;
+}
+
+.itemlist-item-salesunit .subtotal,
+.qtyinput .subtotal {
+	white-space: nowrap;
+	line-height: 14px;
+  	margin-top: 4px;
+}
+
+.itemlist-item-controls .qtyinput input.qty {
+	height: 16px;
+	line-height: 16px;
+	margin: 0;
+	border: 1px solid #CCC;
+	vertical-align: top;
+	-webkit-box-shadow: inset 0 1px 2px #DDD;
+	box-shadow: inset 0 1px 2px #DDD;
+}
+
+
+.itemlist-item-controls .qtyinput .quantity_minus {
+	height: 22px;
+	background-position: -27px -3px;
+}
+.itemlist-item-controls .qtyinput .quantity_minus:hover {
+	background-position: -27px -30px;
+}
+.itemlist-item-controls .qtyinput .quantity_plus {
+	background-position: 0 -3px;
+}
+.itemlist-item-controls .qtyinput .quantity_plus:hover {
+	background-position: 0 -30px;
+}

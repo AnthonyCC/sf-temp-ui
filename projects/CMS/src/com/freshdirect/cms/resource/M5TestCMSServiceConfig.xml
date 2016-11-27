@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.cms" version="1.0.0">
+
+	<sub-module descriptor="hivemodule_search.xml"/>
+
+	<schema id="serviceList">
+		<element name="service">
+			<attribute name="name" required="true" translator="service"/>
+			<rules>
+				<push-attribute attribute="name"/>
+				<invoke-parent method="addElement"/>
+			</rules>
+		</element>
+	</schema>
+
+	<configuration-point id="composedTypeServices" schema-id="serviceList"/>
+	<contribution configuration-id="composedTypeServices">
+		<service name="StoreDef"/>
+		<service name="MediaDef"/>
+		<service name="FormDef"/>
+	</contribution>
+
+	<service-point id="FormDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSFormDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="StoreDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="MediaDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/MediaDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="CompositeDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.CompositeTypeService">
+				<configuration>composedTypeServices</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+  
+	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService"  service-id-property="name">
+				<service>CompositeDef</service>
+				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
+				<string>${cms.resource.basePath}/Store.xml.gz,${cms.resource.basePath}/Media.xml.gz,classpath:/com/freshdirect/cms/resource/FDForms.xml,${cms.resource.basePath}/StarterLists.xml</string>
+				<service>ResourceInfo</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="ResourceInfo" interface="com.freshdirect.cms.application.service.ResourceInfoServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.ResourceInfoService"/>
+		</invoke-factory>
+	</service-point>
+	
+	
+
+</module>

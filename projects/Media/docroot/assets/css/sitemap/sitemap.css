@@ -1,0 +1,151 @@
+body {
+  font-family: Verdana, Arial;
+  font-size: 12px;
+  margin: auto;
+  width: 970px;
+  position: relative;
+}
+h1 {
+	color: rgb(51,102,0);
+}
+ul > li {
+ /* background-color: rgba(112,139,74,.1);*/
+}
+
+ul > li {
+ color: rgb(51,102,0);
+}
+
+ul > li > ul > li {
+ color: #dd7711;
+}
+
+ul > li > ul > li > ul > li {
+ color: rgb(51,102,0);
+}
+
+ul > li > ul > li > ul > li > ul > li{
+ color: #dd7711;
+}
+
+ul > li > ul > li > ul > li > ul > li > ul > li{
+ color: rgb(51,102,0);
+}
+
+li.selectedForExport > a {
+  background-color: #afe;
+}
+
+ul {
+  list-style-type: none;
+}
+li > ul {
+  display: none;
+}
+li.selected > ul {
+  display: block;
+}
+span.handle {
+  display: inline-block;
+  width: 20px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+span.handle:after {
+  content: '>';
+  color: red;
+}
+.selected > span.handle:after {
+  content: 'V';
+  color: red;
+}
+
+[data-products]:before {
+  /*display: inline-block;*/
+  position: absolute;
+  content: attr(data-products) " products (" attr(data-products-avail) " avail / " attr(data-products-tempunavail) " unav / " attr(data-products-disc) " disc)";
+  /*color: #c27916;
+  margin-right: 10px;
+  width: 360px;*/
+  right: 20px;
+  white-space: nowrap;
+}
+[data-products="0"] {
+  color: #888;
+}
+.noempty [data-products="0"] {
+  display: none;
+}
+[data-products="0"]:before {
+  content: '';
+}
+span.contentId {
+  display: inline-block;
+  margin-left: 0.3em;
+  color: gray;
+}
+span.contentId:before {
+	content: "(";
+}
+span.contentId:after {
+	content: ")";
+}
+a {
+	color: inherit;
+} 
+li > b {
+  color: #39a;
+  display: inline-block;
+  width: 20px;
+  cursor: pointer;
+  visibility: hidden;
+}
+li > b:before {
+  content: "\2713";
+  visibility: visible;
+  color: green;
+}
+li.selectedForExport > b:before {
+  content: "\274c";
+  visibility: visible;
+  color: red;
+}
+#csvcontent {
+  display: none;
+}
+#content {
+	/*background-color: rgb(220,230,190);*/
+}
+header {
+  text-align: center;
+}
+#log {
+	color: rgb(51,102,0);
+}
+
+/* SVG */
+svg .node {
+  cursor: pointer;
+}
+
+svg .node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+svg .node--leaf {
+  fill: white;
+}
+
+svg .label {
+  font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+svg .label,
+svg .node--leaf {
+  pointer-events: none;
+}
+

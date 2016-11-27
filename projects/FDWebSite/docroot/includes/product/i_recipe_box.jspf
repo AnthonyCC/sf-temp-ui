@@ -1,0 +1,24 @@
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<div class="grid-item">
+	<div class="grid-item-image">
+		<display:RecipeLink recipe="<%= recipe %>" trackingCode="<%= trk %>">
+			<display:SimpleRecipeImage recipe="<%= recipe %>"/>
+		</display:RecipeLink>
+	</div>
+	<div class="grid-item-rating"></div>
+	<div class="grid-item-name">
+		<display:RecipeLink recipe="<%= recipe %>" trackingCode="<%= trk %>">
+			<display:RecipeName recipe="<%= recipe %>"/>
+		</display:RecipeLink>
+	</div>
+	<div class="grid-item-description">
+		<display:RecipeFrom recipe="<%= recipe %>" id="from">
+			<span class="recipe-from">from <%= from %></span>
+			<display:RecipeBy recipe="<%= recipe %>" id="authors">
+				<span class="recipe-by"><%= authors %></span>
+			</display:RecipeBy>
+		</display:RecipeFrom>
+	</div>
+<div class="grid-item-separator"></div>
+</div>

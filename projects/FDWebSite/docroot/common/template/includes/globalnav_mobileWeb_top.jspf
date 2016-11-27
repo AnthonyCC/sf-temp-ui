@@ -1,0 +1,198 @@
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='java.util.*' %>
+<div>
+	<div class="locationbar" style="display: none;">
+		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>
+	</div>
+	<nav class="navbar">
+		<div class="navbar-header">
+			<div class="pull-left navbar-header-left">
+				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+			</div>
+			<div class="pull-right rightSide">
+				<div class="navbar-ecomvalue">
+					<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); return false;"><span class="offscreen">Toggle Search Display</span></a>
+				</div>
+				<div class="navbar-ecomvalue">
+				
+					<%
+					String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+					
+						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
+							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
+							List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+							
+							if (user.getLevel() >= FDUserI.RECOGNIZED) {
+								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+							} else {
+								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+							}
+							
+							//now check if they can go to reservation instead
+							if (user.isEligibleForPreReservation()) {
+								temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
+							}
+							
+							//check if user has addresses besides pickup
+							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+								//nope, change url
+								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+							}
+						}
+					%>
+					<a href="<%= temp_delivery_link %>" class="icon-truck"></a>
+				</div>
+				<%-- TODO: CART is hard-coded, boo --%>
+				<div class="navbar-ecomvalue">
+					<a href="/view_cart.jsp" class="icon-shopbag">
+						<i class="icon-cart"></i>
+						<%-- Cart count requires the popupcart.js (which is not loaded)							
+							<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+						 --%>
+					</a>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div id="search" style="display: none;">
+				<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<span class="icon-search"></span>
+					<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+				</form>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<%-- nav menu --%>
+<%
+	StoreModel store = ContentFactory.getInstance().getStore();
+	List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
+	if(store != null) {
+		List<DepartmentModel> storeDepartments = store.getDepartments();
+		// storeDepartments.get(0).getCategories().get(0).getSubcategories()
+		
+		if(storeDepartments != null) {
+			for(DepartmentModel storeDepartment : storeDepartments) {
+				if(storeDepartment.getContentKey() != null
+					&& !storeDepartment.isHidden()
+					&& !storeDepartment.isHideIphone()) {
+						departments.add(storeDepartment);
+				}
+			}
+		}
+	}
+%>
+<nav id="nav-menu" style="display: none;">
+	<ul id="navMenuItems">
+		<li class="navMenuItems-topIcons">
+			<span>
+				<div class="iconnav icon-browse-shop"></div>
+				<span class="navlabel">Shop</span>
+			</span>
+			<ul class="navMenuItems-browse rem-navbar">
+				<li class="navMenuItems-menuselect">
+					<span class="glBreadcrumblink">All Shops</span>
+				</li>
+				
+				<li>
+					<span class="glBreadcrumblink">
+						<%-- <span class="ui-icon" style="background-image: url('<% -- WHAT ICON GOES HERE? -- %>');"></span> --%>
+						<a href="/browse.jsp?id=picks_love">Fresh Deals</a>
+					</span>
+				</li>
+				<% for (DepartmentModel curDept : departments) {
+					if ("WGD".equalsIgnoreCase(curDept.toString())) {
+						continue;
+					}
+				%>
+					<li>
+						<span class="glBreadcrumblink">
+							<%-- <span class="ui-icon" style="background-image: url('<%= (curDept.getTabletIcon() != null) ? curDept.getTabletIcon().getPathWithPublishId() : "" %>');"></span> --%>
+							<a href="/browse.jsp?id=<%=curDept.toString()%>"><%= curDept.getFullName() %></a>
+						</span>
+					</li>
+				<% } %>
+			</ul>
+		</li>
+		
+		<li class="navMenuItems-topIcons">
+			<span>
+				<div class="iconnav icon-browse-reorder"></div>
+				<span class="navlabel">Reorder</span>
+			</span>
+			<ul class="navMenuItems-reorder rem-navbar">
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
+				</li>
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
+				</li>
+			</ul>
+		</li>
+		
+		<li class="navMenuItems-topIcons">
+			<fd:IncludeMedia name="/media/mobileweb/nav/more_ways.ftl">
+				<span>
+					<div class="iconnav icon-browse-tag"></div>
+					<span class="navlabel">More ways to shop</span>
+				</span>
+				<ul class="navMenuItems-shopmore rem-navbar">
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=deals">Deals</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=top_rated">Top-Rated</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="http://blog.freshdirect.com/">Ideas</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=local">Local</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/category.jsp?catId=our_picks_gltnfr">Gluten-Free</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Organic & All-Natural</a></span>
+					</li>
+					<li>
+						<span class="glBreadcrumblink"><a href="/department.jsp?deptId=kos">Kosher</a></span>
+					</li>
+				</ul>
+			</fd:IncludeMedia>
+		</li>
+		
+		<li class="hide-on-subopen no-divider">
+			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
+		</li>
+		<li class="hide-on-subopen no-divider">
+			<span><a href="/help/index.jsp">Help</a></span>
+		</li>
+		<li class="hide-on-subopen no-divider">
+			<span>
+				<div class="pNavLoginButton-cont">
+					<% if (user == null || (user != null && (user.getLevel() == FDUserI.GUEST || user.getLevel() == FDUserI.RECOGNIZED) )) { /* guest, sign in/create */ %>
+						<div class="pNavLoginButton primaryLink signin"><a href="#" fd-login-required="" fd-login-nosignup="" fd-login-successpage="/index.jsp">Sign in</a></div>
+						<div class="pNavLoginButton primaryLink createacc"><a href="#">Create Account</a></div>
+					<% } %>
+					<% if (user != null && user.getLevel() == FDUserI.SIGNED_IN) { %>
+						<%= ((user != null) ? ("<div class=\"boldgray\">Not " + user.getFirstName() + "?</div>") : "") %>
+						<div class="pNavLoginButton primaryLink logout"><a href="#" class="green transparent cssbutton-flat">Sign out</a></div>
+					<% } %>
+				</div>
+			</span>
+		</li>
+	</ul>
+</nav>

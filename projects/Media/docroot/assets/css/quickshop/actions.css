@@ -1,0 +1,151 @@
+.qs-content[data-items="1"] .qs-actions,
+.qs-content[data-items="0"] .qs-actions {
+	display: none;
+}
+
+.qs-actions {
+	float: right;
+	text-align: right;
+	margin: 10px 0;
+}
+[data-feature-quickshop="2_0"] .qs-actions {
+	width: 300px;
+}
+[data-feature-quickshop="2_0"] #recipe_form .qs-actions {
+	width: 330px;
+}
+.qs-recipe-actions {
+	width: 400px;
+}
+.qs-actions button,
+.qs-actions span {
+  text-transform: capitalize;
+}
+.qs-actions .qs-deletelist {
+  color: #aaa;
+  font-weight: normal;
+}
+
+.qs-actions .qs-deletelist:active,
+.qs-actions .qs-deletelist:hover {
+  color: #888;
+}
+
+[data-feature-quickshop="2_0"] .qs-actions button,
+[data-feature-quickshop="2_0"] .qs-actions span {
+	border: none;
+	display: inline-block;
+	height: 29px;
+	padding: 0;
+	text-align: left;
+	text-indent: -9999em;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+button[data-component="applyCustomization"],
+#reset {
+	height:22px;
+	margin:0;
+	padding:0;
+	text-indent:-400px;
+	overflow:hidden;
+	border:none;
+	cursor:pointer;
+	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+[data-feature-quickshop="2_0"] button.qs-addtolist,
+[data-feature-quickshop="2_0"] button.qs-addtocart,
+.qs-saverecipe,
+.qs-addrecipetocart {
+	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
+}
+
+.qs-saverecipe,
+.qs-addrecipetocart{
+  border: none;
+  display: inline-block;
+  height: 29px;
+  padding: 0;
+  text-align: left;
+  text-indent: -9999em;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+[data-feature-quickshop="2_0"] button.qs-addtolist {
+    width: 125px;
+    height: 29px;
+    background-position: -181px -37px;
+}
+[data-feature-quickshop="2_0"] button.qs-addtolist:hover,
+[data-feature-quickshop="2_0"] button.qs-addtolist:focus {
+    background-position: -181px -76px;
+}
+[data-feature-quickshop="2_0"] button.qs-addtocart {
+	margin:0;
+    width: 166px;
+    height: 29px;
+    background-position: -5px -37px;
+}
+[data-feature-quickshop="2_0"] button.qs-addtocart:hover,
+[data-feature-quickshop="2_0"] button.qs-addtocart:focus {
+    background-position: -5px -76px;
+}
+
+[data-feature-quickshop="2_0"] #recipe_form button.qs-addtocart{
+  width: 166px;
+  height: 29px;
+  background-position: -5px -405px;
+}
+
+.qs-saverecipe {
+    width: 152px;
+    height: 29px;
+    background-position: -5px -483px;
+}
+.qs-saverecipe:hover,
+.qs-saverecipe:focus {
+    background-position: -5px -522px;
+}
+
+button.qs-addrecipetocart {
+    width: 166px;
+    height: 29px;
+    background-position: -5px -405px;
+}
+button.qs-addrecipetocart:hover,
+button.qs-addrecipetocart:focus {
+    background-position: -5px -444px;
+}
+
+#reset {
+    width: 68px;
+    background-position: -5px -561px;
+	display:block;
+	margin:auto;
+}
+#reset:hover,
+#reset:focus {
+    background-position: -83px -561px;
+}
+
+button[data-component="applyCustomization"] {
+    width: 138px;
+	background: url(/media_stat/images/quickshop/button-apply.png) no-repeat;
+	margin:12px 0;
+}
+button[data-component="applyCustomization"]:hover,
+button[data-component="applyCustomization"]:focus {
+    /*background-position: -181px -437px;*/
+}
+
+.qs-actions .cssbutton:after,
+.qs-actions .cssbutton:before {
+  font-size: 14px;
+}

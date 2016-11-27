@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>CORS test page</title>
+    <style>
+      #result {
+        margin: 10px;
+        padding:10px;
+        background: #eee;
+        color: #000;
+        border: 1px solid #888;
+      }
+    </style>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  </head>
+  <body>
+    <h1>FreshDirect CORS test page</h1>
+    <label>Domain: <input name="domain" value="http://freshdirect.com" /></label>
+    <hr/>
+    <div class="apitest" id="loginTest" data-endpoint="/api/login">
+      <h2>Login</h2>
+      <p>
+        <label>UserId: <input name="userId" /></label>
+      </p>
+      <p>
+        <label>Password: <input type="password" name="password" /></label>
+      </p>
+      <p>
+        <label>successPage: <input name="successPage" /></label>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="checkLoginStatus" data-endpoint="/api/checkloginstatus.jsp">
+      <h2>checkloginstatus</h2>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="loginTest" data-endpoint="/api/addtocart" data-wrapper="items">
+      <h2>ATC</h2>
+      <p>
+        <label>atcItemId: <input name="atcItemId" /></label>
+      </p>
+      <p>
+        <label>categoryId: <input name="categoryId" /></label>
+      </p>
+      <p>
+        <label>productId: <input name="productId" /></label>
+      </p>
+      <p>
+        <label>skuCode: <input name="skuCode" /></label>
+      </p>
+      <p>
+        <label>quantity: <input name="quantity" /></label>
+      </p>
+      <p>
+        <label>salesUnit: <input name="salesUnit" /></label>
+      </p>
+      <p>
+        <label>configuration: <input name="configuration" /></label>
+      </p>
+      <p>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
+      </p>
+      <p>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
+      </p>
+      <p>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="customATCTest" data-endpoint="/api/addtocart" data-datafunc="customATC">
+      <h2>Custom ATC - external, configured</h2>
+      <p>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
+      </p>
+      <p>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
+      </p>
+      <p>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
+      </p>
+      <p>
+        <ul>
+          <li>Hass Avocado (non-configurable, 2pcs)</li>
+          <li>Copper River Wild Salmon - configured, sales unit selected</li>
+          <li>FD Pepper Jack Cheese - configured, sales unit selected</li>
+          <li>Wine</li>
+        </ul>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="customATCNonConfigTest" data-endpoint="/api/addtocart" data-datafunc="customATCNC">
+      <h2>Custom ATC - external, unconfigured</h2>
+      <p>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
+      </p>
+      <p>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
+      </p>
+      <p>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
+      </p>
+      <p>
+        <ul>
+          <li>Hass Avocado (non-configurable, 2pcs)</li>
+          <li>Hass Avocado (non-configurable, 250pcs - ERROR)</li>
+          <li>Copper River Wild Salmon - sales unit not selected</li>
+          <li>FD Pepper Jack Cheese - sales unit not selected</li>
+          <li>FD Pepper Jack Cheese - variation not selected</li>
+          <li>Pear</li>
+        </ul>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <pre id="result">
+    </pre>
+    <script>
+(function () {
+
+  $('input[name="domain"]').val(window.location.origin);
+
+  window.sendCORSRequest = function (data, url) {
+    var result = $('#result');
+
+    $.ajax({
+      type: 'POST',
+      url: url,
+      crossDomain: true,
+      xhrFields: {
+        withCredentials: true
+      },
+      data: {
+        data: JSON.stringify(data)
+      },
+      success: function (res) {
+        result.html(typeof res === "string" ? res : JSON.stringify(res, null, 2));
+      },
+      error: function (res, status, error) {
+        result.html('ERROR! see console for details');
+        console.log(res, status, error);
+      }
+    });
+  };
+
+  window.customATC = function (data) {
+    var externalGroup = $('#customATCTest input[name="externalGroup"]').val(),
+        externalSource = $('#customATCTest input[name="externalSource"]').val(),
+        externalAgency = $('#customATCTest input[name="externalAgency"]').val();
+
+    return {
+      eventSource: "ExternalPage",
+      items: [
+        {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          salesUnit: "EA",
+          quantity: 2,
+          atcItemId: "atc_avc_has_VEG0010952_avocados_fruit",
+          productId: "avc_has",
+          categoryId: "avocados_fruit",
+          skuCode:"VEG0010952"
+        },
+        {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          atcItemId: "atc_fflt_crs_cohoslmn_frzn_SEA1075998_salm_wild",
+          skuCode: "SEA1075998",
+          salesUnit: "G01",
+          quantity: 1
+        },
+        {
+            externalGroup: externalGroup,
+            externalSource: externalSource,
+            externalAgency: externalAgency,
+            atcItemId: "WIN0077581",
+            skuCode: "WIN0077581",
+            salesUnit: "EA",
+            quantity: 1
+         },
+        {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "A02",
+          configuration: {
+            C_DA_CHEESE_CUT_OPTION_08: "D02"
+          }
+        }
+      ]
+    };
+  };
+
+  window.customATCNC = function (data) {
+    var externalGroup = $('#customATCNonConfigTest input[name="externalGroup"]').val(),
+        externalSource = $('#customATCNonConfigTest input[name="externalSource"]').val(),
+        externalAgency = $('#customATCNonConfigTest input[name="externalAgency"]').val();
+
+    return {
+      eventSource: "ExternalPage",
+      items: [
+        {
+          salesUnit: "EA",
+          quantity: 2,
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode:"VEG0010952"
+        },
+        {
+            salesUnit: "EA",
+            quantity: 250,
+            externalGroup: externalGroup,
+            externalSource: externalSource,
+            externalAgency: externalAgency,
+            skuCode:"VEG0010952"
+        },
+        {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "SEA1075998",
+          salesUnit: "",
+          quantity: 1
+        },
+        {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "",
+          configuration: {
+            C_DA_CHEESE_CUT_OPTION_08: "D02"
+          }
+        },
+        {
+            salesUnit: "EA",
+            quantity: 2,
+            externalGroup: externalGroup,
+            externalSource: externalSource,
+            externalAgency: externalAgency,
+            skuCode:"FRU0005440"
+          },
+        {
+          atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "A06"
+        }
+      ]
+    };
+  };
+
+  $(document).on('click', '.apitest button', function () {
+    var data = {},
+        box = $(this).closest('.apitest'),
+        domain = $('input[name="domain"]').val(),
+        endpoint = box.attr('data-endpoint'),
+        wrapper = box.attr('data-wrapper'),
+        datafunc = box.attr('data-datafunc'),
+        result = $('#result');
+
+    box.find('input').each(function () {
+      var el = $(this);
+
+      if(el.val()){
+        data[el.attr('name')] = el.val();
+      }
+    });
+
+    if (wrapper) {
+      var subdata = data;
+      data = {};
+      data[wrapper] = [subdata];
+      data.eventSource = "ExternalPage";
+    }
+
+    if (datafunc && window[datafunc]) {
+      data = window[datafunc](data);
+    }
+
+    sendCORSRequest(data, domain+endpoint);
+  });
+}());
+    </script>
+  </body>
+</html>

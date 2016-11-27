@@ -1,0 +1,459 @@
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
+<%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
+<%@page import="com.freshdirect.fdstore.*"%>
+<%@page import='com.freshdirect.webapp.util.JspLogger'%>
+<%@page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus" %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%-- 
+	[DDPP version of i_product_box (different style/layout)]
+	
+	input parameters:
+
+	@pm - ProductModel - the product model of the given product
+	@pi - ProductImpression - see the example code above how to construct
+	@user - FDUser variable
+	@seqDDPP - an id unique to the give box in the page
+	@tempCounter - temp count int separate from seqDDPP (for non-feat section)
+	
+	@isFeatProd - boolean - use featured product
+	@viewType - set view type for non-featured (either "grid" (default) or "list")
+	
+	@prodContStyle - style to be used on product container
+	@transProdIndex - int to track transactional product count
+	@actionURI -
+	@hideBursts - 
+	@disableLinks - if links should be disabled or not (disabled for preview)
+	
+	@TX_FORM_NAME - form name/id unique per product (set for each using seqDDPP)
+	@TX_JS_NAMESPACE - javascript namespace (set for each using seqDDPP)
+	
+	these aren't input vars, but set locally:
+	
+	prodATCId - id used in content div and anchors (set for each using seqDDPP)
+	prodATCStatusId - element id for status text to put results in (set for each using seqDDPP)
+	
+	checkHtml - check mark HTML (used in ATC success message)
+	
+ --%>
+ <%
+ 	
+	ProductModelPromotionAdapter pmPA = (ProductModelPromotionAdapter)pm;
+ 	
+ 	//change image to use if it's a wine product
+	String imageSize = "detail";
+%>
+ <% if (isFeatProd) { /* Featured Products look */ %>
+	<%
+	 	String TX_FORM_NAMEi = TX_FORM_NAME+"_FP"+seqDDPP;
+		String TX_JS_NAMESPACEi = TX_JS_NAMESPACE+"_FP"+seqDDPP;
+		String prodATCId = "#prodATC_FP_"+(seqDDPP+1);
+		String prodATCStatusId = "prodATCStatus_FP_"+(seqDDPP+1);
+	%>
+	<fd:PendingOrderChecker/>
+	<div class="ddpp_feat_prod" id="<%=prodATCId.replaceFirst("#","")%>" style="<%= prodContStyle %>">
+		<%
+			/* simple check for a valid value */
+			if (pmPA != null && pmPA.getFeaturedHeader() != null && pmPA.getFeaturedHeader().length() == 3) { %>
+				<div class="ddpp_feat_ribbon"><img src="/media/images/ddpp_ribbons/<%= pmPA.getFeaturedHeader() %>.png" alt="" /></div>
+			<% } %>
+		<a name="<%=prodATCId.replaceFirst("#","")%>"></a>
+		<div class="topText"><div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div></div>
+		
+		<div class="prodImageCont">
+			<display:ProductLink product="<%= pm %>" trackingCode="<%= trk %>">
+			<%
+			  		FDProduct fdproduct = null;
+			        try {
+			        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
+			           
+					if ( JspMethods.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+						imageSize = "zoom";
+					}
+			       } catch (Exception fdsnf){
+			       }
+			%>
+			<fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
+		</div>
+		<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
+		<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" truncAt="80" useEllipsis="true" disabled="<%=disableLinks%>" /></div>
+		
+		<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
+		
+		<display:ProductGroupLink impression="<%= pi %>" trackingCode="<%= trk %>"><display:ProductGroupPricing product="<%= pm %>"/></display:ProductGroupLink>
+		<% 
+			String fDCouponContClassProdBoxDdppFeat = "fdCoupon_prodBoxDdppFeat";
+			if (pi.isTransactional()) { fDCouponContClassProdBoxDdppFeat += "Trans"; }
+		%>
+		<display:FDCoupon coupon="<%= user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName()) %>" contClass="<%= fDCouponContClassProdBoxDdppFeat %>"></display:FDCoupon>
+		
+		<div class="prodAddFP">
+			<div class="prodAddTr"></div>
+			<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
+			<%
+				if (pi.isTransactional()) {
+					%>
+					<fd:TxProductPricingSupport formName="<%= TX_FORM_NAMEi %>" namespace="<%= TX_JS_NAMESPACEi %>"	customer="<%= user %>" impressions="<%= Collections.singletonList(pi) %>" setMinQuantity="true" />
+						<script type="text/javascript">
+							<%-- override default product pricing callback method --%>
+							<%= TX_JS_NAMESPACEi %>.ddppCB = function() {
+								<%-- prevent dropping below min --%>
+								if (<%= TX_JS_NAMESPACEi %>.pricings[0].getQuantity() < <%= TX_JS_NAMESPACEi %>.pricings[0].minQty) {
+									<%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(<%= TX_JS_NAMESPACEi %>.pricings[0].minQty);
+								}
+								$jq('#FPsubtotal_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getPrice());
+								if (<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() != '') {
+									$jq('#FPsubtotalEstPrefix_<%= seqDDPP %>').show();
+									$jq('#FPsubtotalEst_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() + ' for ');											
+								}
+							};
+							<%= TX_JS_NAMESPACEi %>.pricings[0].setCallbackFunction( <%= TX_JS_NAMESPACEi %>.ddppCB );
+							$jq(document).ready(function () { <%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(0.0); });
+									
+							<%= TX_JS_NAMESPACEi %>.formSubmit = function() {
+								var query = extract_query_string(document.<%= TX_FORM_NAMEi %>);
+								var url = "/quickbuy/ajax_add_to_cart.jsp";
+								var status = $jq('#<%= prodATCStatusId %>');
+								var callback = {
+									success: function(o) {
+										var retMsg = o.responseText;
+										if (retMsg.indexOf('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>') > -1) {
+											retMsg = '<%= checkHtml %>'+o.responseText;
+										}
+										//change to succss look and msg
+										status.removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').html(retMsg);
+										//change button look
+										$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonFP').attr('src', '/media/images/buttons/add_to_cart_no_icon_s.png');
+										//kick off timer for close effect
+										setTimeout(function () {
+											$jq('#<%= prodATCStatusId %>').fadeOut('400', function() {
+												setTimeout(function () {
+													$jq('#<%= TX_FORM_NAMEi %>').closest('.prodAddFP').animate({ height: '0', top: '200'}, 'fast');
+													//remove add to cart text, and show div again
+													$jq('#<%= prodATCStatusId %>').empty().show();
+												}, 500);
+												$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonFP').data('usedCTA', false);
+											});
+										}, 2000);
+										//coremetrics tracking
+										fdCoremetrics.trackAddToCartEvent();
+										<%--
+											here is the place where you can do further changes,
+											e.g. disable quantity and add-to-cart controls
+											updateYourCartPanel();
+											--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+										--%>
+									},
+									failure: function(o) {
+										status.removeClass('prodATCStatusSuccess').addClass('prodATCStatusError').html("Connection error");
+									},
+									argument: []
+								};
+								YAHOO.util.Connect.asyncRequest('POST', url, callback, query);
+								return false;
+							};
+						</script>
+						<form method="get" action="#" id="<%= TX_FORM_NAMEi %>" name="<%= TX_FORM_NAMEi %>" onsubmit="return <%= TX_JS_NAMESPACEi %>.formSubmit();">
+							<fd:AddToCartPending id="<%= TX_FORM_NAMEi %>" action="addMultipleToCart" rebindSubmit="true"/>
+							<fd:CmFieldDecorator/>
+							<input type="hidden" name="itemCount" value="1" />
+							<fd:TxProductControl txNumber="0" namespace="<%= TX_JS_NAMESPACEi %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
+							<div class="subtotalInfo"><span id="FPsubtotalEstPrefix_<%= seqDDPP %>" style="display: none;">est. </span>subtotal: <span id="FPsubtotalEst_<%= seqDDPP %>"></span><span class="subtotalInfoPrice" id="FPsubtotal_<%= seqDDPP %>"></span></div>
+							<div class="ctaATC">
+								<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" name="addSingleToCart_<%= transProdIndex %>" src="/media/images/buttons/add_to_cart_no_icon<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" width="95" height="27" border="0" alt="ADD SELECTED TO CART" />
+							</div>
+							<!-- fd:IsAlcoholic skuCode="%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" -->
+								<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
+								<fd:PopupHandler id="<%= TX_FORM_NAMEi %>" event="onclick" elementId='<%= "CTAButtonFP_" + seqDDPP %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
+							<!-- /fd:IsAlcoholic -->
+							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+							<% transProdIndex++; %>
+						</form>
+			<% } else {
+					String _deptId = pm.getDepartment().getContentKey().getId();
+					
+				/* NOTE THAT CUSTOMIZE USES showPanelDDPP(). IT HAS SPECIAL DISPLAY FUNCTIONALITY */
+			%>
+				<div class="ctaCUSTOMIZE">
+					<input type="image" class="CTAButtonFP" id="CTAButtonFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanelDDPP('<%= _deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+				</div>
+				<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+				<script>
+					window.<%= prodATCStatusId %>={
+							updateStatus:function(e){
+								$jq('#<%= prodATCStatusId %>').removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').html(e);
+								setTimeout(function () {
+									$jq('#<%= prodATCStatusId %>').fadeOut('400', function() {
+										setTimeout(function () {
+											$jq('#<%= prodATCStatusId %>').closest('.prodAddFP').animate({ height: '0', top: '200'}, 'fast');
+											//remove add to cart text, and show div again
+											$jq('#<%= prodATCStatusId %>').empty().show();
+										}, 500);
+										$jq('#<%= prodATCStatusId %>').closest('.prodAddFP').find('.CTAButtonFP').data('usedCTA', false);
+									});
+								}, 2000);
+							}
+					};
+				</script>
+				<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
+			<% } %>
+			</div>
+		</div>
+	</div>
+<% } else { /* Non-Featured Products (all views) */ %>
+	<%
+ 		String TX_FORM_NAMEi = TX_FORM_NAME+"_NFP"+seqDDPP;
+		String TX_JS_NAMESPACEi = TX_JS_NAMESPACE+"_NFP"+seqDDPP;
+		String prodATCId = "#prodATC_NFP_"+(seqDDPP+1);
+		String prodATCStatusId = "prodATCStatus_NFP_"+(seqDDPP+1);
+		String lineClass = "";
+	%>
+	<% if ("grid".equalsIgnoreCase(view)) { 
+			
+			//set the vertical line (right) on grid products (so it looks like: 0 | 1 | 2 | 3 )
+			if (tempCounter < 3) {
+				lineClass = " vline_right";
+			} else {
+				lineClass = "";
+				tempCounter = -1;
+			}
+			if (tempCounter == 0) { //start "row"
+				%><div class="ddpp_grid_row <%= tempCounter %>"><%
+			}
+			%>
+			<div class="ddpp_normal_prod">
+				<a name="<%=prodATCId.replaceFirst("#","")%>"></a>
+				<div class="topText"><display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showRegularPrice="false" grpDisplayType="NONFEAT" dataDriven="true" /></div>
+				<display:ProductImage 
+					product="<%= pm %>" 
+					showRolloverImage="false" 
+					action="<%= actionURI %>" 
+					hideBursts="<%= hideBursts %>" 
+					prodImageType="<%= imageSize %>"
+					disabled="<%=disableLinks%>"
+					bindToContainerSize="h=190,w=190" 
+				/>
+				<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
+				<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" disabled="<%=disableLinks%>" /></div>
+				<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
+				<% 
+					String fDCouponContClassProdBoxDdpp = "fdCoupon_prodBoxDdppGrid";
+					if (pi.isTransactional()) { fDCouponContClassProdBoxDdpp += "Trans"; }
+				%>
+				<display:FDCoupon coupon="<%= user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName()) %>" contClass="<%= fDCouponContClassProdBoxDdpp %>"></display:FDCoupon>
+				<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
+					<%
+						if (pi.isTransactional()) {
+							%>
+							<fd:TxProductPricingSupport formName="<%= TX_FORM_NAMEi %>" namespace="<%= TX_JS_NAMESPACEi %>"	customer="<%= user %>" impressions="<%= Collections.singletonList(pi) %>" setMinQuantity="true" />
+								<script type="text/javascript">
+									<%-- override default product pricing callback method --%>
+									<%= TX_JS_NAMESPACEi %>.ddppCB = function() {
+										<%-- prevent dropping below min --%>
+										if (<%= TX_JS_NAMESPACEi %>.pricings[0].getQuantity() < <%= TX_JS_NAMESPACEi %>.pricings[0].minQty) {
+											<%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(<%= TX_JS_NAMESPACEi %>.pricings[0].minQty);
+										}
+										$jq('#NFPsubtotal_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getPrice());
+										if (<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() != '') {
+											$jq('#NFPsubtotalEstPrefix_<%= seqDDPP %>').show();
+											$jq('#NFPsubtotalEst_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() + ' for ');											
+										}
+									};
+									<%= TX_JS_NAMESPACEi %>.pricings[0].setCallbackFunction( <%= TX_JS_NAMESPACEi %>.ddppCB );
+									$jq(document).ready(function () { <%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(0.0); });
+									
+									<%= TX_JS_NAMESPACEi %>.formSubmit = function() {
+										var query = extract_query_string(document.<%= TX_FORM_NAMEi %>);
+										var url = "/quickbuy/ajax_add_to_cart.jsp";
+										var status = $jq('#<%= prodATCStatusId %>');
+										var callback = {
+											success: function(o) {
+												var retMsg = o.responseText;
+												if (retMsg.indexOf('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>') > -1) {
+													retMsg = '<%= checkHtml %>'+o.responseText;
+												}
+												//change to succss look and msg
+												status.removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').html(retMsg);
+												//change button look
+												$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').attr('src', '/media/images/buttons/add_to_cart_no_icon_s.png');
+												//kick off timer for close effect
+												setTimeout(function () {
+													$jq('#<%= prodATCStatusId %>').fadeOut('400', function() {
+														$jq('#<%= prodATCStatusId %>').empty().show();
+														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
+													});
+												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
+												<%--
+													here is the place where you can do further changes,
+													e.g. disable quantity and add-to-cart controls
+													updateYourCartPanel();
+													--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+												--%>
+											},
+											failure: function(o) {
+												status.html("Connection error");
+											},
+											argument: []
+										};
+										YAHOO.util.Connect.asyncRequest('POST', url, callback, query);
+										return false;
+									};
+								</script>
+								<form method="get" action="#" id="<%= TX_FORM_NAMEi %>" name="<%= TX_FORM_NAMEi %>" onsubmit="return <%= TX_JS_NAMESPACEi %>.formSubmit();">
+									<input type="hidden" name="itemCount" value="1" />
+									<fd:TxProductControl txNumber="0" namespace="<%= TX_JS_NAMESPACEi %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
+									<div class="subtotalInfo"><span id="NFPsubtotalEstPrefix_<%= seqDDPP %>" style="display: none;">est. </span>subtotal: <span id="NFPsubtotalEst_<%= seqDDPP %>"></span><span class="subtotalInfoPrice" id="NFPsubtotal_<%= seqDDPP %>"></span></div>
+									<div class="ctaATC">
+										<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" name="addSingleToCart_<%= transProdIndex %>" src="/media/images/buttons/add_to_cart_no_icon<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" width="95" height="27" border="0" alt="ADD SELECTED TO CART" />
+									</div>
+									<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+									<% transProdIndex++; %>
+								</form>
+					<% } else {
+							String _deptId = pm.getDepartment().getContentKey().getId();
+					%>
+						<div class="ctaCUSTOMIZE">
+							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= _deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+						</div>
+						<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+						<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
+					<% } %>
+				</div>
+			</div>
+			<%
+				if (tempCounter == -1) {
+					//horizontal line between each grid row
+					%><div class="hline" style="clear:both;"><!-- --></div><%
+					%></div><% //end product row (last row does not come here)
+				} else {
+					%><div class="gutter"><div class="vline"><!-- --></div></div><%
+				}
+
+				if (seqDDPP == nonfeatProds.size()-1) {
+					%><br style="clear: both;" /></div><% //clear last row
+				}
+			%>
+	<% } else if ("list".equalsIgnoreCase(view)) { %>
+		<div class="ddpp_normal_prod ddpp_normal_prod_list">
+			<div class="ddpp_normal_prod_list_imgCont">
+				<display:ProductImage 
+					product="<%= pm %>" 
+					showRolloverImage="false" 
+					action="<%= actionURI %>" 
+					hideBursts="<%= hideBursts %>" 
+					prodImageType="<%= imageSize %>" 
+					disabled="<%=disableLinks%>"
+					bindToContainerSize="h=120,w=120" 
+				/>
+				<div class="prodRating"><display:ProductRating product="<%= pm %>" action="<%= actionURI %>" /></div>
+			</div>
+			<div class="ddpp_normal_prod_list_prdInfo">
+				<div class="topText"><display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showRegularPrice="false" grpDisplayType="NONFEAT" dataDriven="true" /></div>
+				<div class="prodName"><display:ProductName product="<%= pm %>" action="<%= actionURI %>" disabled="<%=disableLinks%>" /></div>
+			</div>
+			<div class="ddpp_normal_prod_list_prcCont">
+				<display:ProductPrice impression="<%= pi %>" showDescription="true" dataDriven="true" /><%-- don't pass grpDisplayType in here (for apple pricing override) --%>
+			</div>
+			<% 
+				String fDCouponContClassProdBoxDdpp = "fdCoupon_prodBoxDdppList";
+				if (pi.isTransactional()) { fDCouponContClassProdBoxDdpp += "Trans"; }
+				FDCustomerCoupon curCoupon = null;
+				if (pm.getDefaultSku() != null && pm.getDefaultSku().getProductInfo() != null) {
+					curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+				}
+			%>
+			<display:FDCoupon coupon="<%= curCoupon %>" contClass="<%= fDCouponContClassProdBoxDdpp %>"></display:FDCoupon>
+			<div class="ddpp_normal_prod_list_qtyCont">
+				<div class="prodAdd"<%= (isPpPreview)?"style=\"display: none;\"":""%>>
+					<%
+						if (pi.isTransactional()) {
+							%>
+							<fd:TxProductPricingSupport formName="<%= TX_FORM_NAMEi %>" namespace="<%= TX_JS_NAMESPACEi %>" customer="<%= user %>" impressions="<%= Collections.singletonList(pi) %>" setMinQuantity="true" />
+								<script type="text/javascript">
+									<%-- override default product pricing callback method --%>
+									<%= TX_JS_NAMESPACEi %>.ddppCB = function() {
+										<%-- prevent dropping below min --%>
+										if (<%= TX_JS_NAMESPACEi %>.pricings[0].getQuantity() < <%= TX_JS_NAMESPACEi %>.pricings[0].minQty) {
+											<%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(<%= TX_JS_NAMESPACEi %>.pricings[0].minQty);
+										}
+										$jq('#NFPsubtotal_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getPrice());
+										if (<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() != '') {
+											$jq('#NFPsubtotalEstPrefix_<%= seqDDPP %>').show();
+											$jq('#NFPsubtotalEst_<%= seqDDPP %>').html(<%= TX_JS_NAMESPACEi %>.pricings[0].getEstimatedQuantity() + ' for ');											
+										}
+									};
+									<%= TX_JS_NAMESPACEi %>.pricings[0].setCallbackFunction( <%= TX_JS_NAMESPACEi %>.ddppCB );
+									$jq(document).ready(function () { <%= TX_JS_NAMESPACEi %>.pricings[0].changeQty(0.0); });
+									
+									<%= TX_JS_NAMESPACEi %>.formSubmit = function() {
+										var query = extract_query_string(document.<%= TX_FORM_NAMEi %>);
+										var url = "/quickbuy/ajax_add_to_cart.jsp";
+										var status = $jq('#<%= prodATCStatusId %>');
+										var callback = {
+											success: function(o) {
+												var retMsg = o.responseText;
+												if (retMsg.indexOf('<%= EnumQuickbuyStatus.ADDED_TO_CART.getMessage() %>') > -1) {
+													retMsg = '<%= checkHtml %>'+o.responseText;
+												}
+												//change to succss look and msg
+												status.removeClass('prodATCStatusError').addClass('prodATCStatusSuccess').html(retMsg);
+												//change button look
+												$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').attr('src', '/media/images/buttons/add_to_cart_no_icon_s.png');
+												//kick off timer for close effect
+												setTimeout(function () {
+													$jq('#<%= prodATCStatusId %>').fadeOut('400', function() {
+														$jq('#<%= prodATCStatusId %>').empty().show();
+														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
+													});
+												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
+												<%--
+													here is the place where you can do further changes,
+													e.g. disable quantity and add-to-cart controls
+													updateYourCartPanel();
+													--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+												--%>
+											},
+											failure: function(o) {
+												status.html("Connection error");
+											},
+											argument: []
+										};
+										YAHOO.util.Connect.asyncRequest('POST', url, callback, query);
+										return false;
+									};
+								</script>
+								<form method="get" action="#" id="<%= TX_FORM_NAMEi %>" name="<%= TX_FORM_NAMEi %>" onsubmit="return <%= TX_JS_NAMESPACEi %>.formSubmit();">
+									<input type="hidden" name="itemCount" value="1" />
+									<div class="qtyControl">
+										<fd:TxProductControl txNumber="0" namespace="<%= TX_JS_NAMESPACEi %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
+										<div class="subtotalInfo"><span id="NFPsubtotalEstPrefix_<%= seqDDPP %>" style="display: none;">est. </span>subtotal: <br /><span id="NFPsubtotalEst_<%= seqDDPP %>"></span><span class="subtotalInfoPrice" id="NFPsubtotal_<%= seqDDPP %>"></span></div>
+									</div>
+									<div class="ctaATC">
+										<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" name="addSingleToCart_<%= transProdIndex %>" src="/media/images/buttons/add_to_cart_no_icon<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" width="95" height="27" border="0" alt="ADD SELECTED TO CART" />
+										<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+									</div>
+									<% transProdIndex++; %>
+								</form>
+					<% } else {
+							String _deptId = pm.getDepartment().getContentKey().getId();
+					%>
+						<div class="qtyControl">&nbsp;</div>
+						<div class="ctaCUSTOMIZE">
+							<input type="image" class="CTAButtonNFP" id="CTAButtonNFP_<%= seqDDPP %>" src="/media/images/buttons/customize_blue<%= (cart.getTotalQuantity(pm) > 0) ? "_s": "" %>.png" height="27" width="95" onclick="FD_QuickBuy.showPanel('<%= _deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= prodATCStatusId %>')();" />
+							<div class="prodATCStatus" id="<%= prodATCStatusId %>"></div>
+						</div>
+						<%-- in /quickbuy/confirm.jsp you can change onDOMReady handler to perform other changes, e.g. disable configure control --%>
+					<% } %>
+				</div>
+			</div>
+		</div>
+		<% if (tempCounter < nonfeatProds.size()-1) { %><div class="hline" style="clear:both;"><!-- --></div><% } %>
+	<% } %>
+<% } %>

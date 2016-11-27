@@ -1,0 +1,40 @@
+.staticpage {
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.staticpage .sidebar {
+  padding: 20px 10px;
+  background-color: #e0e3d0;
+  border: none;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.staticpage .sidebar h2 {
+  font-size: 2em;
+  line-height: 1.1em;
+  margin-bottom: 0.6em;
+}
+
+.staticpage .sidebar ul {
+  margin: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.staticpage .sidebar li {
+  margin: 0 0 0 4px;
+}
+
+.staticpage .sidebar li.back {
+  margin: 0 0 .6em 0;
+  font-weight: bold;
+}
+
+.staticpage .sidebar ul ul {
+  margin-left: 8px;
+}

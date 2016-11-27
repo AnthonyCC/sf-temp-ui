@@ -1,0 +1,234 @@
+.debug-line{
+  outline:1px solid #CCC;
+}
+
+.customize-popup{
+  width:700px;
+  padding:30px 30px 0 30px;
+}
+
+.customize-popup .header{
+  color:#336600; 
+}
+
+.customize-popup .body,
+.customize-popup .footer{
+  margin-top:10px;
+}
+
+.customize-popup .header,
+.customize-popup .description,
+.customize-popup .shopfromlists{
+  padding:0;
+  margin:0;
+}
+
+.customize-popup .description{
+  font-size:13px;
+  color:#666;
+  margin-bottom:15px;
+}
+
+.customize-popup .vertical-top{
+  display:inline-block;
+  vertical-align:top;
+  line-height:19px;
+}
+
+
+.customize-popup .strong{
+  font-weight:bold;
+}
+
+.customize-popup .italic{
+  font-style:italic;
+}
+
+.customize-popup .itemlist-item-header{
+  width:530px;
+}
+
+.customize-popup .itemlist-item-header-name{
+  font-weight:bold;
+  color:#000;
+}
+
+.customize-popup .itemlist-item-total{
+  display:inline-block;
+  color:#666;
+  line-height:22px;
+}
+
+.customize-popup .itemlist-item-customization{
+  margin-left:110px;
+  margin-bottom:20px;
+}
+
+.customize-popup .itemlist-item{
+  border-top:none;
+  border-bottom:1px solid #CCC;
+}
+
+.customize-popup ol:last-child .itemlist-item:last-child{
+  border:none;
+}
+
+.customize-popup .cust-title{
+  color:#336600; 
+  font-weight:bold;
+  margin:11px 0 0 0;
+}
+
+.customize-popup .footer{
+  text-align:center;
+  padding-bottom:20px;
+}
+
+.customize-popup .fixwidth,
+.customize-popup button.cssbutton[data-component].fixwidth{
+  display:inline-block;
+  width:200px;
+}
+
+.customize-popup button.cssbutton[data-component="delete-and-close"]{
+  margin-right:15px;
+}
+
+/* override help button's color */
+.customize-popup button.cssbutton.green.css-help-button{
+  background-color:#AAA;
+}
+
+.customize-popup button.cssbutton.green.css-help-button:focus,
+.customize-popup button.cssbutton.green.css-help-button:hover{
+  background-color:#dfdfdf;
+}
+/* overriding ends */
+
+.customize-popup .warning{
+  position:relative;
+  color:#333;
+  display:block;
+  width:60%;
+  margin:0 auto;
+  padding-left:45px;
+}
+
+.customize-popup .warning-content{
+  display:block;
+  padding-left:15px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.customize-popup .sign{
+  display:block;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  padding-top:3px;
+}
+
+.customize-popup .sign:before{
+  content:'!';
+  display:inline-block;
+  width:40px;
+  height:40px;
+  line-height:40px;
+  font-size:30px;
+  text-align:center;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  background-color:#c94747;
+  color:white;
+}
+
+.customize-popup .itemlist-item-total{
+  margin-left:10px;
+  font-size:13px;
+}
+
+.customize-popup .itemlist-item-total [data-component="subtotal"]{
+  line-height:22px;
+}
+
+
+.customize-popup[data-current-step] [data-multi-step]{
+  display:none;
+}
+
+.customize-popup[data-current-step='1'] [data-multi-step='1'],
+.customize-popup[data-current-step='2'] [data-multi-step='2'],
+.customize-popup[data-current-step='3'] [data-multi-step='3']{
+  display:block;  
+}
+
+#multi-customize-popup.invalid .footer button.cssbutton[data-atc-blocking],
+#multi-customize-popup.valid .qs-popup-close-icon{
+  display:none;
+}
+
+.customize-popup .itemlist-item-controls-subtotal {
+  padding-bottom: .5em;
+}
+
+.customize-popup .atc-info .incart-message,
+.customize-popup .atc-info .incart-info {
+  display: none;
+}
+
+.customize-popup .atc-info .incart-message.ERROR {
+  display: block;
+  text-align: left;
+}
+
+.customize-popup .shopfromlists[data-name="_simple_"] [data-component="product"] {
+  display: none;
+}
+
+.customize-popup .qty strong{
+  text-transform:lowercase;
+}
+
+.customize-popup .errorcontainer span.error{
+  display:none;
+}
+
+/* variations redesign */
+.customize-popup .skucontrol-variations,
+.customize-popup .skucontrol-variations-item{
+  display:inline-block;
+}
+
+.sku-margin{
+  margin-right:15px;
+  display:inline-block;
+}
+/* variations redesign ends */
+
+.customize-popup a,
+.customize-popup a:link,
+.customize-popup a:visited,
+.customize-popup a:hover,
+.customize-popup a:active{
+  cursor:pointer;
+  color:#AAA;
+}
+
+.customize-popup a:hover{
+  text-decoration:underline;
+}
+
+.customize-popup .salesunit{
+  vertical-align:baseline;
+}
+
+.customize-popup .itemlist-item-customization select{
+  font-size:11px;
+}
+
+.customize-popup .itemlist-item-customization input[type=checkbox]{
+  vertical-align:middle;
+}

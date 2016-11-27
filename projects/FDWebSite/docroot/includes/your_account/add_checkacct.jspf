@@ -1,0 +1,8 @@
+<%
+String currentPage = request.getRequestURI(); 
+boolean fromCheckout = currentPage.indexOf("checkout") > -1;
+String fromParam = fromCheckout ? "?from=checkout":"";
+String addCheckPage = fromCheckout ? "/checkout/step_3_checkacct_add.jsp" : "/your_account/add_checkacct.jsp";
+%>
+
+<div><a href="<%=addCheckPage%>"><img src="/media_stat/images/buttons/add_check_acct.gif" width="145" height="15" border="0" alt="ADD CHECKING ACCOUNT" vspace="12"></a></div>

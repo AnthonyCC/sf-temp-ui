@@ -1,0 +1,137 @@
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.common.pricing.util.DealsHelper"%>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
+
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="logic" prefix="logic"%>
+
+<%--
+
+Smart Search Text View (Flat)
+=============================
+
+@author segabor
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Instance of {@link String}
+@input nav			Instance of {@link SearchNavigator}
+
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+
+// turn products into product impressions
+List<ProductImpression> impressions = new ArrayList<ProductImpression>();
+for (Iterator<ProductModel> it=search.getPageProducts().iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression(it.next()) );
+}
+int k = 0;
+
+%>
+<table style="width: 100%: margin: 0; padding: 1em 0 0 0; border-collapse: collapse;">
+<logic:iterate id="pi" collection="<%= impressions %>" type="com.freshdirect.webapp.util.ProductImpression">
+	<tr style="height: 2.6em; <%= (k%2)==1 ? "background-color: #eee" : "" %>">
+<%
+		ProductModel productNode = pi.getProductModel();
+%>
+<%@ include file="/includes/search/price_info.jspf" %><%	
+		
+		ContentNodeModel parent = productNode.getParentNode();
+		
+		String actionURI = FDURLUtil.getProductURI(search.getParentContainer(), pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), k);
+%>
+		<td style="width: 100%; padding-left: 1em">
+			<div>
+			<%
+				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
+				if (productNode.isFullyAvailable()) {
+				%>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" showNew="true" />&nbsp;<%=aka %>
+				<% } else {	%>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color:#999999;"/>&nbsp;<%= aka %>
+				<% }			
+
+%>		</div>
+<%
+		// Various labels
+		if (productNode.getProductRating() != null && productNode.getProductRating().length() != 0) {
+			%><div style="margin-left:10px;"><display:ProductRating product="<%= productNode %>" noBr="true" leftAlign="true" /></div><%
+		}
+//   YOUR FAVORITE
+		if (isYourFave) {
+			%><div style="margin-left:10px;"><span class="fav-label">YOUR FAVORITE!</span></div><%
+		}
+%>
+		</td>
+		<td style="text-align: right; padding-left: 1em; padding-right: 1em; white-space: nowrap;vertical-align: center;"><%
+			if (defaultPrice != null) {
+				String scaledPrices[] = pi.getScaledPrices();
+				int scaledPercents[] = pi.getScaledPercentages(realBase);
+				if (hasWas) {
+				%><div>
+					<span class="save-label">SAVE <%= wasDeal %>%</span>
+					<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				  </div>
+				  <div>
+					<span class="save-base-price">(<font style="text-decoration: line-through;"><%= JspMethods.formatPrice(basePrice) %></font>)</span>
+				  </div> 
+				<%
+				} else {
+				%><div>
+					<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				  </div>
+				<%
+				}
+				// Scaled prices
+				//
+				boolean isGrpScale = false;
+				FDGroup group = pi.getFDGroup(); 
+				if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+					isGrpScale = true;	
+				}
+				if(isGrpScale) {
+				%>
+					<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+				<% } else { 
+					//show regular scale pricing
+				
+					if (scaledPrices != null && scaledPrices.length > 0) {
+						for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+					%>
+						<div>
+							<% if (scaledPercents[ymalSci] > 0) { %><span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<% } %>
+							<span class="save-price"><%= scaledPrices[ymalSci] %></span>
+						</div>
+					<%
+						}
+					}
+				} 
+			}else {
+				%>&nbsp;<%
+			}			
+%>		</td>
+	</tr><%
+++k;
+%></logic:iterate>
+</table>
+

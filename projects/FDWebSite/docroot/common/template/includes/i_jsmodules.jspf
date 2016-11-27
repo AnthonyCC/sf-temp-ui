@@ -1,0 +1,46 @@
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%-- this file will be included just before the closing </body> tag --%>
+<soy:import packageName="common"/>
+<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+
+
+	<% 
+	//System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 
+	if (session.getAttribute("DELIVERYADDRESS_COMPLETE") != null) {%>	
+			
+	<script>
+	$jq(document).ready(function() {
+		if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
+			FreshDirect.components.ifrPopup.open({ 
+				url: '/social/DeliveryAddressCreateSuccess.jsp'}); 
+		} else {
+			pop('/social/DeliveryAddressCreateSuccess.jsp');
+		}
+	});
+	</script>
+	
+<% 
+	session.setAttribute("DELIVERYADDRESS_COMPLETE",null);
+	} 
+%>
+
+<% 
+	if (session.getAttribute("SOCIAL_LOGIN_EXIST") != null) {%>	
+			
+	<script>
+	$jq(document).ready(function() {
+		if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
+			FreshDirect.components.ifrPopup.open({ 
+				url: '/social/SocialAccountExist.jsp'}); 
+		} else {
+			pop('/social/SocialAccountExist.jsp');
+		}
+	});
+	</script>
+	
+<% 
+	session.setAttribute("SOCIAL_LOGIN_EXIST",null);
+	} 
+%>

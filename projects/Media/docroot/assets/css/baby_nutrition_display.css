@@ -1,0 +1,204 @@
+/* preview only */
+#previewpanel {
+  float: left;
+  margin-left: 8px;
+  margin-top: 48px;
+}
+
+.display {
+	background:#FFF;
+  color: #000;
+	padding:7px;
+	font-family:Arial,sans-serif;
+	font-size:11px;
+	width:355px;
+  text-align: left;
+}
+
+.display hr {
+	margin:0;
+	border:1px solid #000;
+	height:0px;
+}
+
+.display .drugsection {
+	clear:both;
+	float:none;
+	overflow:hidden;
+	border-top:6px solid #000;
+	padding:4px 0;
+}
+
+.display .drugsection:first-child {
+  font-weight: bold;
+  border-top: none;
+}
+
+.display .type_INGREDIENT .drugitem {
+	overflow:hidden;
+	position:relative;
+	margin:4px 0px;
+}
+
+.display .type_INGREDIENT .drugitem span {
+}
+
+.display .type_INGREDIENT .drugitem .value1,
+.display .type_INGREDIENT .drugitem .value2,
+.display .type_INGREDIENT .drugitem .ingredientValue,
+.display .type_INGREDIENT .drugitem .uom {
+	position:relative;
+	background:#FFF;	
+	float:left;
+}
+
+.display .type_INGREDIENT .drugitem .dotted-wrapper {
+	display: block;
+	overflow:hidden;
+}
+
+.display .type_INGREDIENT .drugitem .dotted {
+	display: block;
+	overflow:hidden;
+	height:1em;
+	border-bottom:2px dotted #000;
+}
+
+
+.display .type_INGREDIENT .important {
+	font-size:12px;
+	font-style:italic;
+	font-weight:normal;
+	font-family:"Arial Black",Arial
+}
+
+.display .type_INGREDIENT .drugitem .value1,
+.display .type_INGREDIENT .drugitem .value2,
+.display .type_INGREDIENT .drugitem .uom {
+	padding-right:4px;
+}
+
+.display .type_INGREDIENT .drugitem .value2 {
+	padding-left:0.2em;
+  position: absolute;
+  left: 0;
+}
+
+.display .type_INGREDIENT .drugitem .ingredientValue {
+	float:right;
+	padding-left:4px;
+	max-width: 50%;
+  text-align: right;
+}
+
+.display .type_INGREDIENT .important .ingredientValue,
+.display .type_INGREDIENT .important .uom,
+.display .type_INGREDIENT .important .dotted {
+		display:none;
+}
+
+.display .type_INGREDIENT .title,
+.display .type_INGREDIENT .drugitem,
+.display .type_TABLE .title,
+.display .type_TABLE .drugitem {
+	display:block;
+}
+
+.display .type_FREE_TEXT .bulleted {
+	background:url('');
+}
+
+.display .type_FREE_TEXT .drugitem .value1 {
+	min-width:40%;
+}
+
+.display .type_FREETEXT .drugitem hr {
+	margin:2px 0;
+}
+
+.display .type_TABLE .drugitem {
+	border-bottom:2px solid #000;
+	margin-left:10px;
+	position:relative;
+}
+
+.display .type_TABLE .last {
+	border-bottom:none;
+}
+
+.display .type_TABLE .drugitem .value1,
+.display .type_TABLE .drugitem .value2 {
+	display:inline-block;
+	width:50%;
+	vertical-align:top;
+}
+
+.display .type_TABLE .drugitem .value2 {
+	width:49%;
+}
+
+.display .type_TABLE .drugitem .val {
+	display:inline-block;
+	margin:2px;
+}
+
+.display .type_TABLE .drugitem .value2 .val {
+	display:inline-block;
+	margin-left:1em;
+		
+}
+
+.display .type_TABLE .drugitem .hsep {
+	border-right:2px solid #000;
+	height:100%;
+	position:absolute;
+	right:50%;
+	top:0;
+}
+
+.display .linebreak {
+  display: block;
+  clear: both;
+  height: .5em;
+}
+
+.display .title {
+	font-family: "Arial Black",Arial
+}
+.display .important {
+	font-weight:bold;
+}
+
+.display .importance_0 {
+	font-weight:bold;
+}
+.display .importance_1 {
+	font-style:italic;
+	font-size:14px;
+}
+.display .importance_2 {
+	font-style:italic;
+	font-size:16px;
+}
+.display .importance_3 {
+	font-style:italic;
+	font-size:18px;
+}
+.display .importance_4 {
+	font-size:20px;
+}
+
+.display .separator {
+	float:none;
+	clear:both;
+	display:block;
+}
+
+.display .bullet {
+	display:inline-block;
+	height:5px;
+	width:5px;
+	vertical-align:middle;
+	background:#000;
+}
+

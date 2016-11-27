@@ -1,0 +1,58 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>3</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select decode(status_code, '10', 'Commited', '15', 'Canceled', '20', 'Expired') as status, to_number(count(*)) as count, 1 as rank from dlv.reservation where type in ('WRR','OTR') group by next_day(trunc(expiration_datetime) - 1, 'Sunday'), status_code having next_day(trunc(expiration_datetime) - 1, 'Sunday') between trunc(sysdate) - 7 and sysdate 
+UNION 
+select '', null, 2 as rank from dual 
+UNION select 'ChefsTable Orders', count(*), 3 as rank from cust.sale s, cust.salesaction sa where sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7 and sa.sale_id = s.id
+and customer_id in (select fdc.erp_customer_id from cust.profile p, cust.fdcustomer fdc where p.profile_name = 'ChefsTable' and p.customer_id = fdc.id) 
+UNION 
+select 'ChefsTable Customers', count(*), 4 as rank from ( select distinct s.customer_id from cust.sale s, cust.salesaction sa where sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.requested_date between next_day(trunc(sysdate) - 1, 'Sunday') - 13 and next_day(trunc(sysdate) - 1, 'Sunday') - 7 and sa.sale_id = s.id and customer_id in (select fdc.erp_customer_id from cust.profile p, cust.fdcustomer fdc where p.profile_name = 'ChefsTable' and p.customer_id = fdc.id) 
+)
+order by rank asc
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>5</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+     select to_char(next_day(trunc(sysdate-7) - 1, 'Sunday'), 'MM/DD/YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

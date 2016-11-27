@@ -1,0 +1,106 @@
+.qs-search input {
+	border: 1px solid #b49eb5;
+	line-height: 23px;
+	height: 23px;
+	padding: 7px 0 6px 10px;
+	vertical-align: middle;
+  box-sizing: content-box;
+  font-size: 14px;
+  color: #333;
+  border-radius: 3px;
+}
+
+[data-feature-quickshop="2_0"] .qs-search input {
+	background: #fff url(/media_stat/images/quickshop/icon-stopwatch.png) no-repeat 5px 50%;
+	font-size: 12px;
+	line-height: normal;
+	height: 14px;
+	padding: 5px 6px 5px 25px;
+	-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.3);
+	box-shadow: inset 0 2px 4px rgba(0,0,0,.3);
+	border-radius: 2px;
+}
+
+.qs-search input + .reset-search {
+  border: 1px solid transparent;
+  background-color: transparent;
+  display: inline-block;
+  cursor: pointer;
+  outline: 0;
+  padding: 0;
+  position: relative;
+  vertical-align: middle;
+  height: 17px;
+}
+
+.qs-search input[value] + .reset-search {
+  visibility: visible;
+}
+
+.qs-search input + .reset-search,
+.qs-search input[value=""] + .reset-search {
+  visibility: hidden;
+}
+
+.qs-search input + .reset-search:after {
+  content: "X";
+  display: block;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  background-color: #969;
+  color: white;
+  z-index: 1;
+  right: 13px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 3px 2px 2px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 15px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+[data-feature-quickshop="2_0"] .qs-search input[type="submit"] {
+  width: 68px;
+  height: 22px;
+  padding: 0;
+  background: url(/media_stat/images/quickshop/buttons-sprite.png) -175px -336px no-repeat;
+  text-align: left;
+  text-indent: 200%;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
+}
+
+[data-feature-quickshop="2_0"] .qs-search input[type="submit"]:hover,
+[data-feature-quickshop="2_0"] .qs-search input[type="submit"]:focus {
+    background-position: -260px -336px;
+}
+
+#searchTerm {
+	width:350px;
+}
+
+[data-feature-quickshop="2_0"] #searchTerm {
+	width:180px;
+}
+
+#searchTerm::-ms-input-placeholder {
+  color: #333;
+}
+#searchTerm::-moz-placeholder {
+  color: #333;
+}
+#searchTerm::-webkit-input-placeholder {
+  color: #333;
+}
+#searchTerm::input-placeholder {
+  color: #333;
+}

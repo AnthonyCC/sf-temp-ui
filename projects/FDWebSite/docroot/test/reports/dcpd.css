@@ -1,0 +1,150 @@
+body {
+    font-family: "Trebuchet MS";
+}
+
+h1 {
+	text-align: center;
+}
+
+.msg {
+    color: gray;
+    font-size: 12px;
+}
+
+.ibutton {
+    color: white;
+    background-color: black;
+    padding: 3px 30px;
+    font: 12px "Trebuchet MS";
+}
+
+.errmsg {
+    font-size: 12px;
+}
+
+.qTable th {
+   font: 12px "Trebuchet MS";
+   text-align: left;
+}
+
+.dcpd {
+   border-left: 1px solid #3c3;
+}
+
+table.dcpd {
+   width: 100%;
+}
+
+td.dcpd {
+   background-color: #090;
+   padding: 5px 5px;
+   margin-right: 5px;
+   width: none;
+   border-right: 2px solid #006600;
+   white-space: nowrap;
+
+   font: 11px "Trebuchet MS";
+   color: white;
+}
+
+td.dcpd a {
+   text-decoration: none;
+   color: white;
+   border: 0;
+}
+
+.dcpd th {
+   background-color: #090;
+   color: white;
+   text-align: left;
+   padding: 5px 7px;
+   /* font-size: 14px; */
+   font: 14px "Trebuchet MS";
+}
+
+.dcpd td {
+   border-bottom: 1px solid #ccc;
+   border-right: 1px solid #3c3;
+   padding: 7px 7px;
+   font: 12px "Trebuchet MS";
+}
+
+.qTable th {
+   font: 12px "Trebuchet MS";
+   text-align: left;
+}
+
+.dcpdpo {
+   border-left: 1px solid #3c3;
+}
+
+table.dcpdpo {
+   width: 100%;
+}
+
+td.dcpdpo {
+   background-color: #ff9900;
+   padding: 5px 5px;
+   margin-right: 5px;
+   border: 0;
+   width: none;
+   border-right: 2px solid #cc6600;
+   white-space: nowrap;
+
+   font: 11px "Trebuchet MS";
+   color: #a94300;
+}
+
+td.dcpdpo a {
+   text-decoration: none;
+   color: #a94300;
+   border: 0;
+}
+
+.dcpdpo th {
+   background-color: #ff9900;
+   color: #a94300;
+   text-align: left;
+   padding: 5px 7px;
+   /* font-size: 14px; */
+   font: 14px "Trebuchet MS";
+}
+
+.dcpdpo td {
+   border-bottom: 1px solid #ccc;
+   border-right: 1px solid #3c3;
+   padding: 7px 7px;
+   font: 12px "Trebuchet MS";
+}
+
+
+
+.deptcat {
+   color: #960;
+   font: 12px bold "Trebuchet MS";
+}
+
+#csv-anchor {
+  font: 12px bold "Trebuchet MS";
+  border: 1px solid #ff9900;
+  color: #ff9900;
+  background-color: yellow;
+  text-decoration: none;
+  padding: 5px 5px;
+  display: inline;
+  /* float: right; */
+}
+
+.err-span {
+  color: red;
+  font: 12px "Trebuchet MS";
+}
+
+#legend {
+  color: grey;
+  font: 10px "Trebuchet MS";
+}
+
+span.text12 {
+  font: 12px "Trebuchet MS";
+}

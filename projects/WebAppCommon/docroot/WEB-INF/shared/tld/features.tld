@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<taglib>
+	<tlibversion>3.1</tlibversion>
+	<jspversion>1.2</jspversion>
+	<shortname>features</shortname>
+	<uri>fd-features</uri>
+
+	<tag>
+		<name>potato</name>
+		<tagclass>com.freshdirect.webapp.features.tags.FeaturesPotatoTag</tagclass>
+	</tag>
+	<tag>
+		<name>allFeaturesPotato</name>
+		<tagclass>com.freshdirect.webapp.features.tags.AllFeaturesPotatoTag</tagclass>
+	</tag>
+	<tag>
+		<name>isActive</name>
+		<tagclass>com.freshdirect.webapp.features.tags.FeatureIsActiveTag</tagclass>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>featureName</name>
+			<required>true</required>
+		</attribute>
+	</tag>
+	<tag>
+	   <name>redirect</name>
+	   <tagclass>com.freshdirect.webapp.features.tags.FeatureRedirectorTag</tagclass>
+	   <attribute>
+	       <name>featureName</name>
+	       <required>true</required>
+	       <rtexprvalue>true</rtexprvalue>
+	   </attribute>
+	   	<attribute>
+			<name>checkout</name>
+			<required>false</required>
+		</attribute>
+	</tag>
+</taglib>

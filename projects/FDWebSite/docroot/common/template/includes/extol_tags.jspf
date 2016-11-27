@@ -1,0 +1,100 @@
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%
+//start local block
+{
+	FDUserI user_e1 = (FDUserI)session.getAttribute(SessionName.USER);
+	
+	//NEW: prohibited pages.  right now, this includes 'view_cart.jsp' AND checkout
+	String servletPath=request.getServletPath();
+	String[] extoleBlackList = {"view_cart.jsp", "checkout.jsp", "order_detail.jsp"};
+	
+	boolean isValidPage = true;
+
+	//if the user is ANYWHERE on a blacklist page, they can not see extole content
+	for(int i = 0; i < extoleBlackList.length; i++){
+		if( servletPath.toLowerCase().contains(extoleBlackList[i].toLowerCase()) ){
+			isValidPage = false;
+		}
+	}
+	
+	boolean isSignupPage = false;
+	
+	//if this is the invite signup page from the email, overrides
+	if( servletPath.toLowerCase().contains("invite_signup.jsp") ){
+		isSignupPage = true;
+	}
+	
+	//PASS 1 of 3.  Basic customer vars only defined here.	
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) ){
+		
+		int user_getLevel = user_e1.getLevel();
+	
+		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
+		if( (user_e1.getLevel() == FDUserI.SIGNED_IN) || isSignupPage == true ){
+			//customer basics
+			String exCustFirstName = user_e1.getFirstName();
+			String custLastName = user_e1.getLastName();
+			
+			String custEmail = "";
+			String custId = "";
+			
+			boolean isSignedCustomer = false;
+			
+			//lets find out if they ordered something
+			boolean exValidOrderCount = false;
+			
+			//more advanced customer stuff
+			FDIdentity identity_e  = user_e1.getIdentity();
+			if(null !=identity_e){
+				ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+				custEmail = cm_e.getEmail();
+				
+				//numerical id
+				custId = identity_e.getErpCustomerPK();
+				
+				//definitely logged in
+				isSignedCustomer = true;
+				
+				//since they are logged on in this case, lets see if they have an order
+				try{
+					exValidOrderCount = user_e1.isReferralProgramAvailable();
+				} catch (Exception e){
+					out.println("An exception occurred: " + e.getMessage());
+				}
+			}
+		
+			//session object needed to determine whether this user had just signed up
+			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
+			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(true);
+			
+			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
+
+			//if they have actually ordered something.  PASS 3 of 3
+			if(exValidOrderCount == true || justSignedUp || isSignupPage == true ){
+			%>
+			<script>
+			//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
+			var globalExtoleVars = {
+				"custId": "<%=custId%>",
+				"custFirstName": "<%=exCustFirstName%>",
+				"custLastName": "<%=custLastName%>",
+				"custEmail": "<%=custEmail%>",
+				"isSignedCustomer": <%=isSignedCustomer%>,
+				"validOrderCount": <%=exValidOrderCount%>,
+				"justSignedUp": <%=justSignedUp%>,
+				"mainPromo": <%=exMainPromo%>
+			};
+			</script>
+			<!-- <script src="//tags.extole.com/553175139/core.js"></script>
+			EXTOLE LIBRARY IS NOW CALLED FROM BELOW FILE.  This is done because javascript, unlike java/jsp, recognizes when it is being called in an iframe -->
+			<script src="/assets/javascript/extole_tags_generator.js"></script>
+			<%
+			} //end if(exValidOrderCount == true)
+		} // end if( user_e1.getLevel() != 0 )
+	} // end if (user_e1 != null) 
+} //end local block
+%>

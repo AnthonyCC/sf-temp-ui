@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DeliveryGroup" table="DELIVERY_GROUP">
+        <id name="groupId" type="string">
+            <column name="ID" length="16" />
+            <generator class="sequence">
+    			<param name="sequence">DELIVERY_GROUP_SEQ</param>
+			</generator>
+        </id>
+        <property name="groupName" type="string">
+            <column name="GROUP_NAME" length="255" not-null="true" />
+        </property>         
+    </class>
+</hibernate-mapping>

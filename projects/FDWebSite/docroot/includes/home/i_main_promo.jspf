@@ -1,0 +1,32 @@
+<%@ page import='java.util.*'  %>
+<%!
+private final static String[] NUMERALS = new String[] { "first", "second", "third", "fourth", "fifth", "sixth", "seventh" };
+%>
+<%
+Promotion promo = (Promotion) user.getEligibleSignupPromotion();
+List rules = promo.getHeaderDiscountRules();
+int promoValue = (int)promo.getHeaderDiscountTotal();
+%>
+
+<a href="/registration/signup.jsp"><img src="/media/editorial/promotions/signup_biscuit.gif" width="138" height="137" alt="Special Offer for New Delivery Areas: Free $<%=promoValue%> Fresh Food" border="0"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
+<%
+	int count = 0;
+	for (Iterator i= rules.iterator(); i.hasNext();) { 
+		SignupDiscountRule rule = (SignupDiscountRule)i.next();
+		count++;
+		if (count == 1) {
+	%>
+		<img src="/media_stat/images/template/promotions/signup_max_off_<%=(int)rule.getMaxAmount()%>.gif" width="174" height="11" alt="Get $ off this order" border="0" vspace="3"><br><img src="/media_stat/images/template/promotions/signup_min_order_<%=(int)rule.getMinSubtotal()%>.gif" width="157" height="13" alt="When you order $ or more!" border="0"></a><br>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+	<% } else { 
+		if (count == 2) { %>
+			<b>AND</b><br>
+		<% } %>
+	$<%=(int)rule.getMaxAmount()%> off your <%=NUMERALS[count-1]%> order<br>
+	<% } 
+	}
+	%>
+<%= (rules.size() > 1) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"8\"><br>" : "" %>
+<a href="promotion.jsp"><b>Click here for offer details.</b></a>
+<%= (rules.size() < 2) ? "<br>" : "" %>
+<% if (user.isPickupOnly()){ %><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><b>Pickup orders are not eligible.</b><% } %>

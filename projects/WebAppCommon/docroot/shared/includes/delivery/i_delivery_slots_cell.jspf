@@ -1,0 +1,338 @@
+<%--
+	Component that renders a cell in delivery timeslot chooser table
+	It is imported by i_delivery_slots.jspf
+
+	@param FDTimeslot slot                       Current timeslot to render
+	@param StringBuffer stringBuffer             (out)
+	@param FDDeliveryTimeslotModel deliveryModel
+	@param Date cutoffTime                       Cutoff time
+	@param boolean __genericTsTable              true = generic timeslot table / false = Normal timeslots
+	@param boolean __isAm                        true = AM / false = PM
+ --%>
+
+
+<%@page import="com.freshdirect.fdstore.util.TimeslotLogic"%>
+<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
+<%
+	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
+
+	boolean isPreReservedSlotId = slot.getId().equals(preReserveSlotId);
+	boolean isSelectedSlotId = slot.getId().equals(selectedSlotId);
+	if(StandingOrderHelper.isSO3StandingOrder(user)){
+		isSelectedSlotId=StandingOrderHelper.findSO3MatchTimeslot(slot,user.getCurrentStandingOrder());
+	}
+
+	if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
+		request.setAttribute("shownCTSlot", "TRUE");
+	}
+	boolean soldOut = slot.isSoldOut();
+	
+	/* cutoff data */
+	boolean displayCutoffMessage = cutoffTime == null
+			||
+			cutoffTime.getTime() < slot.getCutoffDateTime().getTime() /* cutoffTime.getTime() != slot.getCutoffDateTime().getTime() */;
+
+
+	if ( displayCutoffMessage ) {
+		cutoffTime = slot.getCutoffDateTime();
+
+		String inner = "";
+		
+		if(slot.isPremiumSlot() || slot.isFdxSlot())
+			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;<span id=\"premCOtime\">"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"</span>&nbsp;"+TimeslotPageUtil.getSDSCutoffDay(day)+"</b>";
+		else 
+			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b>";
+		
+				
+			
+		stringBuffer.append("							<td class=\"cutoff\">\n")
+					.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+					.append("									<div>" + inner + "</div>\n")
+					.append("								</div>\n")
+					.append("							</td>\n");
+
+		if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+			%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+			<%
+			if (showPremiumSlots) { //this SHOULD be a UTC timestamp instead of localized
+				%>var premSlotsCO = '<%= sameDayCutoffUTC %>';
+				<%
+			}
+		}else{
+			%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+			<%
+		}
+	}else{
+		stringBuffer.append("							<td class=\"cutoff\">\n")
+					.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+					.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
+					.append("								</div>\n")
+					.append("							</td>\n");
+
+		if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+			%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
+		}else{
+			%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
+		}
+	}
+	
+	stringBuffer.append("						</tr>\n");
+	
+	if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+		%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+		<%
+	}else{
+		%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+		<%
+	}
+			
+	/* timeslot row */
+	stringBuffer.append("						<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
+				.append("							<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC")
+				.append(
+					(
+						(soldOut||slot.isUnavailable()) 
+							? ""
+							: (isSelectedSlotId)
+								? " tsContentSelE"
+									: (isPreReservedSlotId && hasPreReserved)
+										? " tsContentResE"
+											: ""
+					)
+				+"\">\n")
+				.append("								<div class=\"tsContent\">\n")
+				.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
+					if (soldOut||slot.isUnavailable()) {
+						if (isStaticSlot) { /* do nothing? */
+							} else {
+						}
+						if(!isNextDayTimeSlotNotAvailable){
+							isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
+						}
+					} else {
+						if (isStaticSlot) {
+							/* do nothing? */
+						} else {
+							if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
+								/* do nothing? */
+							}
+						
+							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"");
+							stringBuffer.append(
+									( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
+									? "checked" : ""
+									)
+										.append(
+											" value=\""+
+											(
+												(isForce && !slot.hasAvailCTCapacity())
+													? ("f_"+ slot.getId())
+													: slot.getId()
+											)+"\" data-sofirstdate=\""+slot.getFormattedSoFirstDeliveryDateFull()+"\" />" 
+										);
+						}
+					}
+
+					/* removing the slot times for now, until accessibility is ready
+						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>
+					*/
+	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n");
+
+	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
+				.append(
+					(
+						(soldOut||slot.isUnavailable())
+							? "tsSoldoutC"
+							: (slot.isPremiumSlot() && slot.getPremiumAmount()>0)
+								? "tsPremiumTimeC"
+								: (isSelectedSlotId)
+									? "tsContentSelC"
+										: (isPreReservedSlotId && hasPreReserved)
+										? "tsReservationTimeE"
+											: (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0)
+											? "tsDiscountTimeC"
+											: (slot.isEarlyAM() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+											?""
+											: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+												? "tsNeighbourhoodTimeC"
+												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+													? "tsEcoFriendlyTimeC"
+													: "" 
+					)+"\">"+slot.getDisplayString(true)+ "<span class=\"so-first-delivery\">(" +soFirstNextTextCell + slot.getFormattedSoFirstDeliveryDate()+")</span>" +"</div>\n");
+	
+	
+	//)+"\">"+slot.getDisplayString(true)+ "<span class=\"so-first-delivery\">" + (soFirstDeliv ? "("+soFirstNextTextCell + " Delivery "+slot.getFormattedSoFirstDeliveryDate()+")":"")+"</span>" +"</div>\n");
+
+	/* add hidden ts info */
+	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getStartDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
+
+	/* START Timeslot promotion display */
+	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
+		stringBuffer.append("									<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
+						.append("<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" width=\"16\" height=\"16\" border=\"0\">")
+					.append("</div>\n");
+	}else{
+		stringBuffer.append("									<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
+						.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+					.append("</div>\n");
+	}
+	if (slot.isUnavailable()) {
+		stringBuffer.append("									<div class=\"tsUnavailPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+		.append("										<div class=\"tsUnavailE_cont\">")
+				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+				.append("<div><font class=\"tsUnavailE\">UNAVAILABLE</font></div>")
+			.append("</div>")
+		.append("</div>\n");
+	} else if (soldOut) {
+		stringBuffer.append("									<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+					.append("										<div class=\"tsSoldoutE_cont\">")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div>")
+						.append("</div>")
+					.append("</div>\n");
+	} else if(slot.isMinOrderSlot() && !slot.isMinOrderMet() ) {
+		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#ff0000;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" width=\"16\" height=\"15\" border=\"0\">")
+					.append("									</div>");
+	} else if(slot.isMinOrderSlot() && slot.isMinOrderMet() ) {
+		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+		.append("										<div>")
+				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+				.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#669933;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+			.append("</div>\n")
+		.append("									</div>")
+		.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+		.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" width=\"16\" height=\"15\" border=\"0\">")
+		.append("									</div>");
+	} else if (isSelectedSlotId) {
+		stringBuffer.append("									<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
+							.append("<div class=\"tsSelectedSlotE\">Selected</div>")
+						.append("</div>\n")
+					.append("									</div>\n")
+					.append("									<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
+						.append("</div>\n")
+					.append("									</div>\n");
+	} else if (slot.isPremiumSlot() && slot.getPremiumAmount()>0 && ( deliveryModel.getShoppingCart() != null 
+																		&& deliveryModel.getShoppingCart().getDeliveryPremium() == 0.0)) {
+					stringBuffer.append("						<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+					.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+					.append("<div><font class=\"tsPremiumE\">"+slot.getPremiumAmountFmt()+"</font></div>")
+					.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
+					.append("									</div>");
+	} else if(slot.isFdxSlot() && slot.getDeliveryFee()>0) {
+					stringBuffer.append("						<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+					.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+					.append("<div><font class=\"tsPremiumE\">"+"<strike>"+slot.getDeliveryFee()+" </strike>"+"</font><font class=\"tsPremiumE\"> "+slot.getPromoDeliveryFee()+"</font></div>")
+					.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsPremiumC\">"+slot.getPromoDeliveryFeeFmt()+"</font></div>\n")
+					.append("									</div>");
+	} else if (isPreReservedSlotId && hasPreReserved ){
+		stringBuffer.append("									<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+					.append("										<div>");
+						if(isSelectedSlotId){
+							stringBuffer.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">");
+						}else{
+							stringBuffer.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"17\" height=\"13\" border=\"0\">");
+						}
+						stringBuffer.append("<font class=\"tsReservationE\">Reserved</font>")
+					.append("</div>\n")
+					.append("									</div>\n");
+	} else if (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
+		stringBuffer.append("									<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>\n")
+					.append("									</div>");
+	} else if(slot.isEarlyAM()){
+		stringBuffer.append("									<div class=\"tsEarlyAmPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+		.append("										<div>")
+				.append("<img src=\"/media_stat/images/timeslots/early_delivery_icon_web.png\" width=\"16\" height=\"12\" border=\"0\">")
+				.append("<font class=\"tsEarlyAmE\"> Early Unattended</font>")
+			.append("</div>\n")
+		.append("									</div>\n")
+		.append("									<div class=\"tsEarlyAmPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+			.append("<img class=\"tsEarlyAmImage\" src=\"/media_stat/images/timeslots/early_delivery_icon_web.png\" width=\"16\" height=\"12\" border=\"0\">\n")
+		.append("</div>");
+	} else if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
+		stringBuffer.append("									<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
+							.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
+						.append("</div>\n")
+					.append("									</div>\n")
+					.append("									<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+						.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
+					.append("</div>\n");
+	} else if (slot.isEcoFriendly()){
+		if(!slot.isDepot()){
+			stringBuffer.append("									<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+						.append("										<div>")
+								.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">")
+								.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly</font>")
+							.append("</div>\n")
+						.append("									</div>\n")
+						.append("									<div class=\"tsEcoFriendlyPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+							.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">\n")
+						.append("</div>");
+	}else{
+			stringBuffer.append("									<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+						.append("										<div>")
+								.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")
+								.append("<div class=\"tsNeighbourhoodE\">Delivery&nbsp;Helper</font></div>")
+							.append("</div>\n")
+						.append("									</div>\n")
+						.append("									<div class=\"tsNeighbourhoodPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+							.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")
+						.append("</div>");
+		}
+	}else if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
+		stringBuffer.append("<div class=\"tsForceC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_forceX\"><b>F</b></div>\n");
+	}
+	
+	
+	/* close timeslot content div */
+	stringBuffer.append("								</div>\n");
+
+	stringBuffer.append("							</td>\n")
+				.append("						</tr>\n");
+
+	/* Check eligibility column to expand on page load */
+	 if(isSelectedSlotId && !defaultColExp){
+		defaultColExp = true;
+
+		%>dayIndex = <%= dayIndex %>;
+		slotIndex = <%= slotIndex %>;
+		<%
+	}else if ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved && !defaultColExp) {
+		defaultColExp = true;
+
+		%>dayIndex = <%= dayIndex %>;
+		slotIndex= <%= slotIndex %>;
+		<%
+	}
+
+	slotIndex++;
+%>

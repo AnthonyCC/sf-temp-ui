@@ -1,0 +1,44 @@
+#breadcrumbs {
+	margin:0;
+	padding:0 0 0 18px;
+	list-style-type:none;
+	font-weight:normal;
+	color: #764077;
+}
+
+#breadcrumbs li {
+	border: 1px solid #c1b5c1;	
+	display: inline-block;
+	margin:0 8px 4px 0;
+}
+
+[data-feature-quickshop="2_0"] #breadcrumbs li {
+	margin:0 8px 0 0;
+}
+
+#breadcrumbs li label {
+	background: #eedfee;
+	padding:0 8px 0 0;
+	cursor:pointer;
+	line-height:20px;
+	display:inline-block;
+}
+
+#breadcrumbs li label:before {
+	content:' ';
+	display:inline-block;
+	width:12px;
+	height:12px;
+	vertical-align:-2px;
+	margin:0 4px;
+	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -175px -561px  #eedfee;
+}
+
+.no-touch #breadcrumbs li label:hover {
+	text-decoration:underline;
+}
+
+#breadcrumbs li label:hover:before {
+	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -160px -561px  #eedfee;
+}
+

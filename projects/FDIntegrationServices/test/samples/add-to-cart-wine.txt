@@ -1,0 +1,7 @@
+productId=usq_chi_alfa_merl&
+catId=usq_red&
+skuCode=WIN0073196&
+quantity=1&
+PRICE=%249.99&
+add_to_cart.x=83&
+add_to_cart.y=12

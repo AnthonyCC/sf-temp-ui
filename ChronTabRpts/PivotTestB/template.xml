@@ -1,0 +1,42 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <!-- type>com.freshdirect.xls.datasource.DatabaseDataSource</type -->
+   <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION = 
+    (ADDRESS_LIST = 
+    (ADDRESS = (PROTOCOL = TCP)(HOST = logserver.nyc2.freshdirect.com)(PORT = 1630)) 
+    (ADDRESS = (PROTOCOL = TCP)(HOST = rac2.nyc2.freshdirect.com)(PORT = 1521)) ) 
+(CONNECT_DATA = (SERVICE_NAME = DBSTO01.nyc.freshdirect.com)  ) 
+(SOURCE_ROUTE=yes)  )
+</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select ci.first_name||' '||ci.last_name as name, s.customer_id as fdcustomer_id, 'ZONE', sd.question, sd.answer
+from cust.survey s, cust.surveydata sd, cust.fdcustomer fd, cust.customerinfo ci
+where s.customer_id = '42560'
+and s.id = '92722809'
+and s.survey_name = 'LastOrderSurvey'
+and s.id = sd.survey_id
+and s.customer_id = fd.id
+and fd.erp_customer_id = ci.customer_id
+     </param>
+     <param>
+quest1_FoodQuality,quest3_DriverProf,quest2_OnTime
+     </param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

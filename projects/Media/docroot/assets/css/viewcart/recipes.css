@@ -1,0 +1,35 @@
+#i_viewcart .recipes h2 {
+  text-align: left;
+  margin: 20px 0 0;
+}
+
+#i_viewcart .recipes h2 span {
+  display: inline-block;
+  line-height: 36px;
+  height: 36px;
+  font-family: 'Eagle-Bold', 'EagleBook', verdana, arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+  font-size: 22px;
+  text-transform: uppercase;
+  padding: 3px 30px 0;
+  background: #595959;
+  color: #fff;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+#i_viewcart .recipes .recipes_box {
+  padding: 30px 30px 30px 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+#i_viewcart .recipes .recipes_box .recipe_name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#i_viewcart .recipes .recipes_box tr.recipe_box_header td {
+  vertical-align: bottom;
+}

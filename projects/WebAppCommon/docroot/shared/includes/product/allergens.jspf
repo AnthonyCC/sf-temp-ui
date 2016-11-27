@@ -1,0 +1,21 @@
+<%@ page import='com.freshdirect.content.nutrition.*' %>
+<%-- ALLERGENS
+Only display allergens applicable to all available SKUs
+--%>
+<%
+Set common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ALLERGEN);
+if (!common.isEmpty()) {
+	%>
+	<table cellpadding="0" cellspacing="0" border="0">
+	<%
+	for (Iterator ic = common.iterator(); ic.hasNext();) {
+		EnumAllergenValue allergen = (EnumAllergenValue) ic.next();
+		if (!EnumAllergenValue.getValueForCode("NONE").equals(allergen)) {
+			%>
+			<tr valign="top"><td width="10" style="font-size:11pt; line-height: 12px;">&#149;</td><td><%= allergen %></td></tr>
+			<% 
+		}
+	} %>
+	</table> 
+<% }
+%>

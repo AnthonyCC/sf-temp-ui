@@ -1,0 +1,152 @@
+html,body {
+	height: 100%;
+}
+
+.holder {
+	width: 970px;
+	position: relative;
+	zoom: 1;
+}
+
+.oas_feature_frame {
+	padding: 5px 0px 10px;
+}
+
+.oas_feature_left {
+	width: 683px;
+	text-align: left;
+}
+
+.oas_feature_right {
+	width: 273px;
+}
+
+.oas_feature_right .oas_feature_right_tab {
+}
+
+.oas_home_bottom {
+	width: 970px;
+	padding-top: 5px;
+	padding-bottom: 10px;
+}
+
+.homepage-categories-header {
+    height: 1px;
+    background-color: #D0D0D0;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.homepage-categories-header span {
+	position: relative;
+    top: -0.7em;
+    padding: 0 7px;
+	text-transform: uppercase;
+    font-weight: bold;
+    color: #FF9933;
+	background-color: white;
+   
+}
+
+#most-popular .grid-carousel {
+	overflow:hidden;	
+}
+
+#top-items .ymalCarousel .portrait-item,
+#most-popular .ymalCarousel .portrait-item {
+  width: 130px;
+}
+
+#top-items .ymalCarousel h2 {
+  color: #f93;
+  text-align: center;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 15px;
+  position: relative;
+}
+
+#top-items .ymalCarousel h2:before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  background-color: #d6d6d6;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+#top-items .ymalCarousel h2 span {
+  display: inline-block;
+  background-color: #fff;
+  padding: 0 10px;
+  position: relative;
+  z-index: 2;
+}
+
+#most-popular .ymalCarousel h2 {
+  visibility: hidden;
+}
+
+#carousel-cos_carousel,
+#carousel-fav_carousel {
+	padding-top:21px;
+}
+
+#bottom_link {
+	padding:16px 0;
+}
+
+.cos .figure {
+	display:inline-block;
+	vertical-align:top;
+	text-align:center;
+}
+.cos .figure img {
+	margin-bottom:0.5em;
+}
+
+.cos .category {
+	font-size:1.5em;
+}
+
+.cos #categories .category {
+	width:190px;
+}
+.cos #categories .figure {
+	margin-bottom:1.4em;
+}
+
+.cos .caption {
+	font-weight:normal;
+	line-height:1.2em;
+}
+
+.cos #cos-bottom {
+	font-size:14px;
+}
+
+.cos #cos-bottom .container {
+	border-top:1px solid #eee;
+	padding-top:1.5em;
+	margin-top:1.5em;
+	text-align:left;
+}
+
+.cos #cos-footer-fruit {
+	float:left;
+	margin-right:1em;
+}
+
+.cos #cos-footer p {
+	font-size:13px;
+	color:#333;
+}
+
+#welcome-section-container .text-left {
+	display: none;
+}
+#welcome-section-container .clear {
+	clear: both;
+}

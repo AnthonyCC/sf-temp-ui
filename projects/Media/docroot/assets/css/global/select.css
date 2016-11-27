@@ -1,0 +1,65 @@
+.selectButton {
+  padding-right: 5px;
+}
+
+.selectButton > span {
+  display: inline-block;
+  text-align: left;
+}
+
+.selectButton span.popupcontent {
+  visibility: hidden;
+  display: block;
+  max-height: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin-bottom: -1px;
+}
+
+select.customselect {
+  visibility: hidden;
+}
+
+ul.customselect,
+.browse-popup-content ul.customselect {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#FDCustomSelect li {
+  cursor: pointer;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+#FDCustomSelect li button {
+  font-weight: normal;
+  color: inherit;
+  background: transparent;
+  border: none;
+}
+
+#FDCustomSelect li button:focus,
+#FDCustomSelect li:hover button {
+  text-decoration: underline;
+}
+
+#FDCustomSelect li.default {
+  font-weight: bold;
+}
+
+#FDCustomSelect li.selected {
+  background: #f0f5e1;
+  border-radius: 3px;
+}
+
+.popupcontentghost > .selectButton,
+select.selected + .fdselect > .selectButton {
+  background-color: #4fa157;
+}
+
+.fdselect .selectButton {
+  background-color: #999;
+  border-color: transparent;
+}

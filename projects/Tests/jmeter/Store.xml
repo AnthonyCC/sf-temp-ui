@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMeterTests dir="$(jmx.directory)" jar="$(jmeter.lib)/bin/ApacheJMeter.jar">
+
+	<!-- BUY PERISHABLES -->
+	<JMeterScript file="buy_perishables.jmx" enabled="true">
+	        <!-- Obtain data -->
+		<CMSData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="perishable_data.csv" type="product">
+				<QueryParameters>
+					<Parameter name="seed">13809843</Parameter>
+					<Parameter name="max_content">10000</Parameter>
+
+					<Parameter name="varperm">number</Parameter>
+					<Parameter name="varmax">3</Parameter>
+
+					<Parameter name="nothidden">true</Parameter>
+					<Parameter name="notunaiv">true</Parameter>
+					<Parameter name="groc">false</Parameter>
+					<Parameter name="layout">PERISHABLE</Parameter>
+
+
+					<Parameter name="column_order">product_id.category_id.perm_skus.min_quantity.perm_salesunits.perm_options</Parameter>
+
+					<Parameter name="distro">everything_ever_ordered.sku</Parameter>
+					<Parameter name="sample_size">10000</Parameter>
+				</QueryParameters>
+			</Retrieve>
+		</CMSData>
+
+		<!-- Set parameters -->
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+			<Parameter name="test_user">fob@fob.com</Parameter>
+			<Parameter name="user_pass">fobfob</Parameter>
+			<Parameter name="perishable_threads">2</Parameter>
+			<Parameter name="perishable_outerloop_counter">2</Parameter>
+			<Parameter name="perishable_loginbuy_counter">3</Parameter>
+			<Parameter name="perishable_saveclear_counter">3</Parameter>
+			<Parameter name="perishable_additem_counter">10</Parameter>
+			<Parameter name="perishable_data">$(output.directory)/perishable_data.csv</Parameter>
+			<Parameter name="perishable_output">$(output.directory)/perishable_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- Calculate aggregates -->
+		<Results dir="$(output.directory)">
+			<Aggregate file="perishable_results.csv">
+				<Rows>
+					<Match column="3">.*product.jsp</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="perishable_response_ave.property">ave($0)</Formula>
+					<Formula file="perishable_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="perishable_latency_ave.property">ave($4)</Formula>
+					<Formula file="perishable_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+					<Formula file="perishable_total.property">count($0)</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="perishable_results.csv">
+				<Rows>
+					<Match column="3">.*product.jsp</Match>
+					<Match column="1" negate="true">(200)|(302)</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="perishable_error.property">count($0)</Formula>
+				</Calculate>
+			</Aggregate>
+		</Results>
+	</JMeterScript>
+
+
+	<!-- BUY GROCERIES -->
+	<JMeterScript file="buy_groceries.jmx" enabled="true">
+	        <!-- Obtain data -->
+		<CMSData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="grocery_data.csv" type="product">
+				<QueryParameters>
+					<Parameter name="seed">13809843</Parameter>
+					<Parameter name="max_content">10000</Parameter>
+
+					<Parameter name="varperm">number</Parameter>
+					<Parameter name="varmax">3</Parameter>
+
+					<Parameter name="nothidden">true</Parameter>
+					<Parameter name="notunaiv">true</Parameter>
+					<Parameter name="groc">true</Parameter>
+
+
+					<Parameter name="column_order">product_id.category_id.perm_skus.min_quantity.perm_salesunits.perm_options</Parameter>
+
+					<Parameter name="distro">everything_ever_ordered.sku</Parameter>
+					<Parameter name="sample_size">10000</Parameter>
+				</QueryParameters>
+			</Retrieve>
+		</CMSData>
+
+		<!-- Set parameters -->
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+			<Parameter name="test_user">fob@fob.com</Parameter>
+			<Parameter name="user_pass">fobfob</Parameter>
+			<Parameter name="grocery_threads">2</Parameter>
+			<Parameter name="grocery_outerloop_counter">2</Parameter>
+			<Parameter name="grocery_loginbuy_counter">3</Parameter>
+			<Parameter name="grocery_saveclear_counter">3</Parameter>
+			<Parameter name="grocery_additem_counter">10</Parameter>
+			<Parameter name="grocery_data">$(output.directory)/grocery_data.csv</Parameter>
+			<Parameter name="grocery_output">$(output.directory)/grocery_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- Calculate aggregates -->
+		<Results dir="$(output.directory)">
+			<Aggregate file="grocery_results.csv">
+				<Rows>
+					<Match column="3">.*category.jsp</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="grocery_response_ave.property">ave($0)</Formula>
+					<Formula file="grocery_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="grocery_latency_ave.property">ave($4)</Formula>
+					<Formula file="grocery_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+					<Formula file="grocery_total.property">count($0)</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="grocery_results.csv">
+				<Rows>
+					<Match column="3">.*category.jsp</Match>
+					<Match column="1" negate="true">(200)|(302)</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="grocery_error.property">count($0)</Formula>
+				</Calculate>
+			</Aggregate>
+		</Results>
+	</JMeterScript>
+
+	<!-- BROWSE PRODUCTS -->
+	<JMeterScript file="browse.jmx" enabled="true">
+	        <!-- Obtain data -->
+		<CMSData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="browse_products_data.csv" type="product">
+				<QueryParameters>
+					<Parameter name="seed">13809843</Parameter>
+					<Parameter name="max_content">5000</Parameter>
+
+					<Parameter name="bvar_max">1</Parameter>
+
+					<Parameter name="nothidden">true</Parameter>
+					<Parameter name="notunaiv">true</Parameter>
+					<Parameter name="groc">true</Parameter>
+
+
+					<Parameter name="column_order">bpath</Parameter>
+
+					<Parameter name="distro">everything_ever_ordered.sku</Parameter>
+					<Parameter name="sample_size">10000</Parameter>
+				</QueryParameters>
+			</Retrieve>
+		</CMSData>
+
+		<!-- Set parameters -->
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+			<Parameter name="test_user">fob@fob.com</Parameter>
+			<Parameter name="user_pass">fobfob</Parameter>
+			<Parameter name="browser_threads">2</Parameter>
+			<Parameter name="n">1000</Parameter>
+			<Parameter name="browse_data">$(output.directory)/browse_products_data.csv</Parameter>
+			<Parameter name="browse_output">$(output.directory)/browse_products_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- Calculate aggregates -->
+		<Results dir="$(output.directory)">
+			<Aggregate file="browse_products_results.csv">
+				<Rows>
+					<Match column="3">.*((category.jsp)|(product.jsp)).*</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="browse_products_response_ave.property">ave($0)</Formula>
+					<Formula file="browse_products_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="browse_products_latency_ave.property">ave($4)</Formula>
+					<Formula file="browse_products_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+					<Formula file="browse_products_total.property">count($0)</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="browse_products_results.csv">
+				<Rows>
+					<Match column="3">.*((category.jsp)|(product.jsp)).*</Match>
+					<Match column="1" negate="true">(200)|(302)</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="browse_products_error.property">count($0)</Formula>
+				</Calculate>
+			</Aggregate>
+		</Results>
+	</JMeterScript>
+
+	<!-- BROWSE CATEGERIES -->
+	<JMeterScript file="browse.jmx" enabled="true">
+	        <!-- Obtain data -->
+		<CMSData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="browse_categories_data.csv" type="category">
+				<QueryParameters>
+					<Parameter name="seed">13809843</Parameter>
+					<Parameter name="max_content">5000</Parameter>
+
+					<Parameter name="bvar_max">1</Parameter>
+
+					<Parameter name="nothidden">true</Parameter>
+					<Parameter name="notunaiv">true</Parameter>
+					<Parameter name="groc">true</Parameter>
+
+
+					<Parameter name="column_order">bpath</Parameter>
+
+					<Parameter name="distro">category_history.cid</Parameter>
+					<Parameter name="sample_size">10000</Parameter>
+				</QueryParameters>
+			</Retrieve>
+		</CMSData>
+
+		<!-- Set parameters -->
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+			<Parameter name="test_user">fob@fob.com</Parameter>
+			<Parameter name="user_pass">fobfob</Parameter>
+			<Parameter name="browser_threads">2</Parameter>
+			<Parameter name="n">1000</Parameter>
+			<Parameter name="browse_data">$(output.directory)/browse_categories_data.csv</Parameter>
+			<Parameter name="browse_output">$(output.directory)/browse_categories_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- Calculate aggregates -->
+		<Results dir="$(output.directory)">
+			<Aggregate file="browse_categories_results.csv">
+				<Rows>
+					<Match column="3">.*((category.jsp)|(product.jsp)).*</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="browse_categories_response_ave.property">ave($0)</Formula>
+					<Formula file="browse_categories_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="browse_categories_latency_ave.property">ave($4)</Formula>
+					<Formula file="browse_categories_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+					<Formula file="browse_categories_total.property">count($0)</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="browse_categories_results.csv">
+				<Rows>
+					<Match column="3">.*((category.jsp)|(product.jsp)).*</Match>
+					<Match column="1" negate="true">(200)|(302)</Match>
+				</Rows>
+				<Calculate>
+					<Formula file="browse_categories_error.property">count($0)</Formula>
+				</Calculate>
+			</Aggregate>
+		</Results>
+	</JMeterScript>
+</JMeterTests>

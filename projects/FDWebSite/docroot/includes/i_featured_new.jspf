@@ -1,0 +1,125 @@
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.DisplayObject"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%
+if (newProds.getFeaturedCategory() != null) {
+	final int itemsMinToShow = 1;
+	final int itemsToShow = 4;
+	int itemsShown = 0;
+	List<ContentNodeModel> pList = newProds.getFeaturedCategory().getFeaturedNewProdBrands();
+	String catId = newProds.getFeaturedCategory().getContentKey().getId();
+
+	//make sure we have the minimum amount first
+	if (pList.size()>=itemsMinToShow) {
+		//get each col width
+		int colWidth = 0;
+		int colWidthEa = (pList.size()>4)?4:pList.size(); //hard code 4 max here
+		colWidth = 100/colWidthEa;
+		String colWidthStr = Integer.toString(colWidth)+"%";
+%>
+		<div class="title16" style="text-align: left; margin: 0px 15px 0px;">Our Favorite New Additions</div>
+		<div style="margin:  15px 0px 10px 14px;">
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" class="newFeat"  align="center">
+				<tr>
+				<%
+					for (int i = 0; i < pList.size(); i++) {
+				
+						if (itemsShown>=itemsToShow) continue;
+
+						if (pList.get(i) instanceof ProductModel) {
+							//do product related stuff
+							ProductModel productMod=(ProductModel)pList.get(i);
+							if (productMod.isDiscontinued() || productMod.isUnavailable()) { continue; }
+
+							String prodNameAttribute = JspMethods.getProductNameToUse(productMod);
+							DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,productMod,prodNameAttribute,false);
+							int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+							String actionURI = FDURLUtil.getProductURI( productMod, trk );
+
+							%>
+								
+								<td align="center" valign="bottom" width="<%=colWidthStr%>" style="padding-left:5px; padding-right:5px;">
+									<display:ProductImage product="<%= productMod %>" showRolloverImage="false" action="<%= actionURI %>" newProductPage="true" />
+								</td>
+							<%
+							itemsShown++;
+						}else if (pList.get(i) instanceof BrandModel) {
+							//do brand related stuff
+							BrandModel brandMod=(BrandModel)pList.get(i);
+							if (brandMod==null) continue;
+							Image bLogo = brandMod.getLogoLarge();
+							if (bLogo==null) {
+								bLogo = new Image();
+								bLogo.setPath("/media/images/temp/soon_80x80.gif");
+								bLogo.setWidth(80);
+								bLogo.setHeight(80);
+							 };
+							int adjustedImgWidth = bLogo.getWidth()+6+10;
+							String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+							%>	
+							<td align="center" valign="bottom" width="<%=colWidthStr%>" style="padding-left:5px; padding-right:5px;">
+								<a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a>
+							</td>
+							<%
+							itemsShown++;
+						}
+					}
+					
+					//reset count
+					itemsShown=0;
+				%>
+				</tr>
+				<tr>
+				<%
+					for (int i = 0; i < pList.size(); i++) {
+
+							if (itemsShown>=itemsToShow) continue;
+
+								if (pList.get(i) instanceof ProductModel) {
+									//do product related stuff
+								ProductModel productMod=(ProductModel)pList.get(i);
+								if (productMod.isDiscontinued() || productMod.isUnavailable()) { continue; }
+
+								String prodNameAttribute = JspMethods.getProductNameToUse(productMod);
+								DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,productMod,prodNameAttribute,false);
+								int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+								String actionURI = FDURLUtil.getProductURI( productMod, trk );
+
+								%>
+									
+									<td align="center" valign="top" width="<%=colWidthStr%>" style="padding-left:5px; padding-right:5px;">
+										<display:ProductRating product="<%= productMod %>" action="<%= actionURI %>" />
+										<display:ProductName product="<%= productMod %>" action="<%= actionURI %>" />
+										<display:ProductPrice impression="<%= new ProductImpression(productMod) %>" showDescription="true" />
+									</td>
+								<%
+								itemsShown++;
+							}else if (pList.get(i) instanceof BrandModel) {
+								//do brand related stuff
+								BrandModel brandMod=(BrandModel)pList.get(i);
+								if (brandMod==null) continue;
+								 
+								String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+								%>
+								<td align="center" valign="top" width="<%=colWidthStr%>" style="padding-left:5px; padding-right:5px;">
+									<div><a href="<%= brandLink %>"><strong><%= brandMod.getFullName() %></strong><br />New Products</a></div>
+									<div class="text10" style="font-weight: normal; font-style: italic; color: #999;">(Click&nbsp;to&nbsp;see&nbsp;all)</div>
+								</td>
+								<%
+								itemsShown++;
+							}
+					}
+				%>
+				</tr>
+				</table>
+			</div>
+	<% }
+}	
+%>

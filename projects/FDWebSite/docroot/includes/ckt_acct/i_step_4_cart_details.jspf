@@ -1,0 +1,623 @@
+<%@page import="com.freshdirect.common.pricing.EnumDiscountType"%>
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="java.text.MessageFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.GoogleAnalyticsCartProduct' %>
+<%@ page import='java.util.*'  %>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.FDCustomerCoupon"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponStatus"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.services.tax.AvalaraContext" %>
+<%@ taglib uri="logic" prefix="logic" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
+%>
+<%
+	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
+	if (cart instanceof FDOrderI) {    	
+    	isEBTPayment = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
+    } else {    	
+    	isEBTPayment = (null !=user.getShoppingCart().getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(user.getShoppingCart().getPaymentMethod().getPaymentMethodType()));
+    }
+	String detailWidth="693";
+	boolean isReceiptPage = false;
+	if (request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")) {
+		isReceiptPage = true;
+		
+		//check if Google Analytic pixel is on, else turn off on receipt page
+		if (!FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics").isEnabled()) {
+			isReceiptPage = false;
+		}
+	}
+	
+	Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
+	//create a map to hold all unique products by skuCode (send info to GA after the iterate)
+	Map<String, GoogleAnalyticsCartProduct> GACartProds = new HashMap<String, GoogleAnalyticsCartProduct>();
+
+if (isSmaller) detailWidth="630";
+	String parentOrderId=null;
+	if (masqueradeContext!=null) {
+		parentOrderId = masqueradeContext.getParentOrderId();		 
+	}%>
+
+<div style="width: <%=W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL%>px;">
+<%
+int idx = 0;
+double taxValue  = cart.getTaxValue();
+
+%>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
+	<tr><td colspan="11">
+		<%
+		if (!"".equals(view.getDescription())) {
+			%><br><div class="orderViewHeader"><%= view.getDescription().toUpperCase() %></div><%
+			if (!view.isDisplayDepartment()) {
+				%><br><%
+			}
+		}
+		%>
+	</td></tr>
+	<%
+		boolean newItems = true; // whether we are in the new items section
+		boolean hasNewItems = false; // flag if we have new items
+	%>
+	<logic:iterate id="orderLines" collection="<%= view.getNewOrderLinesSeparated() %>" type="java.util.List">
+	<%
+	String lastDept = null;
+	boolean firstRecipe = true;
+	Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
+	%>
+	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
+		<%
+		ProductModel productNode = cartLine.lookupProduct();
+		FDProduct fdProduct = cartLine.lookupFDProduct();
+		
+		/* Google Analytics data. */
+		
+		if (isReceiptPage && fdProduct != null && productNode != null) {
+			//check if we've already gotten this sku in a different cartLine
+			if (GACartProds.containsKey(fdProduct.getSkuCode())) {
+				GoogleAnalyticsCartProduct GACartProd = GACartProds.get(fdProduct.getSkuCode());
+				
+				//add to qty
+				GACartProd.addToQty(cartLine.getConfiguration()!=null?cartLine.getConfiguration().getQuantity():0 );
+				
+				//add to total
+				GACartProd.addToTotal(cartLine.getPrice());
+			} else {
+				//unit price comes back as "$#.##/UOM", so remove dollar sign and split it out to add to the two seperate attributes...
+				String unitPriceInfo[] = cartLine.getUnitPrice().replace("$", "").split("/");
+
+				//we haven't, create a new one
+				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), cartLine.getConfiguration()!=null?cartLine.getConfiguration().getQuantity():0, cartLine.getPrice());
+
+				//add unit price
+				GACartProd.setUnitPrice(unitPriceInfo[0]);
+				//add category
+				GACartProd.setProductCategoryId((productNode.getCategory()!=null)?productNode.getCategory().toString():"");
+				//add product name
+				GACartProd.setProductId(productNode.toString());
+				
+				//add to hashmap
+				GACartProds.put(fdProduct.getSkuCode(), GACartProd);
+			}
+		}
+		
+		
+		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
+		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
+
+		if (newItems && viewIndex == 0) {
+			lastDept = cartLine.getDepartmentDesc();
+			hasNewItems = true;
+			%>
+			<tr>
+				<td colspan="3"></td>
+				<td colspan="8" class="text11orbold fd-red-text"><br>New Items in Cart</td>
+			</tr>
+			<%
+		} else if (!newItems && (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc()))) {
+			lastDept = cartLine.getDepartmentDesc() ;
+			
+			if (view.isDisplayDepartment() || hasNewItems) {
+				if (null != lastDept &&lastDept.startsWith("Recipe: ")) {
+					if (firstRecipe) {
+						%>
+						<tr>
+							<td colspan="3"></td>
+							<td colspan="8" class="text11orbold"><br>Recipes</td>
+						</tr>
+						<%
+					}
+					%>
+					<tr>
+						<td colspan="3"></td>
+						<td colspan="8" class="text11bold"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"8\"><br>":""%><%= lastDept.substring("Recipe: ".length()) %></td>
+					</tr>
+					<%
+					firstRecipe = false;
+				} else {
+					%>
+					<tr>
+						<td colspan="3"></td>
+						<td colspan="8" class="text11orbold"><br><%= lastDept %></td>
+					</tr>
+					<%
+					}
+			}
+		}
+		%>
+		<%-- discount msg --%>
+		<%
+			String discountMsg = null;
+			String groupDiscountMsg = null;
+			boolean isFreeProd = false;
+			if(cartLine.getDiscount() != null){
+				if(!EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) {
+				Discount discount = cartLine.getDiscount();
+				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+				String skuMsg = "";
+				if(discount.getSkuLimit() > 0 && cartLine.getUnitPrice().indexOf("lb") == -1) {
+					if(discount.getSkuLimit() == 1)
+						skuMsg = " on " + discount.getSkuLimit() + " item";
+					else
+						skuMsg = " on " + discount.getSkuLimit() + " items";
+				}
+				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+skuMsg+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+				}
+				else{					
+						isFreeProd = true;
+				}
+			}else {
+				if(cartLine.getGroupQuantity() > 0) {
+					double savings = cartLine.getGroupScaleSavings();
+					if(savings > 0)
+						groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoFromCheckout('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+				}
+			}
+		%>
+		
+		<tr valign="middle">
+			<td align="right" width="40">
+				<%=cartLine.getDisplayQuantity()%>
+				<%
+					totalItemsInCart++; //for sem use
+				%>
+			</td>
+			<td width="16"></td>
+			<td width="22">&nbsp;<%=cartLine.getLabel()%></td>
+			
+			<td colspan="2">
+				<div style="margin-left:16px; text-indent:-8px;">
+					<span class="text10bold"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+					<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+					<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+				</div>
+				<%if(request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")){ %>
+				<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineChckout" pastTense="true"></display:FDCoupon>
+				<%}else{
+					FDCustomerCoupon coupon = user.getCustomerCoupon(cartLine, EnumCouponContext.CHECKOUT) ;
+					String couponClass = "fdCoupon_cartlineChckout";
+					Boolean pastTense = true;
+					if(null != coupon &&  EnumCouponStatus.COUPON_CLIPPED_FILTERED.equals(coupon.getStatus())){
+						couponClass = "fdCoupon_cartlineChckoutExpired";
+						pastTense = false;
+					%>
+						<img src="/media/images/ecoupon/red_triangle.png" alt="" />
+					<%}
+				%>
+				<display:FDCoupon coupon="<%= coupon %>" contClass="<%= couponClass %>" pastTense="<%= pastTense %>"></display:FDCoupon>
+				<% } %>
+			</td>
+			<% if(cartLine.getDiscount() != null && EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) { %>
+			<td width="70" align="right"><font color="#FF0000"></font></td>
+			<td align="right"><span class="text10bold"><font color="#FF0000">FREE</font></span></td>
+            <% } else if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
+			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
+			<td align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
+            <% } else { %>
+  			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
+			<td align="right"><span class="text10bold"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
+            <% } %>
+			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : " " %></td>
+			<td width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
+		</tr>
+		
+		<%
+		if (user.isEligibleForClientCodes() && cartLine.getClientCodes().size() > 0) {
+			int noCode = (int) cartLine.getQuantity();
+			for (ErpClientCode item : cartLine.getClientCodes()) {
+				noCode -= item.getQuantity();
+			}
+		%>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+			<td colspan="5" style="padding: 4px 0px 4px 16px; line-height: 1.5em;">
+				<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;">
+				Client Code<% if (cartLine.getClientCodes().size() > 1) { %>s<% } %>: <% ErpClientCode.toHtmlWriter(cartLine.getClientCodes(), noCode, out); %>
+				</span>
+			</td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<%
+		}
+		%>
+	
+		<%
+		idx++;
+		%>
+	</logic:iterate>
+	<% if (!newItems) { %>
+	<tr><td colspan="11">
+		<div class="orderViewSeparator"></div>
+	</td></tr>
+	<tr class="orderViewSummary">
+		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
+		<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
+		<td colspan="1"><% if (view.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+	if (view.getTax() > 0) {
+		%>
+		<tr class="orderViewSummary">
+			<td colspan="6" align="right">Tax:</td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getTax())%></td>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+		<%
+	}
+	if (view.getDepositValue() != 0) {
+		%>
+		<tr class="orderViewSummary">
+			<td colspan="6" align="right">State Bottle Deposit:</td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getDepositValue())%></td>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+		<% 
+	}
+	%>
+	<% } // !newItems %>
+	<%
+		newItems = false;
+	%>
+	</logic:iterate>
+</logic:iterate>
+	<tr><td colspan="11">
+		<div class="orderSeparator" />
+	</td></tr>
+	
+	<tr valign="top">
+		<td colspan="3" rowspan="12"></td>
+		<td colspan="8"></td>
+	</tr>
+	
+	<tr valign="top" class="orderSummary">
+		<td colspan="3" align="right">Order Subtotal:</td>
+		<td align="right"><%=JspMethods.formatPrice(cart.getSubTotal())%></td>
+		<td><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="6">&nbsp;</td>
+	</tr>
+<%
+	request.setAttribute("cartSubtotal", JspMethods.formatPrice(cart.getSubTotal())); //for sem use
+	%>
+
+	<% if (isFdxOrder) { %>
+	<tr>
+	    <td colspan="3" align="right">Tip :</td>
+	    <td align="right"><%=JspMethods.formatPrice(cart.getTip()) %></td>
+	    <td colspan="7"></td>
+	</tr>
+	<% } %>
+	
+	
+	
+	<%
+	if(!isEBTPayment){
+	if (cart.isDlvPassApplied()) {
+%>	
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee:</td>
+			<td width="30%" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+			<td></td>
+			<td colspan="6">&nbsp;</td>
+		</tr>
+		<%
+	}else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
+	
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">
+				Delivery Fee<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:
+				<%if (!cart.isChargeWaived(EnumChargeType.DELIVERY) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
+				Force Waive <input type="checkbox" value="true" <%=(user.getMasqueradeContext() != null ? user.getMasqueradeContext().isCsrWaivedDeliveryCharge() : false)?"checked":"" %> name="waive_delivery_fee"><%}%>
+			</td>
+			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
+			<td></td>
+			<td colspan="6"><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
+		</tr>
+		<%
+	}if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
+			%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">
+				Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:
+				<%if (!cart.isChargeWaived(EnumChargeType.DLVPREMIUM) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
+					Force Waive <input type="checkbox" value="true" <%=(user.getMasqueradeContext() != null ? user.getMasqueradeContext().isCsrWaivedDeliveryPremium() : false)?"checked":"" %> name="waive_delivery_premium_fee">
+				<%}%>
+			</td>
+			<td align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?"$0.0":JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>
+			<td></td>
+			<td colspan="6"><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T":""%></td>
+		</tr>
+			<%
+	}
+	if (cart.getMiscellaneousCharge() > 0.0) {%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
+		    	<td></td>
+			<td colspan="6"><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
+		</tr>
+	<%  } 
+	if (cart.getPhoneCharge() > 0 && !isReceiptPage && user.getMasqueradeContext()!=null){%>
+	<tr valign="top" class="orderSummary">
+			<%if(user.getMasqueradeContext()!=null&& parentOrderId!=null) {%>
+			<td colspan="3" align="right">Waive Phone Handling Charge<input type="checkbox" value="true" checked="checked" name="waive_phone_fee"></td>
+			<%}else{%>
+			<td colspan="3" align="right">Waive Phone Handling Charge<input type="checkbox" value="true" <%=cart.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee"></td>
+			<%}%>
+			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.PHONE)){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getPhoneCharge()) %><%}%></td>
+			<td colspan="7">&nbsp;</td>
+		</tr>
+		
+	<%}%>
+	
+	<%
+		double restockingFee = 0.0;
+		if (cart instanceof FDOrderI && ((FDOrderI)cart).hasSettledReturn() && user.getMasqueradeContext()!=null) {
+			restockingFee = ((FDOrderI)cart).getRestockingCharges();
+			if (restockingFee > 0) {
+				%>
+				<tr valign="top" class="orderSummary">
+					<td colspan="3" align="right">Restocking Fees:</td>
+					<td align="right"><%=currencyFormatter.format(restockingFee)%></td>
+					<td colspan="7">&nbsp;</td>
+				</tr>
+				<%
+			}
+		}
+	%>
+
+	<%
+	if (taxValue > 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Total Tax:</td>
+			<td align="right"><%=JspMethods.formatPrice(taxValue)%></td>
+			<td colspan="7"></td>
+		</tr>
+		<%
+	}
+	} else { %>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee(waived):</td>
+			<td width="30%" align="right">$0.00</td>
+			<td></td>
+			<td colspan="6">&nbsp;</td>
+		</tr>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a>(waived):</td>
+			<td align="right">$0.00</td>
+			<td colspan="6"></td>		    	
+			
+		</tr>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Total Tax (waived):</td>
+			<td align="right">$0.00</td>
+			<td colspan="7"></td>
+		</tr>
+	<% } %>
+	
+	<% if (cart.getDepositValue() != 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">State Bottle Deposit:</a></td>
+			<td align="right"><%=JspMethods.formatPrice(cart.getDepositValue())%></td>
+			<td colspan="7"></td>
+		</tr>
+		<% 
+	}
+	%>
+	
+	<%if (cart.getTotalDiscountValue() >= 0) {
+		List discounts = cart.getDiscounts();
+		for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+			ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+			Discount discount = discountLine.getDiscount();
+			PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+			String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
+			%>
+			<tr valign="top" class="orderSummary">
+				<td colspan="3" align="right"><%= desc %>:</td>
+				<td align="right">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
+				<td colspan="7"></td>	   
+			</tr>
+		<%
+		}
+	}
+
+	request.setAttribute("totalDiscountAmount", JspMethods.formatPrice(cart.getTotalDiscountValue())); //for sem use
+	request.setAttribute("totalCartItems", totalItemsInCart); //for sem use
+	%>
+	
+	<%
+		//MNT-111 Bug Fix
+		String desc = cart.getRedeemedSampleDescription();
+		if(desc != null && !desc.equals("NONE")) {
+	%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><%= desc %>:</td>
+			<td align="right">FREE!</td>
+			<td colspan="7"></td>	   
+		</tr>	
+	<%
+		}
+	%>	
+    
+   	<%
+		String extendDPDesc = cart.getExtendDPDiscountDescription();
+		if(extendDPDesc != null && !extendDPDesc.equals("NONE")) {
+	%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><%= extendDPDesc %>:</td>
+			<td align="right">Pass extension</td>
+			<td colspan="7"></td>	   
+		</tr>	
+	<%
+		}
+	%>	
+
+	<%  if (cart.getCustomerCreditsValue() > 0) { %>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Credit Applied:</td>
+			<td align="right">-<%=JspMethods.formatPrice(cart.getCustomerCreditsValue())%></td>
+			<td colspan="7"></td>
+		</tr>		   
+	<%  } %>
+	<tr valign="top" class="orderTotal">
+		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
+		<td align="right"><b><%= JspMethods.formatPrice(cart.getTotal()) %></b></td>
+		<td><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="6"></td>
+	</tr>
+	
+	<tr><td colspan="8" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
+	
+</table>
+
+<%	if (!isReceiptPage && user.getMasqueradeContext()!=null) { %>
+	<div>CUSTOMER INVOICE MESSAGE: <INPUT TYPE="text" NAME="csr_message" SIZE="55"></div>
+<%	} %>
+
+<%
+	if (isReceiptPage) {
+		%>
+		<script type="text/javascript">
+			<% if (FDStoreProperties.isGoogleAnalyticsUniversal()) { %>
+				<%-- universal script --%>
+				ga('require', 'ecommerce', 'ecommerce.js');   // Load the ecommerce plug-in.
+				
+				ga('ecommerce:addTransaction', {
+					  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+					  'affiliation': 'FreshDirect',   // Affiliation or store name
+					  'revenue': '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',               // Grand Total
+					  'shipping': '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',	// Shipping
+					  'tax': '<%= JspMethods.formatPrice(taxValue).replace("$", "") %>'                     // Tax
+				});
+				<%
+					/* Google Analytics data. */
+					//add product info
+					for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
+						Map.Entry e = (Map.Entry) gaIter.next();
+						GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
+						%>
+						ga('ecommerce:addItem', {
+						  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+						  'name': '<%= GACartProd.getProductId() %>',                // Product name. Required
+						  'sku': '<%= GACartProd.getSkuCode() %>',                    // SKU/code
+						  'category': '<%= GACartProd.getProductCategoryId() %>',       // Category or variation
+						  'price': '<%= GACartProd.getUnitPrice() %>',                 // Unit price
+						  'quantity': '<%= GACartProd.getQtyFormatted() %>'                   // Quantity
+						});
+						<%
+					}
+				
+					//add the discount if there is one
+					if (cart.getTotalDiscountValue() >= 0) {
+						%>
+						ga('ecommerce:addItem', {
+						  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+						  'name': 'DISCOUNT',                // Product name. Required
+						  'sku': '0000000000',                    // SKU/code
+						  'category': 'DISCOUNT',       // Category or variation
+						  'price': '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',                 // Unit price
+						  'quantity': '1'                   // Quantity
+						});
+						<%
+					}
+					//push transaction to google analytics
+				%>
+					ga('ecommerce:send');      // Send transaction and item data to Google Analytics.
+				
+			<% } else { %>
+				<%-- old script --%>
+
+				//create a transaction
+				_gaq.push(['_addTrans',      
+			           '<%= sem_orderNumber %>',           // order ID - required
+			           'FreshDirect', // affiliation or store name
+			           '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',          // total - required
+			           '<%= JspMethods.formatPrice(taxValue).replace("$", "") %>',           // tax
+			           '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',          // shipping
+			           '<%= dlvAddress.getCity() %>',       // city
+			           '<%= dlvAddress.getState() %>',     // state or province
+			           '<%= dlvAddress.getCountry() %>'             // country
+			        ]);
+	
+				<%
+				/* Google Analytics data. */
+				//add product info
+				for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
+					Map.Entry e = (Map.Entry) gaIter.next();
+					GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
+					%>
+					 _gaq.push(['_addItem',
+					            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+					            '<%= GACartProd.getSkuCode() %>',         // SKU/code - required
+					            '<%= GACartProd.getProductId() %>',      // product name - necessary to associate revenue with product
+					            '<%= GACartProd.getProductCategoryId() %>', // category or variation
+					            '<%= GACartProd.getUnitPrice() %>',        // unit price - required
+					            '<%= GACartProd.getQtyFormatted() %>'             // quantity - required
+					         ]);
+					<%
+				}
+				
+					//add the discount if there is one
+					if (cart.getTotalDiscountValue() >= 0) {
+	
+						%>
+						 _gaq.push(['_addItem',
+						            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+						            '0000000000',         // SKU/code - required
+						            'DISCOUNT',      // product name - necessary to associate revenue with product
+						            'DISCOUNT', // category or variation
+						            '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',        // unit price - required
+						            '1'             // quantity - required
+						         ]);
+						<%
+					}
+					//push transaction to google analytics
+				%>
+					_gaq.push(['_trackTrans']);
+				<%
+			} %>
+		</script><%
+			
+	}
+%>
+</div>

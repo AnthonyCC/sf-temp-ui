@@ -1,0 +1,1233 @@
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.webapp.util.RestrictionUtil'%>
+<%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
+<%@ page import='com.freshdirect.framework.util.TimeOfDay'%>
+<%@ page import="java.text.MessageFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.fdstore.util.DYFUtil" %>
+<%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
+<%@ page import='com.freshdirect.framework.webapp.ActionError' %>
+<%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
+<%@ page import='com.freshdirect.fdstore.promotion.PromotionErrorType' %>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType';%>
+<%@ page import="com.freshdirect.common.pricing.EnumDiscountType"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
+<%@ page import="com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData" %>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.FDCouponProperties"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.lang.Math"%>
+<%@ taglib uri="logic" prefix="logic" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<% //expanded page dimensions
+final int W_VIEWCART_FULL = 970;
+%>
+<% boolean isEBTPayment = (null !=(cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals((cart).getPaymentMethod().getPaymentMethodType()));%>
+<% if (user.isEligibleForClientCodes()) { %>
+
+<div id="clicode_dlgTmpl" style="display: none">
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
+	</table>
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
+		<tr>
+			<td colspan="4" class="text11">
+				<a href="#"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="FreshDirect (close window)"></a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="height: 20px;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width: 20px; line-height: 18px;">&nbsp;</td>
+			<td class="text13rbold" style="line-height: 18px; white-space: nowrap; vertical-align: top; width: 130px; text-align: right;">
+				<img src="/media_stat/images/buttons/client_codes_exclamation.gif" style="vertical-align: middle;" width="14" height="18">
+				<span>
+				</span>
+				&nbsp;&nbsp;&ndash;&nbsp;&nbsp;
+			</td>
+			<td class="text13rbold" style="line-height: 18px; vertical-align: top; width: 350px;">
+				<span>
+				</span>
+			</td>
+			<td style="width: 20px;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
+			<td colspan="2" align="right" class="text11" style="vertical-align: middle; height: 50px; padding-right: 20px;">
+				<span>
+					<input type="image" src="/media_stat/images/buttons/close_window.gif"
+							width="142" height="17" border="0" alt="CLOSE WINDOW" style="vertical-align: middle;">
+				</span>
+				<span>
+					<input type="image" src="/media_stat/images/buttons/client_codes_cancel.gif"
+							width="100" height="19" border="0" alt="CANCEL" style="vertical-align: middle;">&nbsp;&nbsp;
+					<input type="image" src="/media_stat/images/buttons/apply_change.gif"
+							width="141" height="19" border="0" alt="CONTINUE" style="vertical-align: middle;">
+				</span>
+			</td>
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+<% for (IgnoreCaseString clientCode : user.getClientCodesHistory()) {%>
+FreshDirect.ClientCodes.addHistory("<%= StringEscapeUtils.escapeJavaScript(clientCode.toString()) %>", true);
+<% } %>
+YAHOO.util.Event.onDOMReady(FreshDirect.ClientCodes.onLoad);
+</script>
+<% } %>
+<%
+//	Dependencies that come from /viewcart.jsp are:
+//	FDUserI user;
+
+FDIdentity identity = user.getIdentity();
+
+//MakeGood
+MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+String makeGoodFromOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
+String [] lineReason = request.getParameterValues("ol_credit_reason");
+List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
+%>
+<br />
+<div style="width: <%= W_VIEWCART_FULL %>px;">
+<style type="text/css">
+ .promotionError { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+ .dept-name-cart a{color:#FF9933; font-weight:bold; font-size: 10px;}
+ .dept-name-cart a:hover{text-decoration:none;}
+</style>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="110" style="vertical-align: middle; white-space: nowrap;">
+			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
+				width="100" height="17" border="0" alt="UPDATE CART" style="vertical-align: middle;" />
+		</td>
+		<td style="vertical-align: middle; white-space: nowrap;">
+			
+			<% if (user.isEligibleForClientCodes()) { %>
+			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
+			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
+				<button class="cssbutton green small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
+			</span>
+			<% } %>
+			<% if (FDStoreProperties.isAnnotationMode()) {
+				%><a href="/test/cartexport.jsp">Export Cart</a><%
+			} %>
+			<%-- if ( !"true".equalsIgnoreCase(NVL.apply(request.getAttribute("inSo"), "false").toString()) ) { /* check for standing order flow */ --%>
+				<div id="fdCoupon_cartAlert" style="<%= (user.isCouponsSystemAvailable()) ? "display: none;" : "" %> white-space: normal; text-indent: -14px; padding-left: 14px;"><img src="/media/images/ecoupon/red_triangle.png" alt="" /> <%= (!user.isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) ? SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE : "One or more coupons have not been applied to your order.<br />See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>" %></div>
+			<%-- } --%>
+		</td>
+		<td class="title11" style="text-align: right; vertical-align: middle; white-space: nowrap; padding-right: 8px;">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<span id="clicode_hide" style="display: none;">
+				<input type="image" src="/media_stat/images/buttons/hide_client_codes.gif" onclick="return FreshDirect.ClientCodes.hide();"
+					width="142" height="17" border="0" alt="HIDE CLIENT CODES" style="vertical-align: middle;">
+				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
+			</span>
+			<span id="clicode_show">
+				<input type="image" src="/media_stat/images/buttons/add_client_codes.gif" onclick="return FreshDirect.ClientCodes.show();"
+					width="132" height="17" border="0" alt="ADD CLIENT CODES" style="vertical-align: middle;">
+				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
+			</span>
+			<% } %>
+			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
+	</tr>
+</table>
+
+<div id="clicode_testbox" class="text10" style="position: absolute; top: -2000px; left: -2000px; height: 24px; padding: 0px; color: #999999; border-top: 1px solid #999999; visibility: hidden;">
+</div>
+<div id="i_viewcart">
+<logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0">
+	<tr><td colspan="11">
+		<%
+		if (!"".equals(view.getDescription())) {
+			%><br><div class="orderViewHeader"><%= view.getDescription().toUpperCase() %></div><%
+			if (!view.isDisplayDepartment()) {
+				%><br><%
+			}
+		}
+		%>
+	</td></tr>
+	<%
+	List orderLines = view.getOrderLines();
+	String lastDept = null;
+	boolean firstRecipe = true;
+	boolean hadKosherRestriction = false;
+	boolean hadPlatterRestriction = false;
+  	boolean lastWasRecipe = false;
+  	List<String> usedDcpdDiscounts = new ArrayList<String>();
+  
+ 	Collections.sort(orderLines, FDCartModel.EXTERNAL_GROUPS_IN_FRONT_COMPARATOR);
+ 	Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
+  
+	%>
+	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
+		<%
+		int idx = cart.getOrderLineIndex(cartLine.getRandomId());
+		
+		ProductModel productNode = cartLine.lookupProduct();
+		FDProduct fdProduct = cartLine.lookupFDProduct();
+		
+		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
+		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
+	
+		if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+	
+			lastDept = cartLine.getDepartmentDesc();
+			
+			if (view.isDisplayDepartment()) {
+			
+				//This gets the first item's department, does not apply to Recipe
+				String lastDeptImgName = cartLine.getProductRef().lookupProductModel().getDepartment().getContentName() + "_cart.gif";
+				
+        if (cartLine.getExternalGroup()!=null) { // new (Foodily) recipes
+          if (!lastWasRecipe) {
+            // start recipe box
+            %>
+            </table>
+            <div class="recipes">
+            <h2><span>Recipe Ingredients</span></h2>
+            <div class="recipes_box">
+              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <%
+          }
+
+					%>
+					<tr class="recipe_box_header">
+						<td colspan="5"><span class="recipe_name"><%= lastDept%></span></td>
+						<td colspan="5" align="right"></td>
+						<td width="20" align="right"></td>
+						</td>
+					</tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+					
+					<%
+
+          lastWasRecipe = true;
+
+				} else if (lastDept.startsWith("Recipe: ")) { // old FD Recipes
+
+					if (firstRecipe) {
+						%>
+						<tr>
+							<td colspan="3"></td>
+							<td colspan="8"><br><a href="/department.jsp?deptId=<%= RecipeDepartment.getDefault().getContentName() %>&trk=cart"><img src="/media_stat/images/layout/department_headers/rec_cart.gif" alt="RECIPES" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
+							</td>
+						</tr>
+						<%
+					}
+					%>
+					<tr>
+						<td colspan="3"></td>
+						<td colspan="2"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
+							<a style="text-transform:uppercase; font-weight:bold;"
+								href="/recipe.jsp?recipeId=<%= cartLine.getRecipeSourceId() %>&trk=cart"><%= lastDept.substring("Recipe: ".length()) %></a>
+						</td>
+						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a></td>
+						<td width="20" align="right">
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
+						</td>
+					</tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+					
+					<%
+					firstRecipe = false;
+				} else {
+          if (lastWasRecipe) {
+            // close recipe box 
+            %>
+              </table>
+            </div>
+            </div>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <%
+          }
+          lastWasRecipe = false;
+
+					ProductModel prodMdl=ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() );
+					String deptId = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
+					%>
+					<tr>
+						<td width="84">&nbsp;</td>
+						<td width="16">&nbsp;</td>
+						<td width="22">&nbsp;</td>
+						<td colspan="8"><br><span class="dept-name-cart"><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><%= lastDept.toUpperCase() %></a></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+					</tr>
+					<%
+				}
+				
+			}
+
+		}
+		if (cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER)) {
+			hadPlatterRestriction = true;
+		}
+		if (cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER)) {
+			hadKosherRestriction = true;
+		}
+		%>
+		
+		<tr valign="middle">
+		<%		
+		boolean isFreeProd = false;
+		if(cartLine.getDiscount() != null) {
+			Discount discount = cartLine.getDiscount();				
+			if ((discount.getDiscountType()).equals(EnumDiscountType.FREE)) {
+				isFreeProd = true;
+			}
+		}
+		
+		if (cartLine.isSoldBySalesUnits()) {
+			%>
+			<td colspan="2" width="100">
+				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
+				<select id="salesUnit_<%=idx%>" name="salesUnit_<%=idx%>" CLASS="viewcartselect">
+				<option value="">0
+				<logic:iterate id="salesUnit" collection="<%= fdProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+					<%
+					String salesUnitDescr = salesUnit.getDescription();
+					// clean parenthesis
+					int ppos = salesUnitDescr.indexOf("(");
+					if (ppos > -1) {
+						salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
+					}
+					%>
+					<option value="<%= salesUnit.getName() %>"<%= cartLine.getSalesUnit().equals( salesUnit.getName() ) ? " SELECTED" : ""%>><%= salesUnitDescr %>
+				</logic:iterate>
+				</select>
+				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+				</div>
+			</td>
+			<td width="22">&nbsp;</td>
+			<%  
+		} else {
+			%>
+			<td width="100" colspan="2">
+				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
+				<script>
+				function chgQty<%=idx%>(delta) {
+					val = document.viewcart.quantity_<%=idx%>.value;
+					qty = parseFloat(val) + delta;
+					if ((delta > 0) && (val == "")) {
+						if (delta < <%= productNode.getQuantityMinimum() %>) {
+							delta = <%= productNode.getQuantityMinimum() %>;
+						}
+						qty = delta;
+					} else if (isNaN(qty) || (qty < 0)) {
+						<%-- Changed to stick at 0 for APPDEV-3012 --%>
+						<% if (user.isEligibleForClientCodes()) { %>
+							FreshDirect.ClientCodes.undoQty(<%= idx %>);
+						<% } else { %>
+							document.viewcart.quantity_<%=idx%>.value = "0";
+						<% } %>
+						return;
+					} else if ((qty > 0) && (qty < <%= productNode.getQuantityMinimum() %>) && (delta < 0)) {
+						document.viewcart.quantity_<%=idx%>.value = "0";
+						FreshDirect.ClientCodes.updateQty(<%= idx %>);
+						return;
+					} else if ((qty > 0) && (qty < <%= productNode.getQuantityMinimum() %>) && (delta >= 0)) {
+						qty = <%= productNode.getQuantityMinimum() %>;
+					} else if (qty >= <%= user.getQuantityMaximum(productNode) %>) {
+						qty = <%= user.getQuantityMaximum(productNode) %>;
+					}
+					qty = Math.floor( (qty-<%= productNode.getQuantityMinimum() %>)/<%=productNode.getQuantityIncrement()%> )*<%=productNode.getQuantityIncrement()%>  + <%= productNode.getQuantityMinimum() %>;
+
+					document.viewcart.quantity_<%=idx%>.value = qty;
+
+					FreshDirect.ClientCodes.updateQty(<%= idx %>);
+				}
+				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
+				</script>
+        <div class="qtyinput">
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <input class="qty" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+        </div>
+				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+				</div>
+			</td>
+			<td width="22">&nbsp;<%=cartLine.getLabel()%></td>
+			<% 
+		}
+		
+		String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
+		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
+		boolean platterDlvInfo = false;
+		if (productNode.isPlatter()) {
+			platterDlvInfo = true;
+		}
+		%>
+		<%-- discount msg --%>
+		<%
+			String discountMsg = null;
+			String groupDiscountMsg = null;
+			if(cartLine.getDiscount() != null) {
+				Discount discount = cartLine.getDiscount();
+				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+				String skuMsg = "";
+				if(discount.getSkuLimit() > 0 && cartLine.getUnitPrice().indexOf("lb") == -1) {
+					if(discount.getSkuLimit() == 1)
+						skuMsg = " on " + discount.getSkuLimit() + " item";
+					else
+						skuMsg = " on " + discount.getSkuLimit() + " items";
+				}
+				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(cartLine.getDiscountAmount())+skuMsg+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+			} else {
+				if(cartLine.getGroupQuantity() > 0) {
+					double savings = cartLine.getGroupScaleSavings();
+					if(savings > 0) {
+						if(http_link) {
+							groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfo('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+						} else {
+							groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoFromCheckout('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+						}
+					}
+				}
+			}
+			boolean displayLimitedAvailability = false;
+		%>
+			<td colspan="2">
+			<div style="margin-left:16px; text-indent:-8px;">
+            <% if (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) { %>
+              <span class="text10bold">
+                <a class="product-link" href="/pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
+                  <%= cartLine.getDescription() %>
+                </a>
+              </span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+            <% } else { %>
+    			<% if (!isFreeProd) { %>
+    				<span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+    			<% } else { %>
+    				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+    			<% } %>
+            <% } %>
+			<% if (!isFreeProd) { %>	
+				<%= fdProduct.getKosherInfo(plantID).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
+				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
+				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+				<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+				
+				
+				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
+	
+	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
+	        			
+				}
+				%>
+				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+			<% } %>
+			</div>
+			<% 
+				EnumCouponContext couponContext =EnumCouponContext.VIEWCART;
+				FDCustomerCoupon curCoupon_viewcart = null;
+				//if ( !"true".equalsIgnoreCase(NVL.apply(request.getAttribute("inSo"), "false").toString()) ) { /* check for standing order flow */
+					curCoupon_viewcart = user.getCustomerCoupon(cartLine, couponContext);
+				//}
+				
+				//check if we have a coupon that needs msging. add triangle, and js call
+				boolean needsCouponMsging = ( 
+					curCoupon_viewcart != null
+					&& (
+							curCoupon_viewcart.getDisplayStatus().equals(EnumCouponDisplayStatus.COUPON_CLIPPABLE)
+							|| curCoupon_viewcart.getStatus().equals(EnumCouponStatus.COUPON_MIN_QTY_NOT_MET)
+							|| curCoupon_viewcart.getStatus().equals(EnumCouponStatus.COUPON_CLIPPED_EXPIRED)
+						)
+				) ? true : false;
+				%><div class="fdCoupon_cartlineViewCart_msgCont<%= (needsCouponMsging) ? "HasMsg" : "" %>"><% //always add the div for text alignment, secondary class changes indent
+					if (needsCouponMsging) {
+						%><img src="/media/images/ecoupon/red_triangle.png" alt="" /><script type="text/javascript" language="javascript">$jq('#fdCoupon_cartAlert').show();</script><%
+					} %>
+					<display:FDCoupon coupon="<%= curCoupon_viewcart %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
+				</div>
+				<% if (makeGoodFromOrderId!=null) { %>
+					<td align="right">
+						<input type="hidden" name="orderlineId" value="<%= ((FDCartLineI)cartLine).getOrderLineId() %>" />
+						<select name="ol_credit_reason" class="pulldown_detail">
+							<option value="">select make good reason</option>
+							<logic:iterate id="reason" collection="<%= mg_reason %>" type="com.freshdirect.customer.ErpComplaintReason">
+								<option value="<%= reason.getId() %>" <%= ( lineReason != null && reason.getId().equals(lineReason[viewIndex.intValue()]) ) ? "SELECTED" : "" %>><%= reason.getReason() %></option>
+							</logic:iterate>
+						</select>
+					</td>
+				<% } %>
+			
+			</td>
+            <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
+				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : ")"%></font></td>				
+				<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= isFreeProd ? "FREE" : JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
+            <% } else { %>
+  			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
+            <%-- <td width="70" align="right">(<%= cartLine.getDiscountedUnitPrice() %>)</td> --%>
+			<td width="60" align="right"><span class="text10bold"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
+            <% } %>
+            <%if (!FDStoreProperties.getAvalaraTaxEnabled()) { %>
+			<td width="10"><%= cartLine.isEstimatedPrice() && !isFreeProd ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
+			<% }else { %>
+			<td width="10"><%= cartLine.isEstimatedPrice() && !isFreeProd ? "*" : "" %><b><%=cartLine.hasTax() ? "" : ""%></b></td>
+			<%} %>
+			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
+			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
+		</tr>
+
+		<%
+		if (user.isEligibleForClientCodes()) {
+		%>
+		<tr id="clicode_tr_<%= idx %>" style="display: none">
+			<td colspan="3">&nbsp;</td>
+			<td colspan="8">
+				<%
+				String clicode_type;
+				if (cartLine.isSoldBySalesUnits()) {
+					clicode_type = "single";
+				} else if (cartLine.getQuantity() == 1) {
+					clicode_type = "single";
+				} else {
+					clicode_type = "multi";
+				}
+				ErpClientCode firstCC = cartLine.getClientCodes().size() > 0 ? cartLine.getClientCodes().get(0) : new ErpClientCode("", 1);
+				int noCode = (int) cartLine.getQuantity();
+				String ccQuantity = "multi".equals(clicode_type) ? "" : Integer.toString(firstCC.getQuantity());
+				String ccClientCode = "multi".equals(clicode_type) ? "" : StringEscapeUtils.escapeHtml(firstCC.getClientCode());
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+					noCode -= item.getQuantity();
+				}
+				%>
+				<div id="clicode_multi_expanded_<%= idx %>" >
+					<input type="hidden" id="clicode_multi_val_<%= idx %>" name="clicode_multi_val_<%= idx %>">
+					<table class="clicode" id="clicode_multi_table_<%= idx %>"<% if ("multi".equals(clicode_type) && cartLine.getClientCodes().size() > 0) { %> style="border-bottom: 1px solid #999999;"<% } %>>
+						<thead>
+						<tr>
+							<td class="text10 clicode_quantity" style="border: 0px none; vertical-align: bottom;">Quantity</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_clientcode" style="border: 0px none; vertical-align: bottom;">Client Code</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_actions" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="text10 clicode_quantity" style="border: 0px none;">
+								<input type="text" size="5" maxlength="5" class="text10 clicode_quantity" style="text-align: center; vertical-align: middle;"
+										name="clicode_quantity_<%= idx %>" id="clicode_quantity_<%= idx %>"
+										value="<%= "single".equals(clicode_type) ? 1 : ccQuantity %>"<% if ("single".equals(clicode_type)) { %> disabled="disabled"<% } %>
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+							</td>
+							<td class="text10 clicode_gap" style="border: 0px none;">&nbsp;</td>
+							<td class="text10 clicode_head" colspan="3">
+								<div style="position: relative; vertical-align: middle; overflow: visible;">
+								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle; width: 125px; position: static; overflow: visible;"
+										name="clicode_clientcode_<%= idx %>" id="clicode_clientcode_<%= idx %>"
+										value="<%= ccClientCode %>"
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+								<span id="clicode_multi_control_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+									<input type="image" src="/media_stat/images/buttons/add_to_list.gif" onclick="return FreshDirect.ClientCodes.addRow('<%= idx %>');"
+										width="85" height="14" border="0" alt="ADD TO LIST" style="vertical-align: middle;">
+									<span id="clicode_multi_collapser_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+										<input type="image" src="/media_stat/images/buttons/collapse_list.gif" onclick="return FreshDirect.ClientCodes.collapseMulti('<%= idx %>');"
+											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
+									</span>
+								</span>
+								<div id="clicode_autocomplete_<%= idx %>" class="termsStyle" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div>
+								</div>
+							</td>
+						</tr>
+						</thead>
+						<tbody id="clicode_multi_body_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+						<tr id="clicode_multi_empty_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal; text-align: center;">&nbsp;</td>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal;" colspan="4">&nbsp;</td>
+						</tr>
+						<tr id="clicode_multi_head_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10 clicode_quantity">Quantity</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode">Client Code</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">Action</td>
+						</tr>
+						<tr id="clicode_multi_nocode_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0 || noCode == 0) { %> style="display: none;"<% } %>>
+							<td id="clicode_multi_nocode_<%= idx %>" class="text10 clicode_quantity"><%= noCode %></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode"><span style="font-style: italic;">&ndash; No Code &ndash;</span></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">&nbsp;</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="clicode_multi_collapsed_<%= idx %>" style="display: none; line-height: 1.5em;">
+					<input type="image" src="/media_stat/images/buttons/edit_list.gif" onclick="return FreshDirect.ClientCodes.expandMulti('<%= idx %>');"
+						width="76" height="14" border="0" alt="EDIT LIST" style="vertical-align: middle;">
+					&nbsp;<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;"><%= ErpClientCode.toHtml(cartLine.getClientCodes(), noCode) %></span>
+				</div>
+			    <script type="text/javascript">
+				FreshDirect.ClientCodes.initRow('<%= idx %>');
+				<%
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+				%>
+			        FreshDirect.ClientCodes.initRow('<%= idx %>', <%= item.getQuantity() %>, '<%= StringEscapeUtils.escapeJavaScript(item.getClientCode()) %>');
+				<%
+				}
+				%>
+			    </script>
+			</td>
+		</tr>
+		<%
+		}
+		if (lastItemInDept && hadPlatterRestriction) {
+			TimeOfDay platterTime = RestrictionUtil.getPlatterRestrictionStartTime();
+			if (platterTime != null) {
+				String platterCutoffTime;
+				if (new TimeOfDay("12:00 PM").equals(platterTime)) {
+					platterCutoffTime = "12 Noon";
+				} else {
+					SimpleDateFormat tf = new SimpleDateFormat("ha");
+					platterCutoffTime = tf.format(platterTime.getAsDate());	 
+				}
+				%>
+				<tr>
+					<td colspan="3">&nbsp;</td>
+					<td colspan="2" style="padding-left:8px;">
+						<img src="/media_stat/images/layout/ff9933.gif" width="100%" height="1" vspace="3">
+						<br><font color="#FF9933">**</font>
+						This item requires an advance cutoff time. You must <b>complete checkout by <%=platterCutoffTime%></b> to order this item for delivery tomorrow.
+					</td>
+					<td colspan="5">&nbsp;</td>
+				</tr>
+				<% 
+			}
+			hadPlatterRestriction = false;
+		}
+		
+		if (lastItemInDept && hadKosherRestriction) {
+			%>
+			<tr>
+				<td colspan="3">&nbsp;</td>
+				<td colspan="2" style="padding-left: 8px;">
+					<img src="/media_stat/images/layout/6699cc.gif" width="412" height="1" vspace="3">
+					<br><span class="kosher">**</span> Not available for delivery on Friday, Saturday, or Sunday morning.
+					<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
+					<% if (kosherRestrictions.size() > 0) { %>Also unavailable during
+						<logic:iterate indexId='i' collection="<%= kosherRestrictions %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
+						<b><%=restriction.getName()%></b>, <%=restriction.getDisplayDate()%><% if (i.intValue() < kosherRestrictions.size() -1) {%>; <% } else { %>.<% } %>
+						</logic:iterate>
+					<% } %>
+					</fd:GetDlvRestrictions>
+					<a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
+				</td>
+				<td colspan="6">&nbsp;</td>
+			</tr>
+			<% 
+			hadKosherRestriction = false;
+		}
+		 
+		Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
+		String dcpdMinMessage = "";
+		String promoKey = "";
+	
+		if(null!=dcpdMinPromo && dcpdMinPromo.size()>0){
+	
+		for(Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();){			
+			promoKey = iter.next();
+		
+			if(!usedDcpdDiscounts.contains(promoKey)){
+				FDMinDCPDTotalPromoData dcpdPromoModel = dcpdMinPromo.get(promoKey);
+				List<FDCartLineI> dcpdCartLines = dcpdPromoModel.getDcpdCartLines();
+			
+					for(FDCartLineI dcpdCartLine:dcpdCartLines){
+						if(cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())){
+							StringBuffer sb = new StringBuffer();
+							sb.append("Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
+							
+							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
+							/* for brand 
+							if(id.equals("") && null !=dcpdPromoModel.getBrandNames() && dcpdPromoModel.getBrandNames().size()>0){
+								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
+							}
+							*/
+							if(null==id || "".equals(id)){
+								sb.append(" promotional products");
+							}
+							else{
+							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"> promotional products</a>");
+							}
+							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
+							dcpdMinMessage = sb.toString();
+							%>
+							<tr>
+							<td colspan="3">&nbsp;</td>
+							<td colspan="7"><span class="promoMessage"><%= dcpdMinMessage%></span></td>				
+							<% 
+							usedDcpdDiscounts.add(promoKey);
+							break;
+						}
+					}
+				}
+			}
+		}
+		%>
+		</tr>
+	</logic:iterate>
+  <%
+    if (lastWasRecipe) {
+      // close recipe box 
+      %>
+        </table>
+      </div>
+      </div>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0">
+      <%
+    }
+    lastWasRecipe = false;
+  %>
+
+	<tr>
+		<td width="84">&nbsp;</td>
+		<td width="16">&nbsp;</td>
+		<td width="22">&nbsp;</td>
+		<td colspan="8">&nbsp;</td>
+	</tr>
+	<tr><td colspan="11"><div class="orderViewSeparator"></div></td></tr>
+	<tr class="orderViewSummary">
+		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
+		<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
+		<td colspan="1" width="10"><% if (view.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+	if (!FDStoreProperties.getAvalaraTaxEnabled()){
+	if (view.getTax() > 0) {
+		%>
+		<tr class="orderViewSummary">
+			<td colspan="6" align="right">Tax:</td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getTax())%></td>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+		<%
+		}
+	}
+	if (view.getDepositValue() != 0) {
+		%>
+		<tr class="orderViewSummary">
+			<td colspan="6" align="right">State Bottle Deposit:</td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getDepositValue())%></td>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+		<% 
+	}
+	%>
+	</table>
+		
+</logic:iterate>
+</div>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+	<tr><td colspan="9">
+		<div class="orderSeparator"></div>
+	</td></tr>
+	
+	<tr>
+		<td valign="top" colspan="3" rowspan="12" width="<%=W_VIEWCART_FULL/2%>">
+			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" width="100" height="17" border="0" alt="UPDATE CART" VSPACE="2" HSPACE="0">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<span class="title11" id="clicode_save_2" style="display: none;">&nbsp;
+			<button class="cssbutton green small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
+			</span>
+			<% } %>
+		</td>
+		<td colspan="6"></td>
+	</tr>
+	<tr valign="top" class="orderSummary">
+		<td colspan="3" align="right">Order Subtotal:</td>
+		<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getSubTotal())%></td>
+		<td width="10"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="1">&nbsp;</td>
+	</tr>
+
+<% if(!isEBTPayment){
+	if (!FDStoreProperties.getAvalaraTaxEnabled()){
+	if (cart.getTaxValue() > 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Total Tax:</td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getTaxValue())%></td>
+			<td colspan="2"></td>
+		</tr>
+<%
+		}
+	}
+	if (cart.getDepositValue() > 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">State Bottle Deposit:</a></td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getDepositValue())%></td>
+			<td colspan="2"></td>
+		</tr>
+<%
+	}
+    
+	if (cart.isDlvPassApplied()) {
+	%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee:</td>
+			<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+			<td colspan="2">&nbsp;</td>
+		</tr>
+<%
+	} else if ((int)cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
+			<td><b>
+			<% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
+			<%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
+			<% }else { %>
+			<%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "" : "" %></b></td>
+			<% } %>
+			<td></td>
+		</tr>
+		<%	} else if((int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ) { %>   
+			<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%>&nbsp;&nbsp;&nbsp;<b>check</b>&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large_long')"><b>delivery fee</b></A><%}%></td>
+			<td></td>
+			<td></td>
+			</tr>
+        <%} if ((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
+		%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Premium (Hamptons)<% if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM))%><%}%></td>
+			<td><b>
+			<% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
+			<%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+			<% }else { %>
+			<%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "" : "" %></b></td>
+			<% } %>
+			<td></td>
+		</tr>
+		<%	}%>
+	
+	<%-- DPCart APPDEV-664 --%>
+	<%if (user!=null && user.getIdentity() !=null) { %>
+		<%
+		if (
+			(
+				FDStoreProperties.isDPCartEnabled() || 
+				( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
+			)
+			&& !cart.isDlvPassApplied() 
+			&& 
+				(
+					EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.SHORT_SHIPPED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.ORDER_CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.PASS_RETURNED.equals(user.getDlvPassInfo().getStatus())
+				)
+			&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
+			&& cart.getDeliverySurcharge() > 0
+		) { %>
+			<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart.html" %>' />
+		<% } %>
+	<% } %>
+	<%
+	
+	if (cart.getMiscellaneousCharge() > 0.0) {%>
+		<tr valign="top" class="orderSummary">
+           	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
+		    <% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
+		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
+		    <% }else { %>
+		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "" : "" %></b></td>
+		    <% } %>
+			<td></td>
+		</tr>
+<% }  %>
+	<%} else { %>
+	<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Total Tax (waived):</td>
+			<td colspan="1" align="right">$0.00</td>
+			<td colspan="2"></td>
+		</tr>
+		<%if (cart.getDepositValue() > 0) { %>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">State Bottle Deposit:</a></td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getDepositValue())%></td>
+			<td colspan="2"></td>
+		</tr>
+		<% } %>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Fee (waived):</td>
+			<td colspan="1" align="right">$0.00</td>
+			<td colspan="2">&nbsp;</td>
+		</tr>
+		<tr valign="top" class="orderSummary">
+           	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a>(waived):</td>
+			<td align="right">$0.00</td>
+		    <td colspan="2">&nbsp;</td>
+			<td></td>
+		</tr>
+	<%}
+	double maxPromotion = user.getMaxSignupPromotion();
+	PromotionI redemptionPromo = user.getRedeemedPromotion();
+    String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
+    boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
+	boolean removeLinkDisplayed = false;
+
+
+    List discounts = cart.getDiscounts();
+	for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+		ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+		Discount discount = discountLine.getDiscount();							
+		if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
+			%>
+			<tr valign="top" class="orderSummary">
+				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
+				<td colspan="1" align="right">-<%=JspMethods.formatPrice(discount.getAmount())%></td>
+				<td colspan="2"></td>	   
+			</tr>	   
+			<%
+		} else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) { 
+			removeLinkDisplayed = true;
+			%>
+			<tr valign="top" class="orderSummary">
+				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+				<td colspan="1" align="right">
+					<%="-" + JspMethods.formatPrice(discount.getAmount()) %>
+				</td>
+				<td colspan="1"></td>
+				<td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+			</tr>	   
+	<%
+		} else  { //Its a automatic header discount
+			PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+			%>
+			<tr valign="top" class="orderSummary">
+				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promotion.getPromotionCode()%>','small')"><%= promotion.getDescription()%></a></b>:</td>
+				<td colspan="1" align="right">
+					<%="-" + JspMethods.formatPrice(discount.getAmount()) %>
+				</td>
+				<td colspan="2"></td>
+			</tr>	   
+			
+    <%		
+    		}
+	}
+    
+	if (isRedemptionApplied) {
+	    if (redemptionPromo.isSampleItem()) {
+    	%>
+        <tr valign="top" class="orderSummary">
+            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+            <td colspan="1" align="right"><b>FREE!</b></td>
+            <td colspan="1"></td>
+            <td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+        </tr>
+        <%
+	    } else if (redemptionPromo.isWaiveCharge() && !removeLinkDisplayed) {
+        %>
+            <tr valign="top" class="orderSummary">
+                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+                <td colspan="1" align="right"><b>$0.00</b></td>
+                <td colspan="1"></td>
+                <td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+            </tr>
+        <%
+	    } else if (redemptionPromo.isExtendDeliveryPass()) {
+        %>
+            <tr valign="top" class="orderSummary">
+                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+                <td colspan="1" align="right"><b>Pass extension</b></td>
+                <td colspan="1"></td>
+                <td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+            </tr>
+        <%
+        }        
+	}
+ 
+	if (cart.getCustomerCreditsValue() > 0) {
+	    %>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Credit Applied:</td>
+			<td colspan="1" align="right">-<%=JspMethods.formatPrice(cart.getCustomerCreditsValue())%></td>
+			<td colspan="2"></td>
+		</tr>		   
+        <% 
+	}
+	%>
+	<tr valign="top" class="SSorderTotal">
+		<td colspan="3" width="<%=W_VIEWCART_FULL/2-140%>"align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
+		<td colspan="1" width="60" align="right"><b><%= JspMethods.formatPrice(cart.getTotal()-cart.getTaxValue()) %></b></td>
+		<td colspan="1" width="10"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="1" width="70"></td>
+	</tr>
+    <% if (user.getGiftcardBalance() > 0) { %>
+    <tr valign="top" style="background-color: #FF9933;line-height: 20px;">
+        <td colspan="3" align="right" style="color: white;font-size: 13px;"><b>Gift Card Balance</b>:</td>
+        <td colspan="1" align="right" style="color: white;font-size: 13px;"><b><%= JspMethods.formatPrice(user.getGiftcardBalance()) %></b></td>
+        <td colspan="1"></td>
+        <td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeGiftCard" class="note">Remove</a></td>
+	</tr>
+    <%}%>        
+	<%
+    if (isRedemptionApplied && redemptionPromo.isHeaderDiscount()) {
+        if (request.getAttribute("redeem_override_msg") != null) {
+		%>
+		<%--
+			<SCRIPT LANGUAGE='JavaScript'>
+				var msg = '<%= request.getAttribute("redeem_override_msg") %>';
+				alert(msg);
+			</SCRIPT>
+		--%>	
+		<tr align="right">
+			<td colspan="6"><span class="text11rbold"><%=request.getAttribute("redeem_override_msg")%></span></td>
+		</tr>
+
+		<%
+		}
+	}
+
+
+	
+	if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) {
+		%>
+        <tr align="right"><% String errorMsg1 = ""; %>
+			<td colspan="6">
+                <fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg">
+                    <span class="promotionError"><% errorMsg1 = errorMsg;%><%=errorMsg%></span>
+                </fd:ErrorHandler>
+            </td>
+		</tr>
+		<tr>
+			<td colspan="6"><br></td>
+		</tr>
+        
+		
+		<tr>
+		<% Boolean isEligible =(Boolean)request.getAttribute("isEligible");
+		if(isEligible != null && !isEligible){
+		%>
+			<td colspan="3" align="right" style="padding-right: 5px;"><b><% if(!"".equals(errorMsg1)){%><span class="promotionError">Enter promotion code:</span> <% } else {%>Enter promotion code:<% } %></b></td>
+		<%} else { %>
+			<td colspan="3" align="right" style="padding-right: 5px;"><b>Enter promotion code: </b></td>
+		<% } %>
+			<td colspan="2" align="right"><input type="text" size="10" maxlength="16" class="text10" name="redemptionCode" value=""></td>
+			<td colspan="1" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
+		</tr>
+		
+		<%
+	}
+
+	if (redemptionPromo != null	&& user.getPromotionEligibility().isEligible(promoCode)
+		&& ( ! user.getPromotionEligibility().isApplied(promoCode)
+			|| (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getDiscountValue(promoCode) == 0)  
+            || (redemptionPromo.isLineItemDiscount() && redemptionPromo.getLineItemDiscountPercentage() > 0 && !cart.isDiscountInCart(promoCode)))
+		) {
+		// TODO: some of these error handlers are already written in RedemptionCodeControllerTag
+		//   so error display duplication may occur! 
+		double redemptionAmt = 0;
+		String warningMessage = "";
+		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
+            redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
+			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+			
+		} else if (redemptionPromo.isLineItemDiscount()) {
+            int errorCode = user.getPromoErrorCode(promoCode);
+            if(errorCode == PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode())
+			    warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
+		} else if (redemptionPromo.isSampleItem()) {
+			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
+		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {
+           
+            warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
+        }
+		%>
+		<tr valign="top">
+			<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+			<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + JspMethods.formatPrice(redemptionAmt) %></td>
+			<td colspan="1"></td>
+			<td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+		</tr><%
+
+
+		// MNT-113 Quick fix: to avoid duplicated error displays we check
+		//   whether the generated warning message is displayed already by ErrorHandlerTag 
+		ActionError rerr = redemptionResult.getError("redemption_error");
+		String rerrMsg = (rerr != null ? rerr.getDescription() : null);
+		
+		// display if message is not empty and does not match the previously displayed error message (if exists)
+		if(null !=rerrMsg && !"".equals(rerrMsg)){ %>
+			<tr align="right">
+				<td colspan="6"><span class="text11rbold"><%= rerrMsg %></span></td>
+			</tr>
+		<%} else  if (!"".equalsIgnoreCase(warningMessage) && !warningMessage.equalsIgnoreCase(rerrMsg)) {
+			%>
+			<tr align="right">
+				<td colspan="6"><span class="text11rbold"><%= warningMessage %></span></td>
+			</tr>
+			<%
+			}
+	}
+	%>
+	<% if(107==(user.getPromoErrorCode("CD_1331652202648"))){		%>
+	<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_TIMESLOT %>
+	<% } else if(103==user.getPromoErrorCode("CD_1331652202648") || 105==user.getPromoErrorCode("CD_1331652202648")){		%>
+		<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS %>
+	<% } else if(106==user.getPromoErrorCode("CD_1331652202648") || 105==user.getPromoErrorCode("CD_1331652202648")){		%>
+		<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_PAYMENT %>
+	
+	<% } %>
+    <% 
+        //This logic is invoked to display redemption failure due to address and payment method.
+        if (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") != null) {
+    %>
+		<tr valign="top">
+			<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+			<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + JspMethods.formatPrice(redemptionPromo.getHeaderDiscountTotal()) %></td>
+			<td colspan="1"></td>
+			<td colspan="1">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+		</tr>
+   		<tr align="right">
+			<td colspan="6"><br><fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg"><span class="promotionError"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+        <tr align="right">
+            <td colspan="6"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')">Click here for details</a></b></td>
+        </tr>
+    
+    <%
+        }    
+    %>
+	<tr>
+		<td colspan="6" align="right"><%
+	if (identity == null || user.isEligibleForSignupPromotion()) {
+		if (user.isEligibleForSignupPromotion()) {
+			PromotionI signupPromo = user.getEligibleSignupPromotion();
+			
+			SignupDiscountRule discountRule = user.getSignupDiscountRule();
+			int minSubtotal = (int)discountRule.getMinSubtotal();
+			int maxAmount   = (int)discountRule.getMaxAmount();
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<%
+			if (cart.getSubTotal() < minSubtotal) {
+			    %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b><%
+			}
+			%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Applies to home delivery orders only.<%
+		}
+
+		if (user.isPickupOnly()) {
+		    %><br><font color="#CC0000"><b>Pickup orders are not eligible for our free food promotion.</b></font><%
+		}
+	}
+	%>
+		</td>
+	</tr>
+	<%
+		if (redemptionPromo!= null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+        %>
+            <tr valign="top" class="">
+                <td colspan="6" align="right">
+					<br />
+					To remove promotion code <%= redemptionPromo.getRedemptionCode() %>, <b><a href="<%= request.getRequestURI() %>?action=removeCode" class="note">click here.</a></b></td>
+            </tr>
+			<tr>
+				<td colspan="6" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br />Have a FreshDirect Gift Card? <a href="/your_account/giftcards.jsp?trk=cart">Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
+			</tr>
+     <% }else{ %>
+			<tr>
+				<td colspan="6" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br />Have a FreshDirect Gift Card? <a href="/your_account/giftcards.jsp?trk=cart">Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
+			</tr>
+	 <% } %>
+	<% 
+	if (user!=null && user.getIdentity() !=null) {
+	    %><fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'><%
+		if (customerCreditHistory.getRemainingAmount()>0.00) {
+			%>
+			<tr>
+			 	<td colspan="6" align="right">
+					<span class="text11">You have <%= JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()) %> in credits that will be applied during final check out.</span><br>
+				</td>
+			</tr>
+			<%
+		}
+		%></fd:CustomerCreditHistoryGetterTag><%
+	}
+	%>
+</table>
+<table width="100%">
+	<tr><td align="right">
+		<% /* bottom continue button */ %>
+		
+		<div class="right">
+			<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		</div><div style="clear: both;"></div>
+		
+	</td></tr>
+	<tr><td align="right"><br /><%	if (FDStoreProperties.getAvalaraTaxEnabled()) {%><b>Order total will be recalculated before the order submit</b>&nbsp;&nbsp;&nbsp;&nbsp;<%	}else{%><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;	<%	}	%><strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
+	<!-- <tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>-->
+</table>
+</div>
+
+<a name="cartRec"></a>
+<div style="padding-top: 1em">
+<%-- display items just added to cart  --%>
+<%
+	/**
+	 * Display recently added products
+	 */
+	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
+%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
+<br/>
+<%
+	}
+%>
+</div>
+
+
+<%-- DPCart APPDEV-664 : popup --%>
+<%if (user!=null && user.getIdentity() !=null) { %>
+	<%
+	if (
+		(
+			FDStoreProperties.isDPCartEnabled() || 
+			( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
+		)
+		&& !cart.isDlvPassApplied() 
+		&& 
+			(
+				EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.SHORT_SHIPPED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.ORDER_CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.PASS_RETURNED.equals(user.getDlvPassInfo().getStatus())
+			)
+		&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
+		&& cart.getDeliverySurcharge() > 0
+	) { %>
+		<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart_popup.html" %>' />
+	<% } %>
+<% } %>

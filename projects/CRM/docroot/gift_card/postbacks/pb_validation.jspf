@@ -1,0 +1,39 @@
+<%
+	/*
+	 *	We should NOT just pass through the form values in prod
+	 *
+	 *	Remember, this include is used in the pdf_generator (so any values
+	 *	should exist there). Any local vars can be checked in their jsp.
+	 */
+
+	//make sure we have strings at least
+	if ( gcId == null ) { gcId = ""; }
+	if ( gcAmount == null ) { gcAmount = ""; }
+	if ( gcRedempCode == null ) { gcRedempCode = ""; }
+	if ( gcFor == null ) { gcFor = ""; }
+	if ( gcFrom == null ) { gcFrom = ""; }
+	if ( gcMessage == null ) { gcMessage = ""; }
+
+	if ( gcBaseUrl == null ) { gcBaseUrl = ""; }
+
+	//limit lengths
+	int limit;
+
+	limit = 32;
+	if (gcId.length() > limit) { gcId = gcId.substring(0, limit); }
+	
+	limit = 10;
+	if (gcAmount.length() > limit) { gcAmount = gcAmount.substring(0, limit); }
+
+	limit = 32;
+	if (gcRedempCode.length() > limit) { gcRedempCode = gcRedempCode.substring(0, limit); }
+
+	limit = 32;
+	if (gcFor.length() > limit) { gcFor = gcFor.substring(0, limit); }
+
+	limit = 32;
+	if (gcFrom.length() > limit) { gcFrom = gcFrom.substring(0, limit); }
+
+	limit = 255;
+	if (gcMessage.length() > limit) { gcMessage = gcMessage.substring(0, limit); }
+%>

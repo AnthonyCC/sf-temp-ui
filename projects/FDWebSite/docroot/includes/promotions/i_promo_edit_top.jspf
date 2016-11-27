@@ -1,0 +1,5 @@
+<table>
+	<tr>
+	<td><span class="gray">ID: <%= promotion.getId() %> - <%= promotion.getPromotionCode() %></span></td>
+	</tr>
+</table>

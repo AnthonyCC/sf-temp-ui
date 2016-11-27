@@ -1,0 +1,16 @@
+.was-price,
+.pdp s,
+.itemlist-item-price s,
+.portrait-item-price s,
+.productDisplay-skulist s {
+  font-weight: normal;
+  text-decoration: line-through;
+}
+
+.was-price,
+.itemlist-item-price s,
+.portrait-item-price s,
+.productDisplay-skulist s {
+  font-size: 10px;
+}
+

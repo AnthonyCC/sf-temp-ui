@@ -1,0 +1,421 @@
+a.cssbutton,
+a.cssbutton:visited,
+a.cssbutton:link,
+.cssbutton,
+.cssbutton:visited {
+  display: inline-block;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+	font-family: Verdana, sans-serif;
+  line-height: 1em;
+  margin: 0;
+  outline: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  width: auto;
+  -webkit-font-smoothing: antialiased;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  transition: background-color 0.12s ease-in-out 0s;
+	text-indent:0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;		
+}
+
+.cssbutton + .cssbutton {
+  margin-left: 1em;
+}
+
+.cssbutton:focus {
+  transition: background-color 0s ease-in-out 0s;
+}
+
+a.cssbutton:focus,
+a.cssbutton:hover,
+a.cssbutton:active {
+	text-decoration:none;
+}
+
+a.cssbutton.large,
+button.cssbutton.large,
+.cssbutton.large {
+  font-size: 16px;
+  padding: 15px 30px;
+}
+
+a.cssbutton.small,
+button.cssbutton.small,
+.cssbutton.small {
+  font-size: 12px;
+  padding: 7px 12px;
+}
+
+a.cssbutton.wide,
+button.cssbutton.wide,
+.cssbutton.wide {
+  padding-left: 60px;
+  padding-right: 60px;
+}
+
+a.cssbutton.wide.small,
+button.cssbutton.wide.small,
+.cssbutton.wide.small {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+a.cssbutton.wide.large,
+button.cssbutton.wide.large,
+.cssbutton.wide.large {
+  padding-left: 110px;
+  padding-right: 110px;
+}
+
+/* Used within FF chrome to target CSS to specific URLs: being FF-specific,
+It is also useful for targeting FF-only code. Targeting both http and https */
+button.cssbutton::-moz-focus-inner
+{
+  padding: 0;
+  border: 0;
+}
+
+@-moz-document url-prefix(http) {
+  button.cssbutton.notext[class^="icon-"]::-moz-focus-inner,
+  button.cssbutton.notext[class*=" icon-"]::-moz-focus-inner {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+
+a.cssbutton.notext[class^="icon-"],
+a.cssbutton.notext[class*=" icon-"],
+button.cssbutton.notext[class^="icon-"],
+button.cssbutton.notext[class*=" icon-"],
+.cssbutton.notext[class^="icon-"],
+.cssbutton.notext[class*=" icon-"] {
+  /* TODO */
+  width: 40px;
+  white-space: nowrap;
+  letter-spacing: 2em;
+  padding-left: 11px;
+  padding-right: 10px;
+  text-align: center;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+span.cssbutton.notext[class^="icon-"],
+span.cssbutton.notext[class*=" icon-"] {
+  width: 2em;
+}
+
+.cssbutton[class^="icon-"]:before,
+.cssbutton[class*=" icon-"]:before {
+  padding-right: .5em;
+}
+
+.cssbutton[class^="icon-"]:after,
+.cssbutton[class*=" icon-"]:after {
+  padding-left: .5em;
+}
+
+.cssbutton:focus {
+  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+/* green button */
+.cssbutton.green {
+  color: #ffffff;
+  background-color: #4fa157;
+  border: 1px solid #4fa157;
+}
+
+.cssbutton.green:hover {
+  background-color: #458d4e;
+  border: 1px solid #458d4e;
+}
+
+.cssbutton.green:active {
+  background-color: #5fb067;
+  border-color: #5fb067;
+}
+
+.cssbutton.green:focus {
+  background-color: #5fb067;
+  border-color: #306238;
+  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+.cssbutton.green.transparent {
+  color: #458b4c;
+  background-color: #ffffff;
+  border: 1px solid #4fa157;
+}
+
+.cssbutton.green.transparent:hover {
+  color: #458b4c;
+  background-color: #edf5ee;
+}
+
+.cssbutton.green.transparent:active {
+  color: #458b4c;
+  background-color: #ffffff;
+}
+
+.cssbutton.green.transparent:focus {
+  color: #458b4c;
+  background-color: #ffffff;
+  border-color: #458b4c;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+}
+
+/* orange button */
+.cssbutton.orange {
+  color: #ffffff;
+  background-color: #f68139;
+  border: 1px solid #f68139;
+}
+
+.cssbutton.orange:hover {
+  background-color: #e77630;
+  border: 1px solid #e77630;
+}
+
+.cssbutton.orange:active {
+  background-color: #fc8e46;
+  border-color: #fc8e46;
+}
+
+.cssbutton.orange:focus {
+  background-color: #fc8e46;
+  border-color: #a84c14;
+  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+.cssbutton.orange.transparent {
+  color: #e77630;
+  background-color: #ffffff;
+  border: 1px solid #f68139;
+}
+
+.cssbutton.orange.transparent:hover {
+  color: #e77630;
+  background-color: #f5efed;
+}
+
+.cssbutton.orange.transparent:active {
+  color: #e77630;
+  background-color: #ffffff;
+}
+
+.cssbutton.orange.transparent:focus {
+  color: #e77630;
+  background-color: #ffffff;
+  border-color: #e77630;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+}
+
+/* purple button - transparent by default */
+.cssbutton.purple,
+.cssbutton.purple.transparent {
+  color: #a367ab;
+  background-color: #ffffff;
+  border: 1px solid #a367ab;
+}
+
+.cssbutton.purple:hover,
+.cssbutton.purple.transparent:hover {
+  color: #a367ab;
+  background-color: #f7f2f8;
+}
+
+.cssbutton.purple:active,
+.cssbutton.purple.transparent:active {
+  color: #a367ab;
+  background-color: #ffffff;
+}
+
+.cssbutton.purple:focus,
+.cssbutton.purple.transparent:focus {
+  color: #a367ab;
+  background-color: #ffffff;
+  border-color: #a367ab;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+}
+
+.cssbutton.purple.nontransparent {
+	color: #ffffff;
+	background-color: #a367ab;
+	border: 1px solid #a367ab;
+}
+
+.cssbutton.purple.nontransparent:hover {
+	background-color: #8e5a95;
+}
+
+.cssbutton.purple.nontransparent:active {
+	background-color: #af7bb6;
+}
+
+.cssbutton.purple.nontransparent:focus {
+	background-color: #af7bb6;
+	border-color: #824c89;
+	box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+
+/* purple coupon button - not transparent by default, no transp version */
+.cssbutton.purple-coup {
+  color: #fff;
+  background-color: #8957c5;
+  border: 1px solid #8957c5;
+}
+
+.cssbutton.purple-coup:hover {
+  color: #f7f2f8;
+  background-color: #a367ab;
+}
+
+.cssbutton.purple-coup:active {
+  color: #8957c5;
+  background-color: #f7f2f8;
+}
+
+.cssbutton.purple-coup:focus {
+  color: #f7f2f8;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+}
+
+
+/* red button - transparent by default */
+.cssbutton.red,
+.cssbutton.red.transparent {
+  color: #b93d3f;
+  background-color: #f8ebeb;
+  border: 1px solid #b93d3f;
+}
+
+.cssbutton.red:hover,
+.cssbutton.red.transparent:hover {
+  color: #ffffff;
+  background-color: #b93d3f;
+}
+
+.cssbutton.red:active,
+.cssbutton.red.transparent:active {
+  color: #b93d3f;
+  background-color: #ffffff;
+}
+
+.cssbutton.red:focus,
+.cssbutton.red.transparent:focus {
+  color: #ffffff;
+  background-color: #b93d3f;
+  border-color: #892e2f;
+  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+.cssbutton.red.nontransparent {
+  color: #ffffff;
+  background-color: #b93d3f;
+  border: 1px solid #b93d3f;
+}
+
+.cssbutton.red.nontransparent:hover {
+  background-color: #b93d3f;
+  border: 1px solid #b93d3f;
+}
+
+.cssbutton.red.nontransparent:active {
+}
+
+.cssbutton.red.nontransparent:focus {
+  box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+
+/* some old buttons */
+.cssbutton.white {	background:#f4f4f4; color:#555; text-shadow:none; }
+.cssbutton.white:focus,.cssbutton.white:hover { background:#dfdfdf; color:#555; text-shadow:none;  }
+
+.cssbutton.khaki { background:#979863; }
+.cssbutton.khaki:focus,.cssbutton.khaki:hover { background:#8b8c59; }
+
+.cssbutton.blue { background:#6699cc; }
+.cssbutton.blue:focus,.cssbutton.blue:hover { background:#708fbd; }
+
+.cssbutton.transparent {	background:none; box-shadow: none }
+.cssbutton.transparent:focus,.cssbutton.transparent:hover { background:none; box-shadow: none  }
+
+.cssbutton.black {	background:#000; }
+.cssbutton.black:focus,.cssbutton.black:hover { background:#333; }
+
+.cssbutton.grey {	background:#AAA; }
+.cssbutton.grey:focus,.cssbutton.grey:hover { background:#dfdfdf; }
+
+.cssbutton.white,
+.cssbutton.white:focus,.cssbutton.white:hover,
+.cssbutton.khaki,
+.cssbutton.khaki:focus,.cssbutton.khaki:hover,
+.cssbutton.blue,
+.cssbutton.blue:focus,.cssbutton.blue:hover,
+.cssbutton.transparent,
+.cssbutton.transparent:focus,.cssbutton.transparent:hover,
+.cssbutton.black,
+.cssbutton.black:focus,.cssbutton.black:hover,
+.cssbutton.grey,
+.cssbutton.grey:focus,.cssbutton.grey:hover{
+	color:white;
+}
+
+.css-help-button {
+	border-radius:50%;
+	display:inline-block;
+	width:24px;
+	height:24px;
+	text-align:center;
+	margin-left:8px;
+	padding:0;
+}
+
+.cssbutton.white.transparent {
+  color: #aaa;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.cssbutton.white.transparent:hover {
+  color: #888;
+}
+
+.cssbutton.round {
+  border-radius: 50%;
+}
+
+.cssbutton.disabled,
+.cssbutton[disabled],
+.cssbutton.disabled:hover,
+.cssbutton[disabled]:hover,
+.cssbutton.disabled:active,
+.cssbutton[disabled]:active,
+.cssbutton.disabled:focus,
+.cssbutton[disabled]:focus {
+  color: #858585;  
+  background-color: #e8e8ea;
+  border-color: #e8e8ea;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.remove-item-button {
+	padding-right: 0;
+}

@@ -1,0 +1,193 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>HomeDeliveryFDContacted</name>
+   <beginOffsetRow>25</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select li.route, li.Reported, li.reported_stops, li.eta_window, 
+	 li.reported_by, li.reported_at,li.comments, 
+         to_number(decode(l.actual_stopstext, null, li.Reported, l.actual_stopscount)),
+	 li.ChefsTable
+from
+(select l.id, l.route, count(l.sale_id) Reported, l.stopstext as reported_stops,
+           l.delay_minutes || 'min' || '/' || l.delivery_window as eta_window,
+       l.reported_by, l.reported_at,
+       l.comments, l.actual_stopscount,
+           count(ct.profile_name) ChefsTable
+  from (select distinct l.id, l.route, li.sale_id, l.stopstext, l.delay_minutes, l.delivery_window, l.reported_by, l.reported_at, l.comments, l.delivery_date, l.actual_stopscount
+                from   cust.lateissue l, cust.lateissue_orders li
+                where l.id = li.lateissue_id) l,
+         cust.sale s, cust.customerinfo c,
+         cust.fdcustomer fdc, cust.salesaction sa,
+                 cust.deliveryinfo d,
+         (select * from cust.profile where profile_name='ChefsTable') ct
+  where l.delivery_date = trunc(sysdate - 10/24)
+  and c.customer_id = fdc.erp_customer_id
+  and c.customer_id = s.customer_id
+  and s.id = l.sale_id
+  and fdc.id = ct.customer_id (+)
+  and s.id = sa.sale_id
+  and sa.action_date = (select max(action_date) from cust.salesaction
+                                                           where sale_id = s.id and action_type in ('CRO', 'MOD'))
+  and sa.id = d.salesaction_id
+  and d.delivery_type = 'H'
+  group by l.id, l.route, l.stopstext, l.delay_minutes, l.delivery_window,
+             l.reported_by, l.reported_at, l.comments, l.actual_stopscount
+  order by reported_at asc) li, cust.lateissue l
+where li.id = l.id
+order by reported_at asc
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>HomeDeliveryCasesCreated</name>
+   <beginOffsetRow>7</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+  select to_char(c.create_date, 'hh:mi PM'), s.truck_number || '/' || stop_sequence as route_stop,
+  		 to_char(d.starttime, 'hh:mi') || '-' || to_char(d.endtime, 'hh:mi PM') as window,
+		 c.summary, ct.profile_name
+   from cust.case c, cust.sale s, cust.salesaction sa, cust.deliveryinfo d,
+   		(select * from cust.profile where profile_name='ChefsTable') ct,
+		cust.customerinfo ci,
+        cust.fdcustomer fdc
+  where c.sale_id = s.id
+  and s.status != 'CAN'
+  and s.id = sa.sale_id
+  and sa.action_type in ('CRO','MOD')
+  and sa.action_date = (select max(action_date) from cust.salesaction 
+  	  				   where sale_id = s.id
+					   and action_type in ('CRO', 'MOD')
+					   and requested_date = trunc(sysdate - 10/24)) 
+  and c.case_subject in ('LDQ-004','LDQ-005','LDQ-006','LDQ-007','LDQ-010') 
+  and sa.id = d.salesaction_id
+  and ci.customer_id = fdc.erp_customer_id
+  and ci.customer_id = s.customer_id
+  and fdc.id = ct.customer_id (+)
+  and trunc(c.create_date) = trunc(sysdate - 10/24)
+  and s.id not in (
+  	  select li.sale_id from cust.lateissue l, cust.lateissue_orders li, cust.case case
+	    where l.id = li.lateissue_id
+		 and li.sale_id = case.sale_id
+		 and l.delivery_date = trunc(sysdate - 10/24)
+		 and case.create_date &lt; l.reported_at + 1/24/2  -- give 30 minute leeway
+    )
+  order by c.create_date asc
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>CorpDeliveryFDContacted</name>
+   <beginOffsetRow>9</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select l.route, count(li.lateissue_id) Reported, l.stopstext as reported_stops, 
+	   l.delay_minutes || 'min' || '/' || l.delivery_window as eta_window, 
+       l.reported_by, l.reported_at, 
+       l.comments,
+	   0 as actual_lates, 
+	   count(ct.profile_name) ChefsTable 
+  from cust.lateissue l, cust.lateissue_orders li, 
+         cust.sale s, cust.customerinfo c,
+         cust.fdcustomer fdc, cust.salesaction sa,
+		 cust.deliveryinfo d,
+         (select * from cust.profile where profile_name='ChefsTable') ct
+  where l.id = li.lateissue_id
+  and delivery_date = trunc(sysdate - 10/24)
+  and c.customer_id = fdc.erp_customer_id
+  and c.customer_id = s.customer_id
+  and s.id = li.sale_id
+  and fdc.id = ct.customer_id (+)
+  and s.id = sa.sale_id
+  and sa.action_date = (select max(action_date) from cust.salesaction 
+  	  				   		   where sale_id = s.id and action_type in ('CRO', 'MOD'))
+  and sa.id = d.salesaction_id
+  and d.delivery_type = 'C' 				    	  				   		   
+  group by l.route, l.stopstext, l.delay_minutes, l.delivery_window, 
+             l.reported_by, l.reported_at, l.comments
+  order by reported_at asc
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>TransportationIssues</name>
+   <beginOffsetRow>7</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+ select to_char(c.create_date, 'hh:mi PM'), s.truck_number, s.stop_sequence,  cs.code, cs.name, c.summary
+  from cust.case c, cust.sale s, cust.salesaction sa, cust.case_subject cs
+  where c.sale_id = s.id
+  and s.id = sa.sale_id
+  and sa.action_date = (select max(action_date) from cust.salesaction sa where sa.sale_id = s.id and sa.action_type in ('CRO', 'MOD'))
+  and sa.requested_date = trunc(sysdate - 10/24)
+  and c.case_subject in ('TCQ-001','TCQ-002','TCQ-003','TCQ-004','TCQ-005','DSQ-001','DSQ-003','DSQ-004','DSQ-005','DSQ-006','DSQ-007','DSQ-008','DSQ-009','ORQ-001','ORQ-002','ORQ-008','ORQ-011','ORQ-013','LDQ-004','LDQ-005','LDQ-006','LDQ-007','LDQ-008','LDQ-010') 
+  and c.case_subject = cs.code
+  order by c.create_date asc
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>HomeDeliveryFDContacted</name>
+   <beginOffsetRow>5</beginOffsetRow>
+   <beginOffsetColumn>6</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+  select cs.name, count(*)
+  from cust.case c, cust.sale s, cust.salesaction sa, cust.case_subject cs
+  where c.sale_id = s.id
+  and s.id = sa.sale_id
+  and sa.action_date = (select max(action_date) from cust.salesaction sa where sa.sale_id = s.id and sa.action_type in ('CRO', 'MOD'))
+  and sa.requested_date = trunc(sysdate - 10/24)
+  and c.case_subject in ('TCQ-001','TCQ-002','TCQ-003','TCQ-004','TCQ-005','DSQ-001','DSQ-003','DSQ-004','DSQ-005','DSQ-006','DSQ-007','DSQ-008','DSQ-009','ORQ-001','ORQ-002','ORQ-008','ORQ-011','ORQ-013','LDQ-004','LDQ-005','LDQ-006','LDQ-007','LDQ-008','LDQ-010') 
+  and c.case_subject = cs.code
+  and cs.case_priority = 'MD'
+  group by cs.name
+  order by cs.name
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>HomeDeliveryFDContacted</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>7</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select to_char(sysdate - 10/24, 'MON-DD-YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

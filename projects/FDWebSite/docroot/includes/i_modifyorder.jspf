@@ -1,0 +1,58 @@
+<%@page import="com.freshdirect.customer.EnumTransactionSource"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%!
+	public String printDate(Date date){
+		return new SimpleDateFormat("h:mm a '</b>on<b>' EEEEE, MM/dd/yyyy").format(date);
+	} 
+	
+	public String printDateOnly(Date date){
+		return new SimpleDateFormat("EEEEE, MM/dd").format(date);
+	}
+%>
+<%
+	String uri = request.getRequestURI();
+	final boolean isInDelivery = (uri.indexOf("step_2_select") > -1);
+	boolean isInReview = uri.indexOf("step_4_submit") != -1;
+	boolean modifyOrderMode = false;
+
+	FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
+	FDCartModel mCart = mUser.getShoppingCart();
+	
+	String modifiedOrderNumber="";
+	String modifyNote="";
+	
+	if (mUser.getCurrentStandingOrder() != null) {
+		mCart.setTransactionSource(EnumTransactionSource.STANDING_ORDER);
+		%><%@include file="i_so_header.jspf" %><%
+	
+	} else if (mCart instanceof FDModifyCartModel) {
+		mCart.setTransactionSource(null);
+		modifyOrderMode = true;
+		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
+		String oId = modCart.getOriginalOrder().getErpSalesId();
+		session.setAttribute("MODIFIED" + oId, oId);
+
+		// Date originalOrderDate = modCart.getOriginalOrder().getDatePlaced();
+		Calendar cal  = Calendar.getInstance();
+		cal.setTime( modCart.getOriginalOrder().getDatePlaced() );
+		cal.add(Calendar.DAY_OF_MONTH, 8);
+		Date weekFromOrderDate = cal.getTime();
+		modifiedOrderNumber = modCart.getOriginalOrder().getErpSalesId();
+		
+		modifyNote+="The price and availability of some items may change.<br>";
+		modifyNote+="You must complete any modifications by <b>"+printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime());
+		modifyNote+="</b> <a href='/help/faq_search.jsp?searchFAQ=cutoff' target='_blank' class='dialog'>Learn More</a>";
+		if (isInDelivery) { 
+			modifyNote+="<br>If your new delivery date is on or after <b>"+printDate(weekFromOrderDate);
+			modifyNote+="</b>, all of your items will be updated to reflect today's prices.";
+		}		
+	} 
+%>

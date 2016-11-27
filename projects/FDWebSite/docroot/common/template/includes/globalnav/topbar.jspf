@@ -1,0 +1,60 @@
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<div id="topbar">
+  <div class="container clearfix">
+    <ul>
+      <li class="contactus"><a class="topbarlink" href="<c:url value="/help/index.jsp"/>">contact us</a></li>
+      <li class="help"><a class="topbarlink" href="<c:url value="/help/index.jsp"/>">help/FAQs</a></li>
+      <%-- if the notification count is 0 then the notification bar turns into cyan --%>
+      <li class="notifications"><a class="topbarlink" id="notifications_trigger" href="#notifications"><span>notifications</span><span class="notif_count">3</span></a></li>
+      <% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
+        <li class="myaccount"><a class="topbarlink" href="<c:url value="/your_account/manage_account.jsp"/>">my account</a></li>
+        <li class="logout"><a class="topbarlink" href="<c:url value="/logout.jsp"/>"><em>&gt;</em> log out</a></li>
+        <li class="welcome" id="loggedin">Welcome Ruchi (<a href="<c:url value="/logout.jsp"/>">not ruchi?</a>)</li>
+      <% } else { %>
+        <li class="myaccount"><a class="topbarlink loginrequired" href="<c:url value="/your_account/manage_account.jsp"/>">my account</a></li>
+        <li class="login"><a class="topbarlink" id="loginbox_trigger" href="<c:url value="/login/login.jsp"><c:param name="successPage"><%= globalUri %></c:param></c:url>"><em>&gt;</em> log in</a></li>
+        <li class="welcome">Welcome!</li>
+      <% } %>
+    </ul>
+  </div>
+</div>
+
+<div id="notifications">
+  <div class="container clearfix">
+    <a class="nav prev span-1" href="#notifications_prev" id="notifications_prev">&lt;</a>
+    <div class="span-22 holder">
+    <display:FDNotificationTag attrName="notifications">
+      <ul>
+      	<c:forEach var="notification" items="${notifications}">
+      		<c:choose>
+      			<c:when test="${notification.important}">
+        			<li class="span-22 last center important"><div><strong style="color: #a00;"><c:out value="${notification.message}" escapeXml="false"/></strong></div></li>
+        		</c:when>
+        		<c:otherwise>
+        			<li class="span-22 last center"><div><c:out value="${notification.message}" escapeXml="false"/></div></li>
+        		</c:otherwise>
+        	</c:choose>
+        </c:forEach>
+      </ul>
+      </display:FDNotificationTag>
+    </div>
+    <a class="nav next span-1 last" href="#notifications_next" id="notifications_next">&gt;</a>
+  </div>
+</div>
+
+<div id="loginbox">
+  <span class="close">(click here to close)</span>
+  <form id="loginboxform" method="post" action="<c:url value="/login/login.jsp"/>">
+    <label for="login_email">Email address</label>
+    <input class="text" type="email" name="userid" size="14" id="login_email" />
+    <label for="login_password">Password</label>
+    <input class="text" type="password" name="password" size="14" id="login_password" />
+    <div>
+      <input class="submit" type="submit" name="check_access" value="sign in" />
+      <a class="register" href="<c:url value="/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"/>">New customer?</a>
+    </div>
+    <a class="forgot_password" href="<c:url value="/login/forget_password.jsp"/>">Forgot password?</a>
+  </form>
+</div>

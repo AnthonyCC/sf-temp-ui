@@ -1,0 +1,63 @@
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.text.NumberFormat"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@ page import='com.freshdirect.customer.EnumDeliveryType' %>
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%//build order navigation
+	DateFormat nav_dateFormatter = new SimpleDateFormat("MM/dd/yy");
+	DateFormat nav_dayFormatter = new SimpleDateFormat("EEE");
+	NumberFormat nav_currencyFormatter = java.text.NumberFormat.getIntegerInstance( Locale.US );
+	String selectedOrder = quickCart.getOrderId();
+	boolean hasSelected = selectedOrder != null && !"".equals(selectedOrder);
+	String style = "text12";
+	
+	if (orderHistoryInfo != null && orderHistoryInfo.size() > 0) {
+%><table cellpadding="0" cellspacing="0" border="0" class="text13">
+<%
+		int count = 0;
+			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+					if (orderInfo != null &&
+						!EnumDeliveryType.GIFT_CARD_PERSONAL.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+						!EnumDeliveryType.GIFT_CARD_CORPORATE.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+						!EnumDeliveryType.DONATION_INDIVIDUAL.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+						!EnumDeliveryType.DONATION_BUSINESS.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString())
+						) {
+						if (!orderInfo.isPending()) {
+							++count;
+%>	<tr>
+		<td class="text12">
+			<a style="margin-left: 1em; font-weight: bold;" href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= nav_dateFormatter.format(orderInfo.getRequestedDate()) %>&nbsp;&nbsp;&nbsp;<%= nav_dayFormatter.format(orderInfo.getRequestedDate()) %></a>
+		</td>
+		<td class="text10">&nbsp;&nbsp;(<%
+		if (orderInfo != null) {
+			%><fd:GetOrder id='qs_order' saleId='<%= orderInfo.getErpSalesId()%>'><%= qs_order != null ? qs_order.numberOfOrderLines() + (qs_order.numberOfOrderLines() == 1 ? " Item, ": " Items, ") : "0 Items, " %>
+		</fd:GetOrder><%
+		}
+%>			<span style="font-weight: bold;">$<%= nav_currencyFormatter.format(orderInfo.getTotal()) %></span>)
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="7" border="0"></td>
+	</tr>
+<%							
+						}
+					}
+				if (maxQuickshopItems != null && count >= maxQuickshopItems /* && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0 */) {
+%>	<tr>
+		<td class="text12" <%= !hasSelected ? "colspan=\"2\"" : "" %>>
+			<br>
+			<a style="font-weight: bold;" href="/quickshop/previous_orders.jsp">All Orders &raquo;</a>
+		</td>
+	</tr>
+<%
+					break;
+				}
+			}
+%></table>
+<%
+	}
+%>

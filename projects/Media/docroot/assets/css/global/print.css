@@ -1,0 +1,23 @@
+@media print {
+	/* top nav */
+		.container.globalnav_top {
+			margin: 12px auto 0;
+			width: 970px;
+		}
+	/* slide show */
+		.paginationCont {
+			display: none;
+		}
+		#slides {
+			width: 683px;
+			height: 250px;
+			overflow: hidden;
+			border: 1px solid #eee;
+			border-radius: 10px;
+		}
+		#slides .slideCont {
+			width: 100%;
+			height: 100%;
+			margin: 0px auto;
+		}
+}

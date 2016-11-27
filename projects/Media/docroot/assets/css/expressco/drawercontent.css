@@ -1,0 +1,239 @@
+.drawer__content{
+  font-family:Verdana, Geneva, sans-serif;
+  width:970px;
+  box-sizing: border-box;
+  
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+  
+  display: -ms-flexbox;
+  -ms-flex-direction:row;
+  -ms-flex-wrap:wrap;
+  
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-flex-wrap:wrap;
+}
+
+.drawer__content [fdform-error-container]{
+  width: 100%;
+}
+
+.drawer__content[data-item-count="1"] .icon-trash-new-before{
+  display:none;
+}
+
+.drawer__header {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 22px;
+  overflow: hidden;
+}
+
+.drawer__item{
+  padding: 10px 10px 10px 30px;
+  width:250px;
+  margin: 0 19px 20px 0;
+  position:relative;
+  min-height:300px;
+}
+
+.ie .drawer__item{
+  display:inline-block;
+  vertical-align:top;
+}
+
+.drawer__itemleft{
+  margin-left:-20px;
+  margin-top:10px;
+  float:left;
+}
+
+.drawer__itemright{
+  margin-bottom:30px;
+  display: inline-block;
+  max-width: 220px;
+}
+
+.drawer__item__label  .fake-radio-wrapper {
+  margin-top: 8px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.drawer__item__section{
+  padding-bottom:20px;
+}
+
+.drawer__item__title{
+  font-size:18px;
+  font-weight:bold;
+  color:#4fa157;
+  margin-top:5px;
+  margin-bottom:0;
+}
+
+.drawer__item__section .section__title{
+  font-weight:bold;
+  font-size:14px;
+  color:#444;
+  margin:0;
+}
+
+.drawer__item__section .section__body{
+  font-size:14px;
+  color:#666;
+  font-weight: normal;
+}
+
+.drawer__item__section .section__body p{
+  margin:0;
+}
+
+.drawer__item__action{
+  position:absolute;
+  bottom:10px;
+}
+
+.drawer__item__action .action {
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 13px;
+  line-height: 1.3em;
+}
+
+.drawer__item__action .action.white.transparent {
+  color: #222;
+}
+
+.drawer__item__action .action:before {
+  margin-right: .2em;
+  vertical-align: top;
+}
+
+.drawer__item-addaction.drawer__item{
+  position:relative;
+  outline:1px solid #ccc;
+  text-align: center;
+  background: #f7f7f3;
+}
+
+.drawer__item__label{
+  cursor: pointer;
+  display: inline-block;
+}
+
+.addaction__center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width:80%;
+
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.addaction__button{
+  width:100%;
+  height:40px;
+  background:#4fa157;
+}
+
+.addaction__desc{
+  font-size:14px;
+  color:#333;
+}
+
+.timeslot_pattern_notification{
+  display: inline-block;
+  margin: 0;
+}
+
+[data-drawer-default-content] .drawer__item {
+  margin: 0;
+  padding: 0;
+}
+
+[data-drawer-default-content] .drawer__item .fake-radio-wrapper,
+[data-drawer-default-content] .drawer__item input {
+  display: none;
+}
+
+[data-drawer-default-content] .drawer__item__label {
+  cursor: default;
+}
+
+[data-drawer-default-content] .drawer__item__action {
+  display: none;
+}
+
+.drawer__previewitem__title{
+  font-size:18px;
+  font-weight:bold;
+  color:#4fa157;
+  margin-top:5px;
+  margin-bottom:0;
+}
+
+.drawer__previewitem__section{
+  padding-bottom:20px;
+}
+
+.drawer__previewitem__button__section {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.drawer__previewitem__button__section button.cssbutton {
+  font-size: 24px;
+  padding: 0;
+  min-width: 250px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  margin-top: 35px;
+}
+
+.drawer__previewitem__section .section__title{
+  font-weight:bold;
+  font-size:14px;
+  color:#444;
+  margin:0;
+}
+
+.drawer__previewitem__section .section__body{
+  font-size:14px;
+  color:#666;
+}
+
+.drawer__previewitem__section .section__body p{
+  margin:0;
+}
+
+[data-drawer-content="timeslot"] [data-component="timeslotchangebutton"],
+[data-drawer-content="payment"] [data-component="paymentchangebutton"] {
+	font-size: 18px;
+	height: 45px;
+}
+[data-drawer-content="timeslot"] [data-component="timeslotchangebutton"] {
+  float:right;
+}
+
+[data-drawer-content="timeslot"] [data-component="timeselectorcontent"] {
+  width: 100%;
+}
+
+[data-drawer-content="payment"] [data-component="paymentchangebutton"] {
+  float:right;
+}
+
+[data-drawer-locked][data-drawer-default-content] button.cssbutton.green[data-drawer-activate] {
+  background: grey;
+  cursor: default;
+} 

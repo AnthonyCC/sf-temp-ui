@@ -1,0 +1,43 @@
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%
+
+try{
+		ProductModel marProduct = null;
+		Image prodImg = null;
+		String prodDescription = null;
+
+		marProduct =  ContentFactory.getInstance().getProduct(skucode);
+		prodImg = marProduct.getDetailImage();
+		prodDescription = ((Html)marProduct.getProductDescription()).getPath();
+        SkuModel defaultSku = (SkuModel)marProduct.getSkus().get(0);
+        FDProduct fdprd = null;
+        try {
+            fdprd = defaultSku.getProduct();
+        } catch (FDSkuNotFoundException fdsnfe) { }
+%>
+		<img src="/media_stat/images/layout/clear.gif" width="379" height="3"><br>
+		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
+		
+		<br>
+		<br>
+		<font class="title16"><%=marProduct.getFullName()%></font><br>
+		<font class="text11">
+		<%if(prodDescription!=null){%>
+			<fd:IncludeMedia name='<%=prodDescription%>'/>	
+		<%}%>
+		</font><br><br>
+
+<%  if (fdprd!=null && fdprd.hasIngredients()) {    %>
+        <%@ include file="/includes/product/i_product_ingredients.jspf"%>
+        <br><br>
+<%  }      
+    if (fdprd != null && fdprd.hasNutritionFacts()) { %>
+        <%@ include file="/includes/product/i_product_nutrition.jspf"%>
+        <br><br><br>
+<%  }
+ 
+}
+catch (FDSkuNotFoundException ex){
+
+}
+		%>

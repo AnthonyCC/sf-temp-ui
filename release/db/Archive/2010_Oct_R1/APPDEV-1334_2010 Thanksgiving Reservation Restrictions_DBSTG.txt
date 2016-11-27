@@ -1,0 +1,2 @@
+-- The following DB query to be executed .
+alter table DLV.GEO_RESTRICTION add (VIEW_TYPE VARCHAR2(25 BYTE) null);

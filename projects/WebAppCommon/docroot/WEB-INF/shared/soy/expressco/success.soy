@@ -1,0 +1,205 @@
+{namespace expressco}
+
+/**
+* @param? header Media string from CMS
+* @param? orderId Number of order
+* @param? receipt Map of receipt data
+* @param? rightBlock Media string from CMS
+* @param? soName
+* @param? soOrderDate
+* @param? orderModifiable
+* @param? soActivate
+* @param? soFrequency
+* @param? soEstimatedTotal
+* @param? soId
+* @param? soDeliveryTime
+* @param? soDeliveryDay
+*/
+{template .successpage autoescape="false"}
+{if $orderId}
+    {call .successheader}
+      {param headerMedia: $header /}
+    {/call}
+  {call .successtotal}
+    {param orderId: $orderId /}
+    {param receipt: $receipt /}
+    {param rightBlock: $rightBlock /}
+    {param soName: $soName /}
+    {param soOrderDate: $soOrderDate /}
+    {param orderModifiable: $orderModifiable /}
+  {/call}
+{elseif  $soActivate}
+	<h1 class="so-success-h1">Your Standing Order has been placed!</h1>
+  	<div class="so-success-header">Standing Order Summary</div>
+  	<a class="so-success-details-button cssbutton cssbutton-flat purple nontransparent" href="/quickshop/standing_orders.jsp?soid={$soId}#soid_{$soId}">View Details</a>
+  	<div class="success-soinfo">
+  		<div class="success-soinfo-item">Name:</div><div class="success-soinfo-name">{$soName}</div>
+  		<div class="success-soinfo-item">First Delivery:</div><div class="success-soinfo-date">{$soDeliveryTime}</div>
+  		<div class="success-soinfo-item">Frequency:</div><div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
+  		<div class="success-soinfo-item">Estimated Total:</div><div class="success-soinfo-total">${$soEstimatedTotal}</div>
+  	</div>
+    <h2 class="so-success-h2">Your Next Delivery</h2>
+    {call .successtotal}
+	    {param orderId: $orderId /}
+	    {param receipt: $receipt /}
+	    {param rightBlock: $rightBlock /}
+	    {param soName: $soName /}
+	    {param soOrderDate: $soOrderDate /}
+	    {param orderModifiable: $orderModifiable /}
+	    {param soActivate: $soActivate /}
+ 	{/call}
+{/if}
+{/template}
+
+/**
+ * @param? headerMedia
+ */
+{template .successheader autoescape="false"}
+<div class="header">
+  {if $headerMedia}{$headerMedia}{/if}
+</div>
+{/template}
+
+/**
+ * @param? orderId Number of order
+ * @param? rightBlock
+ * @param? receipt
+ * @param? soName
+ * @param? soOrderDate
+ * @param? orderModifiable
+ * @param? soActivate
+ */
+{template .successtotal autoescape="false"}
+<div class="successtotal">
+	{if $soActivate}
+  		<div class="successtotal-so-message">
+  			<div class="successtotal-so-message-note">
+  				NOTE:
+  			</div>
+  			<div class="successtotal-so-message-text">
+  				You will recieve an email confirmation for this order.<br/>
+  				Changes can be made after email confirmation has been sent.
+  			</div>
+  		</div>
+  	{/if}
+  <div class="successtotal-left">
+    {call .receiptBox}
+      {param orderId: $orderId /}
+      {param receiptLines: $receipt.receiptLines /}
+      {param totalLabel: $receipt.totalLabel /}
+      {param total: $receipt.total /}
+      {param soName: $soName /}
+      {param soOrderDate: $soOrderDate /}
+      {param orderModifiable: $orderModifiable /}
+      {param soActivate: $soActivate /}
+    {/call}
+  </div>
+  <div class="successtotal-right">
+    <div class="tips">
+      <h2 class="next">What's Next?</h2>
+      <ul>
+        {if $rightBlock}{$rightBlock}{/if}
+      </ul>
+    </div>
+  </div>
+</div>
+{/template}
+
+/**
+ * @param? id
+ ** param? year
+ * @param? month
+ * @param? dayOfMonth
+ * @param? dayOfWeek
+ * @param? timePeriod
+ * @param? soFreq
+ * @param? soActivated
+ * @param? soCutOffDeliveryTime
+ * @param? soCutOffFormattedDeliveryDate
+ * @param? shortDayOfWeek
+ * @param? soDeliveryDate
+ */
+{template .successtimeslot autoescape="false"}
+	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
+		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
+		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
+		  	<div class="successtimeslot_time">
+		    	{$timePeriod ? $timePeriod : ''}
+		  	</div>
+		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
+		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
+			  		{if $soFreq == '1'}
+			  			Every
+			  		{elseif $soFreq == '2'}
+			  			Every Other
+			  		{elseif $soFreq == '4'}
+			  			Every Fourth
+			  		{/if} {$dayOfWeek ? $dayOfWeek : ''}
+		  		</div>			
+		  </div>
+		  {if not $soActivated and $soCutOffFormattedDeliveryDate and $soCutOffDeliveryTime}
+			<div class="standing-orders-3-successtimeslot_date-reservation">
+			  	To keep this delivery reservation,</br>
+			  	activate this standing order by:</br>
+			  	{$soCutOffFormattedDeliveryDate} at {$soCutOffDeliveryTime}
+			</div>
+			<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	First delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {else}
+		  	<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	Next delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {/if}
+		</div>
+	{else}
+		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
+		  <div class="successtimeslot_date">
+		    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
+		  </div>
+		  <div class="successtimeslot_time">
+		    {$timePeriod ? $timePeriod : ''}
+		  </div>
+		</div>
+	{/if}
+{/template}
+
+/**
+* @param orderId Number
+* @param receiptLines List of receipt data
+* @param totalLabel Label of Subtotal
+* @param total Value of Subtotal
+* @param? soName
+* @param? soOrderDate
+* @param orderModifiable
+* @param? soActivate
+*/
+{template .receiptBox autoescape="false"}
+<div class="orderbox">
+  {if $soActivate}
+     <h2 class="orderid">{$soName}</h2>
+  {else}
+  <h2 class="orderid">Order #{$orderId}
+  	{if $soName}
+  		<div class="standing-order-3-receiptBox">{$soName}, {$soOrderDate} Delivery</div>
+  	{/if}
+  </h2>
+  {/if}
+  {if $receiptLines and length($receiptLines) > 0}
+    <ul class="ordertotal">
+      {foreach $receipt in $receiptLines}
+        <li data-receipt-id="{$receipt.id}">
+          <span class="receipt-text">{$receipt.text}</span>
+          <span class="receipt-price">{$receipt.value}{if $receipt.other and $receipt.other.mark}{$receipt.other.mark}{/if}</span>
+        </li>
+      {/foreach}
+    </ul>
+  {/if}
+  <p class="estimated">{$totalLabel}: {$total}</p>
+  {if $orderModifiable}
+  <div class="successmodifyorderbutton-cont">
+  <button class="cssbutton orange" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
+  </div>
+  {/if}
+</div>
+{/template}

@@ -1,0 +1,41 @@
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%if(user.isEligibleForPreReservation()){%>
+	<%String uri_resWarning = request.getRequestURI().toLowerCase();
+	  FDReservation rsv = user.getReservation();
+	  %>
+	<%if(rsv != null){%>
+	<%
+		Calendar today = Calendar.getInstance();
+	    int diff = DateUtil.getDiffInMinutes(today.getTime(), rsv.getExpirationDateTime());
+		String extended = NVL.apply(request.getParameter("extended"), "");
+		if("true".equals(extended)){%>
+				<b><font color="#CC0000">DELIVERY RESERVATION EXTENDED:</font></b>
+					Customer's delivery reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> has been extended until <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>.
+					<br>Checkout must be completed before that time or the reservation will be released.
+		<%} else {%>
+			<%if((uri_resWarning.endsWith("view_cart.jsp") || uri_resWarning.indexOf("/order/") > -1 || uri_resWarning.indexOf("/checkout/") > -1) && diff > 60){%>
+				<b><font color="#CC0000">Customer has a reserved delivery time for <%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></font></b>
+						(<a href="/your_account/reserve_timeslot.jsp?addressId=<%=rsv.getAddressId()%>"><b>Edit</b></a>)
+			<%}else if(diff > 20 && diff <= 60){%>
+					<b><font color="#CC0000">Customer's Delivery Reservation Expires in <%=diff%> Minutes</font>.</b>
+						Reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>.
+						<br>Checkout must be completed before that time or the reservation will be released.
+			<%}else if(diff > 0 && diff <= 20){%>
+				<% 
+				Calendar extendedCal = DateUtil.toCalendar(rsv.getExpirationDateTime());
+				extendedCal.add(Calendar.HOUR, 1);
+				String queryString = NVL.apply(request.getQueryString(), "");
+				String successPage = request.getRequestURI();
+				if(!"".equals(queryString)){
+					successPage += "?"+queryString;
+				}
+				%>
+					<b><font color="#CC0000">Customer's Delivery Reservation Expires in <%=diff%> Minutes</font>.</b>
+					Reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>
+			<%}%>
+		<%}%>
+	<%}%>
+<%}%>

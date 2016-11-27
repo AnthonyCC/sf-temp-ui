@@ -1,0 +1,42 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <delimiter>TAB</delimiter>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+	select s.status STATUS, to_char(count(s.id), '999,999') COUNT from cust.sale s, cust.salesaction sa 
+	where s.id = sa.sale_id 
+  and sa.action_date = (select max(action_date) from cust.salesaction sz 
+			where sz.action_type in ('CRO','MOD') and sz.sale_id = sa.sale_id)
+  and s.status = 'ENR' 
+  and sa.requested_date = trunc(sysdate-1) group by s.status
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

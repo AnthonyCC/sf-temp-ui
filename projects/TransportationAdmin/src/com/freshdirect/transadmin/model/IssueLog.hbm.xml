@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 11, 2011 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.IssueLog" table="ISSUELOG">              
+        <id name="id" type="string" column="id">            
+           <generator class="sequence">
+    			<param name="sequence">IssueLog_id_SEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="virRecord" class="com.freshdirect.transadmin.model.VIRRecord" fetch="select" lazy="false">
+            <column name="VIRRECORD_ID" length="30" />
+        </many-to-one>
+        <many-to-one name="maintenanceIssue" class="com.freshdirect.transadmin.model.MaintenanceIssue" fetch="select" lazy="false">
+            <column name="MAINTENANCEISSUEID" length="10" />
+        </many-to-one>
+       	<property name="issueType" type="string">
+            <column name="ISSUETYPE" length="45" />
+        </property> 
+        <property name="issueSubType" type="string">
+            <column name="ISSUESUBTYPE" length="45" />
+        </property>             
+        <property name="comments" type="string">
+            <column name="COMMENTS" length="200" />
+        </property>        
+        <property name="damageLocation" type="string">
+            <column name="ISSUELOCATION" length="45" not-null="true"/>
+        </property>
+        <property name="issueSide" type="string">
+            <column name="ISSUESIDE" length="45" not-null="true"/>
+        </property>    
+              
+    </class>
+</hibernate-mapping>

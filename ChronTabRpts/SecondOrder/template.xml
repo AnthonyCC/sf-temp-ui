@@ -1,0 +1,151 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+    <!--url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+	(ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SERVICE_NAME = ORCL)
+      )
+    )</url>
+    <user>cms</user>
+    <password>cms</password-->
+  </source>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB2</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+    <!--url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+        (SERVICE_NAME = ORCL)
+      )
+    )</url>
+    <user>cms</user>
+    <password>cms</password-->
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>DataSheet</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select distinct c.first_name || ' ' || c.last_name as NAME, sv.create_date, di.zone, sd.question, sd.answer 
+from cust.survey sv, 
+	 cust.customerinfo c, 
+	 cust.surveydata sd, 
+	 cust.fdcustomer fdc,
+	 cust.deliveryinfo di,
+	 cust.salesaction sa,
+	 cust.sale sale
+where sv.survey_name = 'second_order_survey' 
+  and sv.id = sd.survey_id 
+  and sv.customer_id = fdc.id 
+  and fdc.erp_customer_id = c.customer_id
+  and sale.customer_id = c.customer_id
+  and sale.id in 
+  (select max(to_number(s.id))
+  	from cust.sale s, cust.salesaction sa, cust.fdcustomer fdc 
+	where s.id = sa.sale_id 
+	  and sa.action_date = (select max(action_date) 
+                                          from cust.salesaction sz 
+                                          where sz.action_type in ('CRO','MOD') 
+                                          and sz.sale_id = s.id) 
+      and s.customer_id = fdc.erp_customer_id 
+      and s.customer_id = c.customer_id)
+  and sa.sale_id = sale.id
+  and sa.action_date = (select max(action_date) 
+                                          from cust.salesaction sz 
+                                          where sz.action_type in ('CRO','MOD') 
+                                          and sz.sale_id = sale.id)
+  and sa.id = di.salesaction_id
+  and sd.answer is not null
+  order by sv.create_date asc
+     </param>
+     <param>
+question1_prices,question1_selection,question1_quality,question1_convenience,question1_customerservice,question2_professional,question2_prompt,question3_easeofuse,question3_information,question3_speed,question4_weeklyspend_restaurant,question4_weeklyspend_store,question5_numpeopleshopfor,question6_favoritecuisine,question6_favoritecuisine_other,question7_cookingattitude,question8_importantnutrition,question8_importantnutrition_other,question9_foodallergy,question9_foodallergy_other,question10_household,question11_birthday,question11_birthmonth,question11_birthyear,question12_gender,question13_recommend
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>OpenEnded</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select distinct c.first_name || ' ' || c.last_name as NAME, sv.create_date, sd.question, sd.answer
+from cust.survey sv, cust.customerinfo c, cust.surveydata sd, cust.fdcustomer fdc
+where sv.survey_name = 'second_order_survey'
+  and sv.id = sd.survey_id
+  and sv.customer_id = fdc.id
+  and fdc.erp_customer_id = c.customer_id
+  and sd.question='question14_additional_comments'
+  order by sv.create_date asc
+     </param>
+     <param>VacationSuggestion</param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Survey Results</name>
+   <beginOffsetRow>3</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>DB2</name>
+     <param>
+select count(*) from cust.promotion_participation where promotion_id = '467968507'
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Survey Results</name>
+   <beginOffsetRow>4</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>DB2</name>
+     <param>
+select count(*) from cust.promotion_participation where promotion_id = '467763558'
+     </param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

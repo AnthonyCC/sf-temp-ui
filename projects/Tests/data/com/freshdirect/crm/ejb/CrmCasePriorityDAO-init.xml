@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.CASE_PRIORITY CODE="LO" NAME="Low Pri" DESCRIPTION="Low Priority" PRIORITY="0"/>
+<CUST.CASE_PRIORITY CODE="HI" NAME="High Pri" DESCRIPTION="High Priority" PRIORITY="1"/>
+
+</dataset>

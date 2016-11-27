@@ -1,0 +1,84 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr class="flatRow">
+					<%-- sets the column widths --%>
+					<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<% if(promotion.getBatchId() != null) { %>
+				<input type="hidden" name="batch_id" value="<%= promotion.getBatchId() %>"/>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr>
+					<td colspan="2" align="center"><input type="checkbox" id="batch_promo" name="batch_promo" value="true" <%= (promotion.isBatchPromo())?"checked":"" %> />&nbsp; <b>Apply changes to entire batch</b> (Clicking the checkbox will apply these change to entire batch)</td>
+				</tr>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<% } %>
+				<tr>
+					<td class="promo_detail_label">Payment Method:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse" id="edit_payreq_payMethodParent" width="75%">
+							<tr>
+								<td><input type="checkbox" id="amex" name="amex" <%= (paymentType.indexOf("Amex")>-1)?"checked":"" %>/></td>
+								<td>Amex</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="masterCard" name="masterCard" <%= (paymentType.indexOf("MasterCard")>-1)?"checked":"" %> /></td>
+								<td>MasterCard</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="visa" name="visa" <%= (paymentType.indexOf("Visa")>-1)?"checked":"" %>/></td>
+								<td>Visa</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="discover" name="discover" <%= (paymentType.indexOf("Discover")>-1)?"checked":"" %>/></td>
+								<td>Discover</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="debitCard" name="debitCard" <%= (paymentType.indexOf("Debit")>-1)?"checked":"" %>/></td>
+								<td>Debit Card</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="masterPass" name="masterPass" <%= (paymentType.indexOf("MasterPass")>-1)?"checked":"" %>/></td>
+								<td>MasterPass</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="payPal" name="payPal" <%= (paymentType.indexOf("PayPal")>-1)?"checked":"" %>/></td>
+								<td>PayPal</td>
+							</tr>
+							<tr>
+								<td class="vTop"><input type="checkbox" id="eCheck" name="eCheck" value="eCheck" <%= (paymentType.indexOf("ECheck")>-1)?"checked":"" %>/></td>
+								<td>
+									eCheck<br />
+									<span class="gray">Prior eCheck use: </span>
+									<input type="radio" id="eCheckMatchLesserEqual" value="<%=EnumComparisionType.LESS_OR_EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.LESS_OR_EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>&lt=</b>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" id="eCheckMatchEqual" value="<%=EnumComparisionType.EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>=</b>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" id="eCheckMatchGreaterEqual" value="<%=EnumComparisionType.GREATER_OR_EQUAL.getName() %>" name="eCheckMatchType" <%=EnumComparisionType.GREATER_OR_EQUAL.equals(eCheckMatchType)?"checked":"" %>/> <b>>=</b> &nbsp;&nbsp;
+									<input type="text" id="minOrders" name="minOrders" class="w30px alignC" value="<%= (paymentType.indexOf("ECheck")>-1)?eCheckMin:(!"0".equals(eCheckMin)?eCheckMin:"") %>" />
+									<span class="gray"> settled orders</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="alignL">
+									<a href="#" onclick="selectAllCB('edit_payreq_payMethodParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_payreq_payMethodParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w30px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w300px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

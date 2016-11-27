@@ -1,0 +1,1 @@
+<jsp:forward page="/reports/subject_report.jsp" />

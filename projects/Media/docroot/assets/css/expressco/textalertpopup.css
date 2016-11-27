@@ -1,0 +1,154 @@
+.ec-popup.textalertpopup,
+.ec-popup.textalertconfirmpopup {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+  width:780px;
+  max-width:780px;
+  box-sizing:border-box;
+  padding:50px;
+  font-family:Verdana,Genava,sans-serif;
+  font-size:12px;
+}
+
+.textalertpopup .title{
+  font-size:22px;
+  font-weight:bold;
+  margin:20px 0 20px 0;
+  text-align:center;
+  clear:both;
+  position: relative;
+  padding: 0 80px;
+}
+
+.textalertpopup .subtitle{
+  text-align:center;
+  margin:0.5em 0;
+}
+
+.textalertpopup .mobile{
+  font-size:22px;
+  font-weight:bold;
+  line-height:22px;
+  text-align:center;
+}
+
+.textalertpopup .mobile input{
+  width:300px;
+  line-height:22px;
+  font-size:22px;
+}
+
+.textalertpopup label {
+  font-weight: normal;
+}
+
+.textalertpopup .choices-title{
+  font-size:14px;
+  font-weight:bold;
+  border-bottom:1px solid #aaa;
+  line-height:30px;
+  margin:1.5em 0;
+}
+
+.textalertpopup .choices{
+  list-style-type:none;
+}
+
+.textalertpopup .choices li{
+  padding-left:30px;
+  margin:10px 0;
+}
+
+.textalertpopup .choices li .fake-checkbox-wrapper {
+  margin-left: -27px;
+}
+
+.textalertpopup .choices li input[type=checkbox]{
+  float:left;
+  margin-left:-20px;
+  margin-top:4px;
+}
+
+.textalertpopup .choices .choice-title{
+  font-weight:bold;
+}
+
+.textalertpopup .terms{
+  font-size:10px;
+  text-align:center;
+}
+
+.nothanks-holder{
+  display:inline-block;
+  margin-right:30px;
+  text-align: left;
+}
+
+.nothanks-holder label.remindme{
+  margin-top: 10px;
+  display:block;
+}
+
+label.remindme input[type=checkbox]{
+  margin-right:5px;
+}
+
+.textalert-nothanks,
+.textalert-signup{
+  display:inline-block;
+  font-size:14px;
+  padding:10px 20px;
+}
+
+.textalert-signup{
+  vertical-align:top;
+}
+
+.textalertpopup .actions{
+  text-align:center;
+}
+
+#textalert_formbody,
+#textalert_terms{
+  display:none;
+}
+
+[data-show='textalert_formbody'] #textalert_formbody,
+[data-show='textalert_terms'] #textalert_terms{
+  display:block;
+}
+
+.textalert-back{
+  font-size:14px;
+  position: absolute;
+  left: 0;
+}
+
+#textalert_terms .terms-body{
+  color:#666;
+}
+
+.ec-popup.textalertconfirmpopup h2,
+.ec-popup.textalertconfirmpopup h3 {
+  font-weight: bold;
+  line-height: 1.2em;
+}
+
+.ec-popup.textalertconfirmpopup .buttons {
+  border-top: 1px solid #aaa;
+  margin-top: 20px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.textalertpopup [fdform-error="notices"] {
+  text-align: left;
+}
+
+.textalertpopup [fdform-error="mobile"] {
+  margin-top: -20px;
+  padding-right: 150px;
+}

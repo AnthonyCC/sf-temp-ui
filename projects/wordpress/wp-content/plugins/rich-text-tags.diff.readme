@@ -1,0 +1,1 @@
+Fixes stupid <p> tag issue when TinyMCE automatically adds paragraph to the description.

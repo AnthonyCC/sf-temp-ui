@@ -1,0 +1,36 @@
+#loginbox.centered,
+#loginbox_overlay.centered,
+#searchbar.fixedtop {
+  position: absolute;
+}
+
+.ie6fixed {
+  position: absolute !important;
+}
+
+#notifications a.nav,
+#notifications div.holder,
+#notifications ul {
+  position: relative;
+}
+
+#searchbar {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20px;
+}
+
+#header_cart {
+  position: absolute;
+  z-index: 2;
+}
+
+#alldepartments {
+  position: relative;
+}
+
+#alldepartments ul {
+  position: absolute;
+  width: 191px;
+}
+

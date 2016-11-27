@@ -1,0 +1,15 @@
+--1 row inserted
+INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,LABEL,CARDINALITY_CODE) 
+VALUES ('FEATURED_NEW_PRODBRANDS','Category.FEATURED_NEW_PRODBRANDS','Category','F','F','F','Featured New Prods/Brands','Many');
+
+--1 row inserted
+INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) 
+VALUES ('Category.FEATURED_NEW_PRODBRANDS','Brand',NULL,'Category.FEATURED_NEW_PRODBRANDS.Brand');
+
+--1 row inserted
+INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) 
+VALUES ('Category.FEATURED_NEW_PRODBRANDS','ConfiguredProduct',NULL,'Category.FEATURED_NEW_PRODBRANDS.ConfiguredProduct');
+
+--1 row inserted
+INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) 
+VALUES ('Category.FEATURED_NEW_PRODBRANDS','Product',NULL,'Category.FEATURED_NEW_PRODBRANDS.Product');

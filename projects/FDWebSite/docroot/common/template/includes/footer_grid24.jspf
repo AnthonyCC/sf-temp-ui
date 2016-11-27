@@ -1,0 +1,106 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%@ include file="/common/template/includes/footer/footerlinks.jspf" %>
+<%@ include file="/common/template/includes/footer/seolinks.jspf" %>
+
+<div id="tagline">
+  <div class="container clearfix">
+    <div class="column span-24 center"><img src="http://placekitten.com/g/600/50" /></div>
+  </div>
+</div>
+
+<div class="footergreen">
+
+  <div id="bottomlinks">
+    <div class="container clearfix">
+
+      <div class="column span-8">
+        <h3 class="clearfix">
+          <span>FD Feed</span>
+          <a href="http://blog.freshdirect.com/">go to our blog &raquo;</a>
+          <hr/>
+        </h3>
+        <div class="article">
+          <h4>Title of the article</h4>
+          <div class="author">by somebody on 01 Mar 10 - 40 Comments</div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu augue turpis, vitae egestas risus. Vivamus adipiscing dui et urna elementum non interdum tortor pretium. Duis ultrices iaculis velit, in accumsan purus dignissim id. Vestibulum est massa, posuere id tristique at, fermentum ac quam. <a href="#">read more...</a></p>
+        </div>
+        <hr/>
+        <div class="article">
+          <h4>Title of the article</h4>
+          <div class="author">by somebody on 01 Mar 10 - 40 Comments</div>
+          <p>Duis tincidunt iaculis nisi, nec tempus leo pretium at. Nam justo nisi, consequat eu auctor eget, dapibus id justo. Aenean pulvinar tempus quam at gravida. Ut enim metus, pharetra sed volutpat eu, pretium consequat est. Nam ac dui molestie sem tristique pellentesque vehicula in nisi. Praesent nisi tellus, scelerisque ut cursus non, sodales non leo. <a href="#">read more...</a></p>
+        </div>
+      </div>
+      
+      <div class="column span-16 last">
+        <h3 class="clearfix">
+          <span>our customers love us!</span>
+          <a href="#">read more &raquo;</a>
+          <hr/>
+        </h3>
+        <div class="testimonials">
+          <div class="testimonial">
+            <p>Not only would I recommend you to friends, but I have talked you people up to virtually everyone I know in New York. You guys are the best invention since ice cream!</p>
+            <span class="say"><!-- IE6 --></span>
+          </div>
+          <div class="author">- Rosina, Upper East Side</div>
+        </div>
+
+        <hr/>
+      
+      </div>
+
+      <div class="column span-8">
+        <h3 class="clearfix"><i>shop anywhere, anytime</i>FRESHDIRECT IS MOBILE!</h3>
+      </div>
+
+      <div class="column span-8 last">
+        <h3 class="clearfix"><i>love freshdirect?</i>SPREAD THE WORD!</h3>
+        <!-- AddThis Button BEGIN -->
+        <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+          <a class="addthis_button_facebook"></a>
+          <a class="addthis_button_twitter"></a>
+          <a class="addthis_button_email"></a>
+          <a class="addthis_button_favorites"></a>
+          <a class="addthis_button_compact"></a>
+        </div>
+        <script type="text/javascript" src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e2d304c254f4311"></script>
+        <!-- AddThis Button END -->
+      
+      </div>
+      
+    </div>
+  </div>
+
+  <div id="marquee" class="footergreen">
+    <div class="container clearfix">
+      <hr/>
+      <ul class="column span-24 center">
+        <li>Cheesy Chicken Parm & Fusili</li>
+        <li>Kid Power Cheese-Stuffed Jumbo! Shells</li>
+        <li>Kid Power Megaroni & Beef</li>
+        <li>Kid Power Sunny Falafel & Hummus</li>
+        <li>Kid Power Turkey Sweet-ish Meat</li>
+      </ul>
+      <hr/>
+    </div>
+  </div>
+
+  <div class="container clearfix">
+    <div class="column span-1"></div>
+    <div class="column span-22 center">
+      <div id="quicklinks" class="span-22 last">
+        <a href="<c:url value="/"/>">Home</a> | 
+        <a href="#">Site Map</a> | 
+        <a href="<c:url value="/help/privacy_policy.jsp"/>">Privacy Policy</a> | 
+        <a href="<c:url value="/help/terms_of_service.jsp"/>">Customer Agreement</a> | 
+        <a href="<c:url value="/help/aol_note.jsp"/>">A note on images for AOL users</a>
+      </div>
+      <div id="copyright" class="span-22 last">&copy; 2002-2011 FreshDirect. All Rights Reserved</div>
+    </div>
+    <div class="column span-1 last">
+      <a class="backtotop" href="#topbar"><span>^</span></a>
+    </div>
+  </div>
+</div>

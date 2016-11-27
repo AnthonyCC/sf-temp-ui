@@ -1,0 +1,98 @@
+{namespace pdp}
+
+/**
+ * @param productName
+ * @param? salesUnitDescrPDP
+ * @param? unitPrice
+ * @param? utSalesUnit
+ * @param? available
+ */
+{template .mealkitProductTitle}
+	<p class="mealkit-product-title">{$productName}</p>
+	<p class="mealkit-product-subtitle">{if $salesUnitDescrPDP}<br/>{$salesUnitDescrPDP}{/if}</p>
+	{if $available == true }
+	<p class="mealkit-product-subtitle">{if $unitPrice}<br/>{call common.price}{param price:$unitPrice/}{/call}{/if} {if $utSalesUnit}{$utSalesUnit}{/if}</p>
+	{/if}
+<!--bundle-title-ends -->
+{/template}
+
+/**
+ * @param images
+ */
+{template .mealkitProductImage}
+  {if $images and length($images) > 0}
+    <img class="mealkit-product-image" src="{$images[0].url}" />
+  {/if}
+{/template}
+
+
+/**
+ * @param? productAboutMediaPath
+ */
+{template .mealkitProductActionsMedia}
+<a href="{if $productAboutMediaPath}javascript:popup('{$productAboutMediaPath}','large'){else}#{/if}"
+class="action-item heating-instructions icon-clock-before"><span class="action-item-content easy-to-follow">Easy-to-follow instructions</span></a>
+{/template}
+
+/**
+ * @param? catId
+ * @param? productId
+ */
+{template .mealkitProductActionsDetails}
+<span class="action-item meal-details icon-meal-details-before" data-component="ajaxpopup" data-ajaxpopup-template="pdp.mealDetailsPopup" href="/api/potato/product?categoryId={$catId}&amp;productId={$productId}" data-ajaxpopup-type="bundleDetails"><span class="action-item-content">Meal Details</span></span>
+{/template}
+
+/**
+* @param catId
+* @param productId
+* @param skuCode
+*param soldBySalesUnit
+* @param salesUnit
+* @param quantity
+*param availMatPrices
+* @param inCartAmount
+* @param available
+@param price
+*/
+{template .mealkitProductAddToCart}
+{if $available}
+<div class="mealkit-price">
+{call common.formatDecimalPrice}
+    {param price:$price /}
+  {/call}
+ </div>
+ <form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
+ {let $cssbuttons: 'true' /}
+{call common.quantitybox }
+	{param quantity:$quantity /}
+    {param uid:$productId /}
+    {param cssbuttons:$cssbuttons /}
+{/call}
+{call pdp.subtotal data="all" /}
+<input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
+<div class="atc-button-wrapper">
+  <button class="cssbutton orange medium addtocart-button" alt="" data-component="ATCButton" type="button">Add to Cart</button>
+  {call common.atcInCart}
+    {param atcItemId:'pdp_'+$catId+'_'+$productId+'_'+$skuCode /}
+    {param amount:$inCartAmount /}
+  {/call}
+</div>
+</form>
+{/if}
+{/template}
+
+
+/**
+* @param? crossSellProducts
+* @param? mobWeb
+*/
+{template .mealkitProductRecommendation autoescape="false"}
+{if $crossSellProducts and length($crossSellProducts)>0}
+ <h2 class="mealkit-recommendation-title">You may already have</h2> 
+  {call common.productList}
+      {param productList:$crossSellProducts /}
+      {param mobWeb:$mobWeb /}
+    {/call}
+{/if}
+{/template}
+

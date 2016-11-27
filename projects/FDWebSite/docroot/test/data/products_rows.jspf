@@ -1,0 +1,27 @@
+
+      <li>Available within <input type="text" size="3" name="aval_days"/> days, <i>and</i>
+      <li><label><input type="checkbox" name="notunaiv" value="true" checked/><b>Not</b> <b>un</b>available</label>, <i>and</i>
+      <li><label><input type="checkbox" id="groc_false" name="groc" value="false" onclick="setgroc(false)"/> <b>Not</b> grocery category</label>
+          <img src="miez.gif" alt="?" onclick="javascript:popup('help.html#groc','large')"/>, <i>and</i>
+      <li><label><input type="checkbox" id="groc_true" name="groc" value="true" onclick="setgroc(true)"> <b>Is</b> grocery category</label>, <i>and</i>
+
+      <li>Has product layout
+      <ul>
+          <li><label><input type="checkbox" name="layout" value="PERISHABLE"/> perishable</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="COMPOSITE"/> composite</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="WINE"/> wine</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="COMPOSITE_PLUS"/> composite plus</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="PARTY_PLATTER"/> party platter</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="MULTI_ITEM_MEAL"/> multi item meal</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="COMPONENTGROUP_MEAL"/> component group meal</label>, <i>or</i>
+          <li><label><input type="checkbox" name="layout" value="CONFIGURED_PRODUCT"/> configured product</label>
+      </ul>
+      <li><label><input type="checkbox" name="autoconfigurable" value="true"/>Is auto-configurable</label>, <i>and</i>
+      <li>Has available YMAL
+      <ul>
+          <li><label><input type="checkbox" name="ymal" value="product"/> products</label>, <i>or</i>
+          <li><label><input type="checkbox" name="ymal" value="recipe"/> recipes</label>, <i>or</i>
+          <li><label><input type="checkbox" name="ymal" value="category"/> categories</label>
+      </ul>
+
+

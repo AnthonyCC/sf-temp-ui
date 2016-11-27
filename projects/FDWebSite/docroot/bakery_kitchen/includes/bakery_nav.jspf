@@ -1,0 +1,65 @@
+		<b>pg:</b> 	
+	<% if (pageNo.equals("1")){
+	
+	%>
+	<b>1</b> |
+	<%
+	}
+	else{%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=1">1</a> |
+
+	<%} 
+	
+	if (pageNo.equals("2")){
+	%>
+	<b>2</b> |
+	<%
+	}
+	else{%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=2">2</a> |
+	<%} 
+	
+	if (pageNo.equals("3")){
+	%>
+	<b>3</b> |
+	<%
+	}
+	else{%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=3">3</a> |
+	<%
+	}
+	
+	if (pageNo.equals("4")){
+	%>
+	<b>4</b> |
+
+	<%
+	}
+	else{%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=4">4</a> |
+	<%
+	}
+	
+	if (pageNo.equals("5")){
+	%>
+	<b>5</b> |
+	<%
+	}
+	else{%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=5">5</a> |
+	<%
+	}	
+
+
+	
+	
+	if (!pageNo.equals("5")){
+%>
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=<%=intNextPageNo%>">></a>
+<%
+	}
+	else{
+%>
+ &nbsp; &nbsp; &nbsp;
+<%}%>
+	

@@ -1,0 +1,33 @@
+<html jwcid="shell">
+<body jwcid="@Body">
+	<div id="wrap">
+		<div id="header">
+			<span id="subsystem">
+				<form jwcid="@Form">
+					<select jwcid="@PropertySelection" model="ognl:subsystemSelectionModel" value="ognl:page.visit.subsystem" submitOnChange="ognl:true" style="font-family: Verdana; font-size: 7pt;"/>
+				</form>
+			</span>
+			Rules Admin
+		</div>
+		
+		<span jwcid="@If" condition="ognl:page.visit.subsystem != null" >
+			<div id="nav">
+				<ul id="navlist">
+					<li>
+						<a jwcid="@PageLink" page="Home">	Home</a>
+					</li>
+					<li><a jwcid="@DirectLink" listener="ognl:listeners.createRule">Create</a></li>
+					<li>
+						<a jwcid="@PageLink" page="OutcomeMatrix">	Outcomes Matrix</a>
+					</li>
+					<li>
+						<a jwcid="@PageLink" page="Publish">Publish</a>
+					</li>
+				</ul>
+			</div>
+			<br />
+		</span>
+		<span jwcid="@RenderBody"/>
+	</div>
+</body>
+</html>

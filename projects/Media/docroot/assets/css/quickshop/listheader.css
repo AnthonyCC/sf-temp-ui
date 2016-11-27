@@ -1,0 +1,46 @@
+.qs-list-header {
+  margin: 10px 0 5px 18px;
+  color:#764007;
+  text-align:left;
+  float: left;
+}
+[data-feature-quickshop="2_0"] .qs-list-header {
+  width: 470px;
+}
+.qs-list-header h2 {
+  line-height: 20px;
+  margin: 4px 0;
+  font-family: Verdana, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: #764077;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;   
+}
+[data-feature-quickshop="2_0"] .qs-list-header h2 {
+  margin: 8px 0 4px;
+  color: #996699;
+}
+.qs-list-header p {
+  font-size: 12px;
+  margin: 0;
+  color: #996699;
+}
+[data-feature-quickshop="2_0"] .qs-list-header p {
+  color: #666;
+}
+.qs-list-header .recipe {
+  display: inline-block;
+  color: #360;
+  font-weight: bold;
+  background:  url(/media_stat/images/quickshop/bullet-orange.png) no-repeat 0 3px;
+  padding-left: 15px;
+}
+.qs-list-header + .qs-actions {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+[data-feature-quickshop="2_0"] .qs-list-header + .qs-actions {
+  margin-top: 10px;
+}

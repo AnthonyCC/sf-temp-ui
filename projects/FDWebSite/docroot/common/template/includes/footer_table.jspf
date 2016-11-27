@@ -1,0 +1,39 @@
+
+<!--[if IE 6]>
+<div class="ie6">
+<![endif]-->
+<div class="globalnavcontainer">
+	<div class="globalnav-left">
+		<img src="/media_stat/images/navigation/globalnav_and_footer/footer_border_left.gif" width="11" height="22"/>
+	</div>
+
+	<div class="globalnav-footer">
+		<div class="left">
+			<span class="nodot" id="globalfooteritem-aboutus-pad"><a class="globalnavitem" id="globalfooteritem-aboutus" href="/department.jsp?deptId=about&trk=bnav"><span>About us</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-careers" href="<%=FDStoreProperties.getCareerLink()%>"><span>Careers</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-billorrights" href="/category.jsp?catId=about_billrights&trk=bnav"><span>Your Bill Of Rights</span></a></span>
+		</div>
+		<div class="right">			
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-office" href="/department.jsp?deptId=COS&trk=bnav"><span>At The Office</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-giftcards" href="<%=giftPath%>"><span>Gift Card</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-newprod" href="/newproducts.jsp?trk=bnav"><span>New Products</span></a></span>
+		</div>		
+	</div>
+	<div class="globalnav-right">
+		<img src="/media_stat/images/navigation/globalnav_and_footer/footer_border_right.gif" width="11" height="22"/>
+	</div>
+</div>
+<!--[if IE 6]>
+</div>
+<![endif]-->
+
+<script type="text/javascript" language="javascript">
+var globalfooteritem = document.getElementById('globalfooteritem-<%=botNav%>'); 
+if (globalfooteritem != null) { 
+	globalfooteritem.className += " globalnavitem-selected";
+}
+var globalfooteritempad = document.getElementById('globalfooteritem-<%=botNav%>-pad'); 
+if (globalfooteritempad != null) { 
+	globalfooteritempad.className = "nodot-selected";
+}
+</script>

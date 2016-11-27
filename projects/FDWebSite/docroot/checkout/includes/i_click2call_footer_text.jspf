@@ -1,0 +1,31 @@
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+ <% boolean isSmall = request.getRequestURI().indexOf("step_4_receipt") > -1; 
+String width="693";
+if (isSmall) width="630";
+%><%--
+<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%=width%>">
+<tr align="center" valign="top">
+	<td>
+		<font class="space4pix"><br><br><br></font><font class="text13">
+		<img src="/media/editorial/site_pages/click_to_call/c2c_hdr_trouble_help.gif" alt="Timeslot Full?"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="0" height="35">
+		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><img src="/media/editorial/site_pages/click_to_call/button_call_me_now.gif"  border="0" alt="CLICK TO CALL"></a>
+		<br><img src="/media_stat/images/layout/clear.gif" width="0" height="15">
+		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><b>NEW!  Call Me Now</b></a>.
+		Just enter your phone number and a specialist will call you back immediately. <br>
+		
+		Or reach out to us at:  <%=user.getCustomerServiceContact()%> or <a href="mailto:<%=user.getCustomerServiceEmail()%> "><%=user.getCustomerServiceEmail()%> </a>
+		<br><br>
+		</font>
+		<img src="/media_stat/images/layout/redB75959.gif" width="380" height="1"><br><br>
+		<font class="text12">
+		Service Hours:  <% List<FDCSContactHours> fdcsHours = FDCSContactHoursUtil.getFDCSHours();
+for (Iterator iterator = fdcsHours.iterator(); iterator.hasNext();) {
+	FDCSContactHours contactHours = (FDCSContactHours) iterator.next();%>
+	<%= contactHours.getDaysDisplay() %>&nbsp;<%= contactHours.getHoursDisplay() %>;
+<%} %>
+                </font>
+	</td>
+</tr>
+</table>
+--%>

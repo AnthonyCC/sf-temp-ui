@@ -1,0 +1,60 @@
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%-- **************************************************
+	THIS FILE REQUIRES:
+	- import com.freshdirect.customer.*
+	- ErpPaymentMethodI payment
+	- SimpleDateFormat monthYearFormatter
+	- boolean showCCButtons
+	- boolean showDeleteButtons
+************************************************** --%>
+			<TABLE width="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" align="CENTER" class="order">
+				<tr>
+					<td width="35%" align="right" class="order_detail">Name on account&nbsp;&nbsp;</td>
+					<td width="65%"><%= payment.getName() %></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right" class="order_detail">Account type&nbsp;&nbsp;</td>
+					<td width="65%"><%= payment.getBankAccountType().getDescription() %></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right" class="order_detail">Account number&nbsp;&nbsp;</td>
+					<td width="65%"><%= PaymentMethodUtil.getDisplayableAccountNumber(payment) %></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right" class="order_detail">Routing number&nbsp;&nbsp;</td>
+					<td width="65%"><%= payment.getAbaRouteNumber() %></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right" class="order_detail">Bank name&nbsp;&nbsp;</td>
+					<td width="65%"><%= payment.getBankName() %></td>
+				</tr>
+				<tr valign="top">
+					<td width="35%" align="right" class="order_detail">Account Address&nbsp;</td>
+					<td width="65%"><%=payment.getAddress1()%>&nbsp;Apt. <%=payment.getApartment()%>
+                                    <%if(payment.getAddress2() != null && !"".equalsIgnoreCase(payment.getAddress2())){%>
+                                        <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%></td>
+				</tr>
+			</table><BR>
+<% 	if (showCCButtons) { 
+String currPage = request.getRequestURI();
+String editPage = currPage.indexOf("checkout") > -1 ? "/checkout/checkout_edit_checkacct" : "/customer_account/edit_checking_account";
+String retPage = "";
+if (currPage.indexOf("charge_order") > -1) {
+ retPage += "&returnPage=/order/charge_order.jsp?orderId=" + request.getParameter("orderId");
+}
+%>
+			<CENTER>
+				<% if (showDeleteButtons) { %><a href="javascript:confirmDeletePayment(this.form,'<%= ((ErpPaymentMethodModel)payment).getPK().getId() %>');" class="delete">DELETE</a><% } %> <a href="<%=editPage%>.jsp?paymentId=<%= ((ErpPaymentMethodModel)payment).getPK().getId() %><%=retPage%>" class="edit">EDIT</a>
+			</CENTER>
+<%	} %>
+<% 
+	if (isRestrictedAccount.booleanValue()) {
+%>
+<tr><td colspan="2"><div style="border: solid 1px #CC0000; padding 5px; font-size: 8pt; text-align: center;"><b>Payment for an order <span class="error_detail">failed</span> with this account</b></div></td></tr>
+<% 
+	} else {
+%>
+<tr><td colspan="2">&nbsp;</td></tr>
+<%
+	}
+%>

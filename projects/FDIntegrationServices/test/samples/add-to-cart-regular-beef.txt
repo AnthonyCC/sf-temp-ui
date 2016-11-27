@@ -1,0 +1,12 @@
+productId=bstk_flet_cntrct&
+catId=bgril&
+skuCode=MEA0004667&
+salesUnit=E04&
+C_MT_BF_PAK=ST&
+C_MT_BF_TW1=FT&
+C_MT_BF_MAR=N&
+quantity=2&
+EST_QTY=1.10+lb&
+PRICE=%2424.19&
+add_to_cart.x=69&
+add_to_cart.y=4

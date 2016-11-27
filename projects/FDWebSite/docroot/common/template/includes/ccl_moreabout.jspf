@@ -1,0 +1,1 @@
+<a href="/unsupported.jsp" onclick="return CCL.show_intro(this)">Learn more</a>

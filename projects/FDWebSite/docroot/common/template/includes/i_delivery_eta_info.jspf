@@ -1,0 +1,40 @@
+<%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.DeliveryETAInfo" %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.webapp.util.JspLogger" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+
+<% //expanded page dimensions
+final int W_DELIVERY_ETA_INFO_TOTAL = 970;
+%>
+
+<script>
+$jq('#messages').ready(function() { 
+	$jq('#deliveryetawarning').messages('add','deliveryetawarning'); 
+});
+</script>
+
+
+<%
+boolean dlvETAInfoDisplayed = false;
+try {
+%>
+
+<fd:GetDeliveryETAInfo id="deliveryETAInfo">
+<%
+if (deliveryETAInfo != null) {
+    dlvETAInfoDisplayed = true;
+%>
+	<font color="CC0000"><b>Please note: </b></font>
+		Your order <b>(#<%= deliveryETAInfo.getOrderNo() %>)</b> is on its way! It'll arrive to you between <b><%=CCFormatter.formatDeliveryTime(deliveryETAInfo.getNextEarliestETAStart())%> and <%=CCFormatter.formatDeliveryTime(deliveryETAInfo.getNextEarliestETAEnd())%></b> today. Enjoy!
+	
+<%
+}
+%>
+</fd:GetDeliveryETAInfo>
+<%
+} catch (Exception e) {
+	//JspLogger.GENERIC.error("Exception in i_delivery_eta_info.jspf", e);
+}
+%>

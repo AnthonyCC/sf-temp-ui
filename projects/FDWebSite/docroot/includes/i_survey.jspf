@@ -1,0 +1,67 @@
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurvey,
+		com.freshdirect.fdstore.survey.FDSurveyFactory,
+		com.freshdirect.fdstore.survey.EnumSurveyType,
+		com.freshdirect.common.customer.EnumServiceType,
+		com.freshdirect.webapp.taglib.fdstore.FDSessionUser
+		"%><fd:css href="/assets/css/customerprofile.css"/><% {  
+EnumServiceType userType = (EnumServiceType) request.getAttribute("userType");
+String surveyType = request.getAttribute("Survey").toString();
+boolean invisible = "true".equals(request.getAttribute("HideSurvey"));
+EnumSurveyType _surveyType = EnumSurveyType.getEnum(surveyType);
+FDSurvey survey = userType != null ? FDSurveyFactory.getInstance().getSurvey(_surveyType, userType) : 
+    FDSurveyFactory.getInstance().getSurvey(_surveyType, FDSessionUser.getFDSessionUser(session)); 
+request.removeAttribute("userType");
+request.removeAttribute("Survey");
+	if (survey != null) {
+	    List questions = survey.getQuestions();
+    	List surveyResponse=null;
+    	int quesCount = 1; 
+%><table border="0" cellspacing="1" cellpadding="0" width="675" id="survey_<%= survey.getHtmlFriendlyKey() %>" <%= invisible ? "style='display:none'" : ""%>>
+
+	<logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
+        
+            <tr valign="top">
+			    <td colspan="3" ><div class="question">
+				    
+			    <div class="question_text">
+                    <% 
+                       String[] _response=request.getParameterValues(question.getName());
+                       if(_response!=null) {
+                          surveyResponse=new ArrayList();
+                          for (int i=0;i<_response.length;i++) {
+                          	surveyResponse.add(_response[i]);
+                          }
+                       }
+                    %>
+                    
+					<%=SurveyHtmlHelper.getQuestionText(question)%>
+				    </div>
+				    <div class="cleft"><!--  --></div>
+			    </div>
+		   
+                    <% String container="q07_container";
+                       if(EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())){
+                            container="q06_container";
+                       }else if(question.isPulldown()) {
+                            container="q10_container";
+                       } else if(EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question.getFormDisplayType())) {
+                            container="answer_container";
+                       }else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
+                            container="q8_container";
+                       }
+                       
+                     %>
+                     
+				        <div class="<%=container%>" id="<%=index.intValue()+1%>">
+					        
+                              <%=SurveyHtmlHelper.getAnswersHtml(String.valueOf(quesCount),question,surveyResponse)%>
+				        </div>
+                <div class="cleft"><!--  --></div></td>
+                
+                </tr>
+		</logic:iterate>
+</table><% } else {
+    LoggerFactory.getInstance(this.getClass()).warn("Survey {"+_surveyType+", "+userType+"} is missing !");
+}
+	} %>

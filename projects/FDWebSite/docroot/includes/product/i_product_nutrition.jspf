@@ -1,0 +1,3 @@
+<fd:NutritionPanel skuCode="<%=fdprd.getSkuCode()%>"/>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
+<a href="javascript:pop('/shared/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>

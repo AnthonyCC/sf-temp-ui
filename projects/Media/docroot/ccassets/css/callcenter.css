@@ -1,0 +1,73 @@
+<!-- _BODY {font-size: 7pt;	font-family:  Verdana, Arial, sans-serif; ; color: #333333;} -->
+<!-- _td {font-size: 7pt;	font-family:  Verdana, Arial, sans-serif; ; color: #333333;} -->
+
+.text7gr      {	font-size: 7pt; color: #333333; font-family: Verdana, Arial, sans-serif;}
+.text7wh      {	font-size: 7pt; color: #FFFFFF; font-family: Verdana, Arial, sans-serif;}
+.text7red      {	font-size: 7pt; color: Red; font-family: Verdana, Arial, sans-serif;}
+.text7silver      {	font-size: 7pt;	font-family: Verdana, Arial, sans-serif; color: Silver;}
+
+.text7blackbold      {	font-size: 7pt;	font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+.text7grbold      {	font-size: 7pt; color: #333333; font-family: Verdana, Arial, sans-serif; font-weight : bold;}
+.text7greenbold      {	font-size: 7pt;	font-family: Verdana, Arial, sans-serif; color: #006633; font-weight : bold;}
+.text7orbold      {	font-size: 7pt;	font-family: Verdana, Arial, sans-serif; color: #FF9933;  font-weight : bold;}
+.text7whitebold      {	font-size: 7pt;	font-family: Verdana, Arial, sans-serif; color: #FFFFFF; font-weight : bold;}
+
+.text8gr      {	font-size: 8pt; color: #333333; font-family: Verdana, Arial, sans-serif;}
+.text8 	         { font-size: 8pt; font-family: Verdana, Arial, sans-serif }
+.text8black      { font-size: 8pt; font-family: Verdana, Arial, sans-serif; color: #000000 }
+.text8red      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: Red;}
+.text8blue      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #0000A0;}
+.text8liteblue      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: Blue;}
+.text8silver      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: Silver;}
+.text8white      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #FFFFFF;}
+
+.text8blackbold      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+.text8whitebold      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #FFFFFF; font-weight : bold;}
+.text8redbold      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: Red; font-weight : bold;}
+.text8bluebold      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #0000A0; font-weight : bold;}
+.text8greybold      {	font-size: 8pt;	font-family: Verdana, Arial, sans-serif; color: #666666; font-weight : bold;}
+
+.text9bold       { font-size: 9px;  font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+
+.text10black      {	font-size: 10pt;	font-family: Verdana, Arial, sans-serif; color: #000000;}
+
+.text10bluebold      {	font-size: 10pt;	font-family: Verdana, Arial, sans-serif; color: #0000A0; font-weight : bold;}
+.text10blackbold      {	font-size: 10pt;	font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+.text10redbold      {	font-size: 10pt;	font-family: Verdana, Arial, sans-serif; color: Red; font-weight : bold;}
+.text10wbold     { font-size: 9px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text10whitebold      {	font-size: 10pt;	font-family: Verdana, Arial, sans-serif; color: #FFFFFF; font-weight : bold;}
+
+.text11rbold	 { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.text11prpbold	 { font-size: 10px; font-weight: bold; color: #996699; font-family: Verdana, Arial, sans-serif;}
+
+.text12bluebold      {	font-size: 12pt;	font-family: Verdana, Arial, sans-serif; color: #0000A0; font-weight : bold;}
+.text12blackbold      {	font-size: 12pt;	font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+
+.text13blackbold      {	font-size: 13pt; font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+
+.text14orangebold      {	font-size: 14pt;	font-family: Verdana, Arial, sans-serif; color: #FF9933;  font-weight : bold;}
+
+.text16blackbold      {	font-size: 16pt; font-family: Verdana, Arial, sans-serif; color: #000000; font-weight : bold;}
+.text16greenbold      {	font-size: 16pt; font-family: Verdana, Arial, sans-serif; color: #FF9900; font-weight : bold;}
+.text16whitebold      {	font-size: 16pt; font-family: Verdana, Arial, sans-serif; color: #FFFFFF; font-weight : bold;}
+
+.space2pix      { font-size: 2px; }
+.space4pix      { font-size: 4px; }
+.space8pix      { font-size: 8px; }
+
+
+<!-- _INPUT 	         { font-size: 8pt; font-family: Verdana, Arial, sans-serif; } -->
+<!-- _SELECT         { font-size: 8pt; font-family: Verdana, Arial, sans-serif; } -->
+
+.readonly {	background-color : #cccccc	;	border : thin;}
+
+
+
+<!-- styles for product pages / view cart-->
+.text11		     { font-size: 10px; font-family: Verdana, Arial, sans-serif;}
+.text11bold      { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+.text12bold 	{ font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+.title18 	    { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+.text10bold      { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+
+}

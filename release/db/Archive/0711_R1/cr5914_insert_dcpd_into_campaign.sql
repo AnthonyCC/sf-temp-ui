@@ -1,0 +1,1 @@
+INSERT INTO CUST.CAMPAIGN (CODE, NAME, DESCRIPTION) VALUES ( 'DCPD', 'DCPD' , 'Dept/Category Promotions');

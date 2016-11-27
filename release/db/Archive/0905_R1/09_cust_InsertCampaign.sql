@@ -1,0 +1,1 @@
+INSERT INTO CUST.CAMPAIGN (CODE, NAME, DESCRIPTION) VALUES ('LINE_ITEM', 'Line Item Promotion', 'Line Item Promotion');

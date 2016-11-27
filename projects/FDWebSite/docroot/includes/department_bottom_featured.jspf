@@ -1,0 +1,142 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag" 
+%><%@ page import="com.freshdirect.fdstore.ecoupon.*" %><% 
+//expanded page dimensions
+final int W_DEPARTMENT_BOTTOM_FEATURED_TOTAL = 683;
+%>
+
+<%  
+	Image deptFeatImage = null;
+	DepartmentModel dept = (DepartmentModel) currentFolder;
+    List favorites = dept.getFeaturedProducts();
+
+    StringBuffer favoriteProductsImages = new StringBuffer();
+    StringBuffer favoriteProductsLinks = new StringBuffer();
+    StringBuffer favoriteProductsCouponLogos = new StringBuffer();
+
+	String mediaPathBefore = "/media/editorial/"+deptId+"/popular_items_header.html";
+	String mediaPathAfter = "/media/editorial/"+deptId+"/popular_items_header_after.html";
+
+
+    ContentNodeModel prodParent = null;
+    ContentFactory contentFactory = ContentFactory.getInstance();
+    Comparator priceComp = new ProductModel.PriceComparator();
+    int favoritesToShow = 0;
+    
+    boolean hasCoupons = false;
+%>
+
+<%-- Featured Products column --%>
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+	<% 
+		ProductModel product = contentNode; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+		if (product==null) continue;
+		prodParent = product.getParentNode(); 
+		List skus = product.getSkus(); 
+		if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+		SkuModel sku = null;
+		String prodPrice = null;
+		if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
+		if (skus.size()==1) {
+			sku = (SkuModel)skus.get(0);  // we only need one sku
+		} else {
+			sku = (SkuModel) Collections.min(skus, priceComp);
+		}
+		%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
+			prodPrice = JspMethods.formatPrice(productInfo, user.getPricingContext()); 
+		%></fd:FDProductInfo><%
+
+		String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent + "&prodCatId=" + prodParent + "&productId=" + product + "&trk=feat");
+
+		deptFeatImage = (Image)product.getCategoryImage();
+
+		//get coupon data
+		/* use display tag directly */
+		FDCouponTag manFdCouponTag = new FDCouponTag();
+		FDCustomerCoupon curCoupon = null;
+		
+		if ( product.getDefaultSku() != null && product.getDefaultSku().getProductInfo() != null ) {
+			curCoupon = user.getCustomerCoupon(product.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT, product.getParentId(), product.getContentName());
+		}
+		
+		//create coupon logo row
+		favoriteProductsCouponLogos.append("<td width=\"__cellWidth__\">");
+		if (curCoupon != null) {
+			favoriteProductsCouponLogos.append("<a href=\""+productPageLink_+"\">");
+				favoriteProductsCouponLogos.append("<img src=\"/media/images/ecoupon/logo-med.gif\" alt=\"FDCoupons\" />");
+			favoriteProductsCouponLogos.append("</a>");
+			hasCoupons = true;
+		} else {
+			favoriteProductsCouponLogos.append("&nbsp;");
+		}
+		favoriteProductsCouponLogos.append("</td>");
+		
+		//create images row
+		favoriteProductsImages.append("<td width=\"__cellWidth__\"><a href=\"");
+		favoriteProductsImages.append(productPageLink_);
+		favoriteProductsImages.append("\">");
+		if (deptFeatImage !=null) {
+			favoriteProductsImages.append("<img src=\"");
+			favoriteProductsImages.append(deptFeatImage.getPath());
+			favoriteProductsImages.append("\"");
+			favoriteProductsImages.append(JspMethods.getImageDimensions(deptFeatImage));
+			favoriteProductsImages.append(" border=\"0\" alt=\"");
+			favoriteProductsImages.append(product.getFullName());
+			favoriteProductsImages.append("\">");
+		}
+		favoriteProductsImages.append("</a>");
+		favoriteProductsImages.append("</td>");
+
+		//create links row
+		favoriteProductsLinks.append("<td width=\"__cellWidth__\">");
+		favoriteProductsLinks.append("<a href=\"");
+		favoriteProductsLinks.append(productPageLink_);
+		favoriteProductsLinks.append("\">");
+		String thisProdBrandLabel = product.getPrimaryBrandName();
+		if (thisProdBrandLabel.length()>0) {
+			favoriteProductsLinks.append("<font class=\"text10bold\">");
+			favoriteProductsLinks.append(thisProdBrandLabel);
+			favoriteProductsLinks.append("</font><br />");
+		}
+		favoriteProductsLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+		favoriteProductsLinks.append("</a><br />");
+		favoriteProductsLinks.append("<font class=\"favoritePrice\">");
+		favoriteProductsLinks.append(prodPrice);
+		favoriteProductsLinks.append("</font>");
+		
+		if (curCoupon != null) {
+			manFdCouponTag.setCoupon(curCoupon);
+			manFdCouponTag.setShowCouponImage(false);
+			manFdCouponTag.setContClass("fdCoupon_bigDayValues");
+
+			favoriteProductsLinks.append("<br />"+manFdCouponTag.getContent(pageContext));
+		}
+		
+		favoriteProductsLinks.append("</td>");
+
+		favoritesToShow++;
+
+		if (favoritesToShow==5) break;
+	%>
+</logic:iterate>
+
+<% if (favoritesToShow > 0) { %>
+	<table width="<%=W_DEPARTMENT_BOTTOM_FEATURED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td align="center" colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathBefore %>" /></td>
+		</tr>
+		<% if (hasCoupons) { %>
+			<tr valign="bottom" align="center">
+				<%=favoriteProductsCouponLogos.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
+			</tr>
+		<% } %>
+		<tr valign="bottom" align="center">
+			<%=favoriteProductsImages.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
+		</tr>
+		<tr valign="top" align="center">
+			<%=favoriteProductsLinks.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
+		</tr>
+		<tr>
+			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathAfter %>" /></td>
+		</tr>
+	</table>
+<% } %>

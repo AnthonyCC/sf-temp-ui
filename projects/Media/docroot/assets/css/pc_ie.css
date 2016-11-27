@@ -1,0 +1,118 @@
+
+
+.bodyCopySmall	{ font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
+.lineItems		{ font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
+
+.qualityRating { padding-top:4px; font-size: 10px; color: #FF9900;  font-family: Verdana, Arial, sans-serif; }
+
+.text10trebuchet { font-size: 10px; font-family: Trebuchet MS, sans-serif; }
+.text11bold      { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text12orbold	 { font-size: 12px; font-weight: bold; color: #FF9933; font-family: Verdana, Arial, sans-serif; }
+.text12gr 		 { font-size: 11px; color: #666666; font-family: Verdana, Arial, sans-serif; }
+
+
+.text13		     { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
+.text13bold		 { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text13rbold 	 { font-size: 12px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.text13gr 		 { font-size: 12px; color: #666666; font-family: Verdana, Arial, sans-serif; }
+
+.title13 		 { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+
+.text14			 { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
+.title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.titleor14		 { font-size: 13px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text14rbold 	 { font-size: 13px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+
+.text15	         { font-size: 14px; font-family: Verdana, Arial, sans-serif; }
+
+.text16 	     { font-size: 15px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
+.title16 	     { font-size: 15px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title16or	     { font-size: 15px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+
+
+.title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; }
+
+.title19 	     { font-size: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title20 	     { font-size: 19px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+
+
+.recipe_header { 
+	font-size: 13px; 
+	font-weight: bold; 
+	color: #FF9933; 
+	font-family: Verdana, Arial, sans-serif; 
+	font-variant: small-caps;
+}
+
+
+.recipe_title 	    { font-size: 14px; font-weight: bold;  font-family: Verdana, Arial, sans-serif; color: #000000;}
+
+.recipe_related {
+	font-size: 11px;
+	font-family:  Verdana, Arial, sans-serif;
+	padding-bottom: 4px;
+	margin-left: 10px; 
+	text-indent: -10px;
+}
+
+
+
+
+
+
+
+/** TIMESLOTS **/
+
+
+.slotRow, .cutoffTime {
+clear:both;
+}
+
+.slotRow {
+	float:left;
+	width:98%;
+	height: 20px;
+}
+
+.control {
+	padding: 1px 2px 0px 2px;
+	float:left;
+	width: 18px;
+	text-align: center;
+	height: 20px;
+}
+.cutoffTime {
+}
+
+
+/*********************************************************
+					< Cart&tabs tab display >
+**********************************************************/
+
+a.tab {
+	color: #845286; 
+	font: bold 8.6pt sans-serif; 
+	text-transform: uppercase; 
+	text-decoration: none;
+	font-size: expression('9pt');
+}
+
+
+
+@font-face {
+	font-family: 'Eagle';
+	src: url('fonts/eagle-light-webfont.eot');
+	src: local('☺'), url('fonts/eagle-light-webfont.woff') format('woff'), url('fonts/eagle-light-webfont.ttf') format('truetype'), url('fonts/eagle-light-webfont.svg#webfont6RHzfdZb') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Eagle-Bold';
+	src: url('fonts/eagle-book-webfont.eot');
+	src: local('☺'), url('fonts/eagle-book-webfont.woff') format('woff'), url('fonts/eagle-book-webfont.ttf') format('truetype'), url('fonts/eagle-book-webfont.svg#webfontXlJgVHrD') format('svg');
+	font-weight: bold;
+	font-style: normal;
+}
+

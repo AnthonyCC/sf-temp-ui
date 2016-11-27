@@ -1,0 +1,24 @@
+<%@page import="java.util.Collection"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
+<%
+if (search.getSpellingSuggestions() != null && !search.getSpellingSuggestions().isEmpty()) { 
+	Collection<String> sugs = search.getSpellingSuggestions();
+	String sugTerm = search.getSuggestedTerm();
+	sugs.remove(sugTerm);
+	
+	if(!sugs.isEmpty()) {
+// DID YOU MEAN
+%>
+Did you mean <%
+	Iterator<String> sugIt = sugs.iterator(); int sugI = 0;
+	while (sugIt.hasNext()) {
+		String sug = sugIt.next();
+		if(sug.equals(sugTerm)) continue;
+		String sep = sugI == 0 ? "" : (sugI + 1 == sugs.size() ? " or " : ", ");
+%><%= sep %><a href="?searchParams=<%= StringUtil.escapeUri(sug)%>&amp;fromDym=1&amp;trk=dym"><%=sug%></a><%
+		sugI++;
+	}
+%>?
+<% }
+}%>

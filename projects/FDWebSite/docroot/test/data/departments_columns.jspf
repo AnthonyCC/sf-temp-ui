@@ -1,0 +1,3 @@
+
+      <li><label><input onclick="toggle_column('dept_id')" id="dept_id" type="checkbox" /> Department id</label>
+      <li><label><input onclick="toggle_column('bpath')" id="bpath" type="checkbox" /> Browse Path</label>

@@ -1,0 +1,287 @@
+.tvMainDiv
+{
+	width: 100%;
+	height:680px;
+	overflow-y: scroll;	
+	
+}
+
+.eXtremeTable 
+{
+	background-color: #4C4C4C;
+	margin: 0;
+	padding: 0;
+	border: none 0px white;
+}
+
+
+
+.eXtremeTable select {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	border: none 1px white;
+}
+
+.eXtremeTable .tableRegion {
+	border: 1px solid silver;
+	padding: 2px;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	margin-top: 7px;
+}
+
+.eXtremeTable .filter {
+	background-color: #4C4C4C;
+}
+
+.eXtremeTable .filter td {
+	padding: 2px;
+}
+
+.eXtremeTable .title {
+	color: #444444;
+	font-weight: bold;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 14pt;
+	vertical-align: middle;
+}
+
+.eXtremeTable .titleRow {
+	background-color: #4C4C4C;
+}
+
+.eXtremeTable .titleRow td {	
+	padding-top: 2px;
+	padding-bottom: 2px;
+	vertical-align: middle;
+	text-align: center;
+	border: none 1px white;
+}
+
+.eXtremeTable .titleRow span {
+	color: #444444;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.eXtremeTable .filter input {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	border: solid 1px grey;
+	padding: 1px;
+}
+
+.eXtremeTable .filter select {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	border: solid 1px #EEE;
+}
+
+.eXtremeTable .tableHeader {
+	background-color: #4C4C4C;
+	color: white;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 17px;
+	font-weight: bold;
+	text-align: center;
+	padding-right: 3px;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin: 0px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-color: white;
+	border: none 2px white;	
+}
+
+.eXtremeTable .tableHeaderSort {
+	background-color: #4C4C4C;
+	color: white;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: left;
+	padding-right: 3px;
+	padding-left: 3px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-color: white;
+}
+
+.eXtremeTable .odd a, .even a , .even obsoleteRow, .even confirmedRow  {
+	color: Black;
+	font-size: 10px;
+}
+
+.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td{
+	padding-top: 2px;
+	padding-right: 3px;
+	padding-bottom: 2px;
+	padding-left: 3px;
+	vertical-align: middle;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 15px;	
+	border: none 1px white;
+	font-weight: bold;
+	text-align: center;
+	height:25px;
+}
+
+.eXtremeTable .odd {
+	background-color: #5E5E5E;
+	color: white;
+	border: solid 1px white;
+}
+
+.eXtremeTable .even {
+  	background-color: #4C4C4C;
+  	color: white;  	
+}
+.eXtremeTable .red {
+  	background-color: #4C4C4C;
+  	color: red; 
+  	height:1px;  	
+}
+.eXtremeTable .red td 
+{
+	background-color: #4C4C4C;	
+	color: red;  
+	height:1px; 
+}
+.eXtremeTable .obsoleteRow {
+  	background-color: #4C4C4C;
+}
+
+.eXtremeTable .confirmedRow {
+  	background-color: #4C4C4C;
+}
+
+.eXtremeTable .highlight td {
+	color: black;
+	font-size: 10px;
+	padding-top: 2px;
+	padding-right: 3px;
+	padding-bottom: 2px;
+	padding-left: 3px;
+	vertical-align: middle;
+	background-color: #fdecae;
+}
+
+.eXtremeTable .highlight a, .highlight a {
+	color: black;
+	font-size: 10px;
+}
+
+.eXtremeTable .compactToolbar {
+	background-color: #4C4C4C;
+}
+
+.eXtremeTable .toolbar {
+	background-color: #4C4C4C;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	margin-right: 1px;
+	border-right: 1px solid silver;
+	border-left: 1px solid silver;
+	border-top: 1px solid silver;
+	border-bottom: 1px solid silver;
+}
+
+.eXtremeTable .toolbar a:hover {
+	background-color: transparent;
+}
+
+.eXtremeTable .toolbar td {
+	color: #444444;
+	padding: 0px 3px 0px 3px;
+	text-align:center;
+}
+
+.eXtremeTable .separator {
+	width: 7px;
+}
+
+.eXtremeTable .statusBar {
+	background-color: #4C4C4C;
+	color: white;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+}
+
+.eXtremeTable .filterButtons {
+	background-color: #4C4C4C;
+	text-align: right;
+}
+
+.eXtremeTable .title span {
+	margin-left: 7px;
+}
+
+.eXtremeTable .formButtons {
+	display: block;
+	margin-top: 10px;
+	margin-left: 5px;
+}
+
+.eXtremeTable .formButton {
+	cursor: pointer;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size:10px;
+	font-weight: bold;
+	background-color: #308dbb;
+	color: white;
+	margin-top: 5px;
+	border: outset 1px #333;
+	vertical-align: middle;
+}
+
+.eXtremeTable .calcRow {
+	background-color: #4C4C4C;
+}
+
+.eXtremeTable .calcTitle {
+	background-color: #4C4C4C;
+	color: black;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 10px;
+}
+
+.eXtremeTable .calcResult {
+	background-color: #4C4C4C;
+	color: black;
+	font-family: verdana, arial, helvetica, sans-serif;
+}
+
+
+.eXtremeTable .editinput {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	border: solid 1px #EEE;
+}
+.tv_header
+{
+	background-color: green;
+	color: white;
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 20px;
+}
+.tv_time
+{
+	background-color: orange;
+	color: white;	
+	font-weight: bold;
+	text-align: center;
+	font-size: 15px;
+}
+.tv_time1
+{
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 15px;
+}
+

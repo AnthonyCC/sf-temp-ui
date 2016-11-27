@@ -1,0 +1,17 @@
+<%@ page import='com.freshdirect.fdstore.atp.*';%>
+<%
+    boolean displayLimitedAvailability = false;
+    SkuModel a_sku = __prd.getSku(product.getSkuCode());
+    if (!displayLimitedAvailability && displayShortTermUnavailability 
+    					&& shortTermUnavailable.size() > 0 
+    					&& shortTermUnavailableSkus.contains(a_sku.getSkuCode())) {
+    	
+        Date earliestDate = a_sku.getEarliestAvailability();
+        // cheat: if no availability indication, show the horizon as the
+        //        earliest availability
+        if ( earliestDate == null ) {
+            earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
+        }
+        %><font class="text11rbold">Earliest Available <%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><% 
+    }
+%>

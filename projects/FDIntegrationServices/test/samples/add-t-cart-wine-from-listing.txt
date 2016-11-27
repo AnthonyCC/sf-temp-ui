@@ -1,0 +1,17 @@
+quantity=1&
+productId=usq_arg_asti_malb&
+wineCatId=usq_arg&
+skuCode=WIN0073200&
+quantity_big_1=1&
+addSingleToCart_big.x=28&
+addSingleToCart_big.y=7&
+quantity_big_2=1&
+quantity_big_3=1&
+quantity_big_4=1&
+quantity_big_5=1&
+quantity_big_6=1&
+quantity_big_7=1&
+quantity_big_8=1&
+quantity_big_9=1&
+quantity_big_10=1&
+quantity_big_11=1

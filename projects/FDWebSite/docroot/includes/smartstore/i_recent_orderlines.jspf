@@ -1,0 +1,98 @@
+<%
+// Display recent order lines
+// Used primarily in view_cart.jsp
+// It's made up with SmartStore design
+//
+// @author segabor
+//
+// @param cart customer's cart, instance of FDCartModel
+// @param currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+//
+%><%@ page import="java.util.Iterator"
+%><%@ page import="java.util.Locale"
+%><%@ page import="com.freshdirect.fdstore.customer.FDCartLineModel"
+%><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%><%@ page import="com.freshdirect.fdstore.ecoupon.*"
+%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<style>
+.rol-tl {
+	width: 36px;
+	height: 32px;
+	position: absolute;
+	top: -1px;
+	left: -1px;
+}
+.rol-tr {
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	top: -1px;
+	right: -1px;
+}
+.rol-bl {
+	width: 36px;
+	height: 6px;
+	position: absolute;
+	bottom: -1px;
+	left: -1px;
+}
+.rol-br {
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	bottom: -1px;
+	right: -1px;
+}
+</style>
+<!--[if IE 6]>
+<style>
+.rol-tr {
+	right: -2px;
+}
+.rol-br {
+	right: -2px;
+	bottom: -2px;
+}
+.rol-bl {
+	bottom: -2px;
+}
+</style>
+<![endif]-->
+<%
+// NOTE: this snippet is copied from i_recommender_tabs.jspf
+// Keep the principal values sync'ed!
+int imageWidth = 970;
+final String __uri = request.getRequestURI();
+if(__uri.indexOf("quickshop") > -1) {
+	if (__uri.endsWith("index.jsp"))
+		imageWidth = 740; // QS main page
+	else
+		imageWidth = 601; // QS inner pages
+}
+%>
+<div style="text-align: left; width: <%=(imageWidth-2)%>px; border: 1px solid #996699; position: relative; background-image: url('/media_stat/images/layout/dyf_purple_span.gif'); background-position: left; background-repeat: repeat-y;">
+	<!-- corners -->
+	<img src="/media_stat/images/layout/dyf_conf_tl.gif" class="rol-tl"/>
+	<img src="/media_stat/images/layout/dyf_conf_tr.gif" class="rol-tr"/>
+	<img src="/media_stat/images/layout/dyf_conf_bl.gif" class="rol-bl"/>
+	<img src="/media_stat/images/layout/dyf_conf_br.gif" class="rol-br"/>
+	<img src="/media_stat/images/layout/dyf_conf_hdr.gif" style="width: 235px; height: 10px; padding: 8px 0 7px 44px;"/>
+	<table cellspacing="0" cellpadding="0" style="border: 0; width: <%=(imageWidth - 62)%>px; margin: 0px 0px 6px 64px;">
+<%
+		for (Iterator oit = cart.getRecentOrderLines().iterator();oit.hasNext();) {
+			FDCartLineModel orderLine = (FDCartLineModel)oit.next();
+			EnumCouponContext couponContextCnT = EnumCouponContext.VIEWCART;
+			FDCustomerCoupon curCoupon_viewcartCnT = user.getCustomerCoupon(orderLine, couponContextCnT);
+%>
+		<tr>
+			<td><%= orderLine.getDisplayQuantity() %></td>
+			<td><%= orderLine.getDescription() %><display:FDCoupon coupon="<%= curCoupon_viewcartCnT %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon></td>
+			<td style="text-align: right; padding-right: 80px;"><%= JspMethods.formatPrice(orderLine.getPrice()) %></td>
+		</tr>
+<%
+		}
+%>
+	</table>
+</div>

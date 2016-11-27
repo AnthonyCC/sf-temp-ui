@@ -1,0 +1,65 @@
+{namespace browse}
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ * @param? cssclass css class v22 - 2+2 products, v31 - 3+1 products
+ */
+{template .classedCarousels autoescape="false"}
+  {if $carousel1 or $carousel2}
+  <div class="carousels {$cssclass}">
+    {call browse.carousels}
+      {param carousel1: $carousel1 /}
+      {param carousel2: $carousel2 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ */
+{template .carousels autoescape="false"}
+  {if $carousel1 or $carousel2}
+    <table class="{if $carousel1}hasCarousel1{else}noCarousel1{/if} {if $carousel2}hasCarousel2{else}noCarousel2{/if}">
+      <tr class="header">
+        <td class="c1">
+          <div>
+            <h2>{if $carousel1}{$carousel1.name}{/if}</h2>
+          </div>
+        </td>
+        <td class="spacer" rowspan="2"><div></div></td>
+        <td class="c2">
+          <div>
+            <h2>{if $carousel2}{$carousel2.name}{/if}</h2>
+          </div>
+        </td>
+      </tr>
+      <tr class="ccontent">
+        <td class="c1" {if $carousel1}data-cmeventsource="{$carousel1.cmEventSource}"{/if}>
+          <div class="cholder">
+          {if $carousel1}
+            {call common.simpleCarousel}
+        	    {param items: $carousel1.products /}
+    	        {param itemType:'grid' /}
+	           	{param cmEventSource:$carousel1.cmEventSource /}
+            {/call}
+          {/if}
+          </div>
+        </td>
+        <td class="c2">
+          <div class="cholder">
+          {if $carousel2}
+            {call common.simpleCarousel}
+        	    {param items: $carousel2.products /}
+    	        {param itemType:'grid' /}
+	           	{param cmEventSource:$carousel2.cmEventSource /}
+            {/call}
+          {/if}
+          </div>
+        </td>
+      </tr>
+    </table>
+  {/if}
+{/template}
+

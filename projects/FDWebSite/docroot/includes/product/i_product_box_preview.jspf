@@ -1,0 +1,109 @@
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.EnumBurstType"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
+<%@page import="com.freshdirect.fdstore.*"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.FDProduct"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+
+<% /* 
+	
+	input parameters:
+		@pi - ProductImpression - product impression constructed from product model using DefaultProductConfigurationStrategy
+		@trk - String - tracking code
+ */ 
+ 
+ 
+{ // local variables box
+	Integer seq = (Integer) request.getAttribute("i_product_box_counter");
+	if (seq == null) {
+		seq = 0;
+	}
+
+	String imageSize = "detail";
+	ProductModel pm = pi.getProductModel();	
+	FDCustomerCoupon curCoupon = null;
+	if ( null != pm.getDefaultSku() && pm.getDefaultSku().getProductInfo() != null ){
+		curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+	}
+%>
+
+<%@page import="com.freshdirect.fdstore.FDProduct"%><display:ProductAvailability id="productAvailability" product="<%= pm %>">
+<%
+	String unavailableClass = "";
+	String statusPlaceholderId = "instant_atc_status_" + seq;
+	if (!productAvailability.isFullyAvailable())
+		unavailableClass = "grid-item-unavailable";
+%>
+<div class="grid-item <%= unavailableClass %>">
+<div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div>
+<display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
+<div class="grid-item-image"><span class="grid-item-image-helper"></span>
+<a>
+<%
+  		FDProduct fdproduct = null;
+        try {
+        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
+           
+		if ( JspMethods.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+			imageSize = "zoom";
+		}
+       } catch (Exception fdsnf){
+       }
+%>
+<fd:USQProductBurst product="<%=pm%>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/><span class="burst <%= burstClass %>"></span></a>
+</div>
+</display:ProductBurstClass>
+<div class="grid-item-rating">
+<a><display:ProductRating product="<%= pm %>" noBr="true"/></a>
+</div>
+<div class="grid-item-name">
+<a><display:ProductName product="<%= pm %>"/></a>
+</div>
+<div class="grid-item-price-description"><display:ProductPriceDescription impression="<%= pi %>"/></div>
+<div class="grid-item-price">
+<% if (productAvailability.isFullyAvailable()) { %>
+<display:ProductDefaultPrice product="<%= pm %>" showDescription="true"/>
+<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(<span style="text-decoration: line-through;"><display:ProductWasPrice product="<%= pm %>"/></span>)</span><% } %>
+<display:ProductAboutPrice product="<%= pm %>" />
+<% } %>
+<a class="product-group-price-link"><display:ProductGroupPricing product="<%= pm %>"/></a>
+</div>
+
+		<div class="grid-item-coupon">
+			<% 
+				String couponStatusPlaceholderId = null;
+				String fDCouponContClassProdBox = "";
+				if (curCoupon != null) {
+				couponStatusPlaceholderId = "instant_atc_couponStatus_" + seq;
+			%>
+				<display:FDCoupon coupon="<%= curCoupon %>" contClass="<%= fDCouponContClassProdBox %>" couponStatusPlaceholderId="<%= couponStatusPlaceholderId %>"></display:FDCoupon>
+			<% } %>
+		</div>
+<div class="grid-item-controls">
+<span class="grid-item-controls-content">
+<%
+	if (!productAvailability.isFullyAvailable()) {
+		%>Sorry! Unavailable!<%		
+	}
+%>
+</span>
+		<div class="grid-item-status" id="<%= statusPlaceholderId %>">
+	    	<div class="grid-item-status-in-cart"><fd:ProductCartStatusMessage product="<%= pm %>"/></div>
+			<div class="grid-item-status-added"></div>
+		</div>
+	</div>
+	<div class="grid-item-separator"></div>
+</div><!--  grid-item -->
+</display:ProductAvailability>
+<%
+	++seq;
+	request.setAttribute("i_product_box_counter", seq);
+} // local variables box %>

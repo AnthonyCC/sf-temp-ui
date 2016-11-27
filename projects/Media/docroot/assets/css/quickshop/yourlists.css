@@ -1,0 +1,78 @@
+.rounded-box .shoppinglists-manage {
+  cursor: pointer;
+  line-height: 24px;
+  text-align: center;
+  background-color: #e4cee4;
+  color: #333;
+  border: 1px solid #dbccdb;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-size: 11px;
+}
+
+[data-feature-quickshop="2_0"] .shoppinglists-manage {
+  color: #360;
+  margin: 0 12px 0 12px;
+  cursor: pointer;
+}
+
+.rounded-box .shoppinglists-manage:after {
+  font-family: 'freshdirect_icons';
+  content: "\e619";
+  vertical-align: bottom;
+  font-size: 1.4em;
+  display: inline-block;
+  margin: 0 0 -1px 2px;
+}
+
+.no-touch .shoppinglists-manage:hover span {
+  text-decoration: underline;
+}
+
+[data-feature-quickshop="2_0"] .shoppinglists-manage:before {
+  content: ' ';
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  background: url(/media_stat/images/quickshop/bullet-orange.png) no-repeat;
+  margin-right: 4px;
+}
+
+.no-touch[data-feature-quickshop="2_0"] .shoppinglists-manage:hover {
+  text-decoration: underline;
+}
+
+.no-touch .checkboxlist.shoppinglists-list {
+  overflow: auto;
+  max-height: 375px;
+}
+
+.rounded-box .checkboxlist.shoppinglists-list li span.list {
+  display: block;
+  line-height: 14px;
+  color: #360;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.no-touch .checkboxlist.shoppinglists-list li:hover .list-name {
+  text-decoration: underline;
+}
+
+.checkboxlist.shoppinglists-list li span.list.selected {
+  background-color: #669933;
+  color: #fff;
+}
+
+.checkboxlist.shoppinglists-list li span.list i {
+  font-size: .8em;
+  font-style: normal;
+}
+
+.shoppinglists-list .info {
+  font-size: 7px;
+  font-weight: bold;
+  color: #360;
+}
+.shoppinglists-list .selected .info {
+  color: #fff;
+}

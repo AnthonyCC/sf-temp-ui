@@ -1,0 +1,110 @@
+body {
+	border-top:1px solid #ccc;	
+	margin:8px 0 0 0;
+	padding:8px 0 0 0;
+	font-family:arial,sans-serif;
+	font-size:12px;
+	background:url(/media_stat/images/locationbar/more_info_bg.png) no-repeat right 16px;
+	overflow: hidden;
+}
+
+body.cos {
+	background:none;
+}
+
+form {	
+	padding:0;
+	overflow:hidden;
+	position:relative;
+}
+
+fieldset {
+	border:none;
+	display:inline-block;
+	vertical-align:top;
+	text-align:right;
+	width:260px;
+	padding:0px;
+	margin:8px 0px;
+}
+
+.right {
+	position:absolute;
+	left:260px;
+	height:100%;
+	margin:0;
+	top:0;
+}
+
+label {
+	font-weight:bold;
+	font-family:verdana,arial,sans-serif;
+	font-size:13px;
+	width:140px;
+	display:inline-block;
+	padding-right:0.5em;
+}
+
+input {
+	font-size:13px;
+	border:1px solid #cccdd0;
+	border-radius:2px;
+	width:100px;
+}
+
+#state {
+	width:2em;
+}
+
+#zipcode {
+	width:5em;
+}
+
+#apartment {
+	width:8em;
+}
+
+#header {
+
+}
+#footer {
+	border-top:1px dotted #ccc;
+	overflow:hidden;
+	padding-top:8px;
+	line-height:33px;
+	height:33px;
+}
+
+#footer_text, #login { float: left; }
+#login,#continue {
+	display:inline-block;
+	vertical-align:middle;
+}
+
+#login {
+	margin-left:1em;
+	width:106px;
+	height:30px;
+	background:url(/media_stat/images/locationbar/button_login_popup.png) no-repeat top left;
+}
+
+
+#login img {
+	vertical-align:middle;
+}
+
+#continue {
+	float:right;
+}
+
+#chkaddress {
+	border:none;
+	width:auto;
+	margin-top:6px;
+}
+
+.errorlabel {
+	color:red;
+	font-size:9px;
+	font-weight: bold;
+}

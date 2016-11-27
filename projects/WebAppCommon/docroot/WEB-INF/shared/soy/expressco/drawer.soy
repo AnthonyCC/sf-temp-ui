@@ -1,0 +1,117 @@
+{namespace expressco}
+
+/**
+ * @param drawers
+ * @param? mobWeb
+ */
+{template .drawer autoescape="false"}
+{if $mobWeb}
+	{call .drawermobweb}
+		{param drawers: $drawers /}
+		{param mobWeb: $mobWeb /}
+	{/call}
+{else}
+	{if $drawers and isNonnull($drawers)}
+		<div data-component="drawer" data-drawer-columns="3">
+		  <nav class="drawer-header" role="tablist">
+			{foreach $drawer in $drawers}
+			  {call .drawerheader}
+				{param title: $drawer.title /}
+				{param id: $drawer.id /}
+				{param enabled: $drawer.enabled /}
+				{param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
+			  {/call}
+			{/foreach}
+		  </nav>
+		  <div class="drawer-content">
+			<ul data-drawer-default>
+			  {foreach $drawer in $drawers}
+				{call .drawerpreview}
+				  {param preview: $drawer.preview /}
+				  {param id: $drawer.id /}
+				{/call}
+			  {/foreach}
+			</ul>
+			{foreach $drawer in $drawers}
+			  {call .drawercontent}
+				{param content: $drawer.content /}
+				{param id: $drawer.id /}
+			  {/call}
+			{/foreach}
+		  </div>
+		</div>
+	{/if}
+{/if}
+{/template}
+
+/**
+ * @param drawers
+ * @param? mobWeb
+ */
+{template .drawermobweb autoescape="false"}
+	{if $mobWeb}{/if}
+	{if $drawers and isNonnull($drawers)}
+		<div data-component="drawer" data-drawer-columns="1">
+		
+			{foreach $drawer in $drawers}
+				<nav class="drawer-header" role="tablist">
+					{call .drawerheader}
+						{param title: $drawer.title /}
+						{param id: $drawer.id /}
+						{param enabled: $drawer.enabled /}
+						{param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
+					{/call}
+				</nav>
+				<div class="drawer-content">
+					<ul data-drawer-default>
+						{call .drawerpreview}
+							{param preview: $drawer.preview /}
+							{param id: $drawer.id /}
+						{/call}
+					</ul>
+					{call .drawercontent}
+						{param content: $drawer.content /}
+						{param id: $drawer.id /}
+					{/call}
+				</div>
+			{/foreach}
+		</div>
+	{/if}
+{/template}
+
+/**
+ * @param title
+ * @param id
+ * @param enabled
+ * @param? onOpenCoremetrics
+ */
+{template .drawerheader autoescape="false"}
+<li id="{$id}-tab" role="tab" tabindex="0" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
+  <h2>{$title}</h2>
+  {if $enabled}
+    <button class="change cssbutton green small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change<span class="offscreen">{$title}</span></button>
+    <button class="cancel cssbutton red small">Cancel<span class="offscreen">{$title} Change</span></button>
+  {/if}
+</li>
+{/template}
+
+/**
+ * @param preview
+ * @param id
+ */
+{template .drawerpreview autoescape="false"}
+<li data-drawer-default-content="{$id}">{$preview ? $preview : ''}</li>
+{/template}
+
+/**
+ * @param content
+ * @param id
+ */
+{template .drawercontent autoescape="false"}
+<div id="{$id}-tab-content" data-drawer-content="{$id}" role="tabpanel" tabindex="0" aria-labelledby="{$id}-tab">
+  <div>
+    {$content ? $content : ''}
+  </div>
+</div>
+{/template}
+

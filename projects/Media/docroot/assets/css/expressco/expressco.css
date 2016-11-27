@@ -1,0 +1,222 @@
+#expresscheckout {
+  width: 100%;
+  border-top: 1px solid #e1e1e1;
+  position: relative;
+}
+
+#expresscheckout:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: -moz-linear-gradient(top,  rgba(237,237,237,1) 0%, rgba(237,237,237,0.01) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(100%,rgba(237,237,237,0.01))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#03ededed',GradientType=0 ); /* IE6-8 */
+  z-index: 1;
+}
+
+#expresscheckout > div {
+  position: relative;
+  z-index: 2;
+}
+
+.checkout__footer{
+  margin-top:70px;
+  text-align:center;
+}
+
+.checkout__footer-rights,
+.checkout__footer-links{
+  font-size:14px;
+  margin:0.5em 0;
+}
+
+#successpage .header{
+  text-align:center;
+  margin:40px 0;
+}
+
+#successpage .headline{
+  text-transform:uppercase;
+  font-size:28px;
+  font-weight:bold;
+  margin:0;
+}
+
+#successpage .subhead{
+  font-size:16px;
+  margin:0;
+  color:#666;
+}
+
+#successpage .drawer-header button{
+  display:none;
+}
+
+.checkout__header{
+  height:52px;
+  position:relative;
+  background:#fff;
+}
+
+.checkout__header .header-logo,
+.checkout__header .header-needhelp{
+  position:absolute;
+}
+
+.checkout__header .header-logo{
+  top:5px;
+  left:0;
+}
+
+.checkout__header .header-needhelp{
+  top:0;
+  right:0;
+  font-size:12px;
+  color:#666;
+}
+
+.checkout-contentheader{
+  position:relative;
+  border-bottom:1px solid #ddd;
+}
+
+.checkout-contentheader h2{
+  font-size:22px;
+  color:#333;
+  font-weight:bold;
+  margin:0;
+  line-height:44px;
+}
+
+.checkout-contentheader a{
+  position:absolute;
+  right:0;
+  top:4px;
+  font-size:14px;
+  color:#693;
+  text-decoration:none;
+}
+
+#expresscheckout #timeslots_grid.float_children{
+  overflow-x:visible;
+}
+
+#expresscheckout #tsContainer{
+  margin:0 auto;
+}
+
+#expresscheckout #modifyorder{
+  margin-bottom:30px;
+}
+
+#content button.cssbutton.xc-addaction{
+  font-size:16px;
+  line-height:16px;
+}
+.checkout-wallet-button{
+	margin-bottom: 16px;
+}
+#payment-method-separator{
+		font-size: 11px;
+    	font-weight: bold;
+		color: rgb(102,102,102);
+		margin: 10px 0 10px;
+}
+#payment-method-separator hr{
+	display: inline-block;
+	width: 60px;
+}
+#payment-method-separator span{
+	font-size: 15px;
+	padding: 0 20px;
+}
+.wallet-error-msg{
+	padding-bottom: 4px;
+}
+.wallet-error-msg span{
+	color: #c94747;
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: top;
+	width: 180px;
+    display: inline-block;
+    text-align: left;
+    margin-left: 4px;
+}
+#PP_button, #MP_button {
+	padding: 0;
+}
+
+  /* Tooltip: Default, Hover */
+  span.tooltip,
+  a.tooltip{
+    color: #888888;
+    border-bottom: 1px dashed #888888;
+    text-decoration: none;
+    position: relative;
+  }
+  span.tooltip:hover,
+  a.tooltip:hover{
+    color: #333333;
+    border-bottom: 1px dashed #222222;
+    text-decoration: none;
+  }
+  span.tooltip:focus,
+  a.tooltip:focus{
+    color: #333333;
+    border-bottom: 1px dashed #222222;
+    text-decoration: none;    
+    outline-style: solid;
+    outline-color: #ffffff;
+    outline-width: thick;     
+  }
+ 
+  span.icon-info-before {
+  	color: #888;
+  	font-size: 18px;
+  	position: relative;
+  	z-index: 98;
+  	display: inline-block;
+  	vertical-align: top;
+  	/*top: -10px;*/
+  }
+	.eTippingEnabled span.icon-info-before {
+		float: right;
+	}
+	
+	#optionalToolTip{
+		margin-right: 40px;
+	}
+	
+	.st_val .icon-info-before{
+		display:none;
+	}
+  
+  .tooltip_holder:hover span.icon-info-before,
+  .tooltip_holder:focus span.icon-info-before,
+  .tooltip_holder:active span.icon-info-before {
+  	z-index: 1001;
+  	color: #458d4e;
+  }
+  
+
+.checkout .eTippingEnabled .subtotal__rowcell-left {
+    color: #666;
+}
+
+.checkout .eTippingEnabled a.note{
+  font-size: 12px;
+}
+
+.checkout .eTippingEnabled  .subtotal__rowcell-mid {
+    color: #333;
+}  
+

@@ -1,0 +1,185 @@
+<%--
+	
+	based on footer.jspf
+		
+--%><%@page import="com.freshdirect.webapp.util.FDFaqUtil"%>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+
+<%@ page import='java.util.*' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+  <%@ include file="/common/template/includes/footer_grid24.jspf" %>
+<% } else { %>
+	<%
+	//expanded page dimensions
+	final int W_FOOTER_TOTAL = 970;
+	%>
+	
+	<%-- twitter api 
+	<script>!function(d,s,id){
+		var js,fjs=d.getElementsByTagName(s)[0];
+		if(!d.getElementById(id)){js=d.createElement(s);
+		js.id=id;js.src="//platform.twitter.com/widgets.js";
+		fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+	</script>
+	--%>
+	<div class="container footer-nav">
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
+		<% 
+			String bottomUri = request.getRequestURI();
+			String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
+			String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
+			
+			String botNav = "off";
+			
+			if (bottomUri.indexOf("/about/index.jsp") > -1) {
+			    botNav = "aboutus";
+			} else if (bottomUri.indexOf("/myfd") > -1) {
+			    botNav = "myfd";
+			} else if (bottomUri.indexOf("/jobs/intro") > -1) {
+			    botNav = "careers";
+			} else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
+			    botNav = "giftcards";
+			} else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) {
+			    botNav = "newprod";
+			} else if(!deptId.equals("") && deptId.equalsIgnoreCase("cmty")) {
+			    botNav = "community";
+			} else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) {
+			    botNav = "billorrights";
+			} else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) {
+			    botNav = "office";
+			} else {
+			    botNav = "off";
+			}
+			//since the gift card url is dynamic, check for other query values before adding the trk attribute
+			boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
+			String giftPath = FDStoreProperties.getGiftCardLandingUrl() + (gcUrlHasOtherQueryVals?"&":"?")+"trk=bnav";
+			
+			
+			/* move footer nav to media
+			 *	this may need code support from time to time (when new items are added)
+			 */
+			Map<String, String> params = new HashMap<String, String>();
+			
+			params.put("botNav", botNav);
+			params.put("careerLink", FDStoreProperties.getCareerLink());
+			params.put("giftPath", giftPath);
+			params.put("bottomUri", bottomUri);
+			params.put("deptId", deptId);
+			params.put("catId", catId);
+          	
+		%><fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
+			<%-- no media, include code version --%>
+          	<table width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" ><tr><td><%@ include file="/common/template/includes/footer_table.jspf" %></td></tr></table>
+		</fd:IncludeMedia>
+		<div style="padding: 5px 0px;">
+			<% if (!new BrowserInfo(request).isIE6()) { %>
+				<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
+					<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+					<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+					<div style="width: 81px; overflow: hidden;">
+						<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+						<div class="atclear"></div>
+					</div>
+					<div class="atclear"></div>
+				</div>
+				<script type="text/javascript">
+					var addthis_config = {
+						data_ga_property: 'UA-20535945-1',
+						data_ga_social : true
+					};
+			
+					if (!window['initAddThis']) {
+						window['initAddThis'] = function() {
+							if (window['addthis']) {
+								addthis.init();
+							} else {
+								setTimeout(initAddThis, 1000);
+							}
+						};
+						$jq(window).ready(function () {
+							var at = document.createElement('script'); 
+								at.type = 'text/javascript'; 
+								at.async = true;
+								at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
+							var sat = document.getElementsByTagName('script')[0]; 
+								sat.parentNode.insertBefore(at, sat);
+								initAddThis();
+						});
+					}
+				</script>
+			<% } else { %>
+				<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+			<% } %>
+			<div style="float: left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
+			<div style="float: left"  class="text11bold">
+				<a href="/category.jsp?catId=mobile&amp;trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/mobile_apps.gif" width="25" height="36" alt="Our Mobile Apps" /></a>
+				<a href="/category.jsp?catId=mobile&amp;trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
+			</div>
+			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
+			<div style="float:left"  class="text11bold">
+				<a href="/department.jsp?deptId=COS&amp;trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office" /></a>
+				<a href="/department.jsp?deptId=COS&amp;trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+			</div>
+			<div style="float: left; width: 1px; height: 40px; margin: 0px 10px" class="dotted_separator_v"></div>
+			<div style="float: right; padding: 10px 5px 0px 5px"  class="text11bold">
+				<style type="text/css" scoped>
+					.footer_nav-itemMargin {
+						margin-left: 8px;
+					}
+					.footer_nav-seperator1 {
+						color: #999;
+						font-weight: bold;
+						display: inline-block;
+					}}
+				</style>
+				<a href="/index.jsp">Home</a>
+				<span class="footer_nav-seperator1 footer_nav-itemMargin">|</span>
+				<a href="/your_account/manage_account.jsp" class="footer_nav-itemMargin">Your Account</a>
+				<span class="footer_nav-seperator1 footer_nav-itemMargin">|</span>
+				<a href="/help/index.jsp" class="footer_nav-itemMargin">Help/FAQ</a>
+				<span class="footer_nav-seperator1 footer_nav-itemMargin">|</span>
+				<a href="/help/index.jsp?trk=bnav" class="footer_nav-itemMargin">Contact Us</a>
+			</div>
+				
+			<div style="width: 100%; height: 1px" class="dotted_separator_h"></div>
+			<div class="text11" style="padding-top: 10px; text-align: center;">
+				<style type="text/css" scoped>
+					.footer_nav-itemMargin4px {
+						margin-left: 4px;
+					}
+					.footer_nav-seperator2 {
+						color: #999;
+						display: inline-block;
+					}}
+				</style>
+				<%@ include file="/shared/template/includes/copyright.jspf" %><br />
+				
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
+				
+				<a href="/help/privacy_policy.jsp" class="footer_nav-itemMargin4px">Privacy Policy</a>
+				<span class="footer_nav-seperator2 footer_nav-itemMargin4px">|</span>
+				<a href="/help/terms_of_service.jsp" class="footer_nav-itemMargin4px">Customer Agreement</a>
+				<span class="footer_nav-seperator2 footer_nav-itemMargin4px">|</span>
+				<a href="/help/aol_note.jsp" class="footer_nav-itemMargin4px">A note on images for AOL users</a>
+				
+				<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+			</div>
+		</div>
+	</div>
+	<%
+		String turi = request.getRequestURI();
+		String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
+	
+		if(turi.indexOf("help") > -1){
+			faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
+		}
+	%>
+<% } %>

@@ -1,0 +1,41 @@
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@ taglib uri='freshdirect' prefix='fd' %><%
+//build department navigation
+
+List<DepartmentModel> storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
+
+final String qsDeptId = "";
+final boolean hasDeptId = false;
+
+
+if (storeDepartments.size() > 0) {
+	Collections.sort(storeDepartments, DepartmentModel.DepartmentNameComparator);
+
+	if (!hasDeptId) {
+%>	<option value="/quickshop/every_item.jsp?qsDeptId=all">ALL DEPARTMENTS</option>
+<%
+	}
+
+	for (DepartmentModel thisDept : storeDepartments) {
+%>	
+<fd:QuickShopController id="qCart" orderId="every" action="">
+	<%      // checks if customer has shopped from this dept.  If not, don't show dept. APPDEV-203
+		if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
+
+			//if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+			if (!thisDept.isHidden() && !thisDept.isHidddenInQuickshop()) {
+				if (!hasDeptId) {
+%>	<option value="/quickshop/every_item.jsp?qsDeptId=<%= thisDept.getContentName() %>"><%= thisDept.getFullName() %></option>
+<%
+				}
+
+			}
+		}
+%></fd:QuickShopController><%
+	} 
+}
+%>

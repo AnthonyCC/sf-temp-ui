@@ -1,0 +1,47 @@
+alter table cust.agent modify(user_id varchar2(30 byte));
+alter table cust.agent modify(password varchar2(30 byte));
+alter table cust.lateissue modify(agent_user_id varchar2(30 byte));
+alter table cust.agent add(LDAP_ID varchar2(30 byte));
+
+alter table cust.ROLE add(LDAP_ROLE_NAME varchar2(30 byte));
+alter table cust.case add (PRIVATE_CASE char(1));
+
+
+Insert into CUST.CASE_QUEUE   (CODE, NAME, DESCRIPTION) Values   ('SEQ', 'Security', 'Security Queue');
+
+Insert into CUST.CASE_SUBJECT  (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('SEQ-001', 'FD Customer', 'SEQ', 'LO');
+Insert into CUST.CASE_SUBJECT  (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('SEQ-002', 'Non-FD Customer', 'SEQ', 'LO');
+Insert into CUST.CASE_SUBJECT  (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('SEQ-003', 'Internal', 'SEQ', 'LO');
+
+CREATE TABLE cust.role_old  AS (SELECT * FROM cust.role);
+
+update cust.role r set R.LDAP_ROLE_NAME='CRM_Agent', R.NAME='Agent1' where code='CSR';
+update cust.role r set R.LDAP_ROLE_NAME='CRM_Administrator' where code='ADM';
+update cust.role r set R.LDAP_ROLE_NAME='CRM_Transportation' where code='TRN';
+update cust.role r set R.LDAP_ROLE_NAME='CRM_Supervisor' where code='SUP';
+update cust.role r set R.LDAP_ROLE_NAME='CRM_System' where code='SYS';
+
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('DEV', 'Developer', 'IT Developer','CRM_Developer');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('QA', 'QA', 'QA Team member','CRM_QA');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('SEC', 'Security', 'Security Team','CRM_Security');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('FIN', 'Finance', 'Finance','CRM_Finance');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('BUS', 'Business', 'Business','CRM_Business');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('ETS', 'Technology Services', 'Enterprise Technology Services','CRM_ETS');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('OPS', 'Ops Center', 'Operations Center','CRM_OperationsCenter');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('SOP', 'Ops Center AS', 'Ops Center with additional privileges','CRM_SeniorOperationsCenter');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('SCS', 'Agent2', 'Agent with additional privileges','CRM_SeniorAgent');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('COS', 'COS', 'COS','CRM_COS');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('MOP', 'Marketing', 'Marketing Operations','CRM_MarketingOperations');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('ERP', 'ERP/Plant', 'Erp/Plant','CRM_ERP');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('NCS', 'New CSR', 'New Agent','CRM_NewAgent');
+Insert into CUST.ROLE   (CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME) Values   ('TRNSP', 'Transportation Supervisor', 'Transportation Supervisor','CRM_TransportationSupervisor');
+
+CREATE TABLE cust.case_operation_old  AS (SELECT * FROM cust.case_operation);
+
+DELETE from cust.case_operation;
+
+-- New opeartions 'APPDEV-661_CRM_CASEOPERATION.sql' has to be inserted.
+
+CREATE TABLE cust.case_backup as (select * from cust.case c where C.CASE_STATE='APVD' or c.case_state ='REVW');
+
+UPDATE cust.case c set c.case_state ='CLSD' where C.CASE_STATE='APVD' or c.case_state ='REVW';

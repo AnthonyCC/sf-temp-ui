@@ -1,0 +1,89 @@
+<html>
+<head>
+	<title>DLVAdmin User Audit</title>
+	<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+</head>
+
+<body bgcolor="#ffffff" jwcid="$content$">
+	<span jwcid="border">
+
+		<style>
+			table.dateForm td, table.dateForm img {
+				vertical-align: bottom;
+			}
+			input.time {
+				width: 64px;
+			}
+			table.audit {
+				width: 70%;
+			}
+			table.audit thead tr {
+				background: green;
+				color: white;
+			}
+		</style>
+		<form jwcid="formFilter">
+			<span jwcid="@ShowErrors" delegate="ognl:beans.delegate"/>
+			<table class="dateForm" cellspacing="2" cellpadding="4">
+				<tr>
+					<td><b>Start</b></td>
+					<td>
+						<span jwcid="@FieldLabel" field="component:datePickerStart"/>
+						<br/>
+						<input jwcid="datePickerStart"/>
+					</td>
+					<td>
+						<span jwcid="@FieldLabel" field="component:inputStartTime"/>
+						<br/>
+						<input class="time" jwcid="inputStartTime"/>
+					</td>
+				</tr>
+				<tr>
+					<td><b>End</b></td>
+					<td>
+						<span jwcid="@FieldLabel" field="component:datePickerEnd"/>
+						<br/>
+						<input jwcid="datePickerEnd"/>
+					</td>
+					<td>
+						<span jwcid="@FieldLabel" field="component:inputEndTime"/>
+						<br/>
+						<input class="time" jwcid="inputEndTime"/>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><span jwcid="sumbitFilterForm" /></td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</form>
+	</span>
+	
+	<span jwcid="@If" condition="ognl:report != null">
+	<table class="audit" cellspacing="0">
+		<thead>
+			<tr>
+				<th>User Name</th>
+				<th>Role</th>
+				<th>Date</th>
+				<th>Time Logged In</th>
+				<th>Time of Last Page View</th>
+			</tr>
+		</thead>
+		<tbody>
+			<span jwcid="foreachLogEntry">
+				<tr>
+					<td><span jwcid="@Insert" value="ognl:logEntry.userId">User name</span></td>
+					<td><span jwcid="@Insert" value="ognl:logEntry.role">Role</span></td>
+					<td><span jwcid="@Insert" value="ognl:logEntry.startDate" format="ognl:dateFormat"/></td>
+					<td><span jwcid="@Insert" value="ognl:logEntry.startDate" format="ognl:timeFormat"/></td>
+					<td><span jwcid="@Insert" value="ognl:logEntry.lastInteraction" format="ognl:timeFormat"/></td>
+				</tr>
+			</span>
+		</tbody>
+	</table>
+	</span>
+	
+</body>
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+<page-specification class="com.freshdirect.dlvadmin.CapacityReportPage">
+
+	<property-specification name="currentInfo" type="com.freshdirect.delivery.DlvTimeslotCapacityInfo" persistent="no" />
+
+	<component id="border" type="Border"/>
+	<component id="formDay" type="Form">
+		<binding name="direct" expression='true'/>
+		<binding name="stateful" expression='false'/>
+	</component>
+	<component id="selectDay" type="PropertySelection">
+		<binding name="model" expression='getDaySelectionModel()'/>
+		<binding name="submitOnChange" expression='true'/>
+		<binding name="value" expression='selectedDay'/>
+	</component>
+	<component id="ifDaySelected" type="Conditional">
+		<binding name="condition" expression='selectedDay != null'/>
+	</component>
+	<component id="foreachRow" type="Foreach">
+		<binding name="source" expression='capacityInfos'/>
+		<binding name="value" expression='currentInfo'/>
+		<binding name="element" expression="'tr'"/>
+		<binding name="class" expression="beans.evenOdd.next"/>
+	</component>
+	<component id="insertCutoffTime" type="Insert">
+		<binding name="value" expression='currentInfo.cutoffTime'/>
+	</component>
+	<component id="insertZone" type="Insert">
+		<binding name="value" expression='currentInfo.zoneCode + " (" + currentInfo.zoneName + ")"'/>
+	</component>
+	<component id="insertTimeslot" type="Insert">
+		<binding name="value" expression='currentInfo.startTime + " - " + currentInfo.endTime'/>
+	</component>
+	<component id="insertCapacity" type="Insert">
+		<binding name="value" expression='currentInfo.capacity'/>
+	</component>
+	<bean name="evenOdd" class="org.apache.tapestry.bean.EvenOdd"/>
+</page-specification>

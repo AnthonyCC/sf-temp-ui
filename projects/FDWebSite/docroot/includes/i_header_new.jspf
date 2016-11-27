@@ -1,0 +1,33 @@
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%
+	//assemble what we should say
+	int noOfProducts = newProds.isSimpleView() ? newProds.getNoOfFilteredProducts() : newProds.getNoOfProducts();
+	String countText = "<b>" + noOfProducts + " product";
+	countText += (noOfProducts > 1) ? "s" : "";
+	countText += "</b>";
+	countText += " just added!";
+	
+%>
+<table cellpadding="0" cellspacing="0" border="0" style="margin: 0; padding-bottom: 3px;" width="100%">
+	<tr>
+		<td rowspan="2" width="1%">
+			<% if (!newProds.isSimpleView() && !nav.isRefined()) { %><img src="/media_stat/images/bursts/hdr_new_burst_lg.gif" width="63" height="61" border="0" alt="New" />
+			<% } else { %><img src="/media_stat/images/bursts/hdr_new_burst_sm.gif" height="52" width="52" border="0" alt="New"><% } %>
+		</td>
+		<td>
+			<div style="padding-bottom: 2px; margin-left: 14px; border-bottom: 4px solid #360;">
+							<%
+							if (newProds.getFeaturedCategory() != null) {
+								Image catLabel = newProds.getFeaturedCategory().getCategoryLabel();
+							%>
+							<div style="float: left;"><fd:IncludeImage image="<%= catLabel %>" alt="<%= newProds.getFeaturedCategory().getFullName() %>" style="border: 0px none;"/></div>
+							<%
+							}
+							%>
+        <div style="font-size: 18px; font-weight: normal;float: right; line-height: 21px;"><%=countText%></div>
+        <div class="clear" style="line-height: 1px; height: 1px; overflow: hidden;"></div>
+			</div>
+		</td>
+	</tr>
+</table>

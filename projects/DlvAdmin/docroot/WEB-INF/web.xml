@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+    <display-name>DlvAdmin</display-name>
+	<filter>
+		<filter-name>redirect</filter-name>
+		<filter-class>org.apache.tapestry.RedirectFilter</filter-class>
+	</filter>
+    <filter>
+		<filter-name>WLContentTypeFilter</filter-name>
+		<filter-class>com.freshdirect.framework.webapp.WLContentTypeFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>userAudit</filter-name>
+		<filter-class>com.freshdirect.dlvadmin.utils.UserActivityFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>userAudit</filter-name>
+		<url-pattern>/app</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>redirect</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>WLContentTypeFilter</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+
+  <listener>
+  	<listener-class>com.freshdirect.dlvadmin.utils.UserSessionListener</listener-class>
+  </listener>
+
+
+    <servlet>
+        <servlet-name>DlvAdmin</servlet-name>
+        <servlet-class>org.apache.tapestry.ApplicationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>mapper</servlet-name>
+        <servlet-class>com.freshdirect.dlvadmin.map.DlvMapperServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DlvAdmin</servlet-name>
+        <url-pattern>/app</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mapper</servlet-name>
+        <url-pattern>/map/map.svg</url-pattern>
+    </servlet-mapping>
+    <taglib>
+        <taglib-uri>delivery</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/delivery.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>template</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/struts-template.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>logic</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/struts-logic.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>bean</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/struts-bean.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>html</taglib-uri>
+        <taglib-location>/WEB-INF/shared/tld/struts-html.tld</taglib-location>
+    </taglib>
+    
+  <security-constraint>
+    <display-name></display-name>
+    <web-resource-collection>
+      <web-resource-name>DlvAdmin</web-resource-name>
+      <description>Security Constraints for DLVAdmin</description>
+      <url-pattern>/app</url-pattern>
+      <http-method>POST</http-method>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <description>Security Constraints for DLVAdmin</description>
+      <role-name>Admin</role-name>
+      <role-name>Guest</role-name>
+      <role-name>Marketing</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <description>SSL not required</description>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>FreshDirect</realm-name>
+		<form-login-config>
+			<form-login-page>/Login.html</form-login-page>
+			<form-error-page>/Login.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
+  <security-role>
+    <description>DLVAdmin administrators</description>
+    <role-name>Admin</role-name>
+  </security-role>
+
+  <security-role>
+    <description>DLVAdmin Guest users</description>
+    <role-name>Guest</role-name>
+  </security-role>
+
+  <security-role>
+    <description>DLVAdmin Marketing users</description>
+    <role-name>Marketing</role-name>
+  </security-role>
+  
+</web-app>
+

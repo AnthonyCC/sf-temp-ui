@@ -1,0 +1,61 @@
+<xlsReporting>
+<sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select CAP.sale_id, CAP.AMOUNT CAPTURED, INV.AMOUNT INVOICED, CAP.AMOUNT - INV.AMOUNT REFUND
+from (select sa.sale_id, sum(sa.amount) AMOUNT  
+from cust.salesaction sa, cust.sale s, cust.customerinfo ci, cust.customer c
+where sa.action_date between
+     to_date(to_char(add_months(sysdate, -1), 'MM') ||'/'||'1'||'/'||to_char(add_months(sysdate, -1), 'YYYY'), 'MM/DD/YYYY')
+   and to_date(to_char(to_date(to_char(sysdate, 'MON'), 'MON') - 1, 'MM/DD/YYYY'), 'MM/DD/YYYY')
+  and sa.sale_id = s.id
+  and s.customer_id = ci.customer_id
+  and ci.customer_id = c.id
+  and sa.action_type in ('CAP')
+group by sa.sale_id) CAP,
+(select sa.sale_id, sum(sa.amount) AMOUNT
+from cust.salesaction sa, cust.sale s, cust.customerinfo ci, cust.customer c
+where sa.action_date between
+     to_date(to_char(add_months(sysdate, -1), 'MM') ||'/'||'1'||'/'||to_char(add_months(sysdate, -1), 'YYYY'), 'MM/DD/YYYY')
+   and to_date(to_char(to_date(to_char(sysdate, 'MON'), 'MON') - 1, 'MM/DD/YYYY'), 'MM/DD/YYYY')
+  and sa.sale_id = s.id
+  and s.customer_id = ci.customer_id
+  and ci.customer_id = c.id
+  and sa.action_type in ('INV')
+group by sa.sale_id) INV
+where CAP.SALE_ID = INV.SALE_ID
+and CAP.AMOUNT > INV.AMOUNT
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

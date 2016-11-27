@@ -1,0 +1,30 @@
+<span jwcid="$content$">
+<span jwcid="border">
+
+	<table>
+		<tr>
+			<form jwcid="formDay">
+			<td><b>Date: </b></td>
+			<td><span jwcid="selectDay" /></td> 
+			</form>
+		</tr>
+	</table>
+	<span jwcid="ifDaySelected">
+		<table cellspacing="0" cellpadding="2">
+			<tr>
+				<th>Cutoff Time</th>
+				<th>Zone</th>
+				<th>Timeslot</th>
+				<th>Capacity</th>
+			</tr>
+			<tr jwcid="foreachRow">
+				<td><span jwcid="insertCutoffTime" /></td>
+				<td><span jwcid="insertZone" /></td>
+				<td><span jwcid="insertTimeslot" /></td>
+				<td style="text-align: right;"><span jwcid="insertCapacity" /></td>
+			</tr>
+		</table>
+	</span>
+	
+</span>
+</span>

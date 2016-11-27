@@ -1,0 +1,97 @@
+.expertrating,
+.customerrating,
+.winerating,
+.sustrating {
+	margin-left:8px;	
+	font-weight:normal;
+	vertical-align: baseline;
+}
+
+.expertrating,
+.customerrating,
+.winerating {
+	text-indent:100px;
+	height:16px;
+	display:inline-block;
+	overflow:hidden;
+	vertical-align: top;
+	margin-left:8px;
+}
+.smallrating {
+	height: 13px;
+  width: 65px;
+}
+.expertrating:first-child,
+.customerrating:first-child,
+.winerating:first-child,
+.sustrating:first-child {
+  margin-left: 0;
+}
+
+.expertrating,
+.customerrating,
+.winerating {
+	background:url(/media_stat/images/ratings/stars-sprite.png) repeat-x transparent 0 0;
+}
+.expertrating.smallrating,
+.customerrating.smallrating,
+.winerating.smallrating {
+	background:url(/media_stat/images/ratings/stars-sprite-small.png) repeat-x transparent 0 -39px;
+	vertical-align: baseline;
+}
+
+.customerrating {
+	background-position: 0 -32px;
+}
+.winerating {
+	background-position: 0 -64px;
+}
+
+.smallrating:before {
+  content: ' ';
+  display: block;
+	height: 13px;
+	background:url(/media_stat/images/ratings/stars-sprite-small.png) repeat-x transparent 0 0;
+}
+.customerrating.smallrating:before {
+	background-position: 0 -13px;
+}
+.winerating.smallrating:before {
+	background-position: 0 -26px;
+}
+.norating.smallrating:before {
+	background-position: 0 -39px;
+}
+
+.rating-1  { width:9px; }
+.rating-2  { width:18px; }
+.rating-3  { width:27px; }
+.rating-4  { width:36px; }
+.rating-5  { width:45px; }
+.rating-6  { width:54px; }
+.rating-7  { width:63px; }
+.rating-8  { width:72px; }
+.rating-9  { width:81px; }
+.rating-10 { width:90px; }
+
+.smallrating { width: 65px; }
+.smallrating.rating-1:before  { width:7px; }
+.smallrating.rating-2:before  { width:13px; }
+.smallrating.rating-3:before  { width:20px; }
+.smallrating.rating-4:before  { width:26px; }
+.smallrating.rating-5:before  { width:33px; }
+.smallrating.rating-6:before  { width:39px; }
+.smallrating.rating-7:before  { width:46px; }
+.smallrating.rating-8:before  { width:52px; }
+.smallrating.rating-9:before  { width:59px; }
+.smallrating.rating-10:before { width:65px; }
+
+
+.sustrating {
+	vertical-align: middle;
+}
+
+#customerRatingPopup {
+	margin-top:-7px;
+}
+

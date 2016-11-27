@@ -1,0 +1,1 @@
+<% response.sendRedirect("depot_admin.jsp");%>

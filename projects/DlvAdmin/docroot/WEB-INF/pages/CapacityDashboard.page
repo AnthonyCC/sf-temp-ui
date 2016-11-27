@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.dlvadmin.CapacityDashboard">
+
+	<property-specification name="dailyResources" type="java.util.Map" persistent="yes" />
+	<property-specification name="selectedDay"  type="java.util.Date" persistent="yes" />
+	<property-specification name="selectedZone" type="java.lang.String" persistent="yes" />
+	<property-specification name="recentResourceId" type="java.lang.String" persistent="yes" />
+	<property-specification name="selectedRegion" type="com.freshdirect.delivery.model.DlvRegionModel" persistent="yes" />
+	<property-specification name="editableResources" type="java.util.Set" initial-value="new java.util.HashSet()" persistent="yes" />
+	<property-specification name="selectedWeek" type="com.freshdirect.delivery.planning.Week" persistent="yes" />
+	<property-specification name="selectedView" type="java.lang.String" persistent="yes"/>
+        
+	<property-specification name="day" type="java.util.Date" persistent="no" />
+	<property-specification name="resource" type="com.freshdirect.delivery.planning.DlvResourceModel" persistent="no" />
+	<property-specification name="zone" type="com.freshdirect.delivery.model.DlvZoneModel" persistent="no" />
+
+    <bean name="delegate" class="org.apache.tapestry.valid.ValidationDelegate" lifecycle="request"/>
+    <bean name="doubleValidator" class="org.apache.tapestry.valid.NumberValidator" lifecycle="request">
+        <set-property name="maximum" expression='@java.lang.Double@MAX_VALUE'/>
+        <set-property name="minimum" expression='0.0'/>
+    </bean>
+	
+    <bean name="intValidator" class="org.apache.tapestry.valid.NumberValidator" lifecycle="request">
+        <set-property name="minimum" expression='@java.lang.Integer@MIN_VALUE'/>
+        <set-property name="maximum" expression='@java.lang.Integer@MAX_VALUE'/>
+    </bean>
+
+    <component id="border" type="Border"/>
+
+    <component id="zoneAnchor" type="Any">
+        <static-binding name="element">a</static-binding>
+        <binding name="name" expression='zone.zoneCode'/>
+    </component>
+
+    <component id="resourceEditor" type="EditResource">
+        <binding name="cancelListener" expression='listeners.submitCancel'/>
+        <binding name="overrideListener" expression='listeners.overrideCapacity'/>
+        <binding name="resource" expression='resource'/>
+        <binding name="updateListener" expression='listeners.updateAssets'/>
+        <binding name="view" expression='selectedView'/>
+    </component>
+    
+    <component id="resourceViewer" type="viewResource">
+        <binding name="resource" expression='resource'/>
+        <binding name="view" expression='selectedView'/>
+    </component>
+
+    <component id="showErrors" type="ShowErrors">
+        <binding name="delegate" expression='beans.delegate'/>
+    </component>
+
+</page-specification>

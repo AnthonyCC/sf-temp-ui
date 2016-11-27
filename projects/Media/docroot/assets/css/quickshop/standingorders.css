@@ -1,0 +1,9 @@
+.qs-so #inner-container {
+	padding: 0 0 20px 22px;
+}
+.qs-so .checkboxlist li {
+	margin-top: 10px;
+}
+.qs-so .checkboxlist li:first-child {
+	margin-top: 0;
+}

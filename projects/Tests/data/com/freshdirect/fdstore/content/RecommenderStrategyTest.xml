@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+
+<!-- default values -->
+	<Recommender id="recommender_default">
+		<strategy>
+			<RecommenderStrategy ref="recommender_strategy_default"/>
+		</strategy>
+	</Recommender>
+		
+	<RecommenderStrategy id="recommender_strategy_default">
+		<generator>generator_expr</generator>
+	</RecommenderStrategy>
+	
+	
+<!-- explicit values -->
+	<Recommender id="recommender_full">
+		<strategy>
+			<RecommenderStrategy ref="recommender_strategy_full"/>
+		</strategy>
+		<scope>
+			<Product ref="product_mea0004561"/>
+		</scope>
+	</Recommender>
+	
+	<RecommenderStrategy id="recommender_strategy_full">
+		<generator>generator_expr</generator>
+		<scoring>scoring_expr</scoring>
+		<sampling>harmonic</sampling>
+		<top_n>50</top_n>
+		<top_percent>12.5</top_percent>
+		<exponent>0.15</exponent>
+	</RecommenderStrategy>
+	
+<!-- multiple scope elements -->
+	<Recommender id="recommender_multiscope">
+		<strategy>
+			<RecommenderStrategy ref="recommender_strategy_full"/>
+		</strategy>
+		<scope>
+			<Category ref="category_mea0004561"/>
+			<Product ref="product_mea0004561"/>
+			<ConfiguredProduct ref="configured_product_mea0004561a"/>
+			<ConfiguredProductGroup ref="configured_product_group_mea0004561"/>			
+			<Department ref="mea"/>
+			<FavoriteList ref="fd_favorites"/>			
+		</scope>
+	</Recommender>
+
+
+
+
+<!-- partly imported from ConfigurationStrategyTest.xml -->
+
+	<Store id="FreshDirect">
+	</Store>
+
+	<Department id="mea">
+		<FULL_NAME>Grocery</FULL_NAME>
+		<categories>
+			<Category ref="category_mea0004561"/>
+			<Category ref="category_mea0004561_conf"/>
+		</categories>
+	</Department>
+	
+	<FavoriteList id="fd_favorites">
+		<full_name>Favorites list</full_name>
+		<favoriteItems>
+			<Product ref="product_mea0004561"/>
+			<Product ref="product_mea0004561a"/>
+			<Product ref="configured_product_mea0004561a"/>
+			<Product ref="configured_product_mea0004561b"/>
+			<Product ref="configured_product_mea0004561c"/>
+		</favoriteItems>
+	</FavoriteList>
+
+  <Category id="category_mea0004561">
+    <products>
+      <Product ref="product_mea0004561"/>
+    </products>
+    <products>
+      <Product ref="product_mea0004561a"/>
+    </products>
+  </Category>
+
+  <Category id="category_mea0004561_conf">
+    <products>
+      <Product ref="configured_product_mea0004561a"/>
+    </products>
+    <products>
+      <Product ref="configured_product_mea0004561b"/>
+    </products>
+    <products>
+      <Product ref="configured_product_mea0004561c"/>
+    </products>
+  </Category>
+  
+ <Product id="product_mea0004561">
+    <FULL_NAME>product mea0004561</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="MEA0004561"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004561a">
+    <FULL_NAME>product mea0004561a</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="MEA0004561a"/>
+    </skus>
+  </Product>
+
+  <ConfiguredProduct id="configured_product_mea0004561a">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>12.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="configured_product_mea0004561b">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>8.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="configured_product_mea0004561c">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>4.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProductGroup id="configured_product_group_mea0004561">
+  	<items>
+       <ConfiguredProduct ref="configured_product_mea0004561c"/>
+       <ConfiguredProduct ref="configured_product_mea0004561b"/>
+       <ConfiguredProduct ref="configured_product_mea0004561a"/>
+  	</items>
+  </ConfiguredProductGroup>
+
+  <!-- default sku -->
+  <Sku id="MEA0004561">
+  </Sku>
+
+  <!-- autoconfigurable sku -->
+  <Sku id="MEA0004561a">
+  </Sku>
+	
+	
+</Content>

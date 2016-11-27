@@ -1,0 +1,40 @@
+
+.rightnav-ymal {
+    border:1px solid #ccc;
+    border-radius:6px;
+    overflow:hidden;
+}
+
+.rightnav-ymal-title {
+    color:#6f4473;
+    font-weight:bold;
+    font-size:15px;
+    margin-bottom:4px;
+    padding:4px 0;
+    background:#e2dbe3;
+    text-align: center;
+}
+
+.rightnav-ymal .fd-carousel {
+    padding-bottom: 15px;
+}
+
+.rightnav-ymal .grid-carousel .yui-carousel-next-button {
+    right: 0;
+}
+
+.product-request {
+    color: #306700;
+    font-size: 11px;
+    margin: 12px 0;
+}
+
+.product-request:before {
+    content: '';
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    margin: 0 5px -1px 0;
+    vertical-align: baseline;
+    background: url(/media_stat/images/navigation/sidecart/bullet-orange.png) no-repeat 50% 50%;
+}

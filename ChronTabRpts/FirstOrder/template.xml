@@ -1,0 +1,60 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select s.id as SALE_ID, c.first_name, c.last_name, sa.requested_date 
+from cust.sale s, cust.salesaction sa,
+(select ci.customer_id, ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML'), ci.first_name, ci.last_name
+from cust.salesaction sa, cust.sale s, cust.fdcustomer fd, cust.customerinfo ci
+where sa.action_type in ('CRO')
+and sa.action_date = (select max(action_date)
+from cust.salesaction sz
+where sz.action_type in ('CRO')
+and sz.sale_id = sa.sale_id)
+and sa.sale_id = s.id
+and s.status != 'CAN'
+and s.customer_id = fd.erp_customer_id
+and fd.erp_customer_id = ci.customer_id
+and fd.last_login >= trunc(sysdate)
+group by fd.id, ci.email, ci.first_name, ci.last_name, ci.customer_id, ci.email_plain_text
+having count(sa.sale_id) = 1
+and min(sa.action_date) >= trunc(sysdate)) c
+where s.customer_id = c.customer_id
+and s.id = sa.sale_id
+and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD'))
+and sa.action_type in ('CRO', 'MOD')
+and sa.action_date >= trunc(sysdate)
+order by sa.requested_date asc
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

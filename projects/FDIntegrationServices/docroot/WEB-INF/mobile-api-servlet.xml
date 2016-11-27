@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="baseController" class="com.freshdirect.mobileapi.controller.BaseController"
+		init-method="init" abstract="true">
+		<property name="file" value="classpath:config.json" />
+	</bean>
+
+	<bean id="loginController" class="com.freshdirect.mobileapi.controller.LoginController"
+		parent="baseController" />
+
+	<bean id="searchController" class="com.freshdirect.mobileapi.controller.SearchController"
+		parent="baseController" />
+
+	<bean id="productController" class="com.freshdirect.mobileapi.controller.ProductController"
+		parent="baseController" />
+
+	<bean id="cartController" class="com.freshdirect.mobileapi.controller.CartController"
+		parent="baseController" />
+
+	<bean id="checkoutController" class="com.freshdirect.mobileapi.controller.CheckoutController"
+		parent="baseController" />
+
+	<bean id="orderController" class="com.freshdirect.mobileapi.controller.OrderController"
+		parent="baseController" />
+
+	<bean id="shoppingListController"
+		class="com.freshdirect.mobileapi.controller.CustomerCreatedListController"
+		parent="baseController" />
+
+	<bean id="smartStoreController"
+		class="com.freshdirect.mobileapi.controller.SmartStoreController"
+		parent="baseController" />
+
+	<bean id="contactUsController"
+		class="com.freshdirect.mobileapi.controller.ContactUsController"
+		parent="baseController" />
+
+	<bean id="accountController" class="com.freshdirect.mobileapi.controller.AccountController"
+		parent="baseController" />
+
+	<bean id="emailCaptureController"
+		class="com.freshdirect.mobileapi.controller.EmailCaptureController"
+		parent="baseController" />
+	
+	<bean id="externalInterfaceController" class="com.freshdirect.mobileapi.controller.ExternalInterfaceController" parent="baseController" />
+	
+	
+	<bean id="configurationController"
+		class="com.freshdirect.mobileapi.controller.ConfigurationController"
+		parent="baseController" />
+		
+	<bean id="lookupController" class="com.freshdirect.mobileapi.controller.LookupController" parent="baseController" />
+
+	<bean id="testController" class="com.freshdirect.mobileapi.controller.TestController" />
+
+	<bean id="helpController" class="com.freshdirect.mobileapi.controller.HelpController" />
+	
+	<bean id="browseController" class="com.freshdirect.mobileapi.controller.BrowseController"
+		parent="baseController" />
+
+	<bean id="ideasController" class="com.freshdirect.mobileapi.controller.IdeasController"
+		parent="baseController" />
+
+	<bean id="homeController" class="com.freshdirect.mobileapi.controller.HomeController"
+		parent="baseController" />
+
+	<bean id="recipesController" class="com.freshdirect.mobileapi.controller.RecipesController"
+		parent="baseController" />
+
+	<bean id="producersController" class="com.freshdirect.mobileapi.controller.ProducersController"
+		parent="baseController" />
+
+	<bean id="pickslistController" class="com.freshdirect.mobileapi.controller.PickslistController"
+		parent="baseController" />
+
+	<bean id="couponBrowseController" class="com.freshdirect.mobileapi.controller.CouponBrowseController"
+		parent="baseController" />		
+
+	<bean id="siteAccessController" class="com.freshdirect.mobileapi.controller.SiteAccessController"
+		parent="baseController" />
+
+	<bean id="registerController" class="com.freshdirect.mobileapi.controller.RegistrationController"
+		parent="baseController" />
+
+	<bean id="userController" class="com.freshdirect.mobileapi.controller.UserController"
+		parent="baseController" />
+
+	<bean id="newProductController" class="com.freshdirect.mobileapi.controller.NewProductController"
+		parent="baseController" />
+						
+	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.ExternalAccountController"
+		parent="baseController" />
+		
+    	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
+		parent="baseController" />
+		
+	<!-- <bean id="ewalletStatusController" class="com.freshdirect.mobileapi.controller.EwalletStatusController"
+		parent="baseController" />  -->
+	
+<!-- 	<bean id="ewalletCheckoutController" class="com.freshdirect.mobileapi.controller.EwalletCheckoutController"
+		parent="baseController" />
+
+	<bean id="ewalletExpressController" class="com.freshdirect.mobileapi.controller.EwalletExpressController"
+		parent="baseController" /> -->
+
+	<bean id="ewalletStandardController" class="com.freshdirect.mobileapi.controller.EwalletStandardController"
+		parent="baseController" />
+				
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="**/shoppinglist.do">shoppingListController</prop>
+				<prop key="**/checkout.do">checkoutController</prop>
+				<prop key="**/order.do">orderController</prop>
+				<prop key="**/cart.do">cartController</prop>
+				<prop key="**/search.do">searchController</prop>
+				<prop key="**/product.do">productController</prop>
+				<prop key="**/login.do">loginController</prop>
+				<prop key="**/smartstore.do">smartStoreController</prop>
+				<prop key="**/account.do">accountController</prop>
+				<prop key="**/contactus.do">contactUsController</prop>
+				<prop key="**/emailcapture.do">emailCaptureController</prop>
+				<prop key="**/configvalue.do">configurationController</prop>
+				<prop key="**/lookup.do">lookupController</prop>
+				<prop key="**/test.do">testController</prop>
+				<prop key="**/help.do">helpController</prop>
+				<prop key="**/browse.do">browseController</prop>
+				<prop key="**/browsecoupon.do">couponBrowseController</prop>
+				<prop key="**/ideas.do">ideasController</prop>
+				<prop key="**/home.do">homeController</prop>
+				<prop key="**/recipes.do">recipesController</prop>
+				<prop key="**/producers.do">producersController</prop>
+				<prop key="**/pickslist.do">pickslistController</prop>
+				<prop key="**/zipcheck.do">siteAccessController</prop>
+				<prop key="**/register.do">registerController</prop>
+				<prop key="**/user.do">userController</prop>
+				<prop key="**/fdinterface.do">externalInterfaceController</prop>
+				<prop key="**/newproduct.do">newProductController</prop>
+				<prop key="**/sociallogin.do">socialLoginController</prop>
+				<prop key="**/newbrowse.do">newBrowseController</prop>
+<!-- 				<prop key="**/ewallet.do">ewalletStatusController</prop>
+				<prop key="**/ewalletcheckout.do">ewalletCheckoutController</prop>
+				<prop key="ewalletcheckoutdata.do">ewalletCheckoutController</prop>
+				<prop key="ewalletprecheckout.do">ewalletExpressController</prop>
+				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
+				<prop key="**/ewalletstdcheckout.do">ewalletStandardController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="actionResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+		<property name="paramName">
+			<value>action</value>
+		</property>
+		<property name="defaultMethodName" value="list" />
+	</bean>
+	<!--
+
+		View resolvers can also be configured with ResourceBundles or XML
+		files. If you need different view resolving based on Locale, you have
+		to use the resource bundle resolver.
+	-->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType"><value>text/html; charset=UTF-8</value></property> 
+		<!--
+			if you want to use the Spring FreeMarker macros, set this property to
+			true
+		-->
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="exposeSessionAttributes" value="true" />
+	</bean>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/templates/" />
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape" />
+			</map>
+		</property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="number_format">0.######</prop>
+				<prop key="default_encoding">UTF-8</prop> 
+			</props>
+		</property>
+	</bean>
+
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+</beans>

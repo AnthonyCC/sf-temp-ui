@@ -1,0 +1,306 @@
+<%@page import="com.freshdirect.customer.EnumPaymentType"%>
+<%@ page import='com.freshdirect.fdlogistics.model.*'%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
+<%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag'%>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%--
+	Included by step_4_submit.jsp, i_checkout_receipt.jspf
+	
+	@param FDUserI user
+	@param FDCartI cart
+	@param ErpAddressModel dlvAddress
+
+	Variables defined in upstream JSP file:
+
+	String receipt
+ --%>
+<%!
+	final SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
+	final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
+
+	//expanded page dimensions
+	final int W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL = 970;
+%><%
+	// [APPDEV-2149] SO template only checkout => no order, no dlv timeslot, no giftcard magic
+	//
+	final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals( user.getCheckoutMode() );
+	
+	
+    boolean isDepotAddress = false;
+    ErpDepotAddressModel depotAddress = null;
+	String hamptonsDepotCode ="HAM";
+	String depotCode=null;
+    String depotName = "";
+    double perishableBufferAmount = 0;
+    double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+    double gcBufferAmount=0;
+    double ccBufferAmount=0;
+    
+    String __fmtDlvDateTime = "";
+	String __deliveryTime ="";
+	
+	if (isSOTMPL) {
+		StandingOrderHelper.DeliveryTime dt = new StandingOrderHelper.DeliveryTime(user.getCurrentStandingOrder());
+		__fmtDlvDateTime	= dt.getDayName();
+		__deliveryTime		= dt.formatTime();
+	} else {
+		FDReservation __reservation = cart.getDeliveryReservation();
+		if ( __reservation != null && null != __reservation.getStartTime() ) {
+			__fmtDlvDateTime=dateFormatter.format(__reservation.getStartTime()).toUpperCase();
+			if ( null != __reservation.getEndTime() && !"".equals(__reservation.getStartTime()) && !"".equals(__reservation.getEndTime()) ) 
+				__deliveryTime=FDTimeslot.format(__reservation.getStartTime(), __reservation.getEndTime());
+		}
+	}
+
+
+    if (cart instanceof FDOrderI) {
+    	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) ((FDOrderI)cart).getDeliveryAddress() ;
+    	}
+    	isEBTPayment = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
+    } else {
+    	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
+    	}
+    	isEBTPayment = (null !=user.getShoppingCart().getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(user.getShoppingCart().getPaymentMethod().getPaymentMethodType()));
+    }
+    if(!isSOTMPL && cart instanceof FDCartModel){
+    	perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
+    }
+    
+    if(!isSOTMPL && perishableBufferAmount > 0){
+    	if(cart.getTotalAppliedGCAmount()> 0){
+    		if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())){
+        		/*if(gcSelectedBalance - perishableBufferAmount >=0){
+        			gcBufferAmount = perishableBufferAmount;
+        		}else{*/
+        			gcBufferAmount = gcSelectedBalance;
+        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
+        		//}
+        	}
+    		else{
+    			gcBufferAmount = perishableBufferAmount;
+    		}
+    	}else{
+    		ccBufferAmount = perishableBufferAmount;
+    	}
+    	
+    }
+    
+    
+	if (isDepotAddress && depotAddress!=null) {
+		if(depotAddress.isPickup()){
+			FDDeliveryDepotModel depotModel = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+			if (depotModel!=null) {
+				depotName = depotModel.getName();
+				depotCode = depotModel.getDepotCode();
+			}
+		}
+    }
+
+    boolean showModify =
+    !(	isSOTMPL
+   		||  request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1
+   		||  request.getRequestURI().toLowerCase().indexOf("order_detail")>-1
+    );
+%>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL%>">
+<TR VALIGN="TOP">
+    <TD WIDTH="290">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
+        <TR VALIGN="TOP">
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="102" HEIGHT="15" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+        </TR>
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12"><%-- seeing all these nbsp's make me die a little inside --%>
+<b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp" class="modifybutton">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%=__fmtDlvDateTime%><br>
+            <%=__deliveryTime%><br>
+            <br>
+<b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp" class="modifybutton">Modify</A><%}%><font class="space4pix"><br><br></font>
+            <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br>
+            <%if(depotName != null || depotName.length() > 1){%><%=depotName%><br><%}%>         
+            <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getApartment()%><% } %><BR>
+            <% if(dlvAddress.getAddress2()!=null && dlvAddress.getAddress2().trim().length()>0) {
+            %><%= dlvAddress.getAddress2() %><br>
+            <% }%>
+            <%= dlvAddress.getCity() %>, <%= dlvAddress.getState() %> <%= dlvAddress.getZipCode() %><br>
+            <br>
+            <% if (dlvAddress.getPhone()!=null) { %>
+            Phone: <%= dlvAddress.getPhone().getPhone() %> <%if( !"".equals(dlvAddress.getPhone().getExtension()) ){%>Ext. <%= dlvAddress.getPhone().getExtension() %> <%}%><br>
+            <% } %>
+			<% if (dlvAddress.getAltContactPhone()!=null) { %>
+            Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <%if( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %> <%}%><br>
+            <% } %>
+               <%
+                boolean isPickup = cart instanceof FDOrderI ? 
+                    EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() ) :
+                    dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup();
+                if (isPickup) {
+                   if (hamptonsDepotCode.equalsIgnoreCase(depotCode)) {    %>
+                         <br><a href="javascript:popup('/delivery_popup.jsp?location=hamptons','large')">Click here for directions and details</a><br>          
+<%                 } else { %>
+                         <br><a href="javascript:popup('/delivery_popup.jsp','large')">Click here for directions and details</a><br>          
+<%               }
+}
+               %>
+               <br>
+        <%if(!isDepotAddress){%>    
+            <%if(dlvAddress.getInstructions()!= null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())){%>  
+                <font class="text12bold">Special Delivery Instructions:</font><br>              
+                <%=dlvAddress.getInstructions()%><br><br>
+            <%}%>       
+
+            <%if(EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())){%>  
+                <font class="text12bold">Unattended Delivery:</font><br>              
+                <%=NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"OK")%><br><br>
+            <%}%>       
+        <%}else{%>      
+            <%if(depotAddress.getInstructions()!= null && !depotAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(depotAddress.getInstructions())){%>    
+            <b>Pickup Instructions:</b><br>
+                <%=depotAddress.getInstructions()%><br><br>
+            <%}%>
+        <%}%>
+<%
+        if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
+            <font class="text12bold">Alternate delivery</font>:<br>
+            <%= dlvAddress.getAltDelivery().getName()%><br><br> 
+<%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
+                <%=dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName()%><br>
+                <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getAltApartment()%><br>
+                <%if (dlvAddress.getAltPhone()!=null) {%><%=dlvAddress.getAltPhone().getPhone()%> <%if( !"".equals(dlvAddress.getAltPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <%}}%><br><br>
+            <%}%>
+        <%}%></FONT>
+		
+		<% if (!isSOTMPL && cart.getDeliveryReservation()!=null) { %><span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span><% } %>
+		<br><br></TD>
+        </TR>
+        </TABLE>
+    </TD>
+    <TD WIDTH="40"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1" BORDER="0"></TD>
+    <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12">
+            <b>Order <%= isSOTMPL ? "Subtotal" : "Total" %>:</b><BR>
+            <font class="space4pix"><br></font>
+            <% if (isSOTMPL) { %><%= JspMethods.formatPrice(cart.getSubTotal()) %><% } else { %><%= JspMethods.formatPrice(cart.getTotal()) %>*<% } %><BR>
+            <% if(!isSOTMPL && cart.getTotalAppliedGCAmount()> 0){ %> 
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Gift Card Amount to Be Applied:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <%= JspMethods.formatPrice(cart.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*<BR>
+	            
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Remaining Gift Card Balance:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <% if(cart instanceof FDCartModel) { %>
+	            
+	            	<%= JspMethods.formatPrice(user.getGiftcardsTotalBalance() - cart.getTotalAppliedGCAmount()-gcBufferAmount) %>
+		          
+	            <% } else { %>
+	            <%= JspMethods.formatPrice(user.getGiftcardsTotalBalance()) %>
+	            <% } %>*<BR>     
+	            <BR>      
+            <% } %>
+            <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
+            <% if(!isSOTMPL && cart.getTotalAppliedGCAmount()> 0){ %>     
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Amount to Be Charged to Your Account:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <% if(cart instanceof FDCartModel) { %>
+	            <%= JspMethods.formatPrice(cart.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
+	            <% } else { %>
+	            <%= JspMethods.formatPrice(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>     
+	            <% } %>
+            <% } %>     
+            <BR>  
+			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName()%><BR>
+            <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
+            <BR>
+			<%if (!EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())) {%>
+				<b>Payment:</b> <span style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></span><br>
+				Referenced order: <%= paymentMethod.getReferencedOrder() %><br>
+				<br>
+			<%}%>
+            <% if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {%>
+            <b>Account Address:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentMethod.getApartment()%><% } %><BR>
+            <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
+            <%=paymentMethod.getAddress2()%><BR>
+            <%}%>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR><BR>
+            <%}%>
+            <% if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {%>
+            <b>Billing Address:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentMethod.getApartment()%><% } %><BR>
+            <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
+            <%=paymentMethod.getAddress2()%><BR>
+            <%}%>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %><BR><%= paymentMethod.getCountry() %> <%= paymentMethod.getZipCode() %><BR><BR>
+            <%}%>
+            <%
+            if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
+                <b>Billing Reference/Client Code:</b><BR>
+                <font class="space4pix"><br></font>
+                <%= paymentMethod.getBillingRef() %><br>
+            <%
+            }%>
+			<%
+				List<com.freshdirect.fdstore.customer.WebOrderViewI> views = cart.getOrderViews();
+				boolean usq_message = false;
+				if(views != null) {
+					for (Iterator i = views.iterator(); i.hasNext();) {
+						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
+						if( temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId()) ) {
+							usq_message = true;
+							break;
+						}
+					}
+				}
+			%>
+			<% if(!isSOTMPL && usq_message) { 
+				 if("true".equals(receipt)) {
+			%>
+				<span class="text12">I acknowledge that I have purchased alcohol from 
+ and that my credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText() %>".</span>
+			<% } else { %>             
+				<span class="text12"><b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from <%= JspMethods.getWineLongText() %> and that your credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText() %>".</span>
+			<% } 
+			} %>             
+		<br><br>
+            </FONT>
+			<% } %>             
+            </TD>
+        </TR>
+        </TABLE>
+        </TD>
+    </TR>
+</TABLE>

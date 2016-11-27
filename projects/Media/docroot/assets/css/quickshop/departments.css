@@ -1,0 +1,63 @@
+.departments {
+	font-family: Verdana,sans-serif;
+	font-size:11px;
+	color:#333;	
+}
+
+[data-feature-quickshop="2_0"] .departments-list {
+	max-height:210px;
+	overflow:auto;
+}
+
+.departments-list-clear_dept label,
+.departments-list-all_dept label {
+	font-family: Verdana,sans-serif;
+	font-size:12px;
+	color:#333;
+	text-transform: uppercase;
+}
+.no-touch .departments-list-clear_dept:hover label,
+.no-touch .departments-list-all_dept:hover label {
+	text-decoration: underline;
+}
+.departments-list-clear_dept input[checked] + label,
+.departments-list-all_dept input[checked] + label {
+	font-weight: bold;
+}
+
+.departments-list-clear_dept hr {
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"] {
+  display: none;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"] + label {
+  display: block;
+  padding: 2px 0 2px 5px;
+  border-radius: 6px;
+  font-weight:normal;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label {
+  display: block;
+  padding: 5px;
+  border-radius: 6px;
+  background-color:#969;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label,
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label span{
+  color:#fff;
+  font-weight:bold;
+}
+
+.no-touch .checkboxlist li:hover input[type="radio"]:checked + label,
+.no-touch .checkboxlist li:hover input[type="radio"]:checked + label span{
+  text-decoration:none;
+}
+
+.departments.rounded-box .checkboxlist input[checked] + label span {
+	font-weight: normal;
+}
+

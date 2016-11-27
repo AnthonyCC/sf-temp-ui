@@ -1,0 +1,69 @@
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerListInfo"%>
+<%@ page import='com.freshdirect.fdstore.lists.FDCustomerCreatedList'%>
+<%@ page import='com.freshdirect.framework.util.StringUtil' %>
+<%@ page import="java.util.TreeSet" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@page import="java.util.Comparator"%><fd:FDCustomerCreatedList id="lists" action="loadLists"> 
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding-bottom: 1em">
+<%
+{ // anonymous block
+    // ADD all lists
+    TreeSet<FDCustomerListInfo> sorted;
+	if (maxQuickshopItems != null) {
+		sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
+			public int compare( FDCustomerListInfo l1, FDCustomerListInfo l2 ) {
+
+				if ( l1 == null || l1.getName() == null ) {
+					return -1;
+				}
+				if ( l2 == null || l2.getName() == null ) {
+					return 1;
+				}
+				// should not return 0, since YoYo and yoyo than would be treated equal
+				return l1.getName().compareToIgnoreCase( l2.getName() ) < 0 ? -1 : 1;
+			}
+		});
+	} else {
+		sorted = new TreeSet<FDCustomerListInfo>(FDCustomerCreatedList.getModificationDateComparator());
+	}
+    sorted.addAll(lists);
+
+    int count = 0;
+    for (FDCustomerListInfo CCList : sorted) {
+       int n = CCList.getCount();
+%>
+	<tr>
+		<td class="text12" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
+			<a href="/quickshop/shop_from_list.jsp?ccListId=<%=CCList.getId()%>"><%= StringUtil.escapeHTML(CCList.getName())%></a>
+		</td>
+		<td class="text10" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</td>
+	</tr>
+	<% if (maxQuickshopItems != null && count >= maxQuickshopItems - 1) { %>
+	<tr>
+		<td class="text13" style="font-weight: bold; padding-bottom: 7px; padding-top: 7px;" colspan="2">
+			<a href="/quickshop/all_lists.jsp">All Lists &raquo;</a>
+		</td>
+	</tr>
+	<% break; } %>
+<%
+		count++;
+    } // for
+%>
+</table>
+<div class="text10" style="padding: 1em 0 2em 0">
+To create a new list <a onclick="return CCL.create_list(true, this);" href="/unsupported.jsp">click here.</a>
+</div>
+<div class="text12" style="padding-bottom: 1em">
+<% if (sorted.size() > 1) { %>
+	<a style="display: block; font-weight: bold" href="/quickshop/all_lists.jsp">All Lists &amp; Details &raquo;</a>
+<% } else { %>
+	<a style="display: block; font-weight: bold" href="/quickshop/all_lists.jsp">More List Details &raquo;</a>
+<% } 
+} // anonymous block
+%>
+</div>
+</fd:FDCustomerCreatedList>

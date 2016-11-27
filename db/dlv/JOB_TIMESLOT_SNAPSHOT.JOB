@@ -1,0 +1,15 @@
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+    ( job       => X 
+     ,what      => 'DLV.TIMESLOT_SNAPSHOT;'
+     ,next_date => to_date('23/02/2007 13:56:51','dd/mm/yyyy hh24:mi:ss')
+     ,interval  => 'SYSDATE+30/1440 '
+     ,no_parse  => TRUE
+    );
+  SYS.DBMS_OUTPUT.PUT_LINE('Job Number is: ' || to_char(x));
+END;
+/
+
+commit;

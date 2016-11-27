@@ -1,0 +1,330 @@
+.srch-header {
+  clear: both;
+  overflow: hidden;
+}
+
+.srch-header h1 {
+  float: left;
+} 
+
+.srch-header .oas-cnt {
+  float: right;
+}
+
+.srch-header .numofproducts{
+  font-size: 18px;
+  line-height: 56px;
+  float:right;
+  margin:0;
+}
+
+.srch section.main .content {
+  float: right;
+  width: 775px;
+}
+
+.srch section.tabs nav.tabs {
+  float:left;
+  display: block;
+  overflow: hidden;
+  padding: 8px 0 0;
+  margin-bottom: -1px;
+}
+
+.srch section.tabs nav.tabs li {
+  float: left;
+  height: 35px;
+  line-height: 35px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  background: #669933;
+  box-shadow: -1px -1px 2px 0 rgba(128, 128, 128, 0.3) inset,1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  padding: 0 10px;
+  list-style-type: none;
+}
+
+.srch section.tabs nav.tabs li.active {
+  width: auto;
+  padding: 0 15px;
+  height: 42px;
+  line-height: 42px;
+  position: relative;
+  text-shadow: none;
+  margin: -7px 0 0;
+  color: #669933;
+  background: #f0f5e1;
+  font-size: 21px;
+  box-shadow: 1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
+  border: 1px solid #dce6be;
+  border-bottom: none;
+}
+
+.srch section.tabs nav.tabs li i {
+  font-style: normal;
+  font-weight: normal;
+}
+
+.srch section.tabs .tabcontent {
+  clear: both;
+  overflow: hidden;
+  background: #f0f5e1;
+  border: 1px solid #dce6be;
+  padding: 10px;
+}
+
+.srch .search-input .cssbutton {
+  margin-left: 10px;
+}
+
+.srch .search-input input {
+  height: 17px;
+  line-height: 17px;
+  width: 350px;
+  padding: 7px 0 6px 10px;
+}
+
+.srch .search-input ::-ms-input-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+.srch .search-input ::-moz-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+.srch .search-input ::-webkit-input-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+
+.srch .tabs .itemcount {
+  float: left;
+  font-size: 14px;
+  line-height: 1.2em;
+}
+
+.srch .tabs .itemcount .top-marg{
+  margin-top: 5px;
+}
+
+.srch .tabs .itemcount .left-marg{
+  margin-left:10px;
+}
+
+.srch .srch-carousel .carousel {
+  margin: 0 0;
+}
+
+.srch .srch-carousel .carousel [data-component="carousel-mask"] {
+  margin: 0 8px 0 7px;
+}
+
+.srch .bottom .srch-carousel .carousel [data-component="carousel"] ul li.portrait-item {
+  width: 147px;
+}
+
+.srch .ddpp-list{
+  padding:10px 0;
+  margin-bottom:10px;
+  background:#f0f5e1;
+  float:left
+}
+
+.srch .ddpp-list:after{
+  clear:both;
+}
+
+.srch .radius-border{
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.srch .border-green{
+  border:2px solid #ddd;
+/*  border:2px solid #dce6be;*/
+}
+
+.srch .ddpp{
+  display:table;
+  border-spacing:15px 0;
+}
+
+.ie8 .srch .ddpp{
+  display:block;
+  border-spacing:0;
+}
+
+.srch .ddpp-item{
+  display:table-cell;
+  vertical-align:baseline;
+  position:relative;
+  background:white;
+}
+
+.ie8 .srch .ddpp-item{
+  margin:0 8px;
+  display:inline-block;
+}
+
+.srch .ddpp-item .portrait-item{
+  max-width:202px;
+  width:202px;
+}
+
+.srch .ddpp-ribbon{
+  position:absolute;
+  top:-8px;
+  left:-7px;
+  z-index:10;
+}
+
+.srch .ddpp-list{
+  padding:10px 0;
+}
+
+.srch .ddpp-oas{
+  float:left; 
+  display:none;
+}
+
+[data-pagetype="PRES_PICKS"] .ddpp-oas,
+[data-pagetype="STAFF_PICKS"] .ddpp-oas
+{
+  display:block;
+  max-width: 220px;
+  max-height: 275px;
+  overflow: hidden;
+  padding: 10px 0px;
+  margin-left: 10px;
+}
+
+.srch .ddpp-item .burst{
+  display:none;
+}
+
+.srch .leftnav [data-id="pres_picks_id"]{
+  display:none;
+}
+.srch .leftnav [data-id="prod_assort_id"]{
+  display:none;
+}
+
+.srch .featured-header{
+  display:none;
+  background: url('/media_stat/images/layout/dot_grey_h.gif') repeat-x top left;
+  padding-top: 14px;
+  margin-bottom: 4px;
+  font-size: 18px;
+  color: #333;
+}
+
+[data-pagetype="NEWPRODUCTS"] .featured-header{
+  display:block;
+}
+
+[data-pagetype="NEWPRODUCTS"] .burst.new{
+  display:none;
+}
+
+[data-pagetype="NEWPRODUCTS"] .ddpp-ribbon{
+  display:none;
+}
+
+.srch .ddpp-bottom{
+  display:none;
+}
+
+[data-pagetype="PRES_PICKS"] .srch .ddpp-bottom,
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom
+{
+  display:block;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom .legaltext,
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom .ddpp-hr.bottom
+{
+  display: none;
+}
+
+.srch .ddppBotAds{
+  width:100%;
+}
+
+.srch .ddppBotAd-width{
+  width:970px;
+}
+
+.srch .ddppBotAd-sep{
+  border-left:1px solid #CCC;
+  border-right:1px solid #CCC;
+}
+
+.srch .ddpp-hr{
+  height:1px;
+  width:100%;
+  border-top:1px solid #CCC;
+  background:none;
+}
+
+.srch .ddpp-hr.top{
+  margin:6px 0 35px 0;
+}
+
+.srch .ddpp-hr.bottom{
+  margin:25px 0 0 0;
+}
+
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"],
+.srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"],
+.srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"],
+.srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"]{
+  background:none;
+  border:0;
+  border-radius:0;
+}
+
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"] h2,
+.srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"] h2,
+.srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"] h2,
+.srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"] h2{
+  text-align:center;
+}
+
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"] ul,
+.srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"] ul,
+.srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"] ul,
+.srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"] ul{
+  background: #fffffa;
+  border: 1px solid #dce6be;
+  border-radius: 10px;
+  padding:10px 6px;
+  margin:0;
+}
+
+.no-touch .srch .tabs li span:hover{
+  text-decoration:underline;
+}
+
+.srch .browse-media{
+  clear:both;
+  padding:10px 0;
+}
+
+.srch .listSearchHit {
+	font-size: 20px;
+	padding-right: 1em;
+	padding-bottom: 0.5em;
+	display: inline-block;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-list {
+	padding-top: 0;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp {
+	padding-top: 10px;
+}

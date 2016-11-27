@@ -1,0 +1,55 @@
+.continue-shopping{
+  border-top: 1px solid #ff9933;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
+
+.continue-shopping .col-left,
+.continue-shopping .col-right{
+  display:inline-block;
+  vertical-align:top;
+  margin:0;
+}
+
+.continue-shopping .col-left{
+  padding-right:10px;
+}
+
+.continue-shopping .col-right p{
+  margin:0;
+}
+
+.continue-shopping-label{
+  color:#669933;
+  text-transform:uppercase;
+  font-weight:bold;
+}
+
+.youraccount h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+/* .youraccount h2 i {
+  margin: .25em 0 0 .25em;
+  font-size: .75em;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: top;
+  text-transform: none;
+} */
+.youraccount h2 i {
+  margin: .25em 0 0 .25em;
+  font-size: 10px !important;
+  font-family:Verdana Reg;
+  color:#333;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: top;
+  text-transform: none;
+  
+}

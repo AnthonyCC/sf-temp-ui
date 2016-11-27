@@ -1,0 +1,200 @@
+/* reset */
+.mealkit ul, li{
+  list-style-type:none;
+  margin:0;
+}
+
+.mealkit section.deptnav{
+  margin:0;
+}
+
+/* layout */
+.mealkit-products-list{
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+
+  display: -ms-flexbox;
+  -ms-flex-direction:row;
+  -ms-flex-wrap:wrap;
+
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-flex-wrap:wrap;
+
+  flex-wrap:wrap;
+  max-width:970px;
+  padding:0;
+}
+
+.ie8 .mealkit-products-list {
+  display:block;
+}
+
+.mealkit-products-list-item {
+  padding-top:20px;
+  width: 308px;
+  position:relative;
+  margin-right:20px;
+  margin-bottom:20px;
+  border:1px solid #e1e1e1;
+  vertical-align: top;
+ /* height: 100%;*/
+}
+
+.mealkit-products-list-item:nth-child(3n){
+  margin-right:0;
+}
+
+.ie8 .mealkit-products-list-item {
+  display:inline-block;
+  vertical-align:top;
+  min-height:500px;
+  margin-left:5px;
+  margin-right:5px;
+  height: 100%;
+}
+
+.mealkit-products-list-item-imagewrapper{
+  text-align:center;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.mealkit-products-list-item-imagewrapper a,
+.mealkit-products-list-item-imagewrapper a:hover,
+.mealkit-products-list-item-imagewrapper a:active {
+  text-decoration: none;
+}
+
+.mealkit-products-list-item-image{
+  width:280px;/* product-large width */
+  height: 222px;
+}
+
+.mealkit-products-list-item-head{
+  margin: 0;
+  font-weight:bold;
+  color:#333;
+}
+
+.mealkit-products-list-item-subhead{
+  margin:0;
+}
+
+.recipes-title {
+	font-weight: bold;
+	font-size: 17px;
+}
+
+.mealkit-products-list-content {
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+}
+
+.mealkit-products-list-upper {
+	flex-grow: 1;
+}
+
+.mealkit-products-list-item-header-wrapper {
+	padding-left: 15px;
+  	padding-right: 15px;
+}
+
+.mealkit-products-list-item-infos {
+	line-height: 30px;
+	margin-bottom: 15px;
+	padding-left: 15px;
+  	padding-right: 15px;
+}
+.mealkit-products-list-item-price {
+ text-align: left;
+  margin: 0;
+  font-size:17px;
+  color:#333;
+  font-weight: bold;
+}
+
+.mealkit-products-list-item-price span {
+	font-weight: normal;
+}
+
+.mealkit-products-list-button {
+	margin: 15px auto;
+	text-align: center;
+	height:36px;
+}
+
+.mealkit-products-list-button button {
+  width:100px;
+}
+
+.mealkit-category-head {
+  border-bottom:1px dashed #333;
+  padding-bottom:4px;
+  margin-bottom:20px;
+  font-size:22px;
+  font-weight:bold;
+  color:#333; 
+}
+
+.product-list-qualitynote {
+	padding: 0 15px;
+	margin-bottom: 15px;
+}
+
+.product-list-item-bottom {
+	/*position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;*/
+}
+
+.mealkit-product-list-time {
+	text-align: left;
+	padding: 10px 20px;
+	background: #F0F5E1;
+	margin-top: 15px;
+}
+
+.mealkit-product-list-time span {
+	padding-left: 15px;
+}
+
+/* styles */
+.mealkit-products-list {
+   font-family:Verdana,Geneva,sans-serif;
+}
+
+.mealkit-products-list-item {
+  font-size:16px;
+  background: #fcfcfc;
+}
+
+.unavailable .mealkit-products-list-item-image {
+  opacity: .5;
+  filter: alpha(opacity=50);
+}
+
+.mealkit-products-list-content.unavailable {
+  color:#333;
+}
+
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-head,
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-subhead {
+  color:#999;
+}
+
+.mealkit-products-list-content.unavailable .mealkit-products-list-item-header-wrapper:after{
+  content:"Unavailable";
+  display:block;
+  font-weight:bold;
+  font-size:16px;
+  color:#333;
+  opacity:.5;
+  filter: alpha(opacity=50);
+  font-family:Verdana,Geneva,sans-serif;
+  text-align:center;
+  margin:20px 0;
+}

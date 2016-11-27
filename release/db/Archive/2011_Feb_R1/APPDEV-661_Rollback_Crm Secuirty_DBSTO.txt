@@ -1,0 +1,5 @@
+DELETE from cust.case_operation;
+
+INSERT into CUST.CASE_OPERATION (CASE_SUBJECT, START_CASE_STATE, END_CASE_STATE, ROLE, CASEACTION_TYPE) select CASE_SUBJECT, START_CASE_STATE, END_CASE_STATE, ROLE, CASEACTION_TYPE from CUST.case_operation_old;
+
+UPDATE cust.agent a set a.role = (select ab.role from cust.agent_backup ab where ab.user_id=a.user_id); 

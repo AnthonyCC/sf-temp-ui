@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.test" version="1.0.0">
+
+	<!--
+		Content Services
+	-->
+	<service-point id="StoreDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="XmlContentService" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.SimpleContentService" service-id-property="name">
+				<service>StoreDef</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="CloneContentService" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.CloneProxyContentService">
+				<service>XmlContentService</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+</module>

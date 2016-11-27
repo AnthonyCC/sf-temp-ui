@@ -1,0 +1,638 @@
+{namespace expressco}
+
+/**
+ param? mpEWalletID
+ param mpEwalletStatus
+ param ppEwalletStatus
+ param? displayedCardType
+ param? mpCardPaired 
+ param? walletErrorMsg
+ */
+ 
+/**
+ * @param? selected
+ * @param payments
+ * @param coveredByGiftCard
+ * @param mpEwalletStatus
+ * @param ppEwalletStatus
+ * @param backupPaymentRequiredForGiftCard  
+ * @param? walletErrorMsg  
+ * @param? mpButtonImgURL
+ * @param? onOpenCoremetrics
+ * @param? ppEwalletPaired
+  */
+{template .paymentmethodpreview autoescape="false"}
+{if $coveredByGiftCard}
+  <p class="drawer__item__title">NO PAYMENT NECESSARY...</p>
+  <div class="drawer__previewitem__section">
+    <p class="section__title">YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</p>
+    <div class="section__body">
+      Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
+      including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+      <form fdform="payment"><input type="hidden" name="id" value="fake"/></form>
+    </div>
+  </div>
+{else}
+  {if $selected}
+    {foreach $payment in $payments}
+      {if $payment.selected}
+        {call .paymentmethodpreviewitem data="$payment"}
+        {/call}
+      {/if}
+    {/foreach}
+ 
+ 		{if $mpEwalletStatus or $ppEwalletStatus}
+ 		 	<div id="payment-method-separator">
+		        <hr><span>Or</span><hr>
+			</div>
+		{/if}
+		 <!-- PayPal -->
+		 {if $ppEwalletStatus}
+		     <form id="addpaymentmethod_paypal"  class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
+			    	<input type="hidden" name="ewalletType" value="PP" />
+			    	
+			    	<div id="PP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+				    	</div> 
+				    </div>
+			    	
+			  		{if $ppEwalletPaired}
+			  			<div id="PP_wrapper">
+				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
+				  		</div>
+			  		{else}
+			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+			  		{/if}
+			</form>
+		{/if}
+		<!-- PayPal -->
+		
+ 	/** Masterpass Standard Checkout  */ 
+    	{if $mpEwalletStatus}
+			       
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
+			    	<input type="hidden" name="ewalletType" value="MP" />
+			    	
+			    	<div id="MP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+				    	</div>
+			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
+			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
+			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+		 {/if}
+		
+ /** Masterpass Express Checkout Code */   
+ /**
+   	{if $mpEwalletStatus}
+	    {if $mpEWalletID != '1' and $mpCardPaired != 'Yes'}
+		        <div id="payment-method-separator">
+	        <hr><span>Or</span><hr>
+				</div>
+		    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		    	<input type="hidden" name="action" value="MP_Pairing_Start" />
+		    	<input type="hidden" name="ewalletType" value="MP" />
+		  		<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
+		  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+			</form>
+		{else}
+			{if $displayedCardType != 'MP' or $mpCardPaired == 'Yes' }
+				<img src='/media_stat/images/layout/clear.gif'>
+	        <hr><span>Or</span><hr>
+				</div>
+		    	<img src='/media_stat/images/layout/clear.gif'>
+				<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
+					<input type="hidden" name="action" value="selectMPPaymentMethod" />		
+					<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
+			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+		    {/if}
+	    {/if}
+	 {/if}
+	 
+	 */ 
+	 /** End here MP Exp Checkout */
+	 
+  {else}
+  	<div class="drawer__previewitem__button__section">
+    {if $payments and length($payments) > 0}
+    	<button class='cssbutton green' data-component="pickmethodbutton">Pick a Method</button>
+    
+    	{if $mpEwalletStatus or $ppEwalletStatus}
+ 		 	<div id="payment-method-separator">
+		        <hr><span>Or</span><hr>
+			</div>
+		{/if}
+		<!-- PayPal -->
+		{if $ppEwalletStatus}
+		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
+			    	<input type="hidden" name="ewalletType" value="PP" />
+			    	<div id="PP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+				    	</div> 
+				    </div>
+			  		{if $ppEwalletPaired}
+			  			<div id="PP_wrapper">
+				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
+				  		</div>
+			  		{else}
+			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+			  		{/if}
+				</form>
+		{/if}
+		<!-- PayPal -->
+		
+ 	/** Masterpass Standard Checkout  */ 
+    	{if $mpEwalletStatus}
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
+			    	<input type="hidden" name="ewalletType" value="MP" />
+			    	<div id="MP_ERROR" style="display: none;">
+			    	<div class="wallet-error-msg">
+			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+			    	</div>	
+			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
+			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
+			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+			 	
+		 {/if}
+		 
+   	/** Masterpass Express Checkout Code */   
+   	/**
+    	{if $mpEwalletStatus}
+	     	 {if $mpEWalletID != '1' and $mpCardPaired != 'Yes' }
+			        <div id="payment-method-separator">
+		        <hr><span>Or</span><hr>
+					</div>
+	     		<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		    		<input type="hidden" name="action" value="MP_Pairing_Start" />
+		    		<input type="hidden" name="ewalletType" value="MP" />
+		  			<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
+		  			<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+			{else}
+				{if $displayedCardType != 'MP' and $mpCardPaired == 'Yes' }
+			        <div id="payment-method-separator">
+		        		<hr><span>Or</span><hr>
+					</div>
+			    		<img src='/media_stat/images/layout/clear.gif'>
+					<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
+						<input type="hidden" name="action" value="selectMPPaymentMethod" />		
+						<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
+						<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+					</form>
+		    	{/if}
+			{/if}
+		{/if}	
+
+		*/ 
+	 /** End here MP Exp Checkout */
+	 
+    {else}
+		<button aria-haspopup="true" class='cssbutton green' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
+
+		{if $mpEwalletStatus or $ppEwalletStatus}
+ 		 	<div id="payment-method-separator">
+		        <hr><span>Or</span><hr>
+			</div>
+		{/if}
+		
+		<!-- PayPal -->
+		{if $ppEwalletStatus} 
+		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
+			    	<input type="hidden" name="ewalletType" value="PP" />
+			    	<div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
+			    		<img src='/media_stat/images/masterpass/mpwarning.png'> 
+			    		<span>Cannot Connect to PayPal at this time.</span>
+			    	</div> 
+			  		{if $ppEwalletPaired}
+			  			<div id="PP_wrapper">
+				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
+				  		</div>
+			  		{else}
+			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+			  		{/if}
+			</form>
+		{/if}
+		<!-- PayPal -->
+		
+ 		/** Masterpass Standard Checkout  */ 
+    	{if $mpEwalletStatus}
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
+			    	<input type="hidden" name="ewalletType" value="MP" />
+			    	<div id="MP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+				    	</div>
+			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
+			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
+			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+		 {/if}
+		
+   	/** Masterpass Express Checkout Code */   
+   	/**		    
+		    {if $mpEwalletStatus}
+			        <div id="payment-method-separator">
+		        <hr><span>Or</span><hr>
+					</div>
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    	<input type="hidden" name="action" value="MP_Pairing_Start" />
+			    	<input type="hidden" name="ewalletType" value="MP" />
+			  		<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
+			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				</form>
+		   {/if}
+		   
+		*/ 
+	 /** End here MP Exp Checkout */   
+    {/if}
+  </div>
+  {/if}
+  {if $backupPaymentRequiredForGiftCard}
+    <div class="drawer__previewitem__section">
+      <p class="section__title">
+      	PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.
+      </p>
+      <div class="section__body">
+        <p>Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment.
+        This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order.
+        We guarantee that you'll always pay the true price for the actual weight of your products.</p>
+        <a href="/help/estimated_price.jsp" data-ifrpopup-height="400" data-ifrpopup-width="500" data-ifrpopup="/help/estimated_price.jsp">Learn about Estimated Totals</a>.
+      </div>
+  	</div>
+  {/if}
+{/if}
+{/template}
+
+/**
+ * @param? payments
+ * @param? coveredByGiftCard
+ *
+ */
+{template .paymentmethodcontent autoescape="false"}
+{if $payments}
+  <form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
+    <input type="hidden" name="action" value="selectPaymentMethod" />
+    <div class="drawer__header">
+      <button class="cssbutton orange" data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
+    </div>
+    <div fdform-error-container></div>
+    {foreach $payment in $payments}
+      {call .paymentmethod data="$payment"}{/call}
+    {/foreach}
+    <div class="drawer__item drawer__item-addaction">
+      <div class="addaction__center">
+        <button aria-haspopup="true" class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add <span class="offscreen">Payment </span>Method</button>
+      </div>
+    </div>
+  </form>
+{else}
+  {if $coveredByGiftCard}
+    <div class='drawer__content'>
+      <div class="drawer__header">
+        Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
+        including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+      </div>
+    </div>
+  {else}
+    <div class='drawer__content'>
+      <p class="drawer__header">
+        <h1>No payments available.</h1>
+      </p>
+    </div>
+  {/if}
+{/if}
+{/template}
+
+/**
+* @param id
+* @param type
+* @param nameOnCard
+* @param address1
+* @param address2
+* @param? apartment 
+* @param bestNumber
+* @param expiration
+* @param accountNumber
+* @param? selected
+* @param? bankAccountType
+* @param? bankName
+* @param? abaRouteNumber
+* @param? city
+* @param? state
+* @param? zip
+* @param? eWalletID
+* @param? mpLogoURL
+* @param? referencedOrderId
+* @param? paymentTypeDescription
+* @param? emailID
+* @param? canDelete
+*/
+{template .paymentmethod autoescape="false"}
+<div class='drawer__item'>
+  <label class='drawer__item__label'>
+  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if} />
+  <div class='drawer__itemright'>
+  {if $eWalletID == '1'}
+     <p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
+  {else}	
+   {if $eWalletID == '2'}
+   <p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"> </p> 
+    {else}
+    	<p class='drawer__item__title'>{$bankName or $type}</p>
+    {/if}
+    {/if}
+    {if $accountNumber or $expiration or $bankAccountType}
+    <div class="drawer__item__section">
+      <div class='section__body'>
+        {if $bankAccountType}
+          <p>{$bankAccountType}</p>
+        {/if}
+	{if $eWalletID == '1'}
+      		<p>{$bankName ? $bankName : $type}</p>
+       {/if}
+       {if $eWalletID != '2'}
+        <p>{if $accountNumber}{$accountNumber} {/if}{if $expiration}Exp. {$expiration}{/if}</p>
+       {/if}
+        {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
+      </div>
+    </div>
+    {/if}
+    {if $nameOnCard}
+    <div class="drawer__item__section">
+     {if $eWalletID != '2'}
+      <p class='section__title'>Name{if $type != 'ECheck'} on card{/if}</p>
+     {/if}
+      <div class='section__body'>
+        <p>{$nameOnCard}</p>
+      </div>
+      {if $eWalletID == '2'}
+      <div class='section__body'>
+        <p>{$emailID}</p>
+      </div>
+      {/if}
+    </div>
+    {/if}
+    {if $eWalletID != '1' and $eWalletID != '2'}
+	  {if $address1 or $address2}
+	  <div class="drawer__item__section">
+	    <p class='section__title'>Billing address</p>
+	    <div class='section__body'>
+	      {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
+	      {if $address2}<p>{$address2}</p>{/if}
+	      <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+	    </div>
+	  </div>
+	  {/if}
+	  {if $bestNumber}
+	  <div class="drawer__item__section">
+	    <p class='section__title'>Best # for billing inquiries:</p>
+	    <div class='section__body'>
+	      <p>{$bestNumber}</p>
+	    </div>
+	  </div>
+	  {/if}
+	  {if $referencedOrderId and $paymentTypeDescription}
+      <div class="drawer__previewitem__section">
+        <p class='section__title'>Payment: <span style="color:red">{$paymentTypeDescription}</span></p>
+        <div class='section__body'>
+          <p>Referenced order: {$referencedOrderId}</p>
+        </div>
+      </div>
+      {/if}
+	{/if}
+  </div><!--/ drawer__itemright -->
+  </label>
+  {if $eWalletID != '1' and $eWalletID != '2'}
+  <div class="drawer__item__action">
+    {if $canDelete}<button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
+    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
+  </div>
+  {/if}
+</div><!--/ drawer__item -->
+{/template}
+
+/**
+* @param nameOnCard
+* @param expiration
+* @param? accountNumber
+* @param? type
+* @param? bankAccountType
+* @param? bankName
+* @param? abaRouteNumber
+* @param? eWalletID
+* @param? mpLogoURL
+* @param? emailID
+*/
+{template .paymentmethodpreviewitem autoescape="false"}
+<div class='drawer__previewitem'>
+	{if $eWalletID == '2'}
+		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"> </p>
+	{else}		
+		{if $eWalletID == '1'}
+     		<p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
+    	{else}	
+    	<p class='drawer__previewitem__title'>{$bankName ? $bankName : $type}</p>
+    	{/if}
+     {/if}
+  {if $eWalletID != '2'}
+  {if $accountNumber or $expiration or $bankAccountType}
+  <div class="drawer__previewitem__section">
+    <div class='section__body'>
+      {if $bankAccountType}
+        <p>{$bankAccountType}</p>
+      {/if}
+       {if $eWalletID == '1'}
+      		<p>{$bankName ? $bankName : $type}</p>
+       {/if}
+      <p>{if $accountNumber}{$accountNumber} {/if}{if $expiration}Exp. {$expiration}{/if}</p>
+      {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
+    </div>
+  </div>
+  {/if}
+  {/if}
+  {if $nameOnCard}
+  <div class="drawer__previewitem__section">
+  {if $eWalletID != '2'}
+    <p class='section__title'>Name on card</p>
+   {/if}
+    <div class='section__body'>
+      <p>{$nameOnCard}</p>
+    </div>
+    {if $eWalletID == '2'}
+    <div class='section__body'>
+      <p>{$emailID}</p>
+    </div>
+    {/if}
+  </div>
+  {/if}
+</div>
+<div id="oas_b_FirstECheckPromo" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+</div>
+{/template}
+
+
+/**
+ * @param? selected
+ * @param payments
+ * @param coveredByGiftCard
+ * @param backupPaymentRequiredForGiftCard
+ */
+{template .paymentmethodpreviewNew autoescape="false"}
+{if $coveredByGiftCard}
+  <p class="drawer__item__title">NO PAYMENT NECESSARY...</p>
+  <div class="drawer__previewitem__section">
+    <p class="section__title">YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</p>
+    <div class="section__body">
+      Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
+      including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+    </div>
+  </div>
+{else}
+  {if $selected}
+    {foreach $payment in $payments}
+      {if $payment.selected}
+        {call .paymentmethodpreviewitemNew data="$payment"}
+         {/call}
+      {/if}
+    {/foreach}
+  {/if}
+  {if $backupPaymentRequiredForGiftCard}
+    <div class="drawer__previewitem__section">
+      <p class="section__title">
+      	PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.
+      </p>
+      <div class="section__body">
+        <p>Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment.
+        This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order.
+        We guarantee that you'll always pay the true price for the actual weight of your products.</p>
+        <a href="/help/estimated_price.jsp" data-ifrpopup-height="400" data-ifrpopup-width="500" data-ifrpopup="/help/estimated_price.jsp">Learn about Estimated Totals</a>.
+      </div>
+  	</div>
+  {/if}
+{/if}
+{/template}
+
+/**
+* @param nameOnCard
+* @param address1
+* @param address2
+* @param? apartment 
+* @param bestNumber
+* @param expiration
+* @param? accountNumber
+* @param? type
+* @param? bankAccountType
+* @param? bankName
+* @param? abaRouteNumber
+* @param? city
+* @param? state
+* @param? zip
+* @param? eWalletID
+* @param? mpLogoURL
+* @param? referencedOrderId
+* @param? paymentTypeDescription
+* @param? emailID
+*/
+{template .paymentmethodpreviewitemNew autoescape="false"}
+<div class='drawer__previewitem'>
+{if $eWalletID == '2'}
+		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"> </p>
+{else}
+	{if $eWalletID == '1'}
+	
+     	<p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
+    {else}	
+    	<p class='drawer__previewitem__title'>{$bankName ? $bankName : $type}</p>
+    
+     {/if}
+{/if}
+{if $eWalletID != '2'}
+  {if $accountNumber or $expiration or $bankAccountType}
+  <div class="drawer__previewitem__section">
+    <div class='section__body'>
+      {if $bankAccountType}
+        <p>{$bankAccountType}</p>
+      {/if}
+       {if $eWalletID == '1'}
+      		<p>{$bankName ? $bankName : $type}</p>
+       {/if}
+      <p>{if $accountNumber}{$accountNumber} {/if}{if $expiration}Exp. {$expiration}{/if}</p>
+      {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
+    </div>
+  </div>
+  {/if}
+ {/if}
+  {if $nameOnCard}
+  <div class="drawer__previewitem__section">
+ 	{if $eWalletID != '2'}
+    <p class='section__title'>Name on card</p>
+    {/if}
+    <div class='section__body'>
+      <p>{$nameOnCard}</p>
+    </div>
+    {if $eWalletID == '2'}
+    <div class='section__body'>
+      <p>{$emailID}</p>
+    </div>
+    {/if}
+  </div>
+  {/if}
+  {if $eWalletID != '2'}
+  {if $address1 or $address2}
+  <div class="drawer__previewitem__section">
+    <p class='section__title'>Billing address</p>
+    <div class='section__body'>
+      {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
+      {if $address2}<p>{$address2}</p>{/if}
+      <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+    </div>
+  </div>
+  {/if}
+  {if $bestNumber}
+  <div class="drawer__previewitem__section">
+    <p class='section__title'>Best # for billing inquiries:</p>
+    <div class='section__body'>
+      <p>{$bestNumber}</p>
+    </div>
+  </div>
+  {/if}
+  {if $referencedOrderId and $paymentTypeDescription}
+    <div class="drawer__previewitem__section">
+      <p class='section__title'>Payment: <span style="color:red">{$paymentTypeDescription}</span></p>
+      <div class='section__body'>
+        <p>Referenced order: {$referencedOrderId}</p>
+      </div>
+    </div>
+  {/if}
+ {/if}
+</div>
+{/template}

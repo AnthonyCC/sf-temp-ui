@@ -1,0 +1,24 @@
+<%@page import="com.freshdirect.fdstore.util.TimeslotLogic"%>
+<%
+	/*
+	 	incNextButtonCount is defined in each jsp (using: int incNextButtonCount = 0;)
+	 		adding one on each usage of the include allows for a different "top" and "bottom" button, so start at 0
+	 */
+	 
+	String uriNextButton = request.getRequestURI();
+			/* determine button for page */
+			if (uriNextButton.indexOf("step_2") > -1) {
+				if (uriNextButton.indexOf("step_2_duplicate") > -1) { %>
+				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) { %>
+				<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<% } else {
+					if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
+				<button class="imgButtonWhite checkoutbutton" type="submit" disabled="disabled">choose payment </button>							
+							<%}else{ %>
+				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<% }
+				}							
+			} 
+	incNextButtonCount++;
+%>

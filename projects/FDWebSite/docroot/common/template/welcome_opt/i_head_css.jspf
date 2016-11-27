@@ -1,0 +1,36 @@
+<%--
+	Requires:
+		imports: (BrowserInfo) welcomepageBI
+		taglibs: fd, jwr
+--%><%
+	//BrowserInfo cannot currently parse IE11 - batchley 20140217
+	float welcomepageBI_ver = 0;
+	try {
+		welcomepageBI_ver = Float.parseFloat(welcomepageBI.getVersion());
+	} catch (NullPointerException npe){
+		//do nothing
+	}
+
+%>
+<%--
+	semi-optimized css bundle
+--%>
+	<jwr:style src="/welcome_opt_head.css" />
+	
+<%-- new css --%>
+<style type="text/css">
+	.body-nav {
+	}
+	.globalnav_top img {
+		border: 0;
+	}
+	#globalnav_searchButton {
+		margin: 1px 4px;
+	}
+	.footer-nav {
+	}
+	/* attrib addition */
+	#messages .handler {
+		text-align: center;
+	}
+</style>

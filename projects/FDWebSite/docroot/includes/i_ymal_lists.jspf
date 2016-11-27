@@ -1,0 +1,33 @@
+<%@ page import='java.util.Iterator' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.Set' %>
+<%@ page import='java.util.ArrayList' %>
+<%@ page import='java.util.Map' %>
+<%@ page import="java.util.Collections"%>
+<%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
+<%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+<%@ page import='com.freshdirect.framework.webapp.ActionResult'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
+<%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%--
+/**
+ *  A JSP fragment page to display the YMALs based on YMAL lists for
+ *  product, recipe and category content nodes.
+ *
+ * @param actionResult Result of latest add to cart operation, instance of ActionResult
+ *
+ */
+--%><%
+	// more things
+	ActionResult ymal_result = (ActionResult) request.getAttribute("actionResult");
+	FDUserI ymal_user = (FDUserI) session.getAttribute(SessionName.USER);
+%>
+<fd:YmalContext id="ymalSource">
+	<fd:YMALRecommendations id="recommendations" facility="ymal" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>">
+		<%@ include file="/includes/i_ymal_box.jspf" %>
+	</fd:YMALRecommendations>
+</fd:YmalContext>

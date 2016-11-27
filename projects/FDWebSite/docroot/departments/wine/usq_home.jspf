@@ -1,0 +1,261 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import='java.util.Collections' %>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Collection"%>
+<%@page import="com.freshdirect.fdstore.content.util.WineSorter"%>
+<%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
+<%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWinePrice"%>
+<%@page import="com.freshdirect.fdstore.content.WineFilter"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.webapp.util.JSHelper"%>
+<%@page import="javax.servlet.http.Cookie"%>
+<%@page import="java.net.URLEncoder"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@taglib uri="template" prefix="tmpl"%>
+<%@taglib uri="logic" prefix="logic"%>
+<%@taglib uri="freshdirect" prefix="fd"%>
+<%@taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_WINE_HOME_TOTAL = 765;
+%>
+
+<fd:IsAlcoholic noProduct="true">
+<%
+	boolean isAlcoholic = true; //always true, since the <fd:IsAlcoholic> tag did the checks
+	if (isAlcoholic) { //dummy if, otherwise unreachable code error will raise, if <fd:IsAlcoholic> tag generates this code piece into the servlet
+		String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
+		response.sendRedirect(response.encodeRedirectURL(redirectURL1));
+		return;
+	}
+%>
+</fd:IsAlcoholic>
+
+<div style="width: <%=W_WINE_HOME_TOTAL%>px; text-align: center; margin: 0px auto;">
+<%
+	boolean useAlternateImage = true;
+	String trk = "dpage";
+	EnumWinePrice dfltPrice = EnumWinePrice.TWO;
+	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, request.getParameter("deptId"));
+	boolean isUsq = true;
+	if (dept != null && !dept.toString().toUpperCase().equals("USQ")) { isUsq =  false; }
+	
+	if (dept.getEditorial() != null) {
+		%>
+		<div align="center">
+			<fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
+		</div>
+		<script type="text/javascript">
+			YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
+		</script>
+		<%
+	}
+	%>
+	<%
+	{ // TOP rated multitab carousel
+		if (dept != null && dept.toString().toUpperCase().equals("USQ")) {
+		%>
+			<script type="text/javascript">
+			<% for (EnumWinePrice price : EnumWinePrice.values()) { %>
+				FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLowerCase()%>");
+			<% } %>
+			</script>
+	
+			<div class="usq" style="padding-top: 15px;">
+				<table width="<%=W_WINE_HOME_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td class="wine-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_xprt_filled.png" width="7" height="7"></td>
+						<td class="wine-xprt-bg wine-lightbrown" align="left">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td align="left" nowrap="nowrap"><div class="title19 wine-narrow" style="padding: 0.4em 5px 0.25em;">Our Expert's Top Rated Wines</div></td>
+									<td align="right" nowrap="nowrap" class="text15" style="vertical-align: middle; padding-right: 5px;">
+										<span style="cursor: pointer;" class="clickable" onclick="return FreshDirect.Wine.showExpertRatingPopup();">How USQ Expert Ratings work...</span>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td class="wine-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_xprt_filled.png" width="7" height="7"></td>
+					</tr>
+				</table>
+				<div class="wine-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
+				<table class="wine-xprt" width="<%=W_WINE_HOME_TOTAL%>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+					<tr>
+					<% 
+					{ EnumWinePrice[] values = EnumWinePrice.values();
+						for (int i = 0; i < values.length; i++) {
+							EnumWinePrice price = values[i];
+							String clazz = "carousel-tab-label";
+							if (price == dfltPrice)
+								clazz += "-selected";
+							if (i > 0 && values[i - 1] != dfltPrice)
+								clazz += " carousel-tab-left-label";
+							if (i < values.length - 1 && values[i + 1] != dfltPrice)
+								clazz += " carousel-tab-right-label";
+					%>
+						<td width="<%= 100 / EnumWinePrice.values().length %>%" id="<%="tab_price_" + price.name().toLowerCase() + "_label"%>"
+								class="<%= clazz %> text14 wine-narrow">
+							<div onclick="return FreshDirect.Wine.showTab(&quot;top-rated&quot;, &quot;<%= "tab_price_" + price.name().toLowerCase() %>&quot;);">
+								<span>-<% for (int j = 0; j < price.getDollarCount(); j++) { %>$<% } %>-</span>
+							</div>
+						</td>
+					<%
+						}
+					}
+					%>
+					</tr>
+				</table>
+			
+				<div class="usq">
+					<div id="topRatedContainer" class="wine-brown-border wine-top-rated">
+						<%
+							List<String> ids = new ArrayList<String>();
+							int pcnt = EnumWinePrice.values().length;
+							for (EnumWinePrice price : EnumWinePrice.values()) {
+								String carouselId = "price_" + price.name().toLowerCase();
+								String tabId = dfltPrice != price ? "tab_price_" + price.name().toLowerCase() : null;
+
+								ids.add("tab_price_" + price.name().toLowerCase());
+						%>
+							<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="15" useAlternateImage="true" imageHeightId="imgHeight">
+								<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
+									
+									<script type="text/javascript">
+										var cmPageCarousel = cmPageCarousel || {};	
+										<%String handlerObj = "cmPageCarousel[\"" + carouselId + "\"]"; %>
+										<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-top-rated-"+price.name().toLowerCase()%>' elementCategory="carousel"/>} 
+									</script>
+
+									<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12" useAlternateImage="<%= useAlternateImage %>" 
+											width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45" eventHandlersObj="<%=handlerObj%>"><%
+										ProductModel product = (ProductModel) currentItem;
+										PriceCalculator calculator = product.getPriceCalculator();
+										FDCustomerCoupon custCoupon = user.getCustomerCoupon((new ProductImpression(product)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+									%>
+										<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+											<div><display:WineRating product="<%= product %>" action="<%= actionUrl %>"/></div>
+											<div style="padding-bottom: 10px;"><display:WinePrice priceCalculator="<%= calculator %>" action="<%= actionUrl %>"/></div>
+											<display:ProductImage priceCalculator="<%= calculator %>" showRolloverImage="true" action="<%= actionUrl %>"
+													useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
+											<div class="productname">
+												<display:ProductName priceCalculator="<%= calculator %>" action="<%= actionUrl %>" showBrandName="true" />
+											</div>
+											<display:ProductPrice impression="<%= new ProductImpression(calculator) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+											<display:FDCoupon coupon="<%= custCoupon %>" contClass="fdCoupon_wineTopRated"></display:FDCoupon>
+										</display:GetContentNodeWebId>
+									</display:Carousel>
+								</div>
+							</fd:WineTopRatedFeed>
+						<%
+							}
+						%>
+						<script>
+						YAHOO.util.Event.onDOMReady(function() {
+							var tpIdList = <%= JSHelper.listToJSArray(ids) %>;
+							for (c in tpIdList) {
+								window.fd_carousel.postInit(c, mx);
+							}
+							
+							
+							
+							try {
+								var mx = window.fd_carousel.maxHeights['topRated'];
+								alert(mx);
+								for (c in tpIdList) {
+									window.fd_carousel.fixItemHeights(c, mx);
+								}
+							}catch(exc) {}
+						});
+						</script>
+					</div>
+				</div>
+				
+			</div>
+		<%
+		}
+	}
+%>
+<%
+	//this is where the products in the following carousel are taken from
+	ContentNodeModel usqRegion = (isUsq) ? ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, "usq_region") : ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, "vin_all");
+	if (usqRegion != null) {
+		%>
+		
+		
+		<%-- this is the second carousel --%>
+		<div style="padding-top: 20px; text-align: left;">
+			<table width="<%=W_WINE_HOME_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_brown_filled.png" width="7" height="7"></td>
+					<td class="wine-pop-brown-bg" width="<%=W_WINE_HOME_TOTAL-12%>" align="left"><div class="title17 wine-narrow wine-lightbrown" style="padding: 0.35em 5px 0.2em;">Most Popular</div></td>
+					<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_brown_filled.png" width="7" height="7"></td>
+				</tr>
+			</table>
+			<div class="wine-lightbrown wine-brown-border wine wine-popular" style="padding: 20px 0px 10px;">
+			<fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="usq_dept_pop" currentNode="<%= usqRegion %>" id="deptPopular">
+				<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
+					
+					<script type="text/javascript">
+						var wine_popular_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="PROD_GRP_POPULAR" elementCategory="carousel"/>} 
+					</script>
+					<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="20" useAlternateImage="<%= useAlternateImage %>" 
+							width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" eventHandlersObj="wine_popular_events">
+						<% ProductModel product = (ProductModel) currentItem; 
+						PriceCalculator calculator = product.getPriceCalculator();
+						FDCustomerCoupon custCoupon = user.getCustomerCoupon((new ProductImpression(product)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
+						%>
+						<span class="smartstore-carousel-item">
+							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+								<display:ProductImage priceCalculator="<%= calculator %>" showRolloverImage="true" action="<%= actionUrl %>"
+										useAlternateImage="<%= useAlternateImage %>" className="productImage" enableQuickBuy="true" webId="<%= webId %>"  excludeCaseDeals="true"/>
+								<div><display:WinePrice priceCalculator="<%= calculator %>" action="<%= actionUrl %>"/></div>
+								<div class="rating-small"><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
+								<div class="productname">
+									<display:ProductName priceCalculator="<%= calculator %>" product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+								</div>
+								<display:ProductPrice impression="<%= new ProductImpression(calculator) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+								<display:FDCoupon coupon="<%= custCoupon %>" contClass="fdCoupon_wineMostPop"></display:FDCoupon>
+							</display:GetContentNodeWebId>
+						</span>
+					</display:Carousel>
+				</display:UniqueFilter>
+			</fd:ProductGroupRecommender>
+			</div>
+		</div>
+	<%
+	}
+%>
+
+<% if (dept.getTemplatePath() != null && dept.getTemplatePath().trim().length() > 0) {
+	Map<String, String> params = new HashMap<String, String>();
+	params.put("baseUrl", "");
+%>
+	<div style="padding-top: 15px;" width="100%">
+		<div align="center">
+			<fd:IncludeMedia name="<%= dept.getTemplatePath().trim() %>" parameters="<%= params %>" />
+		</div>
+		<div style="clear: both; font-size: 0px;"></div>
+	</div>
+	<% } %>
+	
+	<div style="padding: 20px 0px 5px;">
+		<%@ include file="/shared/includes/usq_bottom_links.jspf" %>
+	</div>
+	<div style="padding: 5px 0px 10px;">
+		<%@ include file="/shared/includes/usq_copyright.jspf" %>
+	</div>
+
+</div>

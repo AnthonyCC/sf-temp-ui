@@ -1,0 +1,44 @@
+--- framework/src/java/org/apache/hivemind/service/impl/HiveMindClassPool.java	2006-01-15 19:38:38.000000000 +0100
++++ framework/src/java/org/apache/hivemind/service/impl/HiveMindClassPool.java	2009-09-17 14:48:04.000000000 +0200
+@@ -32,7 +32,7 @@
+  */
+ public class HiveMindClassPool extends ClassPool
+ {
+-    private ClassFactoryClassLoader _loader = new ClassFactoryClassLoader();
++    private ClassFactoryClassLoader _loader;
+ 
+     /**
+      * Used to identify which class loaders have already been integrated into the pool.
+@@ -42,8 +42,14 @@
+     public HiveMindClassPool()
+     {
+         super(null);
++        if (Boolean.getBoolean("hivemind.classloader.fix")) {
++            _loader = new ClassFactoryClassLoader(Thread.currentThread().getContextClassLoader());
++            appendClassLoader(ClassLoader.getSystemClassLoader());
++        } else {
++            _loader = new ClassFactoryClassLoader();
++            appendClassLoader(Thread.currentThread().getContextClassLoader());
++        }
+ 
+-        appendClassLoader(Thread.currentThread().getContextClassLoader());
+     }
+ 
+     /**
+--- framework/src/java/org/apache/hivemind/service/impl/ClassFactoryClassLoader.java	2006-01-15 19:38:38.000000000 +0100
++++ framework/src/java/org/apache/hivemind/service/impl/ClassFactoryClassLoader.java	2009-09-17 14:45:58.000000000 +0200
+@@ -26,6 +26,14 @@
+ class ClassFactoryClassLoader extends ClassLoader
+ {
+     private List _loaders = new ArrayList();
++
++    public ClassFactoryClassLoader() {
++        super();
++    }
++  
++    public ClassFactoryClassLoader(ClassLoader loader) {
++        super(loader);
++    }
+ 
+     /**
+      * Adds a delegate class loader to the list of delegate class loaders.

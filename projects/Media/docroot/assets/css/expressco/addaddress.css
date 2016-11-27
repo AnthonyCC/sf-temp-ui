@@ -1,0 +1,311 @@
+#addaddresspopup form {
+  display: none;
+}
+
+#addaddresspopup .ec-popup {
+	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.13);
+    border: none;
+}
+
+#addaddresspopup [data-show="addaddress_home"] #addaddress_home,
+#addaddresspopup [data-show="addaddress_office"] #addaddress_office {
+  display: block; 
+  background: #fefefe;
+  padding: 60px; 
+  font-weight: bold;
+}
+
+#addaddresspopup input,
+#addaddresspopup textarea,
+#addaddresspopup select {
+	width: 100%;
+}
+
+
+#addaddresspopup [data-show="addaddress_home"] #addaddress_home_label,
+#addaddresspopup [data-show="addaddress_office"] #addaddress_office_label  {
+	background: #fff;
+	color: #4fa157;
+	font-weight: bold;
+}
+
+span[fdform-error-for="zip"] {
+	margin-left: 5em;
+}
+label[for="addaddress_home_last_name"],
+label[for="addaddress_home_bd_last_name"],
+label[for="addaddress_office_last_name"],
+span[fdform-error-for="last_name"],
+span[fdform-error-for="phone_ext"],
+span[fdform-error-for="alt_phone_ext"] {
+	margin-left: 3.1em;
+}
+
+label[for="addaddress_home_apartment"],
+label[for="addaddress_office_apartment"],
+label[for="addaddress_home_zip"],
+label[for="addaddress_home_state"],
+label[for="addaddress_home_phone_ext"],
+label[for="addaddress_home_bd_phone_ext"],
+label[for="addaddress_home_alt_phone_ext"],
+label[for="addaddress_office_alt_phone_ext"],
+label[for="addaddress_office_zip"],
+label[for="addaddress_office_state"],
+label[for="addaddress_office_phone_ext"],
+span[fdform-error-for="apartment"] {
+	margin-left: 1.5em;
+}
+
+.backup_delivery {
+	padding-top: 10px;	
+}
+
+div[bd-id] {
+	min-height: 30px;
+}
+
+#addaddress_office textarea[name="instructions"],
+#addaddress_home textarea[name="instructions"] {
+  min-height: 70px;
+}
+
+
+#addaddress_home .buttons button,
+#addaddress_office .buttons button {
+  margin: 10px;
+}
+
+
+#addaddress_home .buttons [fdform-button="cancel"],
+#addaddress_office .buttons [fdform-button="cancel"] {
+	margin-top: 10px;
+}
+
+#addaddress_home .buttons [type="submit"],
+#addaddress_office .buttons [type="submit"] {
+  float: right;
+  width: 260px;
+}
+
+
+#addaddress_home .showaltphone,
+#addaddress_office .showaltphone {
+  padding: 0;
+  width: 21px;
+  height: 21px;
+  line-height: 20px;
+  text-align: center;
+  margin: 0;
+}
+
+#addaddress_home div.altphone,
+#addaddress_office div.altphone,
+#addaddress_home[data-showaltphone] .showaltphone,
+#addaddress_office[data-showaltphone] .showaltphone {
+  display: none;
+}
+
+#addaddress_home[data-showaltphone] div.altphone,
+#addaddress_office[data-showaltphone] div.altphone {
+  display: block;
+}
+
+#addaddress_home .deletephonenumber,
+#addaddress_office .deletephonenumber {
+  display: none;
+  padding: 0;
+  width: 21px;
+  height: 21px;
+  line-height: 20px;
+  font-size: 9px;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 0 3px;
+}
+
+#addaddress_home[data-showaltphone] .deletephonenumber,
+#addaddress_office[data-showaltphone] .deletephonenumber {
+  display: inline-block;
+}
+
+#addaddress_home .phonetype label,
+#addaddress_office .phonetype label {
+  margin: 2px 10px 4px 0;
+  display: inline-block;
+}
+
+#addaddress_home .phonetype label input,
+#addaddress_office .phonetype label input {
+  vertical-align: top;
+  margin: 0 2px 0 0;
+}
+
+#addaddress_home .backup_delivery [bd-id="none"] {
+  display: none;
+}
+
+#addaddress_home .backup_delivery[bd-selected] [bd-id="none"] {
+  display: block;
+}
+
+#addaddress_home .backup_delivery[bd-selected="none"] [bd-id="none"] {
+  display: none;
+}
+
+#addaddress_home .backup_delivery .bd-content {
+  display: none;
+}
+
+#addaddress_home .backup_delivery[bd-selected="doorman"] [bd-id="doorman"] .bd-content,
+#addaddress_home .backup_delivery[bd-selected="neighbor"] [bd-id="neighbor"] .bd-content,
+#addaddress_home .backup_delivery[bd-selected="unattended"] [bd-id="unattended"] .bd-content {
+  display: block;
+}
+
+#addaddress_home .backup_delivery .bd-content textarea {
+  min-height: 70px;
+}
+
+[data-drawer-content="address"] span.phone {
+  display: inline-block;
+}
+
+[data-drawer-content="address"] span.phone:after {
+  display: inline-block;
+  background: #ddd;
+  font-size: 10px;
+  line-height: 10px;
+  margin-left: 4px;
+  padding: 2px 4px;
+}
+
+[data-drawer-content="address"] span.phone.mobile:after {
+  content: 'Mobile';
+}
+
+[data-drawer-content="address"] span.phone.home:after {
+  content: 'Home';
+}
+
+[data-drawer-content="address"] span.phone.work:after {
+  content: 'Work';
+}
+
+[data-drawer-content="address"] [data-component="addresschangebutton"] {
+	font-size: 18px;
+	height: 45px;
+}
+[data-drawer-content="address"] [data-component="addresschangebutton"] {
+  float: right;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes,
+[data-drawer-content="address"] ul.pickuptimes {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li,
+[data-drawer-content="address"] ul.pickuptimes li {
+  position: relative;
+  display: block;
+  height: 1.5em;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li.closed,
+[data-drawer-content="address"] ul.pickuptimes li.closed {
+  color: #ccc;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li:before,
+[data-drawer-content="address"] ul.pickuptimes li:before {
+  content: ' ';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .day,
+[data-drawer-content="address"] ul.pickuptimes li .day {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-right: .3em;
+  background: #f7f7f7;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .time,
+[data-drawer-content="address"] ul.pickuptimes li .time {
+  display: block;
+  float: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 75px;
+  padding-left: .3em;
+  background: #f7f7f7;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .day,
+[data-drawer-default-content="address"] ul.pickuptimes li .time {
+  background: #fff;
+}
+
+[data-drawer-default-content="address"] .drawer__item__section.phone {
+  display: none;
+}
+
+[data-drawer-default-content="address"] .drawer__previewitem > p {
+  text-align: center;
+}
+
+[data-drawer-default-content="address"] .noaddress {
+  padding: 10px 10px 10px 30px;
+  min-width:250px;
+  margin: 0 19px 20px 0;
+  position:relative;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__label {
+  cursor:pointer;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__title {
+  margin: 0;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__section {
+  padding: 0;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__action {
+  display: block;
+}
+
+a.pickuppopup {
+  text-decoration: none;
+}
+
+#addaddresspopup [bd-id="unattended"] {
+  display: none;
+}
+
+[unattendeddeliveryavailable="true"] #addaddresspopup [bd-id="unattended"] {
+  display: block;
+}
+
+/* APPBUG-4517 fix for Savari v8. alignment problems */
+
+#addaddress_home_nick_name,
+#addaddress_office_company_name,
+#addaddress_home_street_address2,
+addaddress_office_street_address2,
+#addaddress_home_bd_address,
+#addaddress_home_instructions,
+#office_instructions {
+	display: block;
+}

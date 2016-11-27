@@ -1,0 +1,43 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+	<name>MKTDW1</name>
+ 	<type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+ 	<url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )</url>
+    <user>dw_owner</user>
+    <password>dw_owner</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>pivottest</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>MKTDW1</name>
+     <param>
+select next_day(trunc(order_date)-1,'Sunday') as week_ending, n.code, sum(o.sub_total) as sales
+from orders o, order_delivery d, neighborhood_zips n
+where trunc(o.order_date) between next_day(trunc(sysdate)-1,'Sunday')-62 and next_day(trunc(sysdate)-1,'Sunday')-7
+and o.order_id = d.order_id
+and d.delivery_type = 'H'
+and d.zip = n.zip
+group by next_day(trunc(order_date)-1,'Sunday'), n.code
+     </param>
+     <param>
+UES,UWS,MID_EAST,MID_WEST,DWNTN,USQ,BPC,HARLEM,RISL_LIC,RDALE,HOB,JC,BKLYN,QUEENS,HAMP
+     </param>
+   </dataSource>
+  </sheet>
+
+
+ </populate>
+</xlsReporting>

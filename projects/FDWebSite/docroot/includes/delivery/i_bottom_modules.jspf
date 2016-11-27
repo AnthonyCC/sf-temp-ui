@@ -1,0 +1,89 @@
+<% //expanded page dimensions
+final int W_BOTTOM_MODULES = 970;
+final int W_BOTTOM_MODULES_C = 313;
+%>
+
+<%
+boolean ClickToCallEnabled=false;
+if(user.getIdentity()!=null && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)){
+	ClickToCallEnabled=true;
+}
+
+String CTBottomMsg = FDStoreProperties.getCustomerServiceEmail();
+if(user!=null && user.isChefsTable())CTBottomMsg = FDStoreProperties.getChefsTableEmail();
+String hourString="";
+Calendar calendar = Calendar.getInstance();
+Date today = calendar.getTime();
+int day = DateUtil.getDayOfWeek(today);
+if(day==6)hourString="11 p.m.";
+else if(day==7)hourString="8 p.m.";
+else hourString="12 a.m.";
+
+Calendar cal1=Calendar.getInstance();
+cal1.setTime(new Date());
+int h1 = cal1.get(Calendar.HOUR_OF_DAY);
+double m1 = cal1.get(Calendar.MINUTE)/60;
+double currentTime = h1+m1;
+%>
+<script>
+	var serviceHourString = "<%= hourString %>";
+	var CTBottomMsg = "<%= CTBottomMsg %>";
+</script>
+<table width="<%= W_BOTTOM_MODULES %>" cellpadding="0" cellpadding="0" border="0" align="center">
+	<tr valign="TOP">
+    <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2" >
+			<% if(user.isChefsTable() && !ClickToCallEnabled) {%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/faq_bottom_module.html"/>
+			<%}else if(user.isChefsTable() && ClickToCallEnabled){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/click-to-call_bottom_module.html"/>
+			<%}else{%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/faq_bottom_module.html"/>
+			<%}%>
+		</td>
+		<td bgcolor="#cccccc" width="1" rowspan="4">
+			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+		</td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		
+		<td width='<%= W_BOTTOM_MODULES_C %>' rowspan="2" class="origspacing_tables">
+			<%if(user.isChefsTable()){
+				if(user.getPercSlotsSold() == 100 && currentTime >= 21){
+			%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/generic_ct_bottom_module.html"/>
+				<%}else if(user.getPercSlotsSold() < 80 || (user.getPercSlotsSold() == 100 && currentTime < 21)){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/nextdayguarantee_long_bottommodule.html"/>
+				<%}else if(user.getPercSlotsSold() > 80){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/preferredctaccess_bottom_module.html"/>
+				<%}%>
+			<%}else{%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/callUs_bottom_module.html"/>
+			<%}%>
+		</td>
+
+		<td bgcolor="#cccccc" width="1" rowspan="4">
+			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+		</td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		
+		<%if(user.isChefsTable()){%>
+      <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
+				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_bottom_module.html"/>
+			</td>
+		<%}else{%>
+			<%if(ClickToCallEnabled) {%>
+        <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
+          <fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/click-to-call_bottom_module.html"/>
+        </td>
+        <td bgcolor="#cccccc" width="1" rowspan="4">
+          <img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+        </td>
+        <td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>	
+			<%}%>
+      <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
+        <fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_bottom_module.html"/>
+      </td>
+		<%}%>
+	</tr>
+
+</table>
+ 

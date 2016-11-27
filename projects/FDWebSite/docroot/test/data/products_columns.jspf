@@ -1,0 +1,22 @@
+      <li><label><input onclick="toggle_column('product_id') "id="product_id" type="checkbox"/> Product id</label>
+      <li><label><input onclick="toggle_column('category_id')" id="category_id" type="checkbox"/> Category id</label>
+      <li><label><input onclick="toggle_column('layout_path')" id="layout_path" type="checkbox"/> Layout path </label>
+      <li><label><input onclick="toggle_column('content_type')" id="content_type" type="checkbox"/> Content type </label>
+      <li><label><input onclick="toggle_column('content_key')" id="content_key" type="checkbox"/> Content key </label>
+      <li><label><input onclick="toggle_column('min_quantity')" id="min_quantity" type="checkbox"/> Minimum quantity </label>
+      <br/><br/>
+
+      <li><label><input onclick="selectBrowsePath()" id="bpath" type="checkbox" "/> Browse Path* </label>
+          (max <input id="bvar_max" name="bvar_max" type="text" value="" size="6"/> variations) 
+	  <img src="miez.gif" alt="?" onclick="javascript:popup('help.html#var','large')"/>
+      <li><label><input id="avail_skus" type="checkbox" onclick="selectAvailableSkus()"/> Available sku codes* </label>
+      <li><label><input id="skus" type="checkbox" onclick="selectSkus()"/> Sku codes* </label>
+      <li>Available variations* 
+      <ul>
+         <li id="varpicker"/>
+         <li><label><input id="perm_skus" type="checkbox" onclick="selectVariations()"/> Sku codes</label>
+         <li><label><input id="perm_options" type="checkbox" onclick="selectVariations()"/> Options</label>
+         <li><label><input id="perm_salesunits" type="checkbox" onclick="selectVariations()"/> Sales unit</label>
+
+      </ul>
+

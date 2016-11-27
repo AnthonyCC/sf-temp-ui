@@ -1,0 +1,47 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.ListIterator' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+
+<% //expanded page dimensions
+final int W_RH_ORDER_INFO_TOTAL = 970;
+%>
+
+<%
+	FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+	ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
+	Integer totalQuantity = user.getDonationTotalQuantity();
+	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice();
+%>
+<table width="<%=W_RH_ORDER_INFO_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td align="left">
+			<table cellpadding="0" cellspacing="0" border="0" align="left"> 
+				<tr>
+					<td>  </td>	
+					<td class="text11bold"><%= totalQuantity %></td>
+					
+					<td style="padding-left:30px;">
+					   <b> <%=productModel.getFullName() %></b> (<%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %>)	
+					</td>
+				</tr>
+			</table>
+		</td>	
+		<td align="right" class="text11"><%= JspMethods.formatPrice(totalPrice) %></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img style="margin: 0;" width="<%=W_RH_ORDER_INFO_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0" /></td>
+	</tr>
+	<tr>
+		<td align="right" colspan="2" class="text13bold">TOTAL: <%= JspMethods.formatPrice(totalPrice) %></td>
+	</tr>
+</table>
+

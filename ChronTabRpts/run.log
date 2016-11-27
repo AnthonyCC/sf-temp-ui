@@ -1,0 +1,693 @@
+cleaned on Wed Sep 21 16:36:41 EDT 2005 
+Wed Sep 21 18:30:00 EDT 2005 Running for NoSettlement 050921183000
+Wed Sep 21 18:30:04 EDT 2005 Task complete for NoSettlement 050921183000
+Wed Sep 21 20:00:00 EDT 2005 Running for FirstOrder 050921200000
+Iterating for: Sheet1
+Wed Sep 21 20:01:53 EDT 2005 Task complete for FirstOrder 050921200000
+Thu Sep 22 00:45:00 EDT 2005 Running for LateReport 050922004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Thu Sep 22 00:45:15 EDT 2005 Task complete for LateReport 050922004500
+Thu Sep 22 07:15:00 EDT 2005 Running for DailyCatering 050922071500
+Thu Sep 22 07:15:00 EDT 2005 Running for MakeGood 050922071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Thu Sep 22 07:15:20 EDT 2005 Task complete for DailyCatering 050922071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Thu Sep 22 07:32:11 EDT 2005 Task complete for MakeGood 050922071500
+Thu Sep 22 07:50:00 EDT 2005 Running for ECPDaily 050922075000
+Thu Sep 22 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050922075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Thu Sep 22 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050922075500
+Thu Sep 22 07:55:00 EDT 2005 Running for MissingWithCarton 050922075500
+Thu Sep 22 07:55:00 EDT 2005 Running for MissingBoxes 050922075500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Thu Sep 22 07:55:08 EDT 2005 Task complete for ExpansionRollingWeek 050922075500
+Thu Sep 22 07:56:15 EDT 2005 Task complete for MissingWithCartonPRN 050922075000
+Thu Sep 22 07:58:24 EDT 2005 Task complete for MissingBoxes 050922075500
+Thu Sep 22 08:00:00 EDT 2005 Running for ExpansionAll 050922080000
+Iterating for: Hamptons
+Thu Sep 22 08:01:54 EDT 2005 Task complete for MissingWithCarton 050922075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Thu Sep 22 08:07:49 EDT 2005 Task complete for ExpansionAll 050922080000
+Thu Sep 22 08:08:45 EDT 2005 Task complete for ECPDaily 050922075000
+Thu Sep 22 11:02:32 EDT 2005 Running for MetalsWeekly 050922110232
+Iterating for: raw_data
+Iterating for: neighborhoods
+Thu Sep 22 11:12:07 EDT 2005 Task complete for MetalsWeekly 050922110232
+Thu Sep 22 11:46:20 EDT 2005 Running for MetalsWeekly 050922114620
+Iterating for: raw_data
+Iterating for: neighborhoods
+Thu Sep 22 11:55:13 EDT 2005 Task complete for MetalsWeekly 050922114620
+Thu Sep 22 11:55:56 EDT 2005 Running for PivotTestB 050922115556
+Iterating for: Sheet1
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = rac1.nyc2.freshdirect.com)(PORT = 1521))
+	(ADDRESS = (PROTOCOL = TCP)(HOST = rac2.nyc2.freshdirect.com)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SERVICE_NAME = DBSTO01.nyc.freshdirect.com)
+      )
+    )
+get user: appdev
+get password: readn0wrt
+Header: quest1_FoodQuality
+Header: quest3_DriverProf
+Header: quest2_OnTime
+Thu Sep 22 11:56:08 EDT 2005 Task complete for PivotTestB 050922115556
+Thu Sep 22 11:57:17 EDT 2005 Running for PivotTestB 050922115717
+Iterating for: Sheet1
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = rac1.nyc2.freshdirect.com)(PORT = 1521))
+	(ADDRESS = (PROTOCOL = TCP)(HOST = rac2.nyc2.freshdirect.com)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SERVICE_NAME = DBSTO01.nyc.freshdirect.com)
+      )
+    )
+get user: appdev
+get password: readn0wrt
+Header: quest1_FoodQuality
+Header: quest3_DriverProf
+Header: quest2_OnTime
+Thu Sep 22 11:57:26 EDT 2005 Task complete for PivotTestB 050922115717
+Thu Sep 22 13:30:00 EDT 2005 Running for PreviousDayOrders 050922133000
+Thu Sep 22 13:30:06 EDT 2005 Task complete for PreviousDayOrders 050922133000
+Thu Sep 22 16:32:21 EDT 2005 Running for PivotTest 050922163221
+Iterating for: pivottest
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )
+get user: dw_owner
+get password: dw_owner
+Exception thrown
+Thu Sep 22 16:32:24 EDT 2005 Task complete for PivotTest 050922163221
+Thu Sep 22 16:35:58 EDT 2005 Running for PivotTest 050922163558
+Iterating for: pivottest
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )
+get user: dw_owner
+get password: dw_owner
+Exception thrown
+Thu Sep 22 16:36:00 EDT 2005 Task complete for PivotTest 050922163558
+Thu Sep 22 16:36:58 EDT 2005 Running for PivotTest 050922163658
+Iterating for: pivottest
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )
+get user: dw_owner
+get password: dw_owner
+Header: JC
+Header: BPC
+Header: HOB
+Header: UES
+Header: USQ
+Header: UWS
+Header: HAMP
+Header: BKLYN
+Header: DWNTN
+Header: RDALE
+Header: HARLEM
+Header: QUEENS
+Header: MID_EAST
+Header: MID_WEST
+Header: RISL_LIC
+Thu Sep 22 16:37:08 EDT 2005 Task complete for PivotTest 050922163658
+Thu Sep 22 16:42:46 EDT 2005 Running for PivotTest 050922164246
+Iterating for: pivottest
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )
+get user: dw_owner
+get password: dw_owner
+Header: BPC
+Header: JC
+Header: HOB
+Header: UES
+Header: USQ
+Header: UWS
+Header: HAMP
+Header: BKLYN
+Header: DWNTN
+Header: RDALE
+Header: HARLEM
+Header: QUEENS
+Header: MID_EAST
+Header: MID_WEST
+Header: RISL_LIC
+Thu Sep 22 16:42:54 EDT 2005 Task complete for PivotTest 050922164246
+Thu Sep 22 17:17:57 EDT 2005 Running for PivotTest 050922171757
+Iterating for: pivottest
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.52.0.30)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SID = MKTDW1)
+      )
+    )
+get user: dw_owner
+get password: dw_owner
+Header: BPC
+Header: JC
+Header: HOB
+Header: UES
+Header: USQ
+Header: UWS
+Header: HAMP
+Header: BKLYN
+Header: DWNTN
+Header: RDALE
+Header: HARLEM
+Header: QUEENS
+Header: MID_EAST
+Header: MID_WEST
+Header: RISL_LIC
+Thu Sep 22 17:18:05 EDT 2005 Task complete for PivotTest 050922171757
+Thu Sep 22 18:30:00 EDT 2005 Running for NoSettlement 050922183000
+Thu Sep 22 18:30:03 EDT 2005 Task complete for NoSettlement 050922183000
+Thu Sep 22 20:00:00 EDT 2005 Running for FirstOrder 050922200000
+Iterating for: Sheet1
+Thu Sep 22 20:01:55 EDT 2005 Task complete for FirstOrder 050922200000
+Fri Sep 23 00:45:00 EDT 2005 Running for LateReport 050923004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Fri Sep 23 00:45:16 EDT 2005 Task complete for LateReport 050923004500
+Fri Sep 23 07:15:00 EDT 2005 Running for DailyCatering 050923071500
+Fri Sep 23 07:15:00 EDT 2005 Running for MakeGood 050923071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Fri Sep 23 07:15:14 EDT 2005 Task complete for DailyCatering 050923071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Fri Sep 23 07:34:37 EDT 2005 Task complete for MakeGood 050923071500
+Fri Sep 23 07:50:00 EDT 2005 Running for ECPDaily 050923075000
+Fri Sep 23 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050923075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Fri Sep 23 07:55:00 EDT 2005 Running for MissingBoxes 050923075500
+Fri Sep 23 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050923075500
+Fri Sep 23 07:55:00 EDT 2005 Running for MissingWithCarton 050923075500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Fri Sep 23 07:55:09 EDT 2005 Task complete for ExpansionRollingWeek 050923075500
+Fri Sep 23 07:57:55 EDT 2005 Task complete for MissingWithCartonPRN 050923075000
+Fri Sep 23 07:58:52 EDT 2005 Task complete for MissingBoxes 050923075500
+Fri Sep 23 08:00:00 EDT 2005 Running for ExpansionAll 050923080000
+Iterating for: Hamptons
+Fri Sep 23 08:02:27 EDT 2005 Task complete for MissingWithCarton 050923075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Fri Sep 23 08:08:41 EDT 2005 Task complete for ExpansionAll 050923080000
+Fri Sep 23 08:09:45 EDT 2005 Task complete for ECPDaily 050923075000
+Fri Sep 23 13:30:00 EDT 2005 Running for PreviousDayOrders 050923133000
+Fri Sep 23 13:30:06 EDT 2005 Task complete for PreviousDayOrders 050923133000
+Fri Sep 23 18:30:00 EDT 2005 Running for NoSettlement 050923183000
+Fri Sep 23 18:30:03 EDT 2005 Task complete for NoSettlement 050923183000
+Fri Sep 23 20:00:00 EDT 2005 Running for FirstOrder 050923200000
+Iterating for: Sheet1
+Fri Sep 23 20:02:27 EDT 2005 Task complete for FirstOrder 050923200000
+Fri Sep 23 22:45:00 EDT 2005 Running for LateReport 050923224500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Fri Sep 23 22:45:12 EDT 2005 Task complete for LateReport 050923224500
+Sat Sep 24 07:15:00 EDT 2005 Running for DailyCatering 050924071500
+Sat Sep 24 07:15:00 EDT 2005 Running for MakeGood 050924071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Sat Sep 24 07:15:13 EDT 2005 Task complete for DailyCatering 050924071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Sat Sep 24 07:36:00 EDT 2005 Task complete for MakeGood 050924071500
+Sat Sep 24 07:50:00 EDT 2005 Running for ECPDaily 050924075000
+Sat Sep 24 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050924075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Sat Sep 24 07:54:48 EDT 2005 Task complete for MissingWithCartonPRN 050924075000
+Sat Sep 24 07:55:00 EDT 2005 Running for MissingBoxes 050924075500
+Sat Sep 24 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050924075500
+Sat Sep 24 07:55:00 EDT 2005 Running for MissingWithCarton 050924075500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Sat Sep 24 07:55:07 EDT 2005 Task complete for ExpansionRollingWeek 050924075500
+Sat Sep 24 07:59:53 EDT 2005 Task complete for MissingBoxes 050924075500
+Sat Sep 24 08:00:01 EDT 2005 Running for ExpansionAll 050924080001
+Iterating for: Hamptons
+Sat Sep 24 08:01:52 EDT 2005 Task complete for MissingWithCarton 050924075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Sat Sep 24 08:09:34 EDT 2005 Task complete for ECPDaily 050924075000
+Iterating for: LIC
+Sat Sep 24 08:10:02 EDT 2005 Task complete for ExpansionAll 050924080001
+Sat Sep 24 13:30:00 EDT 2005 Running for PreviousDayOrders 050924133000
+Sat Sep 24 13:30:05 EDT 2005 Task complete for PreviousDayOrders 050924133000
+Sat Sep 24 18:30:00 EDT 2005 Running for NoSettlement 050924183000
+Sat Sep 24 18:30:04 EDT 2005 Task complete for NoSettlement 050924183000
+Sat Sep 24 20:00:00 EDT 2005 Running for FirstOrder 050924200000
+Iterating for: Sheet1
+Sat Sep 24 20:02:31 EDT 2005 Task complete for FirstOrder 050924200000
+Sat Sep 24 20:15:00 EDT 2005 Running for LateReport 050924201500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Sat Sep 24 20:15:11 EDT 2005 Task complete for LateReport 050924201500
+Sun Sep 25 07:15:00 EDT 2005 Running for DailyCatering 050925071500
+Sun Sep 25 07:15:00 EDT 2005 Running for MakeGood 050925071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Sun Sep 25 07:15:18 EDT 2005 Task complete for DailyCatering 050925071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Sun Sep 25 07:32:48 EDT 2005 Task complete for MakeGood 050925071500
+Sun Sep 25 07:50:00 EDT 2005 Running for SecondOrder 050925075000
+Sun Sep 25 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050925075000
+Sun Sep 25 07:50:00 EDT 2005 Running for ECPDaily 050925075000
+Iterating for: Sheet1
+Iterating for: DataSheet
+get connection: jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = rac1.nyc2.freshdirect.com)(PORT = 1521))
+	(ADDRESS = (PROTOCOL = TCP)(HOST = rac2.nyc2.freshdirect.com)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SERVICE_NAME = DBSTO01.nyc.freshdirect.com)
+      )
+    )
+get user: appdev
+get password: readn0wrt
+Iterating for: Sheet1
+Iterating for: Sheet1
+Sun Sep 25 07:55:00 EDT 2005 Running for MissingBoxes 050925075500
+Sun Sep 25 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050925075500
+Sun Sep 25 07:55:00 EDT 2005 Running for MissingWithCarton 050925075500
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Sun Sep 25 07:55:09 EDT 2005 Task complete for ExpansionRollingWeek 050925075500
+Sun Sep 25 07:56:09 EDT 2005 Task complete for MissingWithCartonPRN 050925075000
+Sun Sep 25 07:58:10 EDT 2005 Task complete for MissingBoxes 050925075500
+Sun Sep 25 08:00:00 EDT 2005 Running for ExpansionAll 050925080000
+Iterating for: Hamptons
+Sun Sep 25 08:02:14 EDT 2005 Task complete for MissingWithCarton 050925075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Sun Sep 25 08:08:46 EDT 2005 Task complete for ExpansionAll 050925080000
+Header: question1_prices
+Header: question1_selection
+Header: question1_quality
+Header: question1_convenience
+Header: question1_customerservice
+Header: question2_professional
+Header: question2_prompt
+Header: question3_easeofuse
+Header: question3_information
+Header: question3_speed
+Header: question4_weeklyspend_restaurant
+Header: question4_weeklyspend_store
+Header: question5_numpeopleshopfor
+Header: question6_favoritecuisine
+Header: question6_favoritecuisine_other
+Header: question7_cookingattitude
+Header: question8_importantnutrition
+Header: question8_importantnutrition_other
+Header: question9_foodallergy
+Header: question9_foodallergy_other
+Header: question10_household
+Header: question11_birthday
+Header: question11_birthmonth
+Header: question11_birthyear
+Header: question12_gender
+Header: question13_recommend
+Sun Sep 25 08:12:23 EDT 2005 Task complete for ECPDaily 050925075000
+Iterating for: OpenEnded
+Header: VacationSuggestion
+Iterating for: Survey Results
+Iterating for: Survey Results
+Sun Sep 25 08:14:57 EDT 2005 Task complete for SecondOrder 050925075000
+Sun Sep 25 13:30:00 EDT 2005 Running for PreviousDayOrders 050925133000
+Sun Sep 25 13:30:06 EDT 2005 Task complete for PreviousDayOrders 050925133000
+Sun Sep 25 18:30:00 EDT 2005 Running for NoSettlement 050925183000
+Sun Sep 25 18:30:01 EDT 2005 Task complete for NoSettlement 050925183000
+Sun Sep 25 20:00:01 EDT 2005 Running for FirstOrder 050925200001
+Iterating for: Sheet1
+Sun Sep 25 20:00:50 EDT 2005 Task complete for FirstOrder 050925200001
+Mon Sep 26 00:45:00 EDT 2005 Running for LateReport 050926004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Mon Sep 26 00:45:16 EDT 2005 Task complete for LateReport 050926004500
+Mon Sep 26 07:00:00 EDT 2005 Running for WeeklyProductRequests 050926070000
+Iterating for: Sheet1
+Mon Sep 26 07:00:04 EDT 2005 Task complete for WeeklyProductRequests 050926070000
+Mon Sep 26 07:15:00 EDT 2005 Running for MakeGood 050926071500
+Mon Sep 26 07:15:00 EDT 2005 Running for PlatterCancellations 050926071500
+Mon Sep 26 07:15:01 EDT 2005 Running for DailyCatering 050926071500
+Mon Sep 26 07:15:01 EDT 2005 Running for ReservationStats 050926071500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Mon Sep 26 07:15:09 EDT 2005 Task complete for DailyCatering 050926071500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Mon Sep 26 07:17:39 EDT 2005 Task complete for ReservationStats 050926071500
+Mon Sep 26 07:19:23 EDT 2005 Task complete for PlatterCancellations 050926071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Mon Sep 26 07:30:00 EDT 2005 Running for Unsubscribes 050926073000
+Iterating for: Sheet1
+Mon Sep 26 07:30:11 EDT 2005 Task complete for Unsubscribes 050926073000
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Mon Sep 26 07:34:31 EDT 2005 Task complete for MakeGood 050926071500
+Mon Sep 26 07:50:00 EDT 2005 Running for ECPDaily 050926075000
+Mon Sep 26 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050926075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Mon Sep 26 07:55:00 EDT 2005 Running for MissingBoxes 050926075500
+Mon Sep 26 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050926075500
+Mon Sep 26 07:55:01 EDT 2005 Running for MissingWithCarton 050926075500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Mon Sep 26 07:55:09 EDT 2005 Task complete for ExpansionRollingWeek 050926075500
+Mon Sep 26 07:56:13 EDT 2005 Task complete for MissingWithCartonPRN 050926075000
+Mon Sep 26 07:59:46 EDT 2005 Task complete for MissingBoxes 050926075500
+Mon Sep 26 07:59:59 EDT 2005 Running for ExpansionAll 050926075959
+Iterating for: Hamptons
+Mon Sep 26 08:02:39 EDT 2005 Task complete for MissingWithCarton 050926075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Mon Sep 26 08:09:03 EDT 2005 Task complete for ExpansionAll 050926075959
+Mon Sep 26 08:10:01 EDT 2005 Task complete for ECPDaily 050926075000
+Mon Sep 26 13:30:00 EDT 2005 Running for PreviousDayOrders 050926133000
+Mon Sep 26 13:30:07 EDT 2005 Task complete for PreviousDayOrders 050926133000
+Mon Sep 26 18:30:00 EDT 2005 Running for NoSettlement 050926183000
+Mon Sep 26 18:30:02 EDT 2005 Task complete for NoSettlement 050926183000
+Mon Sep 26 20:00:00 EDT 2005 Running for FirstOrder 050926200000
+Iterating for: Sheet1
+Mon Sep 26 20:01:52 EDT 2005 Task complete for FirstOrder 050926200000
+Tue Sep 27 00:45:00 EDT 2005 Running for LateReport 050927004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Tue Sep 27 00:45:21 EDT 2005 Task complete for LateReport 050927004500
+Tue Sep 27 07:15:00 EDT 2005 Running for MakeGood 050927071500
+Tue Sep 27 07:15:00 EDT 2005 Running for DailyCatering 050927071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Tue Sep 27 07:15:21 EDT 2005 Task complete for DailyCatering 050927071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Tue Sep 27 07:37:09 EDT 2005 Task complete for MakeGood 050927071500
+Tue Sep 27 07:50:00 EDT 2005 Running for ECPDaily 050927075000
+Tue Sep 27 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050927075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Tue Sep 27 07:55:00 EDT 2005 Running for MissingBoxes 050927075500
+Tue Sep 27 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050927075500
+Tue Sep 27 07:55:00 EDT 2005 Running for MissingWithCarton 050927075500
+Iterating for: Hamptons
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Tue Sep 27 07:55:08 EDT 2005 Task complete for ExpansionRollingWeek 050927075500
+Tue Sep 27 07:57:40 EDT 2005 Task complete for MissingWithCartonPRN 050927075000
+Tue Sep 27 07:59:19 EDT 2005 Task complete for MissingBoxes 050927075500
+Tue Sep 27 07:59:59 EDT 2005 Running for ExpansionAll 050927075959
+Iterating for: Hamptons
+Tue Sep 27 08:02:57 EDT 2005 Task complete for MissingWithCarton 050927075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Tue Sep 27 08:08:53 EDT 2005 Task complete for ExpansionAll 050927075959
+Tue Sep 27 08:11:07 EDT 2005 Task complete for ECPDaily 050927075000
+Tue Sep 27 13:30:00 EDT 2005 Running for PreviousDayOrders 050927133000
+Tue Sep 27 13:30:06 EDT 2005 Task complete for PreviousDayOrders 050927133000
+Tue Sep 27 18:30:00 EDT 2005 Running for NoSettlement 050927183000
+Tue Sep 27 18:30:03 EDT 2005 Task complete for NoSettlement 050927183000
+Tue Sep 27 20:00:00 EDT 2005 Running for FirstOrder 050927200000
+Iterating for: Sheet1
+Tue Sep 27 20:03:50 EDT 2005 Task complete for FirstOrder 050927200000
+Wed Sep 28 00:45:00 EDT 2005 Running for LateReport 050928004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Wed Sep 28 00:45:24 EDT 2005 Task complete for LateReport 050928004500
+Wed Sep 28 07:15:00 EDT 2005 Running for DailyCatering 050928071500
+Wed Sep 28 07:15:00 EDT 2005 Running for MakeGood 050928071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Wed Sep 28 07:15:15 EDT 2005 Task complete for DailyCatering 050928071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Wed Sep 28 07:33:26 EDT 2005 Task complete for MakeGood 050928071500
+Wed Sep 28 07:50:00 EDT 2005 Running for ECPDaily 050928075000
+Wed Sep 28 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050928075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Wed Sep 28 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050928075500
+Wed Sep 28 07:55:00 EDT 2005 Running for MissingBoxes 050928075500
+Wed Sep 28 07:55:00 EDT 2005 Running for MissingWithCarton 050928075500
+Iterating for: Hamptons
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Wed Sep 28 07:55:06 EDT 2005 Task complete for MissingWithCartonPRN 050928075000
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Wed Sep 28 07:55:08 EDT 2005 Task complete for ExpansionRollingWeek 050928075500
+Wed Sep 28 07:58:39 EDT 2005 Task complete for MissingBoxes 050928075500
+Wed Sep 28 08:00:01 EDT 2005 Running for ExpansionAll 050928080001
+Iterating for: Hamptons
+Wed Sep 28 08:01:03 EDT 2005 Task complete for MissingWithCarton 050928075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Wed Sep 28 08:08:38 EDT 2005 Task complete for ExpansionAll 050928080001
+Wed Sep 28 08:08:44 EDT 2005 Task complete for ECPDaily 050928075000
+Wed Sep 28 13:30:00 EDT 2005 Running for PreviousDayOrders 050928133000
+Wed Sep 28 13:30:07 EDT 2005 Task complete for PreviousDayOrders 050928133000
+Wed Sep 28 18:30:01 EDT 2005 Running for NoSettlement 050928183000
+Wed Sep 28 18:30:06 EDT 2005 Task complete for NoSettlement 050928183000
+Wed Sep 28 20:00:00 EDT 2005 Running for FirstOrder 050928200000
+Iterating for: Sheet1
+Wed Sep 28 20:00:41 EDT 2005 Task complete for FirstOrder 050928200000
+Thu Sep 29 00:45:00 EDT 2005 Running for LateReport 050929004500
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryCasesCreated
+Iterating for: CorpDeliveryFDContacted
+Iterating for: TransportationIssues
+Iterating for: HomeDeliveryFDContacted
+Iterating for: HomeDeliveryFDContacted
+Thu Sep 29 00:45:17 EDT 2005 Task complete for LateReport 050929004500
+Thu Sep 29 07:15:00 EDT 2005 Running for DailyCatering 050929071500
+Thu Sep 29 07:15:00 EDT 2005 Running for MakeGood 050929071500
+Iterating for: Sheet1
+Iterating for: MG Created
+Iterating for: Sheet1
+Thu Sep 29 07:15:21 EDT 2005 Task complete for DailyCatering 050929071500
+Iterating for: MG For Delivery Today
+Iterating for: MG Delivered Yesterday
+Iterating for: Summary Queries
+Iterating for: Summary Queries
+Iterating for: Make Good Order Summary
+Iterating for: Make Good Order Summary
+Thu Sep 29 07:35:28 EDT 2005 Task complete for MakeGood 050929071500
+Thu Sep 29 07:50:00 EDT 2005 Running for ECPDaily 050929075000
+Thu Sep 29 07:50:00 EDT 2005 Running for MissingWithCartonPRN 050929075000
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Sheet1
+Thu Sep 29 07:53:51 EDT 2005 Task complete for MissingWithCartonPRN 050929075000
+Thu Sep 29 07:55:00 EDT 2005 Running for ExpansionRollingWeek 050929075500
+Thu Sep 29 07:55:00 EDT 2005 Running for MissingWithCarton 050929075500
+Thu Sep 29 07:55:00 EDT 2005 Running for MissingBoxes 050929075500
+Iterating for: Sheet1
+Iterating for: Sheet1
+Iterating for: Hamptons
+Iterating for: Hamptons
+Iterating for: Riverdale
+Iterating for: Riverdale
+Iterating for: JerseyCity
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Hoboken
+Iterating for: LIC
+Iterating for: LIC
+Thu Sep 29 07:55:08 EDT 2005 Task complete for ExpansionRollingWeek 050929075500
+Thu Sep 29 07:58:53 EDT 2005 Task complete for MissingBoxes 050929075500
+Thu Sep 29 08:00:00 EDT 2005 Running for ExpansionAll 050929080000
+Iterating for: Hamptons
+Thu Sep 29 08:00:30 EDT 2005 Task complete for MissingWithCarton 050929075500
+Iterating for: JerseyCity
+Iterating for: Hoboken
+Iterating for: Riverdale
+Iterating for: LIC
+Thu Sep 29 08:09:50 EDT 2005 Task complete for ExpansionAll 050929080000
+Thu Sep 29 08:10:29 EDT 2005 Task complete for ECPDaily 050929075000

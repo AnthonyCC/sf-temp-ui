@@ -1,0 +1,87 @@
+<%
+	/*
+	 	incNextButtonCount is defined in each jsp (using: int incNextButtonCount = 0;)
+	 		adding one on each usage of the include allows for a different "top" and "bottom" button, so start at 0
+	 */
+	 
+	String uriNextButton = request.getRequestURI();
+			/* determine button for page */
+			if (uriNextButton.indexOf("view_cart") > -1) {
+				%>
+				<button class="imgButtonOrange" type="submit" name="nextStep" value="true" alt="">choose delivery address <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%									
+			} else if (uriNextButton.indexOf("step_1") > -1) {
+				%>
+				<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%									
+			} else if (uriNextButton.indexOf("step_2") > -1) {
+				if (uriNextButton.indexOf("step_2_duplicate") > -1) { %>
+				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) {
+				if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && !user.getShoppingCart().getDeliveryReservation().isMinOrderMet()){%>
+						<a href="/checkout/view_cart.jsp" ><img name="viewcartbutton1" onmouseout="swapImage('viewcartbutton1','/media_stat/images/buttons/continueshop_f1.png')" onmouseover="swapImage('viewcartbutton1','/media_stat/images/buttons/continueshop_f2.png')" src="/media_stat/images/buttons/continueshop_f1.png" border="0"></a>
+				<%}else{%>
+						<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<%}
+				 } else { 	
+				%>
+				<script type="text/javascript" style="display:none">
+					function step2Validator(formId) {
+						if (!$(formId)) { return false; }
+						var premiumslots = document.getElementsByName('deliveryTimeslotId');
+						var premiumslotId ="";
+						for(var i =0;i<=premiumslots.length;i++){
+							if(premiumslots[i].checked==true){
+								premiumslotId = premiumslots[i];
+								break;
+							}
+						}
+						checkPremiumSlot(premiumslotId.value, formId);
+					}
+				</script>
+				
+				<% if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable()) { %>
+					<a class="imgButtonOrange" href="/checkout/step_2_select.jsp?forceorder=true" class="checkout">FORCE ORDER</a>
+				<% } %>
+				<button class="imgButtonOrange" onclick="step2Validator('step2Form'); return false;">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<% }							
+			} else if (uriNextButton.indexOf("step_3") > -1) {
+				String butActionName = "setPaymentMethod"; //default action
+				
+				if ( request.getAttribute("gcCovered") != null && "true".equals(request.getAttribute("gcCovered")) ) {
+					//gc covered button
+					butActionName = "setNoPaymentMethod";
+				}
+				%>
+				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'<%= butActionName %>'); return true;">review order <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<%
+			} else if (uriNextButton.indexOf("step_4") > -1) {
+				/* step 4 is the only step with a different button on order modify (and also needs nettracker tracking) */
+				%>
+				<% /* Unfortunately, this function needs to live in this page since it needs java parsing... */ %>
+				<script type="text/javascript" style="display:none">
+				
+				
+				
+					function orderSubmitValidator(formId) {
+						if (!$(formId)) { return false; }
+
+						if(!FreshDirect.terms){
+							doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+					      	return false;
+						}
+						<% /* first, check that the promo is valid */ %>
+						if (checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>')) {
+							<% /* set loc value (button position) */ %>
+							$(formId).submit();
+						}
+
+						return false;
+					}
+				</script>
+			
+				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit'); return false;">SUBMIT ORDER</button>
+				<%
+			}
+	incNextButtonCount++;
+%>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.AFFILIATE CODE="FD" NAME="FreshDirect" DESCRIPTION="FreshDirect Inc" COND_TAX="ZT01" COND_DEPOSIT="ZBD1"/>
+<CUST.AFFILIATE CODE="WBL" NAME="WBL" DESCRIPTION="WBL Inc" COND_TAX="ZT02" COND_DEPOSIT="ZBD2"/>
+
+</dataset>

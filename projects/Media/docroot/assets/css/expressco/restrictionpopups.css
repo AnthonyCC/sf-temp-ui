@@ -1,0 +1,107 @@
+.ec-popup.restrictionpopup {
+  position: static;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+  width:780px;
+  max-width:780px;
+  box-sizing:border-box;
+  padding:50px;
+  font-family:Verdana,Genava,sans-serif;
+  font-size:12px;
+}
+
+.ec-popup.restrictionpopup .ec-popup-header{
+  display:none;
+}
+
+.restrictionpopup__title{
+  font-size:16px;
+  font-weight:bold;
+  color:#666;
+}
+
+.restrictionpopup__section{
+  font-size:14px;
+  color:#666;
+  margin:20px 0;
+}
+
+.restrictionpopup__section.section-nomargin{
+  margin:0;
+}
+
+.restrictionpopup__section.section-boldcenter{
+  text-align:center;
+  font-weight:bold;
+}
+
+.restrictionpopup__buttons{
+  text-align:center;
+}
+
+.restrictionpopup__buttons .button-margin{
+  margin-right:30px;
+}
+
+.restrictionpopup__continue,
+.restrictionpopup__cancel,
+.restrictionpopup__submitbutton,
+.restrictionpopup__removebutton{
+  width:220px;
+  height:40px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.restrictionpopup__list{
+  margin:0;
+  padding:0;
+  list-style-type:none;
+  margin-bottom:40px;
+}
+
+.restrictionpopup__list .firstitem{
+  width:40px;
+  text-align:center;
+  display:inline-block;
+}
+
+.restrictionpopup__list .listitem{
+  font-size:14px;
+  color:#666;
+  line-height:28px;
+}
+
+#restriction_formbody,
+#restriction_learnmore{
+  display:none;
+}
+
+[data-show='restriction_formbody'] #restriction_formbody,
+[data-show='restriction_learnmore'] #restriction_learnmore{
+  display:block;
+}
+
+.restrictionpopup__learnmoretitle{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.restrictionpopup__learnmoretitle h1{
+  font-size:18px;
+  font-weight:bold;
+  color:#666;
+}
+
+.restrictionpopup__learnmoretitle button{
+  float:left;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.restrictionpopup__learnmorebody{
+  clear:both;
+  margin-top:10px;
+}

@@ -1,0 +1,80 @@
+.centerpopup-helper {
+  position: absolute;
+  top: 220px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.centerpopup-linehelper {
+  display: inline-block;
+  height: 100%;
+  width: 1px;
+  vertical-align: middle;
+}
+
+.ec-popup {
+	display: none;
+	position: absolute;
+  	/*padding: 20px;
+	max-width: 600px;
+  min-width: 200px;*/
+	background: #faf9f7;
+	border: 1px solid #aaa;
+	box-shadow: 0 0 8px rgba(0,0,0,0.2);
+	z-index: 2002;
+}
+
+.ec-popup.addaddresspopup {
+  position: static;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+	width: 650px;
+}
+
+.ec-popup.addaddresspopup .ec-popup-header {
+  display: none;
+}
+
+.popupcontentoverlay.centerpopupoverlay {
+  background: #fff;
+  opacity: .7;
+  filter:alpha(opacity=70);
+}
+
+/*
+.ec-popup [fdform] select,
+.ec-popup [fdform] input,
+.ec-popup [fdform] textarea {
+  display: inline-block;
+  margin: 5px 0;
+}
+*/
+.ec-popup [fdform] b.label,
+.ec-popup [fdform] span.label {
+  display: block;
+  margin-top: 10px;
+}
+
+.ec-popup-help-icon,
+.ec-popup-close-icon {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: none;
+  background: url(/media_stat/images/quickshop/button-help.png) no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.ec-popup-close-icon {
+  top: 5px;
+  width: 18px;
+  height: 18px;
+  background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
+}

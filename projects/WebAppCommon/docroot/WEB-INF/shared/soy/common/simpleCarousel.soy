@@ -1,0 +1,29 @@
+{namespace common}
+
+/**
+ * @param items some path, list of items
+ * @param itemType item variant
+ * @param? title optional title string
+ * @param? cmEventSource optional coremetrics event source
+ * @param? mobWeb
+ */
+{template .simpleCarousel autoescape="false"}
+<div data-component="carousel" class="first">
+	{if $title}<h2>{$title}</h2>{/if}
+	<div data-component="carousel-mask" class="transactional">
+		<ul data-component="carousel-list" data-carousel-page="0">
+			{foreach $item in $items}
+			{delcall common.carouselItem variant="$itemType"}
+				{param item:$item /}
+				{param cmEventSource:$cmEventSource /}
+				{param mobWeb:$mobWeb /}
+			{/delcall}
+			{/foreach}
+		</ul>
+	</div>
+	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
+	<button data-component="carousel-next" data-carousel-nav="next">next</button>
+</div>
+{/template}
+
+              

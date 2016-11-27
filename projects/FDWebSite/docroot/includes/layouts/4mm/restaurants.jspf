@@ -1,0 +1,23 @@
+<%@page import="java.util.Map"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper.FilterInfo"%>
+<%--
+
+  restaurants.jspf
+	requires:
+		List<? extends ContentNodeModel>	restaurants;
+		String 								trackingCode;
+	provides:
+		displays the restaurants from the 4mm department
+	included in:
+		landing_page_layout.jsp	
+		restaurant_page_layout.jsp
+--%>
+<% Map<String, FilterInfo> restCounts = FourMinuteMealsHelper.getRestaurantCounts();%>
+
+<div class="restaurants"><display:ContentNodeIterator itemsToShow="<%= restaurants %>" id="restaurantIterator" showProducts="false" trackingCode="<%= trackingCode %>"><span class="restaurant">
+			<display:CategoryImage category="<%= (CategoryModel) currentItem %>" action="<%= actionUrl %>" />
+			<% FilterInfo info = restCounts.get( ((CategoryModel)currentItem).getContentKey().getId() ); %>
+			<div class="infolabel"><a href="<%= actionUrl %>"><%= info.getLabel() %> (<%= info.getCount() %>)</a></div>
+		</span></display:ContentNodeIterator></div>

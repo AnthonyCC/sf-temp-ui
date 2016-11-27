@@ -1,0 +1,72 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>6</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select * from (
+select to_char(sa.requested_date, 'YYYY-MM-DD - Day') DeliveryDate, sum(sa.amount), count(*)
+ from cust.sale s, cust.salesaction sa, cust.deliveryinfo d, dlv.reservation r, dlv.zone z
+where s.id = sa.sale_id
+and sa.requested_date between trunc(sysdate) and sysdate + 8
+and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD'))
+and s.status != 'CAN'
+and sa.id = d.salesaction_id
+and d.reservation_id = r.id
+and r.zone_id = z.id
+and z.zone_code like '8%'
+group by to_char(sa.requested_date, 'YYYY-MM-DD - Day')
+) order by DeliveryDate asc
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>17</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select s.id OrderNumber, to_char(sa.requested_date, 'Day Mon DD YYYY') DeliveryDate, sa.amount, d.first_name, d.last_name, d.address1 ADDRESS, d.city, d.state, d.zip, z.zone_code ZONE, z.name ZONE_NAME
+ from cust.sale s, cust.salesaction sa, cust.deliveryinfo d, dlv.reservation r, dlv.zone z
+where s.id = sa.sale_id 
+and sa.requested_date between trunc(sysdate) and sysdate + 8 
+and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) 
+and s.status != 'CAN' 
+and sa.id = d.salesaction_id
+and d.reservation_id = r.id
+and r.zone_id = z.id
+and z.zone_code like '8%'
+order by sa.requested_date asc
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

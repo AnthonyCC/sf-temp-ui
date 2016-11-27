@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CMSDef xmlns="http://www.freshdirect.com/xsd/CMS"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<ContentTypeDef name="Sku">
+		<AttributeDefs>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="materials" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ErpMaterial" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="ErpMaterial">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="classes" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ErpClass" />
+			</RelationshipDef>
+			<RelationshipDef name="salesUnits" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ErpSalesUnit" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	
+	<ContentTypeDef name="ErpClass">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="characteristics" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ErpCharacteristic" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ErpCharacteristic">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="values" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ErpCharacteristicValue" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ErpCharacteristicValue">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ErpSalesUnit">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+</CMSDef>

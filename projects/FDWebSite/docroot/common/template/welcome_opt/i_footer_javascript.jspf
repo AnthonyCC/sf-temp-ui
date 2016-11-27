@@ -1,0 +1,45 @@
+<%--
+	Requires:
+		imports: FDStoreProperties
+		taglibs: fd, jwr
+		
+--%>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%-- this file will be included just before the closing </body> tag --%>
+
+<%-- soy init - REQUIRED --%>
+	<soy:import packageName="common"/>
+<%-- /commonjavascript.js  "common" js - REQUIRED, DEFER NO (fails in IE8 if deferred) --%>
+	<jwr:script src="/commonjavascript.js"  useRandomParam="false" />
+<%-- /fdccl.js CCL libs - REQUIRED?, DEFER OK --%>
+	<jwr:script src="/fdccl.js"  useRandomParam="false" defer="true" />
+<%-- /fdcommon.js /assets/javascript/fd/common/** bundle - REQUIRED (by modules/components), DEFER OK : this could prob be reduced --%>
+	<jwr:script src="/fdcommon.js"  useRandomParam="false" defer="true" />
+<%-- /fdmodules.js /assets/javascript/fd/modules/** bundle - REQUIRED, DEFER OK : this could prob be reduced --%>
+	<jwr:script src="/fdmodules.js"  useRandomParam="false" defer="true" />
+<%-- /fdcomponents.js /assets/javascript/fd/components/** bundle - REQUIRED, DEFER OK : this could prob be reduced --%>
+	<jwr:script src="/fdcomponents.js"  useRandomParam="false" defer="true" />
+	
+<% //Bazaarvoice 
+if (FDStoreProperties.isBazaarvoiceEnabled()) {
+  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl();
+  	%><script type="text/javascript" src="<%= bvapiUrl %>" defer="defer" async="async"></script><%
+} %>
+  
+<%-- DP old T&C overlay check --%>
+	<%
+		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
+		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+	
+		if (dpTcCheckUser != null && (dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) 
+			&& dpTcCheckUser.isDpNewTcBlocking())
+		) {
+			%>
+				<script type="text/javascript">
+		    		$jq(window).ready(function() {
+		    			doOverlayDialog('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
+		    		});
+		    	</script>
+	    	<%
+		}
+	%>

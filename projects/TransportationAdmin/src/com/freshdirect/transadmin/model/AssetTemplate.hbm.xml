@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 5, 2008 2:34:34 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.AssetTemplate" table="ASSETTEMPLATE">
+       <id name="assetTemplateId" type="string">
+            <column name="ATR_TEMPLATE_ID" length="40" />
+             <generator class="sequence">
+    			<param name="sequence">ATTRIBUTE_TEMPLATE_SEQ</param>
+			</generator>
+        </id>        
+        <many-to-one name="assetType" class="com.freshdirect.transadmin.model.AssetType" fetch="select" lazy="false">
+            <column name="ASSET_TYPE" length="40" />
+        </many-to-one>
+        <property name="assetTemplateName" type="string">
+            <column name="ATR_TEMPLATE_NAME" length="40" />
+        </property>
+                     
+        <set name="assetTemplateAttributes" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="ATR_TEMPLATE_ID" length="40" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.AssetTemplateAttribute" />
+        </set>
+        
+    </class>
+</hibernate-mapping>

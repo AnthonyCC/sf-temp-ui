@@ -1,0 +1,149 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.DealsHelper"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ProductContainer"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
+<%@page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%
+	/*
+		This is a modified copy of i_featured_products that requires you to pre-specify variables.
+
+		The HTML in here is standalone (not based on the page it's included in), allows toggling quickbuy,
+		toggling of 'disabled', on add links back to it's position in the page,	the media includes only include
+		the LAST of Dept Middle media (as a header), and has a custom footer button. It also uses a running List of
+		products to keep the displayed items unique on the page.
+		
+		To be able to use this, you must specify these variable BEFORE calling this include:
+
+		DepartmentModel featExtDept = the dept to use for featured items
+		String featExtIdPrefix = string to use as the prefix for the HTML elements. (Allows multiple includes in one page)
+		int featExtNumItems = the number of items to show in carousel (on each 'page')
+		int featExtMinItems = the minimum number of items to show in carousel (0 = no min). If min is not met, hide carousel
+		int featExtMaxItems = the maximum number of items to show in carousel (0 = no limit)
+		String featExtTrackCode = tracking code used in carousel
+		int featExtCarWidth = width of carousel (must be px, not a percentage)
+			this value should be TARGET_WIDTH - (featExtNumItems * 20)
+		boolean featExtUseQuickBuy = use quick buy in carousel
+		boolean featExtDisableLinks = enable/disable links for products (and view all button)
+		List<ProductModel> globalUniqueProducts = a list with all currently used products so far
+
+	 */
+
+%>
+<!-- ss row -->
+<fd:ProductGroupRecommender siteFeature="BRAND_NAME_DEALS" facility="brand_name_deals" currentNode="<%= featExtDept %>" id="brandDealRecommendations">
+	<%
+		/* make the items unique to the PAGE */
+		List<ContentNodeModel> curRowItems = new ArrayList<ContentNodeModel>();
+		curRowItems.addAll(brandDealRecommendations.getAllProducts());
+		
+		//check min first
+		if (curRowItems.size() >= featExtMinItems) { %>
+			<%
+				List<ContentNodeModel> curRowUniqueItems = new ArrayList<ContentNodeModel>();
+		
+				for (Iterator iterator = curRowItems.iterator(); iterator.hasNext();) {
+					ContentNodeModel curCNM = (ContentNodeModel) iterator.next();
+					if ( !globalUniqueProducts.contains((ProductModel) curCNM) ) {
+						curRowUniqueItems.add(curCNM);
+						globalUniqueProducts.add((ProductModel) curCNM);
+					}
+				}
+			%>
+			<%
+				// temp ids for display tags
+				String temp_tableId = featExtIdPrefix+"_table";
+				String temp_tdId = featExtIdPrefix+"_td";
+				String temp_carouselId = featExtIdPrefix+"_car";
+				String temp_viewAllId = featExtIdPrefix+"_viewAll";
+				
+			%>
+			<table id="<%=temp_tableId%>">
+		
+				<!-- separator  -->
+				<tr><td>
+					<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%=featExtCarWidth+(featExtNumItems * 20)%>" height="1" border="0" alt="" /><br />
+					<span class="space4pix"><br /><br /></span>
+				</td></tr>
+				
+				<!-- department middle media -->
+				<tr><td>
+					   <%
+					if (featExtDept.getDepartmentMiddleMedia() != null) {
+						String deptBotItm = null;
+						for(Iterator<Html> deptBotItr = featExtDept.getDepartmentMiddleMedia().iterator(); deptBotItr.hasNext();) {
+							Html piece = deptBotItr.next();
+							if (piece != null) {
+								deptBotItm = piece.getPath();
+							}
+						}
+						if (deptBotItm != null) {
+							%><fd:IncludeMedia name='<%= deptBotItm %>' /><%
+						}
+					}
+					   %>
+				</td></tr>
+		
+				<tr><td id="<%=temp_tdId%>">
+					<center>
+					<script type="text/javascript">
+						var cmPageCarousel = cmPageCarousel || {};
+						<%String handlerObj = "cmPageCarousel[\"" + temp_carouselId + "\"]"; %>
+						<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%=featExtIdPrefix%>' elementCategory="carousel"/>} 
+					</script>
+					<display:Carousel id="bnd" carouselId="<%=temp_carouselId%>" width="<%=featExtCarWidth%>" numItems="<%=featExtNumItems%>" showCategories="false" itemsToShow="<%= curRowUniqueItems %>" 
+							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>" eventHandlersObj='<%=handlerObj%>'>
+						<span class="smartstore-carousel-item">
+							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+								<% 
+								FDCustomerCoupon curCoupon = null;
+								ProductImpression coupPi = new ProductImpression((ProductModel)currentItem);
+								if (coupPi.getSku() != null && coupPi.getSku().getProductInfo() != null) {
+									curCoupon = user.getCustomerCoupon(coupPi.getSku().getProductInfo(), EnumCouponContext.PRODUCT,coupPi.getProductModel().getParentId(),coupPi.getProductModel().getContentName());
+								}
+								String productImageClassName = "productImage";
+								if (curCoupon != null) {
+									productImageClassName += " couponLogo";
+								}
+								%>
+								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" className="<%=productImageClassName %>" enableQuickBuy="<%=featExtUseQuickBuy%>" disabled="<%=featExtDisableLinks%>" coupon="<%= curCoupon %>" />
+								<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+								<div class="productname">
+									<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" disabled="<%=featExtDisableLinks%>" />
+								</div>
+								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_featExt"></display:FDCoupon>	
+							</display:GetContentNodeWebId>
+						</span>
+					</display:Carousel>
+					</center>
+				</td></tr>
+					
+				<!-- department bottom media -->
+				<tr><td>
+					<div class="ddpp_viewAllCont"><center><table><tr><td><div id="<%=temp_viewAllId%>" class="ddpp_viewAllDiv"><a href="<%= (featExtDisableLinks) ? "#" : FDURLUtil.getDepartmentURI(featExtDept.toString(), featExtTrackCode) %>">&nbsp;VIEW ALL <%=curRowUniqueItems.size()%> <%=featExtDept.getFullName().toUpperCase()%> DEALS&nbsp;</a></div></td></tr></table></center></div>   
+				</td></tr>
+			</table>
+		<% } %>
+</fd:ProductGroupRecommender>
+       
+		

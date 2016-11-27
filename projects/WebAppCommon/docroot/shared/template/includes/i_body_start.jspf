@@ -1,0 +1,17 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%{String uri = request.getRequestURI().toLowerCase();
+ 
+if (!uri.contains("/quickbuy/product.jsp") && !uri.contains("/pdp.jsp") && !uri.contains("/browse_special.jsp")) {%>
+<fd:CmPageView wrapIntoScriptTag="true"/>
+<%}
+
+//tag shouldn't fire on login form target pages as the redirect
+//wouldn't able the js tag to be processed by the browser
+if (!uri.contains("/login/login.jsp") &&
+	!uri.contains("/login/login_main.jsp") &&
+	!uri.contains("/login/login_popup.jsp") &&
+	!uri.contains("/login/identity_confirmed.jsp") &&
+	!uri.contains("/quickshop/index_guest.jsp")){%>
+
+	<fd:CmRegistration wrapIntoScriptTag="true"/>	
+<%}}%>

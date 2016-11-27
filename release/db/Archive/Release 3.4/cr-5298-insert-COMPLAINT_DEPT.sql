@@ -1,0 +1,1 @@
+INSERT into cust.complaint_dept (code, name) values ('OURPICKS', 'Our Picks');

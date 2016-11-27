@@ -1,0 +1,39 @@
+<%
+/**
+/* author greg
+*/
+%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.webapp.util.AutoCompleteFacade'%>
+  
+<style type="text/css">
+	.yui-ac-bd {
+		width: 144px;
+		border: 1px solid black;
+		border-top: none;
+	}
+	.yui-ac-highlight {
+		background-color: #E0E3D0;
+	}
+	#brands ul {
+		margin: 0px;
+		padding: 0px;
+	}
+	#brands li {
+		list-style-type: none;
+		text-indent: -8px;
+		padding: 2px;
+		padding-left: 10px;		
+		cursor: default ! important;
+	}
+</style>
+
+<%-- when upgrading yui please create a new directory for the version --%>
+<script type="text/javascript" src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="/assets/yui-2.9.0/datasource/datasource.js"></script>
+<script type="text/javascript" src="/assets/yui-2.9.0/connection/connection.js"></script>
+<script type="text/javascript" src="/assets/yui-2.9.0/autocomplete/autocomplete.js"></script> 
+<fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams",false));
+</script>

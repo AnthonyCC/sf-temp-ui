@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<file-format>
+    <converter name="char" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertChar" return-type="java.lang.String"/>
+    <converter name="decimal" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDecimal" return-type="java.lang.Double"/>
+    <record name="row">       
+        <record-definition>
+            <bean name="rowBean" class="com.freshdirect.transadmin.datamanager.model.OrderInfoModel"/>
+            <line>
+                <record-element length="15" justify="left" beanref="rowBean.locationId" type="char"/>                
+                <record-element length="50" justify="left" beanref="rowBean.streetAddress1" type="char"/>
+                <record-element length="20" justify="left" beanref="rowBean.apartmentNumber" type="char"/>
+                <record-element length="30" justify="left" beanref="rowBean.city" type="char"/>
+                <record-element length="20" justify="left" beanref="rowBean.state" type="char"/>
+                <record-element length="2" justify="left" beanref="rowBean.country" type="char"/>
+                <record-element length="10" justify="left" beanref="rowBean.zipCode" type="char"/>
+                <record-element length="15" justify="left" beanref="rowBean.equipmentType" type="char"/> 
+                <record-element length="15" justify="left" beanref="rowBean.deliveryZone" type="char"/>                                                             
+                <record-element length="11" justify="left" beanref="rowBean.latitude" type="char"/>
+                <record-element length="12" justify="left" beanref="rowBean.longitude" type="char"/>                                                               
+            </line>
+        </record-definition>
+    </record>
+</file-format>

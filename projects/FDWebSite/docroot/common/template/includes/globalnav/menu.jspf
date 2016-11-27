@@ -1,0 +1,12 @@
+<div id="menu">
+  <div class="container clearfix">
+    <div class="column span-8"><a href="/"><img src="/media_stat/images/common/logo.png" alt="FreshDirect" width="196" height="45"/></a></div>
+    <ul id="menuitems" class="column span-16 last">
+      <li><a class="delivery" href="<c:url value="/help/delivery_info.jsp"/>"><span>Delivery</span></a></li>
+      <li><a class="quicklist loginrequired" href="<c:url value="/quickshop/index.jsp"/>"><span>Quicklist</span></a></li>
+      <li><a class="recipes" href="<c:url value="/department.jsp"><c:param name="deptId" value="rec"/><c:param name="trk" value="gnav"/></c:url>"><span>Recipes</span></a></li>
+      <li><a class="whatsgood" href="<c:url value="/department.jsp"><c:param name="deptId" value="wgd"/><c:param name="trk" value="gnav"/></c:url>"><span>What's good</span></a></li>
+      <li><a class="presidentspick" href="<c:url value="/newsletter.jsp"><c:param name="catId" value="picks_love"/><c:param name="trk" value="wgd"/></c:url>"><span>President's picks</span></a></li>
+    </ul>
+  </div>
+</div>

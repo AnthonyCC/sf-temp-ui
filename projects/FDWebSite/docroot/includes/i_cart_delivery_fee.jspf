@@ -1,0 +1,43 @@
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<table>
+	<tr>
+		<td align="left"  style="color:#666666;font-weight:bold;">Delivery&nbsp;Fee:&nbsp;</td>
+		<td align="right"  style="color:#666666;font-weight:bold;">
+			<%	
+				//FDCartModel cart = user.getShoppingCart();
+				String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
+				if(cart.isDlvPassApplied()) {
+			%>
+				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user)%>
+				
+			<%	} else if (cart.isDeliveryChargeWaived()) {
+					if((int)cart.getDeliverySurcharge() == 0){
+			%>     
+					Free! 
+					<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
+							
+			<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
+					check&nbsp;<a href="javascript:popup('/help/delivery_info.jsp','large')">delivery fee</a>
+			<%} else { %>
+					<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : JspMethods.formatPrice(cart.getDeliveryCharge())  %>
+			<%} %>
+			
+	</td>
+	</tr>
+	<%if (cart.getTotalDiscountValue() > 0) {
+			List discounts = cart.getDiscounts();
+				for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+					ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+					Discount discount = discountLine.getDiscount();
+				%>
+		<tr>
+			<td align="left" style="color:#669933;font-weight:bold;">Promotion&nbsp;Discount:&nbsp;</td>
+			<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
+		</tr>
+	<%}	}%>
+	<tr>
+		<td align="left"  style="color:#666666;font-weight:bold;"><a href="javascript:popup('/help/estimated_price.jsp','small')"></a>Estimated&nbsp;Total:&nbsp;</td>
+		<td align="right"  style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
+	</tr>
+</table>

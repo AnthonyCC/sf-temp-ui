@@ -1,0 +1,175 @@
+.globalnavcontainer {
+	width: 948px; 
+	position:relative;
+	white-space: nowrap;
+	overflow:hidden;
+	padding:0px 11px;
+}
+
+.globalnavcontainer span {
+	padding-left:5px;
+	display:inline-block;
+	float:left;
+}
+
+.globalnavcontainer .dot {
+	background:url(/media_stat/images/navigation/globalnav_and_footer/headernav_b.png) no-repeat 0px -1px;
+}
+
+.ie6 .globalnavcontainer .dot {
+	background-image:url(/media_stat/images/navigation/globalnav_and_footer/headernav_b.gif);
+}
+
+
+.globalnav-bottom span {
+	background-position:0px -2px;
+}
+
+.globalnavcontainer .nodot {
+	background:none !important;
+}
+
+.globalnavcontainer .nodot-selected {
+	background:none !important;
+	background-color: #336600 !important;
+}
+
+.globalnavitem {
+	display:inline-block;
+	height:23px;
+	line-height:23px;
+	text-align:center;
+	font-size:13px;
+	background:url(/media_stat/images/navigation/globalnav_and_footer/headernav.png) no-repeat; 
+	display: block;
+	
+	text-indent: -9999em;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+
+.ie6 .globalnavitem,
+.ie6 .globalnav-footer .globalnavitem {
+	background:none;
+	text-indent: 0;
+	text-align: center;
+}
+
+a.globalnavitem {
+	color: #ffffff;
+	text-decoration:none;
+}
+
+a.globalnavitem:visited{
+	color: #ffffff;
+	text-decoration:none;
+}
+
+a.globalnavitem:link{
+	color: #ffffff;
+	text-decoration:none;
+}
+
+a.globalnavitem:active{
+	color: #ffffff;
+	text-decoration:none;
+}
+
+.globalnav-top {
+	height: 23px; 
+	line-height:23px; 
+	background:#669933;
+	overflow:hidden;
+	white-space:nowrap ;
+}
+
+
+.globalnav-middle {
+	height: 3px; 
+	line-height:3px; 
+	font-size:1px;
+	background-color: #336600;
+	clear:both;
+}
+
+.globalnav-bottom {
+	height: 24px; 
+	line-height:24px; 
+	font-size:1px; 
+	overflow:hidden;
+	background-color: #999966;
+}
+
+.globalnav-left {
+	left:0; 
+	position:absolute; 
+	z-index: 1
+}
+
+.globalnav-right {
+	right:0; 
+	top:0; 
+	position:absolute; 
+	z-index: 1
+}
+
+.globalnavitem-selected {
+	background-color: #336600 !important;
+}
+
+.globalnav-footer {
+	height: 22px; 
+	line-height:22px; 
+	font-size:1px; 
+	background-color: #669933;
+	overflow:hidden;
+}
+
+.globalnav-footer .left {
+	float: left;
+}
+
+.globalnav-footer .right {
+	float: right;
+}
+
+.globalnav-footer .globalnavitem {
+	background:url(/media_stat/images/navigation/globalnav_and_footer/footer.png) no-repeat;
+}
+
+
+#globalnavitem-fru{width:41px;background-position:-5px 0px;}
+#globalnavitem-veg{width:84px;background-position:-51px 0px;}
+#globalnavitem-mea{width:48px;background-position:-140px 0px;}
+#globalnavitem-sea{width:68px;background-position:-193px 0px;}
+#globalnavitem-del{width:41px;background-position:-266px 0px;}
+#globalnavitem-che{width:63px;background-position:-312px 0px;}
+#globalnavitem-dai{width:46px;background-position:-380px 0px;}
+#globalnavitem-fdi{width:117px;background-position:-486px 0px;}
+#globalnavitem-rtc{width:111px;background-position:-608px 0px;}
+#globalnavitem-hmr{width:83px;background-position:-724px 0px;}
+#globalnavitem-bak{width:58px;background-position:-812px 0px;}
+#globalnavitem-cat{width:72px;background-position:-875px 0px;}
+#globalnavitem-wgd{ width:99px; background-position:-5px -28px;}
+#globalnavitem-orgnat{ width:65px; background-position:-109px -28px;}
+#globalnavitem-local{ width:45px; background-position:-179px -28px;}
+#globalnavitem-kos{ width:55px; background-position:-229px -28px;}
+#globalnavitem-rec{ width:63px; background-position:-289px -28px;}
+#globalnavitem-pas{ width:49px; background-position:-464px -28px;}
+#globalnavitem-cof{ width:54px; background-position:-518px -28px;}
+#globalnavitem-gro{ width:65px; background-position:-577px -28px;}
+#globalnavitem-hba{ width:121px; background-position:-647px -28px;}
+#globalnavitem-big{ width:60px; background-position:-773px -28px;}
+#globalnavitem-fro{ width:57px; background-position:-838px -28px;}
+#globalnavitem-usq{ width:48px; background-position:-900px -28px;}
+#globalnavitem-vin{ width:48px; background-position:-900px -28px;}
+
+#globalfooteritem-aboutus{ width: 70px; background-position:-5px 0px;}
+#globalfooteritem-careers{ width: 68px; background-position:-77px 0px;}
+#globalfooteritem-billorrights{ width: 132px; background-position:-147px 0px;}
+#globalfooteritem-myfd{ width: 53px; background-position:-607px 0px;}
+#globalfooteritem-office{ width: 100px; background-position:-663px 0px;}
+#globalfooteritem-giftcards{ width: 75px; background-position:-767px 0px;}
+#globalfooteritem-newprod{ width: 105px; background-position:-844px 0px;}

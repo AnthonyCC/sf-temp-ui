@@ -1,0 +1,9 @@
+{
+    "query": "apples",
+    "page" : "1",
+    "max" : "25",
+    "brand": "brandId",
+    "category": "categoryId" ,
+    "department": "departmentId" ,
+    "sortBy" : "relevancy" 
+}

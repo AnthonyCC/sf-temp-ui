@@ -1,0 +1,49 @@
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%--
+
+Cart'N'Tabs component for the QuickShop pages
+Includes everything required.
+
+--%><%
+	// first try to figure out FDShoppingCart controller parameters dynamically
+
+    String __cnt_successPage = request.getParameter("fdsc.succpage");
+	final String __cnt_redemptionCode = request.getParameter("redemptionCode");
+    if ((request.getMethod().equalsIgnoreCase("POST") && request.getParameter("checkout.x") != null) && (__cnt_redemptionCode == null || "".equals(__cnt_redemptionCode))) {
+        __cnt_successPage = "/checkout/step_1_choose.jsp";
+    }
+
+    String __cnt_actionName = request.getParameter("fdsc.action");
+	if (__cnt_actionName == null) {
+		__cnt_actionName = "updateQuantities";
+	    if ((request.getMethod().equalsIgnoreCase("POST") && request.getParameter("redemptionCodeSubmit.x") != null) || (__cnt_redemptionCode != null && !"".equals(__cnt_redemptionCode))) {
+	        __cnt_actionName = "redeemCode";
+	        __cnt_successPage = null;
+	    }
+    }
+	    
+	final String __cnt_cartSource = request.getParameter("fdsc.source"); // can be null
+%>
+<fd:FDShoppingCart id='cart' result='result' action='<%= __cnt_actionName %>' successPage='<%= __cnt_successPage %>' cleanupCart='true' source='<%= __cnt_cartSource %>'>
+<a name="cartRec"></a><div style="padding-top: 1em">
+<%-- display items just added to cart  --%>
+<%
+	/**
+	 * Display recently added products
+	 */
+	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
+%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
+<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
+<br/>
+<%
+	}
+%>
+</div>
+
+<!-- ===================================== -->
+<!-- ============ Cart & tabs ============ -->
+<!-- ===================================== -->
+
+<% String smartStoreFacility = "quickshop"; %>
+
+</fd:FDShoppingCart>

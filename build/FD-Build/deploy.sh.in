@@ -1,0 +1,111 @@
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+
+# Dark Magic to determine the ROOTPATH
+relpath="$0"
+D=`dirname "$relpath"`
+B=`basename "$relpath"`
+ROOTPATH="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`"
+
+currentdir=$PWD
+
+
+SOURCE_DIR="$1"
+
+########################################################
+
+#######################
+# Deployment settings
+#######################
+
+# Maximum wait for weblogic startup in minutes
+WEBLOGIC_MAX_WAIT=10
+
+# Directory where to store the applications
+APPLICATIONS_DIR=/home/fdadmin/var/applications
+
+# Directory where to store the static media
+# This directory will be removed and recreated during deployment
+MEDIA_STAT_DIR=/home/fdadmin/var/docroot
+
+# Weblogic domain root dir
+WEBLOGIC_ENV_ROOT=/home/fdadmin/var/bea/freshdirect
+
+# WebLogic Stop Command
+WEBLOGIC_STOP_CMD=stopWebLogic.sh
+
+# WebLogic Start Command
+WEBLOGIC_START_CMD=start.sh
+
+# WebLogic port for startup test
+WEBLOGIC_PORT=7001
+
+# WebLogic StdOut logfile
+WEBLOGIC_STDOUT=$WEBLOGIC_ENV_ROOT/stdout.log
+
+########################################################
+
+# Helper function to wait for Weblogic startup
+function wait_weblogic() {
+    port="$1"
+    logfile="$2"
+    i=0
+    max_wait=$((WEBLOGIC_MAX_WAIT*6)) # the test runs every 10 second
+    while [ $i -lt $max_wait ]
+    do
+	if wget -O /dev/null -o /dev/null "http://localhost:$port/" >/dev/null 2>&1
+	then
+	    echo "Startup succeeded"
+	    echo "WebLogic Startup Messages follow:"
+	    cat $logfile
+	    return 0
+	fi
+	i=$((i+1))
+	sleep 10
+    done
+    echo "ERROR: Weblogic wait timed out after $WEBLOGIC_MAX_WAIT minutes"
+    echo "Showing log for reference:"
+    echo "WebLogic Startup Messages follow:"
+    cat $logfile    
+    exit 1	
+}
+    
+# First stop WebLogic
+    
+echo "Stopping WebLogic..."
+cd $WEBLOGIC_ENV_ROOT
+if ! ./$WEBLOGIC_STOP_CMD
+then
+    echo "Stopping WL failed"
+    cd $currentdir
+    exit 1
+fi
+    
+echo "Removing EARS"
+rm -f $APPLICATIONS_DIR/*.ear
+    
+echo "Copying EARS"
+cp -v $SOURCE_DIR/*.ear $APPLICATIONS_DIR
+    
+echo "Removing Media Stat"
+rm -rf $MEDIA_STAT_DIR
+    
+MEDIA_STAT_ROOT=$(dirname $MEDIA_STAT_DIR)
+echo "Unpacking Media Stat to $MEDIA_STAT_ROOT"
+tar -C $MEDIA_STAT_ROOT -xzf $SOURCE_DIR/media-stat.tar.gz 
+
+echo "Starting WebLogic..."
+cd $WEBLOGIC_ENV_ROOT
+echo "Switched to $PWD"
+./$WEBLOGIC_START_CMD
+
+echo "Waiting for Weblogic"
+wait_weblogic $WEBLOGIC_PORT $WEBLOGIC_STDOUT
+
+echo "Removing temporary directory"
+rm -r $SOURCE_DIR
+        
+echo "Deployment complete."
+exit 0

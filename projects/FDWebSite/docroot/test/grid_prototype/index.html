@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/typography.css">
+		<link rel="stylesheet" href="css/grid.css">
+		<link rel="stylesheet" href="css/fdgrid.css">
+<!--[if IE]>
+		<link rel="stylesheet" href="css/ie.css">
+<![endif]-->
+		<style>
+			.box { background:none }
+			hr.green { border:0px; height:2px; background:url('img/green_hr.png') repeat-x; margin:0px;}
+			.center { text-align:center; }
+			.textright { text-align: right }
+			
+			#topbar {height:32px; line-height:32px; background:url('img/title_bg.png') bottom left; text-align:center}
+			#welcome { padding-right:10px;}
+			
+			#menu { padding-top:25px; line-height:45px;padding-bottom:10px; }
+			#menu img { vertical-align:bottom}
+			#menu .columns { height:45px;}
+			#menuitems {text-align:right}
+			
+			
+			#submenu { height:53px; background:url('img/menu_bg.png'); }
+			
+			#searchbar { height:37px; background:url('img/title_bg.png') bottom left; padding:7px 0px 8px 0px; }
+			
+			#content { padding:10px 0px; }
+			
+			#cart {}
+			#cart_header_wrapper { background:url('img/cart_header.png') top left repeat-x; height:39px; }
+			#cart_header { background:url('img/cart_header.png') top right repeat-x; height:39px; margin-left:6px; padding-right:6px; }
+			#cart_header h5 { margin-bottom: 0px; text-align:center; color:white; font-weight:bold }
+			
+			#cart_body { border-left: 1px solid #fe9b1d; border-right: 2px solid #ffc781; border-top:none; border-bottom: none; text-align:left; margin:0px 0px 0px 1px; padding: 7px 20px;}
+			#cart_body h5 { margin:10px 0px 0px 0px; }
+			#cart_body ul { list-style-type:none; padding:0px; margin:0px; }
+
+			#cart_footer_wrapper { background:url('img/cart_footer.png') top left repeat-x; height:27px; }
+			#cart_footer { background:url('img/cart_footer.png') top right repeat-x; height:27px; margin-left:6px; padding-right:6px; padding-top:4px; }
+			.cart_summary_wrapper { background:url('img/cart_summary.png') top left repeat-x; height:17px; }
+			.cart_summary { background:url('img/cart_summary.png') top right repeat-x; height:17px; margin-left:4px; padding-right:4px; }
+			
+			
+			#marquee ul { list-style-type:none;	padding:0px; margin:7px 0px; color:#759255 }
+			#marquee li { display:inline; }
+			
+			#footerlinks { padding:10px 0px; border-top:1px solid #E8E5E3; }
+			#footerlinks h4 { margin:0px; font-style: italic}
+			
+			#shopbylinks { background: #F9F9F9; padding: 10px 0px; border-top:2px solid #E8E5E3; }
+			#shopbylinks h4 { margin-bottom: 0.25em }
+			#shopbylinks ul { list-style-type:none;	padding:0px; }
+			
+			#tagline { border-top:1px solid #E8E5E3; }
+			
+			.footergreen { background-color: #ACD181;}
+			
+			#bottomlinks { padding:30px 0px 10px 0px; }
+			#bottomlinks h3 { line-height:1.5em }
+			#bottomlinks .right { font-size:0.75em;font-weight:bold;line-height:inherit }
+			
+			#quicklinks { font-weight:bold; color:white; padding:10px 0px 5px 0px; }
+			#copyright { font-weight:bold; color:white; padding:5px 0px 10px 0px; }
+
+      /* popsubmenu */
+      #popsubmenuoverlay { display: none; position: absolute; z-index: 100; background-color: white; opacity: 0.8; width: 100%; height: 100%;}
+      #popsubmenu { display: none; position: absolute; z-index: 110; background-color: white; width: 100%;}
+      #popsubmenu .psmcontent {
+        display: block;
+        border-top: none;
+        border-left: 1px solid #eee;
+        border-right: 1px solid #eee;
+        border-bottom: 5px solid #eee;
+        box-shadow: 2px 2px 5px #555;
+      }
+      #popsubmenu .psmhead {
+        padding-top: 15px;
+      }
+      #popsubmenu .psmhead h3 {
+        float: left;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-left: 15px;
+        margin-right: 10px;
+      }
+      #popsubmenu .psmhead a {
+        float: left;
+        font-size: 1.1em;
+        text-decoration: none;
+      }
+      #popsubmenu .psmcontent ul {
+        padding: 0;
+        list-style-type: none;
+        margin-bottom: 0;
+      }
+      #popsubmenu .psmcontent ul li {
+        padding: 2px 0 2px 10px;
+        line-height: 40px;
+      }
+      #popsubmenu .psmcontent ul.stand {
+        padding-bottom: 15px;
+      }
+      #popsubmenu .psmcontent .stand a {
+        color: black;
+        text-decoration: none;
+      }
+      #popsubmenu .psmcontent .stand a:after {
+        content: ">";
+        color: #78a838;
+      }
+      #popsubmenu .psmcontent ul li img {
+        float: left;
+        margin-right: 3px;
+      }
+      #popsubmenu .psmcontent .shopby ul li {
+        line-height: 1.5em;
+        padding-left: 0;
+      }
+      #popsubmenu .psmcontent .shopby a {
+        color: #78a838;
+        text-decoration: none;
+      }
+		</style>
+    <!-- YUI includes START --> 
+    <link rel="stylesheet" href="/assets/yui-2.9.0/container/assets/container.css" type="text/css"> 
+     
+    <script type="text/javascript" src="/assets/yui-2.9.0/yahoo/yahoo.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/event/event.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/dom/dom.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/event-mouseenter/event-mouseenter.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/connection/connection.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/animation/animation.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/dragdrop/dragdrop.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/utilities/utilities.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/container/container.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/json/json.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/datasource/datasource.js"></script> 
+    <script type="text/javascript" src="/assets/yui-2.9.0/animation/animation.js"></script> 
+     
+    <script type="text/javascript" src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js"></script> 
+    <script type="text/javascript"> 
+      var $E  = YAHOO.util.Event;  
+      var $D  = YAHOO.util.Dom;  
+      //var $DH = YAHOO.ext.DomHelper;  
+      var $C  = YAHOO.util.Connect;  
+      var $X  = YAHOO.ext;  
+      var $  = $D.get;  
+    </script> 
+    <!-- YUI includes END -->
+    <script>
+      var FreshDirect = FreshDirect || {};
+      (function(fd) {
+        var PopSubMenu = function (el, trigger) {
+          this.el = el;
+          this.trigger = trigger;
+          this.overlay = YAHOO.util.Dom.get("popsubmenuoverlay");
+          this.visible = YAHOO.util.Dom.getStyle(el, "display") === "block";
+          YAHOO.util.Event.addListener(this.trigger, "click", this.triggerClicked, null, this);
+        };
+
+        PopSubMenu.prototype.triggerClicked = function (e) {
+          if (this.visible) {
+            this.hide();
+          } else {
+            this.show();
+          }
+        };
+
+        PopSubMenu.prototype.show = function () {
+          this.el.style.display = "block";
+          this.overlay.style.display = "block";
+          this.alignOverlay();
+          this.visible = true;
+        };
+
+        PopSubMenu.prototype.hide = function () {
+          this.el.style.display = "none";
+          this.overlay.style.display = "none";
+          this.visible = false;
+        };
+
+        PopSubMenu.prototype.alignOverlay = function () {
+          var body = document.getElementsByTagName('body')[0],
+              html = document.getElementsByTagName('html')[0],
+              scrollHeight = html.scrollHeight || body.scrollHeight,
+              height = scrollHeight - YAHOO.util.Dom.getXY(this.overlay)[1];
+          this.overlay.style.height = height + "px";
+        };
+
+        fd.PopSubMenu = PopSubMenu;
+      })(FreshDirect);
+
+      YAHOO.util.Event.onDOMReady(function() {
+        var psmEl = YAHOO.util.Dom.get("popsubmenu"),
+            psmTrigger = YAHOO.util.Dom.get("submenu"),
+            psm = new FreshDirect.PopSubMenu(psmEl, psmTrigger);
+      });
+
+    </script>
+	</head>
+	<body>
+		<div id="topbar">
+			<div class="container clearfix">
+				 <div class="column span-3 border">contact us</div>
+				 <div class="column span-3 border">help/FAQs</div>
+				 <div class="column span-14 border textright"><div  id="welcome">Welcome Ruchi (not ruchi?)</div></div>
+				 <div class="column span-3 border">log out</div>
+				 <div class="column span-3 border">my account</div>
+				 <div class="column span-4 last">notifications</div>
+			</div>
+		</div>
+		<div id="menu">
+			<div class="container clearfix">
+				<div class="column span-10"><img src="img/logo.png"></div>
+				<div id="menuitems" class="column span-20 last">
+					<img src="img/delivery.png">
+					<img src="img/quicklist.png">
+					<img src="img/recipes.png">
+					<img src="img/whatsgood.png">
+					<img src="img/presidentspick.png">
+				</div>
+				
+
+			</div>
+		</div>
+		<div id="submenu">
+			<div class="container clearfix"><img src="img/menu.png"></div>
+		</div>
+
+    <div id="popsubmenu">
+      <div class="psmcontent container">
+        <div class="column span-24 dottedborder">
+          <div class="psmhead column span-24 last">
+            <h3>our fruit stand</h3>
+            <a href="#">shop all fruits &raquo;</a>
+          </div>
+          <ul class="column span-6 stand dottedborder">
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Apples</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Bananas</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Citrus</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Grapes</a></li>
+          </ul>
+          <ul class="column span-6 stand dottedborder">
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Melons</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Berries &amp; Cherries</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Tropical &amp; Speciality</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Cut Fruit &amp; Fruit Salad</a></li>
+          </ul>
+          <ul class="column span-6 stand dottedborder">
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Avocados</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Dried Fruit &amp; Nuts</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Pears</a></li>
+            <li><img src="http://placekitten.com/g/40/40"/><a href="#">Fresh-Squeezed Juice</a></li>
+          </ul>
+          <div class="column span-6 last shopby">
+            <h4>shop by</h4>
+            <ul>
+              <li><a href="#">Organic fruit</a></li>
+              <li><a href="#">Cut fruit and salad</a></li>
+              <li><a href="#">Red Jacket orchards</a></li>
+              <li><a href="#">Dried fruits &amp; nuts</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="column span-6 last">
+          <img src="http://placekitten.com/g/180/200" style="margin: 10px 0"/>
+        </div>
+      </div>
+    </div>
+
+    <div id="popsubmenuoverlay"></div>
+
+		<div id="searchbar">
+			<div class="container clearfix">
+				<div class="column span-6 border center"><img src="img/department_selector.png"></div>
+				<div class="column span-16 border center"><img src="img/searchbox.png"></div>
+				<div class="column span-8 last"></div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="container clearfix">
+				<div class="column span-22">
+					<div class="box">
+					<p>Ut ultricies, metus quis gravida iaculis, magna nunc lobortis magna, a vehicula ante dolor eget mauris. Nulla tempus eleifend dui, quis mollis magna tincidunt ut. Pellentesque tellus dolor, ornare a blandit quis, congue non mi. Nullam justo nisl, ultricies sit amet pharetra sed, commodo vel quam. Aenean at arcu lacus. Nulla facilisi. Fusce bibendum vehicula bibendum. Donec gravida magna vitae nulla fringilla eu auctor lorem euismod. Aenean nec nulla vitae nibh vehicula consequat id id diam. Ut hendrerit, orci non consectetur molestie, ipsum orci cursus purus, at sollicitudin mauris tortor quis felis. Nunc sed eros urna, sit amet luctus nisl. Vestibulum at augue nibh, in tristique urna. Mauris pellentesque porta leo imperdiet commodo. Etiam in est sit amet nibh volutpat iaculis ac iaculis turpis.</p>
+					<p>Mauris orci augue, dapibus vitae imperdiet vel, molestie nec ipsum. Aenean ut neque a felis eleifend tincidunt ut eu turpis. Mauris auctor dapibus ipsum non ultricies. Morbi ac enim vitae dui aliquam pellentesque. Fusce vulputate semper sagittis. Phasellus nec lacus eu lectus commodo mollis nec sed massa. Donec sagittis est quis mauris luctus quis tempus enim venenatis. Pellentesque ornare velit a ante sollicitudin sit amet consectetur sem ornare. Maecenas id enim tortor. Vivamus tempus, tortor vitae viverra molestie, quam ipsum rhoncus mauris, tincidunt commodo ante lorem et dolor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+					</div>
+				</div>
+				<div class="column span-8 last center">
+					<div id="cart">
+						<div id="cart_header_wrapper"><div id="cart_header"><h5>Your Cart</h5><div class="cart_summary_wrapper"><div class="cart_summary">Subtotal: 99999</div></div></div></div>
+						<div id="cart_body">
+							<h5>Bakery</h5>
+							<ul>
+								<li>Espresso Mousse</li>
+							</ul>
+							<h5>Deli</h5>
+							<ul>
+								<li>Macaroni Salad</li>
+							</ul>
+							<h5>Fruit</h5>
+							<ul>
+								<li>Bananas</li>
+							</ul>
+							<h5>Grocery</h5>
+							<ul>
+								<li>Oven White</li>
+								<li>Tea Biscuits</li>
+							</ul>
+							<h5>Heat & Eat</h5>
+							<ul>
+								<li>Mozzarella Pizza</li>
+								<li>Blue Cheese Salad</li>
+								<li>Spinach Salad</li>
+							</ul>
+							<h5>Vegetables & Herbs</h5>
+							<ul>
+								<li>Baby Spinach</li>
+							</ul>
+							<h5>Wine</h5>
+							<ul>
+								<li>Tintorera</li>
+								<li>Cabernet Sauvignon</li>
+								<li>Periquita</li>
+							</ul>
+						</div>
+						<div id="cart_footer_wrapper"><div id="cart_footer"><div class="cart_summary_wrapper"><div class="cart_summary">Subtotal: 99999</div></div></div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footerlinks">
+			<div class="container clearfix">
+				<div class="column span-5 border"><h4>let's be</h4><h3>friends!</h3></div>
+				<div class="column span-5 border"><h4>fresh</h4><h3>inspiration</h3></div>
+				<div class="column span-5 border"><h4>new to</h4><h3>freshdirect</h3></div>
+				<div class="column span-5 border"><h4>just added</h4><h3>new products</h3></div>
+				<div class="column span-10 last">gift cards<br>at the office</div>
+			</div>
+		</div>
+		<div id="shopbylinks">
+			<div class="container clearfix">
+				<div class="column span-5 border">
+					<h4>shop by department</h4>
+					<ul>
+						<li>fruits & vegetables</li>
+						<li>grocery</li>
+						<li>meat & seafood</li>
+						<li>dairy</li>
+						<li>frozen</li>
+						<li>organic</li>
+						<li>wine</li>
+						<li>local</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>shop by categories</h4>
+					<ul>
+						<li>milk</li>
+						<li>eggs</li>
+						<li>bread</li>
+						<li>cereal</li>
+						<li>toothpaste</li>
+						<li>water</li>
+						<li>toilet paper</li>
+						<li>orange juice</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>top searches</h4>
+					<ul>
+						<li>body wash</li>
+						<li>diapers</li>
+						<li>body lotion</li>
+						<li>butter</li>
+						<li>garlic</li>
+						<li>onions</li>
+						<li>chips</li>
+						<li>pasta</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>let us help you</h4>
+					<ul>
+						<li>delivery info</li>
+						<li>status of your order</li>
+						<li>modify order</li>
+						<li>change your password</li>
+						<li>cancel order</li>
+						<li>returns/exchanges</li>
+						<li>chef's table customer</li>
+						<li>FAQs</li>
+					</ul>
+				</div>
+				<div class="column span-10 last">
+					<h4>all you need to know</h4>
+					<ul>
+						<li>about us</li>
+						<li>careers</li>
+						<li>our community</li>
+						<li>your bill of rights</li>
+						<li>help/FAQs</li>
+					</ul>
+					<h4>contact us</h4>
+					<ul>
+						<li>call us</li>
+						<li>email us</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="tagline">
+			<div class="container clearfix">
+				<div class="column span-30 center"><img src="img/tagline.png"></div>
+			</div>
+		</div>
+		<div id="bottomlinks" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-10">
+					<h4 class="clearfix">FD Feed<span class="right">go to our blog »</span><hr class="green"></h4>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu augue turpis, vitae egestas risus. Vivamus adipiscing dui et urna elementum non interdum tortor pretium. Duis ultrices iaculis velit, in accumsan purus dignissim id. Vestibulum est massa, posuere id tristique at, fermentum ac quam. Duis tincidunt iaculis nisi, nec tempus leo pretium at. Nam justo nisi, consequat eu auctor eget, dapibus id justo. Aenean pulvinar tempus quam at gravida. Ut enim metus, pharetra sed volutpat eu, pretium consequat est. Nam ac dui molestie sem tristique pellentesque vehicula in nisi. Praesent nisi tellus, scelerisque ut cursus non, sodales non leo.</p>
+				</div>
+				<div class="column span-10">
+						<h4 class="clearfix">our customers love us!<span class="right">read more »</span><hr class="green"></h4>
+				</div>
+				<div class="column span-10 last">
+						<h4 class="clearfix">did you know?<hr class="green"></h4>
+				</div>
+				<div class="column span-10">
+						<hr class="green">
+						<h4 class="clearfix">mobile</h4>
+				</div>
+				<div class="column span-10 last">
+						<hr class="green">
+						<h4 class="clearfix">love freshdirect</h4>
+				</div>
+			</div>
+		</div>
+		<div id="marquee" class="footergreen">
+			<div class="container clearfix">
+				<hr class="green">
+				<ul class="column span-30 center">
+					<li>Cheesy Chicken Parm & Fusili</li>
+					<li>Kid Power Cheese-Stuffed Jumbo! Shells</li>
+					<li>Kid Power Megaroni & Beef</li>
+					<li>Kid Power Sunny Falafel & Hummus</li>
+					<li>Kid Power Turkey Sweet-ish Meat</li>
+				</ul>
+				<hr class="green">
+			</div>
+		</div>
+		<div id="quicklinks" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-30 center">Home | Site Map | Privacy Policy | Customer Agreement | A note on images for AOL users</div>
+			</div>
+		</div>
+		<div id="copyright" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-30 center">© 2002-2011 FreshDirect. All Rights Reserved</div>
+			</div>
+		</div>
+	</body>
+</html>

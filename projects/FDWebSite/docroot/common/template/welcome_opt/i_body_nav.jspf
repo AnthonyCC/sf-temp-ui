@@ -1,0 +1,136 @@
+<%--
+
+	based on globalnav_optimized.jspf
+	
+--%><%@ page import='java.util.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='java.net.*'
+%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
+
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
+	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
+<% } else { %>
+	
+	<% //expanded page dimensions
+	final int W_GLOBAL_NAV_TOTAL = 970;
+	%>
+	<div class="container body-nav">
+		<%@ include file="/common/template/welcome_opt/i_body_navTop.jspf" %><%!
+	
+		public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
+				return ContentFactory.getInstance().getContentNode(deptId);
+		}
+		
+		public ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
+				ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNode(catId);
+				ContentNodeModel dept = null;
+				if (categoryNode instanceof RecipeCategory) {
+					dept = RecipeDepartment.getDefault();
+				} else {
+				   dept= ((CategoryModel)categoryNode).getDepartment();
+				}
+				return dept;
+		}
+	
+		%><oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'><%
+			try {
+			
+			String deptId = request.getParameter("deptId");
+			String catId = request.getParameter("catId");
+			String globalUri = request.getRequestURI();
+			
+			
+			//fallback and check attributes on param fail
+				if (deptId == null || "".equals(deptId)) {
+					deptId = (request.getAttribute("deptId")!=null)?request.getAttribute("deptId").toString():"";
+					if ("".equals(deptId.toString())) { deptId = null; }
+				}
+				if (catId == null || "".equals(catId)) {
+					catId = (request.getAttribute("catId")!=null)?request.getAttribute("catId").toString():"";
+					if ("".equals(catId.toString())) { catId = null; }
+				}
+			
+			
+			String thisDept = "";
+			
+			if (catId != null){
+				ContentNodeModel thisDeptObj = findParentOfCategory (catId);
+				thisDept = thisDeptObj.getContentName();
+			} else if (deptId != null) {
+				if ("kosher_temp".equalsIgnoreCase(deptId)){
+					thisDept = "kos";
+				} else {
+					ContentNodeModel thisDeptObj = findDepartment(deptId);
+					thisDept = thisDeptObj.getContentName();
+				}
+			} else {
+				//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
+				if (globalUri.startsWith("/recipe_dept.jsp") || 
+				    globalUri.startsWith("/recipe_cat.jsp") || 
+				    globalUri.startsWith("/recipe_subcat.jsp") || 
+				    globalUri.startsWith("/recipe.jsp") || 
+				    globalUri.startsWith("/recipe_search.jsp") ) {
+				  thisDept = RecipeDepartment.getDefault().getContentName();
+				}
+			}
+			
+			%>
+			
+			
+			<%
+				boolean isAtHome = true;
+				if(	globalUri.indexOf("login")> -1 ||
+					globalUri.indexOf("promotion")> -1 ||
+					globalUri.indexOf("newproducts")> -1 ||
+					globalUri.indexOf("quickshop")> -1 || 
+					globalUri.indexOf("checkout")> -1 || 
+					globalUri.indexOf("help")> -1 || 
+					globalUri.indexOf("site_access")> -1 || 
+					globalUri.indexOf("about")> -1  || 
+					globalUri.indexOf("registration")> -1  ||
+					globalUri.indexOf("your_account")> -1 ||
+					globalUri.indexOf("search")> -1 ||
+					globalUri.indexOf("survey")> -1 ||
+					globalUri.indexOf("/department.jsp")> -1 ||
+					globalUri.indexOf("/whatsgood.jsp")> -1 ||
+					globalUri.indexOf("view_cart")> -1 ||
+					globalUri.indexOf("myfd")> -1 ||
+					globalUri.indexOf("health_warning")> -1 ||
+					globalUri.indexOf("product_modify")> -1	) {
+					isAtHome = false;
+				}
+				
+				String navigation = isAtHome ? "home" : "off";
+				
+				if (!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){
+					navigation = thisDept;
+				}
+				
+				/* move global nav to media
+			 	** this may need code support from time to time (when new items are added)
+			 	*/
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("curNav", navigation);
+				
+				%><fd:IncludeMedia name="/media/layout/nav/top_nav.ftl" parameters="<%= params %>">
+					<%-- no media, include code version --%>
+					<table width="<%=W_GLOBAL_NAV_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+						<tr><td><%@ include file="/common/template/includes/globalnav_table.jspf" %></td></tr>
+					</table>
+				</fd:IncludeMedia>
+				<table><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
+			<% } catch (Exception ex) {
+					ex.printStackTrace();
+			%><oscache:usecached />
+			<% } %></oscache:cache>
+	</div>
+<% } %>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<file-format>
+    <converter name="char" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertChar" return-type="java.lang.String"/>
+    
+    <record name="row">       
+        <record-definition>        	
+            <bean name="rowBean" class="com.freshdirect.routing.manager.ProcessInfo"/>
+            <line delimit=",">
+            	<record-element length="0" beanref="rowBean.orderId" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element>
+                <record-element length="0" beanref="rowBean.locationId" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element> 
+                <record-element length="0" beanref="rowBean.zoneCode" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element>
+                <record-element length="0" beanref="rowBean.processInfoMsg" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element>
+                <record-element length="0" beanref="rowBean.processTypeMsg" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element>
+                <record-element length="0" beanref="rowBean.additionalInfo" type="char">
+                    <conversion-option name="default-value" value="" />
+                </record-element>                                                              
+            </line>
+        </record-definition>
+    </record>
+</file-format>

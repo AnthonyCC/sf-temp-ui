@@ -1,0 +1,16 @@
+<div>
+	<table>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getRobinHoodLandingUrl()%>"><img src="/media_stat/images/template/site_access/give_to_robin_zip.gif" width="164" height="16" border="0" alt="Give To Robin Hood" /></a></td>
+		</tr>
+		<tr>
+			<td>Help feed hungry citizens this holiday season. Donate holiday meals via our site Robin Hood, NYC's leading anti-poverty organization.</td>
+		</tr>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getRobinHoodLandingUrl()%>">Click here for details.</a></td>
+		</tr>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getRobinHoodLandingUrl()%>"><img src="/media_stat/images/template/site_access/givenow_zip.gif" width="118" height="34" border="0" alt="GIVE NOW" /></a></td>
+		</tr>
+	</table>
+</div>

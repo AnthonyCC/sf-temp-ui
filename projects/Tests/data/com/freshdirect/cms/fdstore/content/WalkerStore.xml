@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content>
+    <Store id="FreshDirect">
+        <departments>
+            <Department ref="dept1"/>
+            <Department ref="dept2"/>
+            <Department ref="dept3"/>
+        </departments>
+    </Store>
+    
+    <!-- departments -->
+    <Department id="dept1">
+        <FULL_NAME>
+            Alpha
+        </FULL_NAME>
+        <categories>
+            <Category ref="cat_2"/>
+            <Category ref="cat_a_valid"/>
+            <Category ref="cat_a_invalid"/>
+        </categories>
+    </Department>
+    
+    <Department id="dept2">
+        <FULL_NAME>
+            Beta
+        </FULL_NAME>
+        <categories>
+            <Category ref="cat_hdn"/>
+            <Category ref="cat_nosearch"/>
+            <Category ref="cat_hdn_nosearch"/>
+        </categories>
+    </Department>
+    
+    <Department id="dept3">
+        <FULL_NAME>
+            Gamma
+        </FULL_NAME>
+        <categories>
+            <Category ref="cat_g_valid"/>
+            <Category ref="cat_g_invalid"/>
+        </categories>
+    </Department>
+
+    <!-- orphaned category -->
+    <Category id="cat_orphan">
+        <FULL_NAME>
+            Orphaned Category
+        </FULL_NAME>
+        <subcategories>
+            <Category ref="cat_1"/>
+        </subcategories>
+    </Category>
+    
+    <Category id="cat_1">
+        <FULL_NAME>
+            Category #1
+        </FULL_NAME>
+        <products>
+            <Product ref="prd_1"/>
+        </products>
+    </Category>
+    
+    <Category id="cat_2">
+        <FULL_NAME>
+            Category #2
+        </FULL_NAME>
+        <products>
+            <Product ref="prd_1"/>
+            <Product ref="prd_2"/>
+            <Product ref="prd_3"/>
+            <Product ref="prd_4"/>
+        </products>
+    </Category>
+    
+    <Category id="cat_hdn">
+        <FULL_NAME>
+            Hidden Category
+        </FULL_NAME>
+        <HIDE_URL>
+            /index.jsp
+        </HIDE_URL>
+        <products>
+            <Product ref="prd_2"/>
+        </products>
+    </Category>
+    
+    <Category id="cat_nosearch">
+        <FULL_NAME>
+            Not Searchable Category
+        </FULL_NAME>
+        <HIDE_URL>
+            /index.jsp
+        </HIDE_URL>
+        <NOT_SEARCHABLE>
+            true
+        </NOT_SEARCHABLE>
+        <products>
+            <Product ref="prd_3"/>
+        </products>
+    </Category>
+    
+    <Category id="cat_hdn_nosearch">
+        <FULL_NAME>
+            Hidden And Not Searchable Category
+        </FULL_NAME>
+        <NOT_SEARCHABLE>
+            true
+        </NOT_SEARCHABLE>
+        <products>
+            <Product ref="prd_4"/>
+        </products>
+    </Category>
+    
+	
+	
+    <Category id="cat_a_valid">
+        <FULL_NAME>
+            Category Alpha Valid (1)
+        </FULL_NAME>
+        <products>
+            <Product ref="prd_r"/>
+        </products>
+    </Category>
+
+    <Category id="cat_a_invalid">
+        <FULL_NAME>
+            Category Alpha Invalid (1)
+        </FULL_NAME>
+        <HIDE_URL>
+            /index.jsp
+        </HIDE_URL>
+        <NOT_SEARCHABLE>
+            true
+        </NOT_SEARCHABLE>
+        <products>
+            <Product ref="prd_r"/>
+        </products>
+    </Category>
+
+    <Category id="cat_g_valid">
+        <FULL_NAME>
+            Category Gamma Valid (2)
+        </FULL_NAME>
+        <products>
+            <Product ref="prd_r"/>
+        </products>
+    </Category>
+
+    <Category id="cat_g_invalid">
+        <FULL_NAME>
+            Category Gamma Invalid (2)
+        </FULL_NAME>
+        <HIDE_URL>
+            /index.jsp
+        </HIDE_URL>
+        <NOT_SEARCHABLE>
+            true
+        </NOT_SEARCHABLE>
+        <products>
+            <Product ref="prd_r"/>
+        </products>
+    </Category>
+
+	
+	
+	
+    <!-- product member of orphaned category -->
+    <Product id="prd_1">
+        <FULL_NAME>
+            Product #1
+        </FULL_NAME>
+        <PRIMARY_HOME>
+            <Category ref="cat_1"/>
+        </PRIMARY_HOME>
+    </Product>
+    
+    <Product id="new_prd">
+        <FULL_NAME>
+            New Product
+        </FULL_NAME>
+    </Product>
+    
+    <Product id="prd_2">
+        <FULL_NAME>
+            Product #2
+        </FULL_NAME>
+        <PRIMARY_HOME>
+            <Category ref="cat_hdn"/>
+        </PRIMARY_HOME>
+    </Product>
+    
+    <Product id="prd_3">
+        <FULL_NAME>
+            Product #3
+        </FULL_NAME>
+        <PRIMARY_HOME>
+            <Category ref="cat_nosearch"/>
+        </PRIMARY_HOME>
+    </Product>
+    
+    <Product id="prd_4">
+        <FULL_NAME>
+            Product #4
+        </FULL_NAME>
+        <PRIMARY_HOME>
+            <Category ref="cat_hdn_nosearch"/>
+        </PRIMARY_HOME>
+    </Product>
+
+    <Product id="prd_r">
+        <FULL_NAME>
+            Product to test Ranking
+        </FULL_NAME>
+    </Product>
+</Content>

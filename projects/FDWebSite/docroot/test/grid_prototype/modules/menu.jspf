@@ -1,0 +1,18 @@
+<div id="menu">
+  <div class="container clearfix">
+    <div class="column span-8"><img src="img/logo.png"></div>
+    <ul id="menuitems" class="column span-16 last">
+      <li><a class="delivery" href="#"><span>Delivery</span></a></li>
+      <li><a class="quicklist" href="#"><span>Quicklist</span></a></li>
+      <li><a class="recipes" href="#"><span>Recipes</span></a></li>
+      <li><a class="whatsgood" href="#"><span>What's good</span></a></li>
+      <li><a class="presidentspick" href="#"><span>President's picks</span></a></li>
+
+      <%--<img src="img/delivery.png">--%>
+      <%--<img src="img/quicklist.png">--%>
+      <%--<img src="img/recipes.png">--%>
+      <%--<img src="img/whatsgood.png">--%>
+      <%--<img src="img/presidentspick.png">--%>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<%--
+	Requires:
+		imports: (BrowserInfo) welcomepageBI, FDStoreProperties
+		taglibs: fd, jwr
+--%><%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache'
+%><%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' 
+%><%@ page import='com.freshdirect.fdstore.customer.*' %><%
+
+	//BrowserInfo cannot currently parse IE11 - batchley 20140217
+	float welcomepageBI_ver = 0;
+	try {
+		welcomepageBI_ver = Float.parseFloat(welcomepageBI.getVersion());
+	} catch (NullPointerException npe){
+		//do nothing
+	}
+%>
+
+<%-- optimizely --%>
+	<script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript" async="async"></script>
+
+<%
+	//html5shiv to add html5 elements to IE < 9. Includes print support. NO DEFER, NO ASYNC
+	if (welcomepageBI.isInternetExplorer() && welcomepageBI_ver < 9.0) {
+		%><jwr:script src="/assets/javascript/html5shiv.js" useRandomParam="false" /><%
+	}
+%>
+
+<%-- FreshDirect global object - REQUIRED in most modules, NO DEFER, NO ASYNC --%>
+	<script type="text/javascript">
+		var FreshDirect = FreshDirect || {};
+		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};
+		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
+	</script>
+	
+<%--
+	jquery/soy - REQUIRED, NO DEFER, NO ASYNC
+		don't use fdlibs_opt.js here, it has dif files.
+--%>
+	<jwr:script src="/fdlibs.js" useRandomParam="false" />
+	<script type="text/javascript">
+			var $jq;
+			var jqInit = false; 
+			function initJQuery() {
+				if (typeof(jQuery) == 'undefined') {
+					if (!jqInit) {
+						jqInit = true;
+					}
+					setTimeout("initJQuery()", 100);
+				} else {
+					$jq = jQuery.noConflict();
+				}
+			}
+			initJQuery();
+	</script>
+
+<%-- YUI - REQUIRED in components, NO DEFER, NO ASYNC --%>
+	<jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+		
+<%-- MISC - REQUIRED, NO DEFER, NO ASYNC --%>
+	<jwr:script src="/fdmisc.js" useRandomParam="false" />
+	
+<%
+	/* Google Analytics Pixel */
+	SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
+	semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
+%>
+<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />

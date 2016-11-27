@@ -1,0 +1,19 @@
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<fd:GetCart id="cart">
+  <div id="header_cart">
+    <div class="items">
+      <span>items:</span>
+      <strong><%= cart.getOrderLines().size() %></strong>
+    </div>
+    <div class="subtotal">
+      <span>subtotal:</span> 
+      <strong><%= JspMethods.formatPrice(cart.getSubTotal()) %></strong>
+    </div>
+    <div class="cart_footer">
+      <a href="<c:url value="/view_cart.jsp"><c:param name="trk" value="gnav"/></c:url>" class="your_cart"><span>your cart</span></a>
+      <a href="<c:url value="/checkout/view_cart.jsp"><c:param name="trk" value="gnav"/></c:url>" class="checkout"><span>checkout</span></a>
+    </div>
+  </div>
+</fd:GetCart>

@@ -1,0 +1,65 @@
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModelUtil"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_4MM_EDITORIAL_TOTAL = 683;
+%>
+
+<%--
+  editorial.jspf
+	requires:
+		FDUserI user;
+	provides:
+		4mm editorial recommender
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+
+<% 	
+CategoryModel category = FourMinuteMealsHelper.get4mmEditorialRecommender(); 
+if ( category != null ) {
+	Image categoryTitle = category.getCategoryTitle();
+	String catTitlePath = categoryTitle != null ? categoryTitle.getPath() : "";
+	%>
+	<display:ItemGrabber id='categoryProducts' category='<%= category %>' depth='0' >
+		<display:UniqueFilter in="<%= categoryProducts %>" out="products" groupId="4mm-default">
+		<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)products ); %>
+		<div class="carousel-box">
+			<div class="separator" style="margin-bottom:15px"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"  class="carousel-box-title"/></div>
+			<script type="text/javascript">
+				var editorial_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId="4mm-editorial" elementCategory="carousel"/>} 
+			</script>
+			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="<%=W_4MM_EDITORIAL_TOTAL%>" numItems="5" showCategories="false" itemsToShow="<%= products %>" trackingCode="edt-4mm" maxItems="12" eventHandlersObj="editorial_events">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<% 
+						ProductModel pmCoup = (ProductModel)currentItem;
+						FDCustomerCoupon curCoupon = null;
+						if (pmCoup.getDefaultSku() != null && pmCoup.getDefaultSku().getProductInfo() != null) {
+							curCoupon = user.getCustomerCoupon(pmCoup.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pmCoup.getParentId(),pmCoup.getContentName());
+						}
+					%>
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true"
+							className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>" coupon="<%= curCoupon %>" />
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<div class="productname">
+						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+					<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmEdit"></display:FDCoupon>
+				</display:GetContentNodeWebId>
+			</display:Carousel>
+		</div>
+		</display:UniqueFilter>
+	</display:ItemGrabber>
+<% } %>

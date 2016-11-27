@@ -1,0 +1,32 @@
+<%@page import="com.freshdirect.fdstore.util.HowToCookItUtil"%>
+<%@page import="com.freshdirect.fdstore.content.view.WebHowToCookIt" %>
+<!-- 
+ -->
+<%
+    boolean htciShownLabel = false;
+	int htciCount = 0;
+
+	List<WebHowToCookIt> howToCookItResult = HowToCookItUtil.getHowToCookIt(productNode);
+
+	for (WebHowToCookIt cookIt : howToCookItResult) {
+		StringBuffer htciLink = new StringBuffer();
+        htciLink.append("<a href=\"");
+        htciLink.append(response.encodeURL("/category.jsp?catId=" + cookIt.getCategoryId() + "&trk=prod"));
+        htciLink.append("\">");
+        htciLink.append(cookIt.getName());
+        htciLink.append("</a>");
+        if (htciShownLabel == false) {
+%>
+<br>
+<b>How To Cook It</b>
+<br>
+<%
+		    htciShownLabel = true;
+        }
+        if (htciCount % 3 == 0 && htciCount != 0) {
+			%><br><%
+    	}
+		%><%=(htciCount % 3) > 0 ? ", " : ""%><%=htciLink.toString()%><%
+	    htciCount++;
+    }
+%>
