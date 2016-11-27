@@ -1,13 +1,10 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.TimeslotList;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 
@@ -43,8 +40,6 @@ public class DeliveryTimeslots extends CheckoutResponse {
     
     private boolean minOrderReqd;
     
-    private ShipToAddress address;
-    
 
     public String getReservedTimeslotId() {
         return reservedTimeslotId;
@@ -79,79 +74,26 @@ public class DeliveryTimeslots extends CheckoutResponse {
     /**
      * @param result
      */
-    public DeliveryTimeslots(TimeSlotCalculationResult result, SessionUser user) {
-        List<TimeslotList> slotLists = result!=null?result.getTimeslotList():null;
-        if(slotLists!=null){
-	        for (TimeslotList slotList : slotLists) {
-	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable(), user)));
-	        }
+    public DeliveryTimeslots(TimeSlotCalculationResult result) {
+        List<TimeslotList> slotLists = result.getTimeslotList();
+        for (TimeslotList slotList : slotLists) {
+            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable())));
         }
-        if(user.getUserContext()!=null&&user.getUserContext().getStoreContext()!=null&&
-        		user.getUserContext().getStoreContext().getEStoreId()!=null&&
-        		user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
-        	timeSlots = combineUnavailableTS(timeSlots);
-        }
-        List<String> restrictionMessages = result!=null?result.getMessages():null;
+        List<String> restrictionMessages = result.getMessages();
         if(restrictionMessages != null) {
 	        for (String restrictionMessage : restrictionMessages) {
 	            this.restrictions.add(new Restriction(restrictionMessage));
 	        }
         }
-        this.selectedTimeslotId = result!=null?result.getPreselectedTimeslotId():null;
-        this.reservedTimeslotId = result!=null?result.getReservationTimeslotId():null;
-        this.showPremiumSlots = result!=null?result.isShowPremiumSlots():false;
-        this.showDPTermsAndConditions = result!=null?result.isShowDPTermsAndConditions():false;
-        this.sameDayCutoff = result!=null?result.getSameDayCutoff():null;
-        this.minOrderReqd = result!=null?result.isMinOrderReqd():false;
-        this.showMinNotMetMessage = result!=null?result.isShowMinNotMetMessage():false;
+        this.selectedTimeslotId = result.getPreselectedTimeslotId();
+        this.reservedTimeslotId = result.getReservationTimeslotId();
+        this.showPremiumSlots = result.isShowPremiumSlots();
+        this.showDPTermsAndConditions = result.isShowDPTermsAndConditions();
+        this.sameDayCutoff = result.getSameDayCutoff();
+        this.minOrderReqd = result.isMinOrderReqd();
+        this.showMinNotMetMessage = result.isShowMinNotMetMessage();
         
     }
-    
-    private List<Timeslot> combineUnavailableTS(List<Timeslot> ts) {
-		List<Timeslot> ts2 = new ArrayList<Timeslot>();
-        if(!ts.isEmpty()){
-        	int loopnumber = 0;
-            boolean foundunavailablets = false;
-        	int first_unavailable_timeslot = 0;
-        	Timeslot lastunavailabletsfound = ts.get(loopnumber);
-	        for(;loopnumber<ts.size();loopnumber++){
-	        	if(ts.get(loopnumber).isFull()||ts.get(loopnumber).isUnavailable()){
-	        		if(!foundunavailablets){
-	        			foundunavailablets = true;
-	        			first_unavailable_timeslot = loopnumber;
-	        			lastunavailabletsfound = ts.get(loopnumber);
-	        		}else if(lastunavailabletsfound.getStartDate().getDate()==ts.get(loopnumber).getStartDate().getDate() &&
-	        					lastunavailabletsfound.getEndDate().getDate()==ts.get(loopnumber).getEndDate().getDate()) {
-	        			lastunavailabletsfound.setStart(ts.get(first_unavailable_timeslot+1).getStartDate());
-	        			lastunavailabletsfound.setEnd(ts.get(loopnumber-1).getEndDate());
-	        			try {
-							lastunavailabletsfound.setStart(ts.get(first_unavailable_timeslot+1).getStart());
-							lastunavailabletsfound.setEnd(ts.get(loopnumber-1).getEnd());
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	        		}else{
-	        			ts2.add(lastunavailabletsfound);
-	        			lastunavailabletsfound = ts.get(loopnumber);
-	        			first_unavailable_timeslot = loopnumber;
-	        		}
-	        	}else{
-	        		if(foundunavailablets){
-	        			ts2.add(lastunavailabletsfound);
-	        			foundunavailablets = false;
-	        			ts2.add(ts.get(loopnumber));
-	        		}else{
-	        			ts2.add(ts.get(loopnumber));
-	        		}
-        		}
-	        }
-	        if(foundunavailablets){
-	        	ts2.add(lastunavailabletsfound);
-	        }
-        }
-        return ts2;
-	}
 
 	public boolean isShowPremiumSlots() {
 		return showPremiumSlots;
@@ -185,13 +127,4 @@ public class DeliveryTimeslots extends CheckoutResponse {
 		return showMinNotMetMessage;
 	}
 
-	
-    public ShipToAddress getAddress() {
-        return address;
-    }
-    
-    public void setAddress(ShipToAddress address) {
-        this.address = address;
-    }
-	
 }

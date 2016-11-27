@@ -11,10 +11,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Add New Delivery Address"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add New Delivery Address</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add New Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">
@@ -33,7 +30,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 	</fd:ErrorHandler>
 	
 	
-	<form fdform name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;" fdform-displayerrorafter>
+	<form name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
 		<table width="<%= W_YA_ADD_DELIVERY_ADDR %>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" class="title18">Add New Delivery Address</td>
@@ -58,7 +55,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 		
 		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_ADD_DELIVERY_ADDR %>">
 			<tr valign="top">
-				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" alt="" hspace="0" width="1" height="1" border="0"></TD>
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></TD>
 			</tr>
 			<tr>
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top">

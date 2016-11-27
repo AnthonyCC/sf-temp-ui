@@ -65,7 +65,7 @@ var FreshDirect = FreshDirect || {};
             match = $el.attr('data-highlight-match'),
             $target = $el.find('a').first();
         
-        if ($target.length === 0) {
+        if ($target.size() === 0) {
           $target = $el;
         }
 

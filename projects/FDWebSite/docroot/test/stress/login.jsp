@@ -9,7 +9,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDAuthenticationException"%>
 
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>LOGIN</title>
 </head>

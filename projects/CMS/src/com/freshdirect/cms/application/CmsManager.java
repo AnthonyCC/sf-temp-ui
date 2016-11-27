@@ -27,16 +27,11 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.multistore.MultiStoreContext;
 import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.cms.multistore.MultiStoreProperties;
-import com.freshdirect.cms.publish.EnumPublishStatus;
-import com.freshdirect.cms.publish.Publish;
-import com.freshdirect.cms.publish.service.impl.BasicPublishStatusService;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.IBackgroundProcessor;
-import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SynonymDictionary;
-import com.freshdirect.cms.search.SynonymDictionaryListKey;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.util.CmsPermissionManager;
 import com.freshdirect.cms.util.CmsPermissionManager.Permit;
@@ -51,7 +46,7 @@ import com.freshdirect.http.HttpService;
  * Singleton entry point for global CMS content service. Obtains primary content-service instance using {@link com.freshdirect.framework.conf.FDRegistry} via service name
  * <code>com.freshdirect.cms.CmsManager</code>.
  */
-public class CmsManager implements ContentServiceI, StoreContentSource {
+public class CmsManager implements ContentServiceI {
 
     private final static Category LOGGER = LoggerFactory.getInstance(CmsManager.class);
 
@@ -59,7 +54,6 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
 
     private ContentServiceI pipeline;
     private ContentSearchServiceI searchService;
-    private BasicPublishStatusService publishStatusService = BasicPublishStatusService.defaultService();
 
     /**
      * CMS {@link ContentKey} of the actual store node
@@ -80,7 +74,7 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
      * Note: this constructor should only called from Tests project
      * 
      * @param pipeline
-     * @param indexerService
+     * @param searchService
      */
     public CmsManager(ContentServiceI pipeline, ContentSearchServiceI searchService) {
         this.initializeInternal(pipeline, searchService, true);
@@ -130,8 +124,8 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
         // get values from the hivemind configuration
         // see CMSServiceConfig.xml or CMSServiceConfig_prd.xml
         ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
-        ContentSearchServiceI search = LuceneSearchService.getInstance();
-        final boolean readOnlyMode = !MultiStoreContextUtil.isCMSPoweredByDatabase();
+        ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+        final boolean readOnlyMode = ! MultiStoreContextUtil.isCMSPoweredByDatabase();
 
         this.initializeInternal(mgr, search, readOnlyMode);
     }
@@ -170,15 +164,15 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
         }
 
         if (this.readOnlyContent && this.singleStoreKey != null) {
-            initPrimaryHomeCache();
+            initPrimaryHomeCache(this.singleStoreKey);
         }
     }
 
     private ContentKey calculateSingleStoreId() {
-
+        
         // find out current context
-        final MultiStoreContext ctx = MultiStoreContextUtil.getContext(this);
-
+        final MultiStoreContext ctx = MultiStoreContextUtil.getContext( this );
+        
         final String theKey;
         if (ctx.isSingleStore()) {
             //
@@ -186,7 +180,7 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
             //
 
             if (ctx.isPreviewNode()) {
-                // Preview mode
+                // Preview mode 
                 final String candidate = MultiStoreProperties.getCmsStoreId();
                 if (candidate == null) {
                     LOGGER.warn("[SINGLE-STORE CMS MODE] failed to acquire store key, most probably multistore.store.id property is not set!");
@@ -226,7 +220,7 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
             theKey = null;
         }
 
-        return theKey != null ? ContentKey.getContentKey(FDContentTypes.STORE, theKey) : null;
+        return theKey != null ? new ContentKey(FDContentTypes.STORE, theKey) : null;
     }
 
     /**
@@ -363,26 +357,15 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
     public CmsResponseI handle(CmsRequestI request) {
 
         final boolean granted = (Permit.ALLOW == CmsPermissionManager.requestSaveChangesetPermission(request, this));
-        final DraftContext draftContext = request.getDraftContext();
-        
-        Publish lastPublish = publishStatusService.getLastPublish();
-        boolean isSaveAllowedByPublish = true;
-        if (lastPublish != null) {
-            isSaveAllowedByPublish = !((DraftContext.MAIN == draftContext) && (lastPublish.getStatus() == EnumPublishStatus.PROGRESS));
-        }
-
-        if (!isSaveAllowedByPublish) {
-            throw new CmsRuntimeException("There is a store publish in progress, can't save nodes!");
-        }
 
         if (granted) {
             // save changes
             CmsResponseI response = pipeline.handle(request);
 
             // notify preview nodes about changes
-            propagateCmsChangeEvent(request.getNodes(), draftContext);
+            propagateCmsChangeEvent(request.getNodes(), request.getDraftContext());
 
-            if (DraftContext.MAIN == draftContext) {
+            if (DraftContext.MAIN == request.getDraftContext()) {
                 try {
                     // re-index contents
                     rebuildIndices(request.getNodes());
@@ -419,17 +402,9 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
     /**
      * The key of store root node for Store front or CMS preview nodes
      * 
-     * @deprecated use {@link #getStoreKey()} instead
-     * 
      * @return CMS {@link ContentKey}
      */
-    @Deprecated
     public ContentKey getSingleStoreKey() {
-        return singleStoreKey;
-    }
-
-    @Override
-    public ContentKey getStoreKey() {
         return singleStoreKey;
     }
 
@@ -465,20 +440,19 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
 
     private Map<ContentKey, ContentKey> primaryHomeMap;
 
-    public void initPrimaryHomeCache() {
+    public void initPrimaryHomeCache(final ContentKey storeKey) {
         primaryHomeMap = new HashMap<ContentKey, ContentKey>();
         DraftContext draftContext = DraftContext.MAIN;
 
         Set<ContentKey> keys = getContentKeysByType(FDContentTypes.PRODUCT, draftContext);
         for (ContentKey key : keys) {
-            ContentKey primaryHome = PrimaryHomeUtil.pickPrimaryHomeForStore(key, singleStoreKey, this, draftContext);
+            ContentKey primaryHome = PrimaryHomeUtil.pickPrimaryHomeForStore(key, storeKey, this, draftContext);
             if (primaryHome != null) {
                 primaryHomeMap.put(key, primaryHome);
             }
         }
     }
 
-    @Override
     public ContentKey getPrimaryHomeKey(ContentKey aKey, DraftContext draftContext) {
         if (readOnlyContent && primaryHomeMap != null && draftContext.isMainDraft()) {
             return primaryHomeMap.get(aKey);
@@ -578,7 +552,7 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
                 adminTool.backgroundReindex(keywords);
 
                 break;
-            } else if (FDContentTypes.FDFOLDER.equals(type) && SynonymDictionaryListKey.SYNONYM.getContentKey().equals(node.getKey().getId())) {
+            } else if (FDContentTypes.FDFOLDER.equals(type) && SynonymDictionary.SYNONYM_LIST_KEY.equals(node.getKey().getId())) {
                 LOGGER.info("Background reindex(2) is invoked with node " + node.getKey());
 
                 adminTool.backgroundReindex();

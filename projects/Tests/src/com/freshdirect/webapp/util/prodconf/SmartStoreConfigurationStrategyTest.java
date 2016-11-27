@@ -22,8 +22,6 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
@@ -50,7 +48,7 @@ import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TestFDInventoryCache;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
@@ -93,9 +91,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/smartstore/ConfigurationStrategyTest.xml");
 
-		CmsManager.setInstance(new CmsManager(service,
-                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
-
+		CmsManager.setInstance(new CmsManager(service, null));
 
 
 

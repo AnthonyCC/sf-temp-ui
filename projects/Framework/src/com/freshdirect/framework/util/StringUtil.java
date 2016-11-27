@@ -83,8 +83,8 @@ public class StringUtil {
 	 * @param buff
 	 */
 	private static void appendHexCode(char c, StringBuffer buff) {
-	    int hi = ((c) & 0xf0) >>> 4;
-	    int low = (c) & 0x0f;
+	    int hi = (((int)c) & 0xf0) >>> 4;
+	    int low = ((int)c) & 0x0f;
 	    buff.append(hi < 10 ? (char)('0' + hi) : (char)('A' + hi - 10));
 	    buff.append(low < 10 ? (char)('0' + low) : (char)('A' + low - 10));
 	}
@@ -823,9 +823,4 @@ public class StringUtil {
 			} 
 		}
 	}
-
-    public static String quote(String message){
-        StringBuilder quoteMessage = new StringBuilder();
-        return quoteMessage.append("\"").append(message).append("\"").toString();
-     }
 }

@@ -12,10 +12,7 @@
 	   jspTemplate = "/common/template/left_dnav.jsp";
    %>
 <tmpl:insert template='<%= jspTemplate %>'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:IncludeMedia name="/media/editorial/site_access/tour/coffee_index.html" />
 </tmpl:put>

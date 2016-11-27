@@ -1,6 +1,6 @@
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
-<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -37,7 +37,6 @@
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.lang.Math"%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -45,7 +44,59 @@
 final int W_VIEWCART_FULL = 970;
 %>
 <% boolean isEBTPayment = (null !=(cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals((cart).getPaymentMethod().getPaymentMethodType()));%>
+<% if (user.isEligibleForClientCodes()) { %>
 
+<div id="clicode_dlgTmpl" style="display: none">
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
+	</table>
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
+		<tr>
+			<td colspan="4" class="text11">
+				<a href="#"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="FreshDirect (close window)"></a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="height: 20px;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width: 20px; line-height: 18px;">&nbsp;</td>
+			<td class="text13rbold" style="line-height: 18px; white-space: nowrap; vertical-align: top; width: 130px; text-align: right;">
+				<img src="/media_stat/images/buttons/client_codes_exclamation.gif" style="vertical-align: middle;" width="14" height="18">
+				<span>
+				</span>
+				&nbsp;&nbsp;&ndash;&nbsp;&nbsp;
+			</td>
+			<td class="text13rbold" style="line-height: 18px; vertical-align: top; width: 350px;">
+				<span>
+				</span>
+			</td>
+			<td style="width: 20px;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
+			<td colspan="2" align="right" class="text11" style="vertical-align: middle; height: 50px; padding-right: 20px;">
+				<span>
+					<input type="image" src="/media_stat/images/buttons/close_window.gif"
+							width="142" height="17" border="0" alt="CLOSE WINDOW" style="vertical-align: middle;">
+				</span>
+				<span>
+					<input type="image" src="/media_stat/images/buttons/client_codes_cancel.gif"
+							width="100" height="19" border="0" alt="CANCEL" style="vertical-align: middle;">&nbsp;&nbsp;
+					<input type="image" src="/media_stat/images/buttons/apply_change.gif"
+							width="141" height="19" border="0" alt="CONTINUE" style="vertical-align: middle;">
+				</span>
+			</td>
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+<% for (IgnoreCaseString clientCode : user.getClientCodesHistory()) {%>
+FreshDirect.ClientCodes.addHistory("<%= StringEscapeUtils.escapeJavaScript(clientCode.toString()) %>", true);
+<% } %>
+YAHOO.util.Event.onDOMReady(FreshDirect.ClientCodes.onLoad);
+</script>
+<% } %>
 <%
 //	Dependencies that come from /viewcart.jsp are:
 //	FDUserI user;
@@ -74,6 +125,12 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		</td>
 		<td style="vertical-align: middle; white-space: nowrap;">
 			
+			<% if (user.isEligibleForClientCodes()) { %>
+			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
+			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
+				<button class="cssbutton green small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
+			</span>
+			<% } %>
 			<% if (FDStoreProperties.isAnnotationMode()) {
 				%><a href="/test/cartexport.jsp">Export Cart</a><%
 			} %>
@@ -95,7 +152,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			</span>
 			<% } %>
 			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a></td>
-			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" style="max-width: 15px;" /></a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
 	</tr>
 </table>
 
@@ -165,7 +222,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						<td width="20" align="right"></td>
 						</td>
 					</tr>
-					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 					
 					<%
 
@@ -177,7 +234,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						%>
 						<tr>
 							<td colspan="3"></td>
-							<td colspan="8"><br><a href="/department.jsp?deptId=<%= RecipeDepartment.getDefault().getContentName() %>&trk=cart"><img src="/media_stat/images/layout/department_headers/rec_cart.gif" alt="RECIPES" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5">
+							<td colspan="8"><br><a href="/department.jsp?deptId=<%= RecipeDepartment.getDefault().getContentName() %>&trk=cart"><img src="/media_stat/images/layout/department_headers/rec_cart.gif" alt="RECIPES" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
 							</td>
 						</tr>
 						<%
@@ -185,17 +242,17 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 					%>
 					<tr>
 						<td colspan="3"></td>
-						<td colspan="2"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"15\"><br>":""%>
+						<td colspan="2"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
 							<a style="text-transform:uppercase; font-weight:bold;"
 								href="/recipe.jsp?recipeId=<%= cartLine.getRecipeSourceId() %>&trk=cart"><%= lastDept.substring("Recipe: ".length()) %></a>
 						</td>
-						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"15\"><br>":""%>
+						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"15\"><br>":""%>
 							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a></td>
 						<td width="20" align="right">
-							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" style="max-width: 15px;" /></a></td>
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
 						</td>
 					</tr>
-					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 					
 					<%
 					firstRecipe = false;
@@ -218,7 +275,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						<td width="84">&nbsp;</td>
 						<td width="16">&nbsp;</td>
 						<td width="22">&nbsp;</td>
-						<td colspan="8"><br><span class="dept-name-cart"><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><%= lastDept.toUpperCase() %></a></span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
+						<td colspan="8"><br><span class="dept-name-cart"><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><%= lastDept.toUpperCase() %></a></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 					</tr>
 					<%
 				}
@@ -269,7 +326,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			<%  
 		} else {
 			%>
-			<td colspan="2">
+			<td width="100" colspan="2">
 				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
 				<script>
 				function chgQty<%=idx%>(delta) {
@@ -306,9 +363,9 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
         <div class="qtyinput">
-          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-          <input class="qty" aria-label="quantity" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
-          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <input class="qty" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
         </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 				</div>
@@ -318,7 +375,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		}
 		
 		String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo())).isEmpty();
+		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
 		boolean platterDlvInfo = false;
 		if (productNode.isPlatter()) {
 			platterDlvInfo = true;
@@ -355,28 +412,35 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		%>
 			<td colspan="2">
 			<div style="margin-left:16px; text-indent:-8px;">
-            
+            <% if (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) { %>
+              <span class="text10bold">
+                <a class="product-link" href="/pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
+                  <%= cartLine.getDescription() %>
+                </a>
+              </span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+            <% } else { %>
     			<% if (!isFreeProd) { %>
     				<span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
     			<% } else { %>
     				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
     			<% } %>
-				<% if (!isFreeProd) { %>
-					<%= fdProduct.getKosherInfo(ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo())).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
-					<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
-					<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
-					<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
-					<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
-					
-					
-					<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
-		
-		    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
-		        			
-					}
-					%>
-					<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
-				<% } %>
+            <% } %>
+			<% if (!isFreeProd) { %>	
+				<%= fdProduct.getKosherInfo(plantID).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
+				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
+				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+				<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+				
+				
+				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
+	
+	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
+	        			
+				}
+				%>
+				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+			<% } %>
 			</div>
 			<% 
 				EnumCouponContext couponContext =EnumCouponContext.VIEWCART;
@@ -401,7 +465,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 					<display:FDCoupon coupon="<%= curCoupon_viewcart %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
 				</div>
 				<% if (makeGoodFromOrderId!=null) { %>
-					<td align="right" data-select-reason=''>
+					<td align="right">
 						<input type="hidden" name="orderlineId" value="<%= ((FDCartLineI)cartLine).getOrderLineId() %>" />
 						<select name="ol_credit_reason" class="pulldown_detail">
 							<option value="">select make good reason</option>
@@ -411,8 +475,8 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						</select>
 					</td>
 				<% } %>
-			</td>
 			
+			</td>
             <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
 				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : ")"%></font></td>				
 				<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= isFreeProd ? "FREE" : JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
@@ -428,12 +492,111 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			<%} %>
 			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A></td>
-			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" style="max-width: 15px;" /></a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
 		</tr>
 
-		
 		<%
-		
+		if (user.isEligibleForClientCodes()) {
+		%>
+		<tr id="clicode_tr_<%= idx %>" style="display: none">
+			<td colspan="3">&nbsp;</td>
+			<td colspan="8">
+				<%
+				String clicode_type;
+				if (cartLine.isSoldBySalesUnits()) {
+					clicode_type = "single";
+				} else if (cartLine.getQuantity() == 1) {
+					clicode_type = "single";
+				} else {
+					clicode_type = "multi";
+				}
+				ErpClientCode firstCC = cartLine.getClientCodes().size() > 0 ? cartLine.getClientCodes().get(0) : new ErpClientCode("", 1);
+				int noCode = (int) cartLine.getQuantity();
+				String ccQuantity = "multi".equals(clicode_type) ? "" : Integer.toString(firstCC.getQuantity());
+				String ccClientCode = "multi".equals(clicode_type) ? "" : StringEscapeUtils.escapeHtml(firstCC.getClientCode());
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+					noCode -= item.getQuantity();
+				}
+				%>
+				<div id="clicode_multi_expanded_<%= idx %>" >
+					<input type="hidden" id="clicode_multi_val_<%= idx %>" name="clicode_multi_val_<%= idx %>">
+					<table class="clicode" id="clicode_multi_table_<%= idx %>"<% if ("multi".equals(clicode_type) && cartLine.getClientCodes().size() > 0) { %> style="border-bottom: 1px solid #999999;"<% } %>>
+						<thead>
+						<tr>
+							<td class="text10 clicode_quantity" style="border: 0px none; vertical-align: bottom;">Quantity</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_clientcode" style="border: 0px none; vertical-align: bottom;">Client Code</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_actions" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="text10 clicode_quantity" style="border: 0px none;">
+								<input type="text" size="5" maxlength="5" class="text10 clicode_quantity" style="text-align: center; vertical-align: middle;"
+										name="clicode_quantity_<%= idx %>" id="clicode_quantity_<%= idx %>"
+										value="<%= "single".equals(clicode_type) ? 1 : ccQuantity %>"<% if ("single".equals(clicode_type)) { %> disabled="disabled"<% } %>
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+							</td>
+							<td class="text10 clicode_gap" style="border: 0px none;">&nbsp;</td>
+							<td class="text10 clicode_head" colspan="3">
+								<div style="position: relative; vertical-align: middle; overflow: visible;">
+								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle; width: 125px; position: static; overflow: visible;"
+										name="clicode_clientcode_<%= idx %>" id="clicode_clientcode_<%= idx %>"
+										value="<%= ccClientCode %>"
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+								<span id="clicode_multi_control_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+									<input type="image" src="/media_stat/images/buttons/add_to_list.gif" onclick="return FreshDirect.ClientCodes.addRow('<%= idx %>');"
+										width="85" height="14" border="0" alt="ADD TO LIST" style="vertical-align: middle;">
+									<span id="clicode_multi_collapser_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+										<input type="image" src="/media_stat/images/buttons/collapse_list.gif" onclick="return FreshDirect.ClientCodes.collapseMulti('<%= idx %>');"
+											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
+									</span>
+								</span>
+								<div id="clicode_autocomplete_<%= idx %>" class="termsStyle" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div>
+								</div>
+							</td>
+						</tr>
+						</thead>
+						<tbody id="clicode_multi_body_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+						<tr id="clicode_multi_empty_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal; text-align: center;">&nbsp;</td>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal;" colspan="4">&nbsp;</td>
+						</tr>
+						<tr id="clicode_multi_head_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10 clicode_quantity">Quantity</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode">Client Code</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">Action</td>
+						</tr>
+						<tr id="clicode_multi_nocode_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0 || noCode == 0) { %> style="display: none;"<% } %>>
+							<td id="clicode_multi_nocode_<%= idx %>" class="text10 clicode_quantity"><%= noCode %></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode"><span style="font-style: italic;">&ndash; No Code &ndash;</span></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">&nbsp;</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="clicode_multi_collapsed_<%= idx %>" style="display: none; line-height: 1.5em;">
+					<input type="image" src="/media_stat/images/buttons/edit_list.gif" onclick="return FreshDirect.ClientCodes.expandMulti('<%= idx %>');"
+						width="76" height="14" border="0" alt="EDIT LIST" style="vertical-align: middle;">
+					&nbsp;<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;"><%= ErpClientCode.toHtml(cartLine.getClientCodes(), noCode) %></span>
+				</div>
+			    <script type="text/javascript">
+				FreshDirect.ClientCodes.initRow('<%= idx %>');
+				<%
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+				%>
+			        FreshDirect.ClientCodes.initRow('<%= idx %>', <%= item.getQuantity() %>, '<%= StringEscapeUtils.escapeJavaScript(item.getClientCode()) %>');
+				<%
+				}
+				%>
+			    </script>
+			</td>
+		</tr>
+		<%
+		}
 		if (lastItemInDept && hadPlatterRestriction) {
 			TimeOfDay platterTime = RestrictionUtil.getPlatterRestrictionStartTime();
 			if (platterTime != null) {
@@ -448,8 +611,8 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 				<tr>
 					<td colspan="3">&nbsp;</td>
 					<td colspan="2" style="padding-left:8px;">
-						<img src="/media_stat/images/layout/ff9933.gif" alt="" width="100%" height="1" vspace="3">
-						<br><font class="orange">**</font>
+						<img src="/media_stat/images/layout/ff9933.gif" width="100%" height="1" vspace="3">
+						<br><font color="#FF9933">**</font>
 						This item requires an advance cutoff time. You must <b>complete checkout by <%=platterCutoffTime%></b> to order this item for delivery tomorrow.
 					</td>
 					<td colspan="5">&nbsp;</td>
@@ -843,14 +1006,16 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			</SCRIPT>
 		--%>	
 		<tr align="right">
-			<td colspan="6"><span class="errortext"><%=request.getAttribute("redeem_override_msg")%></span></td>
+			<td colspan="6"><span class="text11rbold"><%=request.getAttribute("redeem_override_msg")%></span></td>
 		</tr>
 
 		<%
 		}
 	}
 
-	if (((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) && !user.getCheckoutMode().equals(EnumCheckoutMode.MODIFY_SO_TMPL)) {
+
+	
+	if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) {
 		%>
         <tr align="right"><% String errorMsg1 = ""; %>
 			<td colspan="6">
@@ -919,12 +1084,12 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		// display if message is not empty and does not match the previously displayed error message (if exists)
 		if(null !=rerrMsg && !"".equals(rerrMsg)){ %>
 			<tr align="right">
-				<td colspan="6"><span class="errortext"><%= rerrMsg %></span></td>
+				<td colspan="6"><span class="text11rbold"><%= rerrMsg %></span></td>
 			</tr>
 		<%} else  if (!"".equalsIgnoreCase(warningMessage) && !warningMessage.equalsIgnoreCase(rerrMsg)) {
 			%>
 			<tr align="right">
-				<td colspan="6"><span class="errortext"><%= warningMessage %></span></td>
+				<td colspan="6"><span class="text11rbold"><%= warningMessage %></span></td>
 			</tr>
 			<%
 			}
@@ -967,11 +1132,11 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			SignupDiscountRule discountRule = user.getSignupDiscountRule();
 			int minSubtotal = (int)discountRule.getMinSubtotal();
 			int maxAmount   = (int)discountRule.getMaxAmount();
-			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<%
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<%
 			if (cart.getSubTotal() < minSubtotal) {
-			    %><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b><%
+			    %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b><%
 			}
-			%><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>Applies to home delivery orders only.<%
+			%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Applies to home delivery orders only.<%
 		}
 
 		if (user.isPickupOnly()) {

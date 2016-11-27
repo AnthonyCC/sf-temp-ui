@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.standingorder;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 
@@ -24,18 +26,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -47,7 +48,11 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemsPopulator;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.SuccessPageData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -63,10 +68,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -3650318272577031376L;
 	private String spName = "singlePageCheckoutPotato";
+	private String cdName = "cartDataPotato";
+	private String pendinExternalgName = "pendingExternalAtcItemPotato";
 	private static final Logger LOG = LoggerFactory.getInstance(ManageStandingOrderServlet.class);
-	public static final String INITIATOR_NAME = "CUSTOMER";
-	
-	public static final String CANCEL_ALL_DELIVERIES="Cancel all deliveries";
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -76,13 +80,11 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			try {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(true,so,false, u);
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
-					returnSO.put("modifyingOrderId", FDUserUtil.getModifyingOrderId(u));
-					
 				}
 				writeResponseData(response, returnSO);
 				
@@ -98,8 +100,29 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			} catch (HttpErrorResponse e) {
 				LOG.error("Unable to fetch SO with Id:"+ soId, e);
 				throw new ServletException(e);
-			} 
+			}
 		}
+		/*
+		 * try { Map<String, Object> responseData; String actionName =
+		 * request.getParameter("action"); if
+		 * ("startCheckout".equals(actionName)) { final FormDataRequest
+		 * startCheckoutData = BaseJsonServlet.parseRequestData(request,
+		 * FormDataRequest.class); responseData =
+		 * SoyTemplateEngine.convertToMap(
+		 * CartDataService.defaultService().validateOrderMinimumOnStartCheckout
+		 * (user, startCheckoutData)); } else { String orderId =
+		 * request.getParameter(ORDER_ID); if (orderId == null) { CartData
+		 * cartData = CartDataService.defaultService().loadCartData(request,
+		 * user); responseData = SoyTemplateEngine.convertToMap(cartData); }
+		 * else { CartData cartData =
+		 * CartDataService.defaultService().loadCartSuccessData(request, user,
+		 * orderId); responseData = SoyTemplateEngine.convertToMap(cartData); }
+		 * } writeResponseData(response, responseData); } catch
+		 * (FDResourceException e) { BaseJsonServlet.returnHttpError(500,
+		 * "Failed to load cart for user."); } catch (JspException e) {
+		 * BaseJsonServlet.returnHttpError(500,
+		 * "Failed to load cart for user."); }
+		 */
 	}
 
 	@Override
@@ -109,7 +132,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
-			String deleteDate=request.getParameter("deleteDate");
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
 			FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -124,10 +146,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-						if(null != so.getAddressId() && null != so.getStartTime()){											//COS17-56   //APPDEV-7816
-							FDDeliveryZoneInfo zoneInfo =StandingOrderHelper.getZoneInfoFromLogistics(so);
-							so.setZone(zoneInfo.getZoneCode());
-						}
 						u.setCurrentStandingOrder(so);
 						so.setNewSo(true);
 						if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
@@ -136,11 +154,16 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						
 						u.setSoTemplateCart(so.getStandingOrderCart());
 						u.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
+						/*
+						pageContext.setAttribute(pendinExternalgName,
+								SoyTemplateEngine.convertToMap(PendingExternalAtcItemsPopulator.createPendingExternalAtcItemsData(u,request)));
+						*/
+	
 						
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
 						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
 						
-						if(null != so.getDeliveryAddress()){
+						if(so.getAddressId()!=null){
 							ErpAddressModel erpAddressModel=so.getDeliveryAddress();
 							u.getSoTemplateCart().setDeliveryAddress(erpAddressModel);
 							u.getSoTemplateCart().recalculateTaxAndBottleDeposit(erpAddressModel.getZipCode());
@@ -150,51 +173,40 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						 
 						pageContext.setAttribute(spName, potato);
 	
+						/*CartData cartResult=null;
+						try {
+							cartResult = CartDataService.defaultService().loadCartData(request, u);
+						} catch (com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse e) {
+							throw new ServletException(e);
+						}
+						Map<String, ?> cartPotato = SoyTemplateEngine.convertToMap(cartResult);
+						pageContext.setAttribute(cdName, cartPotato);*/
+	
 					}
 				} else if ("delete".equalsIgnoreCase(action)) {
 					if (soId != null && !"".equals(soId)) {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
+	
 						if (!so.isDeleted()) {
-							u.setRefreshSO3(true);
+							 u.setRefreshValidSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
-							if ("Y".equalsIgnoreCase(so.getActivate()) && !"null".equalsIgnoreCase(deleteDate) && !"".equalsIgnoreCase(deleteDate)) {
-								if (!CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate))
-									FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so,deleteDate);
-								else if(CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate)){
-									cancelNextDelivery(so, u);
-								}
-							} else {
-								FDStandingOrdersManager.getInstance().delete(info, so);
-							}
+							FDStandingOrdersManager.getInstance().delete(info, so);
 						}
-
+	
 					}
-				} else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
-					u.setRefreshSO3(true);
-					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
-				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
-					
-					errorMessage= onloadNewStandingOrder(soName,u,pageContext);
-					writeResponseData( response, errorMessage );
 	
 				} else if("create".equalsIgnoreCase(action)){
-					u.setRefreshSO3(true);
+					u.setRefreshValidSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
-					if(null == errorMessage){
-						SuccessPageData successData=new SuccessPageData();
-						successData.setSoId(u.getCurrentStandingOrder().getId());
-						writeResponseData( response, successData );
-					}
-					else{
-						writeResponseData( response, errorMessage );
-					}
+					writeResponseData( response, errorMessage );
 	
 				} else if("selectFreq".equalsIgnoreCase(action) || "selectFreq2".equalsIgnoreCase(action)){
 					 if(freq!=null){
-						 u.setRefreshSO3(true);
+						 u.setRefreshValidSO3(true);
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
+							StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
 					 if("selectFreq2".equalsIgnoreCase(action)){
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
@@ -211,7 +223,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 				} else if("activate".equalsIgnoreCase(action)) {
 					    boolean flg=acitivateSO(u);
-					    u.setRefreshSO3(true);
 					    LOG.info("Standing Order activated " + u.getCurrentStandingOrder().getId() + " " + flg) ;
 				} else if("changename".equalsIgnoreCase(action)){
 					// Need to update name by ID
@@ -221,7 +232,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if(null !=so){
 						FDListManager.renameShoppingList(so.getCustomerListId(), soName);
 						u.getCurrentStandingOrder().setCustomerListName(soName);
-						u.setRefreshSO3(true);
+						u.setRefreshValidSO3(true);
 						}else{
 							errorMessage = "Standing order is not exist !";
 						}
@@ -252,7 +263,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			LOG.error("error while activating the standing order", e);
 			throw new ServletException(e);
 
-		} 
+		}
 	}
 
 	private boolean acitivateSO(FDUserI u) throws FDResourceException, FDInvalidConfigurationException {
@@ -313,30 +324,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		return returnMessage;
 	}
 
-	protected String onloadNewStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
-		soName = soName != null ? soName.trim() : "";
-		String returnMessage = null;
-		try {
-			returnMessage = validateStandingOrderName(soName, u);
-				FDStandingOrder so = null!=u.getCurrentStandingOrder()? u.getCurrentStandingOrder():new FDStandingOrder();
-				so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
-				so.setCustomerListName(soName);
-				so.setCustomerId(u.getIdentity().getErpCustomerPK());
-				so.setNewSo(true);
-				try {
-					so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
-				} catch (FDResourceException e1) {
-					LOG.error("SO:Unable to set PaymentMethodId:"+ e1);
-				}
-				u.setCurrentStandingOrder(so);
-				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
-				returnMessage = so.getId();
-		} catch (FDResourceException e2) {
-			throw new JspException(e2);
-		}
-		return returnMessage;
-	}
-	
 	/**
 	 * @param soName
 	 * @param u
@@ -444,23 +431,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 		public int getErrorCode() {
 			return errorCode;
-		}
-	}
-	
-	public static void cancelNextDelivery(FDStandingOrder so, FDUserI u)  {
-		try {
-			StandingOrderHelper.setUpcomingStandingOrder(so, u);
-			FDActionInfo info = new FDActionInfo(
-					EnumTransactionSource.WEBSITE,
-					so.getCustomerIdentity(), INITIATOR_NAME,
-					"Cancel the standing order based on template criteria ",
-					null, null);
-			if (so.getUpcomingDelivery() != null && so.getUpcomingDelivery().getErpSalesId() != null) {
-				FDCustomerManager.cancelOrder(info, so.getUpcomingDelivery().getErpSalesId(), true, 0, false);
-			}
-			FDStandingOrdersManager.getInstance().delete(info, so);
-		} catch (Exception e) {
-			LOG.error("Got the exception while cancelling the next delivery of SO template:"+so.getId(), e);
 		}
 	}
 }

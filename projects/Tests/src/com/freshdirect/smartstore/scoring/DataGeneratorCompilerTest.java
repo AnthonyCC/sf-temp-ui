@@ -26,8 +26,8 @@ import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModelImpl;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
@@ -92,28 +92,28 @@ public class DataGeneratorCompilerTest extends TestCase {
                     return set;
                 }
                 if ("content".equals(name)) {
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a1")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a3")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3")));
                     return set;
                 }
                 if ("content2".equals(name)) {
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "bbb")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "bbb")));
                     return set;
                 }
                 if ("content3".equals(name)) {
-                    BrandModel b = new BrandModel(ContentKey.getContentKey(FDContentTypes.BRAND, "brand")); 
-                    BrandModel b2 = new BrandModel(ContentKey.getContentKey(FDContentTypes.BRAND, "brand2"));
+                    BrandModel b = new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand")); 
+                    BrandModel b2 = new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand2"));
                     
-                    set.add(new MockProductModel(ContentKey.getContentKey(FDContentTypes.PRODUCT, "e1"))
-                        .addSku(new SkuModel(ContentKey.getContentKey(FDContentTypes.SKU, "bela_01")))
-                        .addSku(new SkuModel(ContentKey.getContentKey(FDContentTypes.SKU, "fru_01"))));
-                    set.add(new MockProductModel(ContentKey.getContentKey(FDContentTypes.PRODUCT, "e2"))
-                    .addSku(new SkuModel(ContentKey.getContentKey(FDContentTypes.SKU, "bela_02")))
-                    .addSku(new SkuModel(ContentKey.getContentKey(FDContentTypes.SKU, "cucc"))).addBrand(b));
-                    set.add(new MockProductModel(ContentKey.getContentKey(FDContentTypes.PRODUCT, "e3"))
-                    .addSku(new SkuModel(ContentKey.getContentKey(FDContentTypes.SKU, "cucc_02")))
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e1"))
+                        .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_01")))
+                        .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "fru_01"))));
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e2"))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_02")))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc"))).addBrand(b));
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e3"))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc_02")))
                     .addBrand(b).addBrand(b2));
                     
                     return set;
@@ -313,11 +313,11 @@ public class DataGeneratorCompilerTest extends TestCase {
         assertNotNull("result prioritized nodes", input.getPrioritizedNodes());
         assertEquals("result prioritized nodes size", 3, input.getPrioritizedNodes().size());
         assertTrue("contains a1", input.getPrioritizedNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a1"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1"))));
         assertTrue("contains a2", input.getPrioritizedNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2"))));
         assertTrue("contains a3", input.getPrioritizedNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a3"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3"))));
     }
 
     public void testDeprioritize() throws CompileException {
@@ -330,11 +330,11 @@ public class DataGeneratorCompilerTest extends TestCase {
         assertNotNull("result deprioritized nodes", input.getPosteriorNodes());
         assertEquals("result deprioritized nodes size", 3, input.getPosteriorNodes().size());
         assertTrue("contains a1", input.getPosteriorNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a1"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1"))));
         assertTrue("contains a2", input.getPosteriorNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2"))));
         assertTrue("contains a3", input.getPosteriorNodes().contains(
-        		new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a3"))));
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3"))));
     }
 
     public void testRecurseRecursiveNodes() throws CompileException {
@@ -450,7 +450,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         assertNotNull("dataGenerator", dataGenerator2);
         input.reset();
         
-        final List<? extends ContentNodeModel> asList = (List) Arrays.asList(new MockProductModel(ContentKey.getContentKey(FDContentTypes.PRODUCT, "ize")), new BrandModel(ContentKey.getContentKey(FDContentTypes.BRAND, "brand2")));
+        final List<? extends ContentNodeModel> asList = (List) Arrays.asList(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "ize")), new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand2")));
         s.setExplicitList(asList); 
         {
             List<? extends ContentNodeModel> result = dataGenerator2.generate(s, input);

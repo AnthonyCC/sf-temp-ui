@@ -19,9 +19,7 @@ public class CategoryData extends BasicData {
 		super(id, name);
 		this.image = image;
 		this.globalNavPostNameImage = globalNavPostNameImage;
-		if(name != null) {
-			this.globalNavShortName = StringEscapeUtils.unescapeHtml(name).length() > 21 ? StringEscapeUtils.escapeHtml(StringEscapeUtils.unescapeHtml(name).substring(0, 18)) + "..." : name;
-		}
+		this.globalNavShortName = StringEscapeUtils.unescapeHtml(name).length() > 21 ? StringEscapeUtils.escapeHtml(StringEscapeUtils.unescapeHtml(name).substring(0, 18)) + "..." : name;
 		this.popularCategories = popularCategories;
 	}
 	

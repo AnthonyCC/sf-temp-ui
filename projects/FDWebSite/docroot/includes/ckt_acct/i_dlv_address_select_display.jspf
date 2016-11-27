@@ -107,13 +107,13 @@ if (__shipToAddresses.size() > 0) {
             	if(__allowSelection && parentOrderid!=null) {
             		
             	if(checkedAddress){%>
-					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
 				<%}else{%>
-					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio" disabled="disabled" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio" disabled="disabled" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
 				<%}
 			}
             else if (__allowSelection) {%>
-				<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
 				<%}
             else { 
 				%>
@@ -176,28 +176,28 @@ if (__shipToAddresses.size() > 0) {
 				<%if (showDeleteButtons) {%>
 					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0">
 				<% } %> <%} %>
-				<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="185" HEIGHT="1">
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 			</TD>
 			<%itemCounter++;
 			if (saItr.hasNext() && (itemCounter % 4 != 0 )) {  
 				%>
-				<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="15" HEIGHT="1"></TD>
-				<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
-				<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="14" HEIGHT="1"></TD>
+				<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+				<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+				<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
 				<%
 			}
         }//End of the loop
         if (itemCounter==1) {
 			%>
-			<TD WIDTH="750"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="750" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="750"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="750" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         } else if (itemCounter==2) {
 			%>
-			<TD WIDTH="500"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="500" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="500"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="500" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         } else if (itemCounter==3) {
 			%>
-			<TD WIDTH="250"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="250" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="250"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="250" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         }
 		%>

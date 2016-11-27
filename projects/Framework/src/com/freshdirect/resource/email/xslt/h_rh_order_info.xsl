@@ -63,15 +63,15 @@
 </TD>
 
 <td valign="top" align="CENTER" width="25">
-	<img height="280" width="1" alt="" src="/images/clear.gif"/>
+	<img height="280" width="1" src="/images/clear.gif"/>
 <br/>
 </td>
 <TD align="CENTER" bgcolor="#CCCCCC" width="1" valign="top">
-    	 	<img src="/images/cccccc.gif" alt="" width="1" height="280" /><br />
+    	 	<img src="/images/cccccc.gif" width="1" height="280" /><br />
 </TD>
 
 <td valign="top" align="CENTER" width="25">
-	<img height="280" width="1" alt="" src="/images/clear.gif"/>
+	<img height="280" width="1" src="/images/clear.gif"/>
 <br/>
 </td>
 

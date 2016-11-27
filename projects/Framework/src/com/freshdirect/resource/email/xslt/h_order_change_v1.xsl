@@ -8,7 +8,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>Your order information has been updated</title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -32,17 +32,12 @@
 				<td>
 					<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
 
-					<p>We've updated your order information. You will receive your final invoice on the day of your delivery. Please look over the details below. If you'd like to make further changes, <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>click here</xsl:element>.</p>
+					<p>We've updated your order information. Please look over the details below. If you'd like to make further changes, <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>click here</xsl:element>.</p>
 
 					<p>Enjoy,<br/>
 					<br/>
 					FreshDirect<br/>
 					Customer Service Group</p>
-					
-					<xsl:comment>fdcOrderCount is CURRENT (modify is called AFTER place, so it's either 0 or 1 during modify)</xsl:comment>
-					<xsl:if test="customer/fdcOrderCount &lt;= 1 and order/deliveryInfo/deliveryPlantInfo/salesOrg = '1400'">
-						<div style="margin: 20px 0; padding: 10px;"><a href="https://www.freshdirect.com/recycle" style="text-decoration: none; border: 0;"><img src="https://www.freshdirect.com/media/images/email/boxes_to_bags/banner.jpg" alt="We're switching from boxes to bags. A fresh new look! Learn more" style="border: 0;" /></a></div>
-					</xsl:if>
 
 					<p><xsl:call-template name="h_order_info_v1"/></p>
 

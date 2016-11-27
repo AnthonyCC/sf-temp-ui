@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -28,11 +28,7 @@ final int W_COFFEE_BEANS_RESULT_CELL_8 = 120;
 FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Don't Know Beans"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put> --%>
-
+	<tmpl:put name='title' direct='true'>Don't Know Beans</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <fd:Department id='coffeeDepartment' departmentId='<%= request.getParameter("deptId") %>'/>
 <fd:ItemGrabber category='<%= (ContentNodeModel)coffeeDepartment %>' id='coffeeCollection'  

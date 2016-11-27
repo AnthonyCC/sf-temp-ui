@@ -9,8 +9,8 @@ import java.util.List;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -31,9 +31,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
 	private List<DomainValue> variationOptions = new ArrayList<DomainValue>();
 	
-	//private boolean unavailable;
-	//private long lastRefresh = 0;
-	//private static final long AVAILABILITY_REFRESH = 1000 * FDStoreProperties.getSkuAvailabilityRefreshPeriod();
+	private boolean unavailable;
+	private long lastRefresh = 0;
+	private static final long AVAILABILITY_REFRESH = 1000 * FDStoreProperties.getSkuAvailabilityRefreshPeriod();
 
 	public SkuModel(ContentKey cKey) {
 		super(cKey);
@@ -98,11 +98,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
 	/** @return null if sku is available */
 	public String getEarliestAvailabilityMessage() {
-		
-		 EnumEStoreId storeId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
-
-		Date today = OncePerRequestDateCache. getToday();
-		if (null==today)today = new java.util.Date();
 		DateRange dr = OncePerRequestDateCache.getAvailabilityHorizon();
 		Date tomorrow = null;
 		if(dr != null) {
@@ -110,10 +105,8 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		}else{
 			tomorrow = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
 		}
-	
 		
 		Date earliestAvailability = getEarliestAvailability();
-
 		
 	    // cheat: if no availability indication, show the horizon as the
 	    //        earliest availability
@@ -124,22 +117,12 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 				earliestAvailability = DateUtil.addDays(DateUtil.truncate(new Date()), ErpServicesProperties.getHorizonDays());
 			}
 		}		
-	
 		
 		if (earliestAvailability.after(tomorrow)) {
 			SimpleDateFormat sf = new SimpleDateFormat("EEE M/dd");
 			return sf.format(earliestAvailability);
 		}
 
-		/*appdev 6184, appdev 5672
-		 * Decided that for FDX, only need to be available  after today
-		 * to trigger availabilit5y message. Siva B. Monoj and kasi where
-		 * nearby eavesdropping but neither objected.
-		 */
-		if ( EnumEStoreId.FDX.equals(storeId) && earliestAvailability.after(today)){
-			SimpleDateFormat sf = new SimpleDateFormat("EEE M/dd");
-			return sf.format(earliestAvailability);
-		}
 		return null;
 	}
 
@@ -156,10 +139,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     	return (ProductModel)getParentNode();
     }
     
-    public AvailabilityI getAvailability() {
-    	if(FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
-    		return DUMMY_AVAILABLE;
-    	}
+    private AvailabilityI getAvailability() {
 		try {
 
 			FDProductInfo fdpi = this.getProductInfo();
@@ -172,8 +152,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 				pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 			}
 			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,pickingPlantId);
-			AvailabilityAdapter answer = new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,pickingPlantId); 
-			return answer;
+			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,pickingPlantId);
 
 		} catch (FDSkuNotFoundException fdsnfe) {
 			return UNAVAILABLE;
@@ -217,37 +196,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    public Date getEarliestAvailability() {
 	    	return null;
 	    }	
-		public double getAvailabileQtyForDate(java.util.Date targetDate) {
-			return 0;
-		}
 	};
-
-	private final static AvailabilityI DUMMY_AVAILABLE = new AvailabilityI() {
-		
-	    public boolean isDiscontinued() {
-	    	return false;
-		}
-		public boolean isTempUnavailable() {
-			return false;
-		}
-	    public boolean isOutOfSeason() {
-	    	return false;
-	    }
-	    public boolean isUnavailable() {
-	    	return false;
-	    }
-	    public boolean isAvailableWithin(int days) {
-	    	return true;
-	    }
-	    public Date getEarliestAvailability() {
-	    	return new Date();
-	    }	
-		public double getAvailabileQtyForDate(java.util.Date targetDate) {
-			return -5;
-		}
-
-	};
-	
 	
 	/**
 	 *  An adapter class, to provide availability information to a
@@ -334,11 +283,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability, days) != null;
 		}
 		
-		@Override
-		public double getAvailabileQtyForDate(java.util.Date targetDate) {
-			return this.availability.getAvailabileQtyForDate(targetDate);
-		}	
-		
 		
 	}
 
@@ -348,17 +292,5 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
 	public PriceCalculator getSkuPriceCalculator() {
 	    return new PriceCalculator(getPricingContext(), getProductModel(), this);
-	}
-
-	/**
-	 * 
-	 * @param targetDate
-	 *            date to check for inventory qty, if NULL will default to
-	 *            Today.
-	 * @return qty avail for targetDate, if FDX and qty 0 for Target date,
-	 *         includes next date.
-	 */
-	public double getAvailabileQtyForDate(java.util.Date targetDate) {
-		return this.getAvailability().getAvailabileQtyForDate(targetDate);
 	}
 }

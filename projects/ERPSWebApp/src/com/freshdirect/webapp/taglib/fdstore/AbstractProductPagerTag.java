@@ -14,10 +14,20 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryNodeTree;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -26,16 +36,6 @@ import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategoryNodeTree;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 
 public abstract class AbstractProductPagerTag extends BodyTagSupportEx implements CategoryTreeContainer {
 	private static final long serialVersionUID = 5631516839214295727L;
@@ -274,8 +274,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 			brands.addAll(item.getModel().getBrands());
 	}
 
-	@Override
-    public void setId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -295,12 +294,12 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		return productFilters;
 	}
 
-    public List<ProductModel> getProducts() {
-        if (productsUnwrap == null) {
-            productsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(FilteringSortingItem.unwrap(results.getProducts()));
-        }
-        return productsUnwrap;
-    }
+	public List<ProductModel> getProducts() {
+		if (productsUnwrap == null)
+			productsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
+					FilteringSortingItem.unwrap(results.getProducts()), getPricingContext());
+		return productsUnwrap;
+	}
 
 	public int getNoOfProductsBeforeProductFilters() {
 		return noOfProductsBeforeProductFilters;
@@ -337,7 +336,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 	public List<ProductModel> getPageProducts() {
 		if (pageProductsUnwrap == null)
 			pageProductsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-                    FilteringSortingItem.unwrap(pageProducts));
+					FilteringSortingItem.unwrap(pageProducts), getPricingContext());
 		return pageProductsUnwrap;
 	}
 	
@@ -358,13 +357,11 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		return brands;
 	}
 
-	@Override
-    public CategoryNodeTree getCategoryTree() {
+	public CategoryNodeTree getCategoryTree() {
 		return categoryTree;
 	}
 
-	@Override
-    public CategoryNodeTree getFilteredCategoryTree() {
+	public CategoryNodeTree getFilteredCategoryTree() {
 		return filteredCategoryTree;
 	}
 
@@ -401,9 +398,8 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 
 	public PricingContext getPricingContext() {
 		FDUserI user = getFDUser();
-        if (user != null) {
-            return user.getUserContext().getPricingContext();
-        }
+		if (user != null)
+			return user.getPricingContext();
 		return PricingContext.DEFAULT;
 	}
 

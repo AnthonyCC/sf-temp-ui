@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 #
 # @author istvan
@@ -27,7 +27,7 @@ checkvars "s v n r d w j x X";
 CSVFILE="$WORKDIR"/"perishables_""$SEED"".csv";
 
 # -- retrieve products
-bash -e "$LOCALDIR"/fd_perprods.sh -s "$SERVER" -v "$VARMAX" -n "$MAXKEYS" -o "$CSVFILE" -r "$SEED" -x "$DISTRO" -X "$DISTRO_SAMPLES"; 
+sh -e "$LOCALDIR"/fd_perprods.sh -s "$SERVER" -v "$VARMAX" -n "$MAXKEYS" -o "$CSVFILE" -r "$SEED" -x "$DISTRO" -X "$DISTRO_SAMPLES"; 
 
 HOST=`echo "$SERVER" | cut -f1 -d:`;
 PORT=`echo "$SERVER" | cut -f2 -d:`;
@@ -39,7 +39,7 @@ fi
 RESULTFILE="$WORKDIR"/perishables.out;
 rm -f "$RESULTFILE";
 # -- run test
-bash -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
+sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
       -Jhostname="$HOST" -Jport="$PORT" \
       -Jtest_user="$TESTUSER" -Juser_pass="$USERPASS" \
       -Jperishable_threads="$PERISHABLE_THREADS" -Jperishable_outerloop_counter="$PERISHABLE_OUTERLOOP_COUNTER" \

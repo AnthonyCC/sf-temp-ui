@@ -25,9 +25,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -56,21 +53,13 @@ public class CaptureCronRunner {
 		Context ctx = null;
 		try {
 			LOGGER.info("CaptureCron started");
-			
-			// First post auth sales for gift cards.
-			// Then capture sales
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
-				SaleCronService.getInstance().postAuthSales(captureTimeout);
-				SaleCronService.getInstance().captureSales(captureTimeout);
-			} else {
-				ctx = getInitialContext();
-				SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-				SaleCronSB sb = home.create();
+			ctx = getInitialContext();
+			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
-				sb.postAuthSales(captureTimeout);
-				sb.captureSales(captureTimeout);
-			}
+			SaleCronSB sb = home.create();
+			//First post auth sales for gift cards.
+			sb.postAuthSales(captureTimeout);
+			sb.captureSales(captureTimeout);
 			LOGGER.info("CaptureCron finished");
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -98,6 +87,7 @@ public class CaptureCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="CaptureCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

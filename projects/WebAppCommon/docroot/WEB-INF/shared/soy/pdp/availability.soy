@@ -27,34 +27,37 @@
 	$msgEarliestAvailability
 }
 <div class="availability-dialog">
-	<div class="header">Availability Note</div>
-	{if $unavailability}{call .onlyHeader}{param text:'Item is temporarily unavailable.' /}{/call}{/if}
-	
-	{if $msgCutoffHeader}{call .availabilityWithHeader}
-	{param header:$msgCutoffHeader /}
-	{param text:$msgCutoffNotice /}
-	{/call}{/if}
-	
-	{if $msgDayOfWeekHeader}{call .availabilityWithHeader}
-	{param header:$msgDayOfWeekHeader /}
-	{param text:$msgDayOfWeek /}
-	{/call}{/if}
-	
-	{if $msgLeadTimeHeader}{call .availabilityWithHeader}
-	{param header:$msgLeadTimeHeader /}
-	{param text:$msgLeadTime /}
-	{/call}{/if}
-	
-	{if $msgKosherRestriction}{call .availabilityText}{param text:$msgKosherRestriction /}{/call}{/if}
-	
-	/*
-	{if $msgDeliveryNote}{call .availabilityText}{param text:$msgDeliveryNote /}{/call}{/if}
-	*/
-	
-	{if $msgEarliestAvailability}<p>Earliest delivery {$msgEarliestAvailability}</p>{/if}
-	
-	{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
+<h1>Availability Note</h1>
+{if $unavailability}{call .onlyHeader}{param text:'Item is temporarily unavailable.' /}{/call}{/if}
+
+{if $msgCutoffHeader}{call .availabilityWithHeader}
+{param header:$msgCutoffHeader /}
+{param text:$msgCutoffNotice /}
+{/call}{/if}
+
+{if $msgDayOfWeekHeader}{call .availabilityWithHeader}
+{param header:$msgDayOfWeekHeader /}
+{param text:$msgDayOfWeek /}
+{/call}{/if}
+
+{if $msgLeadTimeHeader}{call .availabilityWithHeader}
+{param header:$msgLeadTimeHeader /}
+{param text:$msgLeadTime /}
+{/call}{/if}
+
+{if $msgKosherRestriction}{call .availabilityText}{param text:$msgKosherRestriction /}{/call}{/if}
+
+/*
+{if $msgDeliveryNote}{call .availabilityText}{param text:$msgDeliveryNote /}{/call}{/if}
+*/
+
+{if $msgEarliestAvailability}<p>Earliest delivery {$msgEarliestAvailability}</p>{/if}
+
+{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
+
 </div>
+
+
 {/if}
 {/template}
 
@@ -64,7 +67,7 @@
  * 
  */
 {template .availabilityWithHeader autoescape="false" private="true"}
-<div>{$header}</div>
+<h2>{$header}</h2>
 {call .availabilityText}{param text:$text /}{/call}
 {/template}
 
@@ -81,7 +84,7 @@
  * 
  */
 {template .onlyHeader autoescape="false" private="true"}
-<div>{$text}</div>
+<h2>{$text}</h2>
 {/template}
 
 /**

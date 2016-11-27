@@ -10,8 +10,10 @@
 <%@ page import="com.freshdirect.deliverypass.DeliveryPassType"%>
 <%@ page import="com.freshdirect.customer.EnumDeliveryType" %>
 <%
+	//fetch profiles
+	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
 	//sort them
-	List<String> profileAttributeNamesSorted = new ArrayList<String>();
+	List<String> profileAttributeNamesSorted = new ArrayList<String>(profileAttributeNames.keySet());
 	Collections.sort(profileAttributeNamesSorted);
 %>
 <tmpl:insert template='/template/top_nav.jsp'>

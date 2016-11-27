@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Category;
@@ -147,52 +146,10 @@ public class RequestUtil {
      * @return the request url with the query parameters
      */
     public static String getFullRequestUrl(HttpServletRequest request) {
-        return getFullRequestUrl(request.getRequestURL().toString(), request.getQueryString());
-    }
-
-    public static String getFullRequestUrl(String baseUrl, String queryString) {
-        StringBuilder urlBuilder = new StringBuilder(baseUrl);
-        if (queryString != null && !queryString.isEmpty()) {
-            urlBuilder.append("?").append(queryString);
+        StringBuffer urlBuilder = request.getRequestURL();
+        if (request.getQueryString() != null && !request.getQueryString().isEmpty()) {
+            urlBuilder.append("?").append(request.getQueryString());
         }
         return urlBuilder.toString();
-    }
-
-    public static String getFullRequestUrl(String baseUrl, String uri, String queryString) {
-        StringBuilder urlBuilder = new StringBuilder(baseUrl);
-        if (uri != null) {
-            urlBuilder.append(uri);
-        }
-        return getFullRequestUrl(urlBuilder.toString(), queryString);
-    }
-
-    public static String getValueFromCookie(HttpServletRequest request, String cookieKey) {
-        String value = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookieKey.equals(cookie.getName())) {
-                    value = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        return value;
-    }
-
-    public static Cookie createCookie(String cookieKey, String cookieValue, int maxAge) {
-        Cookie cookie = new Cookie(cookieKey, cookieValue);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath("/");
-        LOGGER.debug("Set cookie " + cookieKey + " = " + cookieValue);
-        return cookie;
-    }
-
-    public static String getInputValue(HttpServletRequest request, String parameter, String cookieName) {
-        String value = request.getParameter(parameter);
-        if (value == null) {
-            value = getValueFromCookie(request, cookieName);
-        }
-        return value;
     }
 }

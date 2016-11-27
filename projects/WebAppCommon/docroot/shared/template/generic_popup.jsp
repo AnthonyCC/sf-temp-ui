@@ -48,19 +48,17 @@ if(windowSize.equalsIgnoreCase("custom")){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-      <%--   <title> <%=name%></title> --%>
-         <fd:SEOMetaTag title="<%=name%>"/>
-        <%@ include file="/common/template/includes/metatags.jspf" %>
-        <%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
+	<title> <%=name%></title>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		
+		<fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"  onLoad="window.focus()">
 
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <center>
 <a name="top"></a>
@@ -105,6 +103,5 @@ if(windowSize.equalsIgnoreCase("custom")){
 </TABLE>
 
 </CENTER>
-<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </BODY>
 </HTML>

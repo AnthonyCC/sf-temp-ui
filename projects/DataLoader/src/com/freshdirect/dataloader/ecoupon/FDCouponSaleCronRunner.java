@@ -2,6 +2,7 @@ package com.freshdirect.dataloader.ecoupon;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -17,14 +19,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.analytics.CouponActivityLogListener;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 
 public class FDCouponSaleCronRunner {
 
@@ -43,38 +44,6 @@ public class FDCouponSaleCronRunner {
 		Context ctx = null;
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
-				IECommerceService fdECommerceService = FDECommerceService.getInstance();
-				// Cancel Pending coupon transactions
-				fdECommerceService.postCancelPendingCouponTransactions();
-
-				// Submit Pending coupon transactions
-				List<String> submitSales = fdECommerceService.getSubmitPendingCouponSales();
-				if (null != submitSales) {
-					for (Iterator<String> iterator = submitSales.iterator(); iterator.hasNext();) {
-						String saleId = iterator.next();
-						try {
-							fdECommerceService.postSubmitPendingCouponTransactions(saleId);
-						} catch (Exception e) {
-							LOGGER.info(e);
-						}
-					}
-				}
-
-				// Confirm Pending coupon transactions
-				List<String> confirmSales = fdECommerceService.getConfirmPendingCouponSales();
-				if (null != confirmSales) {
-					for (Iterator<String> iterator = confirmSales.iterator(); iterator.hasNext();) {
-						String saleId = iterator.next();
-						try {
-							fdECommerceService.postConfirmPendingCouponTransactions(saleId);
-						} catch (Exception e) {
-							LOGGER.info(e);
-						}
-					}
-				}
-				LOGGER.info("FDCouponSaleCronRunner stopped.");
-			}else{
 			ctx = getInitialContext();
 			FDCouponManagerHome home = (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
 			FDCouponManagerSB sb = home.create();
@@ -107,7 +76,6 @@ public class FDCouponSaleCronRunner {
 				}
 			}
 			LOGGER.info("FDCouponSaleCronRunner stopped.");
-			}
 		} catch (Exception e){
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));

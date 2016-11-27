@@ -1,6 +1,5 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <tmpl:get name="topwarningbar" />
 <div id="locationbar">
 	<span class="zipdisplay">
@@ -19,4 +18,4 @@
 		</p>
 	</div>
 </div>
-<jwr:script src="/locabar.js" useRandomParam="false" />
+<fd:javascript src="/assets/javascript/locationbar.js" />

@@ -2,15 +2,10 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 
 <head>
-	<fd:css href="/assets/css/social_login.css" />
-  <%--   <title>FreshDirect</title> --%>
-    <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<fd:css href="/assets/css/social_login.css" />	
 </head>
 
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="10" topmargin="10" >

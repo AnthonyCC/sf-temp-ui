@@ -12,14 +12,28 @@ import java.util.StringTokenizer;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.payment.BINCache;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.CreditCard;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Merchant;
+import com.freshdirect.payment.gateway.PaymentMethod;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
+import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
+import com.freshdirect.payment.gateway.impl.RequestFactory;
 
 public class CustomerStrategy implements PromotionStrategyI {
 	private Set<String> cohorts;
@@ -42,25 +56,15 @@ public class CustomerStrategy implements PromotionStrategyI {
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		
-		boolean isEligibleByDPFreeTrialOptIn = 
-				FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && 
-				context.getUser().getDpFreeTrialOptin() && (context.getUser().getDlvPassInfo()==null || EnumDlvPassStatus.NONE.equals(context.getUser().getDlvPassInfo().getStatus()))
-				&& (dpTypes == null || dpTypes.isEmpty() || dpTypes.contains(FDStoreProperties.getTwoMonthTrailDPSku()));
-		
 		//Evaluate Cohorts
 		if(cohorts != null && cohorts.size() > 0 && !cohorts.contains(context.getUser().getCohortName())) return DENY;
 		
-		
-		
 		if(  dpTypes != null && dpTypes.size() > 0) {
-			if(!isEligibleByDPFreeTrialOptIn){
-				if(context.getUser()==null || context.getUser().getDlvPassInfo()==null)return DENY;
-				else if( context.getUser().getDlvPassInfo().getTypePurchased()==null)return DENY;
-				else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
-					return DENY;
-			}
+			if(context.getUser()==null || context.getUser().getDlvPassInfo()==null)return DENY;
+			else if( context.getUser().getDlvPassInfo().getTypePurchased()==null)return DENY;
+			else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
+				return DENY;
 		}
-		
 		
 		//Evaluate Order Range. range is not defined properly. DENY
 		if((orderRangeStart > 0 && orderRangeEnd <= 0) || (orderRangeStart <= 0 && orderRangeEnd > 0)) return DENY;
@@ -81,7 +85,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		}
 		
 		//Evaluate Delivery Pass Status
-		if(dpStatus != null && !isEligibleByDPFreeTrialOptIn){
+		if(dpStatus != null){
 			if(!context.getUser().getDeliveryPassStatus().equals(dpStatus)) return DENY;
 			if(dpStartDate != null && dpEndDate != null) {
 				Date dpExpDate = context.getUser().getDlvPassInfo().getExpDate();
@@ -113,9 +117,12 @@ public class CustomerStrategy implements PromotionStrategyI {
 				if(paymentTypes.contains(EnumCardType.DEBIT)) {
 					
 					if(currentCardType.equals(EnumCardType.VISA)||currentCardType.equals(EnumCardType.MC)) {
+						BINCache binCache=BINCache.getInstance();
 						String profileId=cart.getPaymentMethod().getProfileID();
+						String accNum="";
 						if(!StringUtil.isEmpty(profileId) /*&& StringUtil.isEmpty(cart.getPaymentMethod().getAccountNumber())*/) {
-							if(!cart.getPaymentMethod().isDebitCard()) {
+							accNum=getAccountNumber(profileId);
+							if(!binCache.isDebitCard(accNum, currentCardType)) {
 								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 								return DENY;
 							}
@@ -195,9 +202,9 @@ public class CustomerStrategy implements PromotionStrategyI {
 		// Voucher redemption promotion :  should not allow promotion for new customer who has profile as 
 		// Voucher holder in or out delivery zone
 		try {
-			if (((context.getUser().isVHInDelivery() || context.getUser().isVHOutOfDelivery())
-					&& context.getAdjustedValidOrderCount() == 0)) {
-				return DENY;
+			if(  (context.getAdjustedValidOrderCount() ==0)
+					&& (context.getUser().isVHInDelivery() || context.getUser().isVHOutOfDelivery())){
+				 return DENY;
 			}
 		} catch (FDResourceException e) {
 			e.printStackTrace();
@@ -207,7 +214,25 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
-	
+	private String getAccountNumber(String profileId) {
+		String accNum="";
+		Request _request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
+		CreditCard cc=PaymentMethodFactory.getCreditCard();
+		cc.setBillingProfileID(profileId);
+		BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
+		_request.setBillingInfo(billinginfo);
+		Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		try {
+			Response _response=gateway.getProfile(_request);
+			PaymentMethod pm=_response.getBillingInfo()!=null?_response.getBillingInfo().getPaymentMethod():null;
+			if(pm!=null) {
+				accNum=pm.getAccountNumber();
+			}
+		} catch (ErpTransactionException e) {
+				
+		}
+		return accNum;
+	}
 	public boolean evaluateOrderType(EnumOrderType orderType){
 		if(allowedOrderTypes != null && allowedOrderTypes.size() > 0){
 			for(Iterator<EnumOrderType> it = allowedOrderTypes.iterator();it.hasNext();){
@@ -264,7 +289,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return convertToPaymentTypeNames(this.paymentTypes);
 	}
 
-	public Set<EnumCardType> getPaymentTypes() {
+	public Set getPaymentTypes() {
 		return this.paymentTypes;
 	}
 
@@ -274,7 +299,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 
 
-	public void setCohortNames(String cohortNames) {
+	public void setCohorts(String cohortNames) {
 		this.cohorts = convertToCohorts(cohortNames);
 
 	}
@@ -333,12 +358,12 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return buf.toString();
 	}
 	
-	public void setOrderRangeStart(int orderRangeStart) {
+	public void setOrderStartRange(int orderRangeStart) {
 		this.orderRangeStart = orderRangeStart;
 	}
 
 
-	public void setOrderRangeEnd(int orderRangeEnd) {
+	public void setOrderEndRange(int orderRangeEnd) {
 		this.orderRangeEnd = orderRangeEnd;
 	}
 
@@ -358,7 +383,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 
 
-	public void setPaymentTypeNames(String paymentTypes) {
+	public void setPaymentTypes(String paymentTypes) {
 		this.paymentTypes = convertToPaymentTypes(paymentTypes);
 	}
 
@@ -387,9 +412,12 @@ public class CustomerStrategy implements PromotionStrategyI {
 					if(cardType.equals(EnumCardType.VISA)||cardType.equals(EnumCardType.MC)) {
 						
 						String profileId=paymentMethod.getProfileID();
+						String accNum="";
 								
-						if(!StringUtil.isEmpty(profileId)) {							
-							if(!paymentMethod.isDebitCard()) {
+						if(!StringUtil.isEmpty(profileId)) {
+							accNum=getAccountNumber(profileId);
+							BINCache binCache=BINCache.getInstance();
+							if(!binCache.isDebitCard(accNum, cardType)) {
 								isEligible = false;
 						    }
 						} else {
@@ -419,7 +447,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 	
 	
-	public void setDpTypesNames(String dpTypes) {
+	public void setDpTypes(String dpTypes) {
 		this.dpTypes = convertToCohorts(dpTypes);
 
 	}
@@ -453,17 +481,5 @@ public class CustomerStrategy implements PromotionStrategyI {
 	public void setOrderRangeDeliveryTypes(
 			List<EnumDeliveryType> orderRangeDeliveryTypes) {
 		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
-	}
-
-	public void setCohorts(Set<String> cohorts) {
-		this.cohorts = cohorts;
-	}
-
-	public void setDpTypes(Set<String> dpTypes) {
-		this.dpTypes = dpTypes;
-	}
-
-	public void setPaymentTypes(Set<EnumCardType> paymentTypes) {
-		this.paymentTypes = paymentTypes;
 	}
 }

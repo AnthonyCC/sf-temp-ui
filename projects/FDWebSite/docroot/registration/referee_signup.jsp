@@ -10,7 +10,6 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
-<%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
@@ -41,21 +40,16 @@
 	String email = NVL.apply(request.getParameter("email"), "");
 	String email_error = NVL.apply(request.getParameter("email_error"), "");
 
-    ReferralPromotionModel rpModel = null;
-    if(refname != null) { 
-        rpModel = FDReferralManager.getReferralPromotionDetailsByRefName(referral);
-    }  else {
-        throw new FDNotFoundException("Referral promotion detail model is not found by referral: " + referral);
-    }
-
+    
     if (successPage == null || successPage == "") {
   		// null, default to index.jsp
   		successPage = "/index.jsp";
  	}
     
+    
     //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
     if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
-		successPage = "/index.jsp?serviceType=CORPORATE";
+		successPage = "/department.jsp?deptId=COS";
 	}
 
 	/* moreInfo, redirect back to the same page, and pass in the overlayType */
@@ -67,13 +61,12 @@
 	System.out.println("[******moreInfoPage*****]" + moreInfoPage);
 
 %>
-<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<%-- <title>FreshDirect</title>  --%>
-         <fd:SEOMetaTag title="FreshDirect"/>
+		<title>FreshDirect</title>
+
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 
@@ -84,14 +77,21 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">		
-	<script type="text/javascript">var manual_cm_mmc="fd_acquisition-_-raf-_-signup-_-invite";</script><%--needs to be included before page view tag in i_body_start --%>			
+	<script type="text/javascript">var manual_cm_mmc="fd_acquisition-_-raf-_-signup-_-invite";</script><%--needs to be included before page view tag in i_body_start --%>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+			
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 		<%
 			request.setAttribute("listPos", "SystemMessage,DeliveryFees");
 		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
+		<% if(refname != null) { %>
+			<%
+				ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetailsByRefName(referral);
+			%>
 		
+		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 			<%--
 				Put any java-related variables needed by the page into the _page_options object. 
 			--%>
@@ -125,8 +125,8 @@
 						serviceType: '',
 						corpServiceType: ''
 					},
-					rafTerms: '<%= (rpModel != null) ? rpModel.getReferralPageLegal() : "" %>',
-					rafImage: '<%= (rpModel != null) ? rpModel.getSiteAccessImageFile() : "" %>'
+					rafTerms: "<%= rpModel.getReferralPageLegal() %>",
+					rafImage: '<%= rpModel.getSiteAccessImageFile() %>'
 				};
 				<% if ( !"WEB".equals(serviceType) ) { %>
 					<% if ( result.hasError("technicalDifficulty") ) { %>
@@ -186,8 +186,11 @@
 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" />
 			
 
-		
+		</fd:SiteAccessController>
+		<% }  else { 
+			response.sendRedirect("/index.jsp");
+			}
+		%>
 		
 	</body>
 </html>
-</fd:SiteAccessController>

@@ -13,8 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
@@ -38,11 +43,6 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.DepartmentCarouselUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -120,7 +120,7 @@ public class SmartStoreController extends BaseController {
         					if (recommendedItems != null && recommendedItems.size() == 0 && deptId.equals(FLOWER_DEPARTMENT)) {
         						String cat = getSingleCategory(department);
         						if (cat != null) {
-	        						CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(ContentType.Category, cat);
+	        						CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(ContentType.get("Category"), cat);
 	        						recommendedItems = ProductRecommenderUtil.getMerchantRecommenderProducts(category);
 	        						result.setTitle(category.getCatMerchantRecommenderTitle());
         						}
@@ -136,7 +136,7 @@ public class SmartStoreController extends BaseController {
 																			, null
 																			, EnumCouponContext.PRODUCT));								
 							} catch (ModelException e) {
-								//e.printStackTrace();
+								e.printStackTrace();
 							}
         				}
         			}					
@@ -151,7 +151,7 @@ public class SmartStoreController extends BaseController {
 	    			OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
 	    			
 				} catch (FDResourceException e) {
-					//e.printStackTrace();
+					e.printStackTrace();
 				}     		    			
 			}
 						
@@ -297,7 +297,7 @@ public class SmartStoreController extends BaseController {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			return map;
 		}

@@ -3,33 +3,32 @@ package com.freshdirect.webapp.ajax;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.apache.oltu.oauth2.common.utils.OAuthUtils;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.webapp.ajax.oauth2.data.OAuth2InvalidCodeTokenException;
-import com.freshdirect.webapp.ajax.oauth2.service.OAuth2Service;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.InvalidUserException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.AjaxErrorHandlingService;
-import com.freshdirect.webapp.util.DraftUtil;
+
 
 public abstract class BaseJsonServlet extends HttpServlet {
 
@@ -40,8 +39,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-            FDUserI user = authenticate(request, response);
-			DraftUtil.draft(request, response);
+			FDUserI user = authenticate( request );
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doGet( request, response, user );
@@ -53,7 +51,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}	
-
+	@SuppressWarnings( "static-method" )
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -61,7 +59,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doPut( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-            FDUserI user = authenticate(request, response);
+			FDUserI user = authenticate( request );
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					fixPutRequestParams(request);
@@ -75,7 +73,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
-
+	@SuppressWarnings( "static-method" )
 	protected void doPut( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -83,7 +81,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doDelete( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-            FDUserI user = authenticate(request, response);
+			FDUserI user = authenticate( request );
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doDelete( request, response, user );
@@ -95,7 +93,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
-
+	@SuppressWarnings( "static-method" )
 	protected void doDelete( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -104,7 +102,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	protected final void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {		
         FDUserI user = null;
         try {
-            user = authenticate(request, response);
+            user = authenticate(request);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doPost( request, response, user );
@@ -113,11 +111,11 @@ public abstract class BaseJsonServlet extends HttpServlet {
 				doPost( request, response, user );
 			}
 		} catch ( HttpErrorResponse e ) {
-            String errorMessage = AjaxErrorHandlingService.defaultService().populateErrorMessage(e.getMessage(), null !=user ? user.getCustomerServiceContact(): "1-866-283-7374");
+            String errorMessage = AjaxErrorHandlingService.defaultService().populateErrorMessage(e.getMessage(), null !=user ? user.getCustomerServiceContact(): "1-212-796-8002");
             response.sendError(e.getErrorCode(), errorMessage);
 		}
 	}
-
+	@SuppressWarnings( "static-method" )
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -127,7 +125,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return parseRequestData( request, typeClass, false );
 	}
 	
-    public final static <T> T parseRequestData(HttpServletRequest request, Class<T> typeClass, boolean allowEmpty) throws HttpErrorResponse {
+	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass, boolean allowEmpty ) throws HttpErrorResponse {
 	
 		T reqData = null;
 		try {
@@ -150,21 +148,39 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return reqData;
 	}
 	
-    protected final static <T> void writeResponseData(HttpServletResponse response, T responseData) throws HttpErrorResponse {
-        try {
-            JsonHelper.writeResponseData(response, responseData);
-        } catch (JsonGenerationException e) {
-            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
-        } catch (JsonMappingException e) {
-            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
-        } catch (IOException e) {
-            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
-        } catch (Exception e) {
-            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
-        }
-    }
+	protected final static <T> void writeResponseData( HttpServletResponse response, T responseData ) throws HttpErrorResponse {
+		
+		// Set response parameters
+		configureJsonResponse( response );
+		
+		// Serialize data to JSON and write out the result 
+		try {
+			
+			Writer writer = new StringWriter();
+			new ObjectMapper().writeValue( writer, responseData );
+			
+			ServletOutputStream out = response.getOutputStream();
+			String responseStr = writer.toString();
+			
+//			LOG.debug( "Generated response data: " + responseStr );
+			
+			out.print( responseStr );
+			
+			out.flush();
+			
+		} catch ( JsonGenerationException e ) {
+        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
+		} catch ( JsonMappingException e ) {
+        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
+		} catch ( IOException e ) {
+        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
+		} catch ( Exception e ) {
+        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
+		}
+	}
 	
 	private static void fixPutRequestParams( HttpServletRequest request ) throws HttpErrorResponse {
+
 		BufferedReader br;
 		String line = null;
 		try {
@@ -177,89 +193,56 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			returnHttpError( 400, "Cannot read request data" ); // 400 Bad Request
 		}
 	}	
+	
+	
+	public final static void configureJsonResponse(HttpServletResponse response) {
+		// Set common response properties for JSON response
+		response.setHeader( "Cache-Control", "no-cache" );
+		response.setHeader( "Pragma", "no-cache" );
+		response.setContentType( "application/json" );
+		response.setLocale( Locale.US );
+		response.setCharacterEncoding( "ISO-8859-1" );
+	}
 
 	/**
-     * Does the authentication, checks user auth level, returns the user object.
-     * 
-     * Sends HTTP 401 Unauthorized if user is not found in session, or auth level is insufficient.
-     * 
-     * @param request
-     * @param response
-     * @return the user object from the session
-     * @throws HttpErrorResponse
-     */
-    protected final FDUserI authenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
-    	// if the request is using o-auth, do validation.
-    	if (isOAuthEnabled() && isOAuthTokenInHeader(request)) {
-    		return oAuthAuthenticate(request, response);
-    		
-    	}
+	 * Does the authentication, checks user auth level, returns the user object. 
+	 * 
+	 * Sends HTTP 401 Unauthorized if user is not found in session, or auth level is insufficient.
+	 * 
+	 * @param request
+	 * @return the user object from the session
+	 * @throws HttpErrorResponse
+	 */
+	protected final FDUserI authenticate( HttpServletRequest request ) throws HttpErrorResponse {
         HttpSession session = request.getSession();
-        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-
-        if (user == null) {
-            try {
-                user = UserUtil.createSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel());
-                UserUtil.touchUser(request, user);
-                UserUtil.updateUserRelatedContexts(user);
-            } catch (InvalidUserException e) {
-                returnHttpError(401, "Invalid user!"); // 401 Unauthorized
-            }
+    	
+        FDUserI user = ((FDUserI)session.getAttribute(SessionName.USER));
+        if ( user == null ) {
+        	// There is no user data in the session. Serious problem, should not happen.
+        	returnHttpError( 401, "No user in session!" ); // 401 Unauthorized
         }
-
-        if (user == null) {
-            returnHttpError(401, "Invalid user!"); // 401 Unauthorized
-        }
-
-        if (user.getLevel() < getRequiredUserLevel()) {
-            // User level not sufficient.
-            returnHttpError(401, "User auth level not sufficient!"); // 401 Unauthorized
-        }
-
-        // set current pricing context
-        ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
-
-        return user;
-    }
-    protected boolean isOAuthTokenInHeader(HttpServletRequest request){
-    	String authorization = request.getHeader("Authorization");
-    	return authorization != null && !authorization.isEmpty();
-    }
-    protected final FDUserI oAuthAuthenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
-    	// call oauth service to get token info, which return the fd user id.
-		String authorizationHeader = request.getHeader("Authorization");
-		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-			returnHttpError(401, "Unknown authentication scheme"); // 401 Unauthorized
+        
+		if ( user.getLevel() < getRequiredUserLevel() ) {
+        	// User level not sufficient. 
+        	returnHttpError( 401, "User auth level not sufficient!" ); // 401 Unauthorized
 		}
-		String token = OAuthUtils.getAuthHeaderField(authorizationHeader);
-		if (token == null || token.isEmpty()) {
-			returnHttpError(401, "Unknown authentication scheme"); // 401 Unauthorized
-		}
-		FDIdentity userIdentity;
-		FDUser user = new FDUser();
-		try {
-			userIdentity = OAuth2Service.defaultService().getUserIdentityByAccessToken(token);
-			if (userIdentity == null) {
-				returnHttpError(401, "Invalid token"); // 401 Unauthorized
-			}
-			user.setIdentity(userIdentity);
-		} catch (OAuth2InvalidCodeTokenException e) {
-			returnHttpError(401, "Invalid token"); // 401 Unauthorized
-		}
-		return user;
-    }
+        
+		// set current pricing context
+		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
+		
+		return user;		
+	}
+	
 	/**
 	 * Override to set a required user auth level.
 	 * 
 	 * @return the required user level (use GUEST,RECOGNIZED,SIGNED_IN constants from FDUserI)
 	 */
+	@SuppressWarnings( "static-method" )
 	protected int getRequiredUserLevel() {		
 		return FDUserI.RECOGNIZED;
 	}
 	
-	protected boolean isOAuthEnabled() {
-		return false;
-	}
 	/**
 	 * Subclasses can return return false and do their own synchronization manually OR<br>
 	 * return true to turn on automatic synchronization on the user object.<br>
@@ -281,7 +264,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			user.invalidateCache();
 
 			// Update user
-			user.updateUserState(false);
+			user.updateUserState();
 			
 			// Save user
 			try {

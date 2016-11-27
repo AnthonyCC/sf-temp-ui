@@ -42,12 +42,7 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.PostSettlementNotificationEB;
 import com.freshdirect.payment.ejb.PostSettlementNotificationHome;
-/**
- *@deprecated Please use the PostSettlementNotifyController and PostSettlementNotificationServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 public class PostSettlementNotifySessionBean extends SessionBeanSupport {
 
 	/**

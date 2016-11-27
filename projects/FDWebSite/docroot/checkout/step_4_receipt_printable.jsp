@@ -25,10 +25,10 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Order Placed"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Checkout - Order Placed</tmpl:put> --%>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 //--------OAS Page Variables-----------------------
@@ -48,14 +48,14 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
     </TD>
 </TR>
 <TR VALIGN="BOTTOM">
-  <TD WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-200%>"><A HREF="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt=" redirect to FreshDirect homepage"></A></TD>
+  <TD WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-200%>"><A HREF="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect"></A></TD>
   <TD WIDTH="200" ALIGN="right">    
         <A HREF="javascript:window.print();" onMouseOver="swapImage('print','/media/images/navigation/global_nav/print_page_01.gif')" onMouseOut="swapImage('print','/media/images/navigation/global_nav/print_page.gif')"><img name="print" src="/media_stat/images/navigation/global_nav/print_page.gif" width="54" height="26" border="0" alt="PRINT PAGE"></A>
   </TD>
 </TR>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 <tr>
-  <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" alt="" HEIGHT="4" WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>"></td>
+  <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" HEIGHT="4" WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>"></td>
 </tr>
 </TABLE>
 <%

@@ -36,9 +36,6 @@ import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -325,11 +322,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 				SAPLoaderSB sapLoader = home.create();
 
 				// 1. create batch version
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-					batchNumber = FDECommerceService.getInstance().createBatch();
-				}else{
-					batchNumber = sapLoader.createBatch();
-				}
+				batchNumber = sapLoader.createBatch();
 
 				LOG.info("####### Starting to load global material data, version:" + batchNumber + " ######");
 
@@ -340,13 +333,8 @@ public class FDProductBaseJcoServer extends FdSapServer {
 
 					String materialNo = materialEntry.getKey();
 					try {
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-							FDECommerceService.getInstance().loadData(batchNumber, materialEntry.getValue(), materialClassMap.get(materialNo),
-									variantPriceMap.get(materialNo));
-						}else{
 						sapLoader.loadData(batchNumber, materialEntry.getValue(), materialClassMap.get(materialNo),
 								variantPriceMap.get(materialNo));
-						}
 
 						successCnt++;
 					} catch (RemoteException e) {
@@ -368,11 +356,8 @@ public class FDProductBaseJcoServer extends FdSapServer {
 				}
 
 				// 3. mark the batch status
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-					FDECommerceService.getInstance().updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
-				}else{
-					sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
-				}
+				sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+
 				// 4. email failure material report
 				emailFailureReport(result, "Global material", Integer.toString(batchNumber));
 
@@ -792,7 +777,6 @@ public class FDProductBaseJcoServer extends FdSapServer {
 	private void checkBatchStatus() throws EJBException, RemoteException, LoaderException {
 
 		Context ctx = null;
-		ErpMaterialBatchHistoryModel batchModel;
 		try {
 			ctx = com.freshdirect.ErpServicesProperties.getInitialContext();
 
@@ -800,12 +784,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 			SAPLoaderSB sapLoader = home.create();
 
 			try {
-				
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-					batchModel = FDECommerceService.getInstance().getMaterialBatchInfo();
-				}else{
-					batchModel = sapLoader.getMaterialBatchInfo();
-				}
+				ErpMaterialBatchHistoryModel batchModel = sapLoader.getMaterialBatchInfo();
 
 				if (batchModel != null) {
 					int timeSinceBatchCreated = getDiffInMinutes(new Date(), batchModel.getCreatedDate());

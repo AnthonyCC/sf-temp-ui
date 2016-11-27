@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore.content.browse.sorter;
 
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 
 public class PrimaryDepartmentComparator extends OptionalObjectComparator<FilteringProductItem, String> {
 

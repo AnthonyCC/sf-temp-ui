@@ -20,16 +20,11 @@
 	Promotion promotion = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
 	if (promotion == null) promotion = (Promotion) user.getEligibleSignupPromotion();
 	if (promotion == null) promotion = (Promotion) PromotionFactory.getInstance().getPromotion("SIGNUP");
-	
-	String title = "FreshDirect - " + promotion.getName();
 %>
 <% if (!"".equals(promoCode)) { %>
 	<fd:GetPromotionNew id="promotionNew" promotionId="<%=promoCode%>">
 		<tmpl:insert template='/shared/template/small_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+			<tmpl:put name='title' direct='true'>FreshDirect - <%= promotion.getName() %></tmpl:put>
 				<tmpl:put name='content' direct='true'>
 					<style>
 						.promoPopupTerms {

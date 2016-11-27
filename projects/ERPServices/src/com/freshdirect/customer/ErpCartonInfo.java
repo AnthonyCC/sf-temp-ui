@@ -3,9 +3,6 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ErpCartonInfo implements Serializable {
 
 	private static final long	serialVersionUID	= -2514030108616629805L;
@@ -65,12 +62,11 @@ public class ErpCartonInfo implements Serializable {
 		this.sapNumber = sapNumber;
 	}
 	
-	@JsonCreator
 	public ErpCartonInfo(
-		@JsonProperty("orderNumber") String orderNumber,
-		@JsonProperty("sapNumber") String sapNumber,
-		@JsonProperty("cartonNumber") String cartonNumber,
-		@JsonProperty("cartonType") String cartonType
+		String orderNumber,
+		String sapNumber,
+		String cartonNumber,
+		String cartonType
 		) {
 		this.orderNumber = orderNumber;
 		this.sapNumber = sapNumber;
@@ -107,14 +103,4 @@ public class ErpCartonInfo implements Serializable {
 	private String cartonNumber;
 	private String cartonType;
 	private List<ErpCartonDetails> details = new ArrayList<ErpCartonDetails>();
-	
-	public String getComponentOrderLine(){
-		for(ErpCartonDetails d : details){
-			if(d.getComponents()!=null && 
-					d.getComponents().size()>0)
-				return d.getOrderLineNumber();
-		}
-		return null;
-		
-	}
 }

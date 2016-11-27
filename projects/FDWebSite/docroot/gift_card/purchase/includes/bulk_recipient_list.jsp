@@ -119,7 +119,7 @@ if(recipList != null) {
 
 		<table width="100%" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 		<%
 		if (isConfirm) {
@@ -129,13 +129,13 @@ if(recipList != null) {
 				<td class="right">Subtotal: <div class="recipAmount">$<%=recipList.getFormattedSubTotal() %></div></td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 			<tr>
 				<td class="right">FreshDirect Store Credit: <div class="recipAmount">$<%= FormatterUtil.formatToTwoDecimal(giftUser.getGiftCart().getCustomerCreditsValue()) %></div></td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 			<tr>
 				<td class="recipTotal"><div class="recipTotal recipAmount" style="width: auto;">TOTAL: $<%= FormatterUtil.formatToTwoDecimal(giftUser.getGiftCart().getTotal()) %></div></td>

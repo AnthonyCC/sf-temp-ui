@@ -15,9 +15,9 @@ import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
@@ -401,7 +401,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
         
         Set cart = new HashSet();
-        cart.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
         fit.setShoppingCart(cart);
 
         try {
@@ -488,7 +488,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
         
         Set cart = new HashSet();
-        cart.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
         fit.setShoppingCart(cart);
 
         try {

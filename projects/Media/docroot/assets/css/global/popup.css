@@ -16,18 +16,9 @@
 	width: 180px;
 }
 
-.qs-popup-content #addtolist-selectList1 {
-	width: 180px;
-}
-
 .qs-popup-content #addtolist-newList {
   width: 150px;
 }
-
-.qs-popup-content #addtolist-newList1 {
-  width: 150px;
-}
-
 
 .qs-popup.manageshoppinglists {
   width: auto;
@@ -284,108 +275,3 @@
   margin-bottom: 5px;
 }
 
-.centerpopup-helper {
-	position: absolute;
-	top: 220px;
-	left: 0;
-	right: 0;
-	text-align: center;
-}
-
-.centerpopup-linehelper {
-	display: inline-block;
-	height: 100%;
-	width: 1px;
-	vertical-align: middle;
-}
-
-.c-popup { /* don't add padding */
-	display: none;
-	position: absolute;
-	background: #fff;
-	border: 1px solid #aaa;
-	box-shadow: 0 0 8px rgba(0,0,0,0.2);
-	z-index: 2002;
-	font-size: 14px;
-}
-
-.c-popup-header {
-	position: relative;
-	margin-bottom: 0.75em;
-}
-
-.popupcontentoverlay.centerpopupoverlay {
-	background: #fff;
-	opacity: .8;
-	filter:alpha(opacity=70);
-}
-
-.c-popup [fdform] b.label,
-.c-popup [fdform] span.label {
-	display: block;
-	margin-top: 10px;
-}
-
-.c-popup-help-icon,
-.c-popup-close-icon {
-	position: absolute;
-	top: 7px;
-	right: 7px;
-	width: 15px;
-	height: 15px;
-	padding: 0;
-	border: none;
-	background: url(/media_stat/images/quickshop/button-help.png) no-repeat;
-	text-indent: -9999px;
-	overflow: hidden;
-	cursor: pointer;
-}
-.c-popup-close-icon {
-	position: absolute;
-	display: block;
-	width: 20px;
-	height: 21px;
-	background: url(/media_stat/images/buttons/close_x.png) no-repeat;
-	top: -24px;
-	right: -24px;
-	cursor: pointer;
-	text-indent: -10000em;
-	overflow: hidden;
-	text-decoration: none;
-}
-
-.c-popup.debitswitchnotice {
-	position: static;
-	display: inline-block;
-	vertical-align: middle;
-	text-align: left;
-}
-.c-popup.debitswitchnotice .c-popup-content {
-	padding: 10px 20px;
-	max-width: 500px;
-}
-.c-popup.debitswitchnotice .debitswitchnotice-cont {
-	margin: 10px 0;
-}
-.c-popup.debitswitchnotice .debitswitchnotice-button {
-	margin: 10px 0;
-	text-align: right;
-}
-/* medium screens */
-@media screen and (min-width: 376px) and (max-width: 425px) {
-	[data-feature-mobweb] .c-popup.debitswitchnotice {
-		max-width: 330px;
-	}
-	[data-feature-mobweb] .c-popup.debitswitchnotice .c-popup-content {
-		max-width: 100%;
-	}
-}
-/* smaller screens */
-@media screen and (max-width: 375px) {
-	[data-feature-mobweb] .c-popup.debitswitchnotice {
-		max-width: 280px;
-	}
-	[data-feature-mobweb] .c-popup.debitswitchnotice .c-popup-content {
-		max-width: 100%;
-	}
-}

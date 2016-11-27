@@ -24,9 +24,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.detail.DetailParser;
 import com.freshdirect.dataloader.payment.reconciliation.summary.SummaryParser;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
@@ -220,9 +217,6 @@ public class SettlementLoader {
 
 		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
 		builder.writeTo(f);
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-			ReconciliationService.getInstance().sendFile(new FileInputStream(f), fileName);
-		}
 		return fileName;
 
 	}

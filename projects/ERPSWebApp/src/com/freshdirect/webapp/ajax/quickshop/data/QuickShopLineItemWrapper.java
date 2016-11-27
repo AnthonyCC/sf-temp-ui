@@ -1,23 +1,24 @@
 package com.freshdirect.webapp.ajax.quickshop.data;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.AttributeDefI;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.StarterList;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.StarterList;
 
 public class QuickShopLineItemWrapper implements ContentNodeModel {
-
-    private static final long serialVersionUID = -3321282432018011837L;
-
-    private QuickShopLineItem item;
-    private ProductModel product;
-    private Date deliveryDate;
+	
+	private QuickShopLineItem item;
+	private ProductModelPricingAdapter product;
+	
+	private Date deliveryDate;
 	private boolean inLastOrder;
 	private String orderId;
 	private String cclId;
@@ -27,17 +28,18 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	private String recipeName;
 	private StarterList starterList;
 	private String orderStatus;
+	
 	private Float userScore = 0f;
 
-    public QuickShopLineItemWrapper(QuickShopLineItem item, ProductModel product) {
+	public QuickShopLineItemWrapper(QuickShopLineItem item, ProductModelPricingAdapter product) {
 		this.item = item;
 		this.product = product;
 	}
-
+	
 	public final static Comparator<QuickShopLineItemWrapper> FULL_NAME_PRODUCT_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 		@Override
 		public int compare(QuickShopLineItemWrapper p1, QuickShopLineItemWrapper p2) {
-
+			
 			//put unavailable items to the end of the list
 			if(!p1.getItem().isAvailable()){
 				return 1;
@@ -45,23 +47,23 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			if(!p2.getItem().isAvailable()){
 				return -1;
 			}
-
+			
 			String name1 = NVL.apply(p1.getProduct().getFullName().toLowerCase(), "");
 			String name2 = NVL.apply(p2.getProduct().getFullName().toLowerCase(), "");
 
 			int d = name1.compareTo(name2);
 			if (d != 0)
 				return d;
-
+			
 			return p1.getProduct().getContentKey().getId().compareTo(p2.getProduct().getContentKey().getId());
 		}
 	};
-
+	
 	public final static Comparator<QuickShopLineItemWrapper> FREQUENCY_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
 		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
-
+			
 			//put unavailable items to the end of the list
 			if(!h1.getItem().isAvailable()){
 				return 1;
@@ -69,17 +71,17 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			if(!h2.getItem().isAvailable()){
 				return -1;
 			}
-
+			
 			double retValue = h2.getItem().getFrequency() - h1.getItem().getFrequency();
 			return (int)retValue;
 		}
 	};
-
+	
 	public final static Comparator<QuickShopLineItemWrapper> RECENT_PURCHASE_COMPARATOR_DESC = new Comparator<QuickShopLineItemWrapper>() {
 
 		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
-
+			
 			//put unavailable items to the end of the list
 			if(!h1.getItem().isAvailable()){
 				return 1;
@@ -87,18 +89,18 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			if(!h2.getItem().isAvailable()){
 				return -1;
 			}
-
+			
 			double retValue = h2.getItem().getRecency() - h1.getItem().getRecency();
 			return (int)retValue;
 		}
 	};
-
+	
 	// Expert rating comparator uses both expert and wine ratings!
 	public final static Comparator<QuickShopLineItemWrapper> EXPERT_RATING_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
 		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
-
+			
 			//put unavailable items to the end of the list
 			if(!h1.getItem().isAvailable()){
 				return 1;
@@ -106,7 +108,7 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			if(!h2.getItem().isAvailable()){
 				return -1;
 			}
-
+			
 			int x1 = h1.getItem().getExpertRating();
 			int x2 = h2.getItem().getExpertRating();
 			int w1 = h1.getItem().getWineRating();
@@ -116,12 +118,12 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			return 	v2.compareTo(v1);
 		}
 	};
-
+	
 	public final static Comparator<QuickShopLineItemWrapper> FAVOURITES_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
 		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
-
+			
 			//put unavailable items to the end of the list
 			if(!h1.getItem().isAvailable()){
 				return 1;
@@ -129,10 +131,10 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			if(!h2.getItem().isAvailable()){
 				return -1;
 			}
-
+			
 			Float h1f = h1.getUserScore()==null || h1.getUserScore()==0 ? 0f : 1f;
 			Float h2f = h2.getUserScore()==null || h2.getUserScore()==0  ? 0f : 1f;
-
+			
 			return h2f.compareTo(h1f);
 		}
 	};
@@ -145,11 +147,11 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 		this.item = item;
 	}
 
-    public ProductModel getProduct() {
+	public ProductModelPricingAdapter getProduct() {
 		return product;
 	}
 
-    public void setProduct(ProductModel product) {
+	public void setProduct(ProductModelPricingAdapter product) {
 		this.product = product;
 	}
 
@@ -204,11 +206,11 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	public StarterList getStarterList() {
 		return starterList;
 	}
-
+	
 	public void setStarterList(StarterList starterList) {
 		this.starterList = starterList;
 	}
-
+	
 	public String getRecipeId() {
 		return recipeId;
 	}
@@ -282,6 +284,16 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	}
 
 	@Override
+	public Object getNotInheritedAttributeValue(String name) {
+		return null;
+	}
+
+	@Override
+	public AttributeDefI getAttributeDef(String name) {
+		return null;
+	}
+
+	@Override
 	public String getAltText() {
 		return null;
 	}
@@ -349,6 +361,11 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	@Override
 	public boolean isOrphan() {
 		return false;
+	}
+
+	@Override
+	public Collection<ContentKey> getParentKeys() {
+		return null;
 	}
 
 }

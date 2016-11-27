@@ -9,10 +9,7 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="true" />
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Unattended Delivery Confirmation"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 	String successPage = (request.getParameter("successPage") == null || "".equals(request.getParameter("successPage"))) ? "/your_account/delivery_information.jsp" : request.getParameter("successPage") ;
@@ -33,9 +30,9 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 			<font class="title18">Your neighborhood has Unattended Delivery Service, <br />for no extra charge!</font><br />
 		</td></tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
-	<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_EDIT_DELIVERY_ADDR %>" height="1" border="0"><br />
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
+	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_EDIT_DELIVERY_ADDR %>" height="1" border="0"><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
 
 	<form name="address" method="post">
 		<input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
@@ -45,7 +42,7 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 		
 		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 			<tr valign="top" bgcolor="#ff9933">
-				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/layout/ff9933.gif" alt="" hspace="0" width="1" height="1" border="0"></td>
+				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
 			</tr>
 		<tr>
 			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><br />

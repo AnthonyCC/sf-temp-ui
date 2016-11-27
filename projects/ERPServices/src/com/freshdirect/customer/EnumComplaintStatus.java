@@ -6,9 +6,6 @@
 
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  *
  * @author  jmccarter
@@ -16,9 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class EnumComplaintStatus implements java.io.Serializable {
 
-
-	private static final long serialVersionUID = 4611799119177790539L;
-	public final static EnumComplaintStatus PENDING			= new EnumComplaintStatus(0, "PEN", "Pending");
+    public final static EnumComplaintStatus PENDING			= new EnumComplaintStatus(0, "PEN", "Pending");
     public final static EnumComplaintStatus APPROVED		= new EnumComplaintStatus(1, "APP", "Approved");
     public final static EnumComplaintStatus REJECTED		= new EnumComplaintStatus(2, "REJ", "Rejected");
 
@@ -40,8 +35,7 @@ public class EnumComplaintStatus implements java.io.Serializable {
         return this.name;
     }
 
-    @JsonCreator
-	public static EnumComplaintStatus getComplaintStatus(@JsonProperty("statusCode") String code) {
+	public static EnumComplaintStatus getComplaintStatus(String code) {
 		if ( "APP".equalsIgnoreCase(code) ) {
 			return APPROVED;
 		} else if ( "REJ".equalsIgnoreCase(code) ) {

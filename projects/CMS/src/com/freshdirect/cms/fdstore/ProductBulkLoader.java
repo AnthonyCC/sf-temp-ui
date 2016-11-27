@@ -99,7 +99,7 @@ public class ProductBulkLoader {
 						}
 						
 						if(attrName.toLowerCase().equals("skus")){
-							ContentKey key = ContentKey.getContentKey(FDContentTypes.SKU, cell.getStringCellValue());
+							ContentKey key = new ContentKey(FDContentTypes.SKU, cell.getStringCellValue());
 			                
 							ContentNodeUtil.createNode(key, request, attr, contentService, draftContext);
 						}	
@@ -110,7 +110,7 @@ public class ProductBulkLoader {
 							int strLen=( tmpBrandName.length()>20?21:tmpBrandName.length() );
 	
 			                String id = "bd_"+ProductBulkLoader.removeNonAlpha(tmpBrandName.substring(0,strLen));
-			                ContentKey key = ContentKey.getContentKey(FDContentTypes.BRAND, id);
+			                ContentKey key = new ContentKey(FDContentTypes.BRAND, id);
 			                
 			                ContentNodeUtil.createNode(key, request, attr, contentService, draftContext);
 							

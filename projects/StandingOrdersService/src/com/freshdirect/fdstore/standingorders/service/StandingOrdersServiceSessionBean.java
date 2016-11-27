@@ -23,15 +23,14 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
-import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
@@ -95,13 +94,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				// true :: New Standing Orders3.0  with active flag is Y
 				// false: existing standing Orders with active flag as null
 				
-				soList = soManager.loadActiveStandingOrdersForAWeek(false);	 				//soList = soManager.loadActiveStandingOrders(false);	
+				soList = soManager.loadActiveStandingOrders(false);	
 				
-				soList.addAll(soManager.loadActiveStandingOrdersForAWeek(true));			//soList.addAll(soManager.loadActiveStandingOrders(true));
-				
+				soList.addAll(soManager.loadActiveStandingOrders(true));	
+
 				if ( soList.isEmpty()  ) {
-					LOGGER.error( "Empty list retrieved for standing orders list! - loadActiveStandingOrders() returned empty list" );
-					sendTechnicalMail( "Empty list retrieved for standing orders list! - loadActiveStandingOrders() returned empty list" );
+					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
+					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
 					return null;
 				}
 			} catch (FDResourceException re) {
@@ -122,8 +121,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				for ( String soId : soIdList ) {
 					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
 					if ( so != null ) {
-							soList.add( so );
-						}
+						soList.add( so );
+					}
 				}
 			} catch (FDResourceException re) {
 				invalidateMailerHome();
@@ -147,6 +146,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// Begin processing SO-s, and count the results
 		SOResult.ResultList resultCounter = new SOResult.ResultList();
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
+		CreateCMRequest.consecutiveTimeout = 0;
 		for ( FDStandingOrder so : soList ) {
 			Result result;
 			try {			
@@ -180,11 +180,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 							result.getSoName() ) ) {
 						result.setErrorEmailSentToAdmins();
 					}
-				}else  {
-					// other error, except persisting -> set so to error state, and send email to customer
-					if (result.getErrorCode() != ErrorCode.PERSISTING_ERROR) {
-						so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
-					}
+				} else {
+					// other error -> set so to error state, and send email to customer
+					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
 					if ( sendErrorMail( so, result.getCustomerInfo() ) ) {
 						result.setErrorEmailSentToCustomer();						
 					}
@@ -196,60 +194,17 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
-				if (result.getErrorCode() != ErrorCode.PERSISTING_ERROR) {
-					try {
-						FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
-						LOGGER.info("Saving SO: " + so.getId());
-						soManager.save(info, so);
-					} catch (FDResourceException re) {
-						invalidateMailerHome();
-						LOGGER.error("Saving standing order failed! (FDResourceException)", re);
-					}
-				}
-				logActivity( so, result );				
-			}			
-		}
-		
-		// =====================
-		//  2days notification 
-		// =====================
-		if (jobConfig.isSendReminderNotificationEmail()) {
-			Collection<FDStandingOrder> soListEmailNotification = null;
-			if (soIdList == null) {
 				try {
-					LOGGER.info("Loading all active standing orders for 2days email notification.");
-					soListEmailNotification = soManager.loadActiveStandingOrders(true);
-					soListEmailNotification.addAll(soManager.loadActiveStandingOrders(false));
-					if (soListEmailNotification.isEmpty()) {
-						LOGGER.error("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
-						sendTechnicalMail("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
-						return null;
-					}
+					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
+					LOGGER.info( "Saving SO " + so.getId() );
+					soManager.save( info, so);
 				} catch (FDResourceException re) {
 					invalidateMailerHome();
-					LOGGER.error("Could not retrieve standing orders list! - FDResourceException", re);
-					sendTechnicalMail("Could not retrieve standing orders list! - FDResourceException");
-					return null;
+					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
 				}
-			}
-			try {
-				if (null !=soListEmailNotification && !soListEmailNotification.isEmpty()) {
-					for (FDStandingOrder so : soListEmailNotification) {
-						try {
-							// The main processing occurs here.
-							lookupMailerHome();
-							StandingOrderUtil.sendNotification(so, mailerHome);
-						} catch (FDResourceException re) {
-							LOGGER.error("2days notification for SO failed with FDResourceException!", re);
-							SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");
-						} finally {
-							invalidateMailerHome();
-						}
-					}LOGGER.info("2days email notification has been exicuted.");
-				}
-			} catch (Exception e) {
-				LOGGER.error("2days notification for SOs failed with Exception!", e);
-			}
+								
+				logActivity( so, result );				
+			}			
 		}
 		
 		return resultCounter;			
@@ -301,9 +256,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				else
 					note = null;
 			}
-			if(result.getErrorCode().equals(ErrorCode.PERSISTING_ERROR)){
-				note = "SO: "+so.getId() +" "+ result.getErrorHeader() + " : " +so.getLastErrorCode()+", "+result.getErrorDetail();
-			}
 			activityRecord.setNote( note );
 		}
 		activityRecord.setChangeOrderId( result.getSaleId() );
@@ -332,7 +284,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		lookupMailerHome();
 		try {
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( customerInfo, so );		
-
 			MailerGatewaySB mailer;
 			mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
@@ -457,5 +408,4 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
 			return soManager.getDetailsForReportGeneration();	
 	}
-
-}	
+}

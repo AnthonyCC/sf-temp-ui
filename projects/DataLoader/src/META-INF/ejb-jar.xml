@@ -5,6 +5,52 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 version="3.0">
   <enterprise-beans>
     <session>
+	<ejb-name>ProfileCreatorCron</ejb-name>
+      <home>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorHome</home>
+      <remote>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.payment.ejb.ProfileCreatorSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
+        <remote>
+        com.freshdirect.fdstore.customer.ejb.FDCustomerManaagerSB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>VirtualProductLoader</ejb-name>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
+        <ejb-ref-type>Entity</ejb-ref-type>
+        <home>com.freshdirect.erp.ejb.ErpProductHome</home>
+        <remote>com.freshdirect.erp.ejb.ErpProductEB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
       <ejb-name>SAPLoader</ejb-name>
       <home>com.freshdirect.dataloader.sap.ejb.SAPLoaderHome</home>
       <remote>
@@ -39,6 +85,12 @@ version="3.0">
         <ejb-ref-type>Entity</ejb-ref-type>
         <home>com.freshdirect.erp.ejb.ErpProductHome</home>
         <remote>com.freshdirect.erp.ejb.ErpProductEB</remote>
+      </ejb-ref>
+      <ejb-ref>
+        <ejb-ref-name>ejb/BatchManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.freshdirect.erp.ejb.BatchManagerHome</home>
+        <remote>com.freshdirect.erp.ejb.BatchManagerSB</remote>
       </ejb-ref>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -92,7 +144,38 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
-    
+     <session>
+      <ejb-name>AddressScrubbingLoader</ejb-name>
+      <home>
+      com.freshdirect.dataloader.addressscrubbing.ejb.AddressScrubbingLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.addressscrubbing.ejb.AddressScrubberLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.addressscrubbing.ejb.AddressScrubbingLoaderSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>SAPGrpInfoLoader</ejb-name>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SapGrpInfoLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
     <session>
       <ejb-name>SaleCron</ejb-name>
       <home>
@@ -192,6 +275,11 @@ version="3.0">
   <assembly-descriptor>
     <container-transaction>
       <method>
+        <ejb-name>VirtualProductLoader</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
         <ejb-name>InvoiceLoader</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
@@ -199,6 +287,11 @@ version="3.0">
       <method>
         <ejb-name>SaleCron</ejb-name>
  		<method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>ProfileCreatorCron</ejb-name>
+        <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
       <trans-attribute>Required</trans-attribute>

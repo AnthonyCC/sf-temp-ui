@@ -1,5 +1,5 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -23,17 +23,17 @@ String faqSections = FDStoreProperties.getFaqSections();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
-	
-    <tmpl:get name="extraCss" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	request.setAttribute("listPos", "SystemMessage,DeliveryFees");
 %>
@@ -41,13 +41,13 @@ String faqSections = FDStoreProperties.getFaqSections();
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_FAQ_HELP_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<td width="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+	<td width="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 </TR>
 <TR>
 	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><%@ include file="/common/template/includes/deptnav.jspf" %></TD>
 </TR>
 <TR>
-	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" BGCOLOR="#999966" COLSPAN="2"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
+	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" BGCOLOR="#999966" COLSPAN="2"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0">
@@ -56,10 +56,9 @@ String faqSections = FDStoreProperties.getFaqSections();
 		<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_FAQ_HELP_LEFT%>">
 		    <TR VALIGN="TOP">
 			    <TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" 
-		            alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+		            WIDTH="10" HEIGHT="1" BORDER="0"></TD>
 			    <TD WIDTH="<%=W_FAQ_HELP_LEFT-15%>" valign=top><br><br>
-				<A HREF="/help/index.jsp" TARGET="_top">
-				<!-- <img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR> -->
+				<A HREF="faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>" TARGET="_top"><!-- <img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR> -->
 				<span class="Container_Top_help_FAQ">FREQUENTLY ASKED QUESTIONS</span>
 				<font class="space4pix"><br></font>
 
@@ -72,7 +71,7 @@ String faqSections = FDStoreProperties.getFaqSections();
 				  	if(nextToken.equals(faqPage)){
 								
 				%><b><%= contentNode.getCmsAttributeValue("name") %></b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A class="faq_home_highcontrast" HREF="faq_home.jsp?page=<%= contentNode.getContentKey().getId() %>" TARGET="_top"><%= contentNode.getCmsAttributeValue("name") %></A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A HREF="faq_home.jsp?page=<%= contentNode.getContentKey().getId() %>" TARGET="_top"><%= contentNode.getCmsAttributeValue("name") %></A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}}%>	
 				<% }} %>
 				
@@ -85,7 +84,7 @@ String faqSections = FDStoreProperties.getFaqSections();
 	
 	</TD>
 	<TD width="<%=W_FAQ_HELP_RIGHT%>" align="right">
-		<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_FAQ_HELP_RIGHT%>"><br>
+		<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_FAQ_HELP_RIGHT%>"><br>
 		<!-- content lands here -->
 			<tmpl:get name='content'/>
 		<!-- content ends above here-->
@@ -93,8 +92,8 @@ String faqSections = FDStoreProperties.getFaqSections();
 	</TD>
 </TR>
 <TR VALIGN="BOTTOM">
-	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></TD>
-	<td width="<%=W_FAQ_HELP_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></TD>
+	<td width="<%=W_FAQ_HELP_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

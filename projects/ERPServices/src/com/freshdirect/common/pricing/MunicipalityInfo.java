@@ -15,10 +15,6 @@ public class MunicipalityInfo implements Serializable {
 	private boolean alcoholRestricted;
 	private EnumTaxationType taxationType;
 	
-	public MunicipalityInfo() {
-
-	}
-
 	public MunicipalityInfo(String id, String state, String county, String city, String gl_code, 
 		                     double tax_rate, double bottle_deposit, boolean alcohol_restricted, EnumTaxationType taxationType) {
 		this.id = id;

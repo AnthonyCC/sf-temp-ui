@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 		<title>Your March 24th Order</title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>

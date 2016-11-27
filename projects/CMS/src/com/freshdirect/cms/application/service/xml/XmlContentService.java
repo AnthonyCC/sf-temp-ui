@@ -22,7 +22,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.ResourceInfoServiceI;
 import com.freshdirect.cms.application.service.SimpleContentService;
-import com.freshdirect.cms.util.XmlResourceUtil;
+import com.freshdirect.framework.conf.ResourceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -72,7 +72,6 @@ public class XmlContentService extends SimpleContentService implements ContentSe
         protected void init(CmsNodeHandler nodeHandler, String resourceFiles, ResourceInfoServiceI resourceInfoService) {
             nodeHandler.setContentService(this);
             nodeHandler.setResourceInfoService(resourceInfoService);
-            LOGGER.info("ResourceFiles : "+resourceFiles);
             StringTokenizer tok = new StringTokenizer(resourceFiles, ",");
             // Map allNodes = new HashMap();
             while (tok.hasMoreTokens()) {
@@ -88,7 +87,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 		try {
 			LOGGER.info("Loading: " + location);
 
-			storeDataStream = XmlResourceUtil.openXmlResource(location);
+			storeDataStream = ResourceUtil.openResource(location);
 
 			if (location.endsWith(".zip")) {
 				storeDataStream = new ZipInputStream(storeDataStream);
@@ -105,6 +104,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 			nodeHandler.setContentService(this);
 
 			InputSource dataInputSource = new InputSource(storeDataStream);
+			//dataInputSource.setEncoding("ISO-8859-1");
 			dataInputSource.setEncoding("UTF-8");
 			parser.parse(dataInputSource, nodeHandler);
 
@@ -121,7 +121,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 				if (storeDataStream != null)
 					storeDataStream.close();
 			} catch (IOException ex) {
-			    LOGGER.error("IO exception raised while closing stream", ex);
+				ex.printStackTrace();
 				throw new CmsRuntimeException(ex);
 			}
 		}

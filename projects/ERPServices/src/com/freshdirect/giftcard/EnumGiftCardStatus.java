@@ -6,15 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumGiftCardStatus extends Enum {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4199200116057882779L;
 	public static final EnumGiftCardStatus UNKNOWN = new EnumGiftCardStatus("U", "Unknown");
 	public static final EnumGiftCardStatus ACTIVE = new EnumGiftCardStatus("A", "Active");
 	public static final EnumGiftCardStatus INACTIVE = new EnumGiftCardStatus("I", "InActive");
@@ -31,20 +24,19 @@ public class EnumGiftCardStatus extends Enum {
 		return this.description;
 	}
 
-	@JsonCreator
-	public static EnumGiftCardStatus getEnum(@JsonProperty("name") String name) {
-		return (EnumGiftCardStatus) getEnum(EnumGiftCardStatus.class, name);
+	public static EnumGCDeliveryMode getEnum(String name) {
+		return (EnumGCDeliveryMode) getEnum(EnumGCDeliveryMode.class, name);
 	}
 
 	public static Map getEnumMap() {
-		return getEnumMap(EnumGiftCardStatus.class);
+		return getEnumMap(EnumGCDeliveryMode.class);
 	}
 
 	public static List getEnumList() {
-		return getEnumList(EnumGiftCardStatus.class);
+		return getEnumList(EnumGCDeliveryMode.class);
 	}
 
 	public static Iterator iterator() {
-		return iterator(EnumGiftCardStatus.class);
+		return iterator(EnumGCDeliveryMode.class);
 	}
 }

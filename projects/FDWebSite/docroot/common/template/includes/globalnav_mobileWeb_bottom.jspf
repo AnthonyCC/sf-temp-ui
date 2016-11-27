@@ -1,74 +1,91 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-<%@ page import="com.freshdirect.fdstore.sempixel.FDSemPixelCache" %>
-<%@ page import="com.freshdirect.fdstore.sempixel.SemPixelModel" %>
-<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
-<%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel" %>
-<%@ page import="com.freshdirect.framework.util.log.LoggerFactory" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="org.apache.log4j.Logger" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%
-	Map params = new HashMap();
-
-	String rafLink = "";
-	final Logger LOGGER_BOTNAV = LoggerFactory.getInstance("globalnav_mobileWeb_bottom.jspf");
-	try {
-		if (user != null && user.getLevel() != FDUserI.GUEST) {
-			if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
-				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
-				rafLink = FDStoreProperties.getPropExtoleMicrositeSubUrl();
-			}
-		}
-	} catch (Exception e) {
-		LOGGER_BOTNAV.debug("Error in getting RAF link");
-		e.printStackTrace();
-	}
-
-	params.put("rafLink", rafLink);
-
-
-	String baseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
-	params.put("baseUrl", baseUrl);
-%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
+<%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
 <footer>
-	<fd:IncludeMedia name="/media/mobileweb/nav/bottom_nav.ftl" parameters="<%=params%>" withErrorReport="false">
-		<div class="footercontent">
-			<div class="anchors">
-				<a href="/your_account/manage_account.jsp" fd-login-required>Your&nbsp;Account</a>
-				<a href="/department.jsp?deptId=about&trk=bnav">About&nbsp;Us</a> 
-				<a href="/category.jsp?catId=food_safety_freshdirect&trk=bnav">Food&nbsp;Safety</a> 
-				<a href="http://jobs.jobvite.com/careers/fresh-direct/jobs"	target="_blank">Careers</a> 
-				<a href="/help/index.jsp">Help/FAQ</a>
-				<% if (!"".equals(rafLink)) { %><a href="<%=rafLink%>">Refer&nbsp;a&nbsp;Friend</a><% } %>
-				
-				<a href="/gift_card/purchase/landing.jsp?trk=bnav">Gift&nbsp;Card</a> 
-				<a href="http://blog.freshdirect.com/" target="_blank">Blog</a> 
-				<a href="/newproducts.jsp?trk=bnav">New&nbsp;Products</a> 
-				<a href="/help/contact_fd.jsp">Contact&nbsp;Us</a>
-			</div>
-			<div class="socialmedia">
-				<a href="http://www.facebook.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/facebook.png" border="0" alt="freshdirect on facebook"/></a> <a
-					href="http://www.twitter.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/twitter.png" border="0" alt="freshdirect on twitter"/></a> <a
-					href="http://www.pinterest.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/pinterest.png" border="0" alt="freshdirect on pinterest"/></a> <a
-					href="https://plus.google.com/107881041343024996566" target="_blank"><img
-					src="/media/mobileweb/images/google.png" border="0" alt="freshdirect on google"/></a> <a
-					href="http://www.youtube.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/youtube.png" border="0" alt="freshdirect on youtube"/></a>
-			</div>
-			<div class="storemedia">
-				<a href="https://itunes.apple.com/us/app/freshdirect/id346631494" target="_blank"><img src="/media/mobileweb/images/appstore.png" alt="download freshdirect iphone app" border="0" /></a>
-				<a href="https://market.android.com/details?id=com.freshdirect.android" target="_blank"><img src="/media/mobileweb/images/googleplay.png" alt="download freshdirect android app" border="0" /></a>
-			</div>
+	<div class="footercontent">
+		<div class="anchors">
+			<a href="/your_account/manage_account.jsp" fd-login-required>Your&nbsp;Account</a>
+			<a href="/department.jsp?deptId=about&trk=bnav">About&nbsp;Us</a> 
+			<a href="/category.jsp?catId=food_safety_freshdirect&trk=bnav">Food&nbsp;Safety</a> 
+			<a href="http://jobs.jobvite.com/careers/fresh-direct/jobs"	target="_blank">Careers</a> 
+			<a href="/help/index.jsp">Help/FAQ</a>
+			<%
+				final Logger LOGGER_BOTNAV = LoggerFactory.getInstance("globalnav_mobileWeb_bottom.jspf");
+				try {
+				if(!FDStoreProperties.isExtoleRafEnabled() && user !=null && user.isReferralProgramAvailable()) {
+					FDIdentity customerIdentity = null;
+					if (user!=null && user.getLevel() == 2){
+						customerIdentity = user.getIdentity();
+					}
+					ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
+					if(rpModel != null) {
+						%><a href="/your_account/brownie_points.jsp">Refer&nbsp;a&nbsp;Friend</a><%
+					}
+				}else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
+					//This is the default microsite url for RAF-- under My Account Refer a Friend Link
+					%><a href="<%=FDStoreProperties.getPropExtoleMicrositeSubUrl()%>">Refer&nbsp;a&nbsp;Friend</a><%
+				}
+				} catch (Exception e) {
+					LOGGER_BOTNAV.debug("Error in getting RAF link");
+					e.printStackTrace();
+				}
+			%>
+			<a href="/gift_card/purchase/landing.jsp?trk=bnav">Gift&nbsp;Card</a> 
+			<a href="http://blog.freshdirect.com/" target="_blank">Blog</a> 
+			<a href="/newproducts.jsp?trk=bnav">New&nbsp;Products</a> 
+			<a href="/help/index.jsp?trk=bnav">Contact&nbsp;Us</a>
 		</div>
-		<div class="basicHits">
-			<a href="/help/privacy_policy.jsp">Privacy&nbsp;Policy</a>&nbsp;|&nbsp;
-			<a href="/help/terms_of_service.jsp">Customer&nbsp;Agreement</a>&nbsp;|&nbsp;
-			<a href="/help/platform_agreement.jsp">Platform&nbsp;Terms&nbsp;of&nbsp;Use</a>
+		<div class="socialmedia">
+			<a href="http://www.facebook.com/FreshDirect" target="_blank"><img
+				src="/media/mobileweb/images/facebook.png" border="0" /></a> <a
+				href="http://www.twitter.com/FreshDirect" target="_blank"><img
+				src="/media/mobileweb/images/twitter.png" border="0" /></a> <a
+				href="http://www.pinterest.com/FreshDirect" target="_blank"><img
+				src="/media/mobileweb/images/pinterest.png" border="0" /></a> <a
+				href="https://plus.google.com/107881041343024996566" target="_blank"><img
+				src="/media/mobileweb/images/google.png" border="0" /></a> <a
+				href="http://www.youtube.com/FreshDirect" target="_blank"><img
+				src="/media/mobileweb/images/youtube.png" border="0" /></a>
 		</div>
-	</fd:IncludeMedia>
+		<div class="storemedia">
+			<a href="https://itunes.apple.com/us/app/freshdirect/id346631494" target="_blank"><img src="/media/mobileweb/images/appstore.png" border="0" /></a>
+			<a href="https://market.android.com/details?id=com.freshdirect.android" target="_blank"><img src="/media/mobileweb/images/googleplay.png" border="0" /></a>
+		</div>
+	</div>
+	<div class="basicHits">
+		<a href="/help/privacy_policy.jsp">Privacy&nbsp;Policy</a>&nbsp;|&nbsp;
+		<a href="/help/terms_of_service.jsp">Customer&nbsp;Agreement</a>&nbsp;|&nbsp;
+		<a href="/help/platform_agreement.jsp">Platform&nbsp;Terms&nbsp;of&nbsp;Use</a>
+	</div>
 	
 	<div class="copyright"><%@ include file="/shared/template/includes/copyright.jspf" %></div>
 </footer>
+
+<% if (session != null && session.getAttribute(SessionName.USER) != null) { %>
+	<%
+		/* Digo1 Pixel */
+		SemPixelModel semPixel_DIGO1 = FDSemPixelCache.getInstance().getSemPixel("DiGo1");
+		FDUserI user_DIGO1 = (FDSessionUser)session.getAttribute(SessionName.USER);
+		semPixel_DIGO1.clearParams();
+		semPixel_DIGO1.setParam("footer", "true");
+	%>
+	<%
+		if(request.getRequestURI().endsWith("index.jsp") || request.getRequestURI().endsWith("cos.jsp") || request.getRequestURI().endsWith("welcome.jsp")) {
+			//add param so ftl can do different logic
+			semPixel_DIGO1.setParam("homepage", "true");
+		}
+	%>
+	<%
+		if(user_DIGO1.hasJustLoggedIn(false)) { //don't clear, we need the same check for DiGo2 (which will clear)
+			//add param so ftl can do different logic
+			semPixel_DIGO1.setParam("login", "true");
+		}
+	%>
+		<fd:SemPixelIncludeMedia pixelNames="DiGo1" />
+	<% /* Digo1 Pixel */ %>
+<% } %>
+	

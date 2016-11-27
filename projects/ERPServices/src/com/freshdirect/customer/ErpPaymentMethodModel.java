@@ -5,7 +5,6 @@ import java.util.Date;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -38,8 +37,6 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String eWalletTrxnId="";
 	private String emailID="";
 	private String deviceId;
-	private boolean isDebitCard;
-	private boolean isValidCardForDefault;
 	
 	/**
 	 * @return the trxnId
@@ -403,23 +400,5 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public String getDeviceId() {
 		return this.deviceId;
 	}
-
-	public boolean isDebitCard() {
-		return isDebitCard;
-	}
-
-	public void setDebitCard(boolean isDebitCard) {
-		this.isDebitCard = isDebitCard;
-	}
-
-	public void setIsValidCardForDefault(boolean isValidCardForDefault){
-		this.isValidCardForDefault = isValidCardForDefault;
-	}
-
-	@Override
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
-	}
+	
 }

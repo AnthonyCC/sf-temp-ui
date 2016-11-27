@@ -12,7 +12,6 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -100,8 +99,8 @@ public class ErpComplaintModel extends ModelSupport {
     public int getComplaintMethod() {
 		boolean isStoreCredit = false;
 		boolean isCashBack = false;
-		for (Iterator<ErpComplaintLineModel> it = complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel line = it.next();
+		for (Iterator it = complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
 			if ( line.getMethod().equals(EnumComplaintLineMethod.STORE_CREDIT) ) {
 				isStoreCredit = true;
 			} else if ( line.getMethod().equals(EnumComplaintLineMethod.CASH_BACK) ) {
@@ -128,8 +127,8 @@ public class ErpComplaintModel extends ModelSupport {
 
 		double amount = 0.0;
 
-		for (Iterator<ErpComplaintLineModel> it = complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel line = it.next();
+		for (Iterator it = complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
 			amount += line.getAmount();
 		}
 
@@ -154,11 +153,11 @@ public class ErpComplaintModel extends ModelSupport {
 		return getAmountForMethod(EnumComplaintLineMethod.CASH_BACK);
 	}
 	
-	public List<ErpComplaintLineModel> getCashBackComplaintLines() {
+	public List getCashBackComplaintLines() {
 		
-		List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
-		for(Iterator<ErpComplaintLineModel> i = this.complaintLines.iterator(); i.hasNext(); ) {
-			ErpComplaintLineModel line = i.next();
+		List lines = new ArrayList();
+		for(Iterator i = this.complaintLines.iterator(); i.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel)i.next();
 			if(EnumComplaintLineMethod.CASH_BACK.equals(line.getMethod())) {
 				lines.add(line);
 			}
@@ -175,8 +174,8 @@ public class ErpComplaintModel extends ModelSupport {
 	 */
     private double getAmountForMethod(EnumComplaintLineMethod method) {
 		double amount = 0.0;
-		for (Iterator<ErpComplaintLineModel> it = complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel line = it.next();
+		for (Iterator it = complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
 			if ( line.getMethod().equals(method) )
 				amount += line.getAmount();
 		}
@@ -200,8 +199,8 @@ public class ErpComplaintModel extends ModelSupport {
     }
     
     public ErpComplaintLineModel getComplaintLine(String orderlineId) {
-    	for(Iterator<ErpComplaintLineModel> i = this.complaintLines.iterator(); i.hasNext(); ) {
-    		ErpComplaintLineModel cl = i.next();
+    	for(Iterator i = this.complaintLines.iterator(); i.hasNext(); ) {
+    		ErpComplaintLineModel cl = (ErpComplaintLineModel) i.next();
     		if(!EnumComplaintLineType.ORDER_LINE.equals(cl.getType())) {
     			continue;
     		}
@@ -216,8 +215,8 @@ public class ErpComplaintModel extends ModelSupport {
     
 	private double getAmountForDept(String dept) {
 		double amount = 0.0;
-		for (Iterator<ErpComplaintLineModel> it = complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel line = it.next();
+		for (Iterator it = complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
 			if (dept!=null && dept.equalsIgnoreCase(line.getDepartmentCode()))
 				amount += line.getAmount();
 		}
@@ -360,11 +359,11 @@ public class ErpComplaintModel extends ModelSupport {
 	
 
 
-	public Set<String> collectCartonNumbers() {
-		Set<String> cartonNumbers = new HashSet<String>();
+	public Set collectCartonNumbers() {
+		Set cartonNumbers = new HashSet();
 		
-		for (Iterator<ErpComplaintLineModel> it=complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel l = it.next();
+		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
 			final String cartonNumber = l.getCartonNumber();
 			if (cartonNumber != null)
 				cartonNumbers.add(cartonNumber);
@@ -390,11 +389,13 @@ public class ErpComplaintModel extends ModelSupport {
 		return topReason;
 	}
 	
-	public Set<EnumComplaintDlvIssueType> getDeliveryIssues() {
-		Set<EnumComplaintDlvIssueType> dlvTypes = new HashSet<EnumComplaintDlvIssueType>();
+	
+	// Set<EnumDlvIssueType>
+	public Set getDeliveryIssues() {
+		Set dlvTypes = new HashSet();
 		
-		for (Iterator<ErpComplaintLineModel> it=complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel l = it.next();
+		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
 			dlvTypes.add(l.getReason().getDeliveryIssueType());
 		}
 		return dlvTypes;
@@ -403,8 +404,8 @@ public class ErpComplaintModel extends ModelSupport {
 	public int getPriority() {
 		int p = 0;
 		
-		for (Iterator<ErpComplaintLineModel> it=getComplaintLines().iterator(); it.hasNext();) {
-			int lp = it.next().getReason().getPriority();
+		for (Iterator it=getComplaintLines().iterator(); it.hasNext();) {
+			int lp = ((ErpComplaintLineModel) it.next()).getReason().getPriority();
 			if (lp > p)
 				p = lp;
 		}
@@ -423,7 +424,7 @@ public class ErpComplaintModel extends ModelSupport {
 		private static final long serialVersionUID = 236894187132938375L;
 
 		transient String departmentCode;
-		Collection<ErpComplaintLineModel> complaintLines = new HashSet<ErpComplaintLineModel>();
+		Collection complaintLines = new HashSet();
 		
 		public AggregatedComplaintLines(String deptCode) {
 			this.departmentCode = deptCode;
@@ -440,8 +441,8 @@ public class ErpComplaintModel extends ModelSupport {
 		public double getAmount() {
 			double amt = 0;
 
-			for (Iterator<ErpComplaintLineModel> it=complaintLines.iterator(); it.hasNext();) {
-				amt += it.next().getAmount();
+			for (Iterator it=complaintLines.iterator(); it.hasNext();) {
+				amt += ((ErpComplaintLineModel) it.next()).getAmount();
 			}
 			return amt;
 		}
@@ -463,7 +464,8 @@ public class ErpComplaintModel extends ModelSupport {
 		}
 	}
 
-	@JsonIgnore
+
+	// @return Collection<AggregatedComplaintLines>
 	public Collection getComplaintLinesAggregated() {
 		// Map of dept code to complaint lines
 		Map deptSet = new HashMap();
@@ -497,10 +499,4 @@ public class ErpComplaintModel extends ModelSupport {
     	
     	return null;
     }
-	
-	@Override
-	public void setId(String id) {
-		if (id != null)
-			super.setId(id);
-	}
 }

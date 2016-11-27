@@ -1,5 +1,4 @@
-[fdform] [invalid],
-[fdform] input[type="tel"][invalid] {
+[fdform] [invalid] {
   outline: none;
   border-color: #cb2848;
   background: #fcf4f5;
@@ -14,13 +13,8 @@
 
 [fdform-error] {
   display: block;
-  color: #B93D3F;
+  color: #cb2848;
   font-size: 12px;
-}
-
-[fdform-displayerrorafter] span[fdform-error],
-[fdform-displayerrorafter]+span[fdform-error] {
-    text-align: left;
 }
 
 [fdform] [fdform-warning] {
@@ -34,13 +28,11 @@
 }
 
 [fdform][fdform-locked] *:disabled {
-  background: #e1e1e1;
-  color: #fff;
+  background: #e8e8ea;
+  color: #858585;
   cursor: not-allowed;
 }
-[fdform][fdform-locked] *:disabled:before{
-	content: none;
-}
+
 .ec-popup [fdform] input[fdform-hidden],
 [fdform] [fdform-hidden]{
   display:none;
@@ -48,6 +40,10 @@
 
 [fdform-generated-label] {
   display: none;
+}
+
+body[developer] *:focus {
+  outline: 1px solid rgba(136,167,92,.4);
 }
 
 [fdform] input,
@@ -320,34 +316,21 @@ input[type="radio"]:disabled + .fake-radio:before {
   color: #fafafa;
 }
 
-.ec-popup.addpaymentmethodpopup .formselector {
-	padding-top: 20px;
-}
-
 label.tabs {
   background: #d1d1d1;
   padding: 1.25rem 1.5rem;
   display: inline-block;
-  min-width: 120px;
+  width: 145px;
   font-size: 18px;
-  /*margin-top: 20px;*/
+  margin-top: 20px;
   text-align: center;
   line-height: 1.75rem;
   margin-left: 4px;
   font-weight: bold;
 }
 
-
 .tabs input[type="radio"] {
-/* 	display: none; */
-  position: absolute; 
-  overflow: hidden; 
-  clip: rect(0 0 0 0); 
-  height: 1px;
-  width: 1px; 
-  margin: -1px; 
-  padding: 0; 
-  border: 0; 
+	display: none;
 }
 
 [fdform] label {
@@ -391,32 +374,4 @@ span[fdform-error] {
 
 [fdform][fdform-hidden] label {
 	display: none;
-}
-
-/* make checkboxes LOOK like checkboxes by default */
-[fdform] input[type="checkbox"]:checked {
-	background: #4fa157 url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
-	box-shadow: 0 0 0 1px #4fa157;
-	background-size: 200%;
-}
-[fdform] input[type="checkbox"]:disabled {
-	background: #eee url('/media_stat/images/common/check-radio-disabled-with-checkmark.svg') center center no-repeat;
-	box-shadow: 0 0 0 1px #ccc;
-	background-size: 200%;
-}
-.contact_fd-cont{
-	text-align:left;
-}
-.contact_fd-cont label{
-	width: 150px;
-    padding-right: 10px;
-    vertical-align: middle;
-    text-align: right;
-}
-input#search-faq2,input.accessible_search {
-    border:2px solid #c2c2c2;
-}
-
-input#search-faq2:focus,input#search-faq2:hover {
-        border:2px solid #68aa6d;
 }

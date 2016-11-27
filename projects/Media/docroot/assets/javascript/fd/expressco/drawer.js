@@ -23,78 +23,35 @@ var FreshDirect = FreshDirect || {};
       value: 'ec-drawer'
     },
     changeTrigger: {
-      value: '.drawer__previewitem .change,[data-drawer-activate]'
+      value: '[data-drawer-id] .change,[data-drawer-activate]'
     },
     cancelTrigger: {
-        value: '[data-drawer-id] .cancel-button'
+      value: '[data-drawer-id] .cancel,[data-drawer-active] [data-drawer-disabled],[data-drawer-active] [data-drawer-id]'
     },
     activate: {
       value: function (id) {
-        if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').length === 0) {
-          if($('[data-drawer-columns="1"]').length > 0){
-       		  $('[data-drawer-columns="1"]').css("max-width", "none");
-       	  }
+        if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
           $(document.body).attr('data-drawer-active', id);
-          DISPATCHER.signal(id + '-drawer-on-open');
-          if (fd.mobWeb) {
-        	  $('.drawer-row').removeClass('active').hide();
-        	  $('.drawer-row.auto-height').removeClass('auto-height').addClass('auto-height-disabled');
-        	  $('[data-drawer-default]').hide();
-        	  $('[data-drawer-id="'+id+'"]').parents('.drawer-row').addClass('active').show();
-          } else {
-        	  $('[data-drawer-id]').removeClass('active').hide();
-              $('[data-drawer-id="'+id+'"]').addClass('active').show();
-              $('.cancel .cancel-button:visible').focus();
-          }
-
-          
-		  $('#checkout-cart-header').hide();
+          $('[data-drawer-content="'+id+'"]').focus();
         }
       }
     },
     reset: {
-      value: function (config) {
+      value: function () {
         var active = $(document.body).attr('data-drawer-active');
-        config = config || {};
-        
-        if($('[data-drawer-columns="1"]').length > 0){
-    		$('[data-drawer-columns="1"]').css("max-width", "500px");
-  	  	}
         if (active) {
           try {
             $('[data-drawer-id="'+active+'"]').focus();
           } catch (e) {}
         }
         $(document.body).attr('data-drawer-active', null);
-        if(fd.mobWeb) {
-      	  $('.drawer-row').removeClass('active').show();
-      	  $('.drawer-row.auto-height-disabled').removeClass('auto-height-disabled').addClass('auto-height');
-      	  $('[data-drawer-default]').show();
-        } else {
-        	$('[data-drawer-id]').removeClass('active').show();
-        }
-        
-		$('#checkout-cart-header').show();
         $("#ec-drawer").trigger("drawer-reset");
-
-        if (!config.noEvent) {
-          DISPATCHER.signal('ec-drawer-reset', {active: active});
-        }
-      }
-    },
-    cancel: {
-      value: function () {
-        var active = $(document.body).attr('data-drawer-active');
-        this.reset({noEvent: true});
-        DISPATCHER.signal('ec-drawer-cancel', {active: active});
-      }
+      }	
     },
     changeClick: {
       value: function (e) {
         var ct = $(e.currentTarget),
-            target = ct.attr('data-drawer-activate') || ct.parent().attr('data-drawer-id') ||ct.parents('[data-drawer-default-content]').attr('data-drawer-default-content');
-
-        DISPATCHER.signal('ec-drawer-click', {target: target});
+            target = ct.attr('data-drawer-activate') || ct.parent().attr('data-drawer-id');
 
         this.activate(target);
       }
@@ -135,8 +92,8 @@ var FreshDirect = FreshDirect || {};
   drawer.init();
 
   $(document).on('click', drawer.changeTrigger, drawer.changeClick.bind(drawer));
-  $(document).on('click', drawer.cancelTrigger, drawer.cancel.bind(drawer));
-  $(document).on('keydown', '[data-drawer-content], .drawer-header .active', function (e) {
+  $(document).on('click', drawer.cancelTrigger, drawer.reset.bind(drawer));
+  $(document).on('keydown', '[data-drawer-content]', function (e) {
     if (e.keyCode === fd.utils.keyCode.ESC) {
       drawer.reset();
     }
@@ -144,7 +101,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', function (e) {
     var $el = $(e.target);
 
-    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results,.ui-selectmenu-menu').length === 0) {
+    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results').size() === 0) {
       drawer.reset();
     }
   });
@@ -156,18 +113,13 @@ var FreshDirect = FreshDirect || {};
         action = $ct.attr('data-action'),
         formid, endpoint, submitFn, $el, id;
 
-    if ($form.length) {
+    if ($form.size()) {
       formid = $form.attr('fdform');
-      /* override endpoint with button attr */
-      if ($ct.attr('fdform-endpoint-submit')) {
-        endpoint = $ct.attr('fdform-endpoint-submit');
-      } else {
-        endpoint = fd.modules.common.forms.getAjaxEndpoint(formid, 'submit');
-      }
+      endpoint = fd.modules.common.forms.getAjaxEndpoint(formid, 'submit');
       $el = $ct.parent().siblings('input');
 
-      if ($el.length === 0) {
-    	  $el = $ct.closest('.drawer__item').find('input[name="id"]');
+      if ($el.size() === 0) {
+        $el = $ct.parent().siblings('label').find('input');
       }
       id = $el.val();
 
@@ -195,14 +147,7 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
-  
-  $(document).on('click', '.clickable,.fake-radio', function(e) {
-	    $jq(this).closest('.drawer__item').find('[type="radio"]').click().focus();
-	});
-  $(document).on('click', '[data-drawer-id] .close-button', function(e) {
-	  var drawerId = $jq(this).parents('[data-drawer-id]').data('drawer-id');
-	  $jq('[data-drawer-content="' + drawerId + '"] form').submit();
-  });
+
   $(document).on('keydown', "[data-drawer-id]", function(e){
     // make drawer open by enter key
     if (e.which === 13) {

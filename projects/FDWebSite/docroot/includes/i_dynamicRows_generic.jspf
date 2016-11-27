@@ -1,5 +1,5 @@
 <%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 
 <fd:PendingOrderChecker/>
@@ -257,54 +257,80 @@
 									myDebugStr = "ROW "+curRow+": contentNode is a category : "+contentNode;
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 								}
-							} else if (uniqG) {
+								continue;
+							}
+							if (uniqG) {
 								if(globalColl.contains(contentNode)) {
 									myDebugStr = "ROW "+curRow+": contentNode is already in globalColl : "+contentNode;
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else if (uniqR) {
+							}
+							if (uniqR) {
 								if(rowCollIds.contains(contentNode.toString())) {
 									myDebugStr = "ROW "+curRow+": contentNode is already in rowCollIds : "+contentNode.toString();
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else {
+							}
+
 							ProductModel pm = (ProductModel) contentNode;
-							if (exDisc && pm.isDiscontinued()) { 							//skip if discontinued and we're excluding
+							//skip if discontinued and we're excluding
+							if (exDisc && pm.isDiscontinued()) {
 								myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") and exDisc ("+exDisc+") : "+contentNode;
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-							} else if (pm.isUnavailable()) { 							//skip if unavailable
+								continue;
+							}
+							//skip if unavailable
+							if (pm.isUnavailable()) {
 								myDebugStr = "ROW "+curRow+": contentNode isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-							} else if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { 							//if dealsOnly is true, skip if not a deal
+								continue;
+							}
+							//if dealsOnly is true, skip if not a deal
+							if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) {
 								myDebugStr = "ROW "+curRow+": dealsOnly ("+dealsOnly+") or contentNode getHighestDealPercentage < 1 ("+ pm.getHighestDealPercentage()+") : "+contentNode;
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-							} else if (newOnly) { 							//if new only is true, skip if not new
+								continue;
+							}
+							//if new only is true, skip if not new
+							if (newOnly) {
 								if(!pm.isNew()) {
 									myDebugStr = "ROW "+curRow+": contentNode isNew ("+pm.isNew()+") : "+contentNode.toString();
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else if (bisOnly) {							//if bis only is true, skip if not bis
+							}
+							//if bis only is true, skip if not bis
+							if (bisOnly) {
 								if(!pm.isBackInStock()) {
 									myDebugStr = "ROW "+curRow+": contentNode isBackInStock ("+pm.isBackInStock()+") : "+contentNode.toString();
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else if (exPer) {							//if exclude perishables is true, skip products with perishable flag
+							}
+							//if exclude perishables is true, skip products with perishable flag
+							if (exPer) {
 								if(pm.isPerishable()) {
 									myDebugStr = "ROW "+curRow+": contentNode isPerishable ("+pm.isPerishable()+") : "+contentNode.toString();
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else if (exFro) {
+							}
+							if (exFro) {
 								if(pm.isFrozen()) {
 									myDebugStr = "ROW "+curRow+": contentNode isFrozen ("+pm.isFrozen()+") : "+contentNode.toString();
 										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
 								}
-							} else if (uniqR) { 
+							}
+
+							if (uniqR) { 
 								//add to rowCollIds for ROW dupe check
 								rowCollIds.add(contentNode.toString());
 							}
-			
+
 							minCheckTempCount++;
-							}
 						%>
 					</logic:iterate>
 				<%
@@ -337,49 +363,73 @@
 							myDebugStr = "ROW "+curRow+": contentNode is a category : "+contentNode;
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 						}
-					} else if (uniqG) {
+						continue;
+					}
+					if (uniqG) {
 						if(globalColl.contains(contentNode)) {
 							myDebugStr = "ROW "+curRow+": contentNode is already in globalColl : "+contentNode;
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else if (uniqR) {
+					}
+					if (uniqR) {
 						if(rowCollIds.contains(contentNode.toString())) {
 							myDebugStr = "ROW "+curRow+": contentNode is already in rowCollIds : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else {
+					}
+
 					ProductModel pm = (ProductModel) contentNode;
-					
-					if (exDisc && pm.isDiscontinued()) {//skip if discontinued and we're excluding
+					//skip if discontinued and we're excluding
+					if (exDisc && pm.isDiscontinued()) {
 						myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") and exDisc ("+exDisc+") : "+contentNode;
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-					} else if (pm.isUnavailable()) {//skip if unavailable
+						continue;
+					}
+					//skip if unavailable
+					if (pm.isUnavailable()) {
 						myDebugStr = "ROW "+curRow+": contentNode isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-					} else if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) {//if dealsOnly is true, skip if not a deal
+						continue;
+					}
+					//if dealsOnly is true, skip if not a deal
+					if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) {
 						myDebugStr = "ROW "+curRow+": dealsOnly ("+dealsOnly+") or contentNode getHighestDealPercentage < 1 ("+ pm.getHighestDealPercentage()+") : "+contentNode;
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-					} else if (newOnly) { //if new only is true, skip if not new
+						continue;
+					}
+					//if new only is true, skip if not new
+					if (newOnly) {
 						if(!pm.isNew()) {
 							myDebugStr = "ROW "+curRow+": contentNode isNew ("+pm.isNew()+") : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else if (bisOnly) { //if bis only is true, skip if not bis
+					}
+					//if bis only is true, skip if not bis
+					if (bisOnly) {
 						if(!pm.isBackInStock()) {
 							myDebugStr = "ROW "+curRow+": contentNode isBackInStock ("+pm.isBackInStock()+") : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else if (exPer) {
+					}
+					if (exPer) {
 						if(pm.isPerishable()) {
 							myDebugStr = "ROW "+curRow+": contentNode isPerishable ("+pm.isPerishable()+") : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else if (exFro) {
+					}
+					if (exFro) {
 						if(pm.isFrozen()) {
 							myDebugStr = "ROW "+curRow+": contentNode isFrozen ("+pm.isFrozen()+") : "+contentNode.toString();
 								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else if (brandUniqFilter) {
+					}
+					if (brandUniqFilter) {
 						List<BrandModel> pmBrands = pm.getBrands();
 						boolean brandUsed = false;
 						for (BrandModel pmBrand: pmBrands) {
@@ -392,8 +442,9 @@
 						if (brandUsed) {
 							myDebugStr = "ROW "+curRow+": contentNode brandUsed ("+pmBrands+") : "+contentNode.toString();
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
 						}
-					} else {
+					}
 
 					//add to pageColl for prices ref
 					rowColl.add(contentNode);
@@ -415,7 +466,6 @@
 					}
 
 					tempCounter++;
-					} }
 				%>
 			</logic:iterate>
 			<% if (isTransactionalRow) { %>
@@ -448,6 +498,7 @@
 				<% if (isTransactionalRow) { %>
 					<form id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>' class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 						<fd:AddToCartPending id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>'/>
+						<fd:CmFieldDecorator/>
 						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
 				

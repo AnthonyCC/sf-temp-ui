@@ -33,7 +33,6 @@ public class EwalletRequestData implements Serializable {
 	private String precheckoutTransactionId;
 	private Map<String,String> reqParams;
 	private String emailId;
-	private boolean isDebitCardSwitch;
 	
 	
 	//batch interface related trxns
@@ -291,13 +290,5 @@ public class EwalletRequestData implements Serializable {
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
-
-	public boolean isDebitCardSwitch() {
-		return isDebitCardSwitch;
-	}
-
-	public void setDebitCardSwitch(boolean isDebitCardSwitch) {
-		this.isDebitCardSwitch = isDebitCardSwitch;
-	}
-		
+	
 }

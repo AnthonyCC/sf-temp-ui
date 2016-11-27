@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -13,7 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -36,11 +36,7 @@ if ("POST".equals(request.getMethod()) && result == null) {
 }
 %>
 <tmpl:insert template='/common/template/both_dnav.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - <%= null !=productNode?productNode.getFullName():"" %></tmpl:put> --%>
-    <tmpl:put name="seoMetaTag" direct='true'>
-       <% String var = "FreshDirect - " + (null !=productNode?productNode.getFullName():""); %>
-        <fd:SEOMetaTag title="<%= var %>"/>
-    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= null !=productNode?productNode.getFullName():"" %></tmpl:put>
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>

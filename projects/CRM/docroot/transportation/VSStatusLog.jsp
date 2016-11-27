@@ -60,8 +60,7 @@
 <%
 	Calendar cal = Calendar.getInstance();  
 	cal.add(Calendar.DAY_OF_MONTH, -15);
-	List<CrmVSCampaignModel> campaigns = null;
-	
+	List<CrmVSCampaignModel> campaigns = CallCenterServices.getVoiceShotLog(cal.getTime());
 		if (campaigns.size() > 0) { %>
 		<%
 		for(int i=0;i<campaigns.size();i++) {

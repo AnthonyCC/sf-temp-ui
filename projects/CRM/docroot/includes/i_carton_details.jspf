@@ -87,8 +87,6 @@ if (newCaseObj != null) {
 <%
 		for (Iterator it=cartonInfo.iterator(); it.hasNext(); ) {
 			FDCartonInfo carton = (FDCartonInfo) it.next();
-			if(!"0000000000".equalsIgnoreCase(carton.getCartonInfo().getCartonNumber())){ 
-			
 			String cId = carton.getCartonInfo().getCartonNumber();
 %>
 	<tr valign="top" class="list_odd_row">
@@ -96,7 +94,7 @@ if (newCaseObj != null) {
 		<td colspan="4">Carton: <%= cId %> Type: <%= carton.getCartonInfo().getCartonType() %></td>
 	</tr>
 	<tr>
-		<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+		<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 	</tr>
 <%
 			int ix=0;
@@ -106,7 +104,7 @@ if (newCaseObj != null) {
 %>			<tr valign="top">
                 <td><input id="<%= cId %>_<%= ix %>" type="checkbox" name="cb<%= cId %>_<%= ix %>" onclick="toggleCartonItem('<%= cId %>');"></td>
 				<td>
-					<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
+					<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 					<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
  						<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
  					<% } %>
@@ -115,39 +113,6 @@ if (newCaseObj != null) {
 				<td><%= cartonDetail.getCartonDetail().getNetWeight() %></td>
 				<td><%= cartonDetail.getCartLine().getUnitPrice() %></td>
 			</tr>
-			
-			<% 
-								if(cartonDetail.getCartonDetail().getComponents().size() > 0 ) { 
-									for (int j = 0; j < cartonDetail.getCartonDetail().getComponents().size(); j++) {
-										ErpCartonDetails component = cartonDetail.getCartonDetail().getComponents().get(j);
-							
-							%>
-								
-								<tr valign="top" class="list_component_row">
-									<td width="150px">	</td>
-									<td>									
-										<%= component.getActualQuantity() %>&nbsp;
-									</td>
-									<td>
-										<span style="margin-left: 20px;"><%= component.getMaterialDesc() %>
-										(<%= component.getSkuCode() %>)</span>
-									</td>
-									<td width="90px"> 
-										<%= component.getNetWeight() %>
-										<% if(component.getWeightUnit() != null) { %>
-											<%= component.getWeightUnit().toLowerCase() %>
-										<% } %>
-									</td>
-									<td width="75px">
-										
-									</td>
-								</tr>							
-							
-							<% 		}
-								} 
-							%>
-							
-							
 <%			
 					ix++;
 				} // cartonDetail.getCartLine() != null
@@ -156,7 +121,6 @@ if (newCaseObj != null) {
 cartonItems['<%= cId %>'] = <%= ix %>;
 </script>
 <%
-			 }
 		} // cartonInfo iterator
 %></table>
 <%	} else { %><div class="order">No cartons found!</div>

@@ -16,9 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
@@ -32,22 +29,22 @@ public class EnumCardType extends ValuedEnum {
 	private static final Map<String,EnumCardType> CARDS_BY_SETTLEMENT_CODE = new HashMap<String,EnumCardType>();
 	private static final Map<String,EnumCardType> CARDS_BY_PAYMENTECH_CODE = new HashMap<String,EnumCardType>();
 
-	public final static EnumCardType AMEX = new EnumCardType(0, "AMEX", "AMEX", "003", "A","Amex", "AX", EnumPaymentMethodType.CREDITCARD, 4);
-	public final static EnumCardType MC = new EnumCardType(1, "MC", "MC", "002", "M", "MasterCard", "MC", EnumPaymentMethodType.CREDITCARD, 6);
-	public final static EnumCardType VISA = new EnumCardType(2, "VISA", "VISA", "001", "V", "Visa", "VI", EnumPaymentMethodType.CREDITCARD, 7);
+	public final static EnumCardType AMEX = new EnumCardType(0, "AMEX", "AMEX", "003", "A","Amex", "AX", EnumPaymentMethodType.CREDITCARD);
+	public final static EnumCardType MC = new EnumCardType(1, "MC", "MC", "002", "M", "MasterCard", "MC", EnumPaymentMethodType.CREDITCARD);
+	public final static EnumCardType VISA = new EnumCardType(2, "VISA", "VISA", "001", "V", "Visa", "VI", EnumPaymentMethodType.CREDITCARD);
 	
-	public final static EnumCardType DISC = new EnumCardType(3, "DISC", "DISC", "004", "S", "Discover", "DI", EnumPaymentMethodType.CREDITCARD, 5);
-	public final static EnumCardType ECP = new EnumCardType(4, "ECP", "ECP", "005", "C", "ECheck", "EC", EnumPaymentMethodType.ECHECK, 2);
+	public final static EnumCardType DISC = new EnumCardType(3, "DISC", "DISC", "004", "S", "Discover", "DI", EnumPaymentMethodType.CREDITCARD);
+	public final static EnumCardType ECP = new EnumCardType(4, "ECP", "ECP", "005", "C", "ECheck", "EC", EnumPaymentMethodType.ECHECK);
 	
-	public final static EnumCardType GCP = new EnumCardType(4, "GCP", "GIFT", "006", "C", "GiftCard", "GC", EnumPaymentMethodType.GIFTCARD, 1000);
-	public final static EnumCardType EBT = new EnumCardType(5, "EBT", "EBT", "007", "E", "EBT", "ET", EnumPaymentMethodType.EBT, 9);
+	public final static EnumCardType GCP = new EnumCardType(4, "GCP", "GIFT", "006", "C", "GiftCard", "GC", EnumPaymentMethodType.GIFTCARD);
+	public final static EnumCardType EBT = new EnumCardType(5, "EBT", "EBT", "007", "E", "EBT", "ET", EnumPaymentMethodType.EBT);
 	
-	public final static EnumCardType DEBIT = new EnumCardType(7, "DEBIT", "DEBIT", "008", "D", "Debit", "DC", EnumPaymentMethodType.DEBITCARD, 1);
-	public final static EnumCardType MASTERPASS = new EnumCardType(7, "MP", "MP", "009", "P", "MasterPass", "MP", EnumPaymentMethodType.MASTERPASS, 8);
+	public final static EnumCardType DEBIT = new EnumCardType(7, "DEBIT", "DEBIT", "008", "D", "Debit", "DC", EnumPaymentMethodType.DEBITCARD);
+	public final static EnumCardType MASTERPASS = new EnumCardType(7, "MP", "MP", "009", "P", "MasterPass", "MP", EnumPaymentMethodType.MASTERPASS);
 
-	public final static EnumCardType PAYPAL = new EnumCardType(8, "PYPL", "PYPL", "010", "P", "PayPal", "PP", EnumPaymentMethodType.PAYPAL, 3);
+	public final static EnumCardType PAYPAL = new EnumCardType(8, "PYPL", "PYPL", "010", "P", "PayPal", "PP", EnumPaymentMethodType.PAYPAL);
 	
-	private EnumCardType(int id, String fdName, String sapName, String paylinxId, String settlementCode, String displayName, String paymentechCode, EnumPaymentMethodType type, int priority) {
+	private EnumCardType(int id, String fdName, String sapName, String paylinxId, String settlementCode, String displayName, String paymentechCode, EnumPaymentMethodType type) {
 		super(fdName, id);
 		this.sapName=sapName;
 		this.paylinxId = paylinxId;
@@ -55,7 +52,6 @@ public class EnumCardType extends ValuedEnum {
 		this.displayName = displayName;
 		this.paymentechCode = paymentechCode;
 		this.type = type;
-		this.priority = priority;
 		
 		CARDS_BY_SETTLEMENT_CODE.put(settlementCode, this);
 		CARDS_BY_PAYMENTECH_CODE.put(paymentechCode, this);
@@ -68,7 +64,6 @@ public class EnumCardType extends ValuedEnum {
 	private final String displayName;
 	private final String paymentechCode;
 	private final EnumPaymentMethodType type;
-	private final int priority;
 	
 	//this method is only there for backward compatibility
 	
@@ -76,13 +71,11 @@ public class EnumCardType extends ValuedEnum {
 		return getEnum(code);
 	}
 	
-	@JsonCreator
 	public static EnumCardType getEnum(String code) {
 		return (EnumCardType) getEnum(EnumCardType.class, code);
 	}
 
-	@JsonCreator
-	public static EnumCardType getEnum(@JsonProperty("value") int id) {
+	public static EnumCardType getEnum(int id) {
 		return (EnumCardType) getEnum(EnumCardType.class, id);
 	}
 
@@ -106,7 +99,6 @@ public class EnumCardType extends ValuedEnum {
 		return (EnumCardType) CARDS_BY_PAYMENTECH_CODE.get(paymentechCode);
 	}
 	
-		
 	public static List getCardTypes() {
 		List cards = new ArrayList();
 		for(Iterator i = iterator(); i.hasNext(); ) {
@@ -120,7 +112,6 @@ public class EnumCardType extends ValuedEnum {
 		return cards;
 	}
 
-	@JsonValue
 	public String getFdName() {
 		return this.getName();
 	}
@@ -152,9 +143,4 @@ public class EnumCardType extends ValuedEnum {
 	public EnumPaymentMethodType getPaymentMethodType(){
 		return this.type;
 	}
-	
-	public int getPriority() {
-		return this.priority;
-	}
-	
 }

@@ -1,5 +1,5 @@
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
@@ -10,8 +10,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-
-<fd:RequiredParameterValidator parameters="catId,prodId"/>
 
 <%
 String catId = request.getParameter("catId");
@@ -80,14 +78,10 @@ if (prod.isNutritionMultiple()) {
           }
        }
 }
-title = "FreshDirect - " + title;
 %>
 
 <tmpl:insert template='/common/template/small_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%=title%>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
           <tmpl:put name='content' direct='true'>
           
                <table border="0" cellpadding="0" cellspacing="0" width="330">
@@ -103,9 +97,9 @@ title = "FreshDirect - " + title;
                     <td width="5"><img src="media_stat/images/layout/clear.gif" width="5" height="1"></td>
                     <td width="225" class="text11">
                     	<div class="text12"><b><%=title%></b></div>
-                    	<img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="5"><br>
+                    	<img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="5"><br>
                     <% if ( showAbout ) {%><b>About</b><%} else {%><a href="<%=selfLink%>&show=about">About</a><%}%><% if (fdprd!=null && fdprd.hasNutritionFacts()) {%> | <% if ( showNutrition ) {%><b>Nutrition</b><%} else {%><a href="<%=selfLink%>&show=nutrition">Nutrition</a><%}%><%}%><% if ( fdprd!=null && fdprd.hasIngredients() ) {%> | <% if ( showIngredients ) {%><b>Ingredients</b><%} else {%><a href="<%=selfLink%>&show=ingredients">Ingredients</a><%}%><%}%>
-                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
+                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
                     <% if ( showAbout ) {%>
                          <%@ include file="/shared/includes/product/i_product_about.jspf" %>
                     <% } else if ( showNutrition ) { 
@@ -145,7 +139,7 @@ title = "FreshDirect - " + title;
 							
                          <fd:NutritionPanel skuCode="<%=fdprd.getSkuCode()%>"/>
                          
-                         <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
+                         <img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
                          <a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br>
                     <% } else if( showIngredients ) {
 						if (multiple) {
@@ -186,7 +180,7 @@ title = "FreshDirect - " + title;
                   	     <font CLASS="title18">Ingredients</font><br>
                          <img src="/media_stat/images/layout/330000.gif" width="100%" height="6" vspace="2"><br>
                          <%= fdprd.getIngredients() %><br>
-                         <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
+                         <img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
                          <a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a>
                          </td>
                          </tr>

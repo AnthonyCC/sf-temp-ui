@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
@@ -55,10 +55,7 @@ request.setAttribute("listPos", "HPLeftTop");
 </style>
 
 <tmpl:insert template='/common/template/no_shell.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="Welcome to FreshDirect"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<div id="thankyoutext">THANK YOU FOR SIGNING UP!</div>
 	<div id="cbutton"><a href="/index.jsp">CONTINUE SHOPPING</a>

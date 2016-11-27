@@ -29,9 +29,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.fdstore.CallCenterServices;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -59,26 +56,14 @@ public class SaleCronRunner {
 		}
 
 		Context ctx = null;
-		SaleCronSB sb = null;
 		try {
-			
-			int affected ;
-			List<Date> dates;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
-				SaleCronService.getInstance().cancelAuthorizationFailed();
-				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
-				affected = SaleCronService.getInstance().cutoffSales();
-			} else {
-				if (sb == null) {
-					ctx = getInitialContext();
-					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-					sb = home.create();
-				}
-				
-				sb.cancelAuthorizationFailed();
-				dates = sb.queryCutoffReportDeliveryDates();
-				affected = sb.cutoffSales();
-			}
+			ctx = getInitialContext();
+			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+
+			SaleCronSB sb = home.create();
+			sb.cancelAuthorizationFailed();
+			List<Date> dates = sb.queryCutoffReportDeliveryDates();
+			int affected = sb.cutoffSales();
 			
 			if (affected > 0 && "true".equalsIgnoreCase(ErpServicesProperties.getSendCutoffEmail())) {
 				for(Date day : dates)
@@ -89,25 +74,13 @@ public class SaleCronRunner {
 					}
 			}
 			//First clear pending reverse auth for cancelled orders.
+			sb.reverseAuthorizeSales(authTimeout);
 			//Second Pre auth gift card.
+			sb.preAuthorizeSales(authTimeout);
 			//Third perform CC authorization.
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
-				SaleCronService.getInstance().reverseAuthorizeSales(authTimeout);
-				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
-				SaleCronService.getInstance().authorizeSales(authTimeout);
-			}else {
-				if (sb == null) {
-					if (ctx == null) {
-						ctx = getInitialContext();
-					}
-					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-					sb = home.create();
-				}
-				sb.reverseAuthorizeSales(authTimeout);
-				sb.preAuthorizeSales(authTimeout);
-				sb.authorizeSales(authTimeout);
-				
-			}
+			sb.authorizeSales(authTimeout);
+			// remved the following task, create a new cron job for it.
+			//sb.captureSales(captureTimeout); 
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -140,6 +113,7 @@ public class SaleCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="SaleCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

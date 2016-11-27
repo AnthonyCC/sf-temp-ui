@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -87,7 +86,6 @@ public class CartConfirmPotatoTag extends SimpleTagSupport {
 		dataMap.put("cartConfirmPotatoes", dataList);
 		dataMap.put("backUrl", backUrl);
 		dataMap.put("subTotal", JspMethods.formatPrice( subTotal ));
-		dataMap.put("isModifyingOrder", FDUserUtil.getModifyingOrder(user) != null);
 
 		((PageContext)getJspContext()).setAttribute( name, dataMap );
 		

@@ -55,7 +55,7 @@ public class TextMessageAlertService {
 				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobileNumber, convertBooleanValueToString(fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification()),
 						convertBooleanValueToString(fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification()), isOptionEnabled(formData, AlertValidationConstraints.NOTICES),
 						isOptionEnabled(formData, AlertValidationConstraints.ALERTS), isOptionEnabled(formData, AlertValidationConstraints.PERKS),
-						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages())), user.getUserContext().getStoreContext().getEStoreId());
+						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages())), fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
 
 				FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
 			}
@@ -80,15 +80,9 @@ public class TextMessageAlertService {
 	}
 
 	public boolean showTextMessageAlertPopup(final FDUserI user) throws FDResourceException {
-        boolean showPopup = false;
-
-        if (user.getIdentity() != null) {
-            FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-            FDCustomerEStoreModel fdCustomerSmsPreferenceModel = fdCustomer.getCustomerSmsPreferenceModel();
-            showPopup = FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerSmsPreferenceModel);
-        }
-
-        return showPopup;
+		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+		FDCustomerEStoreModel fdCustomerSmsPreferenceModel=fdCustomer.getCustomerSmsPreferenceModel();
+		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerSmsPreferenceModel);
 	}
 	
 	public String getTermsAndConditionsMedia() throws IOException, TemplateException{

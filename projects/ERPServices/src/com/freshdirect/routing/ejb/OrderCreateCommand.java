@@ -27,8 +27,6 @@ public class OrderCreateCommand implements java.io.Serializable{
 		
 		private String erpOrderId;
 		
-		private boolean containsAlcohol;
-		
 		
 		public String getReservationId() {
 			return reservationId;
@@ -125,14 +123,6 @@ public class OrderCreateCommand implements java.io.Serializable{
 
 		public void setErpOrderId(String erpOrderId) {
 			this.erpOrderId = erpOrderId;
-		}
-
-		public boolean isContainsAlcohol() {
-			return containsAlcohol;
-		}
-
-		public void setContainsAlcohol(boolean containsAlcohol) {
-			this.containsAlcohol = containsAlcohol;
 		}
 		
 		

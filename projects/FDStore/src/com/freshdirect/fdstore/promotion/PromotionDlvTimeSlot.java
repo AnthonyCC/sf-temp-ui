@@ -1,35 +1,26 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Date;
+
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.core.PrimaryKey;
 
 public class PromotionDlvTimeSlot extends ModelSupport {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5927462795205739498L;
 	private Integer dayId;
 	private String dlvTimeStart;
 	private String dlvTimeEnd;
 	private String[] windowTypes;
-	private String forWindowTime;
-	private Integer cutOffExpTime;
 	
 	public PromotionDlvTimeSlot(Integer dayId, String dlvTimeStart,
-			String dlvTimeEnd, String[] windowTypes, String forWindowTime, int cutOffExpTime) {
+			String dlvTimeEnd, String[] windowTypes) {
 		super();
 		this.dayId = dayId;
 		this.dlvTimeStart = dlvTimeStart;
 		this.dlvTimeEnd = dlvTimeEnd;
 		this.windowTypes = windowTypes;
-		this.forWindowTime = forWindowTime;
-		this.cutOffExpTime = cutOffExpTime;
 	}
 	
-	public PromotionDlvTimeSlot() {
-		super();
-	}
-
 	public Integer getDayId() {
 		return dayId;
 	}
@@ -53,21 +44,5 @@ public class PromotionDlvTimeSlot extends ModelSupport {
 	}
 	public void setWindowTypes(String[] windowTypes) {
 		this.windowTypes = windowTypes;
-	}
-
-	public Integer getCutOffExpTime() {
-		return cutOffExpTime;
-	}
-
-	public void setCutOffExpTime(Integer cutOffExpTime) {
-		this.cutOffExpTime = cutOffExpTime;
-	}
-
-	public String getForWindowTime() {
-		return forWindowTime;
-	}
-
-	public void setForWindowTime(String forWindowTime) {
-		this.forWindowTime = forWindowTime;
 	}	
 }

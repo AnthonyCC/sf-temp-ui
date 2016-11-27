@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -9,11 +9,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 
 <%
-String title = null;
 RecipeVariant variant;
 Recipe recipe;
 
@@ -23,35 +22,32 @@ String catIdParam       = request.getParameter("catId");
 
 String jspTemplate ="/common/template/recipe_DLnavs.jsp";
 
+
+
 if (variantId != null) {
-	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
+	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
 
 } else {
-	throw new FDNotFoundException("No variantId or recipeId supplied");
+	throw new IllegalArgumentException("No variantId or recipeId supplied");
 }
 
 if (recipe == null) {
-	throw new FDNotFoundException("No recipe found");
+	throw new IllegalArgumentException("No recipe found");
 }
 
 if (!recipe.isAvailable()) {
     // if the recipe is unavailable, just display such a message
     // and bail out
-    title = "FreshDirect - " + recipe.getName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
    <tmpl:put name='leftnav' direct='true'>
    </tmpl:put>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>recipe</tmpl:put>
+   <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
    <tmpl:put name='content' direct='true'>
 
     Sorry, but this recipe is not available.
@@ -63,17 +59,17 @@ if (!recipe.isAvailable()) {
 }
 
 if (variant == null) {
-	throw new FDNotFoundException("No variant found");
+	throw new IllegalArgumentException("No variant found");
 }
 
 if (!variant.isAvailable()) {
-	throw new FDNotFoundException("Recipe variant unavailable");
+	throw new IllegalArgumentException("Recipe variant unavailable");
 }
 
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
   ContentNodeModel catNode = null;
-  catNode = PopulatorUtil.getContentNode(catIdParam);
+  catNode = ContentFactory.getInstance().getContentNode(catIdParam);
   if (catNode instanceof CategoryModel) {
 	jspTemplate = "/common/template/left_dnav.jsp";
   } 
@@ -105,21 +101,18 @@ String successPage		= FDURLUtil.getRecipeCartConfirmPageURI(request, catIdParam)
 request.setAttribute("sitePage", recipe.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote");
 
-title = "FreshDirect - " + recipe.getName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
-	<tmpl:put name='leftnav' direct='true'>
-	</tmpl:put>
-	<tmpl:put name='customhead' direct='true'>
-		<link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
-		<link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
-	</tmpl:put>
-	<tmpl:put name="seoMetaTag" direct='true'>
-		<fd:SEOMetaTag title="<%= title %>"/>
-	</tmpl:put>
-	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
-	<tmpl:put name='pageType' direct='true'>recipe</tmpl:put>
-	<tmpl:put name='content' direct='true'>
-		<%@ include file="/shared/includes/layouts/i_recipe_body.jspf"%>
-	</tmpl:put>
+   <tmpl:put name='leftnav' direct='true'>
+   </tmpl:put>
+   <tmpl:put name='customhead' direct='true'>
+    <link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
+    <link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
+   </tmpl:put>
+   <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
+   <tmpl:put name='content' direct='true'>
+
+  <%@ include file="/shared/includes/layouts/i_recipe_body.jspf"%>
+
+</tmpl:put>
 </tmpl:insert>

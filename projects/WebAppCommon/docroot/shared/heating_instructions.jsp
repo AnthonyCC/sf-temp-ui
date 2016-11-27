@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.*, com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*, com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -6,11 +6,7 @@
 <fd:CheckLoginStatus />
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 	<tmpl:insert template='/common/template/small_pop.jsp'>
-	<% String title = "FreshDirect - " + productNode.getFullName(); %>
-      <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-      </tmpl:put>
-		<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+		<tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		<font class="title13"><%=productNode.getFullName()%></font>
 		<table width="220" border="0" cellspacing="0" cellpadding="0">

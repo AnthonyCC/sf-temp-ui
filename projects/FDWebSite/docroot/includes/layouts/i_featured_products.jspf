@@ -1,20 +1,21 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.DealsHelper"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
-<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.storeapi.content.ProductContainer"%>
+<%@page import="com.freshdirect.fdstore.content.ProductContainer"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
@@ -41,7 +42,7 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 	
 	<!-- separator  -->
 	<tr><td colspan="5">
-		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_FEATURED_PRODUCTS_TOTAL%>" height="1" border="0"><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_FEATURED_PRODUCTS_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
 	</td></tr>
 	
@@ -61,8 +62,11 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 	</td></tr>
 
 	<tr><td align="center" colspan="5" id="bnd-td">
+		<script type="text/javascript">
+			var bnd_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="BRAND_NAME_DEALS" elementCategory="carousel"/>} 
+		</script>
 		<display:Carousel id="bnd" carouselId="bnd" width="<%=W_FEATURED_PRODUCTS_BND%>" numItems="6" showCategories="false" itemsToShow="<%= brandDealRecommendations.getAllProducts() %>" 
-				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td">
+				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td" eventHandlersObj="bnd_events">
 			<span class="smartstore-carousel-item">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% 

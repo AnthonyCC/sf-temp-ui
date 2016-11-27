@@ -1,19 +1,60 @@
 /* help page related 
 -------------------------------------------------------------- */
+#help-page {
+	width: 970px;
+	text-align: left;
+	margin-top: 10px;
+}
+
+.purple-text {
+	color: #996699;
+	font-size: 18px;
+	font-family: Verdana;
+	font-weight:bold;
+	margin-top: 10px;
+}
 
 #timeslotloyalityHeader {
 	width: 100%;
-	min-height: 25px;
-	background: #333433;
+	height: 25px;
+	background: #999966;
 	color: #fff;
 	border-radius: 10px;
-	padding: 5px 10px 5px 10px;
+	padding: 0 2px 0 10px;
 	line-height: 2.4em;
 	box-sizing: border-box;
 }
 
 #timeslotloyalityHeader.black {
 	background: #333433;
+}
+
+.help-heading {
+	color: #333333;
+    margin: 8px 0;
+    font-family: Verdana Regular;
+    font-size: 16px;
+}
+
+.help-subheading {
+	color: #6f6f6f;
+	margin-top: 1.5em;
+	font-family: Verdana;
+    font-weight: Bold;
+    font-size: 12px;
+}
+
+.underline {
+	border-bottom: 1px solid #669933;
+	margin: 32px 0;
+}
+
+.underline h4 {
+	margin-bottom: .5em;
+	font-family: Verdana;
+    font-weight: Bold;
+	font-size: 14px;
+	color: #333;
 }
 
 .help-aside {
@@ -29,12 +70,22 @@
 	margin: 16px 0;
 }
 
-.search-cont input#search-faq {
+#search-faq,
+.form-group input, 
+.form-group select, 
+.form-group textarea {
 	width: 250px;
-	font-family: Verdana, sans-serif;
-	font-size: 16px;
-	font-weight: normal;
-	color: #666666;
+}
+
+#search-faq {
+	height: 25px;
+}
+
+#help-page label{
+	width: 150px;
+    padding-right: 10px;
+    vertical-align: middle;
+    text-align: right;
 }
 
 #msg-textarea-label {
@@ -50,6 +101,12 @@
     margin-bottom: 10px; 
 }
 
+#home-phone-ext-field,
+#work-phone-ext-field,
+#other-phone-ext-field {
+	width: 40px;
+}
+
 .bordered-box {
 	width: 100%;
     float: left;
@@ -62,844 +119,17 @@
 	margin: 30px 0;
 }
 
+.trisect {
+	width : 33%;
+	float: left;
+}
+
+.bordered-bottom {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
 .error {
 	color: #cc0000;
-}
-
-#contact_fd_contact {
-	padding: 20px 0 0 0;
-}
-
-.optionalaccess{
-	color: #999999;
-    font-weight: normal;
-    font-style: normal;
-    font-size:14px;
-}
-
-.help-center--container #search-faq::placeholder,
-.help-contact-form .form-group textarea::placeholder,
-.help-contact-form .form-group input::placeholder,
-.font16 {
-	font-size: 16px;
-}
-
-.font24 {
-	font-size: 24px;
-}
-
-#help-page .flex {
-	display: flex;
-}
-
-.help-center--container #search-faq::placeholder,
-.verdana-font {
-	font-family: Verdana, sans-serif;
-}
-
-#help-page {
-	margin: 0 auto;
-	max-width: 100%;
-	width: 970px;
-}
-
-#help-page #contact_fd_contact {
-	padding: 0;
-}
-
-.help.help--top-bar {
-	background: #f5f5f5;
-	box-sizing: border-box;
-	flex-direction: row;
-	height: 197px;
-	justify-content: space-between;
-	padding: 30px 40px;
-	margin: 30px 0 57px 0;
-	max-width: 972px;
-}
-
-.help-center--container {
-	text-align: left;
-	width: 50%;
-  flex-grow: 1;
-}
-
-.help-center--container-centered {
-  text-align: center;
-}
-
-.help-center--header {
-	font-size: 26px;
-	font-weight: bold;
-	line-height: 0.92;
-	margin-bottom: 0;
-}
-
-.help-center--subheader {
-	font-size: 16px;
-	line-height: 1.44;
-	margin: 15px 0 20px 0;
-}
-
-.help-center--container form#contact_fd_faq {
-	align-items: center;
-	padding: 0;
-}
-
-.help-center--container-centered form#contact_fd_faq {
-  justify-content: center;
-}
-
-input[type="text"].search-input {
-	background-color: #ffffff;
-	border-style: none;
-	box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.1);
-	box-sizing: border-box;
-	height: 35px;
-	padding: 10px;
-	-webkit-appearance: none;
-	width: 301px;
-}
-
-input[type="text"].search-input::placeholder {
-	color: #757575;
-	font-size: 16px;
-}
-
-.search-button {
-	background-image: url('/media/layout/nav/globalnav/fdx/search-icon.png');
-	background-position: center;
-	background-repeat: no-repeat;
-	border-radius: 0;
-	height: 35px;
-	object-fit: contain;
-	width: 44px;
-}
-
-.self-credit--container {
-	border: solid 1px #cccccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	padding: 20px;
-	width: 397px;
-}
-
-.self-credit--header {
-	line-height: normal;
-	margin-bottom: 0;
-}
-
-.self-credit--subheader {
-	font-size: 14px;
-	line-height: normal;
-	margin: 14px 0;
-}
-
-.cssbutton.green.self-credit-button {
-	width: 200px;
-}
-
-.help--main-content {
-	flex-direction: row;
-}
-
-#helpsidecontent {
-	width: 42%;
-}
-
-.main-content--right {
-	border: 1px solid #dddddd;
-	height: fit-content;
-	max-width: 568px;
-	width: 58%;
-}
-
-.main-content--left .container {
-	flex-direction: column;
-	justify-content: flex-start; 
-}
-
-.main-content--left .section-header {
-	margin-bottom: 0;
-}
-
-.main-content--left .your-account.container {
-	margin-bottom: 50px;
-}
-
-.section-header span {
-	border-bottom: 2px solid #cccccc;
-	color: #333333;
-	display: inline-block;
-	letter-spacing: 0.5px;
-	line-height: 1;
-	padding-bottom: 0.5em;
-	text-align: left;
-	width: 76%;
-}
-
-.link-list-container {
-	padding-left: 0;
-	margin: 22px 0 0 0;
-}
-
-.link-list-container li {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	list-style: none;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.88;
-    letter-spacing: normal;
-    color: #408244;
-}
-
-.link-list-container li a {
-	display: block;
-	text-align: left;
-	width: fit-content;
-	font-size: 16px;
-}
-
-.your-account.container ul li a {
-	font-size: 16px;
-}
-
-.main-content--right {
-	box-sizing: border-box;
-	padding: 46px;
-}
-
-.main-content--right .form-elements-wrapper.form-header {
-	flex-direction: column;
-}
-
-.main-content--right .help-contact-form.header,
-.main-content--right .help-contact-form.subheader {
-	text-align: left;
-}
-
-.main-content--right .help-contact-form.subheader {
-	margin: 15px 0 28px;
-}
-
-.main-content--right .help-contact-form.subheader p {
-	margin: 0;
-}
-
-#contact_fd_contact .form-elements-wrapper.main-content {
-	flex-direction: column;
-}
-
-.help-contact-form .error {
-	text-align: left;
-	font-family: Verdana, sans-serif;
-	font-size: 12px;
-}
-
-#help-page .help-contact-form #help_fieldset {
-	min-width: 100%;
-}
-
-.help-contact-form.header {
-	color: #333333;
-	line-height: 1;
-}
-
-.help-contact-form .cs-contact-hours * {
-	font-family: Verdana, sans-serif;
-	font-size: 16px;
-	font-weight: normal;
-}
-
-.help-contact-form .cs-contact-hours div p b span:first-child {
-	display: none;
-}
-
-.cs-contact-hours div p:nth-child(2) {
-	padding-top: 20px;
-}
-
-.help-contact-form.subheader {
-	color: #333333;
-}
-
-.help-contact-form.login-link {
-	color: #408244;
-	font-weight: normal;
-	margin: 0 0 30px 0;
-	text-align: left;
-}
-
-.help-contact-form .form-elements-wrapper.main-content {
-	margin-top: 0;
-}
-
-.help-contact-form .form-group  {
-	flex-direction: row;
-	margin-bottom: 30px;
-}
-
-.help-contact-form .form-group.email,
-.help-contact-form .form-group.subject-container {
-	flex-direction: column;
-}
-
-.help-contact-form .form-group .customer-email {
-	color: #666666;
-}
-
-.help-contact-form .form-group-name-container {
-	flex-direction: row;
-	justify-content: space-between;
-}
-
-.help-contact-form .form-group.phone_number {
-	flex-direction: row;
-	justify-content: space-between;
-}
-
-.help-contact-form .form-group.first_name,
-.help-contact-form .form-group.last_name {
-	flex-direction: column;
-	width: 48%;
-}
-
-.help-contact-form .form-group.phone_number div {
-	flex-direction: column;
-}
-
-.help-contact-form .form-group.phone_number div:first-child {
-	width: 73%;
-}
-
-.help-contact-form .form-group.phone_number div:nth-child(2) {
-	width: 23%;
-}
-
-.form-group.phone_number.flex div input {
-	display: inline-block;
-	max-width: 100%;
-}
-
-.help-contact-form .form-group label {
-	text-align: left;
-}
-
-.help-contact-form .form-group.phone_number div:first-child label::after {
-	color: #666666;
-	content: 'Optional';
-	float: right;
-	font-weight: normal;
-}
-
-.help-contact-form .form-group.subject-message-container {
-	flex-direction: column;
-}
-
-.help-contact-form .form-group.message {
-	flex-direction: column;
-	margin-bottom: 0;
-}
-
-.help-contact-form .select-wrapper #subject.customsimpleselect {
-	width: 100%;
-}
-
-.help-contact-form .select-wrapper:after {
-	top: 0;
-	transform: translateY(50%);
-}
-
-.help-contact-form .buttons-container {
-	justify-content: flex-end;
-}
-
-.help-contact-form .form-group.customer-name-container {
-	flex-direction: column;
-	margin-bottom: 30px;
-}
-
-.help-contact-form .customer-name.customer-name-container {
-	font-weight: normal;
-	text-align: left;
-}
-
-.help-contact-form .customer-name.customer-name-container span {
-	font-size: 16px;
-}
-
-.help-contact-form .login-link, .help-contact-form .login-link a,
-.customer-name-container .login-label {
-	font-size: 14px;
-}
-
-.help-contact-form .customer-name.customer-name-container .customer-email {
-	color: #666666;
-}
-
-.help-contact-form .form-group label.login-label,
-.help-contact-form .form-group a.login-link {
-	color: #408244;
-	font-weight: normal;
-}
-
-.help-contact-form .form-group.customer-name-container.login {
-	margin-top: 14px;
-}
-
-.help--main-content .help.footer-container {
-	display: none;
-}
-
-.help.footer-container #helpfooter {
-	display: flex;
-	align-items: center;
-	background-color: #f5f5f5;
-	border-radius: 4px;
-	flex-direction: row;
-	height: 64px;
-	margin-top: 40px;
-}
-
-.help.footer-container #helpfooter * {
-	font-size: 16px;
-	font-weight: normal;
-}
-
-.help.footer-container .help-aside {
-	display: flex;
-	align-items: center;
-	border-right: 1px solid #cccccc;
-	color: #666666;
-	font-size: 16px;
-	height: 34px;
-	justify-content: center;
-	width: 40%;
-}
-
-.help.footer-container .help-aside a {
-	padding-left: 8px;
-}
-
-.help.footer-container .helpline-details {
-	align-items: center;
-	color: #666666;
-	justify-content: space-between;
-	padding: 0 55px;
-	width: 60%;
-}
-
-.help.footer-container .helpline-details div {
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-}
-
-.help.footer-container .helpline-details div b,
-.help.footer-container .helpline-details div div,
-.help.footer-container .helpline-details div div b {
-	align-items: center;
-	display: flex;
-	font-weight: normal;
-	width: 50%;
-}
-
-.help.footer-container .helpline-details div div b {
-	width: 100%;
-	color: #333333;
-}
-
-.help.footer-container .helpline-details div div {
-	width: 40%;
-}
-
-.help.footer-container .helpline-details div:first-child span:first-child {
-	align-items: center;
-	display: flex;
-	width: 14%;
-}
-
-.help.footer-container .helpline-details div div:nth-child(3) {
-	width: 50%;
-}
-
-.help.footer-container .helpline-details div div:nth-child(3) span:first-child {
-	justify-content: center;
-	width: 73%;
-}
-
-.help.footer-container .helpline-details span:last-child {
-	display: none;
-}
-
-[fdform] textarea {
-	font-size: 16px;
-	resize: none;
-}
-
-#contactFDThankYou {
-	border: 1px solid #cccccc;
-	box-sizing: border-box;
-	margin: 91px auto;
-	padding: 50px;
-	max-width: 586px;
-}
-
-#contactFDThankYou .header {
-	color: #333333;
-	letter-spacing: 0.5px;
-	margin-bottom: 35px;
-}
-
-#contactFDThankYou .subheader {
-	color: #333333;
-	font-size: 18px;
-	margin-bottom: 55px;
-}
-
-#contactFDThankYou .cs-contact-hours {
-	color: #666666;
-	margin-bottom: 55px;
-}
-
-#contactFDThankYou div.help-home-hours div p {
-	margin: 0 auto;
-}
-
-#contactFDThankYou div.help-home-hours div p:first-child {
-	margin-bottom: 40px;
-}
-
-#contactFDThankYou div.help-home-hours div p b {
-	font-weight: normal;
-}
-
-#contactFDThankYou div.help-home-hours div p span:first-child {
-	display: none;
-}
-
-#contactFDThankYou div.help-home-hours div p:nth-child(2) b {
-	color: #666666;
-}
-
-#contactFDThankYou a.ok-button {
-	align-items: center;
-	display: inline-flex;
-	height: 48px;
-	justify-content: center;
-	max-width: 350px;
-	width: 60%;
-}
-
-@media(max-width: 768px) {
-
-	.content .contact_fd-cont {
-		padding: 0;
-	}
-
-	.contact_fd-cont #help_fieldset {
-		min-width: 100vw;
-	}
-
-	.contact_fd-cont .form-elements-wrapper.flex,
-	.contact_fd-cont .form-group.email.flex,
-	.contact_fd-cont .subject-message-container.flex,
-	.contact_fd-cont .subject-message-container.flex .form-group.message {
-		flex-direction: column;
-	}
-
-	.help.help--top-bar {
-		align-items: center;
-		background: transparent;
-		flex-direction: column;
-		height: auto;
-		margin: 0;
-		padding: 43px 28px 50px;
-	}
-
-	.help-center--container {
-		margin-bottom: 40px;
-		text-align: center;
-		width: 100%;
-	}
-
-	.help-center--container .help-center--subheader {
-		font-size: 14px;
-		margin: 22px 0 28px;
-	}
-
-	.help-center--container form#contact_fd_faq {
-		box-shadow: 0 2px 30px 0 rgba(0, 0, 0, 0.08);
-		margin: 0 auto;
-		max-width: 301px;
-	}
-
-	.help-center--container .search-cont #search-faq {
-		border: none;
-		box-sizing: border-box;
-		height: 35px;
-		padding: 11px 0 11px 9px;
-	}
-
-	.help-center--container #search-faq::placeholder {
-		font-weight: normal;
-	}
-
-	.help-center--container .search-button {
-		background-size: 17.6px 17.6px;
-		height: 36px;
-		width: 44px;
-	}
-
-	.self-credit--container {
-		align-items: center;
-		display: flex;
-		flex-direction: column;
-		padding: 22px 26px;
-		max-width: 321px;
-		width: 100%;
-	}
-
-	.self-credit--subheader {
-		margin: 17px 0;
-	}
-	/* CONTACT FORM */
-
-	form#contact_fd_contact {
-		display: block;
-	}
-
-	.help-contact-form.subheader {
-		padding-bottom: 7px;
-	}
-
-.help-contact-form.login-link
-	.contact_fd-cont .cs-contact-hours.subheader {
-		margin: 35px 0 35px;
-		line-height: 1.44;
-		margin: 15px 0 35px 0;
-	}
-
-	.contact_fd-cont .cs-contact-hours.subheader p {
-		font-size: 16px;
-		margin: 0;
-	}
-	
-	.contact_fd-cont .cs-contact-hours.subheader p b {
-		font-weight: normal;
-	}
-
-	.contact_fd-cont .cs-contact-hours.subheader p b span:first-child {
-		display: none;
-	}
-
-	#contact_fd_contact .login-link,
-	.form-group {
-		margin-bottom: 0;
-	}
-
-	#contact_fd_contact .form-group .customer-email {
-		color: #666666;
-	}
-
-	#contact_fd_contact .form-group label.login-label {
-		color: #408244;
-		font-weight: normal;
-	}
-
-	#contact_fd_contact fieldset {
-		box-sizing: border-box;
-		display: block;
-		padding: 30px 20px;
-	}
-
-	.contact_fd-cont .form-group label {
-		padding: 30px 10px 10px 0;
-		text-align: left;
-	}
-
-	.contact_fd-cont .form-group.customer-name-container {
-		margin-bottom: 15px;
-	}
-
-	.contact_fd-cont .form-group.customer-name-container.login {
-		margin-bottom: 30px;
-	}
-
-	.contact_fd-cont .help.footer-container #helpfooter {
-		flex-direction: column;
-		height: auto;
-		justify-content: center;
-		padding: 30px 0;
-	}
-	.contact_fd-cont .help.footer-container .help-aside {
-		height: auto;
-		margin-bottom: 0;
-		width: 100%;
-	}
-
-	.contact_fd-cont #helpfooter .help-aside div {
-		margin-bottom: 15px;
-	}
-
-	.contact_fd-cont #helpfooter .helpline-details div div:nth-child(3) {
-		margin-top: 15px;
-	}
-
-	.contact_fd-cont .help.footer-container .helpline-details {
-		width: 100%;
-		flex-direction: column;
-	}
-
-	.contact_fd-cont .buttons-container {
-		display: flex;
-		justify-content: flex-end;
-	}
-
-	.contact_fd-cont .form-group.subject-container {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.contact_fd-cont .form-group.subject-message-container select,
-	.contact_fd-cont .form-group.subject-message-container textarea {
-		width: 100%;
-	}
-
-	.contact_fd-cont .select-wrapper:after {
-		top: 0;
-		transform: translateY(25%);
-	}
-
-	.contact_fd-cont .form-group-name-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-	}
-	
-	.contact_fd-cont .form-group.phone_number {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-	}
-	
-	.contact_fd-cont .form-group.first_name,
-	.contact_fd-cont .form-group.last_name {
-		flex-direction: column;
-		width: 48%;
-	}
-	
-	.contact_fd-cont .form-group.phone_number div {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.contact_fd-cont .form-group.phone_number div:first-child {
-		width: 73%;
-	}
-	
-	.contact_fd-cont .form-group.phone_number div:nth-child(2) {
-		width: 23%;
-	}
-
-	.contact_fd-cont .form-group.message {
-		margin-bottom: 20px;
-	}
-
-	.contact_fd-cont #helpfooter * {
-		font-size: 16px;
-		font-weight: normal;
-	}
-
-	.contact_fd-cont #helpfooter .help-aside {
-		margin: 0 auto;
-	}
-
-	.contact_fd-cont #helpfooter .helpline-details div.help_home_hours-container {
-		flex-wrap: wrap;
-	}
-
-	.contact_fd-cont #helpfooter .helpline-details div.help_home_hours-container span {
-		box-sizing: border-box;
-		width: calc(45% - 7px);
-		justify-content: flex-end;
-		padding-right: 7px;
-	}
-	
-	.contact_fd-cont #helpfooter .helpline-details div.help_home_hours-container div {
-		width: 50%;
-	}
-	
-	.contact_fd-cont #helpfooter .helpline-details div div:nth-child(3) {
-		width: 100%;
-	}
-	
-	.contact_fd-cont #helpfooter .helpline-details div div:nth-child(3) span {
-		box-sizing: border-box;
-		justify-content: flex-end;
-		padding-right: 7px;
-		width: calc(50% - 7px);
-	}
-
-	.contact_fd-cont #helpfooter .helpline-details div div:nth-child(3) b {
-		width: 50%;
-	}
-
-	#contactFDThankYou {
-		border: none;
-		height: 100vh;
-		margin: 0 auto;
-		padding: 30px 20px;
-	}
-
-	#contactFDThankYou .header {
-		margin-bottom: 25px;
-	}
-
-	#contactFDThankYou .subheader {
-		margin-bottom: 35px;
-	}
-
-	#contactFDThankYou p {
-		margin: 0;
-	}
-
-	#contactFDThankYou .help-home-hours {
-		margin-bottom: 40px;
-	}
-
-	#contactFDThankYou .help-home-hours * {
-		font-weight: normal;
-	}
-
-	#contactFDThankYou .help-home-hours div p b span:first-child {
-		display: none;
-	}
-
-	#contactFDThankYou .help-home-hours p:nth-child(2) {
-		margin: 40px30px 
-	}
-
-	#contactFDThankYou .help-home-hours p:nth-child(2) b b {
-		color: #666666;
-	}
-
-	#contactFDThankYou a.ok-button {
-		max-width: 335px;
-		width: 100%;
-	}
-}
-
-@media(max-width: 320px) {
-	.help.help--top-bar {
-		padding: 43px 5px 50px;
-	}
-
-	.self-credit--container {
-		padding: 22px 15px;
-		width: 100%;
-	}
+	/*margin-left: 165px;*/
 }

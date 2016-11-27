@@ -150,7 +150,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("getConfiguredPrice surcharges: "+surcharge);
 
 		Price pr = new Price(MathUtil.roundDecimal(basePrice.getPrice().getBasePrice()), MathUtil.roundDecimal(surcharge));
-		return new ConfiguredPrice(pr, basePrice.getPricingCondition(),basePrice.getZoneInfo(), basePrice.getUnscaledPrice());
+		return new ConfiguredPrice(pr, basePrice.getPricingCondition(),basePrice.getZoneInfo());
 	}
 
 	/*
@@ -176,9 +176,9 @@ public class PricingEngine {
 		if (group != null)
 		{
 				try{
-					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx!=null?ctx.getZoneInfo():null);
+					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneInfo());
 					if(grpMaterialPrice != null) {
-						ZoneInfo grpScalePriceZoneInfo = GroupScaleUtil.getGroupPricingZoneId(group, ctx!=null?ctx.getZoneInfo():null);
+						ZoneInfo grpScalePriceZoneInfo = GroupScaleUtil.getGroupPricingZoneId(group, ctx.getZoneInfo());
 						//Group Price exists for this zone.
 						if(grpQuantity > 0 && grpQuantity >= grpMaterialPrice.getScaleLowerBound()){
 							//Required when multiple group scale prices are supported.
@@ -187,7 +187,7 @@ public class PricingEngine {
 //							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,ctx.getZoneInfo());		
 							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,grpScalePriceZoneInfo);
 						} else {
-							return calculateSimplePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null);
+							return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
 						}
 					}
 				}catch(FDResourceException fe){
@@ -195,20 +195,20 @@ public class PricingEngine {
 				}
 		}
 		//Regular Pricing
-		ZonePriceModel zonePriceModel=pricing.getZonePrice(ctx!=null?ctx.getZoneInfo():null);
+		ZonePriceModel zonePriceModel=pricing.getZonePrice(ctx.getZoneInfo());
 		if(zonePriceModel==null) {
-			ZoneInfo zone=ctx!=null?ctx.getZoneInfo():null;
-			while(zone!=null && zone.hasParentZone() && zonePriceModel==null ) {
+			ZoneInfo zone=ctx.getZoneInfo();
+			while(zone.hasParentZone() && zonePriceModel==null ) {
 				zone=zone.getParentZone();
 				zonePriceModel=pricing.getZonePrice(zone);
 			}
 		}
 		if(zonePriceModel==null) 
-			throw new PricingException("No price defined for "+(ctx!=null?ctx.getZoneInfo():null));
+			throw new PricingException("No price defined for "+ctx.getZoneInfo());
 		if (zonePriceModel.hasScales()) {
-			return calculateScalePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null,scaleQuantity);		
+			return calculateScalePrice(pricing, configuration, ctx.getZoneInfo(),scaleQuantity);		
 		} else {
-			return calculateSimplePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null);
+			return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
 		}
 	}
 
@@ -291,8 +291,7 @@ public class PricingEngine {
 		// find pricing condition for quantity (in scaleUnit)
 		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
 		MaterialPrice materialPrice = zpm.findMaterialPrice(scaledQuantity);
-		// get the base price for quantity = 1
-		MaterialPrice materialPriceQuantity1 = zpm.findMaterialPrice(1);
+	
 		double pricingQuantity;
 		if ( !salesUnit.equals(materialPrice.getPricingUnit()) ) {
 			// we need a ratio
@@ -308,7 +307,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + materialPrice.getPrice() + "]");
 
 		double price = pricingQuantity * materialPrice.getPrice();
-		return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone(), materialPriceQuantity1 != null? materialPriceQuantity1.getOriginalPrice() * pricingQuantity : 0);
+		return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone());
 	}
 
 	/**
@@ -325,7 +324,7 @@ public class PricingEngine {
 		// regular pricing
 		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
 		ZoneInfo pz=pricingZone;
-		while(pz!=null && zpm==null && pz.hasParentZone() ) {
+		while(zpm==null && pz.hasParentZone() ) {
 			pz=pz.getParentZone();
 			zpm=pricing.getZonePrice(pz);
 			

@@ -6,7 +6,6 @@
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%= address %>" deliveryInfo="<%= true %>" timeSlotContext="<%= timeSlotCtx %>">
 	<%	
@@ -29,7 +28,7 @@
 
 		if(zonePromoAmount > 0) {
 			zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
-			request.setAttribute("SHOW_WINDOWS_STEERING","true");
+			request.setAttribute("SHOW_WINDOWS_STEERING","false");
 		}
 		String soFirstNextText=null;
 
@@ -47,10 +46,13 @@
 		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 <%}%>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/>
 <!-- GEO Restriction Message Added -->
-<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
+<% if((messages != null && messages.size() > 0) || (user.getMasqueradeContext()!=null && comments!=null && comments.size() > 0)) { %>
+	<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
+	
+<% } %>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8">
 <!-- Error Messages -->
 
 <%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
@@ -60,14 +62,14 @@
 <%}%>
 
 <%@ include file="/includes/delivery/i_holiday_warning.jspf"%>
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
+<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 <%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
-	<table cellpadding="0" cellspacing="0" width="100%" border="0" id="legendCheckout">
+	<table cellpadding="0" cellspacing="0" width="693" border="0" id="legendCheckout">
 		<tr>
 			<td>
-				<table cellpadding="0" cellspacing="0" width="100%">
+				<table cellpadding="0" cellspacing="0" width="964">
 					<tr>
 						<td valign="middle" align="right">
 					 	<table>
@@ -76,7 +78,7 @@
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" alt="Eco-Friendly" WIDTH="16" HEIGHT="16" border="0">
 									</td>
-									<td><a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
+									<td><a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
 									<td>&nbsp;</td>
 								<%}%>
 								<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
@@ -84,7 +86,7 @@
 										<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
 									</td>
 									<td>
-										<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>
@@ -93,19 +95,19 @@
 										<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 								</td>
 									<td> 
-										<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>
 								<%if(deliveryModel.getEarlyAMCount() > 0) { %>
 										<td>
-											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" alt="early unattended" WIDTH="20" HEIGHT="16" border="0">
+											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
 										</td>
 										<td>
 										&nbsp;
 										</td>
 										<td Valign="top">
-										<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
 										<td>&nbsp;</td>
 								<% } %>
 							</tr>
@@ -116,7 +118,7 @@
 			</td>
 		</tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/><br/>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><br/>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -152,7 +154,7 @@
 				<%if(page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
 					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
 				<%}if(hasPreReserved){%>
-					&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" alt="" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+					&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
 				<%}%>
 				</td>
 				<%if(zonePromoAmount > 0 && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING"))){ %>
@@ -196,10 +198,11 @@
 						</td>
 					</tr>
 				</table>
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 		<% } %>
 	<%}%>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
+
 <script language="javascript">
 	
 	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	

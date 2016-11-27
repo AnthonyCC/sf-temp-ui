@@ -37,7 +37,6 @@ public enum EnumEventSource {
 	DFR("DFR"), //Browse - Department Featured Products Recommender
 	DMR("DMR"), //Browse - Department Merchant Recommender
 	CSR("CSR"), //Browse - Category Scarab Recommender
-    CFR("CFR"), // Browse - Category Featured Products Recommender
 	CMR("CMR"), //Browse - Category Merchant Recommender
 	TRY("TRY"), //Browse - TRY Recommender 
 	ATP("ATP"), //ATP Failure Recommender
@@ -48,20 +47,15 @@ public enum EnumEventSource {
 	
 	view_cart("view_cart"),
 	ps_caraousal("ps_caraousal"),
-	ps_carousel_view_cart("ps_carousel_view_cart"),
-	ps_carousel_checkout("ps_carousel_checkout"),
 	
-    checkout("checkout"),
 	dn_caraousal("dn_caraousal"),
-	dn_carousel_view_cart("dn_carousel_view_cart"),
-	dn_carousel_checkout("dn_carousel_checkout"),
 	
 	ExternalPage("ExternalPage"), //External Page
 	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
 	
-    private String name;
+	String name;
 	
-    private EnumEventSource(String name) {
+	EnumEventSource(String name) {
 		this.name = name;
 	}
 	

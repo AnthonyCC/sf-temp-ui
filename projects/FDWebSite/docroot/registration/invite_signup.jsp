@@ -11,11 +11,10 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
-<%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
+
 <%
 	System.out.println("*********************"+request.getRequestURI());
 
@@ -60,7 +59,7 @@
 		 	}
 		    //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
 		if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
-				successPage = "/index.jsp?serviceType=CORPORATE";
+				successPage = "/department.jsp?deptId=COS";
 			}
 
 			/* moreInfo, redirect back to the same page, and pass in the overlayType */
@@ -71,30 +70,27 @@
 		String url = request.getRequestURI();
 		System.out.println("[******moreInfoPage*****]" + moreInfoPage);
 
-    if(clickId == null) { 
-        throw new FDNotFoundException("xtl_click_id parameter is not found.");
-    }
 	
 %>
 <fd:CheckLoginStatus guestAllowed='true' />
-<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<%--  <title>FreshDirect</title> --%>
-        <fd:SEOMetaTag title="FreshDirect"/>
+		<title>FreshDirect</title>
+
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<fd:javascript src="/assets/javascript/swfobject.js" />
 		
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">	
+	
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 		<%
@@ -102,7 +98,12 @@
 		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
+		<% if(clickId != null) { %>
+			<%
+			
+			%>
 		
+		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 				<%--
 				Put any java-related variables needed by the page into the _page_options object. 
 			--%>
@@ -195,7 +196,12 @@
 			</script>
 		
 <%-- 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" /> --%>
-			<fd:IncludeMedia name="/media/editorial/site_access/referral_extole_site_access.html" />
+			<fd:IncludeMedia name="/media/editorial/site_access/referral_extole_site_access.html" />			
+			</fd:SiteAccessController>
+		<% }  else { 
+			response.sendRedirect("/index.jsp");
+			}
+		%>
+		
 	</body>
-</html>			
-</fd:SiteAccessController>
+</html>

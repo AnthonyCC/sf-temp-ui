@@ -7,8 +7,6 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.fdlogistics.deserializer.EnumRegionServiceTypeDeserializer;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -35,7 +33,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			boolean isUnavailable, boolean isEcoFriendly, boolean isSoldOut, boolean isDepot, 
 			boolean isPremiumSlot, boolean isFdxSlot, double totalAvailable, double baseAvailable, double chefsTableAvailble,
 			boolean hasSteeringRadius, String travelZone, double minDurationForModStart, double minDurationForModification,
-			int additionalDistance, EnumRegionServiceType regionSvcType,Date  soFirstDeliveryDate, Date originalCutoffDateTime , int capacityUtilizationPercentage)
+			int additionalDistance, EnumRegionServiceType regionSvcType,Date  soFirstDeliveryDate, Date originalCutoffDateTime)
 	{
 		super();
 		this.id = id;
@@ -77,7 +75,6 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.regionSvcType = regionSvcType;
 		this.soFirstDeliveryDate=soFirstDeliveryDate;
 		this.originalCutoffDateTime = originalCutoffDateTime;
-		this.capacityUtilizationPercentage = capacityUtilizationPercentage;
 	}
 
 	
@@ -115,7 +112,6 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private boolean isSoldOut;
 	private boolean isDepot;
 	private boolean isPremiumSlot;
-	private boolean isSameDaySlot;
 	private boolean isFdxSlot;
 	
 	private String minOrderMsg = "";
@@ -141,16 +137,13 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private String travelZone;
 	private double minDurationForModStart;
 	private double minDurationForModification;
-	@JsonDeserialize(using = EnumRegionServiceTypeDeserializer.class)
 	private EnumRegionServiceType regionSvcType;
 	private Date soFirstDeliveryDate;
 	private double deliveryFee;
 	private double promoDeliveryFee;
 	private EnumDeliveryFeeTier dlvfeeTier;
 	private Date originalCutoffDateTime;
-	private FDDeliveryZoneInfo zoneInfo;
-	private int capacityUtilizationPercentage;
-	private boolean isMidWeekDlvPassApplicable;
+	
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -177,8 +170,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			Calendar endCal) {
 		StringBuffer sb = new StringBuffer();
 
-		formatCal(startCal, true, sb);
-		sb.append(" - ");
+		formatCal(startCal, false, sb);
+		sb.append("-");
 		formatCal(endCal, true, sb);
 
 		return sb.toString();
@@ -201,9 +194,9 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		}
 		if (showAmPm) {
 			if (marker == Calendar.AM) {
-				sb.append(" am");
+				sb.append("am");
 			} else {
-				sb.append(" pm");
+				sb.append("pm");
 			}
 		}
 	}
@@ -255,7 +248,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public String getTimeslotShift() {
 		Calendar startTimeCal = DateUtil.toCalendar(this.getStartDateTime());
 		int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-		if (startHour >= 12)
+		if (startHour > 12)
 			return EnumDayShift.DAY_SHIFT_PM.getName();
 		else
 			return EnumDayShift.DAY_SHIFT_AM.getName();
@@ -675,38 +668,6 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setOriginalCutoffDateTime(Date originalCutoffDateTime) {
 		this.originalCutoffDateTime = originalCutoffDateTime;
-	}
-
-	public FDDeliveryZoneInfo getZoneInfo() {
-		return zoneInfo;
-	}
-
-	public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
-		this.zoneInfo = zoneInfo;
-	}
-
-	public int getCapacityUtilizationPercentage() {
-		return capacityUtilizationPercentage;
-	}
-
-	public void setCapacityUtilizationPercentage(int capacityUtilizationPercentage) {
-		this.capacityUtilizationPercentage = capacityUtilizationPercentage;
-	}
-
-	public boolean isMidWeekDlvPassApplicable() {
-		return isMidWeekDlvPassApplicable;
-	}
-
-	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
-		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
-	}
-
-	public boolean isSameDaySlot() {
-		return isSameDaySlot;
-	}
-
-	public void setSameDaySlot(boolean isSameDaySlot) {
-		this.isSameDaySlot = isSameDaySlot;
 	}
 	
 	

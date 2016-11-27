@@ -1,27 +1,36 @@
 package com.freshdirect.common.pricing.util;
 
-import java.util.List;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class DealsHelper {
+	private static final Logger LOG = Logger.getLogger(DealsHelper.class);
+	
 
-    public static boolean isItemOnSale(double sellingPrice, double promoPrice) {
+	public static boolean isItemOnSale(double sellingPrice, double promoPrice) {
 		if (!isValidInput(promoPrice) || !isValidInput(sellingPrice) ||  sellingPrice<=promoPrice) {
 			return false;
 		}
+
 		int p = getVariancePercentage(sellingPrice,promoPrice);
 		return ( (FDStoreProperties.getDealsLowerLimit()<=p) && (FDStoreProperties.getDealsUpperLimit()>=p) );
 	}
+	
+	
 	
 	public static boolean isShowBurstImage(double sellingPrice, double promoPrice) {
 		if (!isValidInput(promoPrice) || !isValidInput(sellingPrice) ||  sellingPrice<=promoPrice) {
 			return false;
 		}
+
 		int p = getVariancePercentage(sellingPrice,promoPrice);
+		
 		return ( (FDStoreProperties.getBurstsLowerLimit()<=p) && (FDStoreProperties.getBurstUpperLimit()>=p) );
 	}
+	
+	
 	
 	/**
 	 * Returns a -ve integer if either the basePrice or sellingPrice is zero or 
@@ -35,26 +44,75 @@ public class DealsHelper {
 	 * @return
 	 */
 	public static int getVariancePercentage(double sellingPrice, double promoPrice) {
-        if (!isValidInput(promoPrice) || !isValidInput(sellingPrice) || sellingPrice <= promoPrice) {
+		
+		if(!isValidInput(promoPrice)||!isValidInput(sellingPrice)||sellingPrice<=promoPrice)
 			return -1;
-        }
-        return (int) ((sellingPrice - promoPrice) * 100.0 / sellingPrice + 0.2);
+		int val = (int) ((sellingPrice - promoPrice) * 100.0 / sellingPrice + 0.2);
+		if( ((val%5)==0)||((val%2)==0))
+			return val;
+		return val-1;
 	}
 	
 	public static double determineBasePrice(double sellingPrice, double promoPrice) {
+		
 		return sellingPrice >= promoPrice ? sellingPrice : promoPrice;
 	}
 
+	private static boolean isValidInput(String input,int length) {
+		return isValidInput(input) && input.length()>=length;
+	}
+
+	private static boolean isValidInput(String input) {
+		return !(input==null ||"".equals(input.trim()));
+	}
+	
 	private static boolean isValidInput(double input) {
 		return input > 0.0;
 	}
 
-    public static int determineTieredDeal(double sellingPrice, List<ErpMaterialPrice> materialPrices) {
+	public static void main(String[] args) {
+		
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(0.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(0.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(5.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(100.0, 6.0));
+		System.out.println(DealsHelper.isItemOnSale(100.0, 25.1));
+		System.out.println(DealsHelper.isItemOnSale(100.0, 24.99));
+		System.out.println(DealsHelper.isItemOnSale(100.0, 24.0));
+		System.out.println(DealsHelper.isItemOnSale(100.0, 89.99));
+		System.out.println(DealsHelper.isItemOnSale(10.0, 9.0));
+		System.out.println(DealsHelper.isItemOnSale(10.0, 25.0));
+		
+		/*System.out.println(DealsHelper.getVariancePercentage(6.0, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(7.0, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(8.0, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(6.5, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(6.7, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(10.0, 5.0));
+		System.out.println(DealsHelper.getVariancePercentage(10.0, 9.99));
+		System.out.println(DealsHelper.getVariancePercentage(0.0, 9.99));
+		System.out.println(DealsHelper.getVariancePercentage(9.0, 0.0));
+		System.out.println(DealsHelper.getVariancePercentage(0.0, 0.0));
+		System.out.println(DealsHelper.getVariancePercentage(0.01, 100.0));
+		System.out.println(DealsHelper.getVariancePercentage(100.01, 0.001));
+		*/
+	}
+
+
+	public static int determineTieredDeal(double sellingPrice, ErpMaterialPrice[] materialPrices) {
 		int highest = 0;
-        for (ErpMaterialPrice materialPrice : materialPrices) {
-            highest = Math.max(getVariancePercentage(sellingPrice, materialPrice.getPrice()), highest);
+		for (int i = 0; i < materialPrices.length; i++) {
+			int deal = getVariancePercentage(sellingPrice, materialPrices[i].getPrice());
+			if (deal > highest)
+				highest = deal;
 		}
-        return highest;
+		return Math.max(highest, 0);
 	}
 	
 	public static boolean isDealOutOfBounds(int price) {

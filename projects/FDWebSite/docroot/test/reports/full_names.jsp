@@ -7,8 +7,8 @@ page import="java.util.List"%><%@
 page import="java.util.Map"%><%@
 page import="java.util.Set"%><%@
 page import="java.util.StringTokenizer"%><%@
-page import="com.freshdirect.storeapi.content.ContentFactory"%><%@
-page import="com.freshdirect.storeapi.content.ContentNodeModel"%><%@
+page import="com.freshdirect.fdstore.content.ContentFactory"%><%@
+page import="com.freshdirect.fdstore.content.ContentNodeModel"%><%@
 page import="com.freshdirect.framework.util.CSVUtils"%><%@
 page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%><%@
 page import="org.apache.commons.fileupload.FileItemFactory"%><%@
@@ -129,7 +129,7 @@ if (toCSV) {
 } else {
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>YMAL PERFORMANCE TEST PAGE</title>

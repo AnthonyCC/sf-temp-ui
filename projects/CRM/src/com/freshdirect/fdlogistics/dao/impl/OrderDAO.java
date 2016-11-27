@@ -22,7 +22,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.freshdirect.crm.CallLogModel;
-import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.fdlogistics.dao.IOrderDAO;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.logistics.controller.data.request.OrderSearchCriteria;
@@ -47,7 +46,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	// START HANDOFF QUERIES
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 			+ "ci.cell_phone, fde.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.scrubbed_address, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, handofftime "
+			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, handofftime "
 			+ "from cust.customer c, cust.fdcustomer fdc, cust.fdcustomer_estore fde  "
 			+ ", cust.customerinfo ci "
 			+ ", cust.sale s, cust.salesaction sa "
@@ -58,13 +57,14 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ "and s.status <> 'CAN' "
 			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X' and FDE.E_STORE = 'FreshDirect' and FDC.ID =FDE.FDCUSTOMER_ID";
 
-	private static String GET_ORDER_BYID = " SELECT S.ID, S.SAP_NUMBER, SA.REQUESTED_DATE, S.STATUS, SA.AMOUNT, DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME, DI.ZONE ZONE, DI.ADDRESS1, DI.ADDRESS2, " +
-			"DI.APARTMENT, DI.CITY, DI.STATE, DI.ZIP, DI.COUNTRY, DI.DELIVERY_TYPE, DI.RESERVATION_ID, S.CUSTOMER_ID CUSTOMER_ID, DI.FIRST_NAME, DI.LAST_NAME, DI.PHONE HOME_PHONE, " +
-			"DI.DELIVERY_INSTRUCTIONS, SA.SOURCE,P.CARD_TYPE,P.EWALLET_ID,DI.UNATTENDED_INSTR,DI.ALT_DEST,DI.ALT_FIRST_NAME ,DI.ALT_LAST_NAME,DI.ALT_APARTMENT,DI.ALT_PHONE,  " +
-			"(select  cl.amount from cust.chargeline cl where CL.SALESACTION_ID = sa.id and cl.type='TIP' ) TIP, (select count(1) from CUST.ORDERLINE ol where OL.SALESACTION_ID = sa.id and OL.ALCOHOL = 'X') ALCOHOL" +
-			" FROM CUST.SALE S, CUST.SALESACTION SA" +
-			" , CUST.DELIVERYINFO DI,CUST.PAYMENTINFO P WHERE S.ID = SA.SALE_ID  AND SA.CUSTOMER_ID = S.CUSTOMER_ID AND S.CROMOD_DATE=SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO', 'MOD') "+
-			"  AND S.TYPE ='REG' AND SA.ID = DI.SALESACTION_ID AND S.ID =? AND SA.ID = P.SALESACTION_ID";
+	private static String GET_ORDER_BYID = "SELECT s.id, s.sap_number, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
+			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, "
+			+ "s.customer_id customer_id, di.first_name, di.last_name, di.phone home_phone, di.delivery_instructions, sa.source "
+			+ "from cust.sale s, cust.salesaction sa "
+			+ ", cust.deliveryinfo di "
+			+ "where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
+			+ "and s.type ='REG' "
+			+ "and sa.id = di.salesaction_id and s.id =?";
 
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 			+ "ci.cell_phone, fde.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
@@ -227,8 +227,6 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 					Customer customer = new Customer();
 					customer.setCustomerId(rs.getString("customer_id"));
 					customer.setMobilePhone(rs.getString("mobile_number"));
-					customer.setFirstName(rs.getString("first_name"));
-					customer.setLastName(rs.getString("last_name"));
 
 					infoModel.setCustomer(customer);
 					infoModel.setOrderStatus(rs.getString("status"));
@@ -270,7 +268,6 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 					address.setZipCode(rs.getString("ZIP"));
 					address.setCountry(rs.getString("COUNTRY"));
 					address.setApartment(rs.getString("APARTMENT"));
-					address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 
 					// setting the service type in address
 					address.setServiceType(rs.getString("DELIVERY_TYPE"));
@@ -618,43 +615,24 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 						custModel.setCustomerId(rs.getString("CUSTOMER_ID"));
 						custModel.setHomePhone(rs.getString("HOME_PHONE"));
 
-						result.setArea(rs.getString("ZONE"));
+						result.setArea(rs.getString("zone"));
 						result.setOrderNumber(rs.getString("ID"));
-						result.setErpOrderNumber(rs.getString("SAP_NUMBER"));
+						result.setErpOrderNumber(rs.getString("sap_number"));
 						result.setStartTime(rs.getTimestamp("STARTTIME"));
 						result.setEndTime(rs.getTimestamp("ENDTIME"));
 						result.setCutOffTime(rs.getTimestamp("CUTOFFTIME"));
-						result.setReservationId(rs.getString("RESERVATION_ID"));
+						result.setReservationId(rs.getString("reservation_id"));
 						Address address = new Address();						
 						result.setAddress(address);
-						address.setAddress1(rs.getString("ADDRESS1"));
-						address.setAddress2(rs.getString("ADDRESS2"));
-						address.setApartment(rs.getString("APARTMENT"));
-						address.setCity(rs.getString("CITY"));
-						address.setState(rs.getString("STATE"));
-						address.setZipCode(rs.getString("ZIP"));
-						address.setDeliveryInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
-						address.setUnattendedInstructions(rs.getString("UNATTENDED_INSTR"));
-						result.setCardType(rs.getString("CARD_TYPE"));
-						result.setEwalletID(rs.getString("EWALLET_ID"));
-						result.setAlcohol(rs.getInt("ALCOHOL")>0?true:false);
-						result.setETip(rs.getDouble("TIP"));
-						String altDest=(rs.getString("ALT_DEST")!=null)?EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")).getName():null;
-						if(altDest!=null)
-						{
-						if(altDest.equalsIgnoreCase(EnumDeliverySetting.NEIGHBOR.getName()))
-						{
-						String altDeliveryInst=rs.getString("ALT_FIRST_NAME")
-								+" "+rs.getString("ALT_LAST_NAME")+","+
-						((rs.getString("ALT_APARTMENT")!=null)?(" "+rs.getString("ALT_APARTMENT")):"")
-						+",Contact at:"+rs.getString("ALT_PHONE");
-						address.setAltDeliveryInstructions(altDeliveryInst);
-						}
-						else
-							address.setAltDeliveryInstructions(altDest);
-						}
+						address.setAddress1(rs.getString("address1"));
+						address.setAddress2(rs.getString("address2"));
+						address.setApartment(rs.getString("apartment"));
+						address.setCity(rs.getString("city"));
+						address.setState(rs.getString("state"));
+						address.setZipCode(rs.getString("zip"));
+						address.setDeliveryInstructions(rs.getString("delivery_instructions"));
 						result.setOrderStatus(EnumSaleStatus.getSaleStatus(
-								rs.getString("STATUS")).getName());
+								rs.getString("status")).getName());
 						result.setSource(rs.getString("SOURCE"));
 						
 

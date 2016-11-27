@@ -13,7 +13,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr>
 		<td>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 		<b>Order Not Submitted</b><br>
 		This order was not accepted by our system. Details follow.<br><br>
 		</td>
@@ -25,7 +25,7 @@
 	<pre><%= message %></pre>
 	</td>
 	</tr>
-	<tr><td class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+	<tr><td class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 	</tr>
 	</logic:iterate>
 </table>

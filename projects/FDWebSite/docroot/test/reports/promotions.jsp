@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <body>
 
 <h2>Promotions</h2>

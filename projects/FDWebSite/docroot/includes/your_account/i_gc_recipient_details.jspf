@@ -7,7 +7,7 @@ List recipients = cart.getGiftCardRecipients();
  
 <table width="100%" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
-			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font  class="orange">#<%=orderNumber%></font></b></span><br /><br />
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">
             <span class="title12"><b>View this order (and download printable PDFs of your gifts) in Your Account.</b></span></a>
 			</td>
@@ -16,8 +16,7 @@ List recipients = cart.getGiftCardRecipients();
 
 <table class="recipTable">
 		<tr>
-		    <th><div class="offscreen">Recipient list</div></th>
-			<th><div class="recipAmount">Amount</div></th>
+			<td><div class="recipAmount">Amount</div></td>
 		</tr>
             <%
                 //See if Gift card is already delivered.
@@ -32,15 +31,16 @@ List recipients = cart.getGiftCardRecipients();
 				ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>
 		<tr>
-			 <td>
+			<td>
 				<div class="recipRow" id="<%=erm.getSale_id()%>Row">
 					<div class="recipNumber" id="<%=erm.getSale_id()%>Number"><%= indx %>.&nbsp;</div>
 					<div class="recipName" id="<%=erm.getSale_id()%>Name"><%= erm.getRecipientName()%></div>
-               </div>
-            </td>
-			  <td>
-			     <div class="recipAmount" id="<%=erm.getSale_id()%>Amount"><b>$<%= erm.getFormattedAmount() %></b></div>
-			  </td>
+
+					<div class="recipAmount" id="<%=erm.getSale_id()%>Amount">$<%= erm.getFormattedAmount() %></div>
+
+					
+				</div>
+			<td>
 		</tr>
 			<%
 				indx++;

@@ -10,44 +10,41 @@
 	aboutSection = request.getParameter("catId");
 %>
 <tmpl:insert template='/common/template/left_dnav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put> --%>
-    <tmpl:put name='content' direct='true'>
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"><br>
+<tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
+<tmpl:put name='content' direct='true'>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
 <div align="right">
-	<% if ("about_fdstory_promise".equals(aboutSection)){
+	<% if (aboutSection.equals("about_fdstory_promise")){
 	%>
 		<%@ include file="/about/includes/ourPromise.jspf" %>
 	<%
 	}
-	else if("about_fdstory_selection".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_selection")){%>
 
 		<%@ include file="/about/includes/selection.jspf" %>
 	
 	<%} 
-	else if("about_fdstory_facility".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_facility")){%>
 	
 		<%@ include file="/about/includes/ourFacility.jspf" %>
 	
 	<%} 
-	else if("about_fdstory_experts".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_experts")){%>
 	
 		<%@ include file="/about/includes/ourExperts.jspf" %>
 	
 	<%} 
-	else if("about_fdstory_delivery".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_delivery")){%>
 	
 		<%@ include file="/about/includes/delivery.jspf" %>
 	
 	<%} 
-	else if("about_fdstory_guarantee".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_guarantee")){%>
 	
 		<%@ include file="/about/includes/freshness.jspf" %>
 	
 	<%} 
-	else if("about_fdstory_store".equals(aboutSection)){%>
+	else if(aboutSection.equals("about_fdstory_store")){%>
 	
 		<%@ include file="/about/includes/onlineStore.jspf" %>
 	
@@ -60,7 +57,7 @@
 
 %>
 </div>				
-<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12">
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="12">
 </tmpl:put>
 </tmpl:insert>
 

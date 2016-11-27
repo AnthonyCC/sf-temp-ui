@@ -23,7 +23,7 @@ suggestions = FDDeliveryManager.getInstance().findSuggestionsForAmbiguousAddress
 
 <table border="0" cellspacing="1" cellpadding="0">
 	<tr valign="middle">
-		<td colspan="4" class="errortext">
+		<td colspan="4" class="text11rbold">
 	
 		<%= addressMessage = result.getError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()).getDescription() %>
 
@@ -33,7 +33,7 @@ suggestions = FDDeliveryManager.getInstance().findSuggestionsForAmbiguousAddress
 			<%      for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
 			            AddressModel suggestion = (AddressModel) sIter.next();  %>
 			    <tr>
-					<td class="errortext">
+					<td class="text11rbold">
 			        	<img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><a href="javascript:fillAddress('<%= suggestion.getAddress1() %>', '<% if (!"".equals(suggestion.getApartment())) { %> <%= suggestion.getApartment() %> <%}%>' )"><%= suggestion.getAddress1() %> <% if ( suggestion.getApartment() != null && !"".equals(suggestion.getApartment())) { %>Apt # <%= suggestion.getApartment() %><% } %></a>
 			    	</td>
 				</tr>

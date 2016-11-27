@@ -5,30 +5,32 @@ import java.util.Date;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 
+/**
+ * @author skrishnasamy
+ * @version 1.0
+ * @created 19-Dec-2007 2:58:50 PM
+ */
 public class ErpOrderHistory implements OrderHistoryI {
 	private static final long serialVersionUID = 4888213033162047918L;
 
+
 	private Collection<ErpSaleInfo> erpSaleInfos;
 	private Collection<ErpSaleInfo> erpRegSaleInfos;
-	private Collection<ErpSaleInfo> erpRegSoFutureSaleInfos;
 
-
+	/**
+	 * 
+	 * @param erpsaleInfos
+	 */
 	public ErpOrderHistory(Collection<ErpSaleInfo> erpsaleInfos) {
 		this.erpSaleInfos = erpsaleInfos;
 		erpRegSaleInfos=ErpOrderHistoryUtil.filterOrders(this.erpSaleInfos,EnumSaleType.REGULAR);
-		erpRegSoFutureSaleInfos = ErpOrderHistoryUtil.filterSOActiveFutureInstances(this.erpRegSaleInfos);;
 	}
 
 	public Collection<ErpSaleInfo> getErpSaleInfos() {
 		return this.erpSaleInfos;
 	}
 	
-	public Collection<ErpSaleInfo> getErpRegSOFutureSaleInfos() {
-		return this.erpRegSoFutureSaleInfos;
-	}
-	
-	@Override
-    public int getDeliveredOrderCount(){
+	public int getDeliveredOrderCount(){
 		return ErpOrderHistoryUtil.getDeliveredOrderCount(erpRegSaleInfos);
 	}
 
@@ -42,133 +44,94 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getFirstOrderDateByStore(erpRegSaleInfos, estoreId);
 	}
 
-	@Override
-    public Date getFirstNonPickupOrderDate(){
+	public Date getFirstNonPickupOrderDate(){
 		return ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpRegSaleInfos);
 	}
 
-	@Override
-    public Date getLastOrderCreateDate(){
+	public Date getLastOrderCreateDate(){
 		return ErpOrderHistoryUtil.getLastOrderCreateDate(erpRegSaleInfos);
 	}
 
-	@Override
-    public Date getLastOrderDlvDate(){
+	public Date getLastOrderDlvDate(){
 		return ErpOrderHistoryUtil.getLastOrderDlvDate(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getOrderCountForChefsTableEligibility(){
+	public int getOrderCountForChefsTableEligibility(){
 		return ErpOrderHistoryUtil.getOrderCountForChefsTableEligibility(erpRegSaleInfos);
 	}
 	
-	@Override
-    public double getOrderSubTotalForChefsTableEligibility(){
+	public double getOrderSubTotalForChefsTableEligibility(){
 		return ErpOrderHistoryUtil.getOrderSubTotalForChefsTableEligibility(erpRegSaleInfos);
 	}
 	
-	@Override
-    public String getLastOrderId(){
+	public String getLastOrderId(){
 		return ErpOrderHistoryUtil.getLastOrderId(erpRegSaleInfos);
 	}
 
-	@Override
-    public EnumDeliveryType getLastOrderType(){
+	public EnumDeliveryType getLastOrderType(){
 		return ErpOrderHistoryUtil.getLastOrderType(erpRegSaleInfos);
 	}
 
-	@Override
-    public String getLastOrderZone(){
+	public String getLastOrderZone(){
 		return ErpOrderHistoryUtil.getLastOrderZone(erpRegSaleInfos);
 	}
 
-	@Override
-    public int getPhoneOrderCount(){
+	public int getPhoneOrderCount(){
 		return ErpOrderHistoryUtil.getPhoneOrderCount(erpRegSaleInfos);
 	}
 
-	@Override
-    public int getReturnOrderCount(){
+	public int getReturnOrderCount(){
 		return ErpOrderHistoryUtil.getReturnOrderCount(erpRegSaleInfos);
 	}
 
-	@Override
-    public String getSecondToLastSaleId(){
+	public String getSecondToLastSaleId(){
 		return ErpOrderHistoryUtil.getSecondToLastSaleId(erpRegSaleInfos);
 	}
 
-	@Override
-    public int getTotalOrderCount(){
+	public int getTotalOrderCount(){
 		return ErpOrderHistoryUtil.getTotalOrderCount(erpRegSaleInfos);
 	}
 
-	@Override
-    public int getValidECheckOrderCount(){
+	public int getValidECheckOrderCount(){
 		return ErpOrderHistoryUtil.getValidECheckOrderCount(erpRegSaleInfos);
 	}
 
-	@Override
-    public int getValidOrderCount(){
+	public int getValidOrderCount(){
 		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getValidOrderCount(EnumDeliveryType deliveryType){
+	public int getValidOrderCount(EnumDeliveryType deliveryType){
 		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos,deliveryType);
 	}
-	
-	@Override
-    public int getValidOrderCount(String salesOrg){
-		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos, salesOrg);
-	}
 
-    @Override
-    public int getValidOrderCount(EnumEStoreId storeId) {
-        return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos, storeId);
-    }
-
-	@Override
-    public int getValidPhoneOrderCount(){
+	public int getValidPhoneOrderCount(){
 		return ErpOrderHistoryUtil.getValidPhoneOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getSettledOrderCount() {
+	public int getSettledOrderCount() {
 		return ErpOrderHistoryUtil.getSettledOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getSettledOrderCount(EnumEStoreId estoreId) {
-		return ErpOrderHistoryUtil.getSettledOrderCountByStore(erpRegSaleInfos, estoreId);
-	}
-	
-	@Override
-    public int getTotalRegularOrderCount(){
+	public int getTotalRegularOrderCount(){
 		return ErpOrderHistoryUtil.getTotalRegularOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getSettledECheckOrderCount() {
+	public int getSettledECheckOrderCount() {
 		return ErpOrderHistoryUtil.getSettledECheckOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getUnSettledEBTOrderCount(){
+	public int getUnSettledEBTOrderCount(){
 		return ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpRegSaleInfos);
 	}
 	
-	@Override
-    public int getUnSettledEBTOrderCount(String currSaleId){
+	public int getUnSettledEBTOrderCount(String currSaleId){
 		return ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpRegSaleInfos,currSaleId);
 	}
 	
-	@Override
-    public String toString() {
+	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
 		buf.append("ValidOrderCount "+getValidOrderCount()+"\n");
-        buf.append("ValidFdStoreOrderCount " + getValidOrderCount(EnumEStoreId.FD) + "\n");
-        buf.append("ValidFdxStoreOrderCount " + getValidOrderCount(EnumEStoreId.FDX) + "\n");
 		buf.append("LastOrderId "+getLastOrderId()+"\n");
 		buf.append("ValidPhoneOrderCount "+getValidPhoneOrderCount()+"\n");
 		buf.append("TotalOrderCount "+getTotalOrderCount()+"\n");
@@ -192,16 +155,6 @@ public class ErpOrderHistory implements OrderHistoryI {
 	@Override
 	public int getValidMasterPassOrderCount() {
 		return ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpRegSaleInfos);
-	}
-
-	@Override
-	public boolean hasSettledOrders() {
-		return ErpOrderHistoryUtil.hasSettledOrders(erpRegSaleInfos);
-	}
-	
-	@Override
-	public boolean hasSettledOrders(EnumEStoreId estoreId) {
-		return ErpOrderHistoryUtil.hasSettledOrders(erpRegSaleInfos, estoreId);
 	}
 
 }

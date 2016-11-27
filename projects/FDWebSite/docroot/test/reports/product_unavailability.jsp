@@ -1,7 +1,7 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.attributes.*" %>
+<%@ page import="com.freshdirect.fdstore.attributes.*" %>
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -118,7 +118,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 	selectedDeptInfo = (DepartmentInfo)deptInfos.get( selectedDept );
 }
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>/ FD Product Unavailability Report /</title>
 <style type="text/css">
@@ -257,7 +257,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 		int total_unavailable = 0; 
 		int total_in_department = 0;
 		%>
-		<logic:iterate id="dept" indexId="i" collection="<%= ContentFactory.getInstance().getStore().getDepartments() %>" type="com.freshdirect.storeapi.content.DepartmentModel">
+		<logic:iterate id="dept" indexId="i" collection="<%= ContentFactory.getInstance().getStore().getDepartments() %>" type="com.freshdirect.fdstore.content.DepartmentModel">
 			<% DepartmentInfo di = (DepartmentInfo)deptInfos.get(dept.getContentName()); %>
 			<tr style="cursor: hand;" <%= di==selectedDeptInfo ? "class=\"selected\"" : "" %>
 			onClick="document.location='?dept=<%= dept.getContentName() %>'" align="right">
@@ -268,7 +268,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 				<% total_in_department += di.getSkuCount(); %>
 				<td><%= NumberFormat.getPercentInstance().format(di.getPercentMatching()) %></td>
 			</tr>
-			<% if (overview) { %><tr><td colspan="5" class="separator"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr><%}%>
+			<% if (overview) { %><tr><td colspan="5" class="separator"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr><%}%>
 		</logic:iterate>
 		<%-- if (!overview) { %><tr><td></td><td colspan="4"><hr class="black1px" noshade></td></tr><%}--%>
 		<%--tr style="font-weight: bold;" align="right">
@@ -303,19 +303,19 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 				<td width="22%">SAP #</td>
 				<td width="28%">Message</td>
 				<%-- 28 16 28 td width="28%" align="right">Last Time Available</td --%>
-				<% if (!printview) { %><td><img src="/media_stat/images/layout/clear.gif" alt="" width="16" height="1"></td><% } %>
+				<% if (!printview) { %><td><img src="/media_stat/images/layout/clear.gif" width="16" height="1"></td><% } %>
 			</tr>
 		</table>
 		<% if (!printview) { %><div id="detail_list" style="width: 100%; height: 90%; overflow-y: scroll;"><% } %>
 			<table width="100%" cellpadding="0" cellspacing="2" class="detail">
-			<logic:iterate id="sku" collection="<%= selectedDeptInfo.getMatchingSkus() %>" type="com.freshdirect.storeapi.content.SkuModel">
+			<logic:iterate id="sku" collection="<%= selectedDeptInfo.getMatchingSkus() %>" type="com.freshdirect.fdstore.content.SkuModel">
 			<tr valign="top">
 				<td width="50%"><%= sku.getFullName() %></td>
 				<td width="22%"><%= sku.getProduct().getMaterial().getMaterialNumber() %></td>
 				<td width="28%"><%= sku.getEarliestAvailabilityMessage() %></td>
 				<%-- td width="28%" align="right">8/27/2003 11:16 PM</td --%>
 			</tr>
-			<tr><td colspan="3" class="separator"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+			<tr><td colspan="3" class="separator"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 			</logic:iterate>
 			</table>
 		<% if (!printview) { %></div><% } %>
@@ -323,6 +323,6 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 </div>
 <% } %>
 <%= !printview && !overview ? "<br clear=\"all\">" : ""%>
-<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></div>
+<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></div>
 </body>
 </html>

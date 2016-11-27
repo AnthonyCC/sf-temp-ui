@@ -6,7 +6,7 @@
  */
 {template .customerReviews}
 {if $bazaarVoice}
-<li class="pdp-accordion-customerReview pdp-accordion-item"><a href="#" onclick="event.preventDefault();" class="pdp-item-description-toggle" data-component="customercm" id="pdp-customerReview"><span class="pdp-accordion-item-carrot"></span>Customer Reviews</a><div class="customer-review">
+<li class="pdp-accordion-customerReview pdp-accordion-item"><input type="checkbox" id="pdp-customerReview" data-component="customercm"><label for="pdp-customerReview"><span class="pdp-accordion-item-carrot"></span>Customer Reviews</label><div class="customer-review">
 <div id="BVRRContainer" data-productid="{$productId}"></div>
 </div></li>
 {/if}

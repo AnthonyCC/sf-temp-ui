@@ -3,12 +3,7 @@ final int W_RECIPE_DEPT_BODY_TOTAL = 765;
 final int W_RECIPE_DEPT_BODY_LEFT = 435;
 final int W_RECIPE_DEPT_BODY_RIGHT = 330;
 %>
-<style>
-	.W_RECIPE_DEPT_BODY_TOTAL { width: <%= W_RECIPE_DEPT_BODY_TOTAL %>px; }
-	.W_RECIPE_DEPT_BODY_TOTAL-391 { width: calc( <%= W_RECIPE_DEPT_BODY_TOTAL %>px - 391px ); }
-	.W_RECIPE_DEPT_BODY_LEFT { width: <%= W_RECIPE_DEPT_BODY_LEFT %>px; }
-	.W_RECIPE_DEPT_BODY_RIGHT { width: <%= W_RECIPE_DEPT_BODY_RIGHT %>px; }
-</style>
+
 <%
 /*
 -- This includes paints the recipe department body and bottom (no side navs)
@@ -32,14 +27,14 @@ final int W_RECIPE_DEPT_BODY_RIGHT = 330;
 	
 <% 
 if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
-	<div class="W_RECIPE_DEPT_BODY_TOTAL" style="text-align:left;" class="text11">
+	<div style="width: <%=W_RECIPE_DEPT_BODY_TOTAL%>px; text-align:left;" class="text11">
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
 		<fd:IncludeMedia name='<%= editorialPath %>' />
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="">
 	</div>
 <% } %>
 		
-	<table class="W_RECIPE_DEPT_BODY_TOTAL" border="0" cellspacing="0" cellpadding="0">
+	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25" alt="Choose a Category"></td>
         <td colspan="2" height="25" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
@@ -49,16 +44,16 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
         <td width="8" style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="6" height="6" alt=""></td>
         <td width="11"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" alt=""></td>
         <td width="187"><img src="/media_stat/images/layout/clear.gif" width="187" height="1" alt=""></td>
-        <td class="W_RECIPE_DEPT_BODY_TOTAL-391"><img src="/media_stat/images/layout/clear.gif" class="W_RECIPE_DEPT_BODY_TOTAL-391" height="1" alt=""></td>
+        <td width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>" height="1" alt=""></td>
         <td width="177"><img src="/media_stat/images/layout/clear.gif" width="177" height="1" alt=""></td>
       </tr>
       <tr>
         <td style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td valign="top" colspan="2" rowspan="2" style="padding-top: 10px; padding-right: 10px;">
-			<logic:iterate id="recipeCategory" collection="<%= recipeDepartment.getCategories() %>" type="com.freshdirect.storeapi.content.RecipeCategory">
+			<logic:iterate id="recipeCategory" collection="<%= recipeDepartment.getCategories() %>" type="com.freshdirect.fdstore.content.RecipeCategory">
 			<% 
-				if (!(recipeCategory.isSecondaryCategory())) {
+				if (recipeCategory.isSecondaryCategory()) continue;  
 				Image catLabelImg = recipeCategory.getLabel();
 				String catLabelPath = null;
 				if (catLabelImg!=null) {
@@ -68,7 +63,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
     	    %>
 		    	<a href="<%=response.encodeURL("recipe_cat.jsp?catId="+recipeCategory)%>&trk=dpage" class="recipe_category"><% if (catLabelImg!=null) {%><img src="<%=catLabelPath%>" alt="" width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0"><%} else {%><%=recipeCategory.getName().toUpperCase()%><%}%></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""><br>
 			<% int subcatItemCount = 0; %>
-			<logic:iterate id="recipeSubcategory" collection="<%= recipeCategory.getSubcategories() %>" type="com.freshdirect.storeapi.content.RecipeSubcategory">
+			<logic:iterate id="recipeSubcategory" collection="<%= recipeCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
 		        <%
 					if (subcatItemCount > 0) {
 				%>
@@ -77,31 +72,29 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=dpage")%>" class="recipe_subcategory"><%=recipeSubcategory.getName()%></a>
 				<% subcatItemCount++; %>
 			</logic:iterate><br><br>
-			<%} %>
 		  </logic:iterate>
 		  <br>
-		  <form fdform name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">
 		  <table cellpadding="0" cellspacing="0" border="0">
-		  	
+		  	<form name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">
 			<tr>
 				<td colspan="3" style="padding-bottom: 4px;"><img src="/media_stat/recipe/rechm_recipe_search.gif" width="98" height="10" alt="RECIPE SEARCH"></td>
 			</tr>
 		  	<tr>
-				<td style="padding-right: 6px;" class="RECIPE_DEPT_BODY_SEARCH_KEYWORD"><input aria-label="recipe search" class="accessible_search" name="keyword" size="20"></td>
-				<td style="padding-right: 10px;" class="RECIPE_DEPT_BODY_SEARCH_FIND"><button type="submit" class="cssbutton orange small">Find</button></td>
-				<td class="RECIPE_DEPT_BODY_SEARCH_ADVANCED"><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
+				<td style="padding-right: 6px;"><input name="keyword" size="20"></td>
+				<td style="padding-right: 10px;"><input type="image" src="/media_stat/recipe/rechm_find_button.gif" border="0" alt="FIND"></td>
+				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
 			</tr>
-		  	 </table>
-		  	 </form>
+		  	</form>
+		  </table>
 		  <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="">
 		</td>
         <td valign="top">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br>
 			<img src="/media_stat/recipe/rechm_by_cookbook.gif" border="0" width="93" height="9" vspace="5" alt="By Source"><br>
-		    <select class="text9" aria-label="search by source" name="cookbook" style="width:170px;"
+		    <select class="text9" name="cookbook" style="width:170px;"
 				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeSource=' + this.value+'&trk=pcbk';">
 				<option>Search by Source</option>
-		        <logic:iterate id="recipeSource" collection="<%= RecipeSource.findAllAvailable(true) %>" type="com.freshdirect.storeapi.content.RecipeSource">
+		        <logic:iterate id="recipeSource" collection="<%= RecipeSource.findAllAvailable(true) %>" type="com.freshdirect.fdstore.content.RecipeSource">
 <%
 		                  String srcName = recipeSource.getName().toUpperCase().startsWith("THE ") ? recipeSource.getName().substring(4)+", The" : recipeSource.getName();
 %>
@@ -110,10 +103,10 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			</select>
 			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt=""><br>
 			<img src="/media_stat/recipe/rechm_by_author.gif" border="0" width="71" height="10" vspace="5" alt="By Author"><br>
-			<select class="text9" aria-label="search by author" name="author" style="width:170px;"
+			<select class="text9" name="author" style="width:170px;"
 				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeAuthor=' + this.value+'&trk=paut';">
 			   <option>Search by Author</option>
-			   <logic:iterate id="recipeAuthor" collection="<%= RecipeAuthor.findAllAvailable() %>" type="com.freshdirect.storeapi.content.RecipeAuthor">
+			   <logic:iterate id="recipeAuthor" collection="<%= RecipeAuthor.findAllAvailable() %>" type="com.freshdirect.fdstore.content.RecipeAuthor">
 					<option value="<%= recipeAuthor.getContentName() %>"><%=recipeAuthor.getNameLastFirst()%></option>
                </logic:iterate>
 			</select>
@@ -132,31 +125,30 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
       </tr>
     </table>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="">
-	<table class="W_RECIPE_DEPT_BODY_TOTAL" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	  <tr valign="top">
-	  	<td class="W_RECIPE_DEPT_BODY_LEFT" style="padding-right: 10px; border-right: solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="272" height="1" alt=""><br>
+	  	<td width="<%=W_RECIPE_DEPT_BODY_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="272" height="1" alt=""><br>
 	       <% if (rcpCat!= null &&  featuredRecipes!=null && featuredRecipes.size() > 0) { 	       %>
 	          <img src="/media/images/navigation/department/recipes/rechome/rechm_seasonal_graphic.gif" alt="Seasonal Recipes" border="0" width="267"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
-          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
-			  <% if (isPreviewMode && aFeatRecipe.isAvailable()) { 
+          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
+			  <% if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue; 
 			  if (rcpCat!=null) { %>
 		          <a href="<%=response.encodeURL("recipe.jsp?catId="+rcpCat+"&recipeId="+aFeatRecipe+"&trk=dfeat")%>"><%=aFeatRecipe.getName()%></a>
 			<% } else { %><%=aFeatRecipe.getName()%><% } %>
 			<br>
 		  	<span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
-			<% } %>
            </logic:iterate>
 	  	<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+rcpCat+"&subCatId="+rcpSubCat+"&trk=feat")%>" class="text12"><strong>More seasonal recipes...</strong></a>
 	       <% } %>
 	  	</td>
-		<td class="W_RECIPE_DEPT_BODY_RIGHT" align="center" style="padding-left:10px;">
+		<td width="<%=W_RECIPE_DEPT_BODY_RIGHT%>" align="center" style="padding-left:10px;">
  
 	       <% if (featProdCat!=null && featuredProducts!=null && featuredProducts.size() > 0) { 	       
 	            int itmCount = 0;
 	       %>
 			<img src="/media_stat/recipe/rechm_fave_coookbooks.gif" width="161" height="28" alt="stack of Cookbooks"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="">
 		   <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
-		    <logic:iterate id='product' collection="<%=featuredProducts%>" type="com.freshdirect.storeapi.content.ProductModel">
+		    <logic:iterate id='product' collection="<%=featuredProducts%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
 			ContentNodeModel prodParent = product.getParentNode(); 
 			List skus = product.getSkus(); 
@@ -219,7 +211,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 	            int itmCount = 0;       %>
 		   <img src="/media/images/navigation/department/recipes/rechome/rechm_fave_coookbooks2.gif" width="195" height="28" alt="stack of Cookbooks"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="">
 		   <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
-		    <logic:iterate id='rcpSource' collection="<%=featuredSources%>" type="com.freshdirect.storeapi.content.RecipeSource">
+		    <logic:iterate id='rcpSource' collection="<%=featuredSources%>" type="com.freshdirect.fdstore.content.RecipeSource">
 <% 
 		        String ckbkURL = response.encodeURL("/recipe_search.jsp?recipeSource="+rcpSource.getContentName()+"&trk=dfeat");
 			Image srcImg = (Image)rcpSource.getImage();

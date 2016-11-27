@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpHeaders;
 
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.util.RequestUtil;

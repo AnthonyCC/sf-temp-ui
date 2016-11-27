@@ -23,7 +23,7 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_N
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr valign="top">
-<td width="110" align="right"><a href="/shared/popup.jsp?deptId=<%=cat.getDepartment().getContentName()%>&attrib=DEPT_STORAGE_GUIDE_MEDIA&tmpl=large"><% if ( "veg".equalsIgnoreCase(cat.getDepartment().toString())) {%><img src="/media_stat/images/template/vegetable/veg_sto_catnav.gif" width="100" height="56" border="0" alt="Vegetable Storage Guide"><% } else { %><img src="/media_stat/images/template/fruit/fru_sto_catnav.gif" width="86" height="55" border="0" alt="Fruit Storage Guide"><% } %></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="110" height="6"><br>
+<td width="110" align="right"><a href="/shared/popup.jsp?deptId=<%=cat.getDepartment().getContentName()%>&attrib=DEPT_STORAGE_GUIDE_MEDIA&tmpl=large"><% if ( "veg".equalsIgnoreCase(cat.getDepartment().toString())) {%><img src="/media_stat/images/template/vegetable/veg_sto_catnav.gif" width="100" height="56" border="0" alt="Vegetable Storage Guide"><% } else { %><img src="/media_stat/images/template/fruit/fru_sto_catnav.gif" width="86" height="55" border="0" alt="Fruit Storage Guide"><% } %></a><br><img src="/media_stat/images/layout/clear.gif" width="110" height="6"><br>
 <fd:ItemGrabber category='<%= cat.getDepartment() %>' id='sortedColl' depth='<%=grabberDepth%>' ignoreShowChildren='<%=ignoreShowChildren%>' filterDiscontinued='<%= filterDiscontinued %>' returnHiddenFolders='<%=returnHiddenFolders%>' ignoreDuplicateProducts='<%=ignoreDuplicateProducts%>' returnSecondaryFolders='<%=returnSecondaryFolders%>'>
 
 <fd:ItemSorter nodes='<%=(List)sortedColl %>' strategy='<%=sortStrategy%>'/>
@@ -54,19 +54,19 @@ for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
                 catImg = (Image)thisCat.getCategoryPhoto();
                 }
 %>
-<% if (selected) { %><font class="text11bold" color="#000000"><%} else {%><a href="/shared/popup.jsp?catId=<%=thisCat.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large"><% } %><%=thisCat.getFullName()%><% if (selected) { %></font><%} else {%></a><% } %><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br>
+<% if (selected) { %><font class="text11bold" color="#000000"><%} else {%><a href="/shared/popup.jsp?catId=<%=thisCat.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large"><% } %><%=thisCat.getFullName()%><% if (selected) { %></font><%} else {%></a><% } %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
 <%
     selected = false;
     } 
 } 
 %>
 </fd:ItemGrabber>
-<div align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br><img src="<%=catImg.getPath()%>" width="<%=catImg.getWidth()%>" height="<%=catImg.getHeight()%>"></div>
+<div align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><img src="<%=catImg.getPath()%>" width="<%=catImg.getWidth()%>" height="<%=catImg.getHeight()%>"></div>
 </td>
-<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
-<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
-<td><fd:IncludeMedia name="<%=storageMedia%>" /><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br><a href="javascript:goToPage('/category.jsp?catId=<%=currentFolder%>')">Click here to buy some <%=cat.getFullName().toLowerCase()%></a></td>
+<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td><fd:IncludeMedia name="<%=storageMedia%>" /><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><a href="javascript:goToPage('/category.jsp?catId=<%=currentFolder%>')">Click here to buy some <%=cat.getFullName().toLowerCase()%></a></td>
 </tr>
 </table>
 <SCRIPT LANGUAGE="Javascript1.1">

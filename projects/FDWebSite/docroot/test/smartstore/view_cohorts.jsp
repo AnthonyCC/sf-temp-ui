@@ -15,10 +15,10 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.mail.EmailUtil"%>
@@ -136,7 +136,7 @@ String colors[] = {
 List varColors = new ArrayList();
 
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>COHORTS SUMMARY PAGE</title>

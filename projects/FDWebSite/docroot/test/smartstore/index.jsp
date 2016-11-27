@@ -1,8 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="com.freshdirect.cms.application.service.db.DbTypeService"%>
+<%@page import="com.freshdirect.cms.application.service.xml.XmlTypeService"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.freshdirect.event.ImpressionLogger"%>
-<%@ page import="com.freshdirect.smartstore.external.scarab.ScarabInfrastructure"%>
+<%@page import="com.freshdirect.smartstore.external.scarab.ScarabInfrastructure"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%
 	if (request.getParameter("impressionLogger")!=null) {
@@ -14,7 +17,7 @@
 		return;
 	}
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>SMART STORE TEST PAGES - INDEX</title>

@@ -9,21 +9,20 @@
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.freshdirect.storeapi.content.EnumProductLayout"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.MediaI"%>
-<%@page import="com.freshdirect.storeapi.content.TitledMedia"%>
-<%@page import="com.freshdirect.storeapi.content.EnumPopupType"%>
-<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
-<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@page import="com.freshdirect.ErpServicesProperties"%>
 <%@page import="com.freshdirect.framework.util.DateUtil"%>
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
 <%@page import="com.freshdirect.fdstore.FDVariation"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 <%--
 	Required variables:
 
@@ -138,8 +137,8 @@
 		%><fd:SeafoodSustainCheck>
 			<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>">
 			<%  
-				if ( productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo)) != null) {
-					EnumSustainabilityRating enumRating=productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+				if ( productInfo.getSustainabilityRating(plantID) != null) {
+					EnumSustainabilityRating enumRating=productInfo.getSustainabilityRating(plantID);
 					//rating id is +1, only display here for rating of 4,5,6 (or id 5,6,7)
 					/* this only affects ratings with ids > 4, so APPDEV-1979 doesn't touch it. */
 					/* this changes to only ratings of 3 or 4 ONLY with APPDEV-2328 */

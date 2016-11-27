@@ -132,7 +132,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 
 		
 
-		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId;
+		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId+'&amp;coremetrics.pageid='+encodeURIComponent(FreshDirect.Coremetrics.pageId)+'&amp;coremetrics.pagecontenthierarchy='+encodeURIComponent(FreshDirect.Coremetrics.pageContentHierarchy);
 
 		// store DOM ID
 		uri += '&amp;uid='+encodeURIComponent(elementId);

@@ -1,14 +1,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <% //expanded page dimensions
 final int W_BAKERY_KITCHEN_TOTAL = 970;
 %>
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put> --%>
-    <tmpl:put name='content' direct='true'>
+	<tmpl:put name='title' direct='true'>About FreshDirect</tmpl:put>
+		<tmpl:put name='content' direct='true'>
 
 <TABLE  width="<%= W_BAKERY_KITCHEN_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 

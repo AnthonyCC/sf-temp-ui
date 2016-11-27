@@ -23,9 +23,6 @@ public class PDE0017DDataParser extends PaymentechSettlementParser {
 	private static final String FEE_AMOUNT = "FEE_AMOUNT";
 	private static final String USAGE_CODE = "USAGE_CODE";
 	
-	/**
-	 * The fields list is used when tokenizing the chase paymenttech record.
-	 */
 	public PDE0017DDataParser () {
 		super();
 		this.fields.add(new Field(ENTITY_TYPE, 2, true));
@@ -33,12 +30,12 @@ public class PDE0017DDataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(ISSUER_CBK_AMOUNT, 17, true));
 		this.fields.add(new Field(PARTIAL_REPRESENTMENT, 1, true));
 		this.fields.add(new Field(CURRENCY, 3, true));
-		this.fields.add(new Field(CATEGORY, 9, true));//change from 6 to 8 bytes as per revision 6.5
+		this.fields.add(new Field(CATEGORY, 6, true));
 		this.fields.add(new Field(STATUS_FLAG, 1, false));
 		this.fields.add(new Field(SEQUENCE_NUM, 10, true));
 		this.fields.add(new Field(MERCHANT_ORDER_NUM, 22, true));
 		this.fields.add(new Field(ACCOUNT_NUMBER, 19, true));
-		this.fields.add(new Field(REASON_CODE, 6, true)); //change from 3 to 6 bytes as per revision 6.4
+		this.fields.add(new Field(REASON_CODE, 2, true));
 		this.fields.add(new Field(TRANSACTION_DATE, 10, true));
 		this.fields.add(new Field(CBK_DATE, 10, true));
 		this.fields.add(new Field(ACTIVITY_DATE, 10, true));

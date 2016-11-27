@@ -1,6 +1,10 @@
+
+
 	<script type="text/javascript">
 		jQuery.noConflict();
-			
+		
+
+				
 		jQuery(document).ready(function() {			
 						
 			jQuery("#actionName").val(""); 
@@ -11,47 +15,59 @@
 				 * reset form fields with hidden field value
 				 */
 				var userTokenFacebook = jQuery("#user_token_facebook").val();
-				var identityTokenFacebook = jQuery("#identity_token_facebook").val();
 				var socialEmailFacebook = jQuery("#socialEmail_facebook").val();
 				
 				jQuery("#actionName").val("disconnectSocialAccount");  
 				jQuery("#socialNetworkProvider").val("facebook");  
 				jQuery("#socialEmail").val(socialEmailFacebook);
-				jQuery("#userToken").val(userTokenFacebook);
-				jQuery("#identityToken").val(identityTokenFacebook);
+				jQuery("#userToken").val(userTokenFacebook);  				
 			});
 			
 			
-			jQuery("#disconnect_social_accounts_google").click(function(){
+			jQuery("#disconnect_social_accounts_google").click(function(){							
 				/*  
 				 * reset form fields with hidden field value
 				 */
-				var userTokenGoogle = jQuery("#user_token_google").val();
-				var identityTokenGoogle = jQuery("#identity_token_google").val();
+				var userTokenGoogle = jQuery("#user_token_google").val();   							
 				var socialEmailGoogle = jQuery("#socialEmail_google").val();
 				
 				jQuery("#actionName").val("disconnectSocialAccount"); 
 				jQuery("#socialNetworkProvider").val("google"); 
 				jQuery("#socialEmail").val(socialEmailGoogle);  
-				jQuery("#userToken").val(userTokenGoogle);
-				jQuery("#identityToken").val(identityTokenGoogle);
+				jQuery("#userToken").val(userTokenGoogle);  				
 			});			
 					
 		});
 	</script>
-<div class="youraccount_user_social" id="signin_user_social">
+		
+
+				
+
+	
+
 	<form name="social_accounts" method="post">
 	
-		<div class="youraccount_social">
 		<!-- hidden fields used to pass value to RegistrationControllerTag -->
-		<input type="hidden" id="actionName" name="actionName" value="">
-		<input type="hidden" id="userToken" name="userToken" value="">
-		<input type="hidden" id="identityToken" name="identityToken" value="">
-		<input type="hidden" id="socialEmail" name="socialEmail" value="">
-		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">
+		<input type="hidden" id="actionName" name="actionName" value="">   
+		<input type="hidden" id="userToken" name="userToken" value="">   
+		<input type="hidden" id="socialEmail" name="socialEmail" value="">   
+		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">   
 		
-		<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
-		<h2 class="SocialAccount">Social Accounts</h2>
+		<tr>
+			<td colspan="6"><br><br>
+				<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
+				<span class="SocialAccount">Social Accounts</span>
+				<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>								
+			</td>
+		</tr>
+		
+		
+		<%		
+			
+		%>
+				
+		
+		
 		
 		<%		
 			List<ErpCustomerSocialLoginModel> socialLoginInfo = cm.getSocialLoginInfo();
@@ -69,27 +85,23 @@
 			// variables for 'google' accounts
 			String user_token_google = "";
 			String socialEmail_google = "";
-			String identity_token_google = "";
 			
 			// variables for 'facebook' accounts
-			String user_token_facebook = "";
+			String user_token_facebook = "";	
 			String socialEmail_facebook = "";
-			String identity_token_facebook = "";
 			
-			if(socialLoginInfo != null && socialLoginInfo.size()>0){
-				for(ErpCustomerSocialLoginModel socialLoginModel : socialLoginInfo ){
-					String provider = socialLoginModel.getProvider();
-					if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("facebook")){
+			if(socialLoginInfo != null && socialLoginInfo.size()>0){				
+				for(ErpCustomerSocialLoginModel socialLoginModel : socialLoginInfo ){					
+					String provider = socialLoginModel.getProvider();					
+					if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("facebook")){							
 						connectedWithFacebook = true;
 						user_token_facebook = socialLoginModel.getUser_token();
 						socialEmail_facebook = socialLoginModel.getUser_id();
-						identity_token_facebook = socialLoginModel.getIdentity_token();
 						socialNetworkProvider = "facebook";						
-					} else if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("google")){
+					} else if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("google")){						
 						connectedWithGoogle = true;
 						user_token_google = socialLoginModel.getUser_token();	
 						socialEmail_google = socialLoginModel.getUser_id();
-						identity_token_google = socialLoginModel.getIdentity_token();
 						socialNetworkProvider = "google";
 					}					
 				}
@@ -98,16 +110,26 @@
 			//=================================================================================================================================================================================================						
 			String subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 			String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();	
+			//String provider_key = "facebook";
 			String service = "social_login";
 			String callback_uri = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_link_success.jsp";
+		
+			//String directConnectUrl = "https://" + subdomain + ".api.oneall.com/socialize/connect/direct/" + socialNetworkProvider + "/";
 			String directConnectUrl = "https://" + subdomain + site_post_url + "/socialize/connect/direct";
+			
+			// https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp			
+			//String forwardUrl = "https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp";
+			
+			String forwardUrl = directConnectUrl + "?service=" + service + "&callback_uri=" + callback_uri;  // not used
 			//=================================================================================================================================================================================================
 			
 	
 			
 			if(connectedWithFacebook){			
-		%>
-						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook.</div>
+		%>		
+				<tr>
+					<td colspan="6">
+						<img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook. 
 						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
 								(!isPasswordAddedForSocialUser && "google".equalsIgnoreCase(newlyLinkedSocialNetworkProvider)) || 
 								(erpCustomer.isSocialLoginOnly()
@@ -116,17 +138,30 @@
 										&& connectedWithGoogle 
 										&& (!currentProviderName.equalsIgnoreCase("facebook")))){	
 						%>						
-						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
-						<%	} %>		
-		<%	} else { %>														
-						<a href="#" onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" class="youraccount_left_1">
-						<img src="/media/social_login/FacebookLoginButton.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK">
-								</a>	
-		<%	} 
-			
+						<input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
+						<%	} %>
+					</td>									
+				</tr>				
+		<%	} else { %>		
+				<tr>
+					<td colspan="6">													
+						<img src="/media_stat/images/navigation/social_accounts/ConnectFacebook.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK"
+								onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" >							 							 
+					</td>
+				</tr>			
+		<%	} %>	
+		
+		
+		<tr>
+			<td><img src="/media_stat/images/layout/clear.gif" width="40" height="8" border="0" alt=""></td>
+		</tr>			
+		
+		<%	
 			if(connectedWithGoogle){			
-		%>
-						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google.</div>
+		%>		
+				<tr>
+					<td colspan="6">
+						<img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google. 
 						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
 								(!isPasswordAddedForSocialUser && "facebook".equalsIgnoreCase(newlyLinkedSocialNetworkProvider)) 
 								|| (erpCustomer.isSocialLoginOnly() 
@@ -135,22 +170,35 @@
 										&& connectedWithGoogle 
 										&& (!currentProviderName.equalsIgnoreCase("google")))){	
 						%>	
-						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
-						<%	} %>
-		<%	} else { %>												 
-						<a href=#" onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" class="youraccount_left_1">
-						<img src="/media/social_login/GoogleLoginButton.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE" ></a>
+						<input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
+						<%	} %>						
+					</td>
+				</tr>				
+		<%	} else { %>		
+				<tr>
+					<td colspan="6">													 
+						<img src="/media_stat/images/navigation/social_accounts/ConnectGoogle.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE"
+								onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" >
+					</td>
+				</tr>			
 		<%	} %>		
 		
 		
 		<!-- hidden fields used to pass java variables to jQuery -->		
-        <input type="hidden" id="user_token_facebook" name="user_token_facebook" value="<%=user_token_facebook%>">
-        <input type="hidden" id="identity_token_facebook" name="identity_token_facebook" value="<%=identity_token_facebook%>">
-        <input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">
-        <input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">
-        <input type="hidden" id="identity_token_google" name="identity_token_google" value="<%=identity_token_google%>">
-        <input type="hidden" id="socialEmail_google" name="socialEmail_google" value="<%=socialEmail_google%>">
-		<div class="clear"></div>
-		</div>
-	</form>
-</div>
+		<input type="hidden" id="user_token_facebook" name="user_token_facebook" value="<%=user_token_facebook%>">   
+		<input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">   		
+		<input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">   
+		<input type="hidden" id="socialEmail_google" name="socialEmail_google" value="<%=socialEmail_google%>">
+
+
+	</form>	
+	
+
+<br>
+<br>
+<br>
+<br>
+
+
+
+	

@@ -76,9 +76,7 @@ var FreshDirect = FreshDirect || {};
         }
         this.popup.show($t);
         this.popup.clicked = true;
-        if($('.mm-page').length > 0){
-        	$('#deliverypasspopup').addClass('mm-page');
-        }
+
         this.noscroll(true);
       }
     },
@@ -131,17 +129,15 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
     id: "deliverypass",
     submit: function (e) {
-      var product = $('[data-product-id="' + $('[data-selected-product-id]').attr('data-selected-product-id') + '"]');
-      if (product.length) {
-    	if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
-    		fd.deliveryPassSelectedTitle = $('form.deliverypass_form').attr('data-selected-dp-title');
-    		fd.components.AddToCart.addToCart(product, {"dlvPassCart":"true"});
-    	} else {
-    		fd.components.AddToCart.addToCart(product);
-    	}
+      var formEl = e.formEl,
+          product = formEl.find('input:checked').parent().siblings('[data-component="product"]');
+
+      if (product.size()) {
+        fd.components.AddToCart.addToCart(product);
       } else {
         deliverypasspopup.close();
       }
+
       e.preventDefault();
     }
   });
@@ -153,19 +149,7 @@ var FreshDirect = FreshDirect || {};
       deliverypasspopup.close();
     }
   });
-  $(document).on("click", "[data-deliverypass-terms]", function(){
-	  pop("/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information");
-  });
   $(document).on('click', deliverypasspopup.toggleTrigger, deliverypasspopup.toggle.bind(deliverypasspopup));
-  $(document).on('click', "[data-component='deliverypassfreetrialpopup']", function (e) {
-	dataLayer.push({
-      'event': 'deliverypass-click',
-      'eventCategory': 'deliverypass',
-      'eventAction': 'free delivery',
-      'eventLabel': 'free'
-    });
-    doOverlayDialogNew('/includes/freetrial_popup.jsp');
-  });
-  
+
   fd.modules.common.utils.register('expressco', 'deliverypasspopup', deliverypasspopup, fd);
 }(FreshDirect));

@@ -11,11 +11,11 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.TagModel;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.TagModel;
 
 public class Product {
 	
@@ -26,8 +26,6 @@ public class Product {
 	private final List<Image> images;
 	private final float minQty;
 	private final float maxQty;
-
-
 	private final float incrementQty;
 	private final String quantityText;
 	private final String primaryBrand;
@@ -36,13 +34,6 @@ public class Product {
 	private final WineAttributes wineAttributes;
 	private final List<String> keywords;
 	private final int productLayout;
-	private  double availableQty;
-	private  final String msgEarliestAvailability;
-	/*
-	 *     public String getMsgEarliestAvailability() {
-        return msgEarliestAvailability;
-    }
-	 */
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -60,8 +51,6 @@ public class Product {
 		wineAttributes = builder.wineAttributes;
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
-		this.availableQty=builder.availableQty;
-		this.msgEarliestAvailability= builder.availabilityMessage;
 	}
 	
 	public String getId() {
@@ -107,13 +96,6 @@ public class Product {
 	public String getQuantityText() {
 		return quantityText;
 	}
-	
-	public double getAvailableQty() {
-		return Math.floor(availableQty);
-	}
-
-	
-
 
 	public SkuInfo getSkuInfo() {
 		return skuInfo;
@@ -129,11 +111,6 @@ public class Product {
 	public int getProductLayout() {
 		return productLayout;
 	}
-	
-	//getMsgEarliestAvailability()
-    public String getMsgEarliestAvailability() {
-        return msgEarliestAvailability;
-    }
 
 	public static final class WineAttributes {
 		
@@ -241,15 +218,7 @@ public class Product {
 		private SkuInfo skuInfo;
 		private WineAttributes wineAttributes;
 		private int productLayout;
-		private double availableQty;
-		//MsgEarliestAvailability
-		private String availabilityMessage;
 		
-		public ProductBuilder setAvailabilityMessage(String availabilityMessage) {
-			this.availabilityMessage = availabilityMessage;
-			return this;
-		}
-
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
 		private static final List<com.freshdirect.mobileapi.catalog.model.Image> EMPTY_IMAGE=Collections.<com.freshdirect.mobileapi.catalog.model.Image>emptyList();
@@ -278,12 +247,12 @@ public class Product {
             return this;
         }
         
-        public ProductBuilder images(List<com.freshdirect.storeapi.content.Image> images) {
+        public ProductBuilder images(List<com.freshdirect.fdstore.content.Image> images) {
         	if(isEmpty(images))
         		this.images=EMPTY_IMAGE;
         	this.images=new ArrayList<com.freshdirect.mobileapi.catalog.model.Image>(images.size());
         	
-        	for(com.freshdirect.storeapi.content.Image image:images) {
+        	for(com.freshdirect.fdstore.content.Image image:images) {
         		this.images.add(new com.freshdirect.mobileapi.catalog.model.Image(image));
         		
         	}
@@ -375,12 +344,6 @@ public class Product {
             
         	return this;
         }
-        
-        
-        public ProductBuilder availableQty(double val) {
-            availableQty = val;
-            return this;
-       }
         
         public ProductBuilder minQty(float val) {
              minQty = val;

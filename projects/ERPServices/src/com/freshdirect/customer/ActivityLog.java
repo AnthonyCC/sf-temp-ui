@@ -13,7 +13,6 @@ import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class ActivityLog {
 
@@ -38,30 +37,26 @@ public class ActivityLog {
 
 	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return FDECommerceService.getInstance().findActivityByTemplate(template);
-
+			return this.getActivityLogSB().findActivityByTemplate(template);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
 	}
-
-	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template)
-			throws FDResourceException {
+	
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return FDECommerceService.getInstance().getCCActivitiesByTemplate(template);
-
+			return this.getActivityLogSB().getCCActivitiesByTemplate(template);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
 	}
-
+	
 	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
 		try {
-			FDECommerceService.getInstance().logActivity(rec);
-
+			this.getActivityLogSB().logActivity( rec );
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
-		}
+		}		
 	}
 
 	private ActivityLogSB getActivityLogSB() throws FDResourceException {
@@ -76,15 +71,14 @@ public class ActivityLog {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
 	}
-
+	
 	public Map<String, List> getFilterLists(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return FDECommerceService.getInstance().getFilterLists(template);
-
+			return this.getActivityLogSB().getFilterLists(template);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
-
+	
 	}
 
 }

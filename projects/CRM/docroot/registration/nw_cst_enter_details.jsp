@@ -1,4 +1,5 @@
 <%@ page import='java.util.*' %>
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.common.customer.EnumCardType" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
@@ -30,7 +31,8 @@
 	<tmpl:put name='title' direct='true'>New Customer > Enter Details</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
-	<% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);%>
+	<% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); 
+	   CmRegistrationTag.setRegistrationLocation(session,"crm");%>
 	
 	<fd:RegistrationController actionName="register" successPage='/main/account_details.jsp' result='result' fraudPage='/registration/proceed_w_caution.jsp'>
 	

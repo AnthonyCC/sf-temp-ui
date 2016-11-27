@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumViewDisplayType extends Enum {
 	
 	public static final EnumViewDisplayType SINGLE_ANS_PER_ROW = new EnumViewDisplayType("1", "Single Answer per row");
@@ -29,8 +26,7 @@ public class EnumViewDisplayType extends Enum {
 		return displayName;
 	}
 
-	@JsonCreator
-	public static EnumViewDisplayType getEnum(@JsonProperty("name") String name) {
+	public static EnumViewDisplayType getEnum(String name) {
 		return name==null||"".equals(name)?EnumViewDisplayType.SINGLE_ANS_PER_ROW: (EnumViewDisplayType) getEnum(EnumViewDisplayType.class, name);
 	}
 

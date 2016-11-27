@@ -47,7 +47,7 @@ function linkTo(url){
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-						<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+						<img src="/media_stat/images/layout/cccccc.gif" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 						<table cellpadding="0" cellspacing="0">
 							<tr><td colspan="2" class="bodyCopy"><span class="text13"><b>What is FreshDirect At The Office?</b></span><br><br>
 					FreshDirect At The Office brings area businesses the same great, fresh food that's made FreshDirect indispensable for tens of thousands of New York households, with expanded product and service offerings especially for corporate clients. These include:<br><br></td></tr>
@@ -232,7 +232,7 @@ function linkTo(url){
 						<b>What is the "Bottle Deposit" line on my invoice?</b><br>
 						In accordance with New York State law, FreshDirect charges a bottle deposit on certain items. Your total deposit amount is displayed as a separate line item in your shopping cart and on your invoice. 
 						<br><br>
-						If you wish to recover this deposit, empty bottles and cans may be redeemed at any redemption center or you may bring them to our facility at 2 St Ann's Ave Bronx, NY 10454. FreshDirect can only redeem bottles and cans of products that we sell. Our drivers cannot accept bottles and cans for redemption. Bottle deposit will not be charged for deliveries to New Jersey.
+						If you wish to recover this deposit, empty bottles and cans may be redeemed at any redemption center or you may bring them to our facility at 23-30 Borden Avenue, Long Island City, Queens. FreshDirect can only redeem bottles and cans of products that we sell. Our drivers cannot accept bottles and cans for redemption. Bottle deposit will not be charged for deliveries to New Jersey.
 					</TD>
 				</TR>
 			</TABLE>
@@ -251,7 +251,7 @@ function linkTo(url){
 			<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=tableWidth%>" class="bodyCopy">
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
-					<TD WIDTH="<%=tableWidth%>" class="bodyCopy"><A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" alt="" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" alt="" width="6" height="1" border="0">top of page</A>
+					<TD WIDTH="<%=tableWidth%>" class="bodyCopy"><A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" width="6" height="1" border="0">top of page</A>
 						<br><br><br>			
 				   </TD>
 				</TR>

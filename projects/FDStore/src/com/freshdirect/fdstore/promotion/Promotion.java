@@ -25,19 +25,17 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	private static final long	serialVersionUID	= -4069961539775362219L;
 
-	private EnumPromotionType promotionType;
+	private final EnumPromotionType promotionType;
 
-	private String promotionCode;
+	private final String promotionCode;
 
-	private String description;
+	private final String description;
 
-	private String name;
+	private final String name;
+
+	private final List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
 	
-	private String eStoreId;
-
-	private List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
-	
-	private List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
+	private final List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
 
 	private PromotionApplicatorI applicator;
 	
@@ -53,8 +51,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 	private Set<String> excludeSkusFromSubTotal;
 	
 	private EnumOfferType offerType;
-	
-	private double capcityUtilization;
 	
 	private final static Comparator<PromotionStrategyI> PRECEDENCE_COMPARATOR = new Comparator<PromotionStrategyI>() {
 		public int compare(PromotionStrategyI o1, PromotionStrategyI o2) {			
@@ -77,12 +73,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 	
 		
-	public Promotion() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-
 	private Set<String> convertToSkus(String value){
 		StringTokenizer tokens = new StringTokenizer(value);
 		Set<String> returnSet = new HashSet<String>();
@@ -246,10 +236,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return Collections.unmodifiableCollection(this.strategies);
 	}
 	
-	public List<PromotionStrategyI> getStrategiesList() {
-		return this.strategies;
-	}
-	
 	public PromotionStrategyI getStrategy(Class<?> strategyClass) {
 		for (PromotionStrategyI strategy : this.strategies) {
 			if (strategyClass.isAssignableFrom(strategy.getClass())) {
@@ -395,7 +381,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return ((HeaderDiscountRule) discountRules.get(0)).getMinSubtotal();
 	}
 	
-	public Timestamp getLastModified() {
+	public Timestamp getModifyDate() {
 		return lastModified;
 	}
 
@@ -516,68 +502,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public void setOfferType(EnumOfferType offerType) {
 		this.offerType = offerType;
-	}
-
-	public double getCapcityUtilization() {
-		return capcityUtilization;
-	}
-
-	public void setCapcityUtilization(double capcityUtilization) {
-		this.capcityUtilization = capcityUtilization;
-	}
-	
-	public void setPromotionType(EnumPromotionType promotionType) {
-		this.promotionType = promotionType;
-	}
-
-
-	public void setPromotionCode(String promotionCode) {
-		this.promotionCode = promotionCode;
-	}
-
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	public void setStrategiesList(List<PromotionStrategyI> strategies) {
-		this.strategies = strategies;
-	}
-
-
-	public void setApplicatorList(List<PromotionApplicatorI> applicators) {
-		this.applicators = applicators;
-	}
-
-
-	public void setApplicator(PromotionApplicatorI applicator) {
-		this.applicator = applicator;
-	}
-
-
-	public void setLastModified(Timestamp lastModified) {
-		this.lastModified = lastModified;
-	}
-
-
-	public void setExcludeSkusFromSubTotal(Set<String> excludeSkusFromSubTotal) {
-		this.excludeSkusFromSubTotal = excludeSkusFromSubTotal;
-	}
-
-
-	public String geteStoreId() {
-		return eStoreId;
-	}
-
-
-	public void seteStoreId(String eStoreId) {
-		this.eStoreId = eStoreId;
 	}
 	 
 

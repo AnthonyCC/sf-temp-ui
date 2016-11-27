@@ -22,7 +22,6 @@ import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDMuniAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -63,8 +62,6 @@ class FDAvailabilityMapper {
 		}
 
 		int pos = 0;
-		String custId = null;
-		boolean restrictionLog = false;
 		for ( FDCartLineI cartline : cart.getOrderLines() ) {
 			String posex = PosexUtil.getPosex(pos);
 			int orderlineSize = cartline.getErpOrderLineSize();
@@ -83,50 +80,29 @@ class FDAvailabilityMapper {
 			
 
 
-			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();			
+			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();
 			
-			if(null !=cartline.getUserContext() && null !=cartline.getUserContext().getFdIdentity() && null !=cartline.getUserContext().getFdIdentity().getErpCustomerPK()){
-				custId = cartline.getUserContext().getFdIdentity().getErpCustomerPK();
-				restrictionLog = custId !=null && FDStoreProperties.isRestrictionsLogEnabled();
-			}
-			if(restrictionLog) {
-				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" ->Applicable restrictions ,for sku: "+ cartline.getSkuCode()+" , for delivery date:"+ order.getRequestedDate()+" are: "+applicableRestrictions);
-			}
+			LOGGER.debug(" applicable restrictions :"+applicableRestrictions);
 
 			if (!applicableRestrictions.isEmpty()) {
 
 				// apply delivery restrictions
 				List<RestrictionI> r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
-				if(restrictionLog){
-					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" DELIVERY RestrictionsApplied :"+r.toString());
-				}
 				LOGGER.debug(" filtered applicable restrictions :"+applicableRestrictions);
 
 				if (!r.isEmpty()) {
 					//Filter Alcohol restrictions by current State and county.
-					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address!=null?address.getState():null, county, r);
+					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
 					if(!filteredList.isEmpty())
 						inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(filteredList));
-					if(restrictionLog) {
-						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" Filtered DELIVERY+ALCOHOL RestrictionsApplied :"+filteredList.toString());
-					}
 				}
-				
-				if(restrictionLog) {
-					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , PURCHASE originalDayKept :"+originalDayKept+", cartline is FDModifyCartLineI:"+(cartline instanceof FDModifyCartLineI));
-				}
+
 				if (!originalDayKept || !(cartline instanceof FDModifyCartLineI)) {
 					// apply purchase-time restrictions
-					if(restrictionLog && applicableRestrictions.contains(EnumDlvRestrictionReason.PLATTER)) {
-						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" ,allRestrictions :"+allRestrictions);
-					}
 					r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.PURCHASE, applicableRestrictions);
 					if (!r.isEmpty()) {
-						inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), nextDay, new DateRange(now, now));						
+						inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), nextDay, new DateRange(now, now));
 					}
-				}
-				if(restrictionLog) {
-					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , PURCHASE RestrictionsApplied :"+r.toString());
 				}
 
 				// apply cutoff-time restrictions
@@ -135,27 +111,23 @@ class FDAvailabilityMapper {
 					FDReservation rsv = cart.getDeliveryReservation();
 					DateRange cutoff = new DateRange(rsv.getCutoffTime(), rsv.getCutoffTime());
 					DateRange delivery = new DateRange(rsv.getStartTime(), rsv.getEndTime());
-					inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), delivery, cutoff);	
-					if(restrictionLog) {
-						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , CUTOFF RestrictionsApplied :"+r.toString());
-					}
+					inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), delivery, cutoff);
 				}
+
 			}
 
 
 			if (applicableRestrictions.contains(EnumDlvRestrictionReason.ALCOHOL)) {
 
-				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address!=null?address.getState():null, county, address!=null?address.getCity():null);
+				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address.getState(), county, address.getCity());
 
-				if (muniInfo!=null && muniInfo.isAlcoholRestricted()) {
+				if (muniInfo.isAlcoholRestricted()) {
 					inv = new FDMuniAvailability(muniInfo);
 				}
 			}
 
 			cartInvMap.put(Integer.toString(cartline.getRandomId()), inv);
-			if(restrictionLog) {
-				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+"  CartInvMap:"+inv.toString());
-			}
+
 			if (skipModifyLines && cartline instanceof FDModifyCartLineI) {
 				// orderlines that came from the original order were skipped
 				continue;

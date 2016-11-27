@@ -9,8 +9,8 @@ import java.util.Set;
 
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.rules.Rule;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.rules.RulesEngineI;
+import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.rules.RulesRegistry;
 
 /**
  * Generic rule-based fee calculator that operates with a single base price and adjustments.
@@ -84,11 +84,11 @@ public class FeeCalculator implements Serializable {
 	}
 
 	private RulesEngineI getRulesEngine() {
-		return StoreServiceLocator.rulesRegistry().getRulesEngine(this.subsystem);
+		return RulesRegistry.getRulesEngine(this.subsystem);
 	}
 
 	public double calculateFee(FDRuleContextI ctx) {
-		Map<?,Rule> firedRules = getRulesEngine().evaluateRules(ctx);
+		Map<?,Rule> firedRules = (Map<?,Rule>)getRulesEngine().evaluateRules(ctx);
 
 		//System.out.println("FIRED RULES: " + firedRules);
 

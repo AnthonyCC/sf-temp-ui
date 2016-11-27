@@ -60,13 +60,13 @@ public class DraftChangeToContentNodeApplicator {
     public static List<ContentKey> getContentKeysFromRelationshipValue(RelationshipDefI attrDef, String value) {
         List<ContentKey> result = new ArrayList<ContentKey>();
         if (attrDef.isCardinalityOne()) {
-            result.add(ContentKey.getContentKey(value));
+            result.add(ContentKey.decode(value));
         } else {
             String[] changedKeys = StringUtils.split(value, SEPARATOR);
 
             if (changedKeys != null) {
                 for (int i = 0; i < changedKeys.length; i++) {
-                    result.add(ContentKey.getContentKey(changedKeys[i]));
+                    result.add(ContentKey.decode(changedKeys[i]));
                 }
             }
 
@@ -75,7 +75,7 @@ public class DraftChangeToContentNodeApplicator {
     }
 
     public static ContentNodeI createContentNodeFromDraftChange(DraftChange draftChange, ContentServiceI contentService, DraftContext draftContext) {
-        ContentKey key = ContentKey.getContentKey(draftChange.getContentKey());
+        ContentKey key = ContentKey.decode(draftChange.getContentKey());
         ContentNodeI node = contentService.createPrototypeContentNode(key, draftContext);
         node = applyDraftChangeToNode(draftChange, node);
         return node;

@@ -3,9 +3,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
-<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 //start local block
 {
@@ -32,7 +29,7 @@
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.	
-	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) && (user_e1 != null && !user_e1.isEligibleForStandingOrders()) && !(user_e1 != null && user_e1.getShoppingCart() instanceof FDModifyCartModel) ){
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) ){
 		
 		int user_getLevel = user_e1.getLevel();
 	
@@ -53,7 +50,7 @@
 			//more advanced customer stuff
 			FDIdentity identity_e  = user_e1.getIdentity();
 			if(null !=identity_e){
-				ErpCustomerInfoModel cm_e = user_e1.getCustomerInfoModel();//FDCustomerFactory.getErpCustomerInfo(identity_e);
+				ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
 				custEmail = cm_e.getEmail();
 				
 				//numerical id
@@ -74,6 +71,7 @@
 			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
 			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(true);
 			
+			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
 			//if they have actually ordered something.  PASS 3 of 3
 			if(exValidOrderCount == true || justSignedUp || isSignupPage == true ){
@@ -87,12 +85,13 @@
 				"custEmail": "<%=custEmail%>",
 				"isSignedCustomer": <%=isSignedCustomer%>,
 				"validOrderCount": <%=exValidOrderCount%>,
-				"justSignedUp": <%=justSignedUp%>
+				"justSignedUp": <%=justSignedUp%>,
+				"mainPromo": <%=exMainPromo%>
 			};
 			</script>
 			<!-- <script src="//tags.extole.com/553175139/core.js"></script>
 			EXTOLE LIBRARY IS NOW CALLED FROM BELOW FILE.  This is done because javascript, unlike java/jsp, recognizes when it is being called in an iframe -->
-			<jwr:script src="/assets/javascript/extole_tags_generator.js" useRandomParam="false" />
+			<script src="/assets/javascript/extole_tags_generator.js"></script>
 			<%
 			} //end if(exValidOrderCount == true)
 		} // end if( user_e1.getLevel() != 0 )

@@ -29,7 +29,7 @@ Please check the contents of your order below to make sure you're getting everyt
 
 <xsl:if test="order/paymentMethod/paymentType != 'M' and hasUnavailableItems = 'false'"><xsl:if test="hasUnavailableItems != 'false'">Some of the items in your standing order list were not available when your order was placed. Please check the content of the order below to make sure you're getting everything you need. </xsl:if>If you would like to make updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</xsl:if>
 
-As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. We'll also include an itemized, printed receipt with your delivery.
+As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
 
 <xsl:choose>
 <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>

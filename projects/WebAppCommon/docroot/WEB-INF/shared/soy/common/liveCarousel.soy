@@ -9,10 +9,9 @@
 	<div data-component="liverecommender-mask">
 		<ul data-component="liverecommender-list">
 			{foreach $item in $items}
-				{delcall common.carouselItem variant="$itemType"}
-					{param item:$item /}
-					{param itemCount:length($items) /}
-				{/delcall}
+			{delcall common.carouselItem variant="$itemType"}
+				{param item:$item /}
+			{/delcall}
 			{/foreach}
 		</ul>
 	</div>

@@ -1,7 +1,8 @@
 package com.freshdirect.webapp.ajax.expresscheckout.location.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -67,7 +69,7 @@ public class DeliveryAddressService {
     private static final String HAMPTON_DEPOT_CODE = "HAM";
     private static final String PICKUP_DELIVERY_POPUP = "/delivery_popup.jsp?depotCode=%s&locaId=%s";
 
-    private static final Category LOGGER = LoggerFactory.getInstance(DeliveryAddressService.class);
+    private static Category LOGGER = LoggerFactory.getInstance(DeliveryAddressService.class);
 
     private static final DeliveryAddressService INSTANCE = new DeliveryAddressService();
 
@@ -126,10 +128,8 @@ public class DeliveryAddressService {
             throws FDResourceException, JspException, RedirectToPage {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-        boolean deliveryAddressExists = FDCustomerManager.getAddress(user.getIdentity(), deliveryAddressId) != null;
-        
-        if (deliveryAddressExists && (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
-                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId) || StandingOrderHelper.isSO3StandingOrder(user))) {
+        if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
+                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
             ActionResult actionResult = new ActionResult();
             if(deliveryAddress!=null){
             	LOGGER.info("address Id: "+deliveryAddress.getId()+ " " +deliveryAddressId);
@@ -143,7 +143,7 @@ public class DeliveryAddressService {
             DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null,
                     null, null);
             if (actionResult.isSuccess()) {
-                /*TimeslotService.defaultService().releaseTimeslot(user);*/
+                TimeslotService.defaultService().releaseTimeslot(user);
             }
             processErrors(validationErrors, actionResult);
         }
@@ -201,15 +201,15 @@ public class DeliveryAddressService {
         return result;
     }
 
-    public List<LocationData> loadAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
+    public List<LocationData> loadAddress(final FDCartI cart, final FDUserI user, final HttpSession session) throws FDResourceException, JspException, RedirectToPage {
         if (cart instanceof FDOrderI) {
             return loadSuccessLocations(cart, user);
         } else {
-            return loadDeliveryAddress(cart, user, session, shippingAddresses);
+            return loadDeliveryAddress(cart, user, session);
         }
     }
 
-    public List<LocationData> loadDeliveryAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
+    public List<LocationData> loadDeliveryAddress(final FDCartI cart, final FDUserI user, final HttpSession session) throws FDResourceException, JspException, RedirectToPage {
         List<LocationData> addresses = new ArrayList<LocationData>();
         List<ValidationError> addressSelectionErrors = new ArrayList<ValidationError>();
         String selectedDeliveryAddressId = null;
@@ -226,7 +226,7 @@ public class DeliveryAddressService {
                     selectedAddressInCart = null;
                 }
                 if (selectedAddressInCart == null) {
-                	selectedDeliveryAddressId = user.getFDCustomer().getDefaultDepotLocationPK();
+                    selectedDeliveryAddressId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
                     if (selectedDeliveryAddressId != null) {
                         addressSelectionErrors
                                 .addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session, user));
@@ -242,7 +242,7 @@ public class DeliveryAddressService {
 
             if (selectedDeliveryAddressId == null) {
                 if (selectedAddressInCart == null) {
-                	selectedDeliveryAddressId = user.getFDCustomer().getDefaultShipToAddressPK();
+                    selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
                     if (selectedDeliveryAddressId != null) {
                         addressSelectionErrors.addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user));
                     }
@@ -271,16 +271,10 @@ public class DeliveryAddressService {
                 }
             }
 
-//            List<ErpAddressModel> shippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
-            List<ErpAddressModel> lShippingAddresses = null;
-            if(null == shippingAddresses){
-            	lShippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
-            } else {
-            	lShippingAddresses = new ArrayList<ErpAddressModel>(shippingAddresses);
-            }
-            moveLastOrderAddressFirst(user, lShippingAddresses);
-            
-            for (ErpAddressModel shippingAddress : lShippingAddresses) {
+            List<ErpAddressModel> shippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
+            sortDeliveryAddress(user, shippingAddresses);
+
+            for (ErpAddressModel shippingAddress : shippingAddresses) {
                 EnumServiceType serviceType = shippingAddress.getServiceType();
                 if ((EnumServiceType.HOME.equals(serviceType) || EnumServiceType.CORPORATE.equals(serviceType))) {
                     String deliveryAddressId = NVL.apply(shippingAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
@@ -295,18 +289,13 @@ public class DeliveryAddressService {
             if (addresses.size() < 2) {
                 disableDeleteActionOnAddresses(addresses);
             }
+
             if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-            	LOGGER.warn("ORDWRNGRT: During order , selected address is empty in cart for userId: " 
-            					+ (user.getCustomerInfoModel() != null ? user.getCustomerInfoModel().getId() : user.getCookie()) );
-				// commented code to fix order in wrong route during deletion of
-				// address
-				/*
-				 * addressSelectionErrors.addAll(selectDeliveryAddressMethod(
-				 * addresses.get(0).getId(), "", "selectDeliveryAddressMethod",
-				 * session, user)); if (addressSelectionErrors.isEmpty()) {
-				 * addresses.get(0).setSelected(true); }
-				 */
-            	}
+                addressSelectionErrors.addAll(selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user));
+                if (addressSelectionErrors.isEmpty()) {
+                    addresses.get(0).setSelected(true);
+                }
+            }
 
             if (user.isPickupUser()) {
                 final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
@@ -323,6 +312,7 @@ public class DeliveryAddressService {
                     }
                 }
             }
+
         }else if(EnumCheckoutMode.CREATE_SO.equals(user.getCheckoutMode()) && StandingOrderHelper.isSO3StandingOrder(user)){
 			  populateCorporateDeliveryAddress (user,addresses);
 	            if (addresses.size() < 2) {
@@ -376,24 +366,45 @@ public class DeliveryAddressService {
         return depotLocationDatas;
     }
 
-    public void moveLastOrderAddressFirst(FDUserI user, List<ErpAddressModel> deliveryAddressMethods) throws FDResourceException {
-        ErpAddressModel lastUsedOrderAddress = FDCustomerManager.getLastOrderAddress(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
-        if (deliveryAddressMethods.contains(lastUsedOrderAddress)) {
-            deliveryAddressMethods.remove(lastUsedOrderAddress);
+    public void sortDeliveryAddress(FDUserI user, List<ErpAddressModel> deliveryAddressMethods) throws FDResourceException {
+        FDOrderI lastOrder = FDCustomerManager.getLastOrder(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
+        ErpAddressModel lastUsedOrderAddress = null;
+        if (lastOrder != null) {
+            lastUsedOrderAddress = lastOrder.getDeliveryAddress();
+            if (deliveryAddressMethods.contains(lastUsedOrderAddress)) {
+                deliveryAddressMethods.remove(lastUsedOrderAddress);
+            } else {
+                lastUsedOrderAddress = null;
+            }
+        }
+        Collections.sort(deliveryAddressMethods, DELIVERY_ADDRESS_COMPARATOR_BY_ID_REVERSED);
+        if (lastUsedOrderAddress != null) {
             deliveryAddressMethods.add(0, lastUsedOrderAddress);
         }
     }
 
+    private static final Comparator<ErpAddressModel> DELIVERY_ADDRESS_COMPARATOR_BY_ID = new Comparator<ErpAddressModel>() {
+
+        @Override
+        public int compare(ErpAddressModel o1, ErpAddressModel o2) {
+            Long id1 = Long.parseLong(o1.getPK().getId());
+            Long id2 = Long.parseLong(o2.getPK().getId());
+            return id1.compareTo(id2);
+        }
+
+    };
+
+    private static final Comparator<ErpAddressModel> DELIVERY_ADDRESS_COMPARATOR_BY_ID_REVERSED = ComparatorChain
+            .<ErpAddressModel> reverseOrder(ComparatorChain.create(DELIVERY_ADDRESS_COMPARATOR_BY_ID));
+
     private boolean isDeliveryZoneUnattended(ErpAddressModel deliveryAddress) throws FDResourceException {
-        boolean isUnatteded = isDeliveryAddressUnattended(deliveryAddress);
-        if (isUnatteded) {
-	        try {
-	            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null, deliveryAddress.getCustomerId());
-	            isUnatteded = deliveryZoneInfo.isUnattended();
-	        } catch (FDInvalidAddressException e) {
-	            LOGGER.error("Can not find zone info of delivery address.", e);
-	            return false;
-	        }
+        boolean isUnatteded = false;
+
+        try {
+            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null, deliveryAddress.getCustomerId());
+            isUnatteded = deliveryZoneInfo.isUnattended() && isDeliveryAddressUnattended(deliveryAddress);
+        } catch (FDInvalidAddressException e) {
+            LOGGER.error("Can not find zone info of delivery address.", e);
         }
         return isUnatteded;
     }
@@ -482,7 +493,7 @@ public class DeliveryAddressService {
         pickupDepotLocationData.setPopupUrl(preparePickupPopupUrl(deliveryDepotModel.getDepotCode(), addressId));
         pickupDepotLocationData.setOpeningHours(OpeningHourConstants.getOpeningHours());
 
-        if (null != customerInfoModel && customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone().toString())) {
+        if (customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone().toString())) {
             pickupDepotLocationData.setPhone(customerInfoModel.getOtherPhone().getPhone());
         }
 
@@ -609,7 +620,7 @@ public class DeliveryAddressService {
 	protected void populateCorporateDeliveryAddress(FDUserI user, List<LocationData> addresses) throws FDResourceException, JspException, RedirectToPage{
         boolean isValidSOAddress=false;
 		List<ErpAddressModel> shippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
-		moveLastOrderAddressFirst(user, shippingAddresses);
+		sortDeliveryAddress(user, shippingAddresses);
 
 		for (ErpAddressModel shippingAddress : shippingAddresses) {
 			EnumServiceType serviceType = shippingAddress.getServiceType();
@@ -626,13 +637,18 @@ public class DeliveryAddressService {
 		}
 		if (!isValidSOAddress && !addresses.isEmpty()) {
 			String selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
+			boolean isSelectedMatch = false;
 			if (selectedDeliveryAddressId != null) {
 				for (LocationData locationData : addresses) {
 					if (locationData.getId().equals(selectedDeliveryAddressId)) {
 						locationData.setSelected(true);
+						isSelectedMatch = true;
 						break;
 					}
 				}
+			}
+			if (!isSelectedMatch) {
+				addresses.get(0).setSelected(true);
 			}
 		}
 	}
@@ -662,6 +678,4 @@ public class DeliveryAddressService {
         addressModel.setApartment(location.getApartment());
         return addressModel;
     }
-
-
 }

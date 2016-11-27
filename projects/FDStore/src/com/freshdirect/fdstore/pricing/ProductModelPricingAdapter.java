@@ -2,12 +2,14 @@ package com.freshdirect.fdstore.pricing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.AttributeDefI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -17,32 +19,31 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.EnumTemplateType;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.PrioritizedI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.fdstore.content.YmalSet;
+import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ComponentGroupModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumLayoutType;
-import com.freshdirect.storeapi.content.EnumProductLayout;
-import com.freshdirect.storeapi.content.EnumTemplateType;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.MediaI;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.PrioritizedI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.content.TagModel;
-import com.freshdirect.storeapi.content.YmalSet;
-import com.freshdirect.storeapi.content.YmalSetSource;
 
 public class ProductModelPricingAdapter implements ProductModel, Serializable,
-        Cloneable, PrioritizedI {
+		Cloneable, PrioritizedI {
 
 	private static final long serialVersionUID = -6112229358347075169L;
 
@@ -56,7 +57,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		this.prodModel = pModel;
 		this.userCtx = pModel.getUserContext();
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -100,7 +100,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return new PriceCalculator(userCtx.getPricingContext(), prodModel, prodModel
 				.getValidSkuCode(userCtx.getPricingContext(), skuCode));
 	}
-
+	
 	@Override
 	public PriceCalculator getPriceCalculator(SkuModel sku) {
 	    return new PriceCalculator(userCtx.getPricingContext(), prodModel, sku);
@@ -117,16 +117,16 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return new PriceCalculator(pricingContext, prodModel, prodModel
 				.getValidSkuCode(pricingContext, skuCode));
 	}
-
+	
 	@Override
 	public PriceCalculator getPriceCalculator(SkuModel sku, PricingContext pricingContext) {
 	    return new PriceCalculator(pricingContext, prodModel, sku);
 	}
-
+	
 	/* price calculator calls */
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -135,7 +135,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -145,7 +145,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -154,7 +154,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -163,7 +163,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -173,7 +173,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -183,7 +183,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -193,7 +193,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -203,7 +203,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	    /**
-	     * use priceCalculator which can be cached for a request.
+	     * use priceCalculator which can be cached for a request. 
 	     * @return
 	     */
 	    @Deprecated
@@ -213,7 +213,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -223,7 +223,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -233,7 +233,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -243,7 +243,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -252,7 +252,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -261,7 +261,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -270,7 +270,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
         /**
-         * use priceCalculator which can be cached for a request.
+         * use priceCalculator which can be cached for a request. 
          * @return
          */
         @Deprecated
@@ -327,7 +327,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	/**
 	 * Return the auto-configuration for the product, if applicable.
-	 *
+	 * 
 	 * @return the configuration describing the auto-configuration of the product,
 	 *         or null if the product can not be auto-configured.
 	 */
@@ -405,7 +405,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
     /**
-     * use priceCalculator which can be cached for a request.
+     * use priceCalculator which can be cached for a request. 
      * @return
      */
     @Deprecated
@@ -415,11 +415,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns the preferred SKU for a product if defined. Otherwise returns the
 	 * minimum price SKU among the available SKUs for the product. If the product
 	 * only has one available SKU, that will be returned.
-	 *
+	 * 
 	 * @return the preferred SKU for the product, or the minimally priced SKU that
 	 *         is available. if no SKUs are available, returns null.
 	 */
@@ -434,7 +434,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public SkuModel getDefaultSku(PricingContext ctx) {
 		return prodModel.getDefaultSku(ctx);
 	}
-
+	
 	@Override
 	public SkuModel getDefaultTemporaryUnavSku() {
 		return prodModel.getDefaultTemporaryUnavSku();
@@ -785,7 +785,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	/**
 	 * Getter for property skus.
-	 *
+	 * 
 	 * @return Value of property skus.
 	 */
 	@Override
@@ -1077,11 +1077,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.isBackInStock();
 	}
 
-    @Override
-    public boolean isGoingOutOfStock() {
-        return prodModel.isGoingOutOfStock();
-    }
-
 	@Override
 	public double getBackInStockAge() {
 		return this.prodModel.getBackInStockAge();
@@ -1145,6 +1140,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	@Override
 	public String getEditorialTitle() {
 		return this.prodModel.getEditorialTitle();
+	}
+
+	@Override
+	public Collection<ContentKey> getParentKeys() {
+		return this.prodModel.getParentKeys();
 	}
 
 	@Override
@@ -1221,7 +1221,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public boolean isUnavailable() {
 		return this.prodModel.isUnavailable();
 	}
-
+	
 
 	@Override
 	public List<ProductModel> getRelatedProducts() {
@@ -1242,17 +1242,17 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public List<YmalSet> getYmalSets() {
 		return this.prodModel.getYmalSets();
 	}
-
+	
 	@Override
 	public boolean hasActiveYmalSets() {
 		return this.prodModel.hasActiveYmalSets();
 	}
-
+	
 	@Override
 	public YmalSetSource getParentYmalSetSource() {
 		return this.prodModel.getParentYmalSetSource();
 	}
-
+	
 	@Override
     public Object clone() {
 		return prodModel.clone();
@@ -1285,7 +1285,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public String getSustainabilityRating(String skuCode)throws FDResourceException {
 		return this.prodModel.getSustainabilityRating(skuCode);
 	}
-
+	
 	@Override
 	public FDGroup getFDGroup() throws FDResourceException {
 		return this.prodModel.getFDGroup();
@@ -1363,8 +1363,18 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public AttributeDefI getAttributeDef(String name) {
+		return prodModel.getAttributeDef(name);
+	}
+
+	@Override
 	public Object getCmsAttributeValue(String name) {
 		return prodModel.getCmsAttributeValue(name);
+	}
+
+	@Override
+	public Object getNotInheritedAttributeValue(String name) {
+		return prodModel.getNotInheritedAttributeValue(name);
 	}
 
 	@Override
@@ -1416,7 +1426,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public boolean showDefaultSustainabilityRating() {
 		return this.prodModel.showDefaultSustainabilityRating();
 	}
-
+	
 	@Override
     public boolean isExcludedForEBTPayment(){
 		return this.prodModel.isExcludedForEBTPayment();
@@ -1436,7 +1446,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public Image getPackageImage() {
 		return this.prodModel.getPackageImage();
 	}
-
+	
 	@Override
 	public List<TagModel> getTags() {
 		return prodModel.getTags();
@@ -1447,7 +1457,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getAllTags();
 	}
 
-
+	
 	@Override
 	public Set<DomainValue> getAllDomainValues() {
 		return prodModel.getAllDomainValues();
@@ -1468,7 +1478,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public List<ProductModel> getCrossSellProducts() {
 		return this.prodModel.getCrossSellProducts();
 	}
-
+	
 	@Override
 	public String getBrowseRecommenderType(){
 		return prodModel.getBrowseRecommenderType();
@@ -1497,14 +1507,14 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public Image getExtraImage() {
 		return this.prodModel.getExtraImage();
 	}
-
+	
 	@Override
 	public boolean isDisableAtpFailureRecommendation(){
 		return prodModel.isDisableAtpFailureRecommendation();
 	}
 
 
-
+	
 	@Override
 	public EnumProductLayout getSpecialLayout() {
 		return prodModel.getSpecialLayout();
@@ -1525,19 +1535,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getPageTitle();
 	}
 
-    @Override
-    public String getFdxPageTitle() {
-        return prodModel.getFdxPageTitle();
-    }
-
 	@Override
 	public String getSEOMetaDescription() {
 		return prodModel.getSEOMetaDescription();
-	}
-
-	@Override
-	public String getFdxSEOMetaDescription() {
-	    return prodModel.getFdxSEOMetaDescription();
 	}
 
 	@Override
@@ -1556,26 +1556,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
-	@Deprecated
 	public void setParentNode(ContentNodeModel parentNode) {
 	    prodModel.setParentNode(parentNode);
 	}
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-		//return this.getDefaultSku().getAvailabileQtyForDate(targetDate);
-		return prodModel.getAvailabileQtyForDate(targetDate);
-
-	}
-
-	//appdev 6709, fkw-1344
-	@Override
-    public String getEarliestAvailabilityMessage() {
-		return prodModel.getEarliestAvailabilityMessage();
-    }
-
-    @Override
-    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
-        return prodModel.isAlcoholProduct();
-    }
 }

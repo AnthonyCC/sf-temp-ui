@@ -31,7 +31,7 @@ public class RecipeSection extends ContentNodeModelImpl {
 	 */
 	public List<ConfiguredProduct> getIngredients() {
 		ContentNodeModelUtil.refreshModels(this, "ingredients", ingredients, false);
-		return Collections.unmodifiableList(new ArrayList<ConfiguredProduct>(ingredients));
+		return Collections.unmodifiableList(ingredients);
 	}
 
 	/** @return Set of SkuModel */

@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
@@ -66,11 +66,11 @@
 	<% ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(request.getParameter("deptId")); %>
 	<table cellpadding="0" cellspacing="0" border="0" width="<%= peakProduces.size() < 6 ? tableWidth : "100%"%>">
 		<tr valign="bottom">
-			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.storeapi.content.SkuModel">
+			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 				<td>
 				<% 
                   //Convert this to Product Pricing Adapter model for zone pricing.
-                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel());
+                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -84,11 +84,11 @@
 			</logic:iterate>
 		</tr>
 		<tr valign="top">
-			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.storeapi.content.SkuModel">
+			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 				<td>
 				<% 
 					String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-					ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel());
+					ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
 					ProductImpression pi = new ProductImpression(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;

@@ -238,12 +238,12 @@ if (isValidPaymentId) {
     }
 
 %>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
-		<br><span class="errortext"><%= errorMsg %></span><br><br>
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
@@ -259,7 +259,7 @@ if (isValidPaymentId) {
 		<tr>	
 			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
-				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
 			</td>
 		</tr>
 	</TABLE>
@@ -289,20 +289,20 @@ if (isValidPaymentId) {
 	</TR>
 
 </TABLE>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Name on Card&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Name on Card&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="105"><BR></TD>
 	<TD WIDTH="565" CLASS="text12">Please enter name exactly as it appears on card.<BR><FONT CLASS="space4pix"><BR></FONT></TD>
 </TR>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Card Type&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Type&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
 		<SELECT class="text11" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
 		<OPTION value="">Choose a credit card</OPTION>
@@ -314,11 +314,11 @@ if (isValidPaymentId) {
 		%>
 		<option <%=ccType.getFdName().equals(ccCardType)?"selected":""%> value="<%=ccType.getFdName()%>"><%=ccType.getDisplayName()%></option>
 		<%}%>
-		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
 		<input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>"> 
 	</TD>
@@ -327,13 +327,13 @@ if (isValidPaymentId) {
 <TR VALIGN="TOP">
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="565" CLASS="text12">
-		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
 
 <tr>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="errortext"></fd:ErrorHandler>*&nbsp;Expires&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Expires&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
 	<%
 	String tCcExpireMonth="";
@@ -357,12 +357,12 @@ if (isValidPaymentId) {
 	   for (int yr = startYear;yr < endYear; yr++) { %>
 	<OPTION <%= (yr+"").equals(ccExpireYear)?"selected":""%> VALUE="<%=yr %>"><%=yr %></OPTION>
 	<% } %>
-	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
 <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
 		<input class="text11" maxlength="4" SIZE="4" type="text" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
 	</TD>
@@ -373,7 +373,7 @@ if (isValidPaymentId) {
 <TR VALIGN="TOP">
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="565" CLASS="text12">
-		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
@@ -386,10 +386,10 @@ if (isValidPaymentId) {
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
-			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="success13text">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="success13text">Please enter billing address as it appears on your credit card statement.</font><%
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit card statement.</font><%
 		}
 %>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
@@ -400,22 +400,22 @@ if (isValidPaymentId) {
 	
 
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="errortext"></fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="errortext"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
 		</TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
 	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12">Address Line 2&nbsp;&nbsp;</TD>
-		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value = "<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value = "<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		</TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"><span class="errortext"></fd:ErrorHandler>*City&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH="565"><input type="text" class="text11" SIZE="21" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value = "<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*City&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH="565"><input type="text" class="text11" SIZE="21" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value = "<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="errortext"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
 		<TD WIDTH="565">
  	    		  
 					<select class="pulldown" name="<%=AddressName.BIL_STATE%>"  id="<%=AddressName.BIL_STATE%>"  required="true">
@@ -436,14 +436,14 @@ if (isValidPaymentId) {
 					       <%}%>
 					</select>
 					
- 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+ 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="errortext"></fd:ErrorHandler>*Zip/Postal Code&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
-	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Zip/Postal Code&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="errortext"></fd:ErrorHandler>*Country&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Country&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
  	    		 
 					<select class="pulldown" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
@@ -460,7 +460,7 @@ if (isValidPaymentId) {
 		 </TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 
 </TABLE>

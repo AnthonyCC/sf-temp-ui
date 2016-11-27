@@ -1,19 +1,19 @@
 package com.freshdirect.smartstore;
 
+import java.util.Collections;
 import java.util.List;
+
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class TabRecommendation {
 	
-    private static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
+    public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
-    private final List<Variant> variants;
-    private final Variant tabVariant;
-    private String parentImpressionId;
-    private String[] featureImpId;
-    private int selected;
-    private String selectedSiteFeature;
-    private boolean onlyTabHeader;
-    private boolean error;
+    final List<Variant> variants;
+    final Variant tabVariant;
+    String parentImpressionId;
+    String[] featureImpId;
+    int selected;
 
     public TabRecommendation(Variant tabVariant, List<Variant> variants) {
         this.tabVariant = tabVariant;
@@ -35,6 +35,24 @@ public class TabRecommendation {
 
     public Variant get(int index) {
         return variants.get(index);
+    }
+
+    public String getTabTitle(int index) {
+        Variant variant = get(index);
+
+        String prezTitle = variant.getServiceConfig().getPresentationTitle();
+        if (prezTitle == null) {
+            EnumSiteFeature siteFeature = variant.getSiteFeature();
+            prezTitle = siteFeature.getPresentationTitle();
+            if (prezTitle == null)
+                prezTitle = siteFeature.getTitle();
+            if (prezTitle == null)
+                prezTitle = siteFeature.getName();
+        }
+        if (!variant.isSmartSavings() || prezTitle.toLowerCase().startsWith("save on "))
+        	return prezTitle;
+        
+		return "Save on " + prezTitle;
     }
 
     public String getTabDescription(int index) {
@@ -88,31 +106,6 @@ public class TabRecommendation {
      * @return
      */
     public List<Variant> getVariants() {
-        return this.variants;
+    	return Collections.unmodifiableList(this.variants);
     }
-
-    public String getSelectedSiteFeature() {
-        return selectedSiteFeature;
-    }
-
-    public void setSelectedSiteFeature(String selectedSiteFeature) {
-        this.selectedSiteFeature = selectedSiteFeature;
-    }
-
-    public boolean isOnlyTabHeader() {
-        return onlyTabHeader;
-    }
-
-    public void setOnlyTabHeader(boolean onlyTabHeader) {
-        this.onlyTabHeader = onlyTabHeader;
-    }
-
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
-    }
-
 }

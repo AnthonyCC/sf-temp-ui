@@ -48,8 +48,11 @@ String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2"
 	WIDTH="<%=W_YA_EDIT_DELIVERY_ADDR%>">
 	<TR VALIGN="TOP">
-		<TD><span class="text13">If you need to enter a different address:</span> <a class="cssbutton green small" href="<%=response
-						.encodeURL("/your_account/add_delivery_address.jsp")%>">ADD NEW ADDRESS</a></TD>
+		<TD><span class="text13">If you need to enter a different address:</span> <a href="<%=response
+						.encodeURL("/your_account/add_delivery_address.jsp")%>"><img
+				src="/media_stat/images/buttons/add_new_address.gif"
+				alt="Add a new address" WIDTH="106" HEIGHT="16" VSPACE="3"
+				HSPACE="4" ALIGN="middle" border="0"></a></TD>
 	</TR>
 </TABLE>
 
@@ -90,7 +93,7 @@ if(user.isDepotUser()){
 						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 							<!-- <img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp; -->
 							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Corporate Delivery</span><br>
-							<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 						</td>
 					</tr>
@@ -112,7 +115,7 @@ if(user.isDepotUser()){
 							<!-- <img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp; -->
 							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Home Delivery</span><br>
 							
-							<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 						</td>
 					</tr>

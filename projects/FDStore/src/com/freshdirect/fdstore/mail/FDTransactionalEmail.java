@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class FDTransactionalEmail extends FDInfoEmail {
 
@@ -82,7 +82,7 @@ public class FDTransactionalEmail extends FDInfoEmail {
 				/* email needs separate brand name and product name */
 				String brandName = productNode.getPrimaryBrandName();
 				String nameNoBrand = productNode.getFullName();
-				if (brandName != null && brandName.trim().length() > 0 && nameNoBrand != null && nameNoBrand.length() > brandName.length() ) {
+				if (!"".equals(brandName)) {
 					nameNoBrand = (nameNoBrand.substring(brandName.length())).trim();
 				}
 				prodInfo.put("brandName", brandName);

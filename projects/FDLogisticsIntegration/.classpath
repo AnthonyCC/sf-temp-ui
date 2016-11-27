@@ -9,8 +9,8 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-expression-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-jdbc-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-tx-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-jdbc-4.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-tx-4.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
@@ -18,7 +18,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpmime-4.5.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/orika-core-1.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

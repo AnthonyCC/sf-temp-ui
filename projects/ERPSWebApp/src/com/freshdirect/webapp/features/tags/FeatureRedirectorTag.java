@@ -6,7 +6,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -35,25 +34,11 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 		int result = EVAL_BODY_BUFFERED;
 		if (redirectUrl != null) {
 			redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
-			
-			// To ensure that https requests get redirected to https correctly
-			//OPT-15 - Avoid redirect to "http://".
-			String requestScheme = FDStoreProperties.getRequestSchemeForRedirectUrl();
-			LOGGER.debug("Request scheme from properties for " + originalUrl + " :" +requestScheme);
-			if(null != requestScheme && !"".equals(requestScheme) &&  request.getServerName().contains("freshdirect.com")){
-				//The property value should be either http or https.
-				if((!"http".equals(requestScheme) && !"https".equals(requestScheme))){
-					requestScheme = request.getScheme();
-				}
-				redirectUrl = requestScheme + "://" + request.getServerName() + redirectUrl;
-			} else{
-				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
-			}
 			LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
-//			redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
+			redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 			response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 			response.setHeader("Location", redirectUrl);
-			result = SKIP_BODY;
+			result = SKIP_PAGE;
 		}
 		return result;
 	}

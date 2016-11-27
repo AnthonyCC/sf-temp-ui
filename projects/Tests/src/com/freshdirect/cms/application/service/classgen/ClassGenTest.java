@@ -21,7 +21,7 @@ public class ClassGenTest extends TestCase {
     // not the nicest solution, but it effectively 1/3 the execution time in eclipse.
     static XmlContentService service;
     
-    ContentKey key = ContentKey.getContentKey(FDContentTypes.CATEGORY, "gro_choc_fine");
+    ContentKey key = new ContentKey(FDContentTypes.CATEGORY, "gro_choc_fine");
 
 
     protected XmlContentService getService(String prefix) {
@@ -61,7 +61,7 @@ public class ClassGenTest extends TestCase {
         assertTrue("subcategories is list", subcategories instanceof List);
         List sub = (List) subcategories;
         assertEquals("subcategories is 1 element list", 1, sub.size());
-        assertEquals("subcategories is 1 element list", ContentKey.getContentKey(FDContentTypes.CATEGORY, "gro_candy_blkch"), sub.get(0));
+        assertEquals("subcategories is 1 element list", new ContentKey(FDContentTypes.CATEGORY, "gro_candy_blkch"), sub.get(0));
     }
     
     public void testCopy() {

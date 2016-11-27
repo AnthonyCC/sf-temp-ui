@@ -6,23 +6,16 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.log4j.Logger;
-
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.deliverypass.DeliveryPassType;
-import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -30,27 +23,18 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.template.TemplateException;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassProductData;
-import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
-import com.freshdirect.webapp.ajax.location.LocationHandlerService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class DeliveryPassService {
 
 	private static final DeliveryPassService INSTANCE = new DeliveryPassService();
-	private static final Logger LOGGER = LoggerFactory.getInstance(DeliveryPassService.class);
 
 	private DeliveryPassService() {
 	}
@@ -108,20 +92,20 @@ public class DeliveryPassService {
 	}
 
 	private List<ProductModel> collectDeliveryPassProducts(FDUserI user) {
-        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.Category, "gro_gear_dlvpass");
-        List<ProductModel> availableProducts = new ArrayList<ProductModel>();
+		CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.get("Category"), "gro_gear_dlvpass");
+		List<ProductModel> availableProducts = new ArrayList<ProductModel>();
 
-        for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {
-            if (product.isFullyAvailable() && !product.isDiscontinued()) {
-                if (product.getSku(FDStoreProperties.getTwoMonthTrailDPSku()) != null) {
-                    if (!user.getDlvPassInfo().isFreeTrialRestricted() && (!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
-                        availableProducts.add(product);
-                    }
-                } else if(!product.getContentKey().getId().equalsIgnoreCase(FDStoreProperties.getOneMonthDPSku())){
-                    availableProducts.add(product);
-                }
-            }
-        }
+		for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {
+			if (product.isFullyAvailable() && !product.isDiscontinued()) {
+				if (product.getSku(FDStoreProperties.getTwoMonthTrailDPSku()) != null) {
+					if ((!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
+						availableProducts.add(product);
+					}
+				} else {
+					availableProducts.add(product);
+				}
+			}
+		}
 
 		Collections.sort(availableProducts, Collections.reverseOrder(ProductModel.GENERIC_PRICE_COMPARATOR));
 		return availableProducts;
@@ -131,15 +115,12 @@ public class DeliveryPassService {
 			IOException, TemplateException {
 		DeliveryPassData data = new DeliveryPassData();
 		Map<String, Object> deliveryPassConfiguration = data.getDeliveryPass();
-		deliveryPassConfiguration.put("eventSource", EnumEventSource.BROWSE.getName());
+		deliveryPassConfiguration.put("cmEventSource", EnumEventSource.BROWSE.getName());
 		List<DeliveryPassProductData> products = populateDeliveryPassProducts(deliveryPasses, user);
-	//	products.add(0, getRegualDeliveryFee(user));
+		products.add(0, getRegualDeliveryFee(user));
 		selectDeliveryPass(products, cart, user);
 		deliveryPassConfiguration.put("products", products);
 		deliveryPassConfiguration.put("termsAndConditions", loadTermsAndConditions());
-		deliveryPassConfiguration.put("customerContact", populateCustomerServiceContact(user));
-		deliveryPassConfiguration.put("freeTrialEligible", user.isDPFreeTrialOptInEligible());
-		deliveryPassConfiguration.put("zipCheckFkDeliveryPassMsg", zipCheckFkDeliveryPassMsg(user));
 		return data;
 	}
 
@@ -152,31 +133,28 @@ public class DeliveryPassService {
 			ProductData productData = ProductDetailPopulator.createProductData(user, product);
 			DeliveryPassProductData deliveryPassProductData = new DeliveryPassProductData();
 			deliveryPassProductData.setId(productData.getSkuCode());
-		//	deliveryPassProductData.setDescription("with DeliveryPass");
+			deliveryPassProductData.setDescription("with DeliveryPass");
 			deliveryPassProductData.setProduct(productData);
-			DeliveryPassType deliveryPassType =DeliveryPassType.getEnum(productData.getSkuCode());
-			if(null !=deliveryPassType){
-				deliveryPassProductData.setTitle(deliveryPassType.getShortName());
-				if(!deliveryPassType.getEligibleDlvDays().isEmpty() && deliveryPassType.getEligibleDlvDays().size() < 7){
-					deliveryPassProductData.setMidWeekSku(true);				
-				}
-				deliveryPassProductData.setDuration(deliveryPassType.getDuration());
+			if (FDStoreProperties.getOneYearDPSku().equals(productData.getProductId())) {
+				deliveryPassProductData.setTitle("1 Year");
 				deliveryPassProductData.setTotalPrice(productData.getPrice());
-				deliveryPassProductData.setPricePerMonth(calculatePricePerMonth(convertDaystoMonth(deliveryPassType.getDuration()), productData.getPrice()));
+				deliveryPassProductData.setPricePerMonth(calculatePricePerMonth(12, productData.getPrice()));
 				deliveryPassProductData.setSaving(calculateSaving(12, productData.getPrice(), oneMonthDeliveryPassTotalPrice));
-				products.add(deliveryPassProductData);
-
+			} else if (FDStoreProperties.getSixMonthDPSku().equals(productData.getProductId())) {
+				deliveryPassProductData.setTitle("6 Months");
+				deliveryPassProductData.setTotalPrice(productData.getPrice());
+				deliveryPassProductData.setPricePerMonth(calculatePricePerMonth(6, productData.getPrice()));
+				deliveryPassProductData.setSaving(calculateSaving(6, productData.getPrice(), oneMonthDeliveryPassTotalPrice));
+			} else if (FDStoreProperties.getOneMonthDPSku().equals(productData.getProductId())) {
+				deliveryPassProductData.setTitle("1 Months");
+				deliveryPassProductData.setTotalPrice(productData.getPrice());
+				deliveryPassProductData.setPricePerMonth(calculatePricePerMonth(1, productData.getPrice()));
+			} else {
+				deliveryPassProductData.setTitle(productData.getProductName());
+				deliveryPassProductData.setTotalPrice(productData.getPrice());
 			}
+			products.add(deliveryPassProductData);
 		}
-		Collections.sort(products, new Comparator<DeliveryPassProductData>() {
-
-			@Override
-			public int compare(DeliveryPassProductData d1,
-					DeliveryPassProductData d2) {
-				
-				return d1.getDuration().compareTo(d2.getDuration());
-			}
-		});
 		return products;
 	}
 
@@ -196,39 +174,10 @@ public class DeliveryPassService {
 		NumberFormat format = DecimalFormat.getInstance();
 		format.setMinimumFractionDigits(0);
 		format.setMaximumFractionDigits(2);
-		return format.format(actualTotalPrice / month);
-	}
-	
-	private int convertDaystoMonth(int duration) {
-		
-		return duration/30;
+		return format.format(actualTotalPrice / month) + " p/month";
 	}
 
 	private String calculateSaving(int month, double actualTotalPrice, double oneMonthTotalPrice) {
 		return "Save $" + Math.round(month * oneMonthTotalPrice - actualTotalPrice);
-	}
-	
-	private String populateCustomerServiceContact(FDUserI user) {
-        return UserUtil.getCustomerServiceContact(user);
-    }
-	
-	//	DP17-266 Add geo-appropriate FK messaging to Plans page/pop up
-	private boolean zipCheckFkDeliveryPassMsg(FDUserI user) {
-		String zipCode = user.getZipCode();
-		try {
-			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance()
-					.getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FDX);
-			Set<EnumServiceType> availServices = result.getAvailableServices();
-
-			// remove pickup
-			availServices.remove(EnumServiceType.PICKUP);
-			if (availServices.contains(EnumServiceType.FDX)) {
-				return true;
-			}
-
-		} catch (FDResourceException e) {
-			LOGGER.debug(e);
-		}
-		return false;
 	}
 }

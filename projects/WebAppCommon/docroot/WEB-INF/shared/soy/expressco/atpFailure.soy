@@ -69,7 +69,7 @@
   </div>
   {if $imageUrl}
     <div class="pic-cont">
-		<p><img class="pic" src="{$imageUrl}" alt="{$name}" /></p>
+		<p><img class="pic" src="{$imageUrl}" alt="Product {$name}" /></p>
 	</div>	
   {/if}
 {/template}
@@ -114,7 +114,7 @@
                 <input style="display:none" type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove" checked>
         {/if}
         {if $hasRecommendations}
-          <div class="replacements" data-eventsource="ATP">
+          <div class="replacements" data-cmeventsource="ATP">
             {call common.simpleCarousel}
               {param items:$recommendedProducts /}
               {param itemType:'grid' /}
@@ -168,10 +168,10 @@
 {template .deliveryPasses autoescape="false"}
 {if $passes and length($passes) > 0}
 <table>
-    <tr valign="top"><td colspan="5" class="success13text">DeliveryPass</td></tr>
+    <tr valign="top"><td colspan="5" class="text11orbold">DeliveryPass</td></tr>
     <tr><td class="text11"colspan="5">
         We're sorry, the pass(es) below will be removed from your cart for the following reason(s).
-        <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4">
+        <br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
     </td></tr>
     {foreach $line in $passes}
       <tr VALIGN="TOP">

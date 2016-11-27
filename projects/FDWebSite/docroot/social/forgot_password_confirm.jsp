@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -10,13 +11,12 @@
 
 
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-   <%--  <title>FreshDirect</title> --%>
-      <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<title>FreshDirect</title>
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body>
 	

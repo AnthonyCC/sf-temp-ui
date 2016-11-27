@@ -1,7 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -10,23 +9,13 @@ public class Cart extends Message {
 
     private List<String> recentlyAddedItems = new ArrayList<String>();
 
-    private Date modificationCutoffTime;
+    private String modificationCutoffTime;
+
+    public String getModificationCutoffTime() {
+        return this.modificationCutoffTime;
+    }
 
     private CartDetail cartDetail;
-    
-//    private boolean dpFreeTrialEligible;
-
-	public String getModificationCutoffTime() {
-        if (modificationCutoffTime == null){
-            return null;
-        } else {
-            return formatter.format(modificationCutoffTime);
-        }
-    }
-
-    public Date getModificationCutoffTimeMs() {
-        return modificationCutoffTime;
-    }
 
     public CartDetail getCartDetail() {
         return cartDetail;
@@ -45,7 +34,7 @@ public class Cart extends Message {
     public void setCartDetail(CartDetail cartDetail) {
         this.cartDetail = cartDetail;
         if ((cartDetail != null) && (cartDetail instanceof ModifyCartDetail)) {
-            this.modificationCutoffTime = ((ModifyCartDetail) cartDetail).getReservationCutoffDate();
+            this.modificationCutoffTime = ((ModifyCartDetail) cartDetail).getReservationCutoff();
         }
     }
 
@@ -56,4 +45,5 @@ public class Cart extends Message {
     public void setRecentlyAddedItems(List<String> recentlyAddedItems) {
         this.recentlyAddedItems = recentlyAddedItems;
     }
+
 }

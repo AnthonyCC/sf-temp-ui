@@ -3,7 +3,7 @@
 <%@ page import="com.freshdirect.payment.fraud.*" %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
@@ -20,11 +20,7 @@
 %>
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>gc_purchase_bulk</tmpl:put>
+    <tmpl:put name='title' direct='true'>Gift Card : Buy in Bulk</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%-- 	<jsp:include page="/includes/giftcard_nav.jsp" /> --%>
@@ -32,7 +28,7 @@
 	<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 		<tr>
 			<td class="text11" width="675">
-				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards" /></span><br />
+				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
 				Please enter your credit card information below.
 			</td>
 			<td width="99">
@@ -41,7 +37,7 @@
 		</tr>
 		<tr>
 			<td colspan="2" style="padding: 2px;" class="botBordLineBlack">
-				<img style="margin: 2px 0;" width="675" height="1" border="0" alt="" src="/media_stat/images/layout/clear.gif" /><br />
+				<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/clear.gif" /><br />
 			</td>
 		</tr>
 		<tr>
@@ -101,7 +97,7 @@
                             		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
                             			<%@ include file="/includes/i_error_messages.jspf" %>	
 		                            </fd:ErrorHandler>                                
-								<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+								<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 								</td>
 							</tr>
 						</table>
@@ -148,15 +144,15 @@
 
 						<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 							<tr valign="top">
-								<td width=""><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-										<img src="/media_stat/images/layout/999966.gif" alt="" style="width: 100%;" height="1" border="0" vspace="3"><br />
+								<td width="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
+										<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br />
 									<font class="space2pix"><br /></font>  
 								</td>   
 							</tr>
 
 							<tr valign="middle">
-								<td class="text11">If you need to enter another credit card: <a class="cssbutton green small" href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
-									ADD NEW CARD</a>
+								<td class="text11">If you need to enter another credit card: <a href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
+									<IMG src="/media_stat/images/buttons/add_new_card.gif" width="96" height="16" alt="Add New Credit Card" border="0" /></a>
 								</td>
 							</tr>
 							<tr>
@@ -171,11 +167,11 @@
 							</tr>
 							<tr>
 								<td class="botBordLineOrange">
-									<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="17" border="0" /><br />
+									<img src="/media_stat/images/layout/clear.gif" width="1" height="17" border="0" /><br />
 								</td>
 							</tr>
 							<tr>
-								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
 								<td align="right">

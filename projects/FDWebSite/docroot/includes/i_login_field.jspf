@@ -1,4 +1,4 @@
-<%@ page import="com.freshdirect.enums.CaptchaType" %>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -7,7 +7,6 @@
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -25,9 +24,8 @@
 		// disable the submit button on page load
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
-		$jq('#fd_login.fd-login-page').bind('change keyup', function() {
-			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid('login-g-recaptcha');
-		    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
+		$jq('#fd_login').bind('change keyup', function() {
+		    if($jq(this).validate().checkForm()) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
 		    } else { // form is invalid
@@ -46,6 +44,13 @@
 	String userFromSession = null;
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	if(user != null) userFromSession = user.getUserId();
+	
+	//Captcha.
+	Integer attemptString = (Integer)session.getAttribute("fdLoginAttempt");
+	int attempt = attemptString != null ? Integer.valueOf(attemptString): 0;
+	int invalidAttempt = FDStoreProperties.getMaxInvalidLoginAttempt();		
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
+	
 	String userid = NVL.apply(request.getParameter("userid"), NVL.apply(user.getUserId(), ""));
 	
 	
@@ -69,18 +74,15 @@
 
 <div id="sulCont" class="signup-style-social social-singin login-page">
 	<%
-	//Captcha.
-	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT);
-	String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_IN);
 		if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 		//Message to display from referral signup page.
 	%>
-	<table role="presentation" id="login_page_msg" width="100%" cellspacing="0" cellpadding="0" border="0">
+	<table id="login_page_msg" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-			<td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
-			<td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
-			<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+			<td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+			<td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+			<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
 			<td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 		</tr>
 		<tr>
@@ -89,19 +91,19 @@
 		</tr>
 		<tr>
 			<td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
-			<td class="errortext" width="100%" bgcolor="#FFFFFF">
+			<td class="text11rbold" width="100%" bgcolor="#FFFFFF">
 					<div style="padding: 3px 1px 3px 1px"><%= session.getAttribute("MSG_FOR_LOGIN_PAGE") %></div>
 			</td>
 			<td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-			<td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+			<td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 		</tr>
 		<tr>
-			<td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+			<td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
 			<td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-			<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+			<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
 		</tr>
 		<tr>
-			<td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+			<td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 		</tr>
 	</table>
 	<br>
@@ -110,15 +112,12 @@
 	}//end if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null)
 	%>
 	<%if(FDStoreProperties.isSocialLoginEnabled()) { %>
-		<form name="fd_login" id="fd_login" class="fd-login-page" method="post" >
+		<form name="fd_login" id="fd_login" method="post" >
 			<%
 			if (!result.isSuccess()) {
-				//default error message
 				String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
-				String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");           
-				if (result.hasError("captcha")){
-					errorMsg = "<div class='error-message'>Captcha is not valid.</br>Please try again.</div>";
-				} else if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
+				String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");            				            				
+				if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
 					session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
 				    errorMsg = "<div class='error-message'>An account with this e-mail already exists.</br>Please Sign in with your e-mail or social account.</div>";		                    	
 				}
@@ -135,7 +134,7 @@
 			<%
 			}//end if (!result.isSuccess())
 			%>
-			<table role="presentation" border="0" cellpadding="5" cellspacing="8"> 
+			<table border="0" cellpadding="5" cellspacing="8"> 
 				<tr>
 					<td valign="bottom">
 						<!-- span id should be the input box id+"_img" -->
@@ -143,7 +142,7 @@
 					</td>
 					 <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
 					<td>
-						<input id="email" aria-label="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
+						<input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
 					</td>
 				</tr>
 				<tr>
@@ -152,36 +151,15 @@
 						<span class="error_img" id="password_img"></span>
 					</td>
 					<td style="padding-top: 15px;">
-						<input id="password" aria-label="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
+						<input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
 					</td>
 				</tr>
-				<% if (showCaptcha) { %>
-				<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
-				<tr id="login-g-recaptcha-container">
-					<td colspan="2">
-						<div id="login-g-recaptcha" class="g-recaptcha"></div>
-					</td>
-					
-				</tr>
-				<script type="text/javascript">
-				FreshDirect.components.captchaWidget.init('login-g-recaptcha','<%=publicKey%>', function() {
-					FreshDirect.components.captchaWidget.render('login-g-recaptcha', function() {
-						$jq('#fd_login').trigger('change');
-					}, function() {
-						$jq('#login-g-recaptcha-container').hide();
-		        		$jq('#login-g-recaptcha-enabled').val(false);
-					}, function () {
-						$jq('#fd_login').trigger('change');
-					});
-				});
-				</script>
-				<% } %>
 				<tr>
 					<td></td>
 					<td style="padding-top: 15px;">
-						
+						<a onclick="document.fd_login.submit();" href="#" class="butText social-login-continue-button">
 							<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
-					
+						</a>
 					</td>
 				</tr>
 				<tr>
@@ -297,15 +275,12 @@
 				_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);					
 				_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 				_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-				_oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
+				_oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
 				
-				var originPath = window.location.search.substring(1);
-				var originFragment = window.top.location.hash.substring(1);
-				var originUrl = (originFragment ? 'urlStyle=fragment&' + originPath + '?' + originFragment : originPath);
 				<% if(FDStoreProperties.isLocalDeployment()){ %>
-					_oneall.push([ 'social_login', 'set_callback_uri', document.location.protocol + '<%= "//" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?isFromLogin=true&" %>' + originUrl]);
+					_oneall.push([ 'social_login', 'set_callback_uri', document.location.protocol + '<%= "//" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?isFromLogin=true"  %>' ]);
 				<% } else { %>
-					_oneall.push([ 'social_login', 'set_callback_uri', 'https://' + document.location.host + '/social/social_login_success.jsp?isFromLogin=true&' + originUrl]);
+					_oneall.push([ 'social_login', 'set_callback_uri', 'https://' + document.location.host + '/social/social_login_success.jsp?isFromLogin=true' ]);
 				<% } %>			
 			
 				_oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
@@ -326,25 +301,25 @@
 		</div> <!-- social login section ends here -->
 	
 	<% } else{ %>
-			<form name="fd_login" class="fd-login-page" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
-				<table role="presentation" border="0" cellpadding="0" cellspacing="0">
+			<form name="fd_login" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
+				<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td colspan="2">
-					<%if(showCaptcha){%>
+					<%if(attempt >= invalidAttempt){%>
 						<input name="captchaEnabled" type="hidden" value="true">	
 						<div class="g-recaptcha" data-sitekey="<%=publicKey%>"></div>
-						<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+						<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 					<%}%></td>
 				</tr>
 				<tr>
 					<td width="110" align="right" class="text13" style="padding-right: 10px;"><span style="white-space: nowrap;"><label for="userid">* E-mail Address&nbsp;</label></span></td>
 					<td width="125"><input name="userid" size="14" style="width: 140px" type="text" required="true" maxlength="128" tabindex="1" class="text11" value="<%= request.getParameter("userid")!=null ? request.getParameter("userid") : userFromSession%>"></td> 
 					<td></td>
-					<td class="errortext" width="220">
-					<fd:ErrorHandler result='<%=result%>' name='userid' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-					<fd:ErrorHandler result='<%=result%>' name='email_format' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+					<td class="text11rbold" width=220>
+					<fd:ErrorHandler result='<%=result%>' name='userid' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+					<fd:ErrorHandler result='<%=result%>' name='email_format' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 					</td>
-					<td width="30" rowspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1" border="0"><br></td>
+					<td width="30" rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0"><br></td>
 				</tr>
 				<tr valign="MIDDLE">
 					<!--<td width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><label for="password">* Password&nbsp;</label></td>-->
@@ -353,11 +328,11 @@
 						<input type="image" src="/media_stat/images/template/homepages/go_round.gif"" width="18" height="18" name="check_access" border="0" alt="GO" hspace="4" tabindex="3">
 					</td>
 					<tr>
-					<fd:ErrorHandler result='<%=result%>' name='password' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+					<fd:ErrorHandler result='<%=result%>' name='password' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 					</td>
 				</tr>
 				<tr valign="MIDDLE">
-					<!--<td width="110"><img src="/media_stat/images/layout/clear.gif" alt="" WIDTH="110" HEIGHT="1" BORDER="0"></td>-->
+					<!--<td width="110"><img src="/media_stat/images/layout/clear.gif" WIDTH="110" HEIGHT="1" BORDER="0"></td>-->
 					<td colspan=3 class="text13">Passwords are case sensitive.</td>
 				</tr>
 				</table>
@@ -405,10 +380,10 @@
 					
 				<% }else{ %>
 					<font class="text13bold new_cust">New Customer?</font><br class="new_cust"/>
-						<a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()" class="text13 new_cust">See if we deliver to your area</a><% } %>
+						<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a><% } %>
 			<%} else { %>        
 				<font class="text13bold new_cust">New Customer?</font><br class="new_cust" />
-				<a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()" class="text13 new_cust">See if we deliver to your area</a><% } %>
+				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a><% } %>
 		
 	<br><br>
 </fd:LoginController>

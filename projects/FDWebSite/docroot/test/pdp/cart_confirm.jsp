@@ -6,7 +6,7 @@
 	request.setAttribute("listPos", "SystemMessage,LittleRandy");
 %>
 <fd:CheckLoginStatus id="user"/>
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<jwr:style src="/oldglobal.css"/>

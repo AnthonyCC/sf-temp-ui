@@ -12,13 +12,8 @@ public class HLBrandProductAdRequest implements Serializable {
     private String userId;
     private String categoryId;
     private String customerId;
-    private String platformSource;
-    private String lat;
-    private String pdUserId;
-    private String productId;
-    private String selectedServiceType;
     
-    
+   
 
     public String getSearchKeyWord() {
 		return searchKeyWord;
@@ -52,47 +47,6 @@ public class HLBrandProductAdRequest implements Serializable {
 		this.customerId = customerId;
 	}
 
-	public String getPlatformSource() {
-		return platformSource;
-	}
-
-	public void setPlatformSource(String platformSource) {
-		this.platformSource = platformSource;
-	}
-
-	public String getLat() {
-		return lat;
-	}
-
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-
-	public String getPdUserId() {
-		return pdUserId;
-	}
-
-	public void setPdUserId(String pdUserId) {
-		this.pdUserId = pdUserId;
-	}
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public String getSelectedServiceType() {
-		return selectedServiceType;
-	}
-
-	public void setSelectedServiceType(String selectedServiceType) {
-		this.selectedServiceType = selectedServiceType;
-	}
-
-	
 	
 
 }

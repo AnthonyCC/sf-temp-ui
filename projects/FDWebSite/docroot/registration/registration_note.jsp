@@ -11,18 +11,15 @@
 	String successPage = "/index.jsp";
 
 	if(userx.isCorporateUser()){
-		successPage = "/index.jsp?serviceType=CORPORATE";
+		successPage = "/department.jsp?deptId=COS";
 	}else if (userx.isDepotUser()){
-		successPage = "/index.jsp?serviceType=DEPOT";
+		successPage = "/index.jsp";
 	}else{
-		successPage = "/index.jsp?serviceType=HOME";
+		successPage = "/index.jsp";
 	}
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Important Note"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Important Note</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>Important Note</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <%
 String promoChange = "false";

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,12 +23,9 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -51,8 +47,6 @@ public class CmsFilteringNavigator {
 
     // filtering
     private Map<String, List<String>> requestFilterParams = new TreeMap<String, List<String>>();
-
-    private Map<String, Boolean> dataFilterParams = new HashMap<String, Boolean>();
 
     // show all product on the actual page
     private boolean all = false;
@@ -82,15 +76,7 @@ public class CmsFilteringNavigator {
     private String ppPreviewId = null;
 
     private String picksId = null;
-    
-    private boolean isMobile;
 
-    public CmsFilteringNavigator() {
-    	this(true);
-    }
-    public CmsFilteringNavigator(boolean defaultGetAllData) {
-    	this.setDafaultGetAllData(defaultGetAllData);
-    }
     public String getPicksId() {
         return picksId;
     }
@@ -99,48 +85,6 @@ public class CmsFilteringNavigator {
         this.picksId = picksId;
     }
 
-    public boolean isMobile() {
-        return isMobile;
-    }
-
-    public void setIsMobile(boolean isMobile) {
-        this.isMobile = isMobile;
-    }
-    
-	public boolean isReceipeRequested() {
-		return FDStoreProperties.isSearchRecipeResultsEnabled() && this.getDataFilterParams().containsKey("searchReceipeRequested")
-				&& this.getDataFilterParams().get("searchReceipeRequested");
-	}
-
-	public void setReceipeRequested(boolean searchReceipe) {
-		this.getDataFilterParams().put("searchReceipeRequested", searchReceipe);
-	}
-	
-	public boolean isDescriptiveContentRequested() {
-		return this.getDataFilterParams().containsKey("descriptiveContentRequested")
-				&& this.getDataFilterParams().get("descriptiveContentRequested");
-	}
-
-	public void setDescriptiveContentRequested(boolean descriptiveContentRequested) {
-		this.getDataFilterParams().put("descriptiveContentRequested", descriptiveContentRequested);
-	}
-	
-	public boolean isMenuBoxAndFilterRequested() {
-		return this.getDataFilterParams().containsKey("menuBoxFilterRequested")
-				&& this.getDataFilterParams().get("menuBoxFilterRequested");
-	}
-	
-	public void setAdProductRequested(boolean adProductRequested) {
-		this.getDataFilterParams().put("adProductRequested", adProductRequested);
-	}
-	
-	public boolean isAdProductRequested() {
-		return this.getDataFilterParams().containsKey("adProductRequested")
-				&& this.getDataFilterParams().get("adProductRequested");
-	}
-	public void setMenuBoxFilterRequested(boolean menuBoxFilterRequested) {
-		this.getDataFilterParams().put("menuBoxFilterRequested", menuBoxFilterRequested);
-	}
     private int productHits = 0;
     private int recipeHits = 0;
 
@@ -149,28 +93,15 @@ public class CmsFilteringNavigator {
     private String referer;
     private String requestUrl;
     private boolean aggregateCategories;
-    private String productId;
     
-    private boolean populateSectionsOnly;
-
-    private boolean doNotFillPage;
-    
-    private boolean isAutosuggest;
-    
+    /**
+     * Creates a CmsFilteringNavigator instance out of request parameter map.
+     * 
+     * @return CmsFilteringNavigator
+     * @throws FDResourceException
+     * @throws InvalidFilteringArgumentException
+     */
     public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
-    	return createInstance(request, fdUser, true);
-    }
-    
-	/**
-	 * Creates a CmsFilteringNavigator instance out of request parameter map.
-	 * @param request
-	 * @param fdUser
-	 * @param defaultGetAllData, true to get all data (menuboxs, filters, receipe)
-	 * @return
-	 * @throws InvalidFilteringArgumentException
-	 * @throws FDResourceException
-	 */
-    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser, boolean defaultGetAllData) throws InvalidFilteringArgumentException, FDResourceException {
 
         try {
             request.setCharacterEncoding(CharEncoding.UTF_8);
@@ -186,7 +117,6 @@ public class CmsFilteringNavigator {
 
             try {   
                 cmsFilteringNavigator = JsonHelper.parseRequestData(request, CmsFilteringNavigator.class);
-                cmsFilteringNavigator.setDafaultGetAllData(defaultGetAllData);
             } catch (JsonParseException e) {
                 throw new InvalidFilteringArgumentException(e, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
             } catch (JsonMappingException e) {
@@ -197,8 +127,7 @@ public class CmsFilteringNavigator {
 
         } else {
 
-            cmsFilteringNavigator = new CmsFilteringNavigator(defaultGetAllData);
-
+            cmsFilteringNavigator = new CmsFilteringNavigator();
             for (String param : paramNames) {
 
                 String[] paramValues = paramMap.get(param);
@@ -206,8 +135,6 @@ public class CmsFilteringNavigator {
 
                     if ("pageSize".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
-                    } else if ("doNotFillPage".equalsIgnoreCase(param)) {
-                        cmsFilteringNavigator.setDoNotFillPage(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("all".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setAll(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("activePage".equalsIgnoreCase(param)) {
@@ -230,14 +157,6 @@ public class CmsFilteringNavigator {
                         cmsFilteringNavigator.setActiveTab(paramValue.toLowerCase());
                     } else if ("picksId".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPicksId(paramValue);
-                    } else if ("searchReceipe".equalsIgnoreCase(param)) {
-                    	cmsFilteringNavigator.setReceipeRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
-                    } else if ("getMenuBoxAndFilter".equalsIgnoreCase(param)) {
-                    	cmsFilteringNavigator.setMenuBoxFilterRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
-                    } else if ("getDescriptiveContent".equalsIgnoreCase(param)) {
-                    	cmsFilteringNavigator.setDescriptiveContentRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
-                    } else if ("isAutosuggest".equalsIgnoreCase(param)) {
-                        cmsFilteringNavigator.setAutosuggest(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("pageType".equalsIgnoreCase(param)) {
                         // Do nothing but exclude from 'filtering params'
                     } else { // No match for any other CmsFilteringNavigator property => must be a filtering domain
@@ -256,7 +175,7 @@ public class CmsFilteringNavigator {
         int pageSpecificPageSize;
         if (cmsFilteringNavigator.getPageSize() != 0) {
             pageSpecificPageSize = cmsFilteringNavigator.getPageSize();
-        } else if (cmsFilteringNavigator.pageType != null) {
+        } else {
             switch (cmsFilteringNavigator.pageType) {
                 case NEWPRODUCTS:
                     pageSpecificPageSize = FDStoreProperties.getNewProductsPageSize();
@@ -277,40 +196,26 @@ public class CmsFilteringNavigator {
                     pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
                     break;
             }
-        } else {
-        	pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
         }
-        
-        if (!cmsFilteringNavigator.doNotFillPage) {
-            pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
-        }
+        pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 
         if ((id == null || id.equals(""))
-                && (cmsFilteringNavigator.getPageType() != null && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
-                        .getPageType().equals(FilteringFlowType.STAFF_PICKS)))) {
+                && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
+                        .getPageType().equals(FilteringFlowType.STAFF_PICKS))) {
             throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
         }
         cmsFilteringNavigator.setRequestCookies(request.getCookies());
         cmsFilteringNavigator.setReferer(request.getHeader(HttpHeaders.REFERER));
         cmsFilteringNavigator.setRequestUrl(RequestUtil.getFullRequestUrl(request));
-        cmsFilteringNavigator.setIsMobile(UserUtil.isMobile(request.getHeader("User-Agent")) && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, fdUser));
         return cmsFilteringNavigator;
     }
 
     public static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI user, int pageSpecificPageSize) {
         Map<String, String> activeFeatures = FeaturesService.defaultService().getActiveFeaturesMapped(request.getCookies(), user);
         String gridlayoutversion = activeFeatures.get("gridlayoutcolumn");
-        String productCardVersion = activeFeatures.get("productCard");
         if (gridlayoutversion != null) {
             int divider = Integer.parseInt(gridlayoutversion.substring(0, 1));
-            int modulo = pageSpecificPageSize % divider;
-            if (modulo != 0) {
-                pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
-            }
-        }
-        if (productCardVersion != null) {
-            int divider = 4;
             int modulo = pageSpecificPageSize % divider;
             if (modulo != 0) {
                 pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
@@ -351,9 +256,8 @@ public class CmsFilteringNavigator {
             case STAFF_PICKS:
                 queryString.append("id=").append(id);
                 queryString.append("&");
-                //Commented as part of APPDEV 5988 Staff Picks Dynamic Picks ID
-                /*queryString.append("picksId=").append(picksId); 
-                queryString.append("&");*/
+                queryString.append("picksId=").append(picksId);
+                queryString.append("&");
                 break;
             case SEARCH:
                 queryString.append("searchParams=").append(searchParams);
@@ -365,7 +269,7 @@ public class CmsFilteringNavigator {
             default:
                 break;
         }
-        if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.STAFF_PICKS.equals(pageType)) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {      	
+        if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
             queryString.append("pageSize=").append(pageSize);
             queryString.append("&");
             queryString.append("all=").append(all);
@@ -425,15 +329,6 @@ public class CmsFilteringNavigator {
         this.requestFilterParams = requestFilterParams;
     }
 
-    public Map<String, Boolean> getDataFilterParams() {
-        return dataFilterParams;
-    }
-    
-
-    public void setDataFilterParams(Map<String, Boolean> dataFilterParams) {
-        this.dataFilterParams = dataFilterParams;
-    }
-    
     public String getId() {
         return id;
     }
@@ -613,90 +508,4 @@ public class CmsFilteringNavigator {
     public void setAggregateCategories(boolean aggregateCategories) {
         this.aggregateCategories = aggregateCategories;
     }
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-	
-	public boolean populateSectionsOnly(){
-		return populateSectionsOnly;
-	}
-	public void setPopulateSectionsOnly(boolean b){
-		populateSectionsOnly = b;
-	}
-	
-	public void setDafaultGetAllData(boolean b) {
-		this.setReceipeRequested(b);
-		this.setMenuBoxFilterRequested(b);
-		this.setDescriptiveContentRequested(b);
-		this.setAdProductRequested(b);
-	}
-	
-	double ratingBaseLine;
-	public double getRatingBaseLine() {
-		return ratingBaseLine;
-	}
-	public void setRatingBaseLine(double ratingBaseLine) {
-		this.ratingBaseLine = ratingBaseLine;
-	}
-	double popularityBaseLine;
-	public double getPopularityBaseLine() {
-		return popularityBaseLine;
-	}
-	public void setPopularityBaseLine(double popularityBaseLine) {
-		this.popularityBaseLine = popularityBaseLine;
-	}
-	double dealsBaseLine;
-	public double getDealsBaseLine() {
-		return dealsBaseLine;
-	}
-	public void setDealsBaseLine(double dealsBaseLine) {
-		this.dealsBaseLine = dealsBaseLine;
-	}
-	boolean considerNew;
-	public boolean isConsiderNew() {
-		return considerNew;
-	}
-	public void setConsiderNew(boolean considerNew) {
-		this.considerNew = considerNew;
-	}
-	boolean considerBackInStock;
-	public boolean isConsiderBackInStock() {
-		return considerBackInStock;
-	}
-	public void setConsiderBackInStock(boolean considerBackInStock) {
-		this.considerBackInStock = considerBackInStock;
-	}
-	boolean sortProducts;
-	public boolean isSortProducts() {
-		return sortProducts;
-	}
-	public void setSortProducts(boolean sortProducts) {
-		this.sortProducts = sortProducts;
-	}
-	int maxNoOfProducts;
-	public int getMaxNoOfProducts() {
-		return maxNoOfProducts;
-	}
-	public void setMaxNoOfProducts(int maxNoOfProducts) {
-		this.maxNoOfProducts = maxNoOfProducts;
-	}
-
-    public boolean isDoNotFillPage() {
-        return doNotFillPage;
-    }
-
-    public void setDoNotFillPage(boolean doNotFillPage) {
-        this.doNotFillPage = doNotFillPage;
-    }
-	public boolean isAutosuggest() {
-		return isAutosuggest;
-	}
-	public void setAutosuggest(boolean isAutosuggest) {
-		this.isAutosuggest = isAutosuggest;
-	}
 }

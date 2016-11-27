@@ -1,7 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
@@ -141,7 +141,7 @@ response.setHeader("Cache-Control", "no-cache");
 					<% } %>
 				</tr>
 				</table>
-             <% } else { %>
+                <%} else {%>
                 <table class="col100per noBorder">
 				<tr>
 					<% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>   
@@ -171,7 +171,7 @@ response.setHeader("Cache-Control", "no-cache");
 						<span class="bolded">Last Ordered: </span><%=dateFormatter.format(user.getOrderHistory().getLastOrderDlvDate())%>
 					</td>
 				</tr>
-                <% } %>
+                <%}%>
                 <% if(birthDay!=null && birthDay.length==2){%>
 				<tr>
 					<td>
@@ -180,8 +180,7 @@ response.setHeader("Cache-Control", "no-cache");
 					</td>
 				</tr>
                 
-               <% } %>
-             </table>
+               <%}%>
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">
@@ -206,7 +205,7 @@ response.setHeader("Cache-Control", "no-cache");
 		    	 <td><a href="?serviceType=CORPORATE">Corporate Profile</a></td>
 		    	</tr>
 		    </table>
-		    <img width="120" height="10" alt="" src="/media_stat/images/layout/clear.gif"/>
+		    <img width="120" height="10" src="/media_stat/images/layout/clear.gif"/>
 		    <% } %>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 

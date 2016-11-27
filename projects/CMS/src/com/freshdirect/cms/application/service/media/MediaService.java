@@ -57,7 +57,7 @@ public class MediaService extends AbstractContentService implements MediaService
             ResultSet rs = ps.executeQuery();
             Set<ContentKey> keys = new HashSet<ContentKey>();
             while (rs.next()) {
-                ContentKey key = ContentKey.getContentKey(type, rs.getString("ID"));
+                ContentKey key = new ContentKey(type, rs.getString("ID"));
                 keys.add(key);
             }
             rs.close();
@@ -85,7 +85,7 @@ public class MediaService extends AbstractContentService implements MediaService
             ResultSet rs = ps.executeQuery();
             Set<ContentKey> keys = new HashSet<ContentKey>();
             while (rs.next()) {
-                ContentKey key = ContentKey.getContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
+                ContentKey key = new ContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
                 keys.add(key);
             }
             rs.close();
@@ -223,7 +223,7 @@ public class MediaService extends AbstractContentService implements MediaService
 
     private ContentNodeI processNode(Connection conn, ResultSet rs) throws SQLException {
         ContentType type = ContentType.get(rs.getString("TYPE"));
-        ContentKey key = ContentKey.getContentKey(type, rs.getString("ID"));
+        ContentKey key = new ContentKey(type, rs.getString("ID"));
 
         ContentNodeI node = new ContentNode(this, key);
 
@@ -271,7 +271,7 @@ public class MediaService extends AbstractContentService implements MediaService
 
         Set<ContentKey> children = new HashSet<ContentKey>();
         while (rs.next()) {
-            ContentKey key = ContentKey.getContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
+            ContentKey key = new ContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
             children.add(key);
         }
 

@@ -6,9 +6,9 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.Recipe;
 
 public class SimpleRecipeImageTag extends BodyTagSupportEx {
 

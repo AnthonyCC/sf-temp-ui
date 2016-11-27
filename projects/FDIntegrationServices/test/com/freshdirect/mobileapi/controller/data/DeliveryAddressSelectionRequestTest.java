@@ -1,21 +1,26 @@
 package com.freshdirect.mobileapi.controller.data;
 
-import java.io.IOException;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 
 public class DeliveryAddressSelectionRequestTest extends MessageTest {
 
-    @Test
-    public void testParser() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        DeliveryAddressSelection request = mapper.readValue(getFileContentAsStream("DeliveryAddressSelection.json"), DeliveryAddressSelection.class);
-        Assert.assertEquals("2150625068", request.getId());
-        Assert.assertEquals("RESIDENTIAL", request.getType());
+    public static final Logger logger = Logger.getLogger(DeliveryAddressSelectionRequestTest.class);
+
+    public void testParser() throws Exception {
+        try {
+            //String data = getFileContentAsString("Login.xml");
+            ObjectMapper mapper = new ObjectMapper();
+            DeliveryAddressSelection request = mapper.readValue(getFileContentAsStream("DeliveryAddressSelection.json"),
+                    DeliveryAddressSelection.class);
+            assertEquals("2150625068", request.getId());
+            assertEquals("RESIDENTIAL", request.getType());
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            e.printStackTrace();
+        }
     }
 
 }

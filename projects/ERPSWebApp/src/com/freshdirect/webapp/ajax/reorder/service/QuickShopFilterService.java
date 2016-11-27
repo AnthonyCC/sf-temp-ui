@@ -2,6 +2,8 @@ package com.freshdirect.webapp.ajax.reorder.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,18 +13,16 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -89,42 +89,16 @@ public class QuickShopFilterService {
 			EnumQuickShopTab tab, QuickShopListRequestObject requestData) throws FDResourceException {
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
-		
-		List<QuickShopLineItemWrapper> discontinuedandoosproducts = new ArrayList<QuickShopLineItemWrapper>();
-		List<QuickShopLineItemWrapper> dpproducts = new ArrayList<QuickShopLineItemWrapper>();
-		if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX
-				&& items!=null){    			
-	        for(QuickShopLineItemWrapper item : items){
-	        	if(item!=null && item.getProduct()!=null && (item.getProduct().isDiscontinued() || item.getProduct().isOutOfSeason())){
-	        		discontinuedandoosproducts.add(item);
-	        	}
-	        	try {
-					if(item!=null&&item.getProduct()!=null&&item.getProduct().getDefaultSku()!=null&&
-							item.getProduct().getDefaultSku().getProduct()!=null&&
-							item.getProduct().getDefaultSku().getProduct().isDeliveryPass()){
-						dpproducts.add(item);
-					}
-				} catch (FDSkuNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        }
-	        items.removeAll(discontinuedandoosproducts);
-	        items.removeAll(dpproducts);
-		}      
-			
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
 		}
         QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, servletRequest);
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
-        QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
+		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");
 		result = filter.doFlow(nav, filterItems);
-        if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
-            result.setItems(aggregatesCustomizeItems(result.getItems(), user));
-        }
+		eliminatePreviousProductDuplicatesFromPastOrders(result.getItems());
 		QuickShopHelper.postProcessPopulate(user, result, session);
 		setYourTopItemQuantityToDefaultValue(tab, result);
 		return result;
@@ -142,54 +116,56 @@ public class QuickShopFilterService {
 		}
 	}
 	
-    public List<FilteringSortingItem<QuickShopLineItemWrapper>> aggregatesCustomizeItems(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, FDUserI user) {
-        List<FilteringSortingItem<QuickShopLineItemWrapper>> filteredItems = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+	/**
+	 * Remove older product duplicates from past orders.
+	 *
+	 * @param items
+	 */
+	public void eliminatePreviousProductDuplicatesFromPastOrders(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
+			Set<String> itemKeys = new HashSet<String>();
+			Map<String, Integer> indicesOfItems = collectItemIndicesByOrderIdAndContentKeyId(items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> localItems = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
+			QuickShopSortingService.defaultService().sortByWrappedDeliveryDateAndOrderId(localItems);
+			Set<Integer> itemIndicesToBeRemoved = collectDuplicateItemIndicesToBeRemoved(itemKeys,
+					indicesOfItems, localItems);
+			removeDuplicateItemsByIndices(items, itemIndicesToBeRemoved);
+	}
 
-        Map<String, Double> maxQuantityBySkuCode = aggregateProductQuantity(items);
+	private void removeDuplicateItemsByIndices(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, Set<Integer> itemIndicesToBeRemoved) {
+		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> resultIterator = items.iterator();
+		int resultIndex = 0;
+		while (resultIterator.hasNext()) {
+			resultIterator.next();
+			if (itemIndicesToBeRemoved.contains(resultIndex)) {
+				resultIterator.remove();
+			}
+			resultIndex++;
+		}
+	}
 
-        for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
-            QuickShopLineItem lineItem = item.getNode().getItem();
-            Double aggregatedQuantity = maxQuantityBySkuCode.get(lineItem.getSkuCode());
-            if (aggregatedQuantity != null) {
-                if (lineItem.getConfiguration() != null) {
-                    filteredItems.add(item);
-                } else {
-                    double maxQuantity = lineItem.getQuantity().getqMax();
-                    double quantity = lineItem.getQuantity().getQuantity();
-                    int quantityCompare = Double.compare(aggregatedQuantity, Math.min(quantity, maxQuantity));
-                    if (quantityCompare >= 0) {
-                        maxQuantityBySkuCode.remove(lineItem.getSkuCode());
-                        try {
-                            FilteringSortingItem<QuickShopLineItemWrapper> clonedItem = QuickShopHelper.copyQuickShopFilteringItemWrapper(item, user);
-                            double quantityInCart = user.getShoppingCart().calculateAggregatedQuantityBySku(lineItem.getSkuCode());
-                            clonedItem.getNode().getItem().getQuantity().setQuantity(Math.min(maxQuantity - quantityInCart, aggregatedQuantity));
-                            filteredItems.add(clonedItem);
-                        } catch (FDResourceException e) {
-                            LOG.debug("Error when cloned filtering quickshop line item of contentkey " + item.getNode().getProduct().getContentKey(), e);
-                        }
-                    } else {
-                        filteredItems.add(item);
-                    }
-                }
-            }
-        }
-        return filteredItems;
-    }
+	private Set<Integer> collectDuplicateItemIndicesToBeRemoved(Set<String> itemKeys, Map<String, Integer> indicesOfItems, List<FilteringSortingItem<QuickShopLineItemWrapper>> localItems) {
+		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> iterator = localItems.iterator();
+		Set<Integer> itemIndicesToBeRemoved = new HashSet<Integer>();
+		while (iterator.hasNext()) {
+			FilteringSortingItem<QuickShopLineItemWrapper> item = iterator.next();
+			String contentKey = item.getModel().getProduct().getContentKey().getId();
+			if (itemKeys.contains(contentKey)) {
+				itemIndicesToBeRemoved.add(indicesOfItems.get(item.getModel().getOrderId() + contentKey));
+			} else {
+				itemKeys.add(contentKey);
+			}
+		}
+		return itemIndicesToBeRemoved;
+	}
 
-    private Map<String, Double> aggregateProductQuantity(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-        Map<String, Double> maxQuantitiesBySkuCode = new HashMap<String, Double>();
-        for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
-            QuickShopLineItem lineItem = item.getNode().getItem();
-            String skuCode = lineItem.getSkuCode();
-            double quantity = lineItem.getQuantity().getQuantity();
-            double maxQuantity = lineItem.getQuantity().getqMax();
-            if (maxQuantitiesBySkuCode.containsKey(skuCode)) {
-                quantity += maxQuantitiesBySkuCode.get(skuCode);
-            }
-            maxQuantitiesBySkuCode.put(skuCode, Math.min(maxQuantity, quantity));
-        }
-        return maxQuantitiesBySkuCode;
-    }
+	private Map<String, Integer> collectItemIndicesByOrderIdAndContentKeyId(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
+		Map<String, Integer> indicesOfItems = new HashMap<String, Integer>();
+		int index=0;
+		for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
+			indicesOfItems.put(item.getModel().getOrderId() + item.getModel().getProduct().getContentKey().getId(), index++);
+		}
+		return indicesOfItems;
+	}
 
 	/**
 	 * Gives the order id of the latest order.

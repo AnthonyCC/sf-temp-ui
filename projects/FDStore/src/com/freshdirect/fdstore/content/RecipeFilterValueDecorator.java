@@ -4,15 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeSearchPage;
-
 public class RecipeFilterValueDecorator extends GenericFilterDecorator<FilteringSortingItem<Recipe>> {
 
 	public RecipeFilterValueDecorator(Set<FilteringValue> filters) {

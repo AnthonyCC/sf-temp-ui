@@ -9,15 +9,14 @@
 
 package com.freshdirect.customer;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.sms.EnumSMSAlertStatus;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.address.*;
-import com.freshdirect.common.date.SimpleDateDeserializer;
-import com.freshdirect.fdstore.customer.FDIdentity;
 
 /**
  * ErpCustomerInfo model class.
@@ -28,7 +27,6 @@ import com.freshdirect.fdstore.customer.FDIdentity;
  */
 public class ErpCustomerInfoModel extends ModelSupport {
 
-	private static final long serialVersionUID = 9156189087842548162L;
 	private String title;
 	private String firstName;
 	private String middleName;
@@ -48,8 +46,8 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private PhoneNumber fax;
 	private String workDepartment;
     private String employeeId;
-    @JsonDeserialize(using = SimpleDateDeserializer.class)
-    private Date lastReminderEmailSend;
+    
+    private Date lastReminderEmail;
     private int reminderDayOfWeek;
     private int reminderFrequency;
     private boolean reminderAltEmail;
@@ -58,7 +56,7 @@ public class ErpCustomerInfoModel extends ModelSupport {
     private Date rsvStartTime;
     private Date rsvEndTime;
     private String rsvAddressId;
-    private Date unsubscribeDate;
+    private java.util.Date unsubscribeDate;
     private String receive_emailLevel;
     private boolean noContactMail;
     private boolean noContactPhone;
@@ -80,7 +78,6 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private boolean goGreen;
 	/* APPDEV-2475 DP T&C */
 	private int dpTcViewCount;
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date dpTcAgreeDate;
 	
 	private String industry;
@@ -97,30 +94,9 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	
 	private String companyNameSignup; 
 	
-	private String soCartOverlayFirstTime;
-	
-	private String soFeatureOverlay;
+
 	/* APPDEV-4381  */
 	private String fdTcAgree;
- 
-	private FDIdentity identity;
-
-	public String getSoFeatureOverlay() {
-		return soFeatureOverlay;
-	}
-
-	public void setSoFeatureOverlay(String soFeatureOverlay) {
-		this.soFeatureOverlay = soFeatureOverlay;
-	}
-
-	public String getSoCartOverlayFirstTime() {
-		return soCartOverlayFirstTime;
-	}
-
-	public void setSoCartOverlayFirstTime(String soCartOverlayFirstTime) {
-		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
-	}
-
 	public String getFdTcAgree() {
 		return fdTcAgree;
 	}
@@ -253,11 +229,11 @@ public class ErpCustomerInfoModel extends ModelSupport {
     public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
     
     public Date getLastReminderEmailSend(){
-    	return this.lastReminderEmailSend;
+    	return this.lastReminderEmail;
     }
     
     public void setLastReminderEmailSend(Date lastReminderEmailSend) {
-    	this.lastReminderEmailSend = lastReminderEmailSend;
+    	this.lastReminderEmail = lastReminderEmailSend;
     }
     
     public int getReminderDayOfWeek() {
@@ -482,19 +458,5 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setCompanyNameSignup(String companyNameSignup) {
 		this.companyNameSignup = companyNameSignup;
 	}
-	
-	public FDIdentity getIdentity() {
-		return identity;
-	}
-	
-	public void setIdentity(FDIdentity identity) {
-		this.identity = identity;
-	}
 
-	@Override
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
-	}
 }

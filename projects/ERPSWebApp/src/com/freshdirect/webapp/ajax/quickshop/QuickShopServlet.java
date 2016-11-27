@@ -2,15 +2,21 @@ package com.freshdirect.webapp.ajax.quickshop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
@@ -117,5 +123,18 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		}
 
 		return pagedItems;
+	}
+
+	protected static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
+		for ( Map<String, FilteringMenuItem> f : menu.values() ) {
+			for( FilteringMenuItem i : f.values() ) {
+				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {
+					ElementTagModel eTagModel = new ElementTagModel();
+					eTagModel.setElementCategory( CmContext.getContext().prefixedCategoryId( categoryName ) );
+					eTagModel.setElementId( i.getName() );
+					responseData.addCoremetrics( eTagModel.toStringList() );
+				}
+			}
+		}
 	}
 }

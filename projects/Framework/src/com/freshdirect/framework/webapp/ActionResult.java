@@ -8,8 +8,8 @@ public class ActionResult {
 	
 	private static final Logger LOGGER = Logger.getLogger( ActionResult.class );
 
-	private Map<String, ActionError>	errors		= null;
-	private Map<String, ActionWarning>	warnings	= null;
+	private HashMap<String, ActionError>	errors		= null;
+	private HashMap<String, ActionWarning>	warnings	= null;
 
 	public ActionResult() {
 		errors = new HashMap<String, ActionError>();
@@ -96,13 +96,7 @@ public class ActionResult {
 	public boolean hasWarning(String type) {
 		return warnings.containsKey(type);
 	}
-	
-	public void removeError(String type){
-        if (hasError(type)){
-            errors.remove(type);
-        }
-    }
-    
+
 	public String toString() {
 		return "ActionResult[ERRORS: " + this.errors + "][WARNINGS: " + this.warnings +"]";
 	}

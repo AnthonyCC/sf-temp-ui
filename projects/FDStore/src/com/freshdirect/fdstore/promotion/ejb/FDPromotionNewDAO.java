@@ -27,8 +27,8 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -82,7 +82,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductReferenceImpl;
 
 public class FDPromotionNewDAO {
 	private static final int DEFAULT_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID=1;
@@ -185,8 +184,7 @@ public class FDPromotionNewDAO {
 			int redeemCnt = rs.getInt("REDEEM_CNT");
 			if(!rs.wasNull() && redeemCnt > 0)
 				promo.addStrategy(new MaxRedemptionStrategy(redeemCnt));
-			promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
-			promo.seteStoreId(rs.getString("E_STORE"));
+			
 			if("X".equalsIgnoreCase(rs.getString("RULE_BASED"))) {
 				promo.addStrategy(new RuleBasedPromotionStrategy());
 			}
@@ -467,9 +465,6 @@ public class FDPromotionNewDAO {
 		
 		String rafPromoCode=rs.getString("RAF_PROMO_CODE");
 		
-		promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
-		
-		promo.seteStoreId(rs.getString("E_STORE"));
 		
 	//	String rafPromoCode=rs.getString("RAF_PROMO_CODE");
 		
@@ -740,18 +735,12 @@ public class FDPromotionNewDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if(!wasNull){
-			/*if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
+			if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
 				promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}else
 			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
 				loadMinSubtotalStrategy(rs, promo);
 				promo.addApplicator(new ProductSampleApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
-			}*/
-			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
-				loadMinSubtotalStrategy(rs, promo);
-				promo.addApplicator(new ProductSampleApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
-			} else {
-				promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}
 		}
 		
@@ -761,7 +750,7 @@ public class FDPromotionNewDAO {
 			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
 					PromotionApplicatorI _applicator = i.next();
-					_applicator.setDlvZoneStrategy(dlvZoneStrategy);
+					_applicator.setZoneStrategy(dlvZoneStrategy);
 				}
 			}
 		}
@@ -1220,11 +1209,11 @@ public class FDPromotionNewDAO {
 	private static void populateCustomerStrategy(ResultSet rs, CustomerStrategy strategy) throws SQLException {
 		String cohorts = rs.getString("COHORT");
 		if(cohorts != null && cohorts.length() > 0){
-			strategy.setCohortNames(cohorts);
+			strategy.setCohorts(cohorts);
 		}
 		String dpTypes = rs.getString("DP_TYPES");
 		if(dpTypes != null && dpTypes.length() > 0){
-			strategy.setDpTypesNames(dpTypes);
+			strategy.setDpTypes(dpTypes);
 		}
 		String status = rs.getString("dp_status");
 		if(status != null){
@@ -1240,13 +1229,13 @@ public class FDPromotionNewDAO {
 			}
 		}
 		int orderStartRange = rs.getInt("order_range_start");
-		strategy.setOrderRangeStart(orderStartRange);
+		strategy.setOrderStartRange(orderStartRange);
 		int orderEndRange = rs.getInt("order_range_end");
-		strategy.setOrderRangeEnd(orderEndRange);
+		strategy.setOrderEndRange(orderEndRange);
 		
 		String paymentTypes = rs.getString("payment_type");
 		if(paymentTypes != null && paymentTypes.length() > 0)
-			strategy.setPaymentTypeNames(paymentTypes);
+			strategy.setPaymentTypes(paymentTypes);
 		
 		int priorEcheckUse = rs.getInt("prior_echeck_use");
 		strategy.setPriorEcheckUse(priorEcheckUse);
@@ -1451,12 +1440,7 @@ public class FDPromotionNewDAO {
 			dlvZoneStrategy.setDlvDays(rs.getString("DLV_DAYS"));
 			Array array = rs.getArray(4);
 			String[] zoneCodes = (String[])array.getArray();
-			dlvZoneStrategy.setDlvZones(Arrays.asList(zoneCodes));;		
-			
-			Array arrayTravelZoneCodes = rs.getArray(5);
-			String[] dlvZoneCodes = arrayTravelZoneCodes != null ?  (String[]) arrayTravelZoneCodes.getArray() : null;
-			dlvZoneStrategy.setTravelZones(dlvZoneCodes!= null ?Arrays.asList(dlvZoneCodes) : null);
-			
+			dlvZoneStrategy.setDlvZones(Arrays.asList(zoneCodes));;			
 		}
 		rs.close();
 		ps.close();
@@ -1468,7 +1452,7 @@ public class FDPromotionNewDAO {
 				Integer dayId = rs.getInt("DAY_ID");
 				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
 				String[] windowType = windowArray != null ? (String[]) windowArray.getArray() : null;
-				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType,rs.getString("RANGE_EXACT"),rs.getInt("CUT_OFF_EXP_TIME"));
+				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType);
 				List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(dayId);
 				if(null == dlvTimeSlotList){
 					dlvTimeSlotList = new ArrayList<PromotionDlvTimeSlot>();
@@ -1483,7 +1467,7 @@ public class FDPromotionNewDAO {
 			ps.setString(1, dlvZoneStrategy.getDlvZoneId());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				PromotionDlvDay dlvDay = new PromotionDlvDay(rs.getInt("DAY_ID"), rs.getInt("REDEEM_CNT"),rs.getDouble("CAPACITY_UTILIZATION"));
+				PromotionDlvDay dlvDay = new PromotionDlvDay(rs.getInt("DAY_ID"), rs.getInt("REDEEM_CNT"));
 				if(!dlvDays.containsKey(dlvDay.getDayId())){
 					dlvDays.put(dlvDay.getDayId(), dlvDay);
 				}			
@@ -1627,14 +1611,11 @@ public class FDPromotionNewDAO {
 	public static final String GET_REF_EXTOLE_PROMO = "SELECT p.* "
 			+ "FROM  CUST.PROMOTION_NEW p, "
 			+ "CUST.FDCUSTOMER fc, "
-			+ "CUST.CUSTOMER c, "
-			+ "CUST.FDCUSTOMER_ESTORE fde "
+			+ "CUST.CUSTOMER c "
 			+ "where fc.ERP_CUSTOMER_ID = ? "
-			+ "and 	   fde.E_STORE(+)=? "
 			+ "and     fc.ERP_CUSTOMER_ID = c.ID "
-			+ "and     fde.FDCUSTOMER_ID(+) = fc.ID "
-			+ "and     fde.RAF_PROMO_CODE=p.RAF_PROMO_CODE and p.referral_promo='Y' "
-			+ "and     fde.raf_promo_code is not null "
+			+ "and     fc.RAF_PROMO_CODE=p.RAF_PROMO_CODE and p.referral_promo='Y' "
+			+ "and     fc.raf_promo_code is not null "
 			+ "and     p.status in ('LIVE') "
 			+ "and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) "
 			+ "and     p.redemption_code is  null "
@@ -1656,7 +1637,7 @@ public class FDPromotionNewDAO {
 				"and     p.redemption_code is null " +
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
 
-	public static List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid, Connection conn) throws SQLException {
+	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
 		LOGGER.debug("Query is "+GET_REF_PROMO);
 		String query = GET_REF_PROMO;
 		if(FDStoreProperties.isExtoleRafEnabled()){
@@ -1664,9 +1645,6 @@ public class FDPromotionNewDAO {
 		}
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, customerId);
-		if(FDStoreProperties.isExtoleRafEnabled()){
-			ps.setString(2, null != storeid ? storeid.getContentId() : EnumEStoreId.FD.getContentId());
-		}
 		ResultSet rs = ps.executeQuery();
 		List<PromotionI> promotions =  new ArrayList<PromotionI>();
 		while(rs.next()) {

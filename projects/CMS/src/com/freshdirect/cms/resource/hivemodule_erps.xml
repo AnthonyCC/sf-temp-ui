@@ -84,6 +84,14 @@
 	</service-point>
 
 	<!--
+		VALIDATOR
+	-->
+	
+	<contribution configuration-id="com.freshdirect.cms.contentValidators">
+		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
+	</contribution>
+
+	<!--
 		ERPS MAPPINGS
 	-->
 	

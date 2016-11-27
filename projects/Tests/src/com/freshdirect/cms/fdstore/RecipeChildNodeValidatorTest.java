@@ -15,7 +15,6 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.SimpleContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.validation.RecipeChildNodeValidator;
 import com.freshdirect.cms.validation.ValidatingContentService;
 
 import junit.framework.TestCase;
@@ -52,7 +51,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		user        = new CmsUser("test_user");
 				
 		// create a new recipe, and add and insert it
-		key     = ContentKey.getContentKey(FDContentTypes.RECIPE, "recipe_test");
+		key     = new ContentKey(FDContentTypes.RECIPE, "recipe_test");
 		node    = service.createPrototypeContentNode(key, DraftContext.MAIN);
 		request = new CmsRequest(user);
 		
@@ -110,7 +109,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		variantNode = service.getContentNode((ContentKey) set.toArray()[0], DraftContext.MAIN);
 		
 		// add another section to the variant
-		key = ContentKey.getContentKey(FDContentTypes.RECIPE_SECTION, variantNode.getKey().getId() + "_second");
+		key = new ContentKey(FDContentTypes.RECIPE_SECTION, variantNode.getKey().getId() + "_second");
 		sectionNode = service.createPrototypeContentNode(key, DraftContext.MAIN);
 
 		// get (or create if needed) the section relation
@@ -169,7 +168,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		AttributeI		attr;
 		
 		// create a new variant node
-		key = ContentKey.getContentKey(FDContentTypes.RECIPE_VARIANT, "second");
+		key = new ContentKey(FDContentTypes.RECIPE_VARIANT, "second");
 		variantNode = service.createPrototypeContentNode(key, DraftContext.MAIN);
 
 		// get (or create if needed) the variants relation

@@ -9,18 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlow;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopComparatorUtil;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -31,15 +34,18 @@ import com.freshdirect.webapp.ajax.reorder.service.QuickShopSortingService;
 public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper> {
 
 	private FilteringNavigator nav;
+	private FDUserI user;
 	private List<FilteringSortingItem<QuickShopLineItemWrapper>> unfilteredItems;
 	private Set<FilteringValue> filters;
 	private List<String> activeReplacements;
 	private EnumQuickShopTab tabType;
 	private QuickShopListRequestObject requestData;
 
-    public QuickShopFilterImpl(FilteringNavigator nav, Set<FilteringValue> filters, List<FilteringSortingItem<QuickShopLineItemWrapper>> items, List<String> activeReplacements,
+	public QuickShopFilterImpl(FilteringNavigator nav, FDUserI user, Set<FilteringValue> filters, List<FilteringSortingItem<QuickShopLineItemWrapper>> items, List<String> activeReplacements,
 			EnumQuickShopTab tabType, QuickShopListRequestObject requestData) {
+		super();
 		this.nav = nav;
+		this.user = user;
 		this.filters = filters;
 		this.unfilteredItems = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
 		this.activeReplacements = activeReplacements;
@@ -51,12 +57,27 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 		return nav;
 	}
 
+	public PricingContext getPricingContext() {
+		if (user != null)
+			return user.getPricingContext();
+		return PricingContext.DEFAULT;
+	}
+
 	public QuickShopListRequestObject getRequestData() {
 		return requestData;
 	}
 
 	public EnumQuickShopTab getTabType() {
 		return tabType;
+	}
+
+	public String getUserId() {
+		if (user != null) {
+			FDIdentity identity = user.getIdentity();
+			if (identity != null)
+				return identity.getErpCustomerPK();
+		}
+		return null;
 	}
 
 	public void setFilters(Set<FilteringValue> filters) {
@@ -77,7 +98,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-        return QuickShopComparatorUtil.createQuickShopItemComparator(items, nav);
+		return QuickShopComparatorUtil.createQuickShopItemComparator(items, user.getPricingContext(), nav);
 	}
 
 	@Override
@@ -229,7 +250,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 					String deptId = (String) fs.get(0);
 					if (deptId != null) {
 						if (!deptMenu.containsKey(deptId)) {
-							DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(ContentType.Department, deptId);
+							DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(ContentType.get("Department"), deptId);
 							if (dept != null) {
 								FilteringMenuItem fmi = new FilteringMenuItem(dept.getFullName(), deptId, 0, EnumQuickShopFilteringValue.DEPT);
 								fmi.setSelected(true);
@@ -245,6 +266,9 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected void preProcess(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
+		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType)) {
+			QuickShopHelper.removeSkuDuplicatesInPastOrders(items);
+		}
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType) && items != null && !items.isEmpty()) {
 			if (requestData.getOrderIdList() == null || requestData.getOrderIdList().isEmpty()) {
 				QuickShopSortingService.defaultService().sortByWrappedDeliveryDateAndOrderId(items);

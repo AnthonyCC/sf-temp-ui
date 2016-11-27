@@ -34,6 +34,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/FDLogisticsIntegration"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/mockito-all-1.10.19.jar"/>
-        <classpathentry kind="var" path="FD_LIBS/thirdparty/sitemapgen4j-1.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

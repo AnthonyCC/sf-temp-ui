@@ -1,10 +1,9 @@
 package com.freshdirect.fdstore.util;
 
-import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class DYFUtil {
 	/**
@@ -31,16 +30,13 @@ public class DYFUtil {
 	}
 
 
-    public static boolean isFavorite(ProductModel product, FDUserI user) {
-        return isFavorite(product.getContentKey(), user);
-    }
+	public static boolean isFavorite(ProductModel product, FDUserI user) {
+		if (user == null || user.getIdentity() == null
+				|| user.getIdentity().getErpCustomerPK() == null) {
+			return false;
+		}
 
-    public static boolean isFavorite(ContentKey contentKey, FDUserI user) {
-        if (user == null || user.getIdentity() == null || user.getIdentity().getErpCustomerPK() == null) {
-            return false;
-        }
-
-        String customerId = user.getIdentity().getErpCustomerPK();
-        return ScoreProvider.getInstance().isUserHasScore(customerId, contentKey);
-    }
+		String customerId = user.getIdentity().getErpCustomerPK();
+		return ScoreProvider.getInstance().isUserHasScore(customerId, product.getContentKey());
+	}
 }

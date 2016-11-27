@@ -11,18 +11,19 @@
 		}*/
 %>
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
-<%-- 		<title><tmpl:get name='title'/></title> --%>
-         <tmpl:get name="seoMetaTag"/>
+		<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 	<% /* @ include file="/common/template/includes/i_javascripts.jspf" */ %>
+    <% /* @ include file="/shared/template/includes/style_sheet_grid_compat.jspf" */ %>
     <% /* @ include file="/shared/template/includes/style_sheet_detect.jspf" */ %>
     <% /* @ include file="/shared/template/includes/ccl.jspf" */ %>
 
 	<!-- from  /common/template/includes/i_javascripts.jspf -->
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 
+	<!-- from  /shared/template/includes/style_sheet_grid_compat.jspf -->
 	<%-- this file will be included in the <head> tag, when the new grid is used --%>
   	<jwr:style src="/grid.css"/>
 
@@ -39,6 +40,7 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
 	<body>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			<%@ include file="/common/template/includes/globalnav.jspf" %>
     <div id="content">
       <center class="text10">

@@ -35,7 +35,7 @@ public class ClassGeneratorContentService extends XmlContentService {
     }
 
     private void init(ContentTypeServiceI typeService, CmsNodeHandler nodeHandler, String resourceFiles, ResourceInfoServiceI resourceInfoService, String prefix) {
-        generator = GeneratedNodeGeneratorFactory.getInstance().getNodeGenerator(typeService, ContentNodeGenerator.DEFAULT_PREFIX);
+        generator = new ContentNodeGenerator(typeService, prefix);
         init(nodeHandler, resourceFiles, resourceInfoService);
     }
 

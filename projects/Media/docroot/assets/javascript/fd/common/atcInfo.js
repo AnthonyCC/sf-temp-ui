@@ -34,7 +34,7 @@ var FreshDirect = FreshDirect || {};
           product = element.closest('[data-component="product"]');
           controls = product.find('[data-component="product-controls"]');
 
-          if (controls.length !== 0) {
+          if (controls.size() !== 0) {
             // reset qty
             oQ = product.find('[data-quantity-original]').attr('data-quantity-original');
             oSu = product.find('[data-salesunit-original]').attr('data-salesunit-original');
@@ -70,7 +70,7 @@ var FreshDirect = FreshDirect || {};
         var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"], [id="trnp_'+item.itemId+'"], [id="trnp_'+item.atcItemId+'"]'),
             controls, product, oSu, cSu, oQ, cQ;
 
-        if(element.length) {
+        if(element.size()) {
           element.addClass('atc-info-message');
           product = element.closest('[data-component="product"]');
           product.find('[data-component="ATCButton"],[data-component="customizeButton"]').addClass('incart');
@@ -80,6 +80,36 @@ var FreshDirect = FreshDirect || {};
           } else {
             product.removeClass("hasErrors");
           }
+          
+          if (item.status === "SUCCESS"){
+              
+        	  /* Facebook Conversion Code for Add_to_Cart */
+        	!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+			n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+			n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+			t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+			document,'script','//connect.facebook.net/en_US/fbevents.js');
+			// Insert Your Facebook Pixel ID below.
+			fbq('init', '1634670833479183');
+
+			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
+				'content_name': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
+				'content_ids':[item.itemId],
+				'content_type':'product'});
+          
+          
+    	  /* Pinterest Code for Add_to_Cart */
+          !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
+  		n=window.pintrk;n.queue=[],n.version="3.0";var
+  		t=document.createElement("script");t.async=!0,t.src=e;var
+  		r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+			// Insert Your Pinterest Pixel ID below.		
+			pintrk('load','2618512501957');
+			pintrk('track', 'addtocart', {'value':'0.00','currency':'USD',
+				'search_query': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
+				'line_items':[item.itemId],
+				});
+        }
           
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
             product.remove();
@@ -97,7 +127,7 @@ var FreshDirect = FreshDirect || {};
     	  }
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
-          if (controls.length !== 0) {
+          if (controls.size() !== 0) {
             controls.addClass('atc-info-message');
 
             oQ = product.find('[data-quantity-original]').attr('data-quantity-original');
@@ -117,9 +147,7 @@ var FreshDirect = FreshDirect || {};
           }
 
           setTimeout(this.removeMessage.bind(element),1800);
-          if(FreshDirect.standingorder && FreshDirect.standingorder.isSoCartOverlayFirstTime && !element.parent().hasClass("pdp-atc-button-wrapper")){
-        	  doOverlayDialogNew("/quickshop/includes/accidental_add_to_cart.jsp");
-          }
+
         }
       }
     },

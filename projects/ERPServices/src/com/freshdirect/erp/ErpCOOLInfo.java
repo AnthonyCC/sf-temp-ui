@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ErpCOOLInfo implements Serializable {	
 	
 	private static final long	serialVersionUID	= -1120548872587933250L;
@@ -24,9 +22,8 @@ public class ErpCOOLInfo implements Serializable {
 		this.plantId = plantId;
 	}
 
-	public ErpCOOLInfo(@JsonProperty("sapID") String sapID, @JsonProperty("sapDesc") String sapDesc,
-			@JsonProperty("countryInfo") List<String> countryInfo,
-			@JsonProperty("lastModifiedDate") Date lastModifiedDate, @JsonProperty("plantId") String plantId) {
+	public ErpCOOLInfo(String sapID, String sapDesc, List<String> countryInfo, Date lastModifiedDate, String plantId)
+	{
 		this.sapID = sapID;
 		this.sapDesc = sapDesc;
 		this.countryInfo = countryInfo;

@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
@@ -29,9 +27,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
@@ -52,10 +48,7 @@ public class AvailabilityService {
 
 	private static final int DEFAULT_ATP_RESTRICTION_TIMEOUT = 30000;
 
-	public static final String ATP_CHECKOUT="Checkout";
-
 	private static final AvailabilityService INSTANCE = new AvailabilityService();
-	private final static Category LOGGER = LoggerFactory.getInstance(AvailabilityService.class);
 
 	private AvailabilityService() {
 	}
@@ -66,15 +59,9 @@ public class AvailabilityService {
 
 	public boolean checkCartAtpAvailability(final FDUserI user)
 			throws FDResourceException {
-		FDCartModel cart = user.getShoppingCart();
-		if(!(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly())){//No ATP required for DP alone carts
-			cart = FDCustomerManager.checkAvailability(
-					user.getIdentity(), user.getShoppingCart(),
-					DEFAULT_ATP_RESTRICTION_TIMEOUT,ATP_CHECKOUT);
-			if(null != user && null != user.getIdentity() && null != user.getIdentity().getErpCustomerPK()){
-				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+user.getIdentity().getErpCustomerPK()+" CheckCartAtpAvailability() ,cart.isFullyAvailable() : "+ cart.isFullyAvailable());
-			}
-		}
+		FDCartModel cart = FDCustomerManager.checkAvailability(
+				user.getIdentity(), user.getShoppingCart(),
+				DEFAULT_ATP_RESTRICTION_TIMEOUT);
 		System.out.println("WOW");
 		performDeliveryPassAvailabilityCheck(user);
 		user.updateUserState();
@@ -90,10 +77,8 @@ public class AvailabilityService {
 			isEbt = EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod()
 					.getPaymentMethodType());
 		}
-		if (cart.containsUnlimitedPass() && !(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()))
-			//if (cart.containsDlvPassOnly()) Changes as part of standalone deliverypass purchase (DP17-122)  
-			//if((cart instanceof FDModifyCartModel || !FDStoreProperties.isDlvPassStandAloneCheckoutEnabled()) && cart.containsDlvPassOnly()){
-				if(!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
+		if (cart.containsUnlimitedPass())
+			if (cart.containsDlvPassOnly()) {
 				errorMessage = "Your cart contains only delivery pass item(s).";
 			} else if (!user.isOrderMinimumMet()
 					&& user.getMasqueradeContext() == null) {
@@ -166,12 +151,8 @@ public class AvailabilityService {
 		String warningType = null;
 		FDCartModel cart = user.getShoppingCart();
 		ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-		
-		/* Change as part of standalone deliverypass purchase (DP17-122)
-		When the cart contains only deliverypass 
-			- disable the cart validation for DP when the property is enabled
-			- enable the DP only cart validation when the property is disabled */
-		if (!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()) {
+
+		if (cart.containsDlvPassOnly()) {
 			warningType = DELIVERY_PASS_ONLY;
 		} else if (cart.containsDonationProductsOnly()) {
 			warningType = DONATION_PRODUCTS_ONLY;
@@ -184,8 +165,7 @@ public class AvailabilityService {
 			warningType = GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY;
 		} else if (user.getShoppingCart().getOrderLines().isEmpty()) {
 			warningType = CART_IS_EMPTY;
-		
-		}	
+		}
 		return warningType;
 	}
 
@@ -276,7 +256,7 @@ public class AvailabilityService {
 		refreshCartAndUser(user, cart);
 	}
 
-	public void performDeliveryPassAvailabilityCheck(FDUserI user)
+	private void performDeliveryPassAvailabilityCheck(FDUserI user)
 			throws FDResourceException {
 
 		FDCartModel cart = user.getShoppingCart();
@@ -465,12 +445,12 @@ public class AvailabilityService {
 		return lowPriceList;
 	}
 
-	public  static final String REASON_NOT_ELIGIBLE = "Not currently eligible for DeliveryPass. Please contact Customer Service.";
-	public  static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
-	public  static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
-	public  static final String REASON_MAX_PASSES = "Account already has the maximum number of allowable DeliveryPasses.";
-	public  static final String REASON_PROMOTIONAL_PASS = "Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
-	public  static final String REASON_MULTIPLE_AUTORENEW_PASSES = "You already have a DeliveryPass scheduled to automatically renew.";
+	private static final String REASON_NOT_ELIGIBLE = "Not currently eligible for DeliveryPass. Please contact Customer Service.";
+	private static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
+	private static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
+	private static final String REASON_MAX_PASSES = "Account already has the maximum number of allowable DeliveryPasses.";
+	private static final String REASON_PROMOTIONAL_PASS = "Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
+	private static final String REASON_MULTIPLE_AUTORENEW_PASSES = "You already have a DeliveryPass scheduled to automatically renew.";
 
 	private final static Comparator<FDCartLineI> PRICE_COMPARATOR = new Comparator<FDCartLineI>() {
 		public int compare(FDCartLineI o1, FDCartLineI o2) {

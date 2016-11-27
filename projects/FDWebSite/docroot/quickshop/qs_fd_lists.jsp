@@ -16,10 +16,7 @@
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %>
     <jwr:script src="/qsfdlists.js" useRandomParam="false" /></tmpl:put>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Reorder from FD Lists</tmpl:put> --%>
-      <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Reorder from FD Lists"></fd:SEOMetaTag>
-       </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Reorder from FD Lists</tmpl:put>
 
     <tmpl:put name='fdSelected'>selected</tmpl:put>
     <tmpl:put name='containerClass'>qs-fdlists</tmpl:put>
@@ -33,20 +30,20 @@
         <div id="departments" class="">
 			<div class="departments">
 				<div class="departments-header qs-menu-header" data-listsize="">DEPARTMENTS <span class="counter"></span></div>
-				<fieldset><legend class="offscreen">filter products by departments</legend><ul class="checkboxlist departments-list"></ul></fieldset>
+				<ul class="checkboxlist departments-list"></ul>
 			</div>
         </div>
         <div id="preferences" class=""></div>
     </tmpl:put>
 
     <tmpl:put name='ymal'>
-        <div id="qs-ymal" data-eventsource="qs_ymal"></div>
+        <div id="qs-ymal" data-cmeventsource="qs_ymal"></div>
     </tmpl:put>
 
     <tmpl:put name='listactions'>
         <div class="qs-actions">
-            <button class="qs-addtolist" aria-label="add all to list" data-component="ATLButton" data-ref="#productlist">add all to list</button>
-            <button class="qs-addtocart" aria-label="add all items on page" data-component="ATCButton" data-ref="#productlist">add all items on page</button>
+            <button class="qs-addtolist" data-component="ATLButton" data-ref="#productlist">add all to list</button>
+            <button class="qs-addtocart" data-component="ATCButton" data-ref="#productlist">add all items on page</button>
         </div>
     </tmpl:put>
 
@@ -58,5 +55,5 @@
         <div id="listheader" class="qs-list-header"></div>
     </tmpl:put>
 
-    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-eventsource="qs_fdLists"></div><div id="productlistHeader" class=""></div></tmpl:put>
+    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-cmeventsource="qs_fdLists"></div><div id="productlistHeader" class=""></div></tmpl:put>
 </tmpl:insert>

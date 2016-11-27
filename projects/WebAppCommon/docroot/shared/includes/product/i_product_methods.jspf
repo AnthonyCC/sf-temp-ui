@@ -3,11 +3,11 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.freshdirect.fdstore.util.RatingUtil"%>
 <%@ page import="com.freshdirect.fdstore.content.view.WebProductRating"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.fdstore.FDResourceException"%>
-<%@ page import="com.freshdirect.storeapi.content.DepartmentModel"%><%!
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%><%!
 //**** Methods used on the product pages.  **** 
 
 //expanded page dimensions
@@ -60,10 +60,22 @@ public String getProdPageRatings(ProductModel _productNode,
 				rtnString.append("</font>");
 			}
 		}
+		//add the Compare by link and Laabel
+		if (webProductRating.getCompareByLabel() != null
+				&& webProductRating.getLinkParams() != null) {
+			rtnString.append("<br><a href=\"");
+			rtnString.append(_response.encodeURL("/rating_ranking.jsp?"
+					+ webProductRating.getLinkParams()));
+			rtnString.append("\">");
+			// get the label for this comparison folder.
+			rtnString.append(webProductRating.getCompareByLabel());
+			rtnString.append("</a><br>");
+		}
+
 		//add the text ratings
 		if (textRatings.size() > 0) {
 			rtnString
-					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\">");
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\">");
 			for (Iterator<ProductRating> itrRatings = textRatings
 					.iterator(); itrRatings.hasNext();) {
 				ProductRating prodRating = itrRatings.next();
@@ -73,7 +85,7 @@ public String getProdPageRatings(ProductModel _productNode,
 				rtnString.append(prodRating.getRating());
 			}
 			rtnString
-					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\"><br>");
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\"><br>");
 		}
 	}
 	return rtnString.toString();

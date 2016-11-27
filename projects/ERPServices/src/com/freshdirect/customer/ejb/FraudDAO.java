@@ -25,9 +25,6 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.framework.util.DaoUtil;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -36,18 +33,11 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version $Revision$
  * @author $Author$
  */
-
-/**
- *@deprecated Please use the FraudDaoI  in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
 public class FraudDAO implements java.io.Serializable {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FraudDAO.class);
 
-@Deprecated
+
 	public boolean isDuplicateShipToAddress(Connection conn, ErpAddressModel address, String erpCustomerId) throws SQLException {
 		//
 		// Build the query
@@ -118,7 +108,7 @@ public class FraudDAO implements java.io.Serializable {
 			return false;
 		}
 	}
-@Deprecated
+
 	public boolean isDuplicateBillToAddress(Connection conn, AddressModel address, String erpCustomerId) throws SQLException {
 		//
 		// Build the query
@@ -169,11 +159,11 @@ public class FraudDAO implements java.io.Serializable {
 			return false;
 		}
 	}
-@Deprecated
+
 	public boolean isDuplicatePhone(Connection conn, PhoneNumber phone) throws SQLException {
 		return this.isDuplicatePhone(conn, phone, null);
 	}
-@Deprecated
+
 	public boolean isDuplicatePhone(Connection conn, PhoneNumber phone, String erpCustomerId) throws SQLException {
 		//
 		// Build the query
@@ -315,52 +305,5 @@ public class FraudDAO implements java.io.Serializable {
 		}
 		return (count);
 	}
-	
-	private final static String GET_LATEST_REGISTRATIONS_FOR_IP="SELECT COUNT (1) FROM MIS.IPLOCATOR_EVENT_LOG ipl,cust.fduser fdu,cust.fdcustomer fdc,cust.customer c "+
-		                                                        " WHERE IPL.FDUSER_ID = fdu.id AND IPL.INSERT_TIMESTAMP > (SYSDATE - 1/2) AND FDU.FDCUSTOMER_ID = fdc.id AND FDC.ERP_CUSTOMER_ID = c.id AND ipl.ip = ? "+
-		                                                        " AND EXISTS (SELECT 1 FROM CUST.ACTIVITY_LOG al WHERE AL.CUSTOMER_ID = c.id AND AL.TIMESTAMP > (SYSDATE - 1/2) AND AL.ACTIVITY_ID = 'Create Acct')";
-	
-	
-	public int getRegistrationsForIP(Connection conn, String ip) throws SQLException {
-		if(StringUtil.isEmpty(ip)) {
-				return 0;
-		}
-		PreparedStatement ps = conn.prepareStatement(GET_LATEST_REGISTRATIONS_FOR_IP);
-		ResultSet rs = null;
-		int count=0;
-		try {
-			ps.setString(1, ip);
-			
-			rs=ps.executeQuery();
-			if(rs.next()) {
-				count=rs.getInt(1);
-			}
-			
-		} finally {
-			DaoUtil.close(rs,ps);
-		}
-		return count;
-	
-	}
-	
-	private final static String GET_CARD_VERIFICATION_RATE_FOR_CUSTOMER="select count(1) from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TYPE='CC_VERIFY' and GAL.TRANSACTION_TIME>SYSDATE-1/(24) AND GAL.CUSTOMER_ID=?";
-	
-	public int getCardVerificationRateForCustomer(Connection conn,String customerId) throws SQLException {
-		
-		PreparedStatement ps = conn.prepareStatement(GET_CARD_VERIFICATION_RATE_FOR_CUSTOMER);
-		ResultSet rs = null;
-		int count=0;
-		try {
-			ps.setString(1, customerId);
-			
-			rs=ps.executeQuery();
-			if(rs.next()) {
-				count=rs.getInt(1);
-			}
-			
-		} finally {
-			DaoUtil.close(rs,ps);
-		}
-		return count;
-	}
+
 }

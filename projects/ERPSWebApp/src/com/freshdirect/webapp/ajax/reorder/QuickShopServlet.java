@@ -2,14 +2,20 @@ package com.freshdirect.webapp.ajax.reorder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;
@@ -58,7 +64,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	// Common utility methods
 	// ========================
 	
-	public static List<QuickShopLineItem> unwrapResult(List<FilteringSortingItem<QuickShopLineItemWrapper>> result){
+	protected static List<QuickShopLineItem> unwrapResult(List<FilteringSortingItem<QuickShopLineItemWrapper>> result){
 		
 		List<QuickShopLineItem> unwrapped = new ArrayList<QuickShopLineItem>();
 		
@@ -69,7 +75,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		return unwrapped;
 	}
 	
-	public static List<QuickShopSorterValues> generateSorter(FilteringNavigator nav){
+	protected static List<QuickShopSorterValues> generateSorter(FilteringNavigator nav){
 		
 		List<QuickShopSorterValues> sorter = new ArrayList<QuickShopSorterValues>();
 		
@@ -88,7 +94,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	public static final int DEFAULT_PAGE_NUMBER = 0;
 	public static final int DEFAULT_PAGE_SIZE = FDStoreProperties.getQuickShopPageSize();
 	
-	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(FDUserI user, HttpServletRequest request, QuickShopListRequestObject reqObj,
+	protected static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(FDUserI user, HttpServletRequest request, QuickShopListRequestObject reqObj,
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 
 		int pageSize = CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, DEFAULT_PAGE_SIZE);
@@ -114,6 +120,19 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		return pagedItems;
 	}
 
+	protected static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
+		for ( Map<String, FilteringMenuItem> f : menu.values() ) {
+			for( FilteringMenuItem i : f.values() ) {
+				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {
+					ElementTagModel eTagModel = new ElementTagModel();
+					eTagModel.setElementCategory( CmContext.getContext().prefixedCategoryId( categoryName ) );
+					eTagModel.setElementId( i.getName() );
+					responseData.addCoremetrics( eTagModel.toStringList() );
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Wrap items in a FilteringSortingItem for the FilteringFlow.
 	 * @param items

@@ -13,12 +13,7 @@
 
 <% //expanded page dimensions
 final int W_RECIPENT_LIST_TOTAL = 970;
-final int W_RECIPENT_LIST_TOTAL_SUBINFO = 625;
 %>
-<style>
-	.W_RECIPENT_LIST_TOTAL { width: <%= W_RECIPENT_LIST_TOTAL %>px; }
-	.W_RECIPENT_LIST_TOTAL_SUBINFO { width: <%= W_RECIPENT_LIST_TOTAL_SUBINFO %>px; }
-</style>
 
 <%
 //for display of recipient number
@@ -37,10 +32,10 @@ FDRecipientList recipList = giftUser.getRecipientList();
  	if(recipients != null && !recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%><table role="presentation" class="W_RECIPENT_LIST_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		%><table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
-				<td><span class="title18">Review Your Recipient List</span><br /><br />
-					<span class="text10">Check the names and amounts of your gifts below.</span>
+				<td><img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /><br /><br />
+					Check the names and amounts of your gifts below.
 				</td>
 			</tr>
 		</table>
@@ -48,19 +43,18 @@ FDRecipientList recipList = giftUser.getRecipientList();
 		}else{
 			//we're on gift & recipient options page
 		%>
-		<table role="presentation" class="W_RECIPENT_LIST_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
-				<td><span class="title18">Recipient List</span><br /><br />
+				<td><img src="/media_stat/images/giftcards/purchase/recip_list.gif" width="120" height="21" alt="Recipient List" /><br /><br />
 					Check the names and amounts for your giftcards below. <strong>Click the link by the recipient names to see how their Email Gift Card will appear in their Inbox!</strong> If you need to make changes, you may alter the amount here or click the Edit link to change personal info.
 				</td>
 			</tr>
 		</table>
 		<% } %>
 
-		<table class="W_RECIPENT_LIST_TOTAL_SUBINFO recipTable">
+		<table class="recipTable">
 			<tr>
-			    <th><div class="offscreen">Recipient list</div></th>
-				<th><div class="recipAmount right">Amount</div></th>
+				<td><div class="recipAmount right">Amount</div></td>
 			</tr>
 				<%
 				for (RecipientModel rm : recipients) {
@@ -72,20 +66,19 @@ FDRecipientList recipList = giftUser.getRecipientList();
 						<div class="recipNumber" id="<%=srm.getRandomId()%>Number"><%= indx %>.&nbsp;</div>
 						<div class="recipName" id="<%=srm.getRandomId()%>Name"><%= srm.getRecipientName()%></div>
 
-						
+						<div class="recipAmount" id="<%=srm.getRandomId()%>Amount">$<%= srm.getFormattedAmount() %></div>
 						<% if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftUser.getGiftCardType())) {
 							String gcDonId=request.getParameter("gcDonId");
 							if(null==gcDonId){
 								gcDonId= srm.getTemplateId();
 							}
 							%>
-							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview<span class="offscreen"><%= srm.getRecipientName()%> gift card </span></a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= gcDonId %>">Edit<span class="offscreen"><%= srm.getRecipientName()%>  gift card</span></a></div>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= gcDonId %>">Edit</a></div>
 						<% } else { %>
-							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview<span class="offscreen"><%= srm.getRecipientName()%> gift card </span></a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit<span class="offscreen"><%= srm.getRecipientName()%> gift card</span></a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete<span class="offscreen"><%= srm.getRecipientName()%> gift card</span></a></div>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
 						<% } %>
 					</div>
 				</td>
-				<td><div class="recipAmount" id="<%=srm.getRandomId()%>Amount"><b>$<%= srm.getFormattedAmount() %></b></div></td>
 			</tr>
 				<%
 					indx++;
@@ -94,9 +87,9 @@ FDRecipientList recipList = giftUser.getRecipientList();
 
 		</table>
 
-		<table role="presentation" class="W_RECIPENT_LIST_TOTAL_SUBINFO" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table width="623" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 		<%
 		if (isConfirm) {
@@ -111,14 +104,14 @@ FDRecipientList recipList = giftUser.getRecipientList();
 	            
 	                if ( null != giftUser.getGiftCart() && giftUser.getGiftCart().getCustomerCreditsValue() > 0 ) { %>
 	    			<tr>
-	    				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+	    				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 	    			</tr>
 	    			<tr>
 	    				<td class="right" class="recipAmount">FreshDirect Store Credit: $<%=  currencyFormatter.format(giftUser.getGiftCart().getCustomerCreditsValue())%></td>
 	    			</tr>
 	    			<%  } %>
 	    			<tr>
-	    				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+	    				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 	    			</tr>
 	    			<tr>
 	    				<td class="recipTotal">TOTAL: <%=  currencyFormatter.format(giftUser.getGiftCart().getTotal()) %></td>

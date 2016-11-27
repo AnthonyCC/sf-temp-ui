@@ -67,7 +67,7 @@
 						if (!$(formId)) { return false; }
 
 						if(!FreshDirect.terms){
-							doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+							doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
 					      	return false;
 						}
 						<% /* first, check that the promo is valid */ %>

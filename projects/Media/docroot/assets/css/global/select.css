@@ -1,345 +1,65 @@
-#FDCustomSelect.browse-popup[data-custom-select-light-class] {
-  border: 2px solid #d4d4d4;
-  box-shadow: none;
-  box-sizing: border-box;
-  border-top: 0;
-  padding: 0;
-}
 .selectButton {
   padding-right: 5px;
 }
-.selectButton[data-custom-select-light-class] {
-  height: 35px;
-  padding: 0;
-  padding-left: 10px;
-}
+
 .selectButton > span {
   display: inline-block;
   text-align: left;
 }
-.selectButton[data-custom-select-light-class] > span .title {
-  font-family: "Verdana", Geneva, Tahoma, sans-serif;
-  font-weight: normal;
-}
+
 .selectButton span.popupcontent {
-  display: block;
-  height: 1px;
-  margin-bottom: -1px;
-  max-height: 1px;
-  overflow: hidden;
   visibility: hidden;
+  display: block;
+  max-height: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin-bottom: -1px;
 }
+
 select.customselect {
   visibility: hidden;
 }
+
 ul.customselect,
 .browse-popup-content ul.customselect {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-#FDCustomSelect[data-custom-select-light-class] ul.customselect {
-  width: 100%;
-}
+
 #FDCustomSelect li {
   cursor: pointer;
   padding: 0 5px;
   white-space: nowrap;
 }
+
 #FDCustomSelect li button {
+  font-weight: normal;
+  color: inherit;
   background: transparent;
   border: none;
-  color: inherit;
-  cursor: pointer;
-  font-weight: normal;
-  text-align: left;
 }
+
 #FDCustomSelect li button:focus,
 #FDCustomSelect li:hover button {
   text-decoration: underline;
 }
+
 #FDCustomSelect li.default {
   font-weight: bold;
 }
+
 #FDCustomSelect li.selected {
   background: #f0f5e1;
   border-radius: 3px;
 }
+
 .popupcontentghost > .selectButton,
 select.selected + .fdselect > .selectButton {
   background-color: #4fa157;
 }
-.popupcontentghost > .selectButton[data-custom-select-light-class],
-select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
-  background-color: #fff;
-  border: solid 2px #d4d4d4;
-  border-radius: 0;
-  color: #444444;
-}
-.fdselect .selectButton[data-custom-select-light-class]:focus,
-.fdselect .selectButton[data-custom-select-light-class]:hover,
-.popupcontentghost > .selectButton[data-custom-select-light-class]:hover,
-.popupcontentghost > .selectButton[data-custom-select-light-class]:active {
-  border: solid 2px #4fa157;
-}
-.selectButton[data-custom-select-light-class].overlay-open {
-  border: solid 2px #4fa157;  
-}
+
 .fdselect .selectButton {
   background-color: #999;
   border-color: transparent;
-}
-.fdselect .selectButton[data-custom-select-light-class] {
-  background-color: #fff;
-  border: solid 2px #d4d4d4;
-  color: #444444;
-}
-.fdselect .selectButton[data-custom-select-light-class] span b.title b {
-  display: none;
-}
-.fdselect .selectButton[data-custom-select-light-class]::after,
-.popupcontentghost > .selectButton[data-custom-select-light-class]::after {
-  border-bottom: 2px solid #919191;
-  background-color: transparent;
-  border-right: 2px solid #919191;
-  content: "";
-  height: 8px;
-  position: absolute;
-  top: -5px;
-  transform: rotate(45deg);
-  width: 8px;
-}
-.popupcontentghost .selectButton[data-custom-select-light-class] span .title b {
-  display: none;
-}
-#FDCustomSelect[data-custom-select-light-class] .popupcontent .select-close-container {
-  display: none;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.multiple-options li:first-child,
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.empty-options li:first-child {
-  display: none;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.empty-options:first-child button {
-  font-family: "Verdana", Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  height: 100%;
-  padding: 0 10px;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.empty-options:first-child button:hover,
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.empty-options:first-child button:focus {
-  text-decoration: none;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.customselect {
-  margin-left: 0;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li {
-  align-items: center;
-  border-top: 1px solid #d4d4d4;
-  display: flex;
-  height: 51px;
-  padding: 0;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:nth-child(2) {
-  border-top: none;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button {
-  align-items: center;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  font-family: "Verdana", Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  height: 100%;
-  padding: 0 10px;
-  width: 100%;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
-  background: url('/media_stat/images/check_mark.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: center center;
-  height: 20px;
-  margin-right: 10px;
-  width: 20px;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button b {
-  font-family: "Verdana", Geneva, Tahoma, sans-serif;
-}
-#FDCustomSelect[data-custom-select-light-class] {
-  box-shadow: none;
-  box-sizing: border-box;
-  padding: 0;
-  width: 340px;
-}
-#FDCustomSelect[data-custom-select-light-class] ul.customselect {
-  width: 100%;
-}
-#FDCustomSelect[data-custom-select-light-class] .customselect li {
-  box-sizing: border-box;
-  padding: 10px;
-}
-#FDCustomSelect[data-custom-select-light-class] .customselect li button {
-  font-family: "Verdana", Geneva, Tahoma, sans-serif;
-}
-#FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected {
-  background-color: #edf5ee;
-}
-#FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected button {
-  text-decoration: none;
-}
-#FDCustomSelect[data-custom-select-light-class] .customselect li:hover
-  {
-  background: #eee;
-  text-decoration: none;
-  text-decoration-color: transparent;
-}
-#FDCustomSelect[data-custom-select-light-class] li button {
-  padding: 0;
-}
-#FDCustomSelect[data-custom-select-light-class] li button:focus {
-  background-color: #eee;
-}
-#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus {
-  outline: transparent;
-}
-
-@media (max-width: 768px) {
-  .browse-popup.shown {
-    bottom: 14%;
-    left: 2%;
-    max-height: 80%;
-    overflow-y: auto;
-    right: 2%;
-    top: 14%;
-  }
-  .selectButton.cssbutton[data-custom-select-light-class] {
-    height: 35px;
-  }
-  #FDCustomSelect[data-custom-select-light-class] {
-    width: auto;
-  }
-  #FDCustomSelect[data-custom-select-light-class] .popupcontent .select-close-container {
-    background: #444444;
-    display: block;
-    height: 50px;
-  }
-  #FDCustomSelect[data-custom-select-light-class] .popupcontent .overlay-close-icon {
-    filter: brightness(0) invert(1);
-    float: right;
-    height: 22px;
-    position: relative;
-    right: 14px;
-    top: 14px;
-    width: 22px;
-  }
-  #FDCustomSelect[data-custom-select-light-class] #customselect-close-container {         
-    background-color: #444444; 
-    height: 50px;
-    position: relative;
-    right: 0;
-    top: 0;
-    width: 100vw;
-    z-index: 2003;
-  }
-  #FDCustomSelect[data-custom-select-light-class] #customselect-close-container button {
-    filter: brightness(0) invert(1);
-    top: 0;
-  }
-  #FDCustomSelect[data-custom-select-light-class].browse-popup.shown {
-    border: none;
-    bottom: 0;
-    height: 100%;
-    left: 0;
-    max-height: none;
-    overflow-y: auto;
-    right: 0;
-    top: 0;
-    width: 100%;
-  }
-  #FDCustomSelect[data-custom-select-light-class] .select--header {
-    color: #ffffff;
-    font-family: "Verdana", Geneva, Tahoma, sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    padding-left: 20px;
-    position: relative;
-    top: 10px;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus,
-  #FDCustomSelect[data-custom-select-light] .customselect li:hover {
-    background: #ffffff;
-  }
-  #selfCreditInit ~ #FDCustomSelect[data-custom-select-light-class] li {
-    height: 76px;
-    margin-left: 19px;
-    padding-left: 0;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:last-child {
-    border-bottom: 1px solid #d4d4d4;
-  }
-  #FDCustomSelect[data-custom-select-light-class] .customselect li .checkbox-helper {
-    align-self: center;
-    display: inline-flex;
-    height: 26px;
-    padding-right: 20px;
-    position: relative;
-    width: 26px;
-    /* transform: translateY(50%); */
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus,
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:hover,
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:hover button {
-    text-decoration: none;
-    background-color: transparent;
-  }
-  #FDCustomSelect[data-custom-select-light-class] .customselect.empty-options li .checkbox-helper {
-    transform: translateY(20%);
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button {
-    color: #333333;
-    font-size: 18px;
-    letter-spacing: 0.3px;
-    padding: 0 20px 0 0;
-    width: 100%;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button span {
-    display: block;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus span:focus {
-    outline: #fff;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus span {
-    border: none;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus .checkbox-helper span {
-    border: 2px solid #4fa157;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button b {
-    color: #333333;
-    font-size: 16px;
-    left:46px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
-  #FDCustomSelect[data-custom-select-light-class] li .checkbox-helper span {
-    display: inline-flex;
-    border: 1px solid #dddddd;
-    border-radius: 50px;
-    width: 26px;
-  }
-  #FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected {
-    background: #ffffff;
-  }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
-    background: none;
-    width: 26px;
-    height: 26px;
-    margin-right: 0;
-  }
-  #FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected .checkbox-helper span {
-    background-image: url('/media_stat/images/common/check-radio-selected.svg');
-    background-position: center center;
-    background-size: 180%;
-    border: 1px solid #4fa157;
-  }
 }

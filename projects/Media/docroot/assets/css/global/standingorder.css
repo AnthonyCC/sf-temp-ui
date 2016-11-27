@@ -1,11 +1,59 @@
 
 /* over-rides */
-	.pdp-ecoupon {
+	.pdp-atc.soShow, .pdp-ecoupon {
 		background-color: #f7f7f7;
 		border: 1px solid #f5f5f5;
 		border-width: 1px 0;
 		padding: 10px;
 		clear: both;
+	}
+	.pdp-atc.soShow {
+		height: auto;
+		padding: 10px 10px 20px;
+	}
+	#transactionalPopup .portrait-item-soPreShow .quantity_plus, #transactionalPopup .portrait-item-soPreShow .quantity_minus,
+	#transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_plus, #transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_minus,
+	.portrait-item-soPreShow .quantity_plus, .portrait-item-soPreShow .quantity_minus,
+	.soShow .quantity_plus, .soShow .quantity_minus {
+		background: none;
+		background: initial;
+		border-radius: 0;
+		text-indent: 0;
+		background-color: #fff;
+		border: 1px solid #e7e7e7;
+		width: 40px;
+		height: 40px;
+		font-size: 30px;
+		box-shadow: none;
+		color: #333;
+	}
+	#transactionalPopup .portrait-item-soPreShow .quantity_plus:hover, #transactionalPopup .portrait-item-soPreShow .quantity_minus:hover,
+	.portrait-item-soPreShow .quantity_plus:hover, .portrait-item-soPreShow .quantity_minus:hover,
+	.soShow .quantity_plus:hover, .soShow .quantity_minus:hover {
+		color: #4FA157;
+		background-color: transparent;
+	}
+	#transactionalPopup .portrait-item-soPreShow .quantity_plus:active, #transactionalPopup .portrait-item-soPreShow .quantity_minus:active,
+	.portrait-item-soPreShow .quantity_plus:active, .portrait-item-soPreShow .quantity_minus:active,
+	.soShow .quantity_plus:active, .soShow .quantity_minus:active {
+		color: #f90;
+		background-color: transparent;
+	}
+	#transactionalPopup .portrait-item-soPreShow .quantity_plus:focus, #transactionalPopup .portrait-item-soPreShow .quantity_minus:focus,
+	.portrait-item-soPreShow .quantity_plus:focus, .portrait-item-soPreShow .quantity_minus:focus,
+	.soShow .quantity_plus:active, .soShow .quantity_minus:focus {
+		color: #fff;
+		background-color: #6AAA6D;
+	}
+	.pdp-atc.soShow .qty, /* .pdp-evenbetter-quantity .qty, APPBUG-4499 */
+	.portrait-item-soPreShow .qty,
+	#customizePopup.soShow .qty {
+		border-left: none;
+		border-right: none;
+		border-top: 1px solid #e7e7e7;
+		border-bottom: 1px solid #e7e7e7;
+		font-size: 20px;
+		font-weight: bold;
 	}
 	#customizePopup.soShow .subtotal,
 	.pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity .subtotal {
@@ -24,32 +72,61 @@
 		font-size: 21px;
 	}
 	#customizePopup.soShow .skucontrol-quantity {
-		margin: 35px 20px 15px;
+		margin-bottom: 15px;
 		text-align: left;
 		margin-right: 0;
 	}	
 	#customizePopup.soShow .skucontrol-quantity .qtyinput{
 	    width: auto;
 	}
+	/* APPBUG-4515 */
 	#customizePopup .skucontrol-quantity {
-		text-align: center;
+		text-align: right;
+		margin-right: 250px;
 	}
 	#customizePopup .buttons{
-		text-align: center;
+		margin-right: 243px;
 	}
-	#customizePopup .buttons .addtocart{
-		margin: auto;
+	.pdp-atc.soShow .qtyinput input.qty,
+	.pdp-evenbetter-quantity .qtyinput input.qty,
+	.portrait-item-soPreShow input.qty,
+	#transactionalPopup .portrait-item-soPreShow input.qty,
+	#customizePopup.soShow input.qty {
+		vertical-align: top;
+		/* margin: 0; APPBUG-4498 */
+		padding: 0 2px;
+		/* height: 38px; APPBUG-4498 */
+	}
+	.pdp-atc.soShow .qtyinput input.qty,
+	.portrait-item-soPreShow input.qty,
+	#transactionalPopup .portrait-item-soPreShow input.qty,
+	#customizePopup.soShow input.qty{
+		height: 40px;
+		margin: 0;
+	}
+	 #transactionalPopup .portrait-item-soPreShow .portrait-item-controls .qtyinput > span.qtywrapper {
+		height: 40px;
+		left: 40px;
+		right: 40px;
+	}
+	.pdp-evenbetter-quantity .qtyinput input.qty {
+		/* width: 3em; APPBUG-4498 */
+		/* font-size: 16px; APPBUG-4498 */
+		color: #333;
+		font-family: Verdana, Arial, sans-serif;
+	}
+	.pdp-atc.soShow .qtyinput,
+	#customizePopup.soShow {
+		width: auto !important;
+		height: auto !important;
+	}
+	
+	.pdp-evenbetter-quantity .qtyinput {
+		/* width: 135px; APPBUG-4498
+		height: 40px;  APPBUG-4498 */
 	}
 	.pdp-atc.soShow .pdp-atc-buttons {
 		margin-bottom: 20px;
-	}
-	.pdp-atc.soShow .so-container{
-		padding: 20px 0 10px;
-	}
-	.pdp-atc.soShow .so-container button[data-component="createSOButton"],
-	.pdp-atc.soShow .so-container button[data-component-extra="showSOButton"]{
-		width: 100%;
-		padding: 10px 18px;
 	}
 	.pdp-atc.soShow .cssbutton[data-component="ATCButton"] {
 		width: 215px;
@@ -62,7 +139,7 @@
 	}
 	.pdp-evenbetter-atcbutton {
 		display: block;
-		max-width: 248px;
+		max-width: 248px; 
 	}
 	.pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity {
 		width: auto;
@@ -110,29 +187,44 @@
 		height: auto !important;
 		margin: 0 !important;
 	}
+
+	.qs-content .lineitems22 .itemlist-item-controls.smaller {
+		width: 264px;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart {
+		text-align: right;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
+		width: 124px;
+		display: inline-block;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .atc-info {
+		width: 124px;
+		margin-left: 131px;
+		display: inline-block;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
+		margin-left: 10px;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
+		margin: auto;
+		margin-right: 4px;
+	}
+	
 /* new */
 	.so-results-addedTo, .so-results-items-total .total {
 		font-weight: bold;
 	}
-	#customizePopup.soShow .so-results-content{
-		display: none;
-	}
+
 	.qs-content .so-result-container {
-		display: none;
+		display: inline-block;
 		width: 130px;
 	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring{
-		float: right;
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .cssbutton[data-component="showSOButton"] {
+		width: 124px;
+		display: inline-block;
 	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring .so-recurring-1{
-		text-align: left;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring [data-component="createSOButton"]{
-		width: 220px;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
-		width: 220px;
-	}	
+	
 	.so-results-continer {
 		position: relative;
 	}
@@ -184,216 +276,24 @@
 
 	#customizePopup.soShow .buttons,
 	#customizePopup.soShow .learnmore,
-	#customizePopup.soShow .so .so-arrow,
-	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"],
-	#customizePopup.soShow .so-container .so-review-header,
-	#customizePopup.soShow .so-container .so-review-date,
-	#customizePopup.soShow .so-container .so-review-min-details,
-	.cssbutton[data-component="nextStepSOButton"],
-	#customizePopup.soShow.so-review .so .cssbutton[data-component="nextStepSOButton"],
-	#customizePopup.soShow.so-review .productDisplay-skuconfig,
-	#customizePopup.soShow.so-review .so .so-toggler,
-	#customizePopup.soShow.so-review .so .select-wrapper,
-	#customizePopup.soShow.so-review .productDisplay-skulist,
-	#customizePopup.soShow .so .so-toggler,
-	#customizePopup.soShow .so-review-selected,
-	#customizePopup.soShow .so-container .so-review-link,
-	#customizePopup.soShow.so-review .so .so-listadd-content .select-wrapper,
-	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-selected,
-	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-min-details,
-	#customizePopup.soShow.so-review .so-container .so-review-min-details.show .so-review-min-details-tip,
-	#customizePopup .so-review-min-not-show-top,
-	#customizePopup.soShow.so-review-min-met-alert .leftColumn,
-	#customizePopup.soShow.so-review-min-met-alert .rightColumn,
-	#customizePopup.soShow.so-review-min-met-alert .so-container,
-	#customizePopup .so-review-min-not-show-bottom{
+	#customizePopup.soShow .so .so-arrow {
 		display: none;
 	}
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"], #customizePopup.soShow .so .cssbutton[data-component="showOButton"] {
 		width: auto;
 	}
-	#customizePopup.soShow.so-review .so{
-		border: 0;
-		padding: 10px 0 0;
-	}
-	#customizePopup .so-container{
+	#customizePopup .so-container {
 		display: none;
 	}
-	#customizePopup.soShow.so-review .so-container .so-review-date{
-		min-height: 30px;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-date-red{
-		color: #c94747;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-date-add{
-		font-weight: normal;
-		font-size: 14px;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-date-add b{
-		font-size: 20px;
-	}
-	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-red{
-		color: #333;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-date img{
-		padding: 48px 0 15px;
-	    display: block;
-	    margin: auto;
-	}
-	#customizePopup.soShow.so-review .so-review-item-total{
-		font-size: 18px;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-min-details.show{
-		position: relative;
-		width: 65px;
-		margin: auto;
-		cursor: pointer;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip{
-		position: absolute;
-		width: 200px;
-	    white-space: normal;
-	    /* visibility: hidden;
-	    opacity: 0; */
-	    position: absolute;
-	    bottom: 0px;
-		left: 50%;
-		margin-left: -117px;
-	    padding: 17px;
-	    margin-bottom: 35px;
-	    color: #000;
-	    background: #f9f8f7;
-	    border: solid 1px #aaa;
-	    text-align: center;
-	    -moz-user-select: text;
-	    -khtml-user-select: text;
-	    -webkit-user-select: text;
-	    -o-user-select: text;
-	    user-select: text;
-		cursor: auto;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip:before{
-	    content: "";
-	    position: absolute;
-	    bottom: -15px;
-	    right: 105px;
-	    border-width: 14px 14px 0;
-	    border-style: solid;
-	    border-color: #aaa transparent;
-	    display: block;
-	    width: 0;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip:after{
-	    content: "";
-	    position: absolute;
-	    bottom: -14px;
-	    right: 105px;
-	    border-width: 14px 14px 0;
-	    border-style: solid;
-	    border-color: #f9f8f7 transparent;
-	    display: block;
-	    width: 0;
-	}
-	#customizePopup.soShow .so-container,
-	#customizePopup.soShow .so .cssbutton[data-component="nextStepSOButton"],
-	#customizePopup.soShow.so-review .so-container .so-review-header,
-	#customizePopup.soShow.so-review .so-container .so-review-date,
-	#customizePopup.soShow.so-review .so-container .so-review-link,
-	#customizePopup.soShow.so-review .so-container .so-review-selected.show,
-	#customizePopup.soShow.so-review .so-container .so-review-min-details.show,
-	#customizePopup.soShow.so-review .so-container .so-review-min-details.show:hover .so-review-min-details-tip,
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-top,
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom{
+	#customizePopup.soShow .so-container {
 		display: block;
-	}
-	#customizePopup.soShow .productDisplay-skuconfig{
-		padding: 20px 0 0;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-header{
-	    font-size: 20px;
-	    font-weight: bold;
-	    padding: 0 20px 20px;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-text{
-	    font-size: 18px;
-	    padding: 0 20px 20px;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom{
-		font-size: 16px;
-		padding: 18px 0 0 20px;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom #so-min-do-not-show-checkbox{
-		vertical-align: text-top;
-		margin: 0 15px 0 0;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom #so-min-do-not-show-checkbox:disabled{
-		opacity: 0.7;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons{
-		margin: 40px auto 20px;
-		text-align: center;
-	}
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons a,
-	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons button{
-		min-width: 210px;
-	}
-	#customizePopup.soShow .productDisplay-skuconfig .skucontrol-salesunit b{
-		padding: 0 0 5px;
-		font-size: 14px;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-link,
-	#customizePopup.soShow.so-review .so-container .so-review-min-details{
-		text-align: center;
-	}
-	#customizePopup.soShow.so-review .so-container .so-review-link a,
-	#customizePopup.soShow.so-review .so-container .so-review-min-details{
-		font-size: 16px;
-		color: #458b4c;
-	}
-	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"].show,
-	#customizePopup.soShow.so-review  .cssbutton.okReviewSOButton,
-	#customizePopup.soShow .so .so-listadd-content .select-wrapper{
-		display: block;
-		width: 325px;
-		margin: auto;
-	}
-	#customizePopup.soShow .so .cssbutton[data-component="nextStepSOButton"]{
-		width: 325px;
-		margin: 10px auto 0;
-	}
-	#customizePopup.soShow .so-container .so-review-header{
-	    padding: 30px 0 5px;
-		font-size: 18px;
-		text-align: center;
-	}
-	#customizePopup.soShow .so-container .so-review-date,
-	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-add{
-		font-size: 20px;
-		font-weight: bold;
-		text-align: center;
-	}
-	#customizePopup.soShow.so-review .so-review-selected{
-		text-align: center;
-		color: #666666;
-		font-size: 18px;
-		margin: 0 auto 20px;
-	}
-	#customizePopup.soShow.so-review.so-review-success button.cssbutton.okReviewSOButton{
-		margin: 0 auto 20px;
-	}
-	#customizePopup.soShow .so .so-listadd-content{
-		text-align: center;
 	}
 	#customizePopup.soShow .leftright-bottom {
 		background-color: #f7f7f7;
-	}
-	#customizePopup.soShow .leftright-bottom .skucontrol-salesunit,
-	#customizePopup.soShow .leftright-bottom .skucontrol-variations{
-		padding: 0 20px;
+		padding: 10px;
 	}
 	#customizePopup.soShow .leftright-bottom .productDisplay-skuconfig>hr {
-		margin: 35px 0 0;
-		/*display: none;*/
+		display: none;
 	}
 	#customizePopup.soShow .so-results-content {
 		z-index: 5;
@@ -414,7 +314,6 @@
 		display: block;
 		width: 100%;
 		margin-top: 5px;
-		box-sizing: border-box;
 	}
 	#transactionalPopup .portrait-item-so {
 		display: block;
@@ -431,13 +330,9 @@
 		margin-top: 10px;
 	}
 	.portrait-item-so-recurring {
-		font-size: 12px;
-		text-align: center;
+		font-size: 10px;
 	}
-	#evenBetterPopup.shown .pdp-evenbetter-atc{
-		width: 235px;
-		text-align: center;
-	}
+	
 	.pdp-evenbetter .pdp-evenbetter-soPreShow,
 	.pdp-evenbetter .pdp-evenbetter-soShow {
 		display: none;
@@ -454,7 +349,7 @@
 	.pdp-evenbetter-soPreShow {
 		padding: 0 15px;
 	}
-	.pdp-evenbetter-atc .pdp-evenbetter-atcbutton  {
+	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton  {
 		display: block;
 		width: 100%;
 		max-width: 100%;
@@ -477,18 +372,8 @@
 		margin-left: 8px; /* APPBUG-4499 */
 	}
 	/* APPBUG-4499 */
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"],
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"],
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]{
-		width: 235px;
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
 		font-size: 14px;
-	}
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"],
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]{
-		margin: 10px 0 0;
-	}
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton{
-		text-align: right;
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton button.cssbutton {
 		padding: 10px 6px !important;
@@ -632,7 +517,7 @@
 	.so {
 		background-color: #f7f7f7;
 		border: none;
-		/* border-top: 1px solid #e7e7e7; */
+		border-top: 1px solid #e7e7e7;
 		padding: 10px;
 		clear: both;
 		text-align: center;
@@ -729,99 +614,17 @@
 		font-size: 16px;
 		max-width: 845px;
 	}
-	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text,
+	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
+		font-size: 1em;
+		white-space: normal;
+	}
 	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-small-text,
 	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
 	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
-		text-align: left;
-		font-size: 14px;
-	    color: #666;
-	}
-
-	.so-accidental-atc{
-		width: 386px;
-		font-family: Verdana;
-		text-align: center;
-	}
-	.so-accidental-atc .so-accidental-atc-top{
-		padding: 25px;
-		background-color: #f7f7f7;
-		font-size: 22px;
-		font-weight: bold;
-		color: #333333;
-		text-align: center;    
-	}
-	.so-accidental-atc .so-accidental-atc-middle{
-		padding: 38px 0 46px;
-	}
-	.so-accidental-atc .so-accidental-atc-middle-text{
-		color: #555555;
-		font-size: 20px;
-	}
-	.so-accidental-atc .so-accidental-atc-middle-text-purple{
-		color: #a367ab;
-		font-weight: bold;
-	}
-	.so-accidental-atc .so-accidental-atc-middle-img{
-		padding: 28px 0 31px;
-	}
-	.so-accidental-atc .so-accidental-atc-middle-button{
-		text-align: center;
-	}
-	.so-accidental-atc .so-accidental-atc-middle-button button{
-		width: 307px;
-		font-size: 14px;
-		font-family: Verdana;
-	}
-	.so-accidental-atc .so-accidental-atc-bottom{
-		padding: 18px 0 20px 20px;
-		font-size: 16px;
-		background-color: #f7f7f7;
-		text-align: left;
-	}
-	.so-accidental-atc #so-accidental-atc-checkbox{
-		vertical-align: text-top;
-		margin: 0 15px 0 0;
-		border: 2px solid #c2c2c2;
-		background: #fefefe;
-		border-radius: 0;
-		box-sizing: border-box;
-		color: #444;
-		font-size: 16px;
+		font-size: 0.5em;
 		font-weight: normal;
-		font-family: Verdana, arial, sans-serif;
-		box-shadow: none;
-		height: auto;
-		line-height: 22px;
-		outline: none;
-		padding: 8px;
-		-webkit-font-smoothing: antialiased;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
 	}
-	.so-accidental-atc #so-accidental-atc-checkbox:checked{
-		background-color: #68aa6d;
+	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
+	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
+		padding-top: 10px;
 	}
-	.so-accidental-atc #so-accidental-atc-checkbox:disabled{
-		opacity: 0.7;
-	}
-	a.cssbutton.createstandorder{
-	width: 100%;
-    padding: 10px 18px;
-    }
-	.portrait-item-so-container .cssbutton[data-component="createSOButton"]{
-		width: 100%;
-		padding: 10px 5px;
-	}
-	#evenBetterPopup [data-component="createSOButton"]{
-		width: 235px;
-	}
-	#evenBetterPopup .so-recurring{
-		margin: 10px 0 0;
-	}
-	#evenBetterPopup .so-recurring-1{
-		font-size: 10px;
-		text-align: center;
-	}
-	

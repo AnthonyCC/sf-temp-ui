@@ -2,118 +2,109 @@
 
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum EnumTransactionSource {
-    WEBSITE("WEB", "Website"),
-    SYSTEM("SYS", "System"),
-    CUSTOMER_REP("CSR", "Telephone"),
-    ADMINISTRATOR("ADM", "Administrator"),
-    TRANSPORTATION("TRA", "Transportation"),
-    IPHONE_WEBSITE("IPW", "iPhone"),
-    STANDING_ORDER("STO", "Standing Order"),
-    ANDROID_WEBSITE("ANW", "Android"),
-    ANDROID_PHONE("ANP", "FDX Android"),
-    FDX_IPHONE("IFX", "FDX iPhone"),
-    FRIDGE("FDG", "FRIDGE"),
-    FOODKICK_WEBSITE("FKW", "FK Web"),
-    IPAD_WEBSITE("IPD", "iPad");
+	WEBSITE("WEB", "Website"),
+	SYSTEM("SYS", "System"),
+	CUSTOMER_REP("CSR", "Telephone"),
+	ADMINISTRATOR("ADM", "Administrator"),
+	TRANSPORTATION("TRA", "Transportation"),
+	IPHONE_WEBSITE("IPW", "iPhone"),	
+	STANDING_ORDER("STO", "Standing Order"),
+	ANDROID_WEBSITE("ANW", "Android"),
+	ANDROID_PHONE("ANP", "FDX Android"),
+	FDX_IPHONE("IFX", "FDX iPhone"),
+	FRIDGE("FDG", "FRIDGE"),
+	FOODKICK_WEBSITE("FKW", "FK Web"),
+	IPAD_WEBSITE("IPD", "iPad");
+	
+	EnumTransactionSource(String code, String name) {
+		this.code = code;
+		this.name = name;
+	}
 
-    EnumTransactionSource(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
-    @JsonValue
-    public String getCode() {
+	public String getCode() {
         return this.code;
     }
 
     public String getName() {
-        return this.name;
-    }
+		return this.name;
+	}
 
-    public static EnumTransactionSource getTransactionSource(int t) {
-        switch (t) {
-            case 0:
-                return WEBSITE;
-            case 1:
-                return SYSTEM;
-            case 2:
-                return CUSTOMER_REP;
-            case 3:
-                return ADMINISTRATOR;
-            case 4:
-                return TRANSPORTATION;
-            case 5:
-                return IPHONE_WEBSITE;
-            case 6:
-                return STANDING_ORDER;
-            case 7:
-                return ANDROID_WEBSITE;
-            case 8:
-                return FDX_IPHONE;
-            case 9:
-                return FRIDGE;
-            case 10:
-                return ANDROID_PHONE;
+	public static EnumTransactionSource getTransactionSource(int t) {
+		switch (t) {
+			case 0:
+				return WEBSITE;
+			case 1:
+				return SYSTEM;
+			case 2:
+				return CUSTOMER_REP;
+			case 3:
+				return ADMINISTRATOR;
+			case 4:
+				return TRANSPORTATION;
+			case 5:
+				return IPHONE_WEBSITE;
+			case 6:
+				return STANDING_ORDER;
+			case 7:
+				return ANDROID_WEBSITE;
+			case 8:
+				return FDX_IPHONE;	
+			case 9:
+				return FRIDGE;	
+			case 10:
+				return ANDROID_PHONE;
             case 11:
                 return FOODKICK_WEBSITE;
             case 12:
                 return IPAD_WEBSITE;
-            default:
-                return null;
-        }
-    }
+			default:
+				return null;
+		}
+	}
+	public static EnumTransactionSource getTransactionSource(String code) {
+		if(WEBSITE.getCode().equalsIgnoreCase(code)){
+			return WEBSITE;
+		}else if(SYSTEM.getCode().equalsIgnoreCase(code)){
+			return SYSTEM;
+		}else if(CUSTOMER_REP.getCode().equalsIgnoreCase(code)){
+			return CUSTOMER_REP;
+		}else if(ADMINISTRATOR.getCode().equalsIgnoreCase(code)){
+			return ADMINISTRATOR;
+		}else if(TRANSPORTATION.getCode().equalsIgnoreCase(code)){
+			return TRANSPORTATION;
+		}else if(IPHONE_WEBSITE.getCode().equalsIgnoreCase(code)){
+			return IPHONE_WEBSITE;
+		}else if(STANDING_ORDER.getCode().equalsIgnoreCase(code)){
+			return STANDING_ORDER;
+		}else if(ANDROID_WEBSITE.getCode().equalsIgnoreCase(code)){
+			return ANDROID_WEBSITE;
+		}else if(FDX_IPHONE.getCode().equalsIgnoreCase(code)){
+			return FDX_IPHONE;
+		}else if(FRIDGE.getCode().equalsIgnoreCase(code)){
+			return FRIDGE;
+		}else if(ANDROID_PHONE.getCode().equalsIgnoreCase(code)){
+			return ANDROID_PHONE;
+	     }else if(FOODKICK_WEBSITE.getCode().equalsIgnoreCase(code)){
+	            return FOODKICK_WEBSITE;
+	     }else if(IPAD_WEBSITE.getCode().equalsIgnoreCase(code)){
+	            return IPAD_WEBSITE;
+		}else{
+			try {
+				return getTransactionSource( Integer.parseInt(code) );
+			} catch (NumberFormatException ex) {
+				return null;
+			}
 
-    @JsonCreator
-    public static EnumTransactionSource getTransactionSource(String code) {
-        if (WEBSITE.getCode().equalsIgnoreCase(code)) {
-            return WEBSITE;
-        } else if (SYSTEM.getCode().equalsIgnoreCase(code)) {
-            return SYSTEM;
-        } else if (CUSTOMER_REP.getCode().equalsIgnoreCase(code)) {
-            return CUSTOMER_REP;
-        } else if (ADMINISTRATOR.getCode().equalsIgnoreCase(code)) {
-            return ADMINISTRATOR;
-        } else if (TRANSPORTATION.getCode().equalsIgnoreCase(code)) {
-            return TRANSPORTATION;
-        } else if (IPHONE_WEBSITE.getCode().equalsIgnoreCase(code)) {
-            return IPHONE_WEBSITE;
-        } else if (STANDING_ORDER.getCode().equalsIgnoreCase(code)) {
-            return STANDING_ORDER;
-        } else if (ANDROID_WEBSITE.getCode().equalsIgnoreCase(code)) {
-            return ANDROID_WEBSITE;
-        } else if (FDX_IPHONE.getCode().equalsIgnoreCase(code)) {
-            return FDX_IPHONE;
-        } else if (FRIDGE.getCode().equalsIgnoreCase(code)) {
-            return FRIDGE;
-        } else if (ANDROID_PHONE.getCode().equalsIgnoreCase(code)) {
-            return ANDROID_PHONE;
-        } else if (FOODKICK_WEBSITE.getCode().equalsIgnoreCase(code)) {
-            return FOODKICK_WEBSITE;
-        } else if (IPAD_WEBSITE.getCode().equalsIgnoreCase(code)) {
-            return IPAD_WEBSITE;
-        } else {
-            try {
-                return getTransactionSource(Integer.parseInt(code));
-            } catch (NumberFormatException ex) {
-                return null;
-            }
+		}
+	}
 
-        }
-    }
 
-    @Override
-    public String toString() {
-        return this.code;
-    }
+	public String toString() {
+		return this.code;
+	}
 
     private final String name;
     private final String code;
 
-    public boolean isMobileBound() {
-        return this == FOODKICK_WEBSITE || this == IPHONE_WEBSITE;
-    }
 }

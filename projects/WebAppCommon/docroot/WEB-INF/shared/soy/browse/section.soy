@@ -7,12 +7,31 @@
 * @param? available
 */
 {template .category autoescape="false"}
-  {call common.category}
-    {param id:$id /}
-    {param image:$image /}
-    {param name:$name /}
-    {param available:$available /}
-  {/call}
+  <div class="category">
+  {if $available}
+    <a href="/browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+      {if $image}
+        <img src="{$image}" alt="{if $name}{$name}{/if}">
+      {else}
+      	<img src="/media/images/temp/soon_80x60.gif" alt="{if $name}{$name}{/if}">
+      {/if}
+      {if $name}
+        <div class="name">{$name}</div>
+      {/if}
+    </a>
+  {else}
+    <span class="disabled">
+      {if $image}
+        <img src="{$image}" alt="{if $name}{$name}{/if}">
+      {else}
+      	<img src="/media/images/temp/soon_80x60.gif" alt="{if $name}{$name}{/if}">
+      {/if}
+      {if $name}
+        <div class="name">{$name}</div>
+      {/if}
+    </span>
+  {/if}
+  </div>
 {/template}
 
 
@@ -30,17 +49,107 @@
  * @param? mobWeb
  */
 {template .section autoescape="false"}
-  {call common.section}
-    {param section:$section /}
-    {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
-    {param level:$level /}
-    {param lastLevel:$lastLevel /}
-    {param filterLabels:$filterLabels /}
-    {param numProducts:$numProducts /}
-    {param fromProducts:$fromProducts /}
-    {param noFilterTags:$noFilterTags /}
-    {param abFeatures:$abFeatures /}
-    {param ifSingleUL:$ifSingleUL /}
-    {param mobWeb:$mobWeb /}
-  {/call}
+{let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
+
+{if $section and (not $isSuperDeptPage) }
+	{if $usePopularCategoriesLayout}
+		{if $section.sections}
+			{foreach $subSection in $section.sections}
+				{call browse.section}
+					{param section:$subSection /}
+					{param level:($level+1) /}
+					{param lastLevel:$lastLevel /}
+					{param usePopularCategoriesLayout:true /}
+					{param abFeatures:$abFeatures /}
+					{param ifSingleUL:$ifSingleUL /}
+					{param mobWeb:$mobWeb /}
+				{/call}
+			{/foreach}
+		{/if}
+
+		{if $section.categories and length($section.categories) > 0}
+			{if $section.headerText}
+				<h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
+			{/if}
+			{if $section.headerImage}<img src="{$section.headerImage}">{/if}
+			{if $section.media}<div class="media">{$section.media}</div>{/if}
+
+			<div class="large-visual">
+				{foreach $category in $section.categories}
+					{call .lvCategory data="$category" /}
+				{/foreach}
+			</div>
+		{/if}
+	{else}
+		<section class="{if not($section.sections and length($section.sections) > 0) and $level > 1}noSubSections{/if}">
+			{if $section.headerText}
+				<h2 class="{if $level == $lastLevel}last{elseif $level == 1}first{/if}">{$section.headerText}</h2>
+			{/if}
+			{if not $noFilterTags}
+				<div class="browse-filtertags">
+					{if $filterLabels and $level == 1}
+						{call browse.filterTags}
+							{param filterLabels:$filterLabels /}
+						{/call}
+					{/if}
+				</div>
+			{/if}
+			{if $section.headerImage}<img src="{$section.headerImage}">{/if}
+			{if $section.media}<div class="media">{$section.media}</div>{/if}
+    
+			<div class="sectionContent" {if $section.catId}data-section-catid="{$section.catId}"{/if}>
+				{if $section.sections}
+					{foreach $subSection in $section.sections}
+						{call browse.section}
+							{param section:$subSection /}
+							{param level:($level+1) /}
+							{param lastLevel:$lastLevel /}
+							{param abFeatures:$abFeatures /}
+							{param ifSingleUL:$ifSingleUL /}
+							{param mobWeb:$mobWeb /}
+						{/call}
+					{/foreach}
+				{/if}
+
+				{if $section.products}
+					{call common.productList}
+						{param fromProducts:$fromProducts /}
+						{param numProducts:$numProducts /}
+						{param productList:$section.products /}
+						{param abFeatures:$abFeatures /}
+						{param ifSingleUL:$ifSingleUL /}
+						{param mobWeb:$mobWeb /}
+					{/call}
+				{elseif $section.recipes}
+					{let $len: length($section.recipes) /}
+					{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+					{let $fProducts: $fromProducts ? $fromProducts : 0 /}
+					{let $l: $nProducts - $fProducts /}
+					{let $lines: ceiling($l / 5) /}
+					{for $line in range(0, $lines)}
+						<ul class="products{if $line == $lines - 1} lastLine{/if}">
+							{for $col in range(0, 5)}
+								{if $fProducts + $col + $line * 5 < $nProducts}
+									{let $recipe: $section.recipes[$fProducts + $col + $line * 5] /}
+									{call common.recipeItem}
+										{param item:$recipe /}
+										{param extraClass:(($col != 4 and $col + $line * 5 != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+									{/call}
+								{/if}
+							{/for}
+						</ul>
+					{/for}
+				{/if}
+
+				{if $section.categories and length($section.categories) > 0}
+					{if $mobWeb}<div class="sectionContentCategory">{/if}
+						{foreach $category in $section.categories}
+							{call .category data="$category" /}
+						{/foreach}
+					{if $mobWeb}</div>{/if}
+				{/if}
+			</div>
+		</section>
+	{/if}
+{/if}
 {/template}

@@ -26,7 +26,7 @@
 
 <tmpl:insert template='/template/large_pop.jsp'>
 
-	<script type="text/javascript" src="/ccassets/javascript/jsonrpc_airclic.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jsonrpc_airclic.js"></script>
 	
 	<tmpl:put name='title' direct='true'>Carton Exceptions View</tmpl:put>
 		<tmpl:put name='content' direct='true'>
@@ -75,7 +75,7 @@
 					<td colspan="4">Carton: <%= carton.getCartonInfo().getCartonNumber() %> Type: <%= carton.getCartonInfo().getCartonType() %></td>
 				</tr>
 				<tr>
-					<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+					<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 				</tr>
 		<%
 				int ix = 0;
@@ -85,7 +85,7 @@
 		%>		<tr valign="top">
 	                <td>&nbsp;</td>               
 					<td>
-						<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
+						<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 						<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 	 						<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 	 					<% } %>

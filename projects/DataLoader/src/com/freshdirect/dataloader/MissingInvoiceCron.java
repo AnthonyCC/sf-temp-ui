@@ -19,13 +19,10 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -37,11 +34,14 @@ public class MissingInvoiceCron extends DBReportCreator {
 		LOGGER.info("Missing Invoice Report Started");
 		Context ctx = null;
 		try {
-			
+			ctx = getInitialContext();
+			FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+			FDCustomerManagerSB sb = home.create();
+
 			FDOrderSearchCriteria criteria = new FDOrderSearchCriteria();
 			criteria.setDeliveryDate(Calendar.getInstance().getTime());
-			List orders = CustomerOrderService.getInstance().locateOrders(criteria);
 			
+			List orders = sb.locateOrders(criteria);
 			List<String> missingFDOrders = new ArrayList<String>();
 //			List<String> missingFDXOrders = new ArrayList<String>();
 

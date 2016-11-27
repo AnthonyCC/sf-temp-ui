@@ -40,16 +40,8 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>gc_purchase_register</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<style>
-		.W_REGISTER_AND_PURCHASE_TOTAL { width: <%= W_REGISTER_AND_PURCHASE_TOTAL %>px; }
-		.W_REGISTER_AND_PURCHASE_TOTAL-135 { width: calc( <%= W_REGISTER_AND_PURCHASE_TOTAL %>px - 135px ); }
-	</style>
 <fd:GiftCardBuyerController actionName='registerGiftCardBuyer' result="result" registrationType='10' >
 <fd:ErrorHandler result='<%=result%>' field='<%=checkGiftCardBuyerForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
@@ -66,19 +58,19 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 
 
-<table class="W_REGISTER_AND_PURCHASE_TOTAL" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11 W_REGISTER_AND_PURCHASE_TOTAL-135">
-			<span class="title18">purchase gift cards</span><br />
-			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in</a>.)</b>
+		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-99%>">
+			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
+			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in.)</b>
 		</td>
-		<td width="135">
-			<button class="cssbutton small orange" id="submit_top" name="submit_top" onclick="$('address').submit();">SUBMIT ORDER</button>
+		<td width="99">
+			<input type="image" id="submit_top" name="submit_top" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0" onclick="$('address').submit();">
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 4px 0px;">
-            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" alt="" class="W_REGISTER_AND_PURCHASE_TOTAL" height="2" border="0" /><br /><br/>
+            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="2" border="0" /><br /><br/>
 		</td>
 	</tr>
 </table>
@@ -97,14 +89,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 
     <%@ include file="/gift_card/purchase/includes/recipient_list.jspf" %>
-    <table class="W_REGISTER_AND_PURCHASE_TOTAL" cellspacing="0" cellpadding="0" border="0">
+    <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" class="W_REGISTER_AND_PURCHASE_TOTAL" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br /><br/>
+			<img style="margin: 2px 0;" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/>
 		</td>
 	</tr>
     </table>
-<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="address" id="address" method="post" >
+<form name="address" id="address" method="post" >
     <input type="hidden" name="firstTimeVisit" value="false">
 	<%@ include file="/gift_card/purchase/includes/i_gc_signup.jspf" %>
 </form>

@@ -1,16 +1,22 @@
+/*
+ * $Workfile$
+ *
+ * $Date$
+ *
+ * Copyright (c) 2001 FreshDirect, Inc.
+ *
+ */
 package com.freshdirect.erp.ejb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,10 +29,10 @@ import java.util.TreeMap;
 import javax.ejb.EJBException;
 import javax.ejb.ObjectNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -35,47 +41,43 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- *@deprecated Please use the ErpInfoController and ErpInfoServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
  *
  *
+ * @version $Revision$
+ * @author $Author$
  */
 public class ErpInfoSessionBean extends SessionBeanSupport {
 
-    private static final Category LOGGER = LoggerFactory.getInstance(ErpInfoSessionBean.class);
+	/** logger for messages */
+	private static Category LOGGER = LoggerFactory.getInstance(ErpInfoSessionBean.class);
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.
 	 *
 	 * @return the bean's home interface name
 	 */
-	@Override
-    protected String getResourceCacheKey() {
+	protected String getResourceCacheKey() {
 		return "com.freshdirect.erp.ejb.ErpInfoHome";
 	}
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByBatch(int batchNumber) {
 		Connection conn = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			ps =
+			PreparedStatement ps =
 				conn.prepareStatement(
 					"select id, version, sap_id, description from erps.material where version = ? order by description");
 			ps.setInt(1, batchNumber);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -84,8 +86,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-//			rs.close();
-//			ps.close();
+			rs.close();
+			ps.close();
 
 			return materials;
 
@@ -93,9 +95,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for batch " + batchNumber, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+                    close(conn);
 		}
 	}
 
@@ -106,14 +106,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsBySapId(String sapId) {
 		Connection conn = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_MATERIALS_BY_SAPID);
+			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_SAPID);
 			ps.setString(1, "%" + sapId);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -122,8 +120,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-//			rs.close();
-//			ps.close();
+			rs.close();
+			ps.close();
 
 			return materials;
 
@@ -131,9 +129,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SapId " + sapId, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-            close(conn);
+                    close(conn);
 		}
 	}
 
@@ -150,14 +146,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsBySku(String skuCode) {
 		Connection conn = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
+
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_MATERIALS_BY_SKU);
+			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_SKU);
 			ps.setString(1, skuCode);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -166,8 +161,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-//			rs.close();
-//			ps.close();
+			rs.close();
+			ps.close();
 
 			return materials;
 
@@ -175,9 +170,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+                    close(conn);
 		}
 	}
 
@@ -188,14 +181,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByDescription(String description) {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_MATERIALS_BY_DESCRIPTION);
+			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_DESCRIPTION);
 			ps.setString(1, "%" + description.toUpperCase() + "%");
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -204,8 +195,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-//			rs.close();
-//			ps.close();
+			rs.close();
+			ps.close();
 
 			return materials;
 
@@ -213,9 +204,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for description \"" + description + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-            close(conn);
+                    close(conn);
 		}
 	}
 
@@ -254,7 +243,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			 "SELECT m.version, m.sap_id, p.plant_id,ms.sales_org,ms.distribution_channel, ms.unavailability_status, ms.unavailability_date, "+
 			   "ms.unavailability_reason, m.description, p.atp_rule, p.rating, price, "+
 			   "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,  "+
-			   "p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE, m.alcoholic_content, ms.picking_plant_id "+
+			   "m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE, m.alcoholic_content, ms.picking_plant_id "+
 			   "FROM erps.materialprice mp, erps.material m,erps.plant_material p,erps.material_sales_area ms, "+
 			   "(SELECT MAX(m1.version) AS V FROM erps.material m1 WHERE m1.skucode =?) t "+
 			   "WHERE  m.id=p.mat_id AND m.id= mp.mat_id and m.id=ms.mat_id AND m.version=t.V AND m.skucode =?";	
@@ -301,7 +290,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.sap_id, ms.unavailability_status, ms.unavailability_date,"
 			+ " ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"         
-   			+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id, p.plant_id "
+   			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.MATERIAL_SALES_AREA ms"
 			+ " where p.mat_id=m.id and mp.mat_id = m.id and ms.mat_id=m.id and m.skucode = ? and m.version = ?";
 	
@@ -326,7 +315,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(5);				
 				String days_fresh = rs.getString(14);				
 				String upc=rs.getString(17);				
-				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+
 				matNos.add(rs.getString(1));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(8), rs.getString(9), rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), null, null));
 
@@ -336,19 +325,18 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					
 					String days_in_house = rs.getString(15);
 					String sustainabilityRating=rs.getString(16);
-					//String freshness = getFreshnessValue(days_fresh, days_in_house);
-					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+					String freshness = getFreshnessValue(days_fresh, days_in_house);
+					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
 					matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
 					
 				}
-				//boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
-//				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+				boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
 				 return new ErpProductInfoModel(
 				        	skuCode,version,
 				        	matNos.toArray(new String[0]),
 				        	descr,
 				        	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
-				        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),alcoholType); 
+				        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),isAlcohol); 
 			}
 			throw new ObjectNotFoundException("SKU " + skuCode + ", version " + version + " not found");
 
@@ -362,115 +350,36 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private final static String QUERY_PRODUCTS_BY_SKUS = "SELECT m.skuCode, m.version, m.sap_id, p.plant_id,ms.sales_org,ms.distribution_channel, ms.unavailability_status, ms.unavailability_date, "
-			+ "ms.unavailability_reason, m.description, p.atp_rule, p.rating, price, "
-			+ "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,  "
-			+ "p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE, m.alcoholic_content, ms.picking_plant_id "
-			+ "FROM erps.materialprice mp, erps.material m,erps.plant_material p,erps.material_sales_area ms, "
-			+ "(SELECT MAX(m1.version) AS V,  m1.skuCode as skuCode FROM erps.material m1 WHERE m1.skucode in (?) group by m1.skuCode) t "
-			+ "WHERE  m.id=p.mat_id AND m.id= mp.mat_id and m.id=ms.mat_id AND m.version=t.V AND m.skuCode = t.skuCode AND m.skucode in (?)";
-
 	public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) {
 		Connection conn = null;
-		List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
-		PreparedStatement maxPs = null;
-		if (skuCodes == null || skuCodes.length == 0) {
-			return products;
-		}
 		try {
+
+			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>(skuCodes.length);
 			conn = getConnection();
-			int inConditionLimit = FDStoreProperties.getInConditionLimit();
-			// if # of skus is more than the limitation, prepare a ps which allow 50 skus to pass in the in clause to reuse. 
-			// In the last iteration, pass null to the method so it dynamic generates the last one.
-			if (skuCodes.length > inConditionLimit) {
-				maxPs = prepareGetModifiedSkuStatement(inConditionLimit, conn);
-				for (int i = 0; i  < skuCodes.length; i = i + FDStoreProperties.getInConditionLimit()) {
-					if ( (i + FDStoreProperties.getInConditionLimit()) < skuCodes.length) {
-						findProductsBySku(Arrays.copyOfRange(skuCodes, i, i + FDStoreProperties.getInConditionLimit()), products, conn, maxPs);
-					} else {
-						findProductsBySku(Arrays.copyOfRange(skuCodes, i, skuCodes.length), products, conn, null);
-					}
-				}
-			} else {
-				findProductsBySku(skuCodes, products, conn, null);
-			}
 
-		} catch (SQLException sqle) {
-			LOGGER.error("Error finding SKUs ", sqle);
-			throw new EJBException(sqle);
-		} catch (Exception e) {
-			LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
-			throw new EJBException(e);
-		} finally {
-			if (maxPs != null) close(maxPs);
-			close(conn);
-		}
-
-		return products;
-	}
-
-
-	private void findProductsBySku(String[] skuCodes, List<ErpProductInfoModel> products, Connection conn, PreparedStatement ps) {  
-		ResultSet rs = null;
-		PreparedStatement generatedPs = null;
-		try {
-			if (ps == null) {
-				generatedPs = ps = prepareGetModifiedSkuStatement(skuCodes.length, conn);
-			}
-			
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
 			for (int i = 0; i < skuCodes.length; i++) {
-				ps.setString(1 + i, skuCodes[i]);
-				ps.setString(1 + i + skuCodes.length, skuCodes[i]);
-			}
-			Map<String, ErpProductMetaData> productSkuMap = new HashMap<String, ErpProductMetaData>();
+				ps.setString(1, skuCodes[i]);
+				ps.setString(2, skuCodes[i]);
+				ResultSet rs = ps.executeQuery();
 
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				String skuCode = rs.getString("skuCode");
-				ErpProductMetaData productMetaData;
-				if (productSkuMap.containsKey(skuCode)) {
-					productMetaData = productSkuMap.get(skuCode);
-				} else {
-					productMetaData = new ErpProductMetaData(rs);
-					productSkuMap.put(skuCode, productMetaData);
+				if (rs.next()) {
+				    ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
+				    products.add(m);
 				}
-				fetchErpProductInfoModel(rs, productMetaData.matNos, productMetaData.matPrices,
-						productMetaData.matPlants, productMetaData.matSalesAreas, rs.getString("daysfresh"));
-
+				rs.close();
 			}
-			// convert the data gathered from result set to ErpProductInfoModel
-			for (String skuCode : skuCodes) {
-				if (productSkuMap.containsKey(skuCode)) {
-					products.add(productSkuMap.get(skuCode).toErpProductInfoModel(skuCode));
-				}
-			}
-			
+			ps.close();
 
+			return products;
 		} catch (SQLException sqle) {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
-		} catch (Exception e) {
-			LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
-			throw new EJBException(e);
 		} finally {
-			if (rs != null) close(rs);
-			if (generatedPs != null) close(generatedPs);
+                    close(conn);
 		}
 	}
 
-	private PreparedStatement prepareGetModifiedSkuStatement(int length, Connection conn)
-			throws SQLException {
-		StringBuilder builder = new StringBuilder();
-		PreparedStatement ps;
-		for (int i = 0; i < length; i++) {
-			if (builder.length() > 0) {
-				builder.append(',');
-			}
-			builder.append("?");
-		}
-		ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKUS.replace("?", builder.toString()));
-		return ps;
-	}
     /**
      * @param rs
      * @param skuCode
@@ -487,11 +396,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         String descr = rs.getString("description");
         String days_fresh = rs.getString("daysfresh"); 
         String upc=rs.getString("upc");     
-        //boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
-		EnumAlcoholicContent alcoholType =getEnumAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+        boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
         fetchErpProductInfoModel(rs, matNos, matPrices, matPlants, matSalesAreas, days_fresh);
         while (rs.next()) {
-        	fetchErpProductInfoModel(rs, matNos, matPrices, matPlants,	matSalesAreas, rs.getString("daysfresh"));
+        	fetchErpProductInfoModel(rs, matNos, matPrices, matPlants,	matSalesAreas, days_fresh);
         }
 
         return new ErpProductInfoModel(
@@ -499,10 +407,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	matNos.toArray(new String[0]),
         	descr,
         	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
-        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),alcoholType);        
-    }
-	private static EnumAlcoholicContent getEnumAlcoholicContent(String alcoholicContentType) {
-    	return StringUtil.isEmpty(alcoholicContentType)? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(alcoholicContentType);
+        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),isAlcohol);        
     }
 
 	/**
@@ -523,8 +428,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), rs.getDouble("scale_quantity"), rs.getString("sap_zone_id") , rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")));
         String sustainabilityRating=rs.getString("sustainability_rating");
         String days_in_house = rs.getString("days_in_house");
-        //String freshness = getFreshnessValue(days_fresh, days_in_house);                            
-        matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        String freshness = getFreshnessValue(days_fresh, days_in_house);                            
+        matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
         matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
 	}
 
@@ -546,15 +451,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String className, String charName) {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(QUERY_MATERIALS_BY_CHAR);
+			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_CHAR);
 			ps.setString(1, charName);
 			ps.setString(2, className);
 			ps.setString(3, charName);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -563,13 +466,16 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
+			rs.close();
+			ps.close();
+
 			return materials;
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find materials for Characteristic \"" + charName + "\" in Class \"" + className + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(rs,ps,conn);
+                    close(conn);
 		}
 	}
 
@@ -581,14 +487,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByClass(String className) {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(QUERY_MATERIALS_BY_CLASS);
+			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_CLASS);
 			ps.setString(1, className);
 			ps.setString(2, className);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -597,12 +501,15 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
+			rs.close();
+			ps.close();
+
 			return materials;
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find materials in Class \"" + className + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(conn);
 		}
 	}
 	
@@ -641,7 +548,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
     		LOGGER.error("Error finding SKUs ", sqle);
     		throw new EJBException(sqle);
     	} finally {
-    		DaoUtil.close(rs,ps,conn);
+    		
+    		close(rs);
+    		close(ps);
+    		close(conn);
     	}
     }
 
@@ -659,7 +569,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
 			+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
 	        	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,"
-			+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days, p.plant_id,p.HIDE_OOS, ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
+			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days, p.plant_id,p.HIDE_OOS, ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
 			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id"
 			+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
@@ -680,7 +590,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(null,ps,conn);
+					close(ps);
+                    close(conn);
 		}
 	}
 
@@ -698,7 +609,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
 	+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, " 
-	+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION,p.platter,p.blocked_days, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, p.plant_id,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id  "
+	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION,p.platter,p.blocked_days, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, p.plant_id,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id  "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.id=ms.mat_id "
 	+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
@@ -707,22 +618,21 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsByDescription(String description) {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_DESCRIPTION);
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_DESCRIPTION);
 			ps.setString(1, "%" + description.toUpperCase() + "%");
 			List<ErpProductInfoModel> products = fetchErpProductInfoModel(ps);
-			
+			ps.close();
+
 			return products;
 		} catch (SQLException sqle) {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(null,ps,conn);
+                    close(conn);
 		}
 	}
 
@@ -732,72 +642,67 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
      * @throws SQLException
      */
     private List<ErpProductInfoModel> fetchErpProductInfoModel(PreparedStatement ps) throws SQLException {
-        ResultSet rs = null;
-        
-        try {
-	        rs = ps.executeQuery();
-	
-	        List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
-	        String sapId = null;
-	        boolean newSapId= false;
-	        while (rs.next()) {
-	        	String curSapId = rs.getString("sap_id");
-	        	Set<String> matNos = null;
-	        	List<ErpMaterialPrice> matPrices = null;
-	        	Set<ErpPlantMaterialInfo> matPlants = null;
-	        	Set<ErpMaterialSalesAreaInfo> matSalesAreas = null;
-	        	if(null ==sapId || !sapId.equals(curSapId)){
-	        		newSapId = true;
-	        		sapId = curSapId;
-	            	matNos = new HashSet<String>(2);
-	            	matPrices = new ArrayList<ErpMaterialPrice>(5);
-	            	matPlants = new HashSet<ErpPlantMaterialInfo>(5);
-	            	matSalesAreas = new HashSet<ErpMaterialSalesAreaInfo>(5);
-	        	} else {
-	        		System.out.println("continue... "+rs.getString("sap_id"));
-	        		continue;
-	        	}
-	
-	        	String skuCode = rs.getString("skucode");
-	        	int version = rs.getInt("version");
-	        	String descr = rs.getString("description");
-	        	matNos.add(rs.getString("sap_id"));
-	
-	        	String days_fresh = rs.getString("daysfresh");
-	        	String days_in_house = rs.getString("days_in_house");
-	        	//String freshness = getFreshnessValue(days_fresh, days_in_house);
-	        	String sustainabilityRating=rs.getString("sustainability_rating");
-	        	String upc=rs.getString("upc");
-	        	//boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
-				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
-	        	
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
-	        	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id"), rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")));
-	        	
-	        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating,  rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
-	        	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
-	        	
-	        	if(newSapId){
-	        		products.add(
-	        				new ErpProductInfoModel(
-			                	skuCode,
-			                	version,
-			                	matNos.toArray(new String[0]),
-			                	descr,
-			                	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
-			                	upc,
-			                	matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),
-			                	matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),
-			                	alcoholType
-			                )
-	        		);
-	        		newSapId = false;
-	        	}
-	        }
-	        return products;
-        } finally {
-        	DaoUtil.close(rs);
+        ResultSet rs = ps.executeQuery();
+
+        List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
+        String sapId = null;
+        boolean newSapId= false;
+        while (rs.next()) {
+        	String curSapId = rs.getString("sap_id");
+        	Set<String> matNos = null;
+        	List<ErpMaterialPrice> matPrices = null;
+        	Set<ErpPlantMaterialInfo> matPlants = null;
+        	Set<ErpMaterialSalesAreaInfo> matSalesAreas = null;
+        	if(null ==sapId || !sapId.equals(curSapId)){
+        		newSapId = true;
+        		sapId = curSapId;
+            	matNos = new HashSet<String>(2);
+            	matPrices = new ArrayList<ErpMaterialPrice>(5);
+            	matPlants = new HashSet<ErpPlantMaterialInfo>(5);
+            	matSalesAreas = new HashSet<ErpMaterialSalesAreaInfo>(5);
+        	} else {
+        		System.out.println("continue... "+rs.getString("sap_id"));
+        		continue;
+        	}
+
+        	String skuCode = rs.getString("skucode");
+        	int version = rs.getInt("version");
+        	String descr = rs.getString("description");
+        	matNos.add(rs.getString("sap_id"));
+
+        	String days_fresh = rs.getString("daysfresh");
+        	String days_in_house = rs.getString("days_in_house");
+        	String freshness = getFreshnessValue(days_fresh, days_in_house);
+        	String sustainabilityRating=rs.getString("sustainability_rating");
+        	String upc=rs.getString("upc");
+        	boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
+
+        	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
+        	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id"), rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")));
+        	
+        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,  rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
+        	
+        	if(newSapId){
+        		products.add(
+        				new ErpProductInfoModel(
+		                	skuCode,
+		                	version,
+		                	matNos.toArray(new String[0]),
+		                	descr,
+		                	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
+		                	upc,
+		                	matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),
+		                	matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),
+		                	isAlcohol
+		                )
+        		);
+        		newSapId = false;
+        	}
         }
+
+        close(rs);
+        return products;
     }
 
 	private final static String QUERY_PRODUCTS_LIKE_SKU =
@@ -812,18 +717,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 	+ " p.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-	+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,M.ALCOHOLIC_CONTENT "
+	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,M.ALCOHOLIC_CONTENT "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.skucode like ?"
 	+ " and m.version = (select max(version) from erps.material m1 where m1.skucode = m.skucode)";
 
 	public Collection<ErpProductInfoModel> findProductsLikeSku(String skuCode) {
 		Connection conn = null;
-		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_SKU);
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_SKU);
 			ps.setString(1, skuCode.toUpperCase() + "%");
 			return queryProductInfoModel(ps);
 
@@ -831,7 +735,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(null,ps,conn);
+                    close(conn);
 		}
 	}
 
@@ -848,7 +752,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.skucode, m.version, m.sap_id, ms.unavailability_status, ms.unavailability_date, "
 			+ " ms.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
-			+ " p.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
+			+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
 	        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms "
 			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id" +
@@ -857,17 +761,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) {
 		Connection conn = null;
-		PreparedStatement ps =null;
-		ResultSet rs=null;
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
 			ps.setString(1, upc);
 			ps.setString(2, upc);
 			ps.setString(3, upc);
 			ps.setString(4, upc);
-			rs = ps.executeQuery();
 			
 			return queryProductInfoModel(ps);
 
@@ -875,7 +776,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(rs,ps,conn);
+                    close(conn);
 		}
 	}
 	
@@ -910,7 +811,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by Customer:" + erpCustomerPK + ", UPC:"+ upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(rs,ps,conn);
+			close(rs);
+		    close(ps);
+            close(conn);
 		}
 	}
 
@@ -926,19 +829,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 	+ " p.unavailability_reason, m.description, p.atp_rule,p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-	+ " p.daysfresh, p.days_in_house,p.sustainability_rating, m.upc,p.HIDE_OOS,M.ALCOHOLIC_CONTENT  "
+	+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc,p.HIDE_OOS,M.ALCOHOLIC_CONTENT  "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 	+ " and m.version = (select max(version) from erps.material m1 where m1.skucode = m.skucode)";
 
 	public Collection<ErpProductInfoModel> findProductsLikeUPC(String upc) {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_UPC);
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_UPC);
 			ps.setString(1, upc + "%");
 			return queryProductInfoModel(ps);
 
@@ -946,13 +847,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product like UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(null,ps,conn);
+                    close(conn);
 		}
 	}
 
     /**
      * @param ps
-     * @param rs 
      * @return
      * @throws SQLException
      */
@@ -960,8 +860,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         ResultSet rs = ps.executeQuery();
 
         ArrayList<ErpProductInfoModel> results = new ArrayList<ErpProductInfoModel>();
-        try{
-        	while (rs.next()) {
+        while (rs.next()) {
         	List<String> matNos = new ArrayList<String>(5);
         	Set<ErpMaterialPrice> matPrices = new HashSet<ErpMaterialPrice>(5);
         	Set<ErpPlantMaterialInfo> matPlants = new HashSet<ErpPlantMaterialInfo>(5);
@@ -984,15 +883,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
         	String days_fresh = rs.getString(16);
         	String days_in_house = rs.getString(17);
-        	//String freshness = getFreshnessValue(days_fresh, days_in_house);
+        	String freshness = getFreshnessValue(days_fresh, days_in_house);
         	String sustainabilityRating= rs.getString(18);
         	String upc=rs.getString(19);
 
         	matNos.add(rs.getString(3));
-        	//boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
-			EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+        	boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15), null, null));        	
-        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating, rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating, rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
         	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
 
         	results.add(new ErpProductInfoModel(
@@ -1000,11 +898,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         		        	matNos.toArray(new String[0]),
         		        	descr,
         		        	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
-        		        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),alcoholType)      );
-        	}
-		} finally {
-			close(rs);
-		}
+        		        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),isAlcohol)      );
+        }
+
+        close(rs);
+        close(ps);
+
         return results;
     }
 
@@ -1040,7 +939,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to load inventory for material " + materialNo, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1052,15 +953,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	
 	public Map<String, ErpInventoryModel> loadInventoryInfo(Date lastModified) {
 		Connection conn = null;
-		PreparedStatement ps =null;
-		ResultSet rs = null;
 		try{
 			conn = this.getConnection();
 			Map<String, ErpInventoryModel> m = new HashMap<String, ErpInventoryModel>();
 			
-			ps = conn.prepareStatement(LOAD_INVENTORY);
+			PreparedStatement ps = conn.prepareStatement(LOAD_INVENTORY);
 			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
-			rs =ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			String lastMatId = "";
 			List<ErpInventoryEntryModel> entryList = new ArrayList<ErpInventoryEntryModel>();
 			Timestamp t = null;
@@ -1088,7 +987,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to load INVENTORY INFO", e);
 			throw new EJBException(e);
 		}finally{
-			DaoUtil.close(rs,ps,conn);
+                    close(conn);
 		}
 	}
 
@@ -1129,7 +1028,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find skus", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 		
 	}
@@ -1200,7 +1101,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find skus", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1224,8 +1127,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		        */
 		
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 			
 			if(hasValue(skuPrefixes)) {
@@ -1242,7 +1143,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			//System.out.println("Statement is : "+statement.toString());
 			conn = this.getConnection();
 	
-			ps = conn.prepareStatement(statement.toString());
+			PreparedStatement ps = conn.prepareStatement(statement.toString());
 			//ps.setDouble(1, lowerLimit);
 			ps.setBigDecimal(1, new java.math.BigDecimal(lowerLimit));
 			//ps.setDouble(2, upperLimit);
@@ -1253,19 +1154,22 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					ps.setString(i+3, skuPrefixes.get(i).toString());
 				}
 			}
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 	
 			List<String> lst = new ArrayList<String>();
 			while (rs.next()) {
 				lst.add(rs.getString(1));
 			}
 	
+			rs.close();
+			ps.close();
+	
 			return lst;
 	
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(conn);
 		}
 	}
 	
@@ -1280,8 +1184,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"WHERE sku_code=p1.sku_code "+
 		") and rating is not null and rating like 'P%' " );
 				Connection conn = null;
-				PreparedStatement ps = null;
-				ResultSet rs = null;
 				try {
 					
 					if(hasValue(skuPrefixes)) {
@@ -1298,7 +1200,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					//System.out.println("Statement is : "+statement.toString());
 					conn = this.getConnection();
 				
-					ps = conn.prepareStatement(statement.toString());
+					PreparedStatement ps = conn.prepareStatement(statement.toString());
 					
 					
 					if(hasValue(skuPrefixes)) {
@@ -1308,20 +1210,23 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						}
 					}
 					
-					rs = ps.executeQuery();
+					ResultSet rs = ps.executeQuery();
 				
 					List<String> lst = new ArrayList<String>();
 					while (rs.next()) {
 						lst.add(rs.getString(1));
 						//System.out.println(rs.getString(1));
 					}
-								
+				
+					rs.close();
+					ps.close();
+				
 					return lst;
 				
 				} catch (SQLException sqle) {
 					throw new EJBException(sqle);
 				} finally {
-		            DaoUtil.close(rs,ps,conn);
+				    close(conn);
 				}		
 	}
 	
@@ -1335,7 +1240,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	/*private String getFreshnessValue(String days_fresh, String days_in_house) {
+	private String getFreshnessValue(String days_fresh, String days_in_house) {
 		if(null != days_fresh && days_fresh.trim().length() > 0 && StringUtils.isNumeric(days_fresh)) {
 			int df = Integer.parseInt(days_fresh);
 			if(null != days_in_house && days_in_house.trim().length() > 0 && StringUtils.isNumeric(days_in_house)) {
@@ -1353,12 +1258,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 		}
 		return null;
-	}*/
+	}
 
 	private static final String QUERY_NEW_SKUS =
 		"SELECT * FROM erps.new_products_v1";
-	private static final String QUERY_NEW_SKUS_V2 =
-			"SELECT * FROM erps.new_products_v2";
 
 	public Map<String, Map<String,Date>> getNewSkus(/*String salesOrg, String distributionChannel*/) {
 		Connection conn = null;
@@ -1366,13 +1269,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
-				ps = conn.prepareStatement(QUERY_NEW_SKUS_V2);
-			}
-			
-			else{
-				ps = conn.prepareStatement(QUERY_NEW_SKUS);
-			}
+			ps = conn.prepareStatement(QUERY_NEW_SKUS);
 			/*ps.setString(1, salesOrg);
 			ps.setString(2, distributionChannel);
 			*/
@@ -1385,20 +1282,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				sku=rs.getString(1);
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
-					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
-					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
 				} else {
 					value=new HashMap<String,Date>();
-					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
-					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
 				}
 				skus.put(sku, value);
 			}
@@ -1408,107 +1295,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find new skus dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
-	private final static String QUERY_NEW_VERSION_FROM_GROUP = "SELECT 1 FROM ERPS.GRP_HISTORY WHERE DATE_CREATED >= ? ";
 	
-	private final static String QUERY_MODIFIED_SKU_FROM_MATERIAL = "SELECT DISTINCT m.skucode FROM erps.history h INNER JOIN erps.material m ON h.VERSION = m.VERSION WHERE h.DATE_CREATED > ? ";
-	
-	private final static String QUERY_MODIFIED_SKU_FROM_GROUP = "SELECT distinct m.skucode  from ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm,erps.material m,"+
-			"(SELECT GSM.SAP_ID, GSM.VERSION FROM ERPS.MATERIAL_GRP mg,ERPS.GRP_SCALE_MASTER gsm, ERPS.GRP_HISTORY gh WHERE gh.version=gsm.version AND "+
-			"MG.GRP_ID=GSM.ID AND gh.version=(SELECT MAX(gsm1.version) FROM ERPS.GRP_SCALE_MASTER gsm1,ERPS.GRP_HISTORY gh1 WHERE "+
-			"gsm1.sap_id=GSM.SAP_ID AND gh1.version=gsm1.version AND GH1.DATE_CREATED < ? ))a,"+
-
-			"(SELECT GSM.SAP_ID, GSM.VERSION FROM ERPS.MATERIAL_GRP mg,ERPS.GRP_SCALE_MASTER gsm, ERPS.GRP_HISTORY gh WHERE gh.version=gsm.version AND "+
-			"MG.GRP_ID=GSM.ID AND gh.version=(SELECT MAX(gsm1.version) FROM ERPS.GRP_SCALE_MASTER gsm1,ERPS.GRP_HISTORY gh1 WHERE "+
-			"gsm1.sap_id=GSM.SAP_ID AND gh1.version=gsm1.version AND GH1.DATE_CREATED >= ? ))b "+
-
-			"where GSM.SAP_ID=a.sap_id and GSM.SAP_ID=b.sap_id and (gsm.version=a.version or gsm.version=b.version) and gsm.id=MG.GRP_ID and m.sap_id=MG.MAT_ID ";
-	
-	
-	private final static String QUERY_MODIFIED_SKU_ALL = "SELECT DISTINCT SKUCODE FROM ( "
-			+ QUERY_MODIFIED_SKU_FROM_MATERIAL
-			+ "UNION ALL " 
-			+ QUERY_MODIFIED_SKU_FROM_GROUP
-			+ ")";
-
-	/**
-	 * Get the sku codes from erps.material table that have been modified since lastModifiedTime
-	 * @param lastModifiedTime unix time in ms
-	 * @return
-	 */
-	public Set<String> getModifiedSkus(long lastModifiedTime) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			Timestamp timestamp = new Timestamp(lastModifiedTime);
-			conn = getConnection();
-
-			ps = conn.prepareStatement(QUERY_NEW_VERSION_FROM_GROUP);
-			boolean hasNewEntryFromGroup = false;
-			ps.setTimestamp(1, timestamp);
-			ResultSet checkNewEntryRs = ps.executeQuery();
-			try {
-				if (checkNewEntryRs.next()) {
-					hasNewEntryFromGroup = true;
-				}
-				
-			} finally {
-				close(checkNewEntryRs);
-			}
-			
-			// run alter session set "_optimizer_partial_join_eval"=false;
-			// this is needed for production env as the oracle db has a bug that is not yet patched.
-			Statement s = null;
-			if (!FDStoreProperties.isPartialJoinOptimizerEnabled()) {
-				try {
-					s = conn.createStatement();
-					s.executeUpdate("alter session set \"_optimizer_partial_join_eval\"=false");
-				} finally {
-					if (s != null) {
-						s.close();
-					}
-				}
-			}
-			if (hasNewEntryFromGroup) {
-				ps = conn.prepareStatement(QUERY_MODIFIED_SKU_ALL);
-				
-				ps.setTimestamp(1, timestamp);
-				ps.setTimestamp(2, timestamp);
-				ps.setTimestamp(3, timestamp);
-			} else {
-				ps = conn.prepareStatement(QUERY_MODIFIED_SKU_FROM_MATERIAL);
-				
-				ps.setTimestamp(1, timestamp);
-			}
-			ResultSet rs = ps.executeQuery();
-
-			HashSet<String> results = new HashSet<String>();
-			try {
-				while (rs.next()) {
-					String sc = rs.getString(1);
-					results.add(sc);
-				}
-			} finally {
-				close(rs);
-			}
-			return results;
-
-		} catch (SQLException sqle) {
-			LOGGER.error("Unable to find skus by last modified: " + lastModifiedTime, sqle);
-			throw new EJBException(sqle);
-		} finally {
-			DaoUtil.close(null, ps, conn);
-		}
-	}
-
 	private static final String QUERY_BACK_IN_STOCK_SKUS = 
 		"SELECT * FROM erps.back_in_stock_products_v1";
-	private static final String QUERY_BACK_IN_STOCK_SKUS_V2 = 
-			"SELECT * FROM erps.back_in_stock_products_v2";
-	
-
 
 	public Map<String, Map<String,Date>> getBackInStockSkus() {
 		Connection conn = null;
@@ -1516,12 +1310,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
-				ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS_V2);	
-			}
-			else{
 			ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS);
-			}
 			rs = ps.executeQuery();
 			Map<String, Map<String,Date>> skus = new TreeMap<String, Map<String,Date>>();
 			String sku="";
@@ -1530,20 +1319,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				sku=rs.getString(1);
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
-					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
-					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
 				} else {
 					value=new HashMap<String,Date>();
-					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
-					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
-						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
-					}
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
 				}
 				skus.put(sku, value);
 			}
@@ -1554,7 +1333,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find back in stock SKU dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1579,7 +1360,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find overridden new skus dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 
@@ -1599,47 +1382,29 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	 salesOrg=rs.getString(2);
         	 distributionChannel=rs.getString(3);
         	String ds = rs.getString(4);
-        	//To fix NumberFormatException
-        	if(null == ds || "".equals(ds.trim())){
-        		continue;
-        	}
         	Date date;
         	try {
-				try {
-					date = DATE_FORMAT1.parse(ds);
-				} catch (ParseException e) {
-					try {
-						date = DATE_FORMAT3.parse(ds);
-					} catch (ParseException e1) {
-						try {
-							date = DATE_FORMAT2.parse(ds);
-						} catch (ParseException e2) {
-							// skip this bad date
-							continue;
-						}
-					}
-				}
-			} catch (Exception e) {
-				continue;
-			}
-    		if(skus.containsKey(sku)) {
-				value=skus.get(sku);
-				if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+        		date = DATE_FORMAT1.parse(ds);
+        	} catch (ParseException e) {
+        		try {
+        			date = DATE_FORMAT3.parse(ds);
+        		} catch (ParseException e1) {
+        			try {
+        				date = DATE_FORMAT2.parse(ds);
+        			} catch (ParseException e2) {
+        				// skip this bad date
+        				continue;
+        			}
+        		}
+        		
+        		if(skus.containsKey(sku)) {
+					value=skus.get(sku);
+					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				} else {
+					value=new HashMap<String,Date>();
 					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
 				}
-				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
-					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
-				}
-			} else {
-				value=new HashMap<String,Date>();
-				if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
-					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
-				}
-				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
-					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
-				}
-			}
-//        	}
+        	}
         	skus.put(sku, value);
         }
 
@@ -1661,13 +1426,16 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find overridden back in stock SKU dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
 	public Map<String,String> getOverriddenNewness(String sku) {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
 		ResultSet rs = null;
 		Map<String,String> result=new HashMap<String,String>(2);
 		try {
@@ -1682,7 +1450,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
 		}
 		return result;
 	}
@@ -1690,6 +1461,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	public Map<String,String> getOverriddenBackInStock(String sku) {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
 		ResultSet rs = null;
 		Map<String,String> result=new HashMap<String,String>(2);
 		try {
@@ -1704,7 +1476,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
 		}
 		return result;
 	}
@@ -1741,6 +1516,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 			if(ps!=null) {
 				ps.executeBatch();
+				ps.close();
 			}
 			
 
@@ -1787,6 +1563,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 			if(ps!=null) {
 				ps.executeBatch();
+				ps.close();
 			}
 			
 
@@ -1825,7 +1602,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find availability history for SKU: " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1834,18 +1613,20 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
-				ps = conn.prepareCall("CALL erps.refresh_new_and_back_v2()");
-			}
-			else{
-				ps = conn.prepareCall("CALL erps.refresh_new_and_back()");
-			}
+			ps = conn.prepareCall("CALL erps.refresh_new_and_back()");
 			ps.execute();
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to update materialized views (NEW_PRODUCTS and BACK_IN_STOCK_PRODUCTS)", sqle);
 			throw new EJBException(sqle);
 		} finally {
-	        DaoUtil.close(null,ps,conn);
+			try {
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
+			}
 		}
 	}
 	
@@ -1874,7 +1655,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find availability restriction for materialNumber : " + materialNumber, sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(rs,ps,conn);
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 		
 	}
@@ -1892,7 +1675,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				"select m.skucode, m.version, m.sap_id, ms.unavailability_status, ms.unavailability_date, "
 				+ " ms.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
 			        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
-				+ " p.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
+				+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
 		        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
 				+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms,erps.history h "
 				+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id"						
@@ -1901,11 +1684,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	
 	public Collection<ErpProductInfoModel> findProductsByLastModified(Date lastModifiedTime) {
 		Connection conn = null;
-		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_LAST_MODIFIED);
+			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_LAST_MODIFIED);
 			ps.setTimestamp(1, new Timestamp(lastModifiedTime.getTime()));		
 			
 			return queryProductInfoModel(ps);
@@ -1914,36 +1696,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by last modified: " + lastModifiedTime, sqle);
 			throw new EJBException(sqle);
 		} finally {
-            DaoUtil.close(null,ps,conn);
-		}
-	}
-
-	class ErpProductMetaData {
-		private List<String> matNos;
-		private Set<ErpMaterialPrice> matPrices;
-		private Set<ErpPlantMaterialInfo> matPlants;
-		private Set<ErpMaterialSalesAreaInfo> matSalesAreas;
-		private int version;
-		private String descr;
-		private String upc;
-		private EnumAlcoholicContent alcoholType;
-
-		public ErpProductMetaData(ResultSet rs) throws SQLException {
-			version = rs.getInt("version");
-			descr = rs.getString("description");
-			upc = rs.getString("upc");
-			alcoholType = getEnumAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
-			matNos = new ArrayList<String>(5);
-			matPrices = new HashSet<ErpMaterialPrice>(5);
-			matPlants = new HashSet<ErpPlantMaterialInfo>(5);
-			matSalesAreas = new HashSet<ErpMaterialSalesAreaInfo>(5);
-		}
-
-		public ErpProductInfoModel toErpProductInfoModel(String skuCode) {
-			return new ErpProductInfoModel(skuCode, version, matNos.toArray(new String[0]), descr,
-					matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]), upc,
-					matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),
-					matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]), alcoholType);
+                    close(conn);
 		}
 	}
 }

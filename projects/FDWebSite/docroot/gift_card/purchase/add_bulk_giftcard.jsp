@@ -1,7 +1,7 @@
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
@@ -20,15 +20,8 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>gc_add_bullk</tmpl:put>
+	<tmpl:put name='title' direct='true'>Gift Card : Buy in Bulk</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<style>
-			.W_ADD_GIFTCARD_TOTAL { width: <%= W_ADD_GIFTCARD_TOTAL %>px; }
-		</style>
 		<%
 			//used?
 			String success_page = "/gift_card/purchase/add_bulk_giftcard.jsp";
@@ -79,7 +72,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px;">
-						<img style="margin: 2px 0;" width="675" height="1" border="0" alt="" src="/media_stat/images/layout/clear.gif" /><br />
+						<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/clear.gif" /><br />
 					</td>
 				</tr>
 				<tr>
@@ -93,7 +86,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" class="botBordLineOrange"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+					<td colspan="2" class="botBordLineOrange"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="right">

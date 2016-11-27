@@ -1,5 +1,5 @@
 <%@ page import='java.util.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -20,11 +20,9 @@
 				if (FDStoreProperties.isAdServerEnabled()) {
 					request.setAttribute("listPos", "SystemMessage");
 					%>
-          <div id='oas_SystemMessage'>
-  					<script type="text/javascript">
-  						OAS_AD('SystemMessage');
-  					</script>
-        </div>
+					<script type="text/javascript">
+						OAS_AD('SystemMessage');
+					</script>
 				<% } else { %>
 					<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
@@ -114,7 +112,7 @@
 	if ( step == 1 ) { step1_disp = "<img src=\""+step1_img_r+"\" "+step1_attribs+" />"; }
 	if ( step == 2 ) { step2_disp = "<img src=\""+step2_img_r+"\" "+step2_attribs+" />"; }
 	if ( step == 3 ) { step3_disp = "<img src=\""+step3_img_r+"\" "+step3_attribs+" />"; }
-
+	
 	// as we pass each step, we make it a link and allow mouse overs
 	if ( step > 0 ) {
 		// this setup is extra complicated because of the rounded corners
@@ -150,7 +148,7 @@
 		<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_rt_off.gif" /></td>
 	</tr>
 	<tr>
-		<td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+		<td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>		
 		<td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
 	</tr>
 	<tr>

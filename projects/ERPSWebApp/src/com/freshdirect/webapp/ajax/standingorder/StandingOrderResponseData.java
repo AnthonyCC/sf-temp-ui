@@ -13,8 +13,6 @@ public class StandingOrderResponseData {
 	
 	private boolean isAlcohol=false;
 	
-	private boolean reminderOverlayForNewSo;
-	
 	public String getName() {
 		return name;
 	}
@@ -94,11 +92,5 @@ public class StandingOrderResponseData {
 		this.id = id;
 	}
 	
-	public boolean isReminderOverlayForNewSo() {
-		return reminderOverlayForNewSo;
-	}
-	public void setReminderOverlayForNewSo(boolean reminderOverlayForNewSo) {
-		this.reminderOverlayForNewSo = reminderOverlayForNewSo;
-	}
 	
 }

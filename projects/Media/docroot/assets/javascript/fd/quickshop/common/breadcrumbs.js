@@ -5,7 +5,6 @@ var FreshDirect = FreshDirect || {};
 	"use strict";
 
 	var WIDGET = fd.modules.common.widget;
-	var $ = fd.libs.$;
 
 	var filteringId=	['TIME_FRAME_30', 'TIME_FRAME_60', 'TIME_FRAME_90', 'TIME_FRAME_180', 'TIME_FRAME_LAST', 'ORDERS_BY_DATE', 'DEPT', 'GLUTEN_FREE', 'KOSHER', 'LOCAL', 'ORGANIC', 'ON_SALE'],
 		filteringValue=	['TIME_FRAME_ALL', 'TIME_FRAME_ALL', 'TIME_FRAME_ALL', 'TIME_FRAME_ALL', 'TIME_FRAME_ALL', 'order_', 'all_dept', 'pref_glutenFree', 'pref_kosher', 'pref_local', 'pref_organic', 'pref_onSale'],
@@ -53,25 +52,10 @@ var FreshDirect = FreshDirect || {};
           return result[k];
         })});
 			}
-		},
-		handleKeyup:{
-            value:function(clickEvent){
-            	var keyCode = clickEvent.keyCode;
-          	  if (clickEvent.type=="keyup"&&(keyCode==13)){
-          		$(clickEvent.target).trigger('click');
-          		if ($jq('#orders').length) { $(document).trigger("orders-change"); }
-          	  }     
-            }
-	       },
-	        handleClick: {
-	            value: function(e) { /* label -> span accessibility change for duplicate labels*/
-	                $('#'+$(e.currentTarget).find('[data-for]').attr('data-for')).trigger('click');
-	            }
-	        }
-	    });
+		}
+	});
 
 	breadcrumbs.listen();
-	$(document).on('keyup',breadcrumbs.placeholder+' li',breadcrumbs.handleKeyup.bind(breadcrumbs));
-	$(document).on('click',breadcrumbs.placeholder+' li',breadcrumbs.handleClick.bind(breadcrumbs));
+
 	fd.modules.common.utils.register("quickshop.common", "breadcrumbs", breadcrumbs, fd);
 }(FreshDirect));

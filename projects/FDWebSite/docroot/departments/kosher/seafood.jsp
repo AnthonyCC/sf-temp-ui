@@ -10,11 +10,8 @@ final int W_KOSHER_SEAFOOD_TOTAL = 765;
 <fd:CheckLoginStatus guestAllowed="true" />
 
 <tmpl:insert template='/common/template/right_dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Kosher Seafood - Coming Soon!"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Kosher Seafood - Coming Soon!</tmpl:put> --%>
-
+    <tmpl:put name='title' direct='true'>FreshDirect - Kosher Seafood - Coming Soon!</tmpl:put>
+    
 	<tmpl:put name='content' direct='true'>
 	
 	<table width="<%=W_KOSHER_SEAFOOD_TOTAL%>" cellpadding="0" cellspacing="0" border="0">

@@ -4,15 +4,15 @@
 <%@ page import="com.freshdirect.erp.model.*" %>
 <%@ page import="com.freshdirect.erp.EnumFeaturedHeaderType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
 <%@ page import="com.freshdirect.webapp.taglib.productpromotion.ErpProductPromotionUtil" %>
 <%@ page import="com.freshdirect.customer.ErpZoneMasterInfo" %>
 <%@ page import="com.freshdirect.fdstore.FDProductPromotionInfo" %>
-<%@ page import="com.freshdirect.storeapi.content.SkuModel" %>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes" %>
-<%@ page import="com.freshdirect.storeapi.ProductModelPromotionAdapter" %>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
+<%@ page import="com.freshdirect.cms.ContentKey" %>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes" %>
+<%@ page import="com.freshdirect.fdstore.ProductModelPromotionAdapter" %>
 <fd:CheckLoginStatus id="user" />
 <%
 	// DO NOT ALLOW customers here!
@@ -22,10 +22,7 @@
 	}
 %>
 <tmpl:insert template='/common/template/no_border_nonav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Email Products"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Email Products</tmpl:put> --%>
+<tmpl:put name='title' direct='true'> Presidents Picks - Email Products</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 	<%

@@ -1,4 +1,7 @@
 package com.freshdirect.fdstore.standingorders.ejb;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,22 +21,22 @@ import javax.ejb.CreateException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.AddressModel;
+
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.BasicSaleInfo;
+
+import com.freshdirect.common.address.AddressModel;
+
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -43,16 +46,14 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
-import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -64,15 +65,19 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.SOResult.Result;
+
+import com.freshdirect.fdstore.standingorders.SOResult;
+
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * @author kumarramachandran
@@ -135,25 +140,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
-	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			
-			Collection<FDStandingOrder> ret = dao.loadActiveStandingOrdersForAWeek(conn,isNewSo);
-			
-			return ret;
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in loadActiveStandingOrdersForAWeek() : " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
+
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
 		Connection conn = null;
 		try {
@@ -230,8 +217,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
 				if (!cartLine.isInvalidConfig()) {
 					// cartLine.refreshConfiguration();
-					if(fdSelection.getCustomerListLineId()!=null)
-					cartLine.setCustomerListLineId(fdSelection.getCustomerListLineId());
 					so.getStandingOrderCart().addOrderLine(cartLine);
 				}
 			}
@@ -288,48 +273,26 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
-	// "cancel all delivaries" deletion flow coming from manage servlet
-	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate ) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			LOGGER.debug("delete date selected by user: "+ so.getCustomerId() +", Delete date: "+deleteDate);
-			dao.deleteActivatedSO(conn, so.getId(),deleteDate);
-			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
-			rec.setStandingOrderId(so.getId());
-			this.logActivity(rec);
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in deleteActivatedSO() : " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	// coming from servlet deletes unactivated SO templates
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-
+			
 			dao.deleteStandingOrder(conn, so.getId(), so.getCustomerListId());
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_DELETED);
 			rec.setStandingOrderId(so.getId());
 			FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 			this.logActivity(rec);
 		} catch (SQLException e) {
-			LOGGER.error("SQL ERROR in delete() : " + e.getMessage(), e);
+			LOGGER.error( "SQL ERROR in delete() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
 		}
 	}
-	
+
 	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
 		String primaryKey = null;
 		Connection conn = null;
@@ -344,7 +307,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			} catch (FDResourceException e) {
 				LOGGER.warn( "FDResourceException catched", e );
 			}
-			FDUserI user = so.getUser();
+			
 			if (so.getId() == null ||  so.getId().isEmpty()) {
 				// create object
 				LOGGER.debug( "Creating new standing order." );
@@ -361,8 +324,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				ErpAddressModel address=getShipToAddress(so.getAddressId());
 				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
 						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
-						user.getHistoricOrderSize(),
-						so.getCustomerId(),address, user.isNewSO3Enabled());
+						so.getUser().getHistoricOrderSize(),
+						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
 				}
 			} else {
 				LOGGER.debug( "Updating existing standing order." );
@@ -379,8 +342,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				ErpAddressModel address=getShipToAddress(so.getAddressId());
 				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
 						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
-						user.getHistoricOrderSize(),
-						so.getCustomerId(),address, user.isNewSO3Enabled());
+						so.getUser().getHistoricOrderSize(),
+						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
 				}
 			}
 							
@@ -397,6 +360,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
 	
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
 
@@ -450,13 +414,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
-		// COS17-76
-		address.setNotifyOrderPlaceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL")) ? true : false);
-		address.setNotifyOrderModifyToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_MODIFY_SECOND_EMAIL")) ? true : false);
-		address.setNotifyOrderInvoiceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_INVOICE_SECOND_EMAIL")) ? true : false);
-		address.setNotifySoReminderToSecondEmail( "Y".equalsIgnoreCase(rs.getString("SO_REMINDERS_SECOND_EMAIL")) ? true : false);
-		address.setNotifyCreditsToSecondEmail( "Y".equalsIgnoreCase(rs.getString("CREDITS_SECOND_EMAIL")) ? true : false);
-		address.setNotifyVoiceshotToSecondEmail( "Y".equalsIgnoreCase(rs.getString("VOICESHOT_SECOND_EMAIL")) ? true : false);
 
 		return address;
 	}
@@ -1150,62 +1107,4 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 		return isUpdate;
 	}
-	
-	public void	turnOffReminderOverLayNewSo(String standingOrderId)throws FDResourceException,RemoteException{
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			dao.turnOffReminderOverLayNewSo(conn, standingOrderId);
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in turnOffReminderOverLayNewSo(): " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	public void	updateSoCartOverlayFirstTimePreferences(String customerId)throws FDResourceException,RemoteException{
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId);	
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in updateSoCartOverlayFirstTimePreferences(): " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	public void	updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException{
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO.updateNewSoFeaturePreferences(conn, customerId);	
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in updateNewSoFeaturePreferences(): " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	public void	updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException{
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO.updateDeActivatedSOError(conn, soId);	
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in updateDeActivatedSOError(): " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-
 }

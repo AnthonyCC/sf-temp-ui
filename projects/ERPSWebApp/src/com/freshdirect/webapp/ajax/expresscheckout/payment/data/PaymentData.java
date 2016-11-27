@@ -26,24 +26,6 @@ public class PaymentData {
 	private String mpLogoURL;
 	private String emailID;
 	private boolean canDelete = true;
-	private boolean isDefault = false;
-	private boolean isDebit = false;
-
-	public boolean isDebit() {
-		return isDebit;
-	}
-
-	public void setDebit(boolean isDebit) {
-		this.isDebit = isDebit;
-	}
-
-	public boolean isDefault() {
-		return isDefault;
-	}
-
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
 
 	public String getId() {
 		return id;

@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
@@ -73,16 +73,16 @@ function _submit(p) {
     </td>
 </tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
 	</tr>
 
 	<tr>
@@ -100,7 +100,7 @@ function _submit(p) {
 </table>
 </form>
 <br><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
 
 </fd:CustomerProfileSurveyTag>

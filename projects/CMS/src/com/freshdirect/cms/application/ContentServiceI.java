@@ -14,7 +14,7 @@ import com.freshdirect.cms.ContentType;
  * Interface that all services that contribute content must implement.
  * Provides CRUD methods to a content repository.
  */
-public interface ContentServiceI extends ContentNodeSource {
+public interface ContentServiceI {
 
 	/**
 	 * Get globally unique service name.
@@ -38,11 +38,32 @@ public interface ContentServiceI extends ContentNodeSource {
 	public Set<ContentKey> getContentKeysByType(ContentType type, DraftContext draftContext);
 
 	/**
+	 * Get keys that have a navigable relationship TO the given key.
+	 * 
+	 * @param key ContentKey (never null)
+	 * @return Set of ContentKey (never null)
+	 */
+	public Set<ContentKey> getParentKeys(ContentKey key, DraftContext draftContext);
+
+	/**
+	 * @return ContentNodeI (or null if not found, or type is not supported)
+	 */
+	public ContentNodeI getContentNode(ContentKey key, DraftContext draftContext);
+	
+	/**
 	 * @param key
 	 * @return real content nodes (persisted in CMS DB). ERPS only content nodes are not returned!
 	 */
 	public ContentNodeI getRealContentNode(ContentKey key, DraftContext draftContext);
-
+	
+	/**
+	 * Retrieve multiple nodes.
+	 * 
+	 * @param keys Set of ContentKey
+	 * @return Map of ContentKey -> ContentNodeI (never null)
+	 */
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext);
+	
 	/**
 	 * Retrieve nodes of a certain type based on filter criteria.
 	 * 

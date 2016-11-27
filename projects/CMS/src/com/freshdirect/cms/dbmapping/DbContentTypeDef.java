@@ -75,7 +75,7 @@ public class DbContentTypeDef extends ContentTypeDef {
 		ResultSet rs = ps.executeQuery();
 		Set keys = new HashSet();
 		while (rs.next()) {
-			ContentKey key = ContentKey.getContentKey(this.getType(), rs.getString(1));
+			ContentKey key = new ContentKey(this.getType(), rs.getString(1));
 			keys.add(key);
 		}
 		rs.close();
@@ -118,7 +118,7 @@ public class DbContentTypeDef extends ContentTypeDef {
 
 		while (rs.next()) {
 			String id = rs.getString("ID");
-			ContentKey key = ContentKey.getContentKey(this.getType(), id);
+			ContentKey key = new ContentKey(this.getType(), id);
 			ContentNode node = new ContentNode(contentService, key);
 
 			for (int i = 0; i < columnDefinitions.length; i++) {

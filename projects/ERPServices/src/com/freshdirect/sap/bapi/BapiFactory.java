@@ -1,7 +1,6 @@
 package com.freshdirect.sap.bapi;
 
 import com.freshdirect.customer.EnumSaleType;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sap.jco.JcoBapiFunctionFactory;
@@ -49,7 +48,7 @@ public abstract class BapiFactory {
 	 * @return BapiMaterialAvailability
 	 * @throws SapException
 	 */
-	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder(EnumATPRule atpRule)
+	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder(boolean isMultiLevel)
 			throws SapException;
 
 	

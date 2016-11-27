@@ -7,18 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
-
 import java.util.Set;
+
+import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends GenericFilteringMenuBuilder<FilteringSortingItem<N>> {
 

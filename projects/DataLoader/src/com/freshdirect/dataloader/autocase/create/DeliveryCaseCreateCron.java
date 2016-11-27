@@ -24,10 +24,8 @@ import com.freshdirect.crm.CrmManager;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.delivery.ejb.AirclicManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.ecomm.gateway.CrmManagerService;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -55,23 +53,23 @@ public class DeliveryCaseCreateCron {
 					LOGGER.debug("Creatng case for order # " + model.getOrderId());
 					try {
 						if(model.getOrderId() != null) {
-							String customerId = null;
+							FDOrderI order = null;
 							try {
-								customerId = FDCustomerManager.getOrderCustomerId(model.getOrderId());
+								order = FDCustomerManager.getOrder(model.getOrderId());
 							} catch (FDResourceException e){
 								// do nothing if no order exists
 							}
-							if(customerId != null){
+							if(order != null){
 								if(model.isEarlyDeliveryReq()){
-									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
 										"[Route/Stop] request for Early delivery - "+ model.getEarlyDlvStatus(), "Drivers attempted early delivery using the customer call feature", null);
 								}
 								if(model.getRefusedCartons() != null && model.getRefusedCartons().size() > 0){
-									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_REFUSED_CARTON,
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_REFUSED_CARTON,
 										"Last refused at - "+ DateUtil.formatTime(model.getLastRefusedScan()), "Driver Scanned - "+ model.getReturnReason(), model.getRefusedCartons());
 								}
 								if(model.getLateBoxes() != null && model.getLateBoxes().size() > 0){
-									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_LATE_BOX,
+									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_LATE_BOX,
 										"Driver scanned at - "+ DateUtil.formatTime(model.getLateBoxScantime()), "Carton has left ProFoods",  model.getLateBoxes());
 								}
 							}
@@ -129,13 +127,7 @@ public class DeliveryCaseCreateCron {
 	}
 
 	private static CrmAgentModel getLoginAgent() throws CrmAuthenticationException, FDResourceException {
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled("CrmManager_LoginAgent")) {
-			return CrmManagerService.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
-		}
-		else {
-			return CrmManager.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
-		}
-		
+		return CrmManager.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
 	}
 	
 	static public Context getInitialContext() throws NamingException {

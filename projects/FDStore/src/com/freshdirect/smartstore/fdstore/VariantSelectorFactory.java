@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class VariantSelectorFactory {
 	
 	private final static Logger LOGGER = LoggerFactory.getInstance(VariantSelectorFactory.class);
 
-    private static final Map<EnumSiteFeature, VariantSelector> selectors = new HashMap<EnumSiteFeature, VariantSelector>();
+    private static Map<EnumSiteFeature, VariantSelector> selectors = new HashMap<EnumSiteFeature, VariantSelector>();
 
     /**
 	 * Get the appropriate variant selector.

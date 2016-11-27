@@ -17,7 +17,7 @@ var FreshDirect = FreshDirect || {};
     isSlow: function () { return mouse.speed < mouse.slowLimit; }
   };
   
-  $('html').on('mousemove', function(e) {
+  $('html').mousemove(function(e) {
     mouse.lastX = mouse.x;
     mouse.lastY = mouse.y;
     mouse.x = e.pageX;

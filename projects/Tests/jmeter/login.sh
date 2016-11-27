@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 #
 # @author istvan
@@ -35,7 +35,7 @@ RESULTFILE="$WORKDIR"/login_user.out;
 rm -f "$RESULTFILE";
 
 # -- run test
-bash -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
+sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
       -Jhostname="$HOST" -Jport="$PORT" \
       -Jbrowser_threads="$BROWSER_THREADS" -Jn="$LOOP_COUNTER" \
       -Jtest_user="$TESTUSER" -Juser_pass="$USERPASS" \

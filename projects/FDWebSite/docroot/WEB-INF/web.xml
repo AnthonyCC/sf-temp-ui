@@ -1,37 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5" id="FDWebSite">
-
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5" id="FDWebSite">
 	<description>Guess what</description>
 	<display-name>FDWebSite Application</display-name>
-
-	<!-- Parent Spring context that includes CMS services -->
-	<!-- Definition file: beanRefContext.xml, project: cmseue -->
-	<context-param>
-		<param-name>parentContextKey</param-name>
-		<param-value>parentApplicationContext</param-value>
-	</context-param>
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value></param-value>
-	</context-param>
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
 	<filter>
 		<description>Monitors the execution time FDWebSite Requests</description>
 		<display-name>FDWebSite Request Monitor</display-name>
 		<filter-name>FDWebSiteMonitor</filter-name>
 		<filter-class>com.freshdirect.framework.monitor.WebRequestMonitor</filter-class>
-	</filter>
-	<filter>
-		<description>Monitors the warmup status and redirect user to warmup page if it's in progress.</description>
-		<display-name>Warmup Monitor</display-name>
-		<filter-name>WarmupMonitor</filter-name>
-		<filter-class>com.freshdirect.webapp.filters.WarmupMonitorFilter</filter-class>
 	</filter>
 	<filter>
 		<description>This filter takes predefined pretty urls for referals and translate them to ugly urls.</description>
@@ -44,12 +19,6 @@
 		<display-name>TrackingCodeFilter</display-name>
 		<filter-name>TrackingCodeFilter</filter-name>
 		<filter-class>com.freshdirect.webapp.filters.WebTrackingCodeFilter</filter-class>
-	</filter>
-	<filter>
-		<description>User just logged in and signed up status flag flipping mechanic</description>
-		<display-name>UpdateFDSessionUserFilter</display-name>
-		<filter-name>UpdateFDSessionUserFilter</filter-name>
-		<filter-class>com.freshdirect.webapp.filters.UpdateFDSessionUserFilter</filter-class>
 	</filter>
 	<filter>
 		<description>This filter creates availability horizon and today's date as threadlocal</description>
@@ -68,20 +37,12 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>WarmupMonitor</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
 		<filter-name>URLRewriteFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TrackingCodeFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>UpdateFDSessionUserFilter</filter-name>
-		<url-pattern>/social/success.jsp</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>OncePerRequestDateFilter</filter-name>
@@ -91,40 +52,39 @@
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CORSFilter</filter-name>
-		<url-pattern>/assets/*</url-pattern>
-	</filter-mapping>
-	<servlet>
-		<servlet-name>cms-dispatcher</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>com.freshdirect.appconfig.storefront</param-value>
-		</init-param>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>cms-dispatcher</servlet-name>
-		<url-pattern>/cms/*</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>ClientCodeReportServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.util.ClientCodeReportServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AccessTokenServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.AccessTokenServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AuthorizationServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.AuthorizationServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RequestTokenServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.RequestTokenServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>UserDataServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.UserDataServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>referralregistration</servlet-name>
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
-
-	<!-- <servlet> -->
-	<!-- <servlet-name>referralregistration</servlet-name> -->
-	<!-- <jsp-file>/registration/invite_signup.jsp</jsp-file> -->
-	<!-- </servlet> -->
+ 
+<!--  	<servlet> -->
+<!-- 		<servlet-name>referralregistration</servlet-name> -->
+<!-- 		<jsp-file>/registration/invite_signup.jsp</jsp-file> -->
+<!-- 	</servlet>  -->
 	<servlet>
 		<servlet-name>SoyToJsServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.soy.SoyToJsServlet</servlet-class>
@@ -138,29 +98,6 @@
 		<servlet-name>CartDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>BackOfficeServlet</servlet-name>
-		<url-pattern>/api/backoffice/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>BackOfficeServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.backoffice.servlet.BackOfficeServicesServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>OrderServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.order.OrderServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>OrderServlet</servlet-name>
-		<url-pattern>/api/order/*</url-pattern>
-	</servlet-mapping>
-	
-
-
-	
-
 	<servlet-mapping>
 		<servlet-name>CartDataServlet</servlet-name>
 		<url-pattern>/api/cartdata/*</url-pattern>
@@ -176,15 +113,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>ProductRequestServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.product.ProductRequestServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ProductRequestServlet</servlet-name>
-		<url-pattern>/api/productrequest/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>ProductConfigServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
 	</servlet>
@@ -192,14 +120,14 @@
 		<servlet-name>ProductConfigServlet</servlet-name>
 		<url-pattern>/api/productconfig/*</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>ProductPotatoServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.product.ProductPotatoServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ProductPotatoServlet</servlet-name>
-		<url-pattern>/api/potato/product</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>ProductPotatoServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.product.ProductPotatoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductPotatoServlet</servlet-name>
+        <url-pattern>/api/potato/product</url-pattern>
+     </servlet-mapping>
 
 	<servlet>
 		<servlet-name>ShoppingListServlet</servlet-name>
@@ -219,13 +147,12 @@
 		<url-pattern>/api/qs/pastOrders</url-pattern>
 	</servlet-mapping>
 
-	<!-- TODO: QuickShop Top Items: Change QuickShopFilterServlet to the new 
-		servlet -->
-	<servlet-mapping>
-		<servlet-name>QuickShopFilterServlet</servlet-name>
-		<url-pattern>/api/qs/topItems</url-pattern>
-	</servlet-mapping>
-
+<!--    TODO: QuickShop Top Items: Change QuickShopFilterServlet to the new servlet -->
+    <servlet-mapping>
+        <servlet-name>QuickShopFilterServlet</servlet-name>
+        <url-pattern>/api/qs/topItems</url-pattern>
+    </servlet-mapping>
+    
 	<servlet>
 		<servlet-name>QSFromListFilterServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet</servlet-class>
@@ -279,43 +206,43 @@
 		<servlet-name>QuickShopTabMetaServlet</servlet-name>
 		<url-pattern>/api/qs/tabMeta</url-pattern>
 	</servlet-mapping>
-	<!-- New Quickshop 2.2 API endpoints -->
-	<servlet>
-		<servlet-name>ReorderFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ReorderFilterServlet</servlet-name>
-		<url-pattern>/api/reorder/pastOrders</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ReorderFilterServlet</servlet-name>
-		<url-pattern>/api/reorder/topItems</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>ReorderFromListFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.reorder.QSFromListFilterServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ReorderFromListFilterServlet</servlet-name>
-		<url-pattern>/api/reorder/shoppingLists/*</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>ReorderTabMetaServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopTabMetaServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ReorderTabMetaServlet</servlet-name>
-		<url-pattern>/api/reorder/tabMeta</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>ReorderRecommendationServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopRecommendationServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ReorderRecommendationServlet</servlet-name>
-		<url-pattern>/api/reorder/recommendation</url-pattern>
-	</servlet-mapping>
+<!--     New Quickshop 2.2 API endpoints -->
+    <servlet>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/pastOrders</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/topItems</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderFromListFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QSFromListFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderFromListFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/shoppingLists/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderTabMetaServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopTabMetaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderTabMetaServlet</servlet-name>
+        <url-pattern>/api/reorder/tabMeta</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderRecommendationServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopRecommendationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderRecommendationServlet</servlet-name>
+        <url-pattern>/api/reorder/recommendation</url-pattern>
+    </servlet-mapping>
 
 	<servlet>
 		<servlet-name>CmsFilteringServlet</servlet-name>
@@ -326,24 +253,6 @@
 		<url-pattern>/api/filter</url-pattern>
 	</servlet-mapping>
 
-    <servlet>
-        <servlet-name>MultiSearchListServlet</servlet-name>
-        <servlet-class>com.freshdirect.webapp.ajax.search.MultiSearchListServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>MultiSearchListServlet</servlet-name>
-        <url-pattern>/api/multisearch</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>SignUpServlet</servlet-name>
-        <servlet-class>com.freshdirect.webapp.ajax.signup.SignUpServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SignUpServlet</servlet-name>
-        <url-pattern>/api/signup/*</url-pattern>
-    </servlet-mapping>
-
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.login.LoginServlet</servlet-class>
@@ -352,43 +261,7 @@
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/api/login/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-	   <servlet-name>OAuth2Authorization</servlet-name>
-	   <jsp-file>/oauth/auth.jsp</jsp-file>
-	</servlet>
-	<servlet-mapping>
-	  <servlet-name>OAuth2Authorization</servlet-name>
-	  <url-pattern>/oauth/v2/authorize</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>OAuth2AuthorizationServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2AuthorizationServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>OAuth2AuthorizationServlet</servlet-name>
-		<url-pattern>/api/oauth2/authorize</url-pattern>
-	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>OAuth2TokenServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2TokenServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>OAuth2TokenServlet</servlet-name>
-		<url-pattern>/api/oauth2/token</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>OAuth2TokenInfoServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2TokenInfoServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>OAuth2TokenInfoServlet</servlet-name>
-		<url-pattern>/api/oauth2/tokeninfo</url-pattern>
-	</servlet-mapping>
-	
 	<servlet>
 		<servlet-name>ViewCartPotatoServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoServlet</servlet-class>
@@ -424,14 +297,6 @@
 		<servlet-name>YourCartData</servlet-name>
 		<url-pattern>/api/expresscheckout/cartdata</url-pattern>
 	</servlet-mapping>
-   <servlet>
-        <servlet-name>OrderInfoServlet</servlet-name>
-        <servlet-class>com.freshdirect.webapp.ajax.order.OrderInfoServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>OrderInfoServlet</servlet-name>
-        <url-pattern>/api/orderinfo</url-pattern>
-    </servlet-mapping>
 	<servlet>
 		<servlet-name>DeliveryAddressValidationDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.validation.servlet.DeliveryAddressValidationDataServlet</servlet-class>
@@ -464,8 +329,8 @@
 		<servlet-name>PaymentMethodServlet</servlet-name>
 		<url-pattern>/api/expresscheckout/payment</url-pattern>
 	</servlet-mapping>
-
-	<!-- Ewallet Payment Integration -->
+	
+	<!--  Ewallet Payment Integration -->
 	<servlet>
 		<servlet-name>EwalletPaymentServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.servlet.EwalletPaymentServlet</servlet-class>
@@ -491,185 +356,124 @@
 		<url-pattern>/api/expresscheckout/textalert/cancel</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>GiftCardServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.giftcard.servlet.GiftCardServlet</servlet-class>
+	   <servlet-name>GiftCardServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.giftcard.servlet.GiftCardServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>GiftCardServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/giftcard</url-pattern>
+	   <servlet-name>GiftCardServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/giftcard</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>GoGreenServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.gogreen.servlet.GoGreenServlet</servlet-class>
+	   <servlet-name>GoGreenServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.gogreen.servlet.GoGreenServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>GoGreenServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/gogreen</url-pattern>
+	   <servlet-name>GoGreenServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/gogreen</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.csr.servlet.CustomerServiceRepresentativeServlet</servlet-class>
+	   <servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.csr.servlet.CustomerServiceRepresentativeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/csr</url-pattern>
+	   <servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/csr</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>PromotionServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.promotion.servlet.PromotionServlet</servlet-class>
+	   <servlet-name>PromotionServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.promotion.servlet.PromotionServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>PromotionServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/promotion</url-pattern>
+	   <servlet-name>PromotionServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/promotion</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>ETipServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.etip.servlet.ETipServlet</servlet-class>
+	   <servlet-name>ETipServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.etip.servlet.ETipServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>ETipServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/etip</url-pattern>
+	   <servlet-name>ETipServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/etip</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>DeliveryPassServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.deliverypass.servlet.DeliveryPassServlet</servlet-class>
+	   <servlet-name>DeliveryPassServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.deliverypass.servlet.DeliveryPassServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>DeliveryPassServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/deliverypass</url-pattern>
+	   <servlet-name>DeliveryPassServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/deliverypass</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>TimeslotServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.timeslot.servlet.TimeslotServlet</servlet-class>
+	   <servlet-name>TimeslotServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.timeslot.servlet.TimeslotServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>TimeslotServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/timeslot</url-pattern>
+	   <servlet-name>TimeslotServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/timeslot</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>RestrictionServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.restriction.servlet.RestrictionServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RestrictionServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/restriction</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>AtpRestrictionServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.availability.servlet.AtpRestrictionServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AtpRestrictionServlet</servlet-name>
-		<url-pattern>/api/expresscheckout/atpfailure</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>CouponServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.coupon.servlet.CouponServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>CouponServlet</servlet-name>
-		<url-pattern>/api/expressco/coupon</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ModuleHandlingServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ModuleHandlingServlet</servlet-name>
-		<url-pattern>/api/modulehandling/load</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ModuleImageProductsServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.modulehandling.ModuleImageProductsServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ModuleImageProductsServlet</servlet-name>
-		<url-pattern>/api/modulehandling/imageproduct</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>LocationHandlerServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.location.LocationHandlerServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>LocationHandlerServlet</servlet-name>
-		<url-pattern>/api/locationhandler</url-pattern>
-	</servlet-mapping>
-
-	<!-- Dev Tools -->
-	<servlet>
-		<servlet-name>StorePropertiesServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.dev.storeproperties.StorePropertiesServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>StorePropertiesServlet</servlet-name>
-		<url-pattern>/api/dev/properties/store</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>ManageStandingOrderServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.standingorder.ManageStandingOrderServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ManageStandingOrderServlet</servlet-name>
-		<url-pattern>/api/manageStandingOrder</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>StandingOrderCartServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.standingorder.StandingOrderCartServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>StandingOrderCartServlet</servlet-name>
-		<url-pattern>/api/standingOrderCartServlet</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>StandingorderCronServlet</servlet-name>
-		<servlet-class>com.freshdirect.fdstore.standingorders.service.StandingOrderCronServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>StandingorderCronServlet</servlet-name>
-		<url-pattern>/standigorder_cron</url-pattern>
-	</servlet-mapping>
-	<servlet>
-	<servlet-name>ShortSubstituteOrdersServlet</servlet-name>
-		<servlet-class>com.fresdirect.fdstore.shortsuborders.service.ShortSubstituteOrdersServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ShortSubstituteOrdersServlet</servlet-name>
-		<url-pattern>/api/shortSubstituteOrders</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>DeliveryPassOneClickServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.deliverypass.servlet.DeliveryPassOneClickServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-    <servlet-name>DeliveryPassOneClickServlet</servlet-name>
-    <url-pattern>/api/freetrial</url-pattern>
+	 <servlet>
+     <servlet-name>RestrictionServlet</servlet-name>
+     <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.restriction.servlet.RestrictionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>RestrictionServlet</servlet-name>
+     <url-pattern>/api/expresscheckout/restriction</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AtpRestrictionServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.availability.servlet.AtpRestrictionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AtpRestrictionServlet</servlet-name>
+    <url-pattern>/api/expresscheckout/atpfailure</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>CouponServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.coupon.servlet.CouponServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CouponServlet</servlet-name>
+    <url-pattern>/api/expressco/coupon</url-pattern>
   </servlet-mapping>
   
-  	<servlet>
-		<servlet-name>CarouselServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.carousel.CarouselServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>CarouselServlet</servlet-name>
-		<url-pattern>/api/carousel</url-pattern>
-	</servlet-mapping>
-	
-  	<servlet>
-		<servlet-name>InformationalServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.informational.InformationalServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>InformationalServlet</servlet-name>
-		<url-pattern>/api/informational</url-pattern>
-	</servlet-mapping>
-	
+  
+  <!-- Dev Tools -->
+  <servlet>
+    <servlet-name>StorePropertiesServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.dev.storeproperties.StorePropertiesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StorePropertiesServlet</servlet-name>
+    <url-pattern>/api/dev/properties/store</url-pattern>
+  </servlet-mapping>
+
 	<servlet>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.cache.CmsChangePropagatorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <url-pattern>/api/contentcache</url-pattern>
+	</servlet-mapping>
+	<servlet>
+	   <servlet-name>ManageStandingOrderServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.standingorder.ManageStandingOrderServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>ManageStandingOrderServlet</servlet-name>
+	   <url-pattern>/api/manageStandingOrder</url-pattern>
+	</servlet-mapping>
+	<servlet>
+	   <servlet-name>StandingOrderCartServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.standingorder.StandingOrderCartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>StandingOrderCartServlet</servlet-name>
+	   <url-pattern>/api/standingOrderCartServlet</url-pattern>
+	</servlet-mapping>
+  <servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.jawr.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
@@ -682,7 +486,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>CssServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.jawr.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
@@ -710,47 +514,31 @@
 		<url-pattern>/api/json-rpc.jsp</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>ClientCodeReportServlet</servlet-name>
+		<url-pattern>/api/clientCodeReport.jsp</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessTokenServlet</servlet-name>
+		<url-pattern>/oauth/access_token</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AuthorizationServlet</servlet-name>
+		<url-pattern>/oauth/authorize</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RequestTokenServlet</servlet-name>
+		<url-pattern>/oauth/request_token</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UserDataServlet</servlet-name>
+		<url-pattern>/oauth/user_data</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>referralregistration</servlet-name>
 		<url-pattern>/invite/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>BackOfficeSelfCreditServlet</servlet-name>
-		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.BackOfficeSelfCreditServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>BackOfficeSelfCreditServlet</servlet-name>
-		<url-pattern>/api/selfcredit/issuecredit</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>SelfCreditOrderHistoryServlet</servlet-name>
-		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.SelfCreditOrderHistoryServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SelfCreditOrderHistoryServlet</servlet-name>
-		<url-pattern>/api/selfcredit/orders</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>SelfCreditOrderDetailsServlet</servlet-name>
-		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.SelfCreditOrderDetailsServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SelfCreditOrderDetailsServlet</servlet-name>
-		<url-pattern>/api/selfcredit/orderdetails</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>Warmup</servlet-name>
-		<servlet-class>com.freshdirect.webapp.warmup.web.WarmupServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Warmup</servlet-name>
-		<url-pattern>/api/warmup</url-pattern>
-	</servlet-mapping>
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<session-timeout>15</session-timeout>
 	</session-config>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
@@ -758,22 +546,8 @@
 		<welcome-file>index.htm</welcome-file>
 	</welcome-file-list>
 	<error-page>
-		<!-- Missing resource -->
-		<error-code>404</error-code>
-		<location>/notfound.jsp</location>
-	</error-page>
-	<error-page>
-		<!-- Missing resource -->
-		<exception-type>com.freshdirect.fdstore.FDNotFoundException</exception-type>
-		<location>/notfound.jsp</location>
-	</error-page>
-	<error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>401</error-code>
-		<location>/unauthorized.jsp</location>
 	</error-page>
 	<jsp-config>
 		<taglib>
@@ -801,6 +575,10 @@
 			<taglib-location>/WEB-INF/shared/tld/struts-html.tld</taglib-location>
 		</taglib>
 		<taglib>
+			<taglib-uri>oscache</taglib-uri>
+			<taglib-location>/WEB-INF/shared/tld/oscache.tld</taglib-location>
+		</taglib>
+		<taglib>
 			<taglib-uri>productBox</taglib-uri>
 			<taglib-location>/WEB-INF/shared/tld/productbox.tld</taglib-location>
 		</taglib>
@@ -810,8 +588,4 @@
 		</taglib>
 
 	</jsp-config>
-	<mime-mapping>
-		<extension>svg</extension>
-		<mime-type>image/svg+xml</mime-type>
-	</mime-mapping>
 </web-app>

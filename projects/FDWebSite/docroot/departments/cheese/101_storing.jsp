@@ -9,6 +9,7 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  onLoad="window.focus()">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <A NAME="top"></A>
 <CENTER>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
@@ -36,14 +37,14 @@ width="520" height="33" border="0" alt="freshdirect    (close window)"></A><BR>
 	
 </TD>
 <TD WIDTH="10" ROWSPAN="2"><IMG SRC="/media_stat/images/layout/clear.gif"  
-WIDTH="10" HEIGHT="1" alt="" HSPACE="0" VSPACE="0"></TD>
+WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
 <TD WIDTH="1" BGCOLOR="#999966" ROWSPAN="2"><IMG SRC="/media_stat/images/layout/999966.gif"  
-ALT="" WIDTH="1" HEIGHT="300" HSPACE="0" VSPACE="0"></TD>
+WIDTH="1" HEIGHT="300" HSPACE="0" VSPACE="0"></TD>
 <TD WIDTH="10" ROWSPAN="2"><IMG SRC="/media_stat/images/layout/clear.gif"  
-WIDTH="10" HEIGHT="1" alt="" HSPACE="0" VSPACE="0"></TD>
+WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
 <TD VALIGN="TOP" WIDTH="379">
 <IMG SRC="/media_stat/images/layout/clear.gif"  
-WIDTH="1" HEIGHT="3" alt="" HSPACE="0" VSPACE="0"><BR>
+WIDTH="1" HEIGHT="3" HSPACE="0" VSPACE="0"><BR>
 <FONT CLASS="title16">Storing</FONT><BR> 
 
 <font class="bodyCopySmall">
@@ -63,7 +64,7 @@ Don't do it! The moisture in the cheese will freeze and crystallize, forever dam
 <br>
 </font>
 
-<IMG SRC="/media_stat/images/layout/clear.gif" alt="" WIDTH="379" HEIGHT="10" HSPACE="0" VSPACE="0">
+<IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="379" HEIGHT="10" HSPACE="0" VSPACE="0">
 </TD>
 </TR>
 <!-- APPDEV 4284<TR VALIGN="TOP">

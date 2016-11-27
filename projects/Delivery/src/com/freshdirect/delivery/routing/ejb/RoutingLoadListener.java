@@ -1,12 +1,7 @@
 package com.freshdirect.delivery.routing.ejb;
 
 
-/**
- *@deprecated Please do the changes RoutingLoadListener in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -113,8 +108,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     	LOGGER.info("receiving createOrderStatus from queue..."+ command.getSaleId());
     	
     	FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-		command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),command.getErpOrderId()
-		,command.isContainsAlcohol());
+		command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),command.getErpOrderId());
     	
     	
 	}	
@@ -128,7 +122,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     	LOGGER.info("receiving modifyOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().modifyOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
 				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber()
-				,command.getErpOrderId(),command.isContainsAlcohol());
+				,command.getErpOrderId());
 	}	
     
 }

@@ -7,7 +7,7 @@
 {template .familyProducts}
     {if $familyProducts and length($familyProducts) > 0}
 		<div class="pdp-evenbetter">
-			<h2 {if $mobWeb}tabindex="0"{/if} class="header familyproducts {if $mobWeb}gen-accord-toggler{/if}">Try These Too!</h2>
+			<h2 class="familyproducts {if $mobWeb}gen-accord-toggler{/if}">Try These Too!</h2>
 			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
 				{foreach $familyProducts in $familyProducts}
 					{if not isFirst($familyProducts)} <hr/> {/if}
@@ -67,7 +67,7 @@
 			</div>
 		</div>
 		<div class="pdp-evenbetter-productinfo">
-			<h3 data-evenbetteritem-trigger><a href="/pdp.jsp?productId={$productId}&catId={$catId}" class="portrait-item-header-name">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if} {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
+			<h3 data-evenbetteritem-trigger><a href="/pdp.jsp?productId={$productId}&catId={$catId}">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if} {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
 			<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
 			<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
 			<div class="pdp-evenbetter-ratings">
@@ -77,11 +77,9 @@
 			{if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
 	</div>
 		<div{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0} class="pdp-evenbetter-soPreShow"{/if}>
-			<form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-eventsource="EB">
+			<form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-cmeventsource="EB">
 				<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
-				<input type="hidden" data-component="productData" data-productdata-name="productId" name="productId" value="{$productId}">
-				<input type="hidden" data-component="productData" data-productdata-name="categoryId" name="categoryId" value="{$catId}">
 				{if $alcoholic}
 					<input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$alcoholic}">
 				{/if}
@@ -96,26 +94,20 @@
 						{param cvPrices:$cvPrices /}
 						{param qInc:$quantity.qInc /}
 					{/call}
+			</div>
+				<div class="pdp-evenbetter-atcbutton">
+					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
+						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
+						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
+						<button type="button" fd-login-required fd-login-successpage-current data-component="showSOButton" class="cssbutton cssbutton-flat purple nontransparent">Standing Order</button>
+					{else}
+						<button type="button" data-component="ATCButton" class="cssbutton orange small">add to cart</button>
+						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>
+					{/if}
 					{call common.atcInCart}
 						{param amount:$inCartAmount /}
 						{param atcItemId:$atcItemId /}
 					{/call}
-			</div>
-				<div class="pdp-evenbetter-atcbutton">
-					{if $isEligibleForStandingOrders}
-						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange">Add to Cart</button>
-						{if length($soData.settingsData.soData) > 0}
-							<button type="button" fd-login-required fd-login-successpage-current data-component="customizeButton" data-alignpopupfunction="transactionalCustomize" data-component="showSOButton" data-soshow="true" class="cssbutton cssbutton-flat purple nontransparent">Add to Standing Order</button>
-						{else}
-							{call common.soRecurring}
-								{param useButton: true /}
-							{/call}
-						{/if}
-						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
-					{else}
-						<button type="button" data-component="ATCButton" class="cssbutton orange small">Add to Cart</button>
-						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
-					{/if}
 				</div>
 			</form>
 			
@@ -133,5 +125,15 @@
 				</div>
 			{/if}
 		</div>
+		
+		{if $isEligibleForStandingOrders}
+			{if length($soData.settingsData.soData) == 0}
+				<div class="so-container">
+					<div class="so">
+						{call common.soRecurring /}
+					</div>
+				</div>
+			{/if}
+		{/if}
 	</div>
 {/template}

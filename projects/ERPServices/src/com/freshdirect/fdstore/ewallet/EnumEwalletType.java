@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * @author Aniwesh Vatsal
  *
@@ -31,9 +28,8 @@ public class EnumEwalletType extends ValuedEnum {
 	public static EnumEwalletType getEnum(String code) {
 		return (EnumEwalletType) getEnum(EnumEwalletType.class, code);
 	}
-	
-	@JsonCreator
-	public static EnumEwalletType getEnum(@JsonProperty("value") int id) {
+
+	public static EnumEwalletType getEnum(int id) {
 		return (EnumEwalletType) getEnum(EnumEwalletType.class, id);
 	}
 

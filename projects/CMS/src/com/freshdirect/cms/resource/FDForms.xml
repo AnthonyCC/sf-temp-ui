@@ -50,12 +50,6 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>CATALOG</title>
-						<fields>
-							<CmsField><attribute>catalog</attribute></CmsField>
-						</fields>
-					</CmsSection>
-					<CmsSection>
 						<title>LAYOUT</title>
 						<fields>
 							<CmsField><attribute>LAYOUT</attribute></CmsField>
@@ -250,13 +244,7 @@
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
-					</CmsSection>
-                    <CmsSection>
-                        <title>Sitemap</title>
-                        <fields>
-                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
+					</CmsSection>				    
 				</sections>
 			</CmsPage>
 		</pages>
@@ -564,15 +552,6 @@
                            <CmsField><attribute>disableCategoryYmalRecommender</attribute></CmsField>
                        </fields>
                     </CmsSection>
-                    <CmsSection>
-                        <title>FEATURED RECOMMENDER (see &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/Featured+recommer+setup"&gt;help&lt;/a&gt;)</title>
-                        <fields>
-                            <CmsField><attribute>featuredRecommenderTitle</attribute></CmsField>
-                            <CmsField><attribute>featuredRecommenderSourceCategory</attribute></CmsField>
-                            <CmsField><attribute>featuredRecommenderRandomizeProducts</attribute></CmsField>
-                            <CmsField><attribute>featuredRecommenderSiteFeature</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
 					<CmsSection>
 						<title>MERCHANT RECOMMENDER</title>
 						<fields>
@@ -615,13 +594,7 @@
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
-					</CmsSection>
-                    <CmsSection>
-                        <title>Sitemap</title>
-                        <fields>
-                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
+					</CmsSection>				    
 				</sections>
 			</CmsPage>
 		</pages>
@@ -942,12 +915,6 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
-                    <CmsSection>
-                        <title>Sitemap</title>
-                        <fields>
-                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -1971,12 +1938,6 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>CATALOG</title>
-						<fields>
-							<CmsField><attribute>catalog</attribute></CmsField>
-						</fields>
-					</CmsSection>
-					<CmsSection>
 						<title>IMAGES</title>
 						<fields>
 							<CmsField><attribute>titleBar</attribute></CmsField>
@@ -1991,7 +1952,7 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>FEATURED RECOMMENDER (see &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/Featured+recommer+setup"&gt;help&lt;/a&gt;)</title>
+						<title>FEATURED RECOMMENDER</title>
 						<fields>
 							<CmsField><attribute>sdFeaturedRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>sdFeaturedRecommenderSourceCategory</attribute></CmsField>
@@ -2045,12 +2006,6 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
-                    <CmsSection>
-                        <title>Sitemap</title>
-                        <fields>
-                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -2090,12 +2045,6 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
-                    <CmsSection>
-                        <title>Sitemap</title>
-                        <fields>
-                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
-                        </fields>
-                    </CmsSection>
 					<CmsSection>
 						<title>DARK STORE TARGETING</title>
 						<fields>
@@ -2318,7 +2267,6 @@
 							<CmsField><attribute>Description</attribute></CmsField>
 							<CmsField><attribute>ImageBannerImage</attribute></CmsField>
 							<CmsField><attribute>Target</attribute></CmsField>
-							<CmsField><attribute>bannerURL</attribute></CmsField>
 							<CmsField><attribute>linkOneText</attribute></CmsField>
 							<CmsField><attribute>linkOneTarget</attribute></CmsField>
 							<CmsField><attribute>linkOneURL</attribute></CmsField>
@@ -2378,107 +2326,6 @@
 				</CmsPage>
               </pages>
 	</CmsEditor>	
-	
-	<CmsEditor id="ModuleContainer">
-		<contentType>ModuleContainer</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
-						<fields>
-						    <CmsField><attribute>name</attribute></CmsField>
-						    <CmsField><attribute>modulesAndGroups</attribute></CmsField>
-						</fields>
-						</CmsSection>
-					</sections>
-				</CmsPage>
-              </pages>
-	</CmsEditor>
-	
-	<CmsEditor id="ModuleGroup">
-		<contentType>ModuleGroup</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
-						<fields>
-						    <CmsField><attribute>name</attribute></CmsField>
-						    <CmsField><attribute>moduleGroupTitle</attribute></CmsField>
-						    <CmsField><attribute>moduleGroupTitleTextBanner</attribute></CmsField>
-						    <CmsField><attribute>viewAllButtonURL</attribute></CmsField>
-						    <CmsField><attribute>hideViewAllButton</attribute></CmsField>
-						    <CmsField><attribute>modules</attribute></CmsField>
-						    <CmsField><attribute>viewAllSourceNode</attribute></CmsField>
-						</fields>
-						</CmsSection>
-					</sections>
-				</CmsPage>
-              </pages>
-	</CmsEditor>
-	
-	
-	<CmsEditor id="Module">
-		<contentType>Module</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
-						<fields>
-						    <CmsField><attribute>name</attribute></CmsField>
-						    <CmsField><attribute>moduleTitle</attribute></CmsField>						    
-						    <CmsField><attribute>moduleTitleTextBanner</attribute></CmsField>						    
-						    <CmsField><attribute>viewAllButtonLink</attribute></CmsField>
-						    
-						    <CmsField><attribute>contentTitleTextBanner</attribute></CmsField>							    			    
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>EDITORIAL SECTION</title>
-						<fields>
-							<CmsField><attribute>heroGraphic</attribute></CmsField>
-							<CmsField><attribute>headerGraphic</attribute></CmsField>
-							<CmsField><attribute>editorialContent</attribute></CmsField>
-						    <CmsField><attribute>heroTitle</attribute></CmsField>
-						    <CmsField><attribute>heroSubtitle</attribute></CmsField>
-						    <CmsField><attribute>headerTitle</attribute></CmsField>
-						    <CmsField><attribute>headerSubtitle</attribute></CmsField>
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>CONTENT</title>
-						<fields>
-							<CmsField><attribute>contentTitle</attribute></CmsField>
-							<CmsField><attribute>hideViewAllButton</attribute></CmsField>
-						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>	
-						    <CmsField><attribute>showViewAllOverlayOnImages</attribute></CmsField>	
-							<CmsField><attribute>productSourceType</attribute></CmsField>
-							<CmsField><attribute>sourceNode</attribute></CmsField>
-						    <CmsField><attribute>displayType</attribute></CmsField>
-						    <CmsField><attribute>imageGrid</attribute></CmsField>
-						    <CmsField><attribute>openHTML</attribute></CmsField>
-						    <CmsField><attribute>iconList</attribute></CmsField>
-						    <CmsField><attribute>productListRowMax</attribute></CmsField>
-                                                    <CmsField><attribute>productMaxLimit</attribute></CmsField>
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>PRODUCT CONFIG</title>
-						<fields>
-						    <CmsField><attribute>hideProductName</attribute></CmsField>
-						    <CmsField><attribute>hideProductPrice</attribute></CmsField>
-						    <CmsField><attribute>hideProductBadge</attribute></CmsField>
-						</fields>
-					</CmsSection>							
-					</sections>
-				</CmsPage>
-              </pages>
-	</CmsEditor>
 						
 	
 </Content>

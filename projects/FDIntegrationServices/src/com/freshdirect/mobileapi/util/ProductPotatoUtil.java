@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -18,12 +18,9 @@ import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
-import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 
 
@@ -55,22 +52,16 @@ public class ProductPotatoUtil {
      * 
      * @return potato populated or null if either product is not found or making a potato failed
      */
-    public static ProductPotatoData getProductPotato(final ProductModel product, final FDUserI user, final boolean requiresExtraFields, boolean enableProductIncomplete) {
+    public static ProductPotatoData getProductPotato(final ProductModel product, final FDUserI user, final boolean requiresExtraFields) {
         if (product != null) {
             final String productId = product.getContentKey().getId();
 
             try {
                 final ProductPotatoData data = new ProductPotatoData();
 
-                data.setProductData( ProductDetailPopulator.createProductData(user, product, enableProductIncomplete) );
+                data.setProductData( ProductDetailPopulator.createProductData(user, product) );
                 if (requiresExtraFields) {
-                    ProductExtraData extraData = null;
-                    if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
-                        extraData = ProductExtraDataPopulator.createLightExtraData(user, product);
-                    } else {
-                        extraData = ProductExtraDataPopulator.createExtraData(user, product, null, null, false);
-                    }
-                    data.setProductExtraData( extraData);
+                    data.setProductExtraData( ProductExtraDataPopulator.createExtraData(user, product, null, null));
                 }
                 return data;
             } catch (FDRuntimeException e) {
@@ -78,24 +69,12 @@ public class ProductPotatoUtil {
             } catch (FDResourceException e) {
                 LOGGER.error("Failed to load product " + productId);
             } catch (FDSkuNotFoundException e) {
-                LOGGER.error("No SKU for product " + productId + " -> " + getRootCauseStackTrace(e));
+                LOGGER.error("No SKU for product " + productId);
             } catch (HttpErrorResponse e) {
                 LOGGER.error("Failed to load product " + productId);
             }
         }
         return null;
-    }
-    
-    private static String getRootCauseStackTrace(Throwable e) {
-    	
-    	StringBuffer strBuf = new StringBuffer();
-    	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
-    	if(traces != null) {
-		    for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
-		    	strBuf.append(element).append(" ");
-		    }
-    	}
-	    return strBuf.toString();
     }
 
 
@@ -111,18 +90,16 @@ public class ProductPotatoUtil {
      * @return
      */
     public static ProductPotatoData getProductPotato(final String productId, final String categoryId, final FDUserI user, final boolean requiresExtraFields) {
-        return getProductPotato(productId, categoryId, user, requiresExtraFields, FDStoreProperties.getPreviewMode());
-    }
-
-    public static ProductPotatoData getProductPotato(final String productId, final String categoryId, final FDUserI user, final boolean requiresExtraFields, boolean enableProductIncomplete) {
         final ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
         if (product != null) {
-            return getProductPotato(product, user, requiresExtraFields, enableProductIncomplete);
+            return getProductPotato(product, user, requiresExtraFields);
         } else {
             LOGGER.error("Product " + productId + " not found in CMS database");
         }
         return null;
     }
+
+
 
     /**
      * Finds and collects {@link ProductConfiguration} items by walking input collection recursively
@@ -153,11 +130,14 @@ public class ProductPotatoUtil {
         productConfiguration.setProductPotato(potato);
     }
 
+
+
     /**
      * Populate cart detail object with product potatoes
      * 
      * @param user
      * @param cartDetail
+     * @param servletContext
      */
     public static void populateCartDetailWithPotatoes(final FDUserI user, final CartDetail cartDetail) {
         List<ProductConfiguration> configurations = new ArrayList<ProductConfiguration>();

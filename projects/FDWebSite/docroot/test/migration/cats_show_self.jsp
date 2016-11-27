@@ -3,12 +3,12 @@ page import="java.util.ArrayList"%><%@
 page import="java.util.Comparator"%><%@
 page import="java.util.Collections"%><%@
 page import="java.util.List"%><%@
-page import="com.freshdirect.cms.core.domain.ContentKey"%><%@
-page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%><%@
-page import="com.freshdirect.storeapi.application.CmsManager"%><%@
-page import="com.freshdirect.storeapi.content.CategoryModel"%><%@
-page import="com.freshdirect.storeapi.content.ContentFactory"%><%@
-page import="com.freshdirect.storeapi.content.DepartmentModel"%><%@
+page import="com.freshdirect.cms.ContentKey"%><%@
+page import="com.freshdirect.cms.fdstore.FDContentTypes"%><%@
+page import="com.freshdirect.cms.application.CmsManager"%><%@
+page import="com.freshdirect.fdstore.content.CategoryModel"%><%@
+page import="com.freshdirect.fdstore.content.ContentFactory"%><%@
+page import="com.freshdirect.fdstore.content.DepartmentModel"%><%@
 taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %><%@
 taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%@
 taglib prefix="display" uri="/WEB-INF/shared/tld/fd-display.tld" %><%
@@ -72,7 +72,7 @@ taglib prefix="display" uri="/WEB-INF/shared/tld/fd-display.tld" %><%
 	
 	request.setAttribute("cats", cats);	
 %><!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta charset="utf-8"/>
 	<title>Categories having 'SHOWSELF' attribute set to false</title>

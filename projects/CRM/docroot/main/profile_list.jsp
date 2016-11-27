@@ -21,6 +21,7 @@ FDIdentity identity = user.getIdentity();
 FDCustomerModel customer = user.getFDCustomer();
 ProfileModel profile = customer.getProfile();
 Map profileAttributes = profile.getAttributes();
+Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <tmpl:put name='title' direct='true'>Profile List</tmpl:put>
@@ -63,7 +64,7 @@ Map profileAttributes = profile.getAttributes();
     for(Iterator i = profileAttributes.keySet().iterator(); i.hasNext();){
         String name = (String) i.next();
         String value = (String) profileAttributes.get(name);        
-        ProfileAttributeName profileAttributeName = null;
+        ProfileAttributeName profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(name);	        
         boolean isEditable = CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"edit_profile") && (profileAttributeName != null && profileAttributeName.getIsEditable());
 %>
             <tr valign="top" <%= counter % 2 == 0 ? "class='list_odd_row'" : "" %> style="padding-top: 3px; padding-bottom: 3px;">

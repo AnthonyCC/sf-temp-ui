@@ -1,10 +1,10 @@
 <%@		page import="com.freshdirect.fdstore.*"
-%><%@	page import="com.freshdirect.storeapi.content.*"
-%><%@	page import="com.freshdirect.storeapi.attributes.*"
+%><%@	page import="com.freshdirect.fdstore.content.*"
+%><%@	page import="com.freshdirect.fdstore.attributes.*"
 %><%@	page import="com.freshdirect.fdstore.dcpd.*"
 %><%@	page import="com.freshdirect.fdstore.FDResourceException"
 %><%@	page import="com.freshdirect.fdstore.FDSkuNotFoundException"
-%><%@   page import="com.freshdirect.cms.core.domain.ContentKey"
+%><%@   page import="com.freshdirect.cms.ContentKey"
 %><%@	page import="com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper"
 %><%@   page import="java.io.*"
 %><%@	page import="java.util.*"
@@ -23,9 +23,9 @@ if (prodsOnlyView) {
 
 
 /// List contentKeys = new ArrayList();
-List<String> deptKeyz = Collections.emptyList();
-List<String> catKeyz = Collections.emptyList();
-List<String> recipeKeyz = Collections.emptyList();
+List deptKeyz = Collections.EMPTY_LIST;
+List catKeyz = Collections.EMPTY_LIST;
+List recipeKeyz = Collections.EMPTY_LIST;
 DCPDReportQuery q = null;
 
 
@@ -47,11 +47,12 @@ if (deptKeyz.size() > 0 || catKeyz.size() > 0 || recipeKeyz.size() > 0) {
 
 if (!renderCSV) {
     Iterator it;
-%><!DOCTYPE html>
+%><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
 
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>DCPD Report</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="segabor">
@@ -301,7 +302,6 @@ if (!renderCSV) {
 	        <th>Full Name</th>
 			<th>SKU</th>
 			<th>Rating</th>
-			<th>Sustainability Rating</th>
 			<th>Material</th>
 			<th>Eligible</th>
             <th>Price</th>
@@ -309,7 +309,7 @@ if (!renderCSV) {
             <th>Deal</th>
 		</tr>
 <%
-	report.setNodeSeparator("    <tr><td colspan=\"10\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
+	report.setNodeSeparator("    <tr><td colspan=\"6\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
 	report.generate(q.getNodes());
 %>
     </table>

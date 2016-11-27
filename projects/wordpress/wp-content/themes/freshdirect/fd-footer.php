@@ -43,7 +43,7 @@
             </div>
 		<div class="right">
                 <ul>
-                    <li><a id="globalfooteritem-office" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp?serviceType=CORPORATE&trk=bnav">At The Office</a></li>
+                    <li><a id="globalfooteritem-office" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=COS&trk=bnav">At The Office</a></li>
                     <li><a id="globalfooteritem-rec" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=rec&trk=gna">Recipes</a></li>
 					<li><a id="globalfooteritem-myfd" class="globalnavitem globalnavitem-selected" href="http://blog.freshdirect.com/">MYFD</a></li>
 					<li><a id="globalfooteritem-giftcards"  class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/gift_card/purchase/landing.jsp?trk=bnav">Gift Cards</a></li>
@@ -89,12 +89,12 @@
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:left">
-				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp?serviceType=CORPORATE&trk=bnav"><img style="float: left" src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office"/></a>
-				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp?serviceType=CORPORATE&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=COS&trk=bnav"><img style="float: left" src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office"/></a>
+				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=COS&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
-				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp?serviceType=HOME">Home</a>
+				<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp">Home</a>
 				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
 				&nbsp;&nbsp;<a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/your_account/manage_account.jsp">Your Account</a>
 				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>

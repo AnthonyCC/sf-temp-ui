@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+
+Symbols:
+
+	cms.index.path
+
+-->
+<module id="com.freshdirect.cms.search" version="1.0.0">
+	
+	<schema id="IndexConfiguration">
+		<element name="AttributeIndex">
+			<attribute name="contentType" required="true"/>
+			<attribute name="attributeName" required="true" />
+			<attribute name="relationshipAttributeName" required="false"/><!-- if the attribute is a relationship then the corresponding attribute name in that relationship node -->
+			<attribute name="recurseParent" required="false"/><!-- indicates whether the parents of the given node or relationship node should be taken into account -->
+			<attribute name="text" required="false"/><!-- if set to true then the field will be treated as regular English text and not as special product names -->
+			<attribute name="spelled" required="false"/><!-- if setting it true indicates the field should be indexed into the spell checker dictionary -->
+			<conversion class="com.freshdirect.cms.search.AttributeIndex"/>
+		</element>
+		<element name="ContentIndex">
+			<attribute name="contentType" required="true"/>
+			<conversion class="com.freshdirect.cms.search.ContentIndex"/>
+		</element>
+	</schema>
+
+	<service-point id="SearchService" interface="com.freshdirect.cms.search.ContentSearchServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.search.LuceneSearchService" initialize-method="initialize">
+				<set property="indexLocation" value="${cms.index.path}"/>
+				<set-object property="indexes" value="configuration:SearchIndex"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	
+
+	<configuration-point id="SearchIndex" schema-id="IndexConfiguration"/>
+
+	<!-- describe which attributes are supposed to be indexed/searched on which content types -->
+	<contribution configuration-id="SearchIndex">
+		<AttributeIndex contentType="Category" attributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Category" attributeName="KEYWORDS" recurseParent="true" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="AKA" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="KEYWORDS" spelled="true"/>
+		<!-- AttributeIndex contentType="Product"  attributeName="GLANCE_NAME" spelled="true"/-->
+		<!-- AttributeIndex contentType="Product"  attributeName="NAV_NAME" spelled="true"/-->
+		<AttributeIndex contentType="Product"  attributeName="brands" relationshipAttributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="PRIMARY_HOME" relationshipAttributeName="KEYWORDS" recurseParent="true" spelled="true"/>
+		<AttributeIndex contentType="Brand"    attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="Recipe"   attributeName="name" spelled="true"/>
+		<AttributeIndex contentType="Recipe"   attributeName="keywords" spelled="true"/>
+		<AttributeIndex contentType="YmalSet"  attributeName="title"/>
+		<AttributeIndex contentType="ConfiguredProductGroup" attributeName="name"/>
+		<AttributeIndex contentType="FavoriteList"  attributeName="full_name"/>
+		<AttributeIndex contentType="Recommender"  attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="RecommenderStrategy"  attributeName="FULL_NAME"/>
+		<ContentIndex contentType="Sku"/>
+		<ContentIndex contentType="ConfiguredProduct"/>
+		<AttributeIndex contentType="FAQ" attributeName="QUESTION" text="true"/>
+		<AttributeIndex contentType="FAQ" attributeName="ANSWER" text="true"/>
+		<AttributeIndex contentType="FAQ" attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="FAQ" attributeName="KEYWORDS" text="true"/>
+		<AttributeIndex contentType="FAQ" attributeName="PRIORITY_LIST" text="true"/>
+		
+		<AttributeIndex contentType="ImageBanner" attributeName="Name" text="true"/>
+		<AttributeIndex contentType="ImageBanner" attributeName="Description" text="true"/>
+		<AttributeIndex contentType="Section" attributeName="name" text="true"/>
+		<AttributeIndex contentType="WebPage" attributeName="PAGE_TITLE" text="true"/>
+		<ContentIndex contentType="Banner"/>
+		<AttributeIndex contentType="DarkStore" attributeName="name" text="true"/>
+		<AttributeIndex contentType="Domain" attributeName="NAME" text="true"/>
+		<AttributeIndex contentType="Domain" attributeName="Label" text="true"/>
+		<AttributeIndex contentType="ProductFilter" attributeName="name" text="true"/>
+		<AttributeIndex contentType="ProductFilterGroup" attributeName="name" text="true"/>
+		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level1Name" text="true"/>
+		<AttributeIndex contentType="ProductFilterMultiGroup" attributeName="level2Name" text="true"/>
+		<AttributeIndex contentType="Tag" attributeName="name" text="true"/>
+		<AttributeIndex contentType="Section" attributeName="headlineText" text="true"/>
+		<AttributeIndex contentType="DomainValue" attributeName="Label" text="true"/>
+		<AttributeIndex contentType="DomainValue" attributeName="VALUE" text="true"/>
+		
+	</contribution>
+
+</module>

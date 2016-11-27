@@ -14,14 +14,14 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * @author ksriram
@@ -152,6 +152,7 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 		return email;
 	}
 
+	@Override
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer,
 			String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId) {
 		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);

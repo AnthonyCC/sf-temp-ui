@@ -34,7 +34,7 @@ public class SideNavEI extends TagExtraInfo {
                 "java.util.List", true, VariableInfo.NESTED),
             
             new VariableInfo(data.getAttributeString("topCategory"),
-                "com.freshdirect.storeapi.content.CategoryModel", true, VariableInfo.NESTED)
+                "com.freshdirect.fdstore.content.CategoryModel", true, VariableInfo.NESTED)
 
         };
 

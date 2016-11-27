@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
@@ -164,7 +164,7 @@
 				
 			<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_tableBody">
 				<tr>
-					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="gc_colHeader_i">Gift Cards added to account</th>
@@ -175,7 +175,7 @@
 						<fd:GetGiftCardReceived id='giftcards' showAll='true'>
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1_i">
 							<tr class="gc_colHeader">
-								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td width="85">Certificate&nbsp;#</td>
 								<td width="80">Balance</td>
                                 <td  width="85">Status</td>                                
@@ -187,7 +187,7 @@
 								Integer counterTmp = (Integer) pageContext.getAttribute("gcRemCounter1");
 							%>
 							<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
-								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
                                 <td class="gc_balance"><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;<% } %></td>
                                 <td><% if(giftcard.isRedeemable() && FDStoreProperties.isGivexBlackHoleEnabled()) {%>
@@ -204,7 +204,7 @@
 							</tr>
 							</logic:iterate>
 							<% if(!hasCustomerCase){ %>
-								<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td></tr>
+								<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td></tr>
 								<tr><td colspan="6"><b>Note: Case Required to remove a Gift Card.</b></td></tr>
 							<% } %>
 						</table>
@@ -223,7 +223,7 @@
 						<fd:GetDeletedGiftCard id='giftcards'>
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table2_i">
 							<tr class="gc_colHeader">
-								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td width="85">Certificate&nbsp;#</td>
 								<td width="80">Balance</td>						
 								<td>Purchased</td>
@@ -233,7 +233,7 @@
 								Integer counterTmp = (Integer) pageContext.getAttribute("gcDelCounter1");
 							%>
 							<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
-								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint2('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
 								<td>$<%= giftcard.getBalance() %></td>							
 								<td><%= giftcard.getPurchaseSaleId() %></td>							
@@ -253,7 +253,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 				</tr>
 			</table>
 		</fd:RedemptionCodeController>  

@@ -126,11 +126,11 @@ if ("".equals(custEnteredPhone)) { //if nothing has been entered ...
 			    			    
 			    <tr><td colspan="4" class="bodyCopySUL"><span><label>Email Address</label><span class="star"> *</span></span></td></tr>
 				<tr><td colspan="4"><input type="text" size="35" class="text11ref inputUser" name="email" value="<%=custEmail%>"></td></tr>
-				<tr><td colspan="4" class="errMsg"><span class="errortext"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"><%=errorMsg%></fd:ErrorHandler>&nbsp;</span></td></tr>
+				<tr><td colspan="4" class="errMsg"><span class="text11rbold"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"><%=errorMsg%></fd:ErrorHandler>&nbsp;</span></td></tr>
 			    
 			    <tr><td colspan="4" class="bodyCopySUL"><span><label>Delivery Zip Code</label><span class="star"> *</span></span></td></tr>
 				<tr><td colspan="4"><input type="text" size="35" class="text11ref inputUser" name="zip" value="<%=custZip%>"></td></tr>
-				<tr><td colspan="4" class="errMsg"><span class="errortext"><fd:ErrorHandler result="<%=result%>" name="zip" id="errorMsg"><%=errorMsg%></fd:ErrorHandler>&nbsp;</span></td></tr>
+				<tr><td colspan="4" class="errMsg"><span class="text11rbold"><fd:ErrorHandler result="<%=result%>" name="zip" id="errorMsg"><%=errorMsg%></fd:ErrorHandler>&nbsp;</span></td></tr>
 			
 				<tr>
 					<td class="bodyCopySUL" width="30"><input type="radio" class="custType" name="custType" id="custTypeH" value="HOME" <%= (custTypeHome)?"checked":"" %>></td>

@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.crm.CrmCaseOrigin;
-import com.freshdirect.crm.CrmCaseState;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -14,7 +12,7 @@ import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
-public class ReconciliationCaseBuilder {
+class ReconciliationCaseBuilder {
 
 	private final PrimaryKey customerPk;
 	private final PrimaryKey salePk;
@@ -42,10 +40,8 @@ public class ReconciliationCaseBuilder {
 			this.details.append("<BR>");
 		}
 	}
+
 	public List<CrmSystemCaseInfo> getCases() {
-		return getCases(null, null, null);
-	}
-	public List<CrmSystemCaseInfo> getCases(CrmCaseSubject subject, CrmCaseOrigin origin, CrmCaseState state) {
 		if (this.shortedAmount <= (this.order.getSubTotal() * ErpServicesProperties.getCaseShortshipPercentage())) {
 			return Collections.<CrmSystemCaseInfo>emptyList();
 		}
@@ -53,15 +49,12 @@ public class ReconciliationCaseBuilder {
 		List<CrmSystemCaseInfo> cases = new ArrayList<CrmSystemCaseInfo>();
 
 		if (this.details.length() > 0) {
-			subject = subject == null ? CrmCaseSubject.getEnum(CrmCaseSubject.CODE_SHORTOUTITEM) : subject;
-			origin = origin == null ? CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS) : origin;
-			state = state == null ? CrmCaseState.getEnum(CrmCaseState.CODE_OPEN) : state;
 			CrmSystemCaseInfo info =
 				new CrmSystemCaseInfo(
 					customerPk,
 					this.salePk,
-					subject, // Modified to change OIQ-005(Became Obsolete) to OUT-007
-					"order #" + this.salePk.getId() + " was shortshipped", origin, state);
+					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_SHORTOUTITEM), // Modified to change OIQ-005(Became Obsolete) to OUT-007
+					"order #" + this.salePk.getId() + " was shortshipped");
 			
 			if(this.details.length()>4000)
 				info.setNote(this.details.substring(0, 4000));

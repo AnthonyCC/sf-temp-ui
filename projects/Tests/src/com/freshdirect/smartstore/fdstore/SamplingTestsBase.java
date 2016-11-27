@@ -2,7 +2,6 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +18,6 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.smartstore.ConfigurationStatus;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
@@ -35,23 +32,23 @@ import com.freshdirect.smartstore.scoring.MockFilterFactory;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class SamplingTestsBase extends TestCase {
-	protected static ContentKey BANAN = ContentKey.getContentKey(FDContentTypes.PRODUCT, "BANAN");
-	protected static ContentKey CITROM = ContentKey.getContentKey(FDContentTypes.PRODUCT, "CITROM");
+	protected static ContentKey BANAN = new ContentKey(FDContentTypes.PRODUCT, "BANAN");
+	protected static ContentKey CITROM = new ContentKey(FDContentTypes.PRODUCT, "CITROM");
 
-	protected static ContentKey EPER = ContentKey.getContentKey(FDContentTypes.PRODUCT, "EPER");
-	protected static ContentKey CSERESZNYE = ContentKey.getContentKey(FDContentTypes.PRODUCT, "CSERESZNYE");
-	protected static ContentKey MEGGY = ContentKey.getContentKey(FDContentTypes.PRODUCT, "MEGGY");
+	protected static ContentKey EPER = new ContentKey(FDContentTypes.PRODUCT, "EPER");
+	protected static ContentKey CSERESZNYE = new ContentKey(FDContentTypes.PRODUCT, "CSERESZNYE");
+	protected static ContentKey MEGGY = new ContentKey(FDContentTypes.PRODUCT, "MEGGY");
 
-	protected static ContentKey ZOLDALMA = ContentKey.getContentKey(FDContentTypes.PRODUCT, "ZOLDALMA");
-	protected static ContentKey EGRES = ContentKey.getContentKey(FDContentTypes.PRODUCT, "EGRES");
+	protected static ContentKey ZOLDALMA = new ContentKey(FDContentTypes.PRODUCT, "ZOLDALMA");
+	protected static ContentKey EGRES = new ContentKey(FDContentTypes.PRODUCT, "EGRES");
 
-	protected static ContentKey SARGA_GYUMOLCS = ContentKey.getContentKey(FDContentTypes.CATEGORY, "SARGA_GYUMOLCS");
-	protected static ContentKey PIROS_GYUMOLCS = ContentKey.getContentKey(FDContentTypes.CATEGORY, "PIROS_GYUMOLCS");
-	protected static ContentKey ZOLD_GYUMOLCS = ContentKey.getContentKey(FDContentTypes.CATEGORY, "ZOLD_GYUMOLCS");
+	protected static ContentKey SARGA_GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY, "SARGA_GYUMOLCS");
+	protected static ContentKey PIROS_GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY, "PIROS_GYUMOLCS");
+	protected static ContentKey ZOLD_GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY, "ZOLD_GYUMOLCS");
 
-	protected static ContentKey GYUMOLCS = ContentKey.getContentKey(FDContentTypes.CATEGORY, "GYUMOLCS");
+	protected static ContentKey GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY, "GYUMOLCS");
 
-	protected static ContentKey CITROMIZUBANAN = ContentKey.getContentKey(FDContentTypes.PRODUCT, "CITROM_IZU_BANAN");
+	protected static ContentKey CITROMIZUBANAN = new ContentKey(FDContentTypes.PRODUCT, "CITROM_IZU_BANAN");
 
 	protected static Map<ContentKey, ContentKey> categoryMap = new HashMap<ContentKey, ContentKey>();
 
@@ -110,9 +107,7 @@ public class SamplingTestsBase extends TestCase {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/SamplingTest.xml");
 
-        CmsManager.setInstance(new CmsManager(service,
-                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
-
+        CmsManager.setInstance(new CmsManager(service, null));
 
 		candidates.clear();
 		for (ContentKey key : scoreMap.keySet()) {

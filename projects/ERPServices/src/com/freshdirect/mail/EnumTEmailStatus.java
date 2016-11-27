@@ -19,7 +19,6 @@ public class EnumTEmailStatus extends Enum {
 	public static final EnumTEmailStatus SUCESS = new EnumTEmailStatus("COMP", "Success in sending email");
 	public static final EnumTEmailStatus PROCESSING = new EnumTEmailStatus("PRC", "processing the email response");
 	public static final EnumTEmailStatus NEW = new EnumTEmailStatus("NEW", "new email");
-	public static final EnumTEmailStatus INFO = new EnumTEmailStatus("INFO", "Success in sending email, Recieved warning");
 	
     private String description;
 

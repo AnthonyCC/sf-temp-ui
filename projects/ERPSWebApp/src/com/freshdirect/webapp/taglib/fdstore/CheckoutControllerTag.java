@@ -13,7 +13,10 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -21,6 +24,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -38,7 +42,6 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.HttpContextAware;
@@ -52,6 +55,8 @@ import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -77,8 +82,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 	private final String ebtUnavailableItemsPage	= "/checkout/step_3_unavail.jsp";
 	private final String ebtCRMUnavailableItemsPage	= "/checkout/checkout_EBT_unavail.jsp";
-	
-	public boolean dlvPassCart;
 	
 	public String getPaymentId() {			
 		FDCartModel cart = getCart();
@@ -149,13 +152,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	protected boolean performAction( HttpServletRequest request, ActionResult result ) throws JspException {
 		String action = this.getActionName();
 		final HttpSession session = request.getSession();
-        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		boolean saveCart = false;
 
 		final String app = (String)pageContext.getSession().getAttribute( SessionName.APPLICATION );
 		final boolean isNotCallCenter = !"CALLCENTER".equals( app );
 		final FDSessionUser currentUser = (FDSessionUser) getUser();
-		FDCartModel cart = UserUtil.getCart(currentUser, "", isDlvPassCart());
+		FDCartModel cart = currentUser.getShoppingCart();
 		
 		TimeslotEvent event = new TimeslotEvent((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
@@ -163,8 +165,18 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {
+					// set unattended delivery flag to opt in if the user has not seen the unattended delivery notice
+					if(EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
+						com.freshdirect.customer.ErpAddressModel dlvAddress = currentUser.getShoppingCart().getDeliveryAddress();
+						if (dlvAddress != null) {
+					        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+					        	dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);					        	
+					        }
+						}
+					}
+					
 					LOGGER.debug("setDeliveryAddress[START] :");
-                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, action);
+					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
 					m.performSetDeliveryAddress(noContactPhonePage);
 				} catch (RedirectToPage e) {
 					LOGGER.debug("setDeliveryAddress[RedirectToPage] :"+ e);
@@ -177,7 +189,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					if ( !makeGoodOrder ) {
 						// Set the selected gift carts for processing.
 					    if (null != currentUser.getGiftCardList()) {
-						    cart.setSelectedGiftCards(currentUser.getGiftCardList().getSelectedGiftcards());
+						    currentUser.getShoppingCart().setSelectedGiftCards(currentUser.getGiftCardList().getSelectedGiftcards());
 					    }
 					}
 				}
@@ -186,13 +198,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				
 				LOGGER.debug("setDeliveryAddress[END] :");
 			}  else if ( "addAndSetDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, "addDeliveryAddressEx");
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, "addDeliveryAddressEx");
 				m.performAddAndSetDeliveryAddress();
 								
 			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : Start
 				
 			}  else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performEditAndSetDeliveryAddress();
 				FDIdentity identity = getIdentity();
 				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
@@ -208,11 +220,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
 				
 			} else if ( "deleteDeliveryAddress".equalsIgnoreCase( action ) ) {
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performDeleteDeliveryAddress(event); //m.performDeleteDeliveryAddress() method was refactored to check for any existing reservations.
 
 			} else if ( "reserveDeliveryTimeSlot".equalsIgnoreCase( action ) ) {
-                TimeslotManipulator m = new TimeslotManipulator(request, response, result, action);
+				TimeslotManipulator m = new TimeslotManipulator(this.pageContext, result, action);
 				String outcome = m.performReserveDeliveryTimeSlot();
 				
 				if ( outcome.equals( Action.NONE ) ) {
@@ -221,7 +233,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "submitOrder".equalsIgnoreCase( action ) ) {
 				LOGGER.debug( "AVAILABILITY IS: " + getCart().getAvailability() );
-				if ( ((String)pageContext.getSession().getAttribute("BYPASS_CART_VALIDATION")==null || !((String)pageContext.getSession().getAttribute("BYPASS_CART_VALIDATION")).equals("YES")) && !getCart().isAvailabilityChecked() ) {
+				if ( !getCart().isAvailabilityChecked() ) {
 
 					this.setSuccessPage( backToViewCart );
 					return true;
@@ -239,7 +251,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				request.setAttribute("TAXATION_TYPE", pageContext.getSession().getAttribute("TAXATION_TYPE"));
 				pageContext.getSession().removeAttribute("TAXATION_TYPE");
 				
-				String outcome = performSubmitOrder(result, dlvPassCart);
+				String outcome = performSubmitOrder(result);
 
 				MasqueradeContext masqueradeContext = currentUser.getMasqueradeContext();
 				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
@@ -264,8 +276,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 				currentUser.setSuspendShowPendingOrderOverlay(false);
 				currentUser.setShowPendingOrderOverlay(true);
-				//clear inform ordermodify flag
-				currentUser.setShowingInformOrderModify(false);
+				
+				//prepare and store model for Coremetrics report
+				//   EXCEPT for make-good sessions!
+				if ( masqueradeMakeGoodOrderId == null ) {
+					CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
+					CmShop9Tag.buildPendingModels(session, cart);
+				}
+
 				
 				saveCart = true;
 				if ( outcome.equals( Action.NONE ) ) {
@@ -293,7 +311,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				performGiftCardAction(request, result, action);
 
 				if ( result.isSuccess() ) {
-					String outcome = performSubmitOrder(result, dlvPassCart);
+					String outcome = performSubmitOrder(result);
 					saveCart = true;
 
 					if ( result.getError( "address_verification_failed" ) != null ) {
@@ -307,10 +325,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 				}
 			} else if ( "setPaymentMethod".equalsIgnoreCase( action ) ) {
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performSetPaymentMethod();
 				
-				if ( result.isSuccess() && !isDlvPassCart() ) {
+				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
@@ -319,7 +337,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "setNoPaymentMethod".equalsIgnoreCase( action ) ) {
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performSetNoPaymentMethod();
 
 				if ( result.isSuccess() ) {
@@ -330,33 +348,24 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "addAndSetPaymentMethod".equalsIgnoreCase( action ) ) {
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-				String outcome = m.performAddAndSetPaymentMethod();
-				if ( outcome.equals( Action.ERROR ) ) {
-					return true; 
-				}
-				if ( result.isSuccess() && !isDlvPassCart()) {
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+				m.performAddAndSetPaymentMethod();
+				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);					
 				}
 
 			} else if ( "addPaymentMethod".equalsIgnoreCase( action ) || "gc_addPaymentMethod".equalsIgnoreCase( action ) ) {
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-				String outcome = m.performAddPaymentMethod();
-				if ( outcome.equals( Action.ERROR ) ) {
-					return true; 
-				}
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+				m.performAddPaymentMethod();
 
 			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {//Added IPhone functionality APPDEV-1565
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-                String outcome = m.performEditPaymentMethod();
-                if ( outcome.equals( Action.ERROR ) ) {
-					return true; 
-				}
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+				m.performEditPaymentMethod();
 
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
 				if ( UserValidationUtil.validateOrderMinimum( session, result ) ) {
-					String outcome = performSetPaymentAndSubmit( request, result, dlvPassCart );
+					String outcome = performSetPaymentAndSubmit( request, result );
 					saveCart = true;
 					if ( outcome.equals( Action.NONE ) ) {
 						return false; // SKIP_BODY
@@ -364,7 +373,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "deletePaymentMethod".equalsIgnoreCase( action ) ) {
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
 				m.performDeletePaymentMethod();
 
 				if ( ( request.getRequestURI().toLowerCase().indexOf( "gift_card" ) > -1 ) ) {
@@ -375,14 +384,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "setDeliveryAddressAndPayment".equalsIgnoreCase( action ) ) {
 				try {
-                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
+					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 					m.performSetDeliveryAddress(noContactPhonePage);
 				} catch (RedirectToPage e) {
 					this.redirectTo(e.getPage());
 				}
 
 				if ( result.isSuccess() ) {
-                    PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
+					PaymentMethodManipulator m = new PaymentMethodManipulator(this.pageContext, result, getActionName());
 					m.setPaymentMethod();
 
 					if ( result.isSuccess() ) {
@@ -399,7 +408,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				try {
 					
 					LOGGER.debug("setOrderMobileNumber[START] :");
-                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, action);
+					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
 					m.performSetOrderMobileNumber();
 				} catch (RedirectToPage e) {
 					LOGGER.debug("setOrderMobileNumber[RedirectToPage] :"+ e);
@@ -570,13 +579,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		// allane: added this b/c we skip confirm order page in gc checkout. payment needs to be set at the same
 		// time as checkout.
 		FDSessionUser currentUser = (FDSessionUser) getUser();
-        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		
 		if ( "gc_onestep_submitGiftCardOrder".equalsIgnoreCase( action ) ) {
 
 			if ( result.isSuccess() ) {
 				
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performAddAndSetPaymentMethod();
 
 				if ( result.getError( "payment_method_fraud" ) != null ) {
@@ -599,7 +607,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( optinInd == null || optinInd.equals( "" ) ) {
 					result.addError( new ActionError( "Opt_in_required", SystemMessageList.MSG_RH_OPTIN_REQUIRED ) );
 				}
-                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performAddAndSetPaymentMethod();
 
 				if ( result.getError( "payment_method_fraud" ) != null ) {
@@ -608,7 +616,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 			}
 		} else {
-            PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
+			PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 			m.performSetPaymentMethod();
 		}
 	}
@@ -616,13 +624,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result, boolean dlvPassCart ) throws Exception {
-        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-        PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
+	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result ) throws Exception {
+		PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
 		m.setPaymentMethod();
 		
 		if ( result.isSuccess() ) {
-			return performSubmitOrder(result, dlvPassCart);
+			return performSubmitOrder(result);
 		}
 		return Action.ERROR;
 	}
@@ -633,12 +640,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		configureAction(action, result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
 		}
 
-	protected String performSubmitOrder(ActionResult result, boolean dlvPassCart) throws Exception {
-		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage, dlvPassCart);
+	protected String performSubmitOrder(ActionResult result) throws Exception {
+		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage);
 		}
 
 	
-	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage, boolean dlvPassCart) throws Exception {
+	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage) throws Exception {
 		SubmitOrderAction soa = new SubmitOrderAction();
 		configureAction( soa, result, session, request, response);
 		soa.setAuthCutoffPage( authCutoffPage );
@@ -646,7 +653,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		soa.setCcdAddCardPage( ccdAddCardPage );
 		soa.setGCFraudPage( gcFraudPage );
 		soa.setStandingOrder( user.getCurrentStandingOrder() );
-		soa.setDlvPassCart(dlvPassCart);
 
 		if ( actionName.equals( "gc_submitGiftCardOrder" ) || ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) ) {
 			if ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) {
@@ -683,13 +689,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 	private FDCartModel getCart() {
-		/*if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
+		if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
 			return this.getUser().getGiftCart();
 		} else if ( this.getActionName().indexOf( "rh_" ) != -1 ) {
 			return this.getUser().getDonationCart();
 		}
-		return this.getUser().getShoppingCart();*/
-		return UserUtil.getCart(this.getUser(), this.getActionName(), false);
+		return this.getUser().getShoppingCart();
 	}
 
 	private FDUserI getUser() {
@@ -709,15 +714,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl
-	}
-
-
-	public boolean isDlvPassCart() {
-		return dlvPassCart;
-	}
-
-	public void setDlvPassCart(boolean dlvPassCart) {
-		this.dlvPassCart = dlvPassCart;
 	}
 
 }

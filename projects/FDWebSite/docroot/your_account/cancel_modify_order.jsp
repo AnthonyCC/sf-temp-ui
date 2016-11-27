@@ -1,7 +1,9 @@
+
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/your_account/order_history.jsp" />
+
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <%
 FDModifyCartModel modiCart = (FDModifyCartModel)user.getShoppingCart();
 String orderId = modiCart.getOriginalOrder().getErpSalesId();

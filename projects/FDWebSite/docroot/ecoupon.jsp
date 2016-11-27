@@ -1,17 +1,16 @@
 <%@page import="com.freshdirect.customer.EnumATCContext"%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
-<%@ page import="com.freshdirect.storeapi.*"%>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
-<%@ page import="com.freshdirect.storeapi.content.*"%>
-<%@ page import='com.freshdirect.storeapi.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="java.util.*"%>
@@ -22,6 +21,7 @@
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.FDCouponProperties"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil"%>
@@ -30,6 +30,7 @@
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <% //expanded page dimension
@@ -93,10 +94,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>
 
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Coupon Circular Page"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name="title" direct="true">FreshDirect - Coupon Circular Page</tmpl:put> --%>
+	<tmpl:put name="title" direct="true">FreshDirect - Coupon Circular Page</tmpl:put>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>
@@ -272,10 +270,15 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 			request.setAttribute("carNumItems", carNumItems);
   		%>
   		<center>
+		<script type="text/javascript">
+			var cmPageCarousel = cmPageCarousel || {};
+			<% String handlerObj = "cmPageCarousel[\"" + carId + "\"]"; %>
+			<%=handlerObj%> = {"afterScroll": <fd:CmElement wrapIntoFunction="true" carouselId='<%=carPrefix%>' elementCategory="carousel"/> };
+		</script>
 		<div class="search-recommender fdCouponCar">
 			<div class="fdCouponCar-title"><img src="/media/images/ecoupon/best_offers.gif" alt="Best Offers" /></div>
 			<display:Carousel id="fdCouponCarousel" carouselId="<%=carId%>" width="<%=carWidth%>" numItems="<%=carNumItems%>" showCategories="false" itemsToShow="<%= carPms %>" 
-					trackingCode="<%=carTrackCode%>" maxItems="<%=carMaxItems%>" parentId="<%= carParentId %>">
+					trackingCode="<%=carTrackCode%>" maxItems="<%=carMaxItems%>" parentId="<%= carParentId %>" eventHandlersObj='<%=handlerObj%>'>
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<% 

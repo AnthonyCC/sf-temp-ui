@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<taglib xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
-    version="2.1">
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
 
-    <description>UNBXD analytics event tag library</description>
-    <display-name>unbxd</display-name>
-    <tlib-version>1.0</tlib-version>
-    <short-name>unbxd</short-name>
-    <uri>unbxd</uri>
-
+<taglib>
+    <tlib-version>3.6</tlib-version>
+    <jsp-version>1.2</jsp-version>
+	<shortname>UNBXD Events Library</shortname>
+	<uri>unbxd</uri>
+	<info>UNBXD Analytics Event Tags Library</info>
+	
+	
 	<tag>
         <name>browseEvent</name>
         <tag-class>com.freshdirect.webapp.taglib.unbxd.BrowseEventTag</tag-class>

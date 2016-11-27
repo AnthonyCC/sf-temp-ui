@@ -1,11 +1,11 @@
 <%@ page import='java.util.*' %>
-<%@ page import="com.freshdirect.framework.util.StringUtil"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -14,9 +14,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-<fd:OptionalParameterValidator parameter="skuCode" parameterType="<%=String.class.getSimpleName()%>"/>
-
 <%
 FDCartLineI templateLine = null ;
 //m for meal ids
@@ -40,31 +37,28 @@ Recipe        recipe  = null;
 
 
 int            maxWidth = 320;
+ContentFactory cf       = ContentFactory.getInstance();
 List           skus     = new ArrayList();
 
 if (mcatId != null && mproductId != null) {
-try{
-   product =  PopulatorUtil.getProductByName(mcatId,mproductId);
-}
-catch (FDResourceException e){
-    throw new FDNotFoundException("Product is discontinued or exception happened during data collection: "+ e);
-}
+    product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
 
 } else if (variantId != null && variantId.length() != 0) {
-	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
+	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
-} else {
-    throw new FDNotFoundException("No variantId or recipeId or mproductId supplied");
 }
+// TODO: handle lack of mproductId or recipeId
+
 
 //accomodate claims include
 ProductModel    productNode        = null;
 CategoryModel   parentCat          = null;
 String          prodNameAttribute  = null;
+ContentFactory  contentFactory     = null;
 SkuModel        defaultSku         = null;
 Image           productImage       = null;
 List            prodSkus           = null;
@@ -80,6 +74,7 @@ if (product != null) {
     productNode       = product;
     parentCat         = (CategoryModel) productNode.getParentNode();
     prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
+    contentFactory    = ContentFactory.getInstance();
     defaultSku        = product.getDefaultSku();
     productImage      = product.getDetailImage();
     prodSkus          = productNode.getSkus();
@@ -87,12 +82,8 @@ if (product != null) {
     prodSkus          = new ArrayList(variant.getDistinctSkus());
 }
 
-if (prodSkus == null){
-    throw new FDNotFoundException("Product SKUs was null after data collection.");
-}
-
 Map availOptSkuMap = new HashMap();
-
+    
 boolean hasSingleSku = (prodSkus.size() == 1);
 
 if (hasSingleSku) {
@@ -143,9 +134,9 @@ if (productNode != null) {
                 continue;
             }
             try {
-                ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
-                if (pm!=null) {
-                   if ( !pm.isUnavailable() && availOptSkuMap.get(optSkuCode)==null) {
+                ProductModel pm =cf.getProduct(optSkuCode);
+                if (pm!=null ) {
+                   if ( !pm.isUnavailable()   && availOptSkuMap.get(optSkuCode)==null) {
                     availOptSkuMap.put(optSkuCode,pm);
                    } else if ( pm.isUnavailable() ) {
                         unAvailCount++;
@@ -168,24 +159,26 @@ if (productNode != null) {
 	    defaultSku = (SkuModel) prodSkus.get(0);
     }
 }
-String title = null;
-if (productNode != null) {
-  title = "FreshDirect - " + productNode.getFullName() + " Details";
-} else if (variant != null) {
-  title = "FreshDirect - " + recipe.getFullName() + " Details";
-}
+
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%=title%>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+<%
+    if (productNode != null) {
+%>
+        <tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
+<%
+    } else if (variant != null) {
+%>
+        <tmpl:put name='title' direct='true'>FreshDirect - <%=recipe.getFullName()%> Details</tmpl:put>
+<%
+    }
+%>
 	<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top">
-<td style="border-right:solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="120" height="1"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="400" height="1"></td>
+<td style="border-right:solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="120" height="1"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="400" height="1"></td>
 </tr>
 <tr valign="top">
 <td align="right" style="border-right:solid 1px #999966; padding-right: 6px;">
@@ -220,7 +213,7 @@ int prodCount = 0;%>
 					    continue;
 					}
 
-					ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
+					ProductModel pm =(ProductModel)cf.getProduct(optSkuCode);
 					if (pm.getSku(optSkuCode).isUnavailable()) continue;
 					if (pm!=null && !prodList.contains(pm)) {
 						prodList.add(pm);
@@ -297,7 +290,7 @@ int prodCount = 0;%>
 		Image prodImg = null;
 		String prodDescription = null;
 
-		compProduct = ContentFactory.getInstance().getProduct(skuCode);
+		compProduct =  ContentFactory.getInstance().getProduct(skuCode);
         productNode = productNode == null ? compProduct : productNode;
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();
@@ -307,7 +300,7 @@ int prodCount = 0;%>
             fdprd = selectSku.getProduct();
         } catch (FDSkuNotFoundException fdsnfe) { throw fdsnfe; }
 %>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br><span class="space2pix"><br></span>
@@ -371,13 +364,13 @@ int prodCount = 0;%>
         <span class="recipe_author"><%=sourceName%> <%=recipe.getAuthorNames()%></span><br><br></td>
     </tr>
 	<tr valign="top">    
-		<td><% if(recipeIngrdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><% } %>
+		<td><% if(recipeIngrdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><% } %>
 		</td>
         <td style="padding-left:15px;" align="right"><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %></td>
     </tr>
 	<% if(recipeDesc!=null){ %>
 		<tr><td colspan="2"><br></td></tr>
-		<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+		<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 		<tr>
 			<td colspan="2"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><br></td>
 		</tr>

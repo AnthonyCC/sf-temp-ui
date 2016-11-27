@@ -1,4 +1,4 @@
-<%@ tag import="com.freshdirect.storeapi.content.ProductModel" %>
+<%@ tag import="com.freshdirect.fdstore.content.ProductModel" %>
 <%@ tag import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ tag import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
 <%@ tag import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>

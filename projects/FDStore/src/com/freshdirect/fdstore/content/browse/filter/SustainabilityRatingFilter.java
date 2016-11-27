@@ -3,12 +3,10 @@ package com.freshdirect.fdstore.content.browse.filter;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 public class SustainabilityRatingFilter extends AbstractRangeFilter {
 
@@ -25,7 +23,7 @@ public class SustainabilityRatingFilter extends AbstractRangeFilter {
 		}
         
 		FDProductInfo productInfo = productItem.getFdProductInfo();
-		EnumSustainabilityRating sustainabilityRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+		EnumSustainabilityRating sustainabilityRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
 		if (sustainabilityRating != null && sustainabilityRating.getId() >= 2) {
 			return invertChecker(isWithinRange( sustainabilityRating.getId() ));
 		}

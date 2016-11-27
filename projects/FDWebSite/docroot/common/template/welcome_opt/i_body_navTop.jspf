@@ -3,15 +3,14 @@
 
  --%><%@ page import="java.text.SimpleDateFormat"
 %><%@ page import='java.util.*'
-%><%@ page import='com.freshdirect.storeapi.content.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
 %><%@ page import='com.freshdirect.fdstore.customer.*'
 %><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
 %><%@ page import='com.freshdirect.webapp.util.*'
 %><%@ page import='com.freshdirect.fdstore.*'
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
-%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ taglib prefix="fd" uri="freshdirect"
+%><%@ taglib prefix="fd" uri="freshdirect"
 %><%@ taglib prefix="logic" uri="logic" %>
 
 <% //expanded page dimensions
@@ -29,50 +28,51 @@ if(user != null) {
 	if(user.isDepotUser()){
 		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
 	}
-
-
+	
+	
 	request.setAttribute("listPos", "SystemMessage");
-	%><%
+	%><% 
 	if (FDStoreProperties.isAdServerEnabled()) {
-  		%><div id="oas_SystemMessage">
+  		%><div id="OAS_SystemMessage">
   			<script type="text/javascript">OAS_AD('SystemMessage');</script>
-  		</div><%
+  		</div><% 
 	} else { %>
 		<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
-
+		
 			<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
 				<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 					<tr align="center">
 						<td>
 							<font class="text12rbold"><%=ann.getHeader()%></font><br>
 							<%=ann.getCopy()%>
-							<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
+							<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 						</td>
 					</tr>
-					<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+					<tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 				</table><br>
 			</logic:iterate>
 		</fd:GetSiteAnnouncements></div><%
 	} %>
-	<div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
-	<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div>
-	
-	<%
+	<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+	<% if (!cutoffInfoDisplayed) {
+		%><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
+		<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+	}
 	String uri = request.getRequestURI().toLowerCase();
-	%>
+	%>	
 	<div class="message invisible" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
-
+	
 		<!-- Adding Skip to Navigation : Start-->
 		<a href="#content" class="hidefromView">Skip to Content</a>
 		<!-- Adding Skip to Navigation : End-->
-
-
+	
+		
   	<div class="container globalnav_top<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? " disableCart" : "" %>">
 	  	<%
 		if (user.isDepotUser()){ %>
-			<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" /></a>
+			<a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" /></a>
 		<% } else { %>
-		  <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" alt="FreshDirect" id="FD_LOGO" /></a>
+		  <a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" alt="FreshDirect" id="FD_LOGO" /></a>
 		<% } %>
 		<%
 			String hasEcouponsClass="";
@@ -89,6 +89,7 @@ if(user != null) {
 	      			</div>
 	    		</div>
 	    		<div id="popupcart">
+	    			<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
 	    			<div class="header"><span class="quantity">QTY</span><span class="item">ITEM</span><span class="price">PRICE</span></div>
 	    			<div class="body">
 	    				<table class="content"></table>
@@ -102,7 +103,7 @@ if(user != null) {
 	    			</div>
 	    	</fd:GetCart>
 
-            <% String dlvInfoLink = "";
+            <% String dlvInfoLink = ""; 
                 if (user.isPickupOnly()) {
                     dlvInfoLink = "/help/delivery_lic_pickup";
                 } else if (user.isDepotUser()) {
@@ -113,7 +114,7 @@ if(user != null) {
                     dlvInfoLink = "/help/delivery_info";
                         if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
                             dlvInfoLink += "_cos";
-                        }
+                        } 
                 }
             %>
             <div class="topnavitem">
@@ -131,12 +132,12 @@ if(user != null) {
             </div>
             <div>
                 <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-                    <label for="topSearchField"><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" width="46" height="11" alt="SEARCH" id="globalnav_searchButton" /></a></label>
+                    <label><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" width="46" height="11" alt="SEARCH" id="globalnav_searchButton" /></a></label>
                     <% {
                         String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
                     %>
                         <!--  div class="x-yui-skin-sam" style="padding: 0; margin: 0;" -->
-                            <input type="text" id="topSearchField"  class="searchinput search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+                            <input type="text" id="topSearchField"  class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
                             <% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %><div id="topSearchTerms" class="termsStyle" style="position: absolute; background-color: white"></div><% } %>
                         <!-- /div -->
                     <% } %>
@@ -145,7 +146,7 @@ if(user != null) {
             </div>
         </div>
     </div>
-
+    
     <% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %>
         <script type="text/javascript">
             YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory(null, "topSearchTerms", "topSearchField"));
@@ -156,15 +157,15 @@ if(user != null) {
     <table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
     <tr>
         <td width="182" ROWSPAN="3" valign="BOTTOM">
-
-        <a href="<%= FDURLUtil.getLandingPageUrl(user)%>" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" alt="FreshDirect" id="FD_LOGO" /></a>
+    
+        <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" alt="FreshDirect" id="FD_LOGO" /></a>
         </td>
     </tr>
     <tr>
-        <td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" /></td>
+        <td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" alt="" /></td>
     </tr>
     </table>
-<% } %>
+<% } %> 
 
 <!-- Changes for Skip to Content Fix -->
-<div tabindex="-1" id="skip_to_content"></div>
+<div tabindex="0" id="skip_to_content"></div>

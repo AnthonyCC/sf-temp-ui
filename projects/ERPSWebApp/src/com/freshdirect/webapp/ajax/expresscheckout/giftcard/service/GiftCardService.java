@@ -53,11 +53,8 @@ public class GiftCardService {
 						if (gcModel.getBalance() == 0) {
 							validationResult.add(new ValidationError(GIVEX_NUM_FIELD_ID, SystemMessageList.APPLY_GC_WITH_ZERO_BALANCE));
 						}
-						if(null !=user.getGiftCardList()){
-							user.getGiftCardList().addGiftCard(new FDGiftCardModel(gcModel));
-						}
+						user.getGiftCardList().addGiftCard(new FDGiftCardModel(gcModel));
 						user.resetGCRetryCount();
-						
 					} catch (ServiceUnavailableException se) {
 						validationResult.add(new ValidationError(GIVEX_NUM_FIELD_ID, SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE));
 					} catch (InvalidCardException e) {

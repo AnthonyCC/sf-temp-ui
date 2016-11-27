@@ -4,7 +4,8 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 
@@ -34,16 +35,13 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 %>
 
 <tmpl:insert template='<%=templateToUse%>'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Merge Cart"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Merge Cart</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>Merge Cart</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ System.out.println("555555555555"+fdTcAgree);%>
 			<script type="text/javascript">
 			
-			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>')
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>')
 
 			</script>
 <%}%>
@@ -66,9 +64,9 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 	</TD>
 </TR>
 </TABLE>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_MERGE_CART_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_MERGE_CART_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <FONT CLASS="space10pix"><BR></FONT>
 
 <table width="<%=W_MERGE_CART_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
@@ -92,7 +90,7 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 	</table>
 	
 </td>
-<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
+<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
 
 
 
@@ -115,7 +113,7 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 	
 
 </td>
-<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
+<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
 
 <td width="<%=W_MERGE_CART_RADIO%>" align="center"><input type="radio" name="chosen_cart" value="database"></td>
 <td width="<%=W_MERGE_CART_COL%>" class="text11bold">
@@ -144,13 +142,13 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 </table>
 
 <br>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_MERGE_CART_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_MERGE_CART_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_MERGE_CART_TOTAL%>">
 <TR VALIGN="TOP">
 	<TD CLASS="text11" WIDTH="<%=W_MERGE_CART_TOTAL-300%>" VALIGN="bottom">
-		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_MERGE_CART_TOTAL-300%>" HEIGHT="1" BORDER="0"></TD>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_MERGE_CART_TOTAL-300%>" HEIGHT="1" BORDER="0"></TD>
 	<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
 <input type="image" name="process_merging_cart" src="/media_stat/images/buttons/continue_orange.gif" alt="CONTINUE TO CHECKOUT"  VSPACE="2" border="0"></TD>
 	<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE">

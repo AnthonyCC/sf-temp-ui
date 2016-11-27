@@ -1,10 +1,10 @@
 <%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -27,8 +27,9 @@ String skuCode  = request.getParameter("skuCode");
 
 
 int maxWidth=320;
+ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
-ProductModel product =  PopulatorUtil.getProductByName(mcatId,mproductId);
+ProductModel product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
 
 if (null !=product && !product.getComponentGroups().isEmpty()) {
     String redirectURL = "/cg_meal_item_detail.jsp?" + request.getQueryString();
@@ -40,6 +41,7 @@ if (null !=product && !product.getComponentGroups().isEmpty()) {
 ProductModel productNode = product;
 CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
+ContentFactory contentFactory= ContentFactory.getInstance();
 SkuModel defaultSku = product.getDefaultSku();
 Image productImage = product.getDetailImage();
 
@@ -82,7 +84,7 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 			continue;
 		}
 		try {
-			ProductModel pm =ContentFactory.getInstance().getProduct(optSkuCode);
+			ProductModel pm =cf.getProduct(optSkuCode);
 			if (pm!=null ) {
 			   if ( !pm.isUnavailable()   && availOptSkuMap.get(optSkuCode)==null) {
 				availOptSkuMap.put(optSkuCode,pm);
@@ -100,14 +102,10 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 	}
 	if (unAvailCount==varOpts.length && unAvailCount!=0) aVariationUnavailable=true;
 }
-    String title = "FreshDirect - " + productNode.getFullName() + " Details";
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%=title%>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top"><td colspan="5" width="520"></td></tr>
@@ -172,9 +170,9 @@ int prodCount = 0;%>
 	<br><br><br>
 <%-- END NAVIGATION --%>
 </td>
-<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
-<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-<td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
+<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
 <td valign="top" width="379">
 
 <table width="379" border="0" cellpadding="0" cellspacing="2">
@@ -185,7 +183,7 @@ int prodCount = 0;%>
 		Image prodImg = null;
 		String prodDescription = null;
 
-		compProduct =  PopulatorUtil.getProductByName(skuCode);
+		compProduct =  ContentFactory.getInstance().getProduct(skuCode);
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();	
         SkuModel selectSku = (SkuModel)compProduct.getSku(skuCode);
@@ -194,7 +192,7 @@ int prodCount = 0;%>
             fdprd = selectSku.getProduct();
         } catch (FDSkuNotFoundException fdsnfe) { throw fdsnfe; }
 %>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="379" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="379" height="3"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br><span class="space2pix"><br></span>

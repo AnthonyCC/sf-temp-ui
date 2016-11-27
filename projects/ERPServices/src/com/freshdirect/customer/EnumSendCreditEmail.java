@@ -6,12 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumSendCreditEmail extends Enum implements java.io.Serializable {
-
-	private static final long serialVersionUID = -2534746828068897022L;
 
 	private final String description;
 
@@ -23,8 +18,8 @@ public class EnumSendCreditEmail extends Enum implements java.io.Serializable {
 		super(code);
 		this.description = desc;
 	}
-	@JsonCreator
-	public static EnumSendCreditEmail getEnum(@JsonProperty("name") String name) {
+
+	public static EnumSendCreditEmail getEnum(String name) {
 		return (EnumSendCreditEmail) getEnum(EnumSendCreditEmail.class, name);
 	}
 

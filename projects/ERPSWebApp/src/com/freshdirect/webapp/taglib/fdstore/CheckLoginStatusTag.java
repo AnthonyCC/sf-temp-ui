@@ -19,12 +19,20 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.WineFilter;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
 import com.freshdirect.framework.util.NVL;
@@ -32,18 +40,18 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.webapp.ajax.location.LocationHandlerService;
 import com.freshdirect.webapp.util.LocatorUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
 import com.freshdirect.webapp.util.RobotUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
 
-public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport {
+public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport implements SessionName {
 
     private static final long serialVersionUID = -5813651711727931409L;
 
-    private static final Category LOGGER = LoggerFactory.getInstance(CheckLoginStatusTag.class);
-
+    private static Category LOGGER = LoggerFactory.getInstance(CheckLoginStatusTag.class);
+    
     private String id;
     private String redirectPage;
     private boolean guestAllowed = true;
@@ -54,6 +62,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     private String semZipCode = "";
     private String pixelNames = "";
     private AddressModel address;
+    private EnumServiceType serviceType;
 
     @Override
     public void setId(String id) {
@@ -96,12 +105,15 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         return pixelNames;
     }
 
+    private EnumServiceType getServiceType() {
+        return serviceType;
+    }
+
     @Override
     public int doStartTag() throws JspException {
         HttpSession session = pageContext.getSession();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 
         /* APPDEV-2024 */
         if (request.getParameter("apc") != null) {
@@ -112,10 +124,58 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             session.setAttribute(SessionName.TSA_PROMO, request.getParameter("TSAPROMO"));
         }
 
-        try {
-            if (user == null) {
-                user = UserUtil.createSessionUser(request, response, guestAllowed);
+        if (RobotRecognizer.isHostileRobot((HttpServletRequest) pageContext.getRequest())) {
+            doRedirect(true);
+
+            return SKIP_BODY;
+        }
+
+        if (user != null) {
+            user.touch();
+        }
+
+        if (user == null) {
+            StoreContextUtil.getStoreContext(session);
+            // try to figure out user identity based on persistent cookie
+            try {
+                // LOGGER.debug("attempting to load user from cookie");
+                user = CookieMonster.loadCookie((HttpServletRequest) pageContext.getRequest());
+            } catch (FDResourceException ex) {
+                LOGGER.warn(ex);
             }
+
+            if (user != null) {
+                // prevent asking for e-mail address in case of returning customer
+                user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
+                LOGGER.debug("user was found!  placing in session");
+                session.setAttribute(SessionName.USER, user);
+            }
+
+            // // new COS changes redirect corporate user to corporate page
+            if (user != null) {
+                LOGGER.debug("entering the corporate check" + user.getUserServiceType());
+            }
+
+            if (user != null) {
+                FDCustomerCouponUtil.initCustomerCoupons(session);
+            }
+
+            if ((user != null) && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null && user.getUserContext().getStoreContext() != null
+                    && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
+                // only index page request will be redirected to corporate page
+                if (request.getRequestURI().indexOf("index.jsp") != -1) {
+                    this.redirectPage = "/department.jsp?deptId=COS";
+                    doRedirect(true);
+
+                    return SKIP_BODY;
+                }
+            }
+        }
+
+        // APPDEV-3197 try to identify friendly robot on every page before using IP Locator
+        if (user == null && guestAllowed && RobotRecognizer.isFriendlyRobot((HttpServletRequest) pageContext.getRequest())) {
+            user = RobotUtil.createRobotUser(session);
+        }
 
         //
         //
@@ -153,9 +213,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     return SKIP_BODY;
                 }
 
-                user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse());
-
-                if (user == null) {
+                if ((user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse(), this.address)) == null) {
                     StringBuffer redirBuf = new StringBuffer();
                     LOGGER.debug("redirecting to: /site_access/site_access.jsp?successPage=" + request.getRequestURI());
                     redirBuf.append("/site_access/site_access.jsp?successPage=" + request.getRequestURI());
@@ -184,17 +242,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             // redirect, unless this is a request from a friendly robot we want
             // to let in
             //
-
-                if (RobotRecognizer.isFriendlyRobot(request.getHeader("User-Agent"))) {
+            if (guestAllowed && RobotRecognizer.isFriendlyRobot((HttpServletRequest) pageContext.getRequest())) {
                 //
                 // make sure the robot has a user in it's session so that pages
                 // won't blow up for it
                 //
                 if (user == null) {
                     user = RobotUtil.createRobotUser(session);
-                }
-                if(!guestAllowed) {
-                	LOGGER.info("FDCRITICALSEOERROR02:" + request.getHeader("User-Agent") + ":" + request.getServerName() + ":" + request.getRequestURI());
                 }
             } else {
                 if (request.getParameter("siteAccessPage") == null) { // if user navigates on site access do not redirect
@@ -204,12 +258,37 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     }
 
                     // only do IP Sniff if was null originally, else redirect to login page
-                    if (user != null || (user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse())) == null) {
+                    if (user != null || (user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse(), this.address)) == null) {
                         doRedirect(user == null);
                         return SKIP_BODY;
                     }
                 }
             }
+        }
+
+        if (this.id != null) {
+            pageContext.setAttribute(this.id, user);
+        }
+
+        if (user != null) {
+            UserContext userCtx = user.getUserContext();
+            ContentFactory.getInstance().setCurrentUserContext(userCtx);
+
+            WineFilter.clearAvailabilityCache((userCtx != null) ? userCtx.getPricingContext() : PricingContext.DEFAULT);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
+        } else {
+            LOGGER.warn("cannot set pricing context");
+            ContentFactory.getInstance().setCurrentUserContext(UserContext.createDefault(CmsManager.getInstance().getEStoreEnum()));
+            WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled());
+        }
+
+        // Set/clear masquerade agent for activity logging
+        if (user != null) {
+            MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+            FDActionInfo.setMasqueradeAgentTL(masqueradeContext == null ? null : masqueradeContext.getAgentId());
+            user.setClientIp(RequestUtil.getClientIp(request));
+            user.setServerName(RequestUtil.getServerName());
         }
 
         /*
@@ -220,23 +299,10 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             doRedirect(true);
         }
 
-            UserUtil.touchUser(request, user);
-            UserUtil.updateUserRelatedContexts(user);
-
-            EnumServiceType serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
-            LocationHandlerService.getDefaultService().updateServiceType(user, serviceType);
-
-            if (this.id != null) {
-                pageContext.setAttribute(this.id, user);
-            }
-
-        } catch (InvalidUserException e) {
-            doRedirect(true);
-            return SKIP_BODY;
-        }
-
         return EVAL_BODY_INCLUDE;
     }
+
+
 
     private void doRedirect(boolean firstRequest) throws JspException {
         if (noRedirect) {
@@ -246,7 +312,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
         try {
-            response.sendRedirect(this.getRedirectURL(firstRequest));
+            response.sendRedirect(response.encodeRedirectURL(this.getRedirectURL(firstRequest)));
 
             JspWriter writer = pageContext.getOut();
             writer.close();
@@ -304,13 +370,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (result.isSuccess() && (serviceResult != null)) {
-            UserUtil.newSession(request.getSession(), (HttpServletResponse) pageContext.getResponse());
+            LocatorUtil.newSession(request.getSession(), request, (HttpServletResponse) pageContext.getResponse());
 
             EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 
             if (EnumDeliveryStatus.DELIVER.equals(dlvStatus) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
                 try {
-                    UserUtil.createSessionUser(EnumServiceType.HOME, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
+                    LocatorUtil.createUser(EnumServiceType.HOME, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
                             this.address);
                 } catch (FDResourceException e) {
                     LOGGER.error(e);
@@ -320,7 +386,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 return EVAL_BODY_INCLUDE;
             } else {
                 try {
-                    UserUtil.createSessionUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
+                    LocatorUtil.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
                             this.address);
                 } catch (FDResourceException e) {
                     e.printStackTrace();
@@ -445,6 +511,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
         if (!"".equals(homeZipcode)) {
             this.address.setZipCode(homeZipcode);
+            this.serviceType = getServiceType();
         }
 
         this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());
@@ -535,5 +602,4 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
         return false;
     }
-
 }

@@ -13,10 +13,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -47,7 +45,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.ExternalAccountControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
-import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -58,20 +55,19 @@ import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class ExternalAccountController extends BaseController implements SystemMessageList{
 
-    private static final Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
-
+	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
+	
 	//Actions
 	private final static String ACTION_RECOGNIZE_ACCOUNT = "login";
 	private final static String ACTION_SOCIAL_CONNECT_ACCOUNT = "socialConnect";
 	private final static String ACTION_SOCIAL_LOGIN = "socialLogin";
 	private final static String ACTION_LINK_ACCOUNT = "linkaccount";
 	private final static String ACTION_UNLINK_ACCOUNT = "unlinkaccount";
-
-    @Override
+	
     protected boolean validateUser() {
         return false;
     }
-
+	
 	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
@@ -98,12 +94,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 		    String redirectUrl = getRedirectUrl(request, message);
 			redirectAfterLogin(response, redirectUrl);
 		}
-		if(message==null){
-			message = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
-			LOGGER.error("EXTERNALACCOUNTCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null
-					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null
-					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
-		}
 		setResponseMessage(model, message, user);
 		return model;
 	}
@@ -115,7 +105,7 @@ public class ExternalAccountController extends BaseController implements SystemM
                 SocialResponse socialMessage = (SocialResponse) message;
                 redirectUrl = addParameter(redirectUrl, "action", socialMessage.getResultAction());
             }
-        }
+        } 
         return redirectUrl;
     }
 
@@ -137,7 +127,7 @@ public class ExternalAccountController extends BaseController implements SystemM
             }
         }
     }
-
+	
 	private Message unlinkExistingAccounts(SessionUser user, ExternalAccountLogin requestMessage, HttpServletRequest request) {
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
 		ResultBundle resultBundle = wrapper.unlinkExistingAccounts(requestMessage);
@@ -155,7 +145,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 
     private Message recognizeAccountAndLogin(SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request) throws FDException{
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
-		setContextHeaders(request, wrapper);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
 		propogateSetSessionValues(request.getSession(), resultBundle);
@@ -203,15 +192,15 @@ public class ExternalAccountController extends BaseController implements SystemM
 		String socialAccountProvider = null;
 		Message responseMessage = null;
 		HttpSession session = request.getSession();
-
+		
         if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
             request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
         }
-
+		
 		if(socialUser!=null){
 			userToken = socialUser.get("userToken");
-			socialEmail = socialUser.get("email");
-			socialAccountProvider = socialUser.get("provider");
+			socialEmail = (String) socialUser.get("email");
+			socialAccountProvider = (String) socialUser.get("provider");
 			if(socialEmail == null || socialEmail.equalsIgnoreCase("")) {
 				responseMessage = new SocialResponse();
 				// no email address found for social login
@@ -233,11 +222,11 @@ public class ExternalAccountController extends BaseController implements SystemM
 			((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_PROFILE_NOT_FOUND);
 			((SocialResponse) responseMessage).setResultAction("CANCELED");
 			return responseMessage;
-		}
-
+		}		
+		
 		//get user id from EXTERNAL_ACCOUNT_LINK table using user token
 		 userId = ExternalAccountManager.getUserIdForUserToken(userToken);
-
+		
 		try {
 			if(context.equalsIgnoreCase("CREATE") || context.equalsIgnoreCase("SIGNIN")) {
 
@@ -246,8 +235,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 					userLogin(userId, session, request, response);
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
-					user.setDeliveryPassFlags((LoggedIn) responseMessage);
-					((LoggedIn) responseMessage).setOrderminimumamt(user.getMinimumOrderAmount());
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
 						((LoggedIn) responseMessage)
@@ -258,16 +245,16 @@ public class ExternalAccountController extends BaseController implements SystemM
 					}
 				} else {
 					// When user id from EXTERNAL_ACCOUNT_LINK is null
-
+					
 					int isFDAccountExist = ExternalAccountManager.isUserEmailAlreadyExist(socialEmail, socialAccountProvider);
-
+					
 					if(isFDAccountExist == 0) {
 						// FD Account and No Social link
 						SessionUser sessionUser = getUserFromSession(request, response);
 						if(sessionUser.isLoggedIn()){
 							logout(user, request, response);
 						}
-						userLogin(socialEmail, session, request, response);
+						userLogin(socialEmail, session, request, response);		
 						user = getUserFromSession(request, response);
 						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 							ExternalAccountManager.linkUserTokenToUserId(
@@ -283,11 +270,9 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
-						((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
-					} else if (isFDAccountExist == 1){
+					} else if (isFDAccountExist == 1){ 
 						// FD Account and Non matching Social link
 						//if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getUserId()!=null) {
 						SessionUser sessionUser = getUserFromSession(request, response);
@@ -312,8 +297,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
-						((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
 					} else {
@@ -329,7 +312,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 							if(sessionUser.isLoggedIn()){
 								logout(model, user, request, response);
 							}*/
-							userLogin(socialEmail, session, request, response);
+							userLogin(socialEmail, session, request, response);	
 							user = getUserFromSession(request, response);
 							if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 								ExternalAccountManager.linkUserTokenToUserId(
@@ -346,8 +329,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 								responseMessage = setCurrentCartToTheUser(user,
 										request, response);
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
-								((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-								((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 								((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 								checkTermsCond(user,responseMessage);
 							}
@@ -373,10 +354,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_LINKED);
 				((SocialResponse) responseMessage).setResultAction("LINKED");
 			} else if (context.equalsIgnoreCase("UNLINK")) {
-                SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
-                if (socialProvider != null) {
-                    socialProvider.deleteSocialIdentity(socialUser.get("identityToken"));
-                }
 				if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
 					ExternalAccountManager.unlinkExternalAccountWithUser(user.getFDSessionUser().getIdentity().getErpCustomerPK(), socialUser.get("provider"));
 				}
@@ -387,7 +364,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
-		}
+		}		
 		return responseMessage;
 	}
 
@@ -413,7 +390,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 		try {
 			user = getUserFromSession(request, response);
 		} catch (NoSessionException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
 		ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);
@@ -429,22 +406,22 @@ public class ExternalAccountController extends BaseController implements SystemM
 		}
 		return responseMessage;
 	}
-
+	
 	public void userLogin(String userId, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws FDAuthenticationException, FDResourceException {
 		/*try {*/
 			FDIdentity identity = FDCustomerManager.login(userId);
 			LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK()
 					+ " : fdId = " + identity.getFDCustomerPK());
 
-
-			FDSessionUser currentUser = (FDSessionUser) session
-					.getAttribute(SessionName.USER);
-
-			FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null, CmsManager.getInstance().getEStoreEnum());
+			FDUser loginUser = FDCustomerManager.recognize(identity);
 
 			LOGGER.info("FDUser : erpId = "
 					+ loginUser.getIdentity().getErpCustomerPK() + " : "
 					+ loginUser.getIdentity().getFDCustomerPK());
+
+			FDSessionUser currentUser = (FDSessionUser) session
+					.getAttribute(SessionName.USER);
+
 			
 
 			LOGGER.info("loginUser is " + loginUser.getFirstName()
@@ -467,17 +444,17 @@ public class ExternalAccountController extends BaseController implements SystemM
 				// in case existing cart is used or cart merge
 				currentUser.getShoppingCart().setDeliveryAddress(
 						loginUser.getShoppingCart().getDeliveryAddress());
-
+				
 				 if ((currentLines > 0) && (loginLines > 0)) {
-	                    // keep the current cart in the session and send them to the merge cart page
-		                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
+	                    // keep the current cart in the session and send them to the merge cart page	            
+		                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());	                    
 	                } else if ((currentLines > 0) && (loginLines == 0)) {
-	                    // keep current cart
+	                    // keep current cart                	
 	                    loginUser.setShoppingCart(currentUser.getShoppingCart());
 	                    loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser.getUserContext()));
-	                    loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());
+	                    loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());                                     	                    
 	                }
-
+				
 				// merge coupons
 				currentUserId = currentUser.getPrimaryKey();
 
@@ -534,34 +511,34 @@ public class ExternalAccountController extends BaseController implements SystemM
 						.initCustomerCoupons(session, currentUserId);
 			}
 
-
-			//
-
+			
+			// 
+			
 
 			if (user != null) {
 				user.setJustLoggedIn(true);
 				user.setTcAcknowledge(loginUser.getTcAcknowledge());
 			}
 
-
+			
 
 		/*} catch (FDResourceException fdre) {
 			LOGGER.warn("Resource error during authentication", fdre);
-
-
+			
+			
 		} catch (FDAuthenticationException fdae) {
 			LOGGER.error(fdae.getMessage());
 		}*/
-
+	
 	}
-
+	
 	private ResultBundle userRegistration(Map<String, String> socialUser, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException {
 		ResultBundle resultBundleOne = new ResultBundle();
-
+		 
 		// registration and login goes here
 		if (socialUser != null) {
-			String email = socialUser.get("email");
-			String displayName = socialUser.get("displayName");
+			String email = (String) socialUser.get("email");
+			String displayName = (String) socialUser.get("displayName");
 			String names[] = displayName.split(" ");
 			String firstName = (names.length == 0) ? "" : names[0];
 			String lastName = (names.length <= 1) ? ""
@@ -596,18 +573,18 @@ public class ExternalAccountController extends BaseController implements SystemM
 			registerMessage.setWorkPhone(requestMessageRegister
 					.getWorkPhone());*/
 			resultBundleOne = tagWrapper
-					.registerSocial(requestMessageRegister);
-
+					.registerSocial(requestMessageRegister);	
+			
 		}
-
+	
 		return resultBundleOne;
 	}
-
+	
 	private Message logout(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
-		removeUserInSession(user, UserCleanupMode.SESSION_AND_COOKIE, request, response);
+		removeUserInSession(user, request, response);
 		return Message.createSuccessMessage("User logged out successfully.");
 	}
-
+	
 	private void checkTermsCond(SessionUser user, Message responseMessage){
 		((LoggedIn) responseMessage).setTcAcknowledge(user.getTcAcknowledge());
 	}

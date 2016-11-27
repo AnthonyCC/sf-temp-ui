@@ -142,13 +142,9 @@ public class CmsPermissionManager {
             }
 
             final boolean hasAnyTypeBasedPermission = permissionHolder.isAnyContentTypeBasedPermission();
-
-            // handle prototype node, which is not part of CMSManager content service yet. 
-            MaskContentService maskContentService = new MaskContentService(svc, new SimpleContentService(svc.getTypeService()));
-            maskContentService.handle(request);
-
+            
             // test permission on unchanged content objects first
-            final Map<ContentKey, Permit> oldNodeStoreResult = checkStoreMembershipPermission(oldNodes, permissionHolder, maskContentService, draftContext);
+            final Map<ContentKey, Permit> oldNodeStoreResult = checkStoreMembershipPermission(oldNodes, permissionHolder, svc, draftContext);
             for (Map.Entry<ContentKey, Permit> entry : oldNodeStoreResult.entrySet()) {
                 if (!Permit.ALLOW.equals(entry.getValue())) {
                     // TODO create and delete checks are missing
@@ -162,6 +158,9 @@ public class CmsPermissionManager {
             if (Permit.isAnyRejected(oldNodeStoreResult.values())) {
                 return Permit.REJECT;
             }
+            // handle prototype node, which is not part of CMSManager content service yet. 
+            MaskContentService maskContentService = new MaskContentService(svc, new SimpleContentService(svc.getTypeService()));
+            maskContentService.handle(request);
 
             // test permission on changed content objects
             final Map<ContentKey, Permit> newNodeStoreResult = checkStoreMembershipPermission(changedNodes, permissionHolder, maskContentService, draftContext);

@@ -4,9 +4,6 @@
   <!--<listener>
     <listener-class>com.freshdirect.dataloader.payment.WLSInvoiceBatchServer</listener-class>
   </listener>
-   <listener>
-    <listener-class>com.freshdirect.dataloader.invoice.WLSInvoiceBatchServer2</listener-class>
-  </listener>
   <listener>
     <listener-class>com.freshdirect.dataloader.sap.jco.WLSSapBatchServer</listener-class>
   </listener>
@@ -19,17 +16,13 @@
   <listener>
     <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer</listener-class>
   </listener>
-  
-  <listener>
-    <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer2</listener-class>
-  </listener>
   <listener>
     <listener-class>com.freshdirect.dataloader.zoneinfo.WLSSapZoneServer</listener-class>
-  </listener-->
+  </listener>
   <listener>
         <listener-class>com.freshdirect.fdstore.warmup.WLSWarmup</listener-class>
   </listener>
-  <!--listener>
+  <listener>
     <listener-class>com.freshdirect.dataloader.productpromotion.WLSSapProductPromotionServer</listener-class>
   </listener>
   
@@ -37,9 +30,9 @@
   <listener>
     <listener-class>com.freshdirect.dataloader.disablemod.WLSSapDisableOrderModification</listener-class>
   </listener>
-    
+   --> 
    <listener>
     <listener-class>com.freshdirect.dataloader.material.WLSSapGlobalMaterialServer</listener-class>
-  </listener>-->
+  </listener>
 </weblogic-application>
 

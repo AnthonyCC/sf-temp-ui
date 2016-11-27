@@ -15,7 +15,7 @@ Collection pickups = FDDeliveryManager.getInstance().getPickupDepots();
 boolean theHamptonsIsOn = FDStoreProperties.isSummerServiceEnabled();
 String  defaultDepotLocation = "";
 if (user !=null && user.getIdentity() != null){
- 	defaultDepotLocation = null;
+ 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
 }
 String fldDepotLocation = request.getParameter("selectAddressList");
 boolean checkedAddress = false;
@@ -42,7 +42,7 @@ if(pickups.size() > 0){  %>
 		</tr>
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+				<img src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			</td>
 		</tr>
 
@@ -75,7 +75,7 @@ if (theHamptonsIsOn) {
 
 <logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 <% 
-	if (!(!"HAM".equalsIgnoreCase(depot.getDepotCode()) || "HAM".equalsIgnoreCase(depot.getDepotCode()))) { //skip it
+	if (!"HAM".equalsIgnoreCase(depot.getDepotCode()) || "HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skip it
     Date now = new Date();
 %>	
 <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
@@ -98,9 +98,9 @@ if (theHamptonsIsOn) {
 
 	<%if(allowSelection){%>		
 			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>>
-			<BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR></TD>
+			<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
 	<%} else { %>		
-			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
 	<%} %>	
 			<TD valign="top" width="50%" class="text13">
 				<% if (cnt==1) {  %><fd:IncludeMedia name='/media/editorial/hamptons/hamptons_pickup_blurb.html' />	<% }  %>
@@ -124,12 +124,11 @@ if (theHamptonsIsOn) {
 <% checkedAddress = false;%>
 
 	</logic:iterate>
-	<%} %>
 </logic:iterate>	
 <% }  %>
 <logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 <% 
-	if (!("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated())) { //skipp it
+	if ("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated()) continue; //skipp it
     Date now = new Date();
 %>	
 <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
@@ -151,9 +150,9 @@ if (theHamptonsIsOn) {
 %>
 
 	<%if(allowSelection){%>		
-			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR></TD>
+			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
 	<%} else { %>		
-			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
 	<%} %>	
 			<TD valign="top" width="50%" class="text13">
 		
@@ -177,7 +176,6 @@ if (theHamptonsIsOn) {
 <% checkedAddress = false;%>
 
 	</logic:iterate>
-	<%} %>
 </logic:iterate>	
 <%if(cnt !=0) {
    if (cnt%2 != 0){ %>

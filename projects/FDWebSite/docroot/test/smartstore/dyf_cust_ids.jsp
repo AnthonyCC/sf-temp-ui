@@ -25,7 +25,7 @@ List ids = s.getDYFEligibleCustomerIDs();
 
 if ("html".equalsIgnoreCase(request.getParameter("output"))) {
 %>
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>untitled</title>

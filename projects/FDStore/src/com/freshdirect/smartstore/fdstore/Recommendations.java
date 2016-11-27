@@ -6,34 +6,36 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelReference;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.VariantReference;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentNodeModelReference;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
-import com.freshdirect.storeapi.content.ProductReferenceImpl;
-import com.freshdirect.storeapi.content.YmalSource;
 
 /**
  * A list of recommended contents tagged with a variant.
- *
- * This objects is serializable, so
- *
+ * 
+ * This objects is serializable, so 
+ * 
  * @author istvan
  *
  */
 public class Recommendations implements Serializable {
 	public static final int MAX_PRODS = 5;
-
+	
 	private static final long serialVersionUID = 8230385944777453868L;
 	private VariantReference variant;
-
+	
 	/**
 	 * List of all recommended products
 	 */
@@ -49,31 +51,31 @@ public class Recommendations implements Serializable {
 	ContentNodeModelReference<CategoryModel> category;
 	ContentNodeModelReference<ContentNodeModel> currentNode;
 	ContentNodeModelReference<YmalSource> ymalSource;
-
+	
 	private boolean isRefreshable = true;
-
+	
 	@Deprecated
 	private boolean isSmartSavings = false;
 
 	// products window
 	int	offset	= 0;
 	int	wsize	= MAX_PRODS;
-
+	
 	// array of logged products
 	boolean logged[];
-
+	
 	/**
 	 * Constructor.
-	 * @param variant
+	 * @param variant 
 	 * @param contentKeys List<{@link ProductModel}>
 	 */
-    public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings, int wsize) {
+	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings, int wsize, PricingContext pricingCtx) {
 		this.variant = new VariantReference(variant);
 		this.productReferences = new ArrayList<ProductReference>(contentNodes.size());
 		this.products = new ArrayList<ProductModel>(contentNodes.size());
 		for (ContentNodeModel m : contentNodes) {
 			//Convert to ProductModelPricingAdapter for Zone Pricing
-            ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter((ProductModel) m);
+		    ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter((ProductModel)m,pricingCtx);
 		    this.products.add(p);
 		    this.productReferences.add(new ProductReferenceImpl(p));
 		}
@@ -90,7 +92,7 @@ public class Recommendations implements Serializable {
 		this.isSmartSavings = false;
 
 		if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
-			prd2recommender = AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
+			prd2recommender = AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();	        
 	        AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
 		} else {
 			prd2recommender = Collections.emptyMap();
@@ -100,17 +102,17 @@ public class Recommendations implements Serializable {
 			prd2recommenderStrat = AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
 	        AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
 		} else {
-			prd2recommenderStrat = Collections.emptyMap();
+			prd2recommenderStrat = Collections.emptyMap();			
 		}
 	}
 
 	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes) {
-        this(variant, contentNodes, true, false, MAX_PRODS);
+		this(variant, contentNodes, true, false, MAX_PRODS, new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO));
 	}
-
+	
 	/**
 	 * This constructor is called from FDStoreRecommender
-	 *
+	 * 
 	 * @param variant
 	 * @param products
 	 * @param sessionInput
@@ -119,7 +121,8 @@ public class Recommendations implements Serializable {
 	 */
 	public Recommendations(Variant variant, List<ContentNodeModel> products, SessionInput sessionInput,
 			boolean isRefreshable, boolean isSmartSavings) {
-        this(variant, products, isRefreshable, isSmartSavings, sessionInput != null ? sessionInput.getWindowSize(MAX_PRODS) : MAX_PRODS);
+		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null ? sessionInput.getWindowSize(MAX_PRODS) : MAX_PRODS,
+				sessionInput != null && sessionInput.getPricingContext() != null ? sessionInput.getPricingContext() : new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO));
 		if (sessionInput != null) {
 		    this.previousRecommendations = sessionInput.getPreviousRecommendations();
 		    this.category = new ContentNodeModelReference<CategoryModel> (sessionInput.getCategory());
@@ -142,8 +145,8 @@ public class Recommendations implements Serializable {
         final int p = offset * wsize;
         // DEBUG System.err.println("pos: " + p + " num: " + Math.min(wsize, products.size()-p) + " / max products: " + products.size());
         return getAllProducts().subList(p, Math.min(p + wsize, productReferences.size()));
-    }
-
+    }	
+	
 	public List<ProductModel> getAllProducts() {
 	    if (products == null) {
 	        products = new ArrayList<ProductModel>();
@@ -161,9 +164,9 @@ public class Recommendations implements Serializable {
 	public Variant getVariant() {
 		return variant.get();
 	}
+	
 
-
-
+	
     public void addImpressionIds(Map<ContentKey, String> impressionIds) {
         if (this.impressionIds == null) {
             this.impressionIds = impressionIds;
@@ -171,7 +174,7 @@ public class Recommendations implements Serializable {
             this.impressionIds.putAll(impressionIds);
         }
     }
-
+	
 	String getImpressionId(ContentKey key) {
 	    Object obj =  impressionIds!=null ? impressionIds.get(key) : null;
 	    if (obj instanceof String) {
@@ -183,7 +186,7 @@ public class Recommendations implements Serializable {
 	public String getImpressionId(ProductModel model) {
 		return model != null ? getImpressionId(model.getSourceProduct().getContentKey()) : null;
 	}
-
+	
     public boolean isRefreshable() {
     	return this.isRefreshable;
     }
@@ -193,7 +196,7 @@ public class Recommendations implements Serializable {
 	}
 
 
-
+    
     /* PAGING MODULE */
 
     public void pageForward() {
@@ -210,7 +213,7 @@ public class Recommendations implements Serializable {
     public boolean isFirstPage() {
     	return offset == 0;
     }
-
+    
     public boolean isLastPage() {
     	return offset == getNumberOfPages()-1;
     }
@@ -235,71 +238,44 @@ public class Recommendations implements Serializable {
      * @return
      */
     public boolean isLogged() {
-        boolean x = false;
-        if (logged.length != 0) {
-            x = logged[offset];
+    	final boolean x = logged[offset];
     	logged[offset] = true;
-        }
     	return x;
     }
-
+    
     public Map<String, List<ContentKey>> getPreviousRecommendations() {
         return previousRecommendations;
     }
-
+    
     public CategoryModel getCategory() {
         return category != null ? category.get() : null;
     }
-
+    
     public ContentNodeModel getCurrentNode() {
         return currentNode != null ? currentNode.get() : null;
     }
-
+    
     public YmalSource getYmalSource() {
         return ymalSource != null ? ymalSource.get() : null;
     }
-
-
+    
+    
     public String getRecommenderIdForProduct(String productId) {
     	return prd2recommender.get(productId);
     }
-
+    
     public String getRecommenderStrategyIdForProduct(String productId) {
     	return prd2recommenderStrat.get(productId);
     }
-
+    
     public String getRequestId() {
 		return requestId;
 	}
-
+    
     public void setRequestId(String requestId) {
 		this.requestId = requestId;
 	}
-
-    public void truncate() {
-    	truncate(wsize);
-    }
-
-    public void truncate(int newSize) {
-    	productReferences = trunc(productReferences, newSize);
-    	products = trunc(products, newSize);
-    }
-
-    private static <T> List<T> trunc(List<T> what, int newSize) {
-    	List<T> replacement = null;
-    	if(what != null && what.size() > 0 && what.size() > newSize) {
-    		replacement = new ArrayList<T>(newSize);
-    		replacement.addAll(what.subList(0, Math.min(what.size(), newSize)));
-    	} else {
-    		replacement = what;
-    	}
-    	return replacement;
-    }
-
-    public int sizeOfRecommendedContent() {
-        return productReferences.size();
-    }
-
+    
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();

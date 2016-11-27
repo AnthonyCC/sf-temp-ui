@@ -20,7 +20,6 @@ import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -32,14 +31,7 @@ import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.PaymentFraudFactory;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
-import com.freshdirect.payment.service.FDECommerceService;
 
-/**
- *@deprecated Please use the RestrictedPaymentMethod and RestrictedPaymentMethodServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
 public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	private static final long	serialVersionUID	= -6357531295293265599L;
@@ -58,8 +50,6 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 	}
 
 	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel model) {
-		
-		LOGGER.info("Restricting eCheck for customer "+model.getCustomerId());
 		Connection conn = null;
 		PrimaryKey pk = null;
 		RestrictedPaymentMethodModel existingModel = null;
@@ -75,7 +65,6 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 				if (model.getAbaRouteNumber() != null) {
 					criteria.setAbaRouteNumber(model.getAbaRouteNumber());
 				}
-				criteria.setCustomerID(model.getCustomerId());
 				criteria.setAccountNumber(model.getAccountNumber());
 				List<RestrictedPaymentMethodModel> list = findRestrictedPaymentMethods(criteria);
 				if (list != null && list.size() > 0) {
@@ -564,9 +553,8 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 	private void logActivity(ErpActivityRecord rec) {
 		ActivityLogHome home = this.getActivityLogHome();
 		try {
-				ActivityLogSB logSB = home.create();
-				logSB.logActivity(rec);
-
+			ActivityLogSB logSB = home.create();
+			logSB.logActivity(rec);
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

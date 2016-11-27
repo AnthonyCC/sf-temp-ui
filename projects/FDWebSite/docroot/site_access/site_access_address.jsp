@@ -18,14 +18,12 @@
 	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
     String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
 	String failureCorporatePage	= "/survey/cos_site_access_survey.jsp?successPage="+ URLEncoder.encode(successPage);
-%>
-<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
+%>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<%-- 	<title>FreshDirect Address Check</title><% /* if this title changes, you need to change the media JS as well */ %> --%>
-     <fd:SEOMetaTag title="FreshDirect Address Check"/>
+	<title>FreshDirect Address Check</title><% /* if this title changes, you need to change the media JS as well */ %>
 	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
@@ -34,7 +32,8 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-	
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
 		<%
 			String fldAddress1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "");
 			String fldAddress2 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_2.getCode()), "");
@@ -122,7 +121,6 @@
 		<div id="saAddress_suggestedAddresses_hidden" style="display: none;">
 			<% if (result.hasError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode())) { %><%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %><% } %></div>
 		<fd:IncludeMedia name="/media/editorial/site_access/zipfail/site_access_address.html" />
-	
+	</fd:SiteAccessController>
 </body>
 </html>
-</fd:SiteAccessController>

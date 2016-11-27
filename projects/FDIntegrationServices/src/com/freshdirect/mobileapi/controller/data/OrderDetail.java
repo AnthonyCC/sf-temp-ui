@@ -29,16 +29,6 @@ public class OrderDetail implements DateFormat{
 
     private CartDetail cartDetail;
     
-    private Integer modifycount;
-    
-    public Integer getModifycount() {
-		return modifycount;
-	}
-
-	public void setModifycount(Integer modifycount) {
-		this.modifycount = modifycount;
-	}
-    
     public String getDeliveryZone() {
 		return deliveryZone;
 	}

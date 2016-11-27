@@ -12,9 +12,9 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 
 /**
  * A wrapper for the product.
@@ -209,7 +209,7 @@ public class ProductImpression {
 			try{
 	            
 
-				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().getGroup(this.calculator.getPricingContext().getZoneInfo()) !=null){//sku.getProductInfo().isGroupExists(salesOrg,distributionChannel) && sku.getSkuCode().equals(skuCode)) {
+				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().isGroupExists(salesOrg,distributionChannel) && sku.getSkuCode().equals(skuCode)) {
 					//if atleast one sku participates in a group.
 					groupExists = true;
 					break;
@@ -230,16 +230,14 @@ public class ProductImpression {
 	public FDGroup getFDGroup() {
 		FDGroup group = null;
 		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
-		String salesOrg=this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null&&this.calculator.getPricingContext().getZoneInfo()!=null?
-							this.calculator.getPricingContext().getZoneInfo().getSalesOrg():null;
-		String distributionChannel=this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null&&this.calculator.getPricingContext().getZoneInfo()!=null?
-									this.calculator.getPricingContext().getZoneInfo().getDistributionChanel():null;
+		String salesOrg=this.calculator.getPricingContext().getZoneInfo().getSalesOrg();
+		String distributionChannel=this.calculator.getPricingContext().getZoneInfo().getDistributionChanel();
 		while(it.hasNext()){
 			SkuModel sku = it.next();
 			try{
-				if(sku != null && !sku.isUnavailable() && sku.getProductInfo()!=null) {
+				if(sku != null && !sku.isUnavailable()) {
 					//if atleast one sku participates in a group.
-					group = sku.getProductInfo().getGroup(this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null?this.calculator.getPricingContext().getZoneInfo():null);//salesOrg,distributionChannel) ;
+					group = sku.getProductInfo().getGroup(salesOrg,distributionChannel) ;
 					if(group != null)
 						break;
 				}

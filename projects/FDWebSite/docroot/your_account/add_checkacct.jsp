@@ -9,10 +9,7 @@ final int W_YA_ADD_CHECKACCT = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Add Checking Account"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Checking Account</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Checking Account</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 
@@ -29,20 +26,19 @@ final int W_YA_ADD_CHECKACCT = 970;
 <%
 boolean proceedThruCheckout = false;
 %>
-<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_ADD_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-
+<form method="post">
 <tr>
 <td class="text11" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 <font class="title18">Add Checking Account</font><br><span class="space2pix"><br></span>
-<a href="javascript:popup('/pay_by_check.jsp','large')">Learn more<span class="offscreen">about how this service works</span></a> about how this service works.<br>
-To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>
+<a href="javascript:popup('/pay_by_check.jsp','large')">Learn more</a> about how this service works.<br>
+To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
 </td>
 </tr>
 </table>
 <%@ include file="/includes/ckt_acct/checkacct_fields.jspf" %>
 <br><br>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 	<TR VALIGN="TOP">
 				<TD WIDTH="<%= W_YA_ADD_CHECKACCT %>" ALIGN="RIGHT">
@@ -51,7 +47,6 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 				</TD>
 </TR>
 </TABLE>
-</form>
 <br>
 </fd:PaymentMethodController>
 </tmpl:put>

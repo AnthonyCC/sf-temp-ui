@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
 public class FDMinDCPDTotalPromoData implements Serializable{

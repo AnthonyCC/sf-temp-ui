@@ -1,5 +1,6 @@
 package com.freshdirect.payment;
 
+import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -9,6 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -20,7 +23,8 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.ejb.BINInfoManagerHome;
+import com.freshdirect.payment.ejb.BINInfoManagerSB;
 
 
 public class BINCache {
@@ -54,11 +58,21 @@ public class BINCache {
 			synchronized (reloadSync) {
 				LOGGER_LOADER.info("reloading BIN cache");
 				try {
-					binInfoMap=FDECommerceService.getInstance().getActiveBINs();
-					
+					@SuppressWarnings("unchecked")
+					BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
+					binInfoMap=(NavigableMap<Long, BINInfo>) binInfoManagerSB.getActiveBINs();
 				} catch (FDResourceException e) {
 					LOGGER_LOADER.error("failed to reload / initialize all BIN cache", e);
-				} 
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (EJBException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CreateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				LOGGER_LOADER.info("BIN cache reloaded");
 			}
 			LOGGER_LOADER.info("run() exit");
@@ -147,7 +161,22 @@ public class BINCache {
         }
     }
     
-    
+    public static BINInfoManagerHome lookupBINInfoManagerHome() throws EJBException {
+		Context ctx = null;
+		try {
+			ctx = getInitialContext();
+			return (BINInfoManagerHome) ctx.lookup("freshdirect.payment.BINInfoManager");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null)
+					ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.debug(ne);
+			}
+		}
+	}
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");

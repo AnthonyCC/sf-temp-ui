@@ -1,18 +1,26 @@
 package com.freshdirect.dataloader.inventory;
 
 
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
+import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -157,12 +165,33 @@ public class FDRestrictedAvailabilityJcoServer extends FdSapServer
 		}
 	}
 
-	private void updateRestrictedInfos(Set<ErpRestrictedAvailabilityModel> restrictedInfos,
-			Set<String> deletedMaterials) throws FDResourceException {
+	private void updateRestrictedInfos(Set<ErpRestrictedAvailabilityModel> restrictedInfos, Set<String> deletedMaterials)
+			throws NamingException, EJBException, CreateException, FDResourceException, RemoteException
+	{
+		Context ctx = null;
+		try
+		{
+			ctx = ErpServicesProperties.getInitialContext();
+			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
+			ErpInventoryManagerSB sb = mgr.create();
 
-		FDECommerceService.getInstance().updateRestrictedInfos(restrictedInfos, deletedMaterials);
+			sb.updateRestrictedInfos(restrictedInfos, deletedMaterials);
+		} 
+		catch(Exception ex)
+		{
+			throw new EJBException(ex.toString());
+		} 
+		finally 
+		{
+			if (ctx != null)
+			{
+				try {
+					ctx.close();
+				} catch (NamingException e) {
+				}
+			}
+		}
 	}
-		
 
 	/**
 	 * @param serverName

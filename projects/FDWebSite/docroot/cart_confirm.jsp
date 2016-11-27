@@ -1,14 +1,13 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -101,19 +100,16 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 %>
 
 <tmpl:insert template='<%=jspTemplate%>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Confirmation"/>
-    </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put> --%>
+  <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put>
  <tmpl:put name='content' direct='true'>
              <table cellpadding="0" cellspacing="0" border="0" width="<%= W_CART_CONFIRM_TOTAL %>">
                 <tr>
                 <td colspan="2">
 					<%  if (isWineProductAdded) { %>
-						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"><br>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
 					<% } %>
 					<img src="/media_stat/images/template/confirmation/you_have_just_added.gif" width="233" height="13" border="0" alt="YOU HAVE JUST ADDED TO YOUR CART:">
-                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"></td>
+                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
                 </tr>
 
 <%
@@ -129,7 +125,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     String earliestAvailability = prdNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
     FDProduct defaultProduct = prdNode.getDefaultSku().getProduct();
-	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(prdNode.getDefaultSku().getProductInfo())).isEmpty();
+	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
 	
     boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneInfo()).getMaterialPrices()[0]).getPricingUnit()));
     boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));
@@ -149,15 +145,15 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 	   </div>
 	   <fd:CCLCheck>
 			<!-- Add to Shopping List  -->
-			<a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" alt="save to shopping list" style="border: 0;"/></a><span style="padding-left: 15px"></span>
+			<a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"></span>
 			<div></div>
         </fd:CCLCheck>
      </td>
      <td valign="bottom" align="right">
 <%   if (itemShown < 1) {   %>  
-       <img src="<%= confirmImage.getPath() %>" border="0" alt="" width="<%= confirmImage.getWidth() %>" height="<%= confirmImage.getHeight() %>">
+       <img src="<%= confirmImage.getPath() %>" border="0" width="<%= confirmImage.getWidth() %>" height="<%= confirmImage.getHeight() %>">
 <%   } else {  %>
-       <img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1" border="0">
+       <img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0">
 <%   }  %>
     </td></tr>
 <%
@@ -165,27 +161,28 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     SkuModel a_sku = prdNode.getSku(orderLine.getSkuCode());
 
     if(!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null) {%>
-        <tr><td colspan="2"><br><font class="errortext">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
+        <tr><td colspan="2"><br><font class="text11rbold">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
 <%  }
             itemShown++;
   }
   
   int level = userd.getLevel();
   if(level == FDUserI.GUEST && !userd.isInZone() && !userd.isCorporateUser()){%>
-    <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
+    <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
     <tr><td class="text12gr" colspan="2"><b>Please note:</b> We are not yet in your area and cannot complete your delivery.</td></tr>
 <%}   %>
 	
     <%-- spacers --%>
     <tr>
-      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="320" height="10"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="10"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="320" height="10"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="80" height="10"></td>
     </tr>
     <tr>
-      <td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+      <td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
     </tr>
     </table>
     <%@ include file="/includes/i_cart_confirm_bottom.jspf"%>
+    <fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
 </tmpl:put>
 </tmpl:insert>
 </fd:FDShoppingCart>

@@ -8,9 +8,6 @@
  */
 package com.freshdirect.common.pricing;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Class representing a discount.
  *
@@ -18,8 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author $Author$
  */
 public class Discount implements java.io.Serializable {
-	
-	private static final long serialVersionUID = -6822842931883415109L;
+
 	private final String promotionCode;
 	private final EnumDiscountType discountType;
 	private final double amount;
@@ -27,9 +23,7 @@ public class Discount implements java.io.Serializable {
 	private int skuLimit=0;
 	private double maxPercentageDiscount=0.0;
 
-	@JsonCreator
-	public Discount(@JsonProperty("promotionCode") String promotionCode,
-			@JsonProperty("promotionType") EnumDiscountType promotionType, @JsonProperty("amount") double amount) {
+	public Discount(String promotionCode, EnumDiscountType promotionType, double amount) {
 		this.promotionCode = promotionCode;
 		this.discountType = promotionType;
 		this.amount = amount;

@@ -5,7 +5,6 @@ import java.util.List;
 public class FormPaymentData {
 
 	private String selected;
-	private boolean isDefault = false;
 	private List<PaymentData> payments;
 	private boolean coveredByGiftCard;
 	private boolean backupPaymentRequiredForGiftCard;
@@ -16,6 +15,7 @@ public class FormPaymentData {
 	private boolean mpEwalletStatus;
 	private String walletErrorMsg;
 	private String mpButtonImgURL;
+    private List<String> onOpenCoremetrics;
     private boolean ppEwalletStatus;
     private boolean ppEwalletPaired;
 
@@ -79,6 +79,14 @@ public class FormPaymentData {
 		this.mpButtonImgURL = mpButtonImgURL;
 	}
 
+    public List<String> getOnOpenCoremetrics() {
+        return onOpenCoremetrics;
+    }
+
+    public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
+        this.onOpenCoremetrics = onOpenCoremetrics;
+    }
+
 	/**
 	 * @return the ppEwalletStatus
 	 */
@@ -121,12 +129,5 @@ public class FormPaymentData {
 		this.walletErrorMsg = walletErrorMsg;
 	}
 
-	public boolean isDefault() {
-		return isDefault;
-	}
-
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
     
 }

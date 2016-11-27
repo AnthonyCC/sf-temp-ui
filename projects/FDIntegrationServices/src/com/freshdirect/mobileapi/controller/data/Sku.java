@@ -93,65 +93,63 @@ public class Sku {
 
     public static Sku wrap(com.freshdirect.mobileapi.model.Sku sku) {
         Sku result = new Sku();
-        if(sku!=null){
-	        result.price = sku.getPrice();
-	        result.priceUnit = sku.getPriceUnit();
-	        result.basePrice = sku.getBasePrice();
-	        result.basePriceUnit = sku.getBasePriceUnit();
-	        result.skuRating = sku.getRating();
-	        
-	        result.hasWasPrice = sku.hasWasPrice();
-	        result.domainLabel = sku.getDomainLabel();
-	        result.salesUnitDescription = sku.getSalesUnitDescription();
-	        result.displayAboutPrice = sku.getDisplayAboutPrice();
-	
-	        if (sku.getFilteredEarliestAvailability() != null) {
-	            SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
-	            result.earliestAvailability = formatter.format(sku.getFilteredEarliestAvailability());
-	        }
-	
-	        result.setFdContentType(ContentType.getContentType(sku.getFdContentType()));
-	        StringBuffer buff = new StringBuffer();
-	        for (String scaledPrice : sku.getScaledPrices()) {
-	            buff.append(scaledPrice);
-	            buff.append(" ");
-	        }
-	        result.scaledPrices = buff.toString();
-	        result.setCode(sku.getSkuCode());
-	        FDGroup grp = sku.getFDGroup();
-	        result.setGroupId(grp != null ? grp.getGroupId():"");
-	        result.setGroupVersion(grp != null ? String.valueOf(grp.getVersion()):"");
-	        result.setGroupPrice(sku.getGroupPrice());
-	        result.setGroupQuantity(sku.getGroupQuantity());
-	        String grpScaleUnit = sku.getGroupScaleUnit();
-	        result.setGroupScaleUnit(grpScaleUnit != null ? grpScaleUnit : "");
-	        String grpPricingUnit = sku.getGroupPricingUnit();
-	        result.setGroupPricingUnit(grpPricingUnit != null ? grpPricingUnit : "");
-	        String shortDesc = sku.getGroupShortDescription();
-	        result.setGroupShortDesc(shortDesc != null ? shortDesc : "");
-	        String longDesc = sku.getGroupLongDescription();
-	        result.setGroupLongDesc(longDesc != null ? longDesc : "");
-	        
-	        String longOfferDesc = sku.getGroupLongOfferDescription();
-	        result.setGroupLongOfferDescription(longOfferDesc != null ? longOfferDesc : "");
-	        
-	        String shortOfferDesc = sku.getGroupShortOfferDescription();
-	        result.setGroupShortOfferDescription(shortOfferDesc != null ? shortOfferDesc : "");
-	        
-	        String groupOfferDescriptionText = sku.getGroupOfferDescriptionText();
-	        result.setGroupOfferDescriptionText(groupOfferDescriptionText != null ? groupOfferDescriptionText : "");
-	        
-	        String groupOfferPriceText = sku.getGroupOfferPriceText();
-	        result.setGroupOfferPriceText(groupOfferPriceText != null ? groupOfferPriceText : "");
-	      
-	        String _skuSustainabilityRating = sku.getSustainabilityRating();
-	        result.setSustainabilityRating(_skuSustainabilityRating != null ? _skuSustainabilityRating : "");
-	        
-	        String _sustainabilityRatingDescription = sku.getSustainabilityRatingDescription();
-	        result.setSustainabilityRatingDescription(_sustainabilityRatingDescription != null ? _sustainabilityRatingDescription : "");
-	        
-	        result.coupon = sku.getCoupon();
-	        }
+        result.price = sku.getPrice();
+        result.priceUnit = sku.getPriceUnit();
+        result.basePrice = sku.getBasePrice();
+        result.basePriceUnit = sku.getBasePriceUnit();
+        result.skuRating = sku.getRating();
+        
+        result.hasWasPrice = sku.hasWasPrice();
+        result.domainLabel = sku.getDomainLabel();
+        result.salesUnitDescription = sku.getSalesUnitDescription();
+        result.displayAboutPrice = sku.getDisplayAboutPrice();
+
+        if (sku.getFilteredEarliestAvailability() != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
+            result.earliestAvailability = formatter.format(sku.getFilteredEarliestAvailability());
+        }
+
+        result.setFdContentType(ContentType.getContentType(sku.getFdContentType()));
+        StringBuffer buff = new StringBuffer();
+        for (String scaledPrice : sku.getScaledPrices()) {
+            buff.append(scaledPrice);
+            buff.append(" ");
+        }
+        result.scaledPrices = buff.toString();
+        result.setCode(sku.getSkuCode());
+        FDGroup grp = sku.getFDGroup();
+        result.setGroupId(grp != null ? grp.getGroupId():"");
+        result.setGroupVersion(grp != null ? String.valueOf(grp.getVersion()):"");
+        result.setGroupPrice(sku.getGroupPrice());
+        result.setGroupQuantity(sku.getGroupQuantity());
+        String grpScaleUnit = sku.getGroupScaleUnit();
+        result.setGroupScaleUnit(grpScaleUnit != null ? grpScaleUnit : "");
+        String grpPricingUnit = sku.getGroupPricingUnit();
+        result.setGroupPricingUnit(grpPricingUnit != null ? grpPricingUnit : "");
+        String shortDesc = sku.getGroupShortDescription();
+        result.setGroupShortDesc(shortDesc != null ? shortDesc : "");
+        String longDesc = sku.getGroupLongDescription();
+        result.setGroupLongDesc(longDesc != null ? longDesc : "");
+        
+        String longOfferDesc = sku.getGroupLongOfferDescription();
+        result.setGroupLongOfferDescription(longOfferDesc != null ? longOfferDesc : "");
+        
+        String shortOfferDesc = sku.getGroupShortOfferDescription();
+        result.setGroupShortOfferDescription(shortOfferDesc != null ? shortOfferDesc : "");
+        
+        String groupOfferDescriptionText = sku.getGroupOfferDescriptionText();
+        result.setGroupOfferDescriptionText(groupOfferDescriptionText != null ? groupOfferDescriptionText : "");
+        
+        String groupOfferPriceText = sku.getGroupOfferPriceText();
+        result.setGroupOfferPriceText(groupOfferPriceText != null ? groupOfferPriceText : "");
+      
+        String _skuSustainabilityRating = sku.getSustainabilityRating();
+        result.setSustainabilityRating(_skuSustainabilityRating != null ? _skuSustainabilityRating : "");
+        
+        String _sustainabilityRatingDescription = sku.getSustainabilityRatingDescription();
+        result.setSustainabilityRatingDescription(_sustainabilityRatingDescription != null ? _sustainabilityRatingDescription : "");
+        
+        result.coupon = sku.getCoupon();
         return result;
     }
 

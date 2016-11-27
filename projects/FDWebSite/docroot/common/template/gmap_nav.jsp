@@ -11,12 +11,13 @@ final int W_GMAP_NAV_TOTAL = 970;
 <%
 	final String gmap_api_key = FDStoreProperties.getGoogleMapsAPIKey();
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-     <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%-- @ include file="/shared/template/includes/ccl.jspf" --%>
 	<script type="text/javascript" src="https://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
@@ -29,6 +30,7 @@ final int W_GMAP_NAV_TOTAL = 970;
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="initialize()">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%
 		boolean modOrder = false;
 		boolean inViewCart = false;
@@ -59,27 +61,27 @@ final int W_GMAP_NAV_TOTAL = 970;
 	<center class="text10">
 		<table width="<%=W_GMAP_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td><%@ include file="/common/template/includes/deptnav.jspf" %></td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr valign="TOP">
 				<td align="center">
-					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_GMAP_NAV_TOTAL%>"><br />
+					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_GMAP_NAV_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
 				</td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
 			</tr>
 		</table>
 	</center>

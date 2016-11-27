@@ -23,12 +23,6 @@ public class CrmCaseAction extends ModelSupport {
 	public void setType(CrmCaseActionType type) {
 		this.caseActionCode = type == null ? null : type.getCode();
 	}
-	
-	
-	// Introduced for Storefront 2.0 Implementation
-	public String getCaseActionCode() {
-		return caseActionCode;
-	}
 
 	public String getNote() {
 		return note;

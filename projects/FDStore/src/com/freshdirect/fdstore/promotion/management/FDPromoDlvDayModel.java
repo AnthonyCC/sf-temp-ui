@@ -7,7 +7,6 @@ public class FDPromoDlvDayModel extends ModelSupport {
 	private String promoDlvZoneId;
 	private Integer dayId;
 	private Integer redeemCount;
-	private double capcityUtilization;
 
 	public String getPromoDlvZoneId() {
 		return promoDlvZoneId;
@@ -31,14 +30,6 @@ public class FDPromoDlvDayModel extends ModelSupport {
 
 	public void setRedeemCount(Integer redeemCount) {
 		this.redeemCount = redeemCount;
-	}
-
-	public double getCapcityUtilization() {
-		return capcityUtilization;
-	}
-
-	public void setCapcityUtilization(double capcityUtilization) {
-		this.capcityUtilization = capcityUtilization;
 	}
 
 	@Override

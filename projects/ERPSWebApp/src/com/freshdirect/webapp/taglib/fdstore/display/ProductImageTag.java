@@ -17,20 +17,20 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.WineUtil;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -281,6 +281,18 @@ public class ProductImageTag extends BodyTagSupport {
             browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
         }
 
+        final boolean needsOpacityWorkaround = browserInfo.isInternetExplorer() &&
+            (browserInfo.getVersionNumber() < 7.0);
+
+        // IE workaround
+        if ((this.opacity == 1) && needsOpacityWorkaround) {
+            this.opacity = 0.999;
+        }
+
+        final boolean supportsPNG = !((opacity < 1) &&
+            browserInfo.isInternetExplorer() &&
+            (browserInfo.getVersionNumber() < 7.0));
+
         // not disabled, has action and not in cart (savings) -> add link
         final boolean shouldGenerateAction = !this.disabled &&
             (this.action != null) && !this.isInCart;
@@ -403,7 +415,7 @@ public class ProductImageTag extends BodyTagSupport {
         }
 
         buf.append(" alt=\"");
-        buf.append(product.getFullName().replace("\"", "").replace("'", ""));
+        buf.append(product.getFullName());
         buf.append("\"");
 
         //setting a style will override coupon style
@@ -464,7 +476,7 @@ public class ProductImageTag extends BodyTagSupport {
 
         if (displayBurst) {
             try {
-				appendBurst(buf, pl, shouldGenerateAction);
+				appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
 			} catch (FDResourceException e) {
 			}
         }
@@ -660,7 +672,7 @@ public class ProductImageTag extends BodyTagSupport {
      * @throws FDResourceException 
      */
     private void appendBurst(StringBuilder buf, ProductLabeling pl,
-        final boolean shouldGenerateAction) throws FDResourceException {
+        final boolean supportsPNG, final boolean shouldGenerateAction) throws FDResourceException {
         // burst image
         String burstImageStyle = "border: 0;";
 
@@ -723,43 +735,36 @@ public class ProductImageTag extends BodyTagSupport {
             // No opacity needed since burst image is already faded
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/in_cart" +
-                ".png";
+                (supportsPNG ? ".png" : ".gif");
             iAlt = "IN CART";
             iStyle = "border: 0;";
 
         } else if (deal > 0) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/deals/brst_" + iSizeToken + "_" + deal +
-                ".png";
+                (supportsPNG ? ".png" : ".gif");
             iAlt = "SAVE";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayFave()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_fave" +
-                ".png";
+                (supportsPNG ? ".png" : ".gif");
             iAlt = "FAVE";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayNew() && !this.isNewProductPage) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_new" +
-                ".png";
+                (supportsPNG ? ".png" : ".gif");
             iAlt = "NEW";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayBackinStock()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_bis" +
-                ".png";
+                (supportsPNG ? ".png" : ".gif");
             iAlt = "BACK";
-            iStyle = burstImageStyle;
-
-        } else if (pl.isDisplayGoingOutOfStock()) {
-            iSrc = ((this.prefix != null) ? this.prefix : "") +
-                "/media_stat/images/bursts/brst_" + iSizeToken + "_goos" +
-                ".png";
-            iAlt = "GOING OUT OF STOCK";
             iStyle = burstImageStyle;
 
         }

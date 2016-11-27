@@ -23,12 +23,7 @@ import com.freshdirect.fdstore.ewallet.EwalletOldOrderException;
 import com.freshdirect.fdstore.ewallet.EwalletPostBackModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-/**
- *@deprecated Please use the EwalletTxNotifyDaoI  in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 public class EwalletTxNotifyDAO {
 	
 	@SuppressWarnings( "unused" )
@@ -210,11 +205,10 @@ public class EwalletTxNotifyDAO {
 	private static final String UPDATE_NONGAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where salesaction_id in (";
 	private static final String UPDATE_GAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where gateway_activity_log_id in (";
 	
-	@Deprecated
 	public void prepareForPostBack(Connection conn) throws SQLException {
 		prepareForPostBack(conn, ErpServicesProperties.geteWalletPostbackMaxDays());
 	}
-	@Deprecated
+	
 	public void prepareForPostBack(Connection conn, int maxDays) throws SQLException {
 		long time_method_start = System.currentTimeMillis();
 		long curr = System.currentTimeMillis(); 
@@ -244,7 +238,7 @@ public class EwalletTxNotifyDAO {
 		LOGGER.debug("Time taken for the method prepareForPostBack - Offline AUF query (millis) " + (System.currentTimeMillis() - curr));
 		LOGGER.debug("Time taken for the method prepareForPostBack (millis) " + (System.currentTimeMillis() - time_method_start));
 	}
-	@Deprecated
+	
 	public List<EwalletPostBackModel> getAllTrxnsForPostback( Connection conn, EnumEwalletType walletType ) throws SQLException {
 		long time_method_start = System.currentTimeMillis();
 		long curr = System.currentTimeMillis(); 
@@ -272,7 +266,7 @@ public class EwalletTxNotifyDAO {
 				pbItem.setSalesActionId(salesActionId);
 				pbItem.setOrderId(nonGALTrxnsRS.getString("order_id"));
 				pbItem.setTransactionId(nonGALTrxnsRS.getString("transaction_id"));
-				pbItem.setTransactionStatusValue(getTrxnStatus(nonGALTrxnsRS.getString("status")));
+				pbItem.setTransactionStatus(getTrxnStatus(nonGALTrxnsRS.getString("status")));
 				nonGALTrxnMap.put(salesActionId, pbItem);
 			}
 		}
@@ -372,7 +366,7 @@ public class EwalletTxNotifyDAO {
 
 		return new ArrayList<EwalletPostBackModel>(gALTrxnMap.values());
 	}
-	@Deprecated
+	
 	public void updateTrxnStatus(Connection conn, List<EwalletPostBackModel> resps) throws SQLException {
 		
 		if (resps.size() <= 0) {
@@ -424,7 +418,7 @@ public class EwalletTxNotifyDAO {
 			LOGGER.info("Postback Service : Total updated records with success " + noOfUpdatedRecs + " Total failures are " + noOfFailedTrxns);
 		}
 	}
-	@Deprecated
+	
 	void loadPostBackReqData(ResultSet otherData, EwalletPostBackModel pbItem) throws SQLException, EwalletOldOrderException {
 		if (pbItem.isgAL()) {
 			String amt = gALOrderAmountMap.get(otherData.getString("GALId"));
@@ -459,12 +453,13 @@ public class EwalletTxNotifyDAO {
 		pbItem.setExpressCheckoutIndicator(false);
 	}
 	
-	private int getTrxnStatus(String orderStatus) {
+	private boolean getTrxnStatus(String orderStatus) {
+		boolean success = true;
 		if (orderStatus.equalsIgnoreCase(EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode()) ||
 				orderStatus.equalsIgnoreCase(EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode())) {
-			return 0;
+			return !success;
 		} else if (orderStatus.equalsIgnoreCase(EnumSaleStatus.SETTLED.getStatusCode())) {
-			return 1;
+			return success;
 		} else {
 			throw new AssertionError("Status of TxNofiy in DB is incorrect " + orderStatus);
 		}

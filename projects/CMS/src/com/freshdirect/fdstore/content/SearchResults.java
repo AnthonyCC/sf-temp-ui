@@ -52,11 +52,10 @@ public class SearchResults implements Serializable, Cloneable {
 	
 	private final List<FilteringSortingItem<ProductModel>> products;
 	private List<ProductModel> ddppProducts = new ArrayList<ProductModel>(); //ddpp products on 'search like' pages
-	private Map<String, List<ProductModel>> assortProducts = new HashMap<String, List<ProductModel>>(); //staff picks
+	private Map<String, ArrayList<ProductModel>> assortProducts = new HashMap<String, ArrayList<ProductModel>>(); //staff picks
 
 	private List<FilteringSortingItem<ProductModel>> adProducts = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private String pageBeacon;
-	private int hlProductsCount;
 
 	private final List<FilteringSortingItem<Recipe>> recipes;
 	private final List<FilteringSortingItem<CategoryModel>> categories;
@@ -65,8 +64,6 @@ public class SearchResults implements Serializable, Cloneable {
 	private String searchTerm;
 	private String suggestedTerm; // term used when displaying products for the spelling suggestion (there's only one DYM case)
 	private Collection<String> spellingSuggestions = Collections.emptyList();
-	
-	private String emptyProductsPageBeacon; 
 
 	public SearchResults() {
 		this(Collections.<FilteringSortingItem<ProductModel>> emptyList(), Collections.<FilteringSortingItem<Recipe>> emptyList(),
@@ -194,10 +191,10 @@ public class SearchResults implements Serializable, Cloneable {
 		this.ddppProducts = ddppProducts;
 	}
 	
-	public Map<String, List<ProductModel>> getAssortProducts() {
+	public Map<String, ArrayList<ProductModel>> getAssortProducts() {
 		return assortProducts;
 	}
-	public void setAssortProducts(Map<String, List<ProductModel>> assortProducts) {
+	public void setAssortProducts(Map<String, ArrayList<ProductModel>> assortProducts) {
 		this.assortProducts = assortProducts;
 	}
 	public List<FilteringSortingItem<ProductModel>> getAdProducts() {
@@ -214,20 +211,6 @@ public class SearchResults implements Serializable, Cloneable {
 	public void setPageBeacon(String pageBeacon) {
 		this.pageBeacon = pageBeacon;
 	}
-	public int getHlProductsCount() {
-		return hlProductsCount;
-	}
 
-	public void setHlProductsCount(int hlProductsCount) {
-		this.hlProductsCount = hlProductsCount;
-	}
-
-	public String getEmptyProductsPageBeacon() {
-		return emptyProductsPageBeacon;
-	}
-
-	public void setEmptyProductsPageBeacon(String emptyProductsPageBeacon) {
-		this.emptyProductsPageBeacon = emptyProductsPageBeacon;
-	}
 	
 }

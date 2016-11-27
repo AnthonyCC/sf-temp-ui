@@ -10,17 +10,18 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.braintreegateway.Customer;
+import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.PaymentMethod;
+import com.braintreegateway.PaymentMethodRequest;
 import com.braintreegateway.Result;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -30,18 +31,14 @@ import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
 import com.freshdirect.fdstore.ewallet.impl.EWalletRuntimeException;
-import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.PayPalResponse;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
-import com.freshdirect.payment.service.FDPayPalService;
-import com.freshdirect.payment.service.IPayPalService;
 
 /**
  * @author Aniwesh Vatsal
@@ -93,13 +90,8 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	private String clientToken() {
 		String requestToken="";
 		try{
-			
-			
-			requestToken=FDPayPalService.getInstance().generateToken();
-		
+			requestToken = PayPalData.getBraintreeGateway().clientToken().generate();
 		}catch(AuthenticationException authenticationException){
-			throw new EWalletRuntimeException("Can not connect to PayPal.");
-		}catch(FDPayPalServiceException fDPayPalServiceException){
 			throw new EWalletRuntimeException("Can not connect to PayPal.");
 		}
 		return requestToken;
@@ -172,13 +164,13 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			paymentMethod.setEmailID(email);
 			paymentMethod.setAccountNumber("1111111111111111");
 			paymentMethod.setCardType(EnumCardType.PAYPAL);
-			paymentMethod.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+			paymentMethod.setAddress1("23-30 BORDEN AVE");
 			paymentMethod.setAddress2("");
 			paymentMethod.setApartment("");
-			paymentMethod.setCity(FDStoreProperties.getFdDefaultBillingTown());
-			paymentMethod.setState(FDStoreProperties.getFdDefaultBillingState());
-			paymentMethod.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
-			paymentMethod.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+			paymentMethod.setCity("Long Island City");
+			paymentMethod.setState("NY");
+			paymentMethod.setZipCode("11101");
+			paymentMethod.setCountry("US");
 			paymentMethod.setProfileID(vaultToken);
 			paymentMethod.seteWalletID(""+EnumEwalletType.PP.getValue());
 			paymentMethod.setVendorEWalletID("");
@@ -191,29 +183,25 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		 	// Add the PayPal account details to Database
 			try {
 				if(searchedPM != null){ // PayPal card is already paired
-					FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM, ewalletRequestData.isDebitCardSwitch());
+					FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
 				}
 				
 				ewalletRequestData.setPaymentechEnabled(false);
-				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
+				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled());
 		
 				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
 				
-				
 				if(paymentMethods != null && !paymentMethods.isEmpty()){
-					
 					if (paymentMethods.size() > 1) {
 						sortPaymentMethodsByIdReserved(paymentMethods);
 					}
 			        if (!origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
-			    		if (!ewalletRequestData.isDebitCardSwitch()) {
-			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK, null, false);
-			    		}
+			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
+			    		
 			        }
 					ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
 				}
-				
 			} catch (Exception exception) {
 				LOGGER.error("Error While adding PayPal account details : "+exception.getMessage());
 			}	
@@ -281,24 +269,27 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
 			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
 		}
-
+		CustomerRequest request = new CustomerRequest();
+		request.customerId(ewalletRequestData.getCustomerId());
+		request.firstName(fName);
+		request.lastName(lName);
 		try{
 			Result<? extends PaymentMethod> vaultResult = null;
-			IPayPalService payPalService = FDPayPalService.getInstance();
-			PayPalResponse payPalResponse = null;
-
-			 payPalResponse = payPalService.createCustomer(ewalletRequestData.getCustomerId(),fName,lName);
+			
+		    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+	//	    customerResult.getTransaction(); Verify this one 
 		    // Check customer record created successfully or not
-		    if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){
+		    if(customerResult.isSuccess()){
 		    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-
-				payPalResponse = payPalService.createPaymentMethod(payPalResponse.getCustomerId(),paymentMethodNonce,deviceId);
-				
+				PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
+					    .paymentMethodNonce(paymentMethodNonce)
+					    .deviceData(deviceId);
+				vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
 	//			PAYPAL_GET_VAULT_TOKEN_TXN
-				if(payPalResponse != null){
-					if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){
+				if(vaultResult != null){
+					if(vaultResult.isSuccess()){
 						logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-						return payPalResponse.getToken();
+						return vaultResult.getTarget().getToken();
 					}else{
 						//fail
 						return null;
@@ -312,10 +303,6 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		    	return null;
 		    }
 		}catch(AuthenticationException exception){
-			throw new EWalletRuntimeException("Cannot connect to PayPal.");
-		}catch(FDPayPalServiceException ex){
-			throw new EWalletRuntimeException("Cannot connect to PayPal.");
-		}catch(Exception ex){
 			throw new EWalletRuntimeException("Cannot connect to PayPal.");
 		}
 	}
@@ -354,7 +341,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				try {
 					for (ErpPaymentMethodI payment : paymentMethods) {
 						if (payment.geteWalletID() != null && payment.geteWalletID().equalsIgnoreCase(""+EnumEwalletType.PP.getValue())) {
-							FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(),payment, ewalletRequestData.isDebitCardSwitch());
+							FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(),payment);
 							ewalletRequestData.setPaymentData(null);
 							break;
 						}

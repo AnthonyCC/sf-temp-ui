@@ -10,9 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.EnumAlcoholicContent;
-import com.freshdirect.fdstore.FDStoreProperties;
 
 
 /**
@@ -28,19 +26,19 @@ public final class FDSapHelperUtils
 	/**
 	 * Master default zone for price row
 	 */
-	public static final String MASTER_DEFAULT_ZONE = ErpServicesProperties.getMasterDefaultZoneId();
+	public static final String MASTER_DEFAULT_ZONE = "100000";
 	public static final String MASTER_REGION_ID = "1000";
 
-	public static final String MASTER_SALES_ORGANIZATION_ID = FDStoreProperties.getDefaultFdSalesOrg();
-	public static final String MASTER_DISTRIBUTION_CHANNEL = FDStoreProperties.getDefaultFdDistributionChannel();
+	public static final String MASTER_SALES_ORGANIZATION_ID = "0001";
+	public static final String MASTER_DISTRIBUTION_CHANNEL = "01";
 	public static final String MASTER_DIVISION = "01";
 	
-	public static final String DEFAULT_BILLING_STREET = FDStoreProperties.getFdDefaultBillingStreet();
-	public static final String DEFAULT_BILLING_TOWN = FDStoreProperties.getFdDefaultBillingTown();
-	public static final String DEFAULT_BILLING_POSTALCODE = FDStoreProperties.getFdDefaultBillingPostalcode();
-	public static final String DEFAULT_BILLING_STATE = FDStoreProperties.getFdDefaultBillingState();
-	public static final String DEFAULT_BILLING_COUNTRY = FDStoreProperties.getFdDefaultBillingCountry();
-	
+	public static final String DEFAULT_BILLING_STREET = "23-30 borden ave";
+	public static final String DEFAULT_BILLING_TOWN = "Long Island City";
+	public static final String DEFAULT_BILLING_POSTALCODE = "11101";
+	public static final String DEFAULT_BILLING_STATE = "NY";
+	public static final String DEFAULT_BILLING_COUNTRY = "US";
+
 	public static final String PROMO_PRICE_ROW_INDICATOR = "Promo"; //PBBS
 	
 	public static final Date CURRENT_DATE = new Date();

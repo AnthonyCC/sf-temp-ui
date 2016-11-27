@@ -1,19 +1,20 @@
 package com.freshdirect.fdstore.rules;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.rules.Rule;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.rules.RulesEngineI;
+import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.rules.RulesRegistry;
 
 /**
  * Generic rule-based fee calculator that operates with a single base price and adjustments.
  */
 public class OrderMinimumCalculator {
-
+	
 	private String subsystem;
 
 	public OrderMinimumCalculator(String subsystem) {
@@ -35,7 +36,7 @@ public class OrderMinimumCalculator {
 			if (baseOrderMin == null || Double.parseDouble(baseOrderMin) > Double.parseDouble(currOrderMin)) {
 					baseRule = r;
 			}
-		}
+		} 
 		if (baseRule != null) {
 			finalRules.add(baseRule);
 		}
@@ -54,7 +55,7 @@ public class OrderMinimumCalculator {
 					hPriority = r.getPriority();
 			}
 		}
-
+		
 		for (Rule r : rules) {
 			if (r.getOutcome() == null) {
 				continue;
@@ -68,7 +69,7 @@ public class OrderMinimumCalculator {
 	}
 
 	private RulesEngineI getRulesEngine() {
-		return StoreServiceLocator.rulesRegistry().getRulesEngine(this.subsystem);
+		return RulesRegistry.getRulesEngine(this.subsystem);
 	}
 
 	public double getOrderMinimum(FDRuleContextI ctx) {
@@ -76,7 +77,7 @@ public class OrderMinimumCalculator {
 		String value = null;
 
 		if (rulesEngine != null) {
-			Map<?,Rule> firedRules = rulesEngine.evaluateRules(ctx);
+			Map<?,Rule> firedRules = (Map<?,Rule>)rulesEngine.evaluateRules(ctx);
 			//Set<Rule> rules = resolveConflicts(firedRules.values());
 			for (Rule r : firedRules.values()) {
 				value = (String) r.getOutcome();

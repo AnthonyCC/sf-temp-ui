@@ -3,13 +3,14 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.model.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.FDProductInfo" %>
 <%@ page import="com.freshdirect.fdstore.FDCachedFactory" %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.framework.util.*''%> 
 <%@ page import='com.freshdirect.fdstore.customer.*''%> 
 <%@ page import='com.freshdirect.fdstore.ecoupon.*''%>
+<%@ page import='com.freshdirect.dataloader.ecoupon.*''%>
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri='freshdirect' prefix='fd'%>
@@ -17,7 +18,7 @@
 <%@ include file="/shared/template/includes/yui.jspf" %>
 
 <fd:CheckLoginStatus guestAllowed='true' />
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>FDCoupon Test Page</title>
 	

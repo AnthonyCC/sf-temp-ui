@@ -19,19 +19,18 @@ This include expects the following:
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
-<%@ page import="com.freshdirect.storeapi.content.MediaI"%>
-<%@ page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@ page import="com.freshdirect.storeapi.content.SkuModel"%>
-<%@ page import="com.freshdirect.storeapi.content.Domain"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.Domain"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.WineRegionLabelTag"%>
 <%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 <%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>
@@ -86,7 +85,6 @@ if ( skuSize == 0 ) {
     }
 
     FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo( defaultSku.getSkuCode() ) );
-    FDProductInfo productinfo=defaultSku.getProductInfo();
 
     if ( !hasTemplate ) {
 
@@ -145,6 +143,7 @@ if ( skuSize == 0 ) {
 
 <form id='product_form' method='post' name="productForm" action="<%= formAction %>">
 	<fd:AddToCartPending id="product_form"/>
+	<fd:CmFieldDecorator/>
 <%  if (request.getParameter("iatcNamespace") != null) { %>
 	<input type="hidden" name="iatcNamespace" value="<%= request.getParameter("iatcNamespace") %>">
 <%  } %>
@@ -222,7 +221,7 @@ if ( skuSize == 0 ) {
 				    boolean displayEstimatedQuantity = !displaySalesUnitsOnly && isPricedByLB && !isSoldByLB;
 				    boolean salesUnitFirst = ( sellBySalesUnit == null ) && !hasSingleSalesUnit && isPricedByLB && !isSoldByLB;
 				    boolean hasVariationMatrix = ( defaultSku.getVariationMatrix().size() > 0);
-					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productinfo)).isEmpty();    
+					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();    
 				%>
 
 		
@@ -275,7 +274,7 @@ if ( skuSize == 0 ) {
 		   					String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName();
 		   					
 	    	     			if ( bIdx > 0 ) { 
-	    	     				%><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" hspace="0" vspace="0"><% 
+	    	     				%><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" hspace="0" vspace="0"><% 
 	    	     			}   	     
 	    	     			
 		     				if ( brandPopupLink != null ) {
@@ -371,8 +370,8 @@ if ( skuSize == 0 ) {
         			<br/><span class="text11bold">Please Choose</span>
         			<br/><span class="space2pix"><br/></span>
 					<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
-						<span class="errortext"><%=errorMsg%></span><br/>
-						<% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" alt="" border="0"><% } %>
+						<span class="text11rbold"><%=errorMsg%></span><br/>
+						<% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0"><% } %>
 					</fd:ErrorHandler>
 
 	        		<%
@@ -400,7 +399,6 @@ if ( skuSize == 0 ) {
 	       					onChangeText = "pricing.setSalesUnit(this.value);";
 	        			}
 	        		%>
-	        		<label><%= ( "".equals(__prd.getSalesUnitLabel()) || __prd.getSalesUnitLabel() == null ) ?"<span class=\"offscreen\">Please Choose</span>" :"<span class=\"offscreen\">"+ __prd.getSalesUnitLabel()+"</span>" %>
 	        		<select name="salesUnit" class="text11" style="width:165px" onChange="<%= onChangeText %>">
         		
 						<option value=""><%= __prd.getSalesUnitLabel() %></option>
@@ -413,7 +411,6 @@ if ( skuSize == 0 ) {
             				<option value="FDD">NEED HELP CHOOSING?</option>
             			<% } %>
         			</select><br/>
-        			</label>
         				
         		<% } else if ( (sellBySalesUnit != null) && (hasSingleSalesUnit) ) { %>
         			<input type="hidden" name="salesUnit" value="<%= defaultProduct.getSalesUnits()[0].getName() %>">
@@ -509,7 +506,7 @@ if ( skuSize == 0 ) {
             				} %>
             
 				            <fd:ErrorHandler result='<%=result%>' name='<%= variation.getName() %>' id='errorMsg'>
-				                <span class="errortext"><%=errorMsg%></span><br/>
+				                <span class="text11rbold"><%=errorMsg%></span><br/>
 				                <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0" alt="error" />
 				                	<% errorMsgs++; %>
 				                	<% if (idx == variations.size()-1) { %>
@@ -586,8 +583,6 @@ if ( skuSize == 0 ) {
 				            %>
 				                    
 				            <% if (!availableFDVarOptions.isEmpty()) { %>
-				               <label><%= ( "".equals(variation.getDescription()) || variation.getDescription() == null ) ?"<span class=\"offscreen\">Please Choose</span>" :"<span class=\"offscreen\">"+ variation.getDescription()+((variation.isOptional())?" (optional)":"")+"</span>" %>
-				            
 					            <select name="<%= charId %>" class="text11" style="width:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= __tempLine.getCategoryName() %>&prodId=<%= __tempLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=large?lpop:spop%>&title=<%=title%>',<%=(large?largePopup:smallPopup).getHeight()%>,<%=(large?largePopup:smallPopup).getWidth()%>);">
 					            
 		            				<option value=""><%= variation.getDescription() %><% if (variation.isOptional()) { %> (optional) <% } %></option>
@@ -616,7 +611,6 @@ if ( skuSize == 0 ) {
 	            					<% } %>
 	            					
 	            				</select>
-	            				</label>
             				<% } %>
             				
             				<%
@@ -700,7 +694,7 @@ if ( skuSize == 0 ) {
         <% if (isQuickBuy && productNode.hasTerms()) { %>
           <div>
             <fd:ErrorHandler result='<%=result%>' name='agreeToTerms' id='errorMsg'>
-                <span class="errortext"><%=errorMsg%></span><br/>
+                <span class="text11rbold"><%=errorMsg%></span><br/>
                 <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0" alt="error" />
                   <% errorMsgs++; %>
                   <script><%-- fix height of qb panel when an error occurs --%>
@@ -731,7 +725,7 @@ if ( skuSize == 0 ) {
 				<% } %>
 
 			    <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
-			        <span class="errortext"><%=errorMsg%></span><br/>
+			        <span class="text11rbold"><%=errorMsg%></span><br/>
 			    </fd:ErrorHandler>
 
     
@@ -744,7 +738,7 @@ if ( skuSize == 0 ) {
             				<td colspan="2" class="text11" style="<%= CSSTableStyle %>">
 	            				
 								<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
-									<span class="errortext"><%=errorMsg%></span><br/>
+									<span class="text11rbold"><%=errorMsg%></span><br/>
 								</fd:ErrorHandler>
 								
 								<%
@@ -797,9 +791,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-                      <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
@@ -817,9 +811,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-                      <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
                     </span>
                     <span class="qtyprice">Price</span>
                     <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
@@ -839,9 +833,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-                      <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <input class="qty" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
@@ -855,11 +849,11 @@ if ( skuSize == 0 ) {
 
         			
     				if ( !priceShown ) { %>
-    					<tr><td class="text11bold product-price-quantity-container" style="<%= CSSTableStyle %>padding-top:8px; padding-bottom: 8px;white-space: nowrap"><%
+    					<tr><td class="text11bold" style="<%= CSSTableStyle %>padding-top:8px; white-space: nowrap"><%
     					 
 
 	        				if ( displayEstimatedQuantity ) {
-	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" aria-label="estimated quantity" name="EST_QTY" size="7" onChange="" aria-live="polite" tabindex="0" disabled="disabled" value="">
+	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" name="EST_QTY" size="7" onChange="" onFocus="blur()" value="">
 	            				<%
 	        				} else if ( isPricedByLB ) {
 	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated Price</a><%
@@ -867,7 +861,7 @@ if ( skuSize == 0 ) {
 	            				%>Price<%
 	        				}
 	
-	    					%>&nbsp;<input class="text11bold" aria-label="estimated price:" type="text" name="PRICE" size="6" onChange="" disabled="disabled" aria-live="polite" tabindex="0" value="">
+	    					%>&nbsp;<input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value="">
 	    					
     					</td></tr>
 					<% } %>
@@ -913,11 +907,11 @@ if ( skuSize == 0 ) {
         						referer = "/view_cart.jsp";
        						%>
        						<div class="prodMod-buttons-cont">
-	       						<button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
+	       						<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
 	       						<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/><br/>
 	       						
 	       						<% if (!refererPassed) { %><input type="hidden" name="referer" value="<%=referer%>"><% } %>
-	       						<a href="<%=referer%>" class="cssbutton green transparent">Back to Cart</a><br/>
+	       						<a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><br/>
 								<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
 							</div>
        						<%
@@ -998,7 +992,7 @@ if ( skuSize == 0 ) {
 						SkuModel _defaultSku = !__prd.isUnavailable()? __prd.getDefaultSku():(SkuModel)__prd.getSkus().get(0);
     					if ( _defaultSku != null ) {
         					FDProduct fdprd = __prd.isUnavailable() ? null : _defaultSku.getProduct();
-        					if ( fdprd.getKosherInfo(ProductInfoUtil.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction() ) { %>
+        					if ( fdprd.getKosherInfo(plantID).isKosherProduction() ) { %>
             					<br/><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
             					<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%= EnumDlvRestrictionReason.KOSHER %>" withinHorizon="true">
 					            	<% if ( kosherRestrictions.size() > 0 ) { %>

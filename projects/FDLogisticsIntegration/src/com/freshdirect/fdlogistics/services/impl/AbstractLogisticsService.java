@@ -1,15 +1,12 @@
 package com.freshdirect.fdlogistics.services.impl;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -28,13 +25,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -43,7 +36,6 @@ public abstract class AbstractLogisticsService {
 	
 	private static final String API_CONTEXT = "/logisticsapi/v/1/";
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
-	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
 	
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractLogisticsService.class);
@@ -75,18 +67,9 @@ public abstract class AbstractLogisticsService {
 	    requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
-	    
-	    try {
-	    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
-	    staleMonitor.start();
-		staleMonitor.join(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
-	
+			
 	protected <T> T getData(String inputJson, String url, Class<T> clazz) throws FDLogisticsServiceException {
 		
 		try {
@@ -99,7 +82,7 @@ public abstract class AbstractLogisticsService {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
 			LOGGER.info("input json:"+inputJson);
-			throw new FDLogisticsServiceException(e,"API connection failure");
+			throw new FDLogisticsServiceException("API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
@@ -123,38 +106,12 @@ public abstract class AbstractLogisticsService {
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
-			throw new FDLogisticsServiceException(e, "API connection failure");
+			throw new FDLogisticsServiceException("API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
 			throw new FDLogisticsServiceException("API syntax error");
 		}
-	}
-protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> type) throws FDLogisticsServiceException {
-			Response<T> responseOfTypestring = null;
-			RestTemplate restTemplate = getRestTemplate();	
-			ResponseEntity<String> response;
-			try {
-				response = restTemplate.getForEntity(new URI(url),String.class);
-				responseOfTypestring = getMapper().readValue(response.getBody(), type);
-			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (RestClientException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-					
-		return responseOfTypestring;
 	}
 	
 	protected RestTemplate getRestTemplate(){
@@ -209,50 +166,4 @@ protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> typ
 					+ path;
 		
 	}
-	
-	public String getFdCommerceEndPoint(String path){
-		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
-												 path;
-	}
-	
-	
-	
-	public static class IdleConnectionMonitorThread extends Thread {
-	    
-	    private final HttpClientConnectionManager connMgr;
-	    private volatile boolean shutdown;
-	    
-	    public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
-	        super();
-	        this.connMgr = connMgr;
-	        this.setDaemon(true);
-	    }
-	
-	    @Override
-	    public void run() {
-	        try {
-	            while (!shutdown) {
-	                synchronized (this) {
-	                    wait(5000);
-	                    // Close expired connections
-	                    connMgr.closeExpiredConnections();
-	                    // Optionally, close connections
-	                    // that have been idle longer than 30 sec
-	                    connMgr.closeIdleConnections(30, TimeUnit.SECONDS);
-	                }
-	            }
-	        } catch (InterruptedException ex) {
-	            // terminate
-	        }
-	    }
-	    
-	    public void shutdown() {
-	        shutdown = true;
-	        synchronized (this) {
-	            notifyAll();
-	        }
-	    }
-	    
-	}
-
 }

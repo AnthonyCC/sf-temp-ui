@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmCaseSubjectDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -52,17 +50,11 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 
 	public static final String CODE_AUTO_BILL_PAYMENT_MISSING="DPQ-009";
 	
-	public static final String CODE_AUTO_BILL_PAYMENT_MISSING_FK="DPQ-010";
-	
 	public static final String CODE_FIRST_ORDER_FOR_PICK_UP_USED_GC="ASQ-104";
 	
 	public static final String CODE_FIRST_ORDER_OVER_MAX_USED_GC="ASQ-105";
 	
 	public static final String CODE_GC_ORDER_OVER_MAX = "ASQ-104";
-	
-	public static final String CODE_ORDER_LOCATION_HELP = "ASQ-108";
-	
-	public static final String CODE_ORDER_PLACEMENT_HELP = "ASQ-109";
 	
 	public static final String CODE_GIFT_CARD_INFO = "GCQ-010";
 	
@@ -84,10 +76,7 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	private final String priorityCode;
 	private final boolean isCartonsRequired;
 
-	public CrmCaseSubject(@JsonProperty("queueCode") String queueCode, @JsonProperty("code") String code,
-			@JsonProperty("name") String name, @JsonProperty("description") String descr,
-			@JsonProperty("obsolete") boolean obsolete, @JsonProperty("priorityCode") String priorityCode,
-			@JsonProperty("isCartonsRequired") boolean isCartonsRequired) {
+	public CrmCaseSubject(String queueCode, String code, String name, String descr, boolean obsolete, String priorityCode, boolean isCartonsRequired) {
 		super(code, name, descr);
 		this.obsolete = obsolete;
 		this.queueCode = queueCode;
@@ -98,12 +87,7 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	public boolean isObsolete() {
 		return obsolete;
 	}
-	// StoreFront2.0 requirement
-	public String getQueueCode() {
-		return this.queueCode;
-	}
-	
-	@JsonIgnore
+
 	public CrmCaseQueue getQueue() {
 		return CrmCaseQueue.getEnum(this.queueCode);
 	}

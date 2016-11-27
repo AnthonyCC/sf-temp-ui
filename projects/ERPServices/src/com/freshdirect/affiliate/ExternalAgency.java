@@ -5,7 +5,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 /** Agencies which promote FD products on 3rd party pages **/
 public enum ExternalAgency {
-	FOODILY, STOREPOWER, IBOTTA, SMARTCOMMERCE, ZIPONGO, BLUTAG;
+	FOODILY;
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(ExternalAgency.class);
 

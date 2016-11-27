@@ -4,9 +4,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-    <fd:SEOMetaTag title="FreshDirect"/>
+<title>FreshDirect</title>
 
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
@@ -14,6 +14,7 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 	<table width="500" border="0" cellspacing="0" cellpadding="0" align="center">
 	<tr>
@@ -36,7 +37,7 @@
 	<tr>
 		<td align="center">
 			<span class="space4pix"><br><br><br></span>
-			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="250" height="1" vspace="8"><br>
+			<img src="/media_stat/images/layout/cccccc.gif" width="250" height="1" vspace="8"><br>
 			<%@ include file="/shared/template/includes/copyright.jspf" %>
 			<br><br>
 		</td>

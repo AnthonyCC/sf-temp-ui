@@ -88,7 +88,7 @@ public class SearchRelevancyList {
         // find out root content key of search relevancy list
         
         final boolean isFDX = instance.getSingleStoreKey().getId().equals(EnumEStoreId.FDX.getContentId());
-        final ContentKey listKey = isFDX ? ContentKey.getContentKey(SEARCH_RELEVANCY_KEY_FDX) : ContentKey.getContentKey(SEARCH_RELEVANCY_KEY);
+        final ContentKey listKey = isFDX ? ContentKey.decode(SEARCH_RELEVANCY_KEY_FDX) : ContentKey.decode(SEARCH_RELEVANCY_KEY);
         
         
         ContentNodeI searchRelRootNode = instance.getContentNode( listKey, draftContext );

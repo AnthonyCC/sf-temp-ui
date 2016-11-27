@@ -21,7 +21,7 @@
 
 %>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<style>
 		.scrollingDiv {

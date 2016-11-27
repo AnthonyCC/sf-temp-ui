@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.customer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.FDResourceException;
 
@@ -34,10 +33,8 @@ public class FDCustomerInfo implements java.io.Serializable {
     private String customerServiceContact;
     private double userGiftCardsBalance;
     private boolean goGreen;
-    private int fdcOrderCount = -1;
-    private String secondEmailAddress;
 	
-	public FDCustomerInfo(@JsonProperty("firstName") String firstName,@JsonProperty("lastName") String lastName){
+	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
@@ -212,25 +209,8 @@ public class FDCustomerInfo implements java.io.Serializable {
 		this.goGreen = goGreen;
 	}
 
-	public int getFdcOrderCount() {
-		return fdcOrderCount;
-	}
-
-	public void setFdcOrderCount(int fdcOrderCount) {
-		this.fdcOrderCount = fdcOrderCount;
-	}
-
 	public void getUserInfo(FDUserI customerUser) throws FDResourceException {
 		this.setChefsTable(customerUser.isChefsTable());
 		this.setCustomerServiceContact(customerUser.getCustomerServiceContact());
 	}
-
-	public String getSecondEmailAddress() {
-		return secondEmailAddress;
-	}
-
-	public void setSecondEmailAddress(String secondEmailAddress) {
-		this.secondEmailAddress = secondEmailAddress;
-	}
-
 }

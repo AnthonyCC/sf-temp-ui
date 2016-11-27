@@ -16,6 +16,7 @@ import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -26,7 +27,6 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.storeapi.content.ContentFactory;
 
 public class ForgotPasswordControllerTag extends BodyTagSupport {
 
@@ -93,23 +93,30 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				LOGGER.debug("Attempting to do isLinkExpired");
 				if (this.isLinkExpired(email, link)) {
 					this.doRedirect(URI_LINK_EXPIRED);
-					return SKIP_BODY;
 				}
 				// APPDEV-4409 : The below code is set to bypass the hint question page and direct to 
 				// password change page. 
 				pageContext.setAttribute(this.password, "true");
 			}
 
-		} else if(null !=passStep){
+		} else {
 
 			if (passStep.equals("sendUrl")) {
 				//
 				// Email link to user
 				//
-				if (this.performSendUrl(result, request)) {
-					//skip content if redirecting
-					return SKIP_BODY;
+				this.performSendUrl(result, request);
+
+			} else if (passStep.equals("checkHint")) {
+				//
+				// Check if hint answer is correct
+				//
+				if (isLinkExpired(email, link)) {
+					this.doRedirect(URI_LINK_EXPIRED);
+				} else {
+					performCheckHint(result, request);
 				}
+
 			} else if (passStep.equals("changePassword")) {
 				//
 				// changes user password
@@ -121,6 +128,36 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		// place the result as a scripting variable in the page
 		pageContext.setAttribute(this.results, result);
 		return EVAL_BODY_BUFFERED;
+	}
+
+	private void performCheckHint(ActionResult result, HttpServletRequest request) {
+		getHintData(request);
+		validateHintInput(result);
+		LOGGER.debug("Validating: " + hint + " for " + email);
+		if (result.isSuccess()) {
+			try {
+				if (FDCustomerManager.isCorrectPasswordHint(email, hint)) {
+					pageContext.setAttribute(this.password, "true");
+
+				} else {
+					LOGGER.debug("Hint not Valid");
+					result.addError(new ActionError("invalid_hint", SystemMessageList.MSG_INVALID_HINT));
+				}
+
+			} catch (FDResourceException ex) {
+				result.addError(new ActionError("invalid_hint", SystemMessageList.MSG_INVALID_HINT));
+				LOGGER.warn("Failed to locate customer", ex);
+
+			} catch (ErpFraudException ex) {
+				//
+				// Number of unsuccessful guesses > 5
+				//
+				result.addError(new ActionError("numberOfAttempts", 
+	            		MessageFormat.format(SystemMessageList.MSG_NUMBER_OF_ATTEMPTS, 
+	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+				LOGGER.warn("Exceeded allowed number of guesses", ex);
+			}
+		}
 	}
 
 	private void performChangePassword(
@@ -146,7 +183,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 
 				//doRedirect(URI_HOME);
 
-				if (this.successPage != null && !"".equals(this.successPage)) {
+				if (this.successPage != null) {
 					 String newURL = "";
 					 if(FDStoreProperties.isLocalDeployment()){
 						 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
@@ -179,7 +216,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		}
 	}
 
-	private boolean performSendUrl(ActionResult result, HttpServletRequest request) {
+	private void performSendUrl(ActionResult result, HttpServletRequest request) {
 		getFormData(request);
 		validateInput(result);
 		if (result.isSuccess()) {
@@ -195,16 +232,17 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				FDCustomerManager.sendPasswordEmail(email, altEmail != null);
 				LOGGER.debug("Success, redirecting to: " + successPage);
 				this.doRedirect(newURL+this.successPage);
-				return true;
+
 			} catch (FDResourceException ex) {
 				result.addError(new ActionError("invalid_email", MSG_INVALID_EMAIL));
 				LOGGER.warn("Failed to locate customer", ex);
+
 			} catch (PasswordNotExpiredException pe) {
 				result.addError(new ActionError("email_not_expired", MSG_EMAIL_NOT_EXPIRED));
 				LOGGER.warn("Link has not Expired yet", pe);
 			}
+
 		}
-		return false;
 	}
 
 	private void getFormData(HttpServletRequest request) {

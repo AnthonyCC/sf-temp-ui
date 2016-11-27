@@ -3,21 +3,20 @@
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-   <%--  <title>FreshDirect</title>  --%>
-        <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 
 <body>
 	<center>
 		<div id="sulCont" class="signup-style-social signin-social-login-not-recognized">
 			<%
-				HashMap socialUser = (HashMap)session.getAttribute(SessionName.SOCIAL_USER);
-				String provider = (String)socialUser.get("provider");
+				//HashMap socialUser = (HashMap)session.getAttribute(SessionName.SOCIAL_USER);
+				//String provider = (String)socialUser.get("provider");
+				String provider = "facebook";
 			%>
     			
     		<div class="form-side-social-header">Oops!</div>
@@ -25,8 +24,7 @@
 				Your account is not connected to <%= provider %>.
 				</br>Sign in to connect your accounts.							
 			</div>
-			<button class="social-login-green-button"
-				onclick="window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin();">
+			<button class="social-login-green-button" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?triedToConnect=<%= provider %>'}) ">
 				Sign In
 			</button>
 			<div class="social-login-green-button-space"></div>

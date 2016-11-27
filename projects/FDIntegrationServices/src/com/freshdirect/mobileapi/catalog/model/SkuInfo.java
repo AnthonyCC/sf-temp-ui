@@ -15,8 +15,6 @@ public class SkuInfo {
 	private String rating;
 	private String freshness;
 	
-	private double inventory;
-	
 	private GroupInfo groupInfo;
 	
 	private List<SalesUnit> salesUnits;
@@ -126,14 +124,6 @@ public class SkuInfo {
 	public boolean isLimitedQuantity() {
 		return this.isLimitedQuantity;
 	}
-	
-	public double getinventory(){
-		return this.inventory;
-	}
-	   
-   public void setInventory(double inventory){
-	   this.inventory = inventory;
-   }
 	
 
 }

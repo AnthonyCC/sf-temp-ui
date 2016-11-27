@@ -111,10 +111,10 @@
 			
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			     <tr>
-				<td colspan="9" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
+				<td colspan="9" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
 				</tr>
 			     <tr>
-				<td colspan="9"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
+				<td colspan="9"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
 			     </tr>
 			</table>
 			

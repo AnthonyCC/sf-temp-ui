@@ -6,19 +6,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
 import com.freshdirect.mobileapi.model.Product.ImageType;
-import com.freshdirect.webapp.ajax.product.data.ProductData;
 
 public class ProductSearchResult {
+
+    private static Category LOGGER = LoggerFactory.getInstance(ProductSearchResult.class);
 
     private boolean inCart;
 
     private String formattedUnitPriceLabel;
+
+    public boolean isInCart() {
+        return inCart;
+    }
+
+    public void setInCart(boolean inCart) {
+        this.inCart = inCart;
+    }
 
     private Integer highestDealPercentage;
 
@@ -66,6 +78,8 @@ public class ProductSearchResult {
 
     private boolean autoConfigurable;
 
+    //private String checkoutInformation;
+
     private boolean soldByWeight;
 
     private boolean pricedByWeight;
@@ -78,8 +92,6 @@ public class ProductSearchResult {
     //Unit Pricing Fields
     private String utPrice;
 	private String utSalesUnit;
-	
-	private ProductData productData;
 
     public String getFormattedUnitPriceLabel() {
 
@@ -107,6 +119,8 @@ public class ProductSearchResult {
 
     private Map<String, String> options = new HashMap<String, String>();
 
+    //    private String cancellationNote;
+
     public Integer getHighestDealPercentage() {
         return highestDealPercentage;
     }
@@ -127,7 +141,6 @@ public class ProductSearchResult {
     protected ProductSearchResult(com.freshdirect.mobileapi.model.Product product) {
         this.soldBySalesUnits = product.isSoldBySalesUnits();
         this.autoConfigurableSalesUnit = product.getAutoConfiguredSalesUnit();
-        this.deliveryPass = product.isDeliveryPass();
         if (product.isAvailable()) {
             this.sku = Sku.wrap(product.getDefaultSku());
         }
@@ -137,21 +150,21 @@ public class ProductSearchResult {
         this.departmentId=product.getDepartmentId();
         this.available = product.isAvailable();
 
-        com.freshdirect.storeapi.content.Image prodImage = product.getImage(ImageType.PRODUCT);
+        com.freshdirect.fdstore.content.Image prodImage = product.getImage(ImageType.PRODUCT);
         if (prodImage != null) {
             this.image.setSource(prodImage.getPath());
             this.image.setHeight(prodImage.getHeight());
             this.image.setWidth(prodImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image rollImage = product.getImage(ImageType.ROLLOVER);
+        com.freshdirect.fdstore.content.Image rollImage = product.getImage(ImageType.ROLLOVER);
         if (rollImage != null) {
             this.rollOverImage.setSource(rollImage.getPath());
             this.rollOverImage.setHeight(rollImage.getHeight());
             this.rollOverImage.setWidth(rollImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image thumbImage = product.getImage(ImageType.THUMBNAIL);
+        com.freshdirect.fdstore.content.Image thumbImage = product.getImage(ImageType.THUMBNAIL);
         if (thumbImage != null) {
             this.thumbnail.setSource(thumbImage.getPath());
             this.thumbnail.setHeight(thumbImage.getHeight());
@@ -159,7 +172,7 @@ public class ProductSearchResult {
         }
         
 
-        com.freshdirect.storeapi.content.Image detailImage = product.getImage(ImageType.DETAIL);
+        com.freshdirect.fdstore.content.Image detailImage = product.getImage(ImageType.DETAIL);
         
         if (detailImage != null) {
 	        this.detailImage.setHeight(detailImage.getHeight());
@@ -167,7 +180,7 @@ public class ProductSearchResult {
 	        this.detailImage.setSource(detailImage.getPath());
         }        
         
-        com.freshdirect.storeapi.content.Image zoomImg = product.getImage(ImageType.ZOOM);
+        com.freshdirect.fdstore.content.Image zoomImg = product.getImage(ImageType.ZOOM);
         if(zoomImg != null) {
         this.zoomImage.setHeight(zoomImg.getHeight());
         this.zoomImage.setWidth(zoomImg.getWidth());
@@ -179,7 +192,6 @@ public class ProductSearchResult {
         setQuantityIncrement(product.getQuantityIncrement());
         setQuantityLabel(product.getQuantitText());
         setAutoConfigurable(product.isAutoConfigurable());
-        setProductData(product.getProductData());
 
         for (com.freshdirect.mobileapi.model.SalesUnit salesUnit : product.getSalesUnit()) {
             this.salesUnits.add(new SalesUnit(salesUnit));
@@ -191,21 +203,30 @@ public class ProductSearchResult {
             this.highestDealPercentage = product.getHighestDealPercentage();
         }
 
-        com.freshdirect.storeapi.content.Image thumbBurstImage = product.getImage(ImageType.THUMB_BURST);
+        com.freshdirect.fdstore.content.Image thumbBurstImage = product.getImage(ImageType.THUMB_BURST);
         if (thumbBurstImage != null) {
             this.thumbBurst = new Image(thumbBurstImage.getPath(), thumbBurstImage.getHeight(), thumbBurstImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
+        com.freshdirect.fdstore.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
         if (largeBurstImage != null) {
             this.largeBurst = new Image(largeBurstImage.getPath(), largeBurstImage.getHeight(), largeBurstImage.getWidth());
         }
 
         //Set "in cart" flag...
         //This is based on sku level comparison
+        long startTime = System.currentTimeMillis();
         inCart = product.isInProductInCart();
+        long endTime = System.currentTimeMillis() - startTime;
+        /*if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Calculating in cart took:" + endTime + "msec");
+        }*/
 
         this.platter = product.isPlatter();
+        //        this.cancellationNote = product.getCancellationNote();
+        //        if (product.getWarningMessages().size() > 0) {
+        //            this.checkoutInformation = product.getWarningMessages().get(0);
+        //        }
 
         this.soldByWeight = product.isSoldByLB();
         this.pricedByWeight = product.isPricedByLB();
@@ -242,17 +263,13 @@ public class ProductSearchResult {
         			this.setUtPrice( unitPrice );
         			this.setUtSalesUnit( su.getUnitPriceUOM() );
         		}
-        	}
+        	}	        
         }
     }
 
-    public boolean isInCart() {
-        return inCart;
-    }
-
-    public void setInCart(boolean inCart) {
-        this.inCart = inCart;
-    }
+    //    public String getCancellationNote() {
+    //        return cancellationNote;
+    //    }
 
     public Image getThumbBurst() {
         return thumbBurst;
@@ -285,6 +302,8 @@ public class ProductSearchResult {
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
+    
+    
 
     public String getDepartmentId() {
 		return departmentId;
@@ -398,8 +417,6 @@ public class ProductSearchResult {
     public void setAutoConfigurable(boolean autoConfigurable) {
         this.autoConfigurable = autoConfigurable;
     }
-    
-    private boolean deliveryPass;
 
     private boolean soldBySalesUnits;
 
@@ -421,9 +438,21 @@ public class ProductSearchResult {
         this.options.put(key, value);
     }
 
+    //    public String getCheckoutInformation() {
+    //        return checkoutInformation;
+    //    }
+    //
+    //    public void setCheckoutInformation(String checkoutInformation) {
+    //        this.checkoutInformation = checkoutInformation;
+    //    }
+
     public List<ProductWarningMessage> getProductWarningMessages() {
         return productWarningMessages;
     }
+
+    //    public void setProductWarningMessages(List<ProductWarningMessage> productWarningMessages) {
+    //        this.productWarningMessages = productWarningMessages;
+    //    }
 
     public void addProductWarningMessage(ProductWarningMessage productWarningMessage) {
         this.productWarningMessages.add(productWarningMessage);
@@ -475,18 +504,7 @@ public class ProductSearchResult {
 
 	public void setZoomImage(Image zoomImage) {
 		this.zoomImage = zoomImage;
-	}
-
-    public ProductData getProductData() {
-        return productData;
-    }
-
-    public void setProductData(ProductData productData) {
-        this.productData = productData;
-    }
-
-	public boolean isDeliveryPass() {
-		return deliveryPass;
-	}
-
+	}	
+	
+	
 }

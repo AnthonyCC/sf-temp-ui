@@ -1,4 +1,5 @@
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -6,7 +7,7 @@
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import="java.util.Locale"%>  
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -39,10 +40,11 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	}
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="Review Your Order"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Checkout - Review & Submit Order</tmpl:put> --%>
+
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 		FDSessionUser fdSessionUser = (FDSessionUser) user;
@@ -90,7 +92,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
 		String sem_orderNumber = "0";
 %>
-<%
+<% if (!abstractTimeslots) { %><fd:SmartSavingsUpdate promoConflictMode="true"/><% } 
 		//button include count
 		int incNextButtonCount = 0;
 %>
@@ -105,7 +107,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 				<script type="text/javascript">
 				FreshDirect.terms=<%=fdTcAgree.booleanValue()%>;
 				$jq(document).on('ready',  function() {
-					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 				});
 				</script>
 	<%}%>
@@ -191,7 +193,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-<%-- 	<tmpl:put name="title">Review Your Order</tmpl:put> --%>
+	<tmpl:put name="title">Review Your Order</tmpl:put>
 	<tmpl:put name="delivery-fee">
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
@@ -217,7 +219,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <!-- PROFILE HEADER -->
 	<div>
 	<% if(!modifyOrderMode) { %>
-		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<% } %>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<div style="clear: both;"></div>
@@ -254,17 +256,17 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
         %>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
-		<br><span class="errortext"><%= errorMsg %></span><br><br>
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_reservation' id='errorMsg'>
-		<br><span class="errortext"><%= errorMsg %></span><br><br>
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
-    	<br><span class="errortext"><%= errorMsg %></span><br><br>
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
     	<fd:ErrorHandler result='<%=result%>' name='redemption_exceeded' id='errorMsg'>
         <input type = "hidden" name="ignorePromoErrors" value="true"/>
-    	<br><span class="errortext"><%= errorMsg %></span><br><br>
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
     
     
@@ -302,9 +304,9 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <% String receipt = ""; %>
 <%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
 
-<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
 
 <table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0" style="margin-top:1em">
 	<tr VALIGN="TOP">
@@ -312,9 +314,9 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
 <FONT CLASS="text9">If you would like to make any changes to your order, <A HREF="/view_cart.jsp?trk=chkplc">click here</A> to go back to your cart.</FONT><BR>
 <% } %>
-			<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
-			<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-			<% if (!abstractTimeslots) { %><font class="title11"><b>Note:</b></font> <font class="success13text">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font><% } %>
+			<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
+			<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+			<% if (!abstractTimeslots) { %><font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font><% } %>
 		</td>
 	</tr>
 	<tr>
@@ -356,7 +358,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 					<tr>
 						<td class="text10" style="width: 8em; text-align: right; padding-left: 2em; padding-right: 2em;"></td>
 						<td class="text10" style="width: 22px"></td>
-						<td class="success13text" colspan="3" style="padding-top: 1em;"><%= deptDesc %></td>
+						<td class="text11orbold" colspan="3" style="padding-top: 1em;"><%= deptDesc %></td>
 					</tr>
 <%
 				__lastDeptDesc = deptDesc;
@@ -395,9 +397,9 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 </table>
 
 <BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 
 <div style="margin-bottom: 15px; margin-top: 5px; position: relative; text-align: right; min-height: 26px;">
 		<div style="position: absolute; top: 0px; left: 0px; width: 150px; height: 26px; text-align: left;">
@@ -425,9 +427,9 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 
 </FORM>
 
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

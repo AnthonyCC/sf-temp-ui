@@ -1,1 +1,23 @@
 <fd:IncludeMedia name="/media/editorial/site_pages/standing_orders/first_standing_order.html"/>
+<div class="standing-orders-3-first-form-container">
+	<div class="standing-orders-3-first-form">
+		<fd:CreateStandingOrder result="result">
+			<form name="standing-order-name" method="POST">
+				<input type="hidden" name="action" value="create">
+				<input class="standing-orders-3-first-name-input" type="text" name="soName" placeholder='Name your Standing Order (e.g. "Weekly Meeting")' maxlength="25" autocomplete="off">
+				<div style="position: relative;">
+					<div class="standing-orders-3-char-count"></div>
+				</div>
+				<button class="standing-orders-3-start-button cssbutton orange cartheader__button" type="button" onclick="document.forms['standing-order-name'].submit();" disabled>Start ></button>
+				<select name="soFreq" style="display:none;">
+					<% for (EnumStandingOrderFrequency frqItem : EnumStandingOrderFrequency.values()) { %>
+						<option value="<%= frqItem.getFrequency() %>"><%= frqItem.getTitle() %></option>
+					<% } %>
+				</select>
+			</form>
+			<fd:ErrorHandler result='<%= result %>' field='<%= new String[]{"SO_NAME", "SO_FREQ"} %>' id='errorMsg'>
+				<%@ include file="/includes/i_so_error_messages.jspf" %>
+			</fd:ErrorHandler>
+		</fd:CreateStandingOrder>
+	</div>
+</div>

@@ -1,22 +1,25 @@
 package com.freshdirect.dataloader.payment.reconciliation.paypal;
 
-import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.log4j.Category;
 
+import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
+import com.freshdirect.dataloader.payment.reconciliation.paymentech.PaymentechFINParserClient;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.model.ErpSettlementTransactionModel;
@@ -45,13 +48,12 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	private long currSectionTotalFeeCredits = 0;
 	private long currSectionTotalFeeDebits = 0;
 	private List<String> settlementIds = null;
-	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyyMMdd");
 	
 	private boolean ignoreLock = false;
 		
 	public PayPalSettlementParserClient(SettlementBuilderI builder,ReconciliationSB reconSB,
-			List<String> settlementIds) {
-		super(builder, reconSB);
+			PayPalReconciliationSB ppReconSB, List<String> settlementIds) {
+		super(builder, reconSB, ppReconSB);
 		settlementSummarys = new ErpSettlementSummaryModel[2];
 		settlementDetails = new ArrayList<ErpSummaryDetailModel>();
 		this.settlementIds = settlementIds;
@@ -277,37 +279,14 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			}
 			
 			try {
-				if(PayPalSFTPSettlementLoader.isNEwRecordRequired){
-					PayPalReconciliationService.getInstance().insertNewSettlementRecord(SF.parse(PayPalSFTPSettlementLoader.timestamp));
-					
-				}
-				settlementIds = PayPalReconciliationService.getInstance().addPPSettlementSummary(settlementSummarys);
-				
+				settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
-				StringBuilder msg= new StringBuilder(300);
-				msg.append("Error Processing PayPal Reconciliation file .\n");
-				msg.append(e.toString());
-				throw new FDRuntimeException(msg.toString());
-				
 			}
 				
 			// END APPDEV-5531 
 		} else if (record.getRowCount() == 0) {
-			try {
-				List<String> stlmtIds = new ArrayList<String>();
-				if(settlementSummarys.length >0){
-					for(ErpSettlementSummaryModel model:settlementSummarys){
-						stlmtIds.add(model.getId());
-					}
-					if (stlmtIds.size() > 0) {
-						PayPalReconciliationService.getInstance().releasePPLock(stlmtIds);
-						
-					}
-				}
-			} catch (RemoteException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
+			
 			StringBuilder msg= new StringBuilder(300);
 			msg.append("PayPal Reconciliation file does not have any data at this time.\n");
 			msg.append("Please verify that the settlement batch was submitted for the previous day.");

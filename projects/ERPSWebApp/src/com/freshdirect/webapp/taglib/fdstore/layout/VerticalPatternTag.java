@@ -10,10 +10,10 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductModel;
 
 
 public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -186,8 +186,7 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 				continue;
 			
 			// skip hidden folders
-			//if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).getShowSelf() )
-			if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).isShowSelf() )
+			if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).getShowSelf() )
 				continue;
 			
 			// skip categories if ...
@@ -320,7 +319,7 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 	            		VariableInfo.AT_BEGIN ),
    	            new VariableInfo(
 	            		theOnlyProductVariableName,
-	            		"com.freshdirect.storeapi.content.ProductModel",
+	            		"com.freshdirect.fdstore.content.ProductModel",
 	            		true, 
 	            		VariableInfo.AT_BEGIN )
 	        };

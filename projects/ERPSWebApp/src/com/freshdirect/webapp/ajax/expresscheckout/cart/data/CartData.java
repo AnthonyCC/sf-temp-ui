@@ -2,28 +2,24 @@ package com.freshdirect.webapp.ajax.expresscheckout.cart.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.customer.ErpComplaintReason;
+import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
-import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 
 /**
  * Simple java bean for cart contents. Class structure is representing the resulting JSON structure.
  * 
  * @author treer
  */
-public class CartData {
-
-    private static final List<String> TIP_AMOUNTS = Arrays.asList("$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9", "Other Amount");
+public class CartData extends AbstractCoremetricsResponse {
 
     /**
      * Optional global error message
@@ -40,7 +36,6 @@ public class CartData {
      */
     private String subTotal;
 
-    private String saveAmount;
     /**
      * Is a Modify Order Cart ?
      */
@@ -93,7 +88,7 @@ public class CartData {
 
 	private ModifyCartData modifyCartData;
 
-    private ViewCartCarouselData carouselData;
+    private ProductSamplesCarousel productSamplesTab;
 
     private BillingReferenceInfo billingReferenceInfo;
     
@@ -111,11 +106,25 @@ public class CartData {
     
     private boolean containsWineSection;
     
-    private String totalWithoutTax;    
+    private String totalWithoutTax; 
     
-    private GoogleAnalyticsData googleAnalyticsData;
+    private List<String> tipAmounts = new ArrayList<String>();
+    
+    
     
     public CartData() {
+    	tipAmounts.add("$0");
+    	tipAmounts.add("$1");
+    	tipAmounts.add("$2");
+    	tipAmounts.add("$3");
+    	tipAmounts.add("$4");
+        tipAmounts.add("$5");
+		tipAmounts.add("$6");
+		tipAmounts.add("$7");
+		tipAmounts.add("$8");
+		tipAmounts.add("$9");
+		tipAmounts.add("Other Amount");
+		
 		tipAppliedTick = false;
 	}
 
@@ -127,13 +136,6 @@ public class CartData {
     private String softLimit;
     
     private String hardLimit;
-    
-    private String deliveryBegins;
-    
-    private boolean sOCartLineMessages;
-    
-    private boolean dlvPassCart;
-    
     
     public String getErrorMessage() {
         return errorMessage;
@@ -165,14 +167,6 @@ public class CartData {
 
     public void setSubTotal(String subTotal) {
         this.subTotal = subTotal;
-    }
-    
-    public String getSaveAmount() {
-        return saveAmount;
-    }
-    
-    public void setSaveAmount(String saveAmount) {
-        this.saveAmount = saveAmount;
     }
 
     public boolean isModifyOrder() {
@@ -320,7 +314,11 @@ public class CartData {
 	}
 
 	public List<String> getTipAmounts() {
-		return TIP_AMOUNTS;
+		return tipAmounts;
+	}
+
+	public void setTipAmounts(List<String> tipAmounts) {
+		this.tipAmounts = tipAmounts;
 	}
 
 	public boolean isTipAppliedTick() {
@@ -392,8 +390,6 @@ public class CartData {
          */
         private List<Item> cartLines;
 
-        private Map<String, ProductData> products;
-
         private SectionInfo info;
 
         public String getTitle() {
@@ -420,14 +416,6 @@ public class CartData {
             this.cartLines = cartLines;
         }
 
-        public Map<String, ProductData> getProducts() {
-            return products;
-        }
-
-        public void setProducts(Map<String, ProductData> products) {
-            this.products = products;
-        }
-
         public SectionInfo getInfo() {
             return info;
         }
@@ -450,17 +438,8 @@ public class CartData {
         private String taxTotal;        
         private String subTotalText;
         private boolean hasEstimatedPrice;
-        private boolean isJustAdded = false;
 
-        public boolean isJustAdded() {
-			return isJustAdded;
-		}
-
-		public void setJustAdded(boolean isJustAdded) {
-			this.isJustAdded = isJustAdded;
-		}
-
-		@Override
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -599,14 +578,7 @@ public class CartData {
         /**
          * Configuration description text
          */
-        /**
-         * String description alt, placeholder for "clean" string (i.e. no quotes)
-         */
-        private String descrAlt;
-        
         private String confDescr;
-
-        private Map<String, String> confOptions;
 
         /**
          * Is recently changed or added?
@@ -637,7 +609,6 @@ public class CartData {
         private boolean isMealBundle;
         private String productId;
         private String categoryId;
-		private String so3ItemStatus;
 
         /**
          * Reason given for the given cart line item
@@ -662,14 +633,6 @@ public class CartData {
         public void setDescr(String descr) {
             this.descr = descr;
         }
-       
-        public String getDescrAlt() {
-            return descrAlt;
-        }
-
-        public void setDescrAlt(String descrAlt) {
-            this.descrAlt = descrAlt.replace("\"", "").replace("'", "");
-        }
 
         public String getConfDescr() {
             return confDescr;
@@ -677,14 +640,6 @@ public class CartData {
 
         public void setConfDescr(String confDescr) {
             this.confDescr = confDescr;
-        }
-
-        public Map<String, String> getConfOptions() {
-            return confOptions;
-        }
-
-        public void setConfOptions(Map<String, String> confOptions) {
-            this.confOptions = confOptions;
         }
 
         public String getPrice() {
@@ -854,16 +809,8 @@ public class CartData {
         public void setCategoryId(String categoryId) {
             this.categoryId = categoryId;
         }
-        
-        public String getSo3ItemStatus() {
-			return so3ItemStatus;
-		}
 
-		public void setSo3ItemStatus(String so3ItemStatus) {
-			this.so3ItemStatus = so3ItemStatus;
-		}
-
-		public static class Discount implements Serializable {
+        public static class Discount implements Serializable {
 
             private static final long serialVersionUID = 8370395169692317105L;
 
@@ -1148,12 +1095,12 @@ public class CartData {
         this.modifyCartData = modifyCartData;
     }
 
-    public ViewCartCarouselData getCarouselData() {
-        return carouselData;
+    public ProductSamplesCarousel getProductSamplesTab() {
+        return productSamplesTab;
     }
 
-    public void setCarouselData(ViewCartCarouselData carouselData) {
-        this.carouselData = carouselData;
+    public void setProductSamplesTab(ProductSamplesCarousel productSamplesTab) {
+        this.productSamplesTab = productSamplesTab;
     }
 
     public Map<Integer, String> getPopulateDCPDPromoDiscount() {
@@ -1206,36 +1153,5 @@ public class CartData {
 		this.hardLimit = hardLimit;
 	}
 
-	public String getDeliveryBegins() {
-		return deliveryBegins;
-	}
-
-	public void setDeliveryBegins(String deliveryBegins) {
-		this.deliveryBegins = deliveryBegins;
-	}
-
-	public boolean issOCartLineMessages() {
-		return sOCartLineMessages;
-	}
-
-	public void setsOCartLineMessages(boolean sOCartLineMessages) {
-		this.sOCartLineMessages = sOCartLineMessages;
-	}
-
-    public GoogleAnalyticsData getGoogleAnalyticsData() {
-        return googleAnalyticsData;
-    }
-
-    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
-        this.googleAnalyticsData = googleAnalyticsData;
-    }
-
-	public boolean isDlvPassCart() {
-		return dlvPassCart;
-	}
-
-	public void setDlvPassCart(boolean dlvPassCart) {
-		this.dlvPassCart = dlvPassCart;
-	}
-
+    
 }

@@ -82,7 +82,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
-</xsl:choose>
+</xsl:choose> <xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods.</xsl:if>
+
 <xsl:text>View order details online: </xsl:text>
 
 <xsl:text>http://www.freshdirect.com/your_account/order_history.jsp
@@ -104,7 +105,7 @@ FreshDirect
 <xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose>
 <xsl:call-template name="x_invoice_info_v1"/>
 
-NOTE: If this email does not print out clearly, please go to https://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/> for a printer-friendly version of your order details.
+NOTE: If this email does not print out clearly, please go to https://www.freshdirect.com/your_account/order_history.jsp for a printer-friendly version of your order details.
 
 <xsl:call-template name="x_footer_v1"/>
 

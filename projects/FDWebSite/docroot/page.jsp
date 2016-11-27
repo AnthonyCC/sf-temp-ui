@@ -1,7 +1,6 @@
-<%@ page import="com.freshdirect.storeapi.content.*"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.cms.ContentType"%>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='java.net.*'%>
@@ -18,20 +17,24 @@
 	
 	String pageId = request.getParameter("pageId");
 	
+	if ( pageId == null || pageId.length() == 0 || pageId.trim().length() == 0 ) {
+		throw new JspException("pageId parameter is missing from URL");
+	}
+	
 	String layout = "/common/template/page_template.jsp";
 	
-	PageModel pageModel = (PageModel) PopulatorUtil.getContentNodeByKey( ContentKeyFactory.get(ContentType.Page, pageId) );
-
-	String title = "FreshDirect - " + pageModel.getTitle();
+	PageModel pageModel = (PageModel)ContentFactory.getInstance().getContentNodeByKey( new ContentKey(ContentType.get("Page"), pageId) );
+	
+	if ( pageModel == null ) {
+		throw new JspException("No page found with id: " + pageId );
+	}
 %>
 
 <fd:CheckLoginStatus guestAllowed="true" recognizedAllowed="true" />
 
 <tmpl:insert template='<%= layout %>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+
+	<tmpl:put name='title' direct='true'>FreshDirect - <%= pageModel.getTitle() %></tmpl:put>
 
   <tmpl:put name='extraHead' direct='true'>
     <fd:css href="/assets/css/common/page.css" />

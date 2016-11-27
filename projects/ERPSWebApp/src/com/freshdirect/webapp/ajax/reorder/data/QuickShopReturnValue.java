@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListDetails;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
@@ -19,7 +20,7 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopSorterValues;
  * Grouping return values for quickshop (JSON ready)
  *
  */
-public class QuickShopReturnValue implements Serializable {
+public class QuickShopReturnValue extends AbstractCoremetricsResponse implements Serializable {
 
 	private static final long serialVersionUID = -1974804524813407050L;
 	

@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.framework.util.StringUtil;
@@ -29,7 +27,6 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 public class FDCustomerOrderInfo implements Serializable {
 
 	private String saleId;
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date deliveryDate;
 	private Date cutoffTime;
 	private EnumSaleStatus status;

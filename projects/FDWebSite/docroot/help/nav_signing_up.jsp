@@ -1,25 +1,26 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+
 <%FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);%>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-	<%-- <title>FreshDirect - Help</title> --%>
- <fd:SEOMetaTag title="FreshDirect - Help"/>
+	<title>FreshDirect - Help</title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="147">
 			    <TR VALIGN="TOP">
 				    <TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" 
-			            WIDTH="6" HEIGHT="1" ALT="" BORDER="0"></TD>
+			            WIDTH="6" HEIGHT="1" BORDER="0"></TD>
 				    <TD WIDTH="141"><BR>
 <A HREF="faq_index.jsp" TARGET="_top"><img src="/media_stat/images/template/help/fdqa_catnav.gif" width="118" height="56" border="0" alt="FreshDirect Q &amp; A"></A><BR>
 <BR>

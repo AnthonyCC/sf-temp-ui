@@ -13,10 +13,7 @@
 final int W_ADD_GIFTCARD_FIELDS_TOTAL = 970;
 final int W_ADD_GIFTCARD_FIELDS_TABLE = 675;
 %>
-<style>
-	.W_ADD_GIFTCARD_FIELDS_TOTAL { width: <%= W_ADD_GIFTCARD_FIELDS_TOTAL %>px; }
-	.W_ADD_GIFTCARD_FIELDS_TABLE { width: <%= W_ADD_GIFTCARD_FIELDS_TABLE %>px; }
-</style>
+
 
 <%!
 String[] checkGiftCardForm = {
@@ -25,8 +22,7 @@ String[] checkGiftCardForm = {
 	EnumUserInfoName.GC_BUYER_EMAIL.getCode(), 
 	EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode(),
 	EnumUserInfoName.DLV_METHOD.getCode(),
-	EnumUserInfoName.GC_FLDAMOUNT.getCode(),
-	EnumUserInfoName.GC_FLDALTAMOUNT.getCode()
+	"fldAmount"
 };
 
 String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode()};
@@ -66,7 +62,7 @@ if(null != _user.getLastSenderEmail()) {
 }
 
 // Add to recipient list button image
-String addEditButton = "<button class=\"cssbutton small green\" name=\"checkout_credit_card_edit\"/>ADD TO RECIPIENT LIST</button>";
+String addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/add_to_recip_list_btn.gif\" width=\"130\" height=\"25\" alt=\"ADD TO RECIPIENT LIST\" border=\"0\" />";
 
 if (request.getParameter("gcTempId") !=null) {
 	fdTemplateId = request.getParameter("gcTempId");
@@ -153,84 +149,84 @@ if (request.getParameter("fldMessage") !=null) {
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" valign="middle" class="W_ADD_GIFTCARD_FIELDS_TABLE gcTable">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
-        <td colspan="4"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></td>
+        <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">*&nbsp;Your&nbsp;Name</label> 
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
         <td colspan="2">
-			<input type="text" maxlength="55"  size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<input type="text" maxlength="55" tabIndex="1" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 	</td>
         <td rowspan="10" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">*&nbsp;Your&nbsp;Email</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80"   size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<input type="text" maxlength="80" tabIndex="2"  size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
 	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>">*&nbsp;Recipient's&nbsp;Name</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Recipient's&nbsp;Name</label>
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="55"   class="text11" size="21" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" /> 
+			<input type="text" maxlength="55" tabIndex="3"  class="text11" size="21" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" /> 
         </td>
     </tr>
     <tr>
     	<td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="errortext"</fd:ErrorHandler>>
-				<span class="text14bold">*&nbsp;Delivery&nbsp;Method</span>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Delivery&nbsp;Method</label>
 			</span>
     	</td>
-    	<td colspan="2"><fieldset><legend class="offscreen">Delivery Method</legend>
-			<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+    	<td colspan="2">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td width="15">
-						<input type="radio"   class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
+						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
     				</td>
-					<td width="25%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email">Email</label></td>
+					<td width="25%">Email</td>
 					<td width="15">
-						<input type="radio"   class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
+						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
 					</td>
-					<td width="70%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf">I'll Download a PDF and Print It.</label></td>
+					<td width="70%">I'll Download a PDF and Print It.</td>
 				</tr>
-			</table></fieldset>
+			</table>
     	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="errortext"</fd:ErrorHandler> >
-				<span id="recipEmailStar">*</span><label for="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>">&nbsp;Recipient's&nbsp;Email</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
+				<span id="recipEmailStar">*</span><label>&nbsp;Recipient's&nbsp;Email</label>
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="80"   size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
+			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
 	</td>
 	</tr>
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>">class="errortext"</fd:ErrorHandler>><label for="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>">*&nbsp;Amount&nbsp;$</label></span></td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label>*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
-			<table role="presentation">
+			<table>
 				<tr>
 					<td width="65">
-						<select   class="customsimpleselect text9" name="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>" id="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select tabIndex="7"  class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -241,10 +237,10 @@ if (request.getParameter("fldMessage") !=null) {
 						</select>
 					</td>
 					<td>
-						<input type="text" style="margin-left:10px;"  maxlength="10" size="8" class="text9" name="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>" id="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						<span style="white-space: nowrap;"><label for="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>">Enter amount<br>(min. $20.00)</label></span>
+						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
 					</td>
 				</tr>
 			</table>
@@ -255,25 +251,23 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
     <tr>
 		<td align="right" class="text12" width="150">
-			<label for="fldMessage">*&nbsp;Message<br />
+			<label>*&nbsp;Message<br />
 			Type a personalized message over the default.<br />
+			<br />
 			150 character max.</label>
 		</td>
 		<td colspan="2">
-			<textarea rows="4" cols="30" maxlength="150" class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea><br />
-			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="text14bold" href="/gift_card/purchase/add_giftcard.jsp">Clear the Form</a>
+			<textarea rows="4" cols="30" maxlength="150" tabIndex="9"  class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea>
 		</td>
 	</tr>
 </table>
 
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-<br/>
-<br/>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
-        <td align="center" class="W_ADD_GIFTCARD_FIELDS_TOTAL text10bold">
+        <td align="center" <%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" class="text10bold">
 			We deliver only to portions of New York, New Jersey and Connecticut.
         </td>
     </tr>
@@ -283,23 +277,24 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" alt="" class="W_ADD_GIFTCARD_FIELDS_TOTAL" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr>
-		<td class="W_ADD_GIFTCARD_FIELDS_TOTAL" align="right">
-			<button class="cssbutton transparent green small" name="gcPreview" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />PREVIEW</button>
+		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
+			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR" border="0" /></a>
+			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
 			<%= addEditButton %>
 		</td>
 	</tr>
 </table>
 
-<table role="presentation" border="0" cellspacing="1" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
+<table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 <tr valign="MIDDLE">
-    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
 </tr>
 </table>

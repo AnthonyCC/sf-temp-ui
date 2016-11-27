@@ -30,7 +30,34 @@
 <!--       </resource-ref> -->
 <!--     </session> -->
    
+    <session>
+      <ejb-name>DlvRestrictionManager</ejb-name>
+      <home>com.freshdirect.delivery.ejb.DlvRestrictionManagerHome</home>
+      <remote>com.freshdirect.delivery.ejb.DlvRestrictionManagerSB</remote>
+      <ejb-class>com.freshdirect.delivery.ejb.DlvRestrictionManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
 
+    <session>
+		  <ejb-name>SmsAlerts</ejb-name>
+		  <home>com.freshdirect.delivery.sms.ejb.SmsAlertsHome</home>
+		  <remote>com.freshdirect.delivery.sms.ejb.SmsAlertsSB</remote>
+		  <ejb-class>com.freshdirect.delivery.sms.ejb.SmsAlertsSesionBean</ejb-class>
+		  <session-type>Stateless</session-type>
+		  <transaction-type>Container</transaction-type>
+		  <resource-ref>
+			<res-ref-name>jdbc/dbpool</res-ref-name>
+			<res-type>javax.sql.DataSource</res-type>
+			<res-auth>Container</res-auth>
+		  </resource-ref>
+    </session>
+    
     <message-driven>
       <ejb-name>RoutingLoadListener</ejb-name>
       <ejb-class>com.freshdirect.delivery.routing.ejb.RoutingLoadListener</ejb-class>
@@ -55,6 +82,10 @@
     <container-transaction>
       <method>
         <ejb-name>DlvManager</ejb-name>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>DlvRestrictionManager</ejb-name>
         <method-name>*</method-name>
       </method>
        <method>

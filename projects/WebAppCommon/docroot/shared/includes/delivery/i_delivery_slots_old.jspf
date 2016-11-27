@@ -47,11 +47,11 @@ if (timeslots.size() > 0) {
 					<td colspan="2" rowspan="2" height="4" width="4"><img src="/media_stat/images/layout/small-corner_upper-right.gif" width="4" height="4" border="0"></td>
 				</tr>
 				<tr>
-					<td height="3" width="89"><img src="/media_stat/images/layout/clear.gif"  width="3" height="3" border="0" alt=""></td>
+					<td height="3" width="89"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
 				</tr>
 				<tr valign="top">
 					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
-					<td width="3"><img src="/media_stat/images/layout/clear.gif"  width="3" height="3" border="0" alt=""></td>
+					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
 					<td align="center" width="89">
 						<div class="day_name"><b><%= TimeslotPageUtil.formatDayName(day) %></b></div>
 						<div class="day_date"><b><%= TimeslotPageUtil.formatDeliveryDate(day) %></b></div>

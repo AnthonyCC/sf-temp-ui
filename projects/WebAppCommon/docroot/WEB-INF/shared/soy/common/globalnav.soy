@@ -44,29 +44,24 @@
     //{call .globalnavSuperDepartment data="$menuitem" /}
         <!-- SUPERDEPARTMENT - {$menuitem.id} -->
         <div class="subdepartments_cont">
-          {if $menuitem.departments}
-            <ul class="subdepartments">
-              {foreach $department in $menuitem.departments}
-                <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
-                  <span class="submenuitem-link">
-                    <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
-                  </span>
-                  <div class="arrow-down"></div>
-                </li>
-              {/foreach}
-            </ul>
-          {/if}
-		</div>
+        <ul class="subdepartments">
+      {foreach $department in $menuitem.departments}
+            <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+              <span class="submenuitem-link">
+                <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
+              </span>
+              <div class="arrow-down"></div>
+            </li>
+          {/foreach}
+        </ul>
+      </div>
   </li>
   {/if}
-  //looping over depts here will duplicate the dept menus from a superdept
-  //is there a scenerio where a dept will be in a superdept but not in the main list of depts?
-  //
-  //{foreach $department in $menuitem.departments}
-  //  {call .globalnavDepartment}
-  //   {param department: $department/}
-  //  {/call}
-  //{/foreach}
+  {foreach $department in $menuitem.departments}
+    {call .globalnavDepartment}
+     {param department: $department/}
+    {/call}
+  {/foreach}
 {else}
   {call .globalnavDepartment}
    {param department: $menuitem/}
@@ -102,98 +97,75 @@
 {/template}
 
 /**
-* Globalnav top menu popup content - department
-* @param department menu item content
-*/
+ * Globalnav top menu popup content - department
+ * @param department menu item content
+ */
 {template .globalnavDepartment autoescape="false"}
 {let $hasCategories:$department.dropDownCategories and length($department.dropDownCategories) > 0 /}
 {let $hasPrefCategories:$department.preferenceCategories and length($department.preferenceCategories) > 0 /}
 
 {if not $department.hideDropDown}
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
-<!-- start dept {$department.id} -->
- <div class="deptcontainer">
-   {if $department.heroImage}
-     <div class="heroimg_cont"><img class="heroimg lazyload" data-src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
-   {/if}
-   {if $hasCategories or $hasPrefCategories}
-     <div class="department{if not $department.headerTextUsed} noheadertext{/if}{if $department.heroImage} has-heroimg{/if}">
-       {if $hasCategories}
-           {foreach $column in $department.dropDownCategories}
-             <div class="dropdown-column">
-               {foreach $elem in $column}
-                 {if $elem.headline}
-                 	<h3 class="column-heading">{$elem.headline}</h3>
-                 {else}
-                 	<span class="column-heading"><!-- spacer --></span>
-                 {/if}
-                 <!-- start category list -->
-                 <ul>
-                   {foreach $category in $elem.categories}
-                     <li>
-                       {call .categoryLink}
-                           {param deptName: $department.name /}
-                           {param id: $category.id /}
-                           {param globalNavShortName: $category.globalNavShortName /}
-                           {param available: $category.available /}
-                           {param globalNavPostNameImage: $category.globalNavPostNameImage /}
-                       {/call}
-                     </li>
-                   {/foreach}
-                 </ul>
-                 <!-- end category list -->
-               {/foreach}
-             </div>
-           {/foreach}
-       {/if}
-       {if $hasPrefCategories}
-         <div class="dropdown-column">
-			{if $department.preferenceCategoriesNavHeader}
-           		<h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
-			{else}
-				<span class="column-heading"><!-- spacer --></span>
-			{/if}
-			<!-- start preferenceCategories list -->
-           <ul>
-             {foreach $category in $department.preferenceCategories}
-               <li>
-                   {call .categoryLink}
-                       {param deptName: $department.name /}
-                       {param id: $category.id /}
-                       {param globalNavShortName: $category.globalNavShortName /}
-                       {param available: $category.available /}
-                       {param globalNavPostNameImage: $category.globalNavPostNameImage /}
-                   {/call}
-               </li>
-             {/foreach}
-           </ul>
-			<!-- end preferenceCategories list -->
-         </div>
-       {/if}
-       {if $department.seasonalMedia}
-         <div class="seasonal-media {$department.name}">{$department.seasonalMedia}</div>
-       {/if}
-     </div>
-   {/if}
- </div><!-- end dept {$department.id} -->
+  <div class="deptcontainer">
+    {if $department.heroImage}
+      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
+    {/if}
+    {if $hasCategories or $hasPrefCategories}
+      <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
+        {if $hasCategories}
+            {foreach $column in $department.dropDownCategories}
+              <div class="dropdown-column">
+                {foreach $elem in $column}
+                  <h3 class="column-heading">{$elem.headline}</h3>
+                  <ul>
+                    {foreach $category in $elem.categories}
+                      <li>
+                        {call .categoryLink data="$category" /}
+                      </li>
+                    {/foreach}
+                    {if isLast($column) and isLast($elem)}
+                      <li><a href="/browse.jsp?id={$department.id}">VIEW ALL</a></li>
+                    {/if}
+                  </ul>
+                {/foreach}
+              </div>
+            {/foreach}
+        {/if}
+        {if $hasPrefCategories}
+          <div class="dropdown-column">
+            <h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
+            <ul>
+              {foreach $category in $department.preferenceCategories}
+                <li>
+                  {call .categoryLink data="$category" /}
+                </li>
+              {/foreach}
+            </ul>
+          </div>
+        {/if}
+        {if $department.seasonalMedia}
+          <div class="seasonal-media">{$department.seasonalMedia}</div>
+        {/if}
+      </div>
+    {/if}
+  </div>
 </li>
 {/if}
 {/template}
 
 /**
-* @param? deptName
 * @param id
 * @param globalNavShortName
 * @param available
 * @param globalNavPostNameImage
 */
 {template .categoryLink autoescape="false"}
- {if $available}
-   <a href="/browse.jsp?id={$id}">
-     {if $deptName}<span class="offscreen">{$deptName} department</span>{/if}{$globalNavShortName}
-     {if $globalNavPostNameImage}
-       <img class="smallicon lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$globalNavPostNameImage}" alt="" />
-     {/if}
-   </a>
- {/if}
+  {if $available}
+    <a href="/browse.jsp?id={$id}">
+      {$globalNavShortName}
+      {if $globalNavPostNameImage}
+        <img src="{$globalNavPostNameImage}" alt="" class="smallicon" />
+      {/if}
+    </a>
+  {/if}
 {/template}

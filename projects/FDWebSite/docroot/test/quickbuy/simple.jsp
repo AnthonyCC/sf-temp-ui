@@ -6,7 +6,7 @@
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <fd:CheckLoginStatus id="user"/>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>QuickBuy Test Page</title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>

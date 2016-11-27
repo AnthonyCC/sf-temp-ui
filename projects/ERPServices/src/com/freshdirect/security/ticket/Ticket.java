@@ -33,7 +33,7 @@ public class Ticket implements Serializable {
 		this.used = used;
 	}
 
-	public Ticket(String key, String owner, String purpose, Date expiration, boolean used) {
+	Ticket(String key, String owner, String purpose, Date expiration, boolean used) {
 		this.key = key;
 		this.owner = owner;
 		this.purpose = purpose;

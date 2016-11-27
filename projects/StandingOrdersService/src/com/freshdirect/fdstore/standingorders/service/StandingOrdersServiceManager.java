@@ -9,17 +9,14 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.FDStandingOrdersService;
-import com.freshdirect.fdstore.ecomm.gateway.StandingOrdersService;
-import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class StandingOrdersServiceManager {
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersServiceManager.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(FDStandingOrdersManager.class);
 
 	private static StandingOrdersServiceHome soHome = null;
 	
@@ -62,12 +59,8 @@ public class StandingOrdersServiceManager {
 	public void placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig) throws FDResourceException {
 		lookupServiceHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
-				StandingOrdersService.getInstance().placeStandingOrders(soList, jobConfig);
-			}else{
-				StandingOrdersServiceSB sb = soHome.create();			
-				sb.placeStandingOrders(soList, jobConfig);
-			}
+			StandingOrdersServiceSB sb = soHome.create();			
+			sb.placeStandingOrders(soList, jobConfig);
 		} catch (CreateException ce) {
 			invalidateHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.ejb.BINInfoManagerSessionBean;
 
 import au.com.bytecode.opencsv.CSVReader;
 

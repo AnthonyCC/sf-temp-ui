@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<taglib xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
-    version="2.1">
+<!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
 
-    <description>FreshDirect feature tag library</description>
-    <display-name>fd-features</display-name>
-    <tlib-version>1.0</tlib-version>
-    <short-name>fd-features</short-name>
-    <uri>fd-features</uri>
+<taglib>
+	<tlibversion>3.1</tlibversion>
+	<jspversion>1.2</jspversion>
+	<shortname>features</shortname>
+	<uri>fd-features</uri>
 
 	<tag>
 		<name>potato</name>
@@ -43,19 +41,5 @@
 			<name>checkout</name>
 			<required>false</required>
 		</attribute>
-	</tag>
-	<tag>
-		<name>redirectUnauthorizedFeature</name>
-		<tagclass>com.freshdirect.webapp.features.tags.UnauthorizedFeatureRedirectorTag</tagclass>
-		<attribute>
-	       <name>featureActive</name>
-	       <required>true</required>
-	       <rtexprvalue>true</rtexprvalue>
-	   </attribute>
-	   <attribute>
-	       <name>featureName</name>
-	       <required>true</required>
-	       <rtexprvalue>true</rtexprvalue>
-	   </attribute>
 	</tag>
 </taglib>

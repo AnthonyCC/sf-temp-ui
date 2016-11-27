@@ -13,13 +13,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -29,17 +25,10 @@ import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
-import com.freshdirect.fdstore.customer.PendingOrder;
-import com.freshdirect.fdstore.customer.SilverPopupDetails;
-import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
-import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
-import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteData;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -170,56 +159,52 @@ class FDCustomerOrderInfoDAO {
 
 	private static List<FDCustomerOrderInfo> runOrderQuery(Connection conn, CriteriaBuilder builder,boolean isGiftCardSearch) throws SQLException {
 		PreparedStatement ps=null;
-		ResultSet rs = null;
+		System.out.println("query :"+GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
+		if(isGiftCardSearch)
+		   ps = conn.prepareStatement(GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
+		else
+			ps = conn.prepareStatement(ORDER_SEARCH_QUERY + " and " + builder.getCriteria());
 		
-		try {
-			System.out.println("query :"+GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
-			if(isGiftCardSearch)
-			   ps = conn.prepareStatement(GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
-			else
-				ps = conn.prepareStatement(ORDER_SEARCH_QUERY + " and " + builder.getCriteria());
-			
-			Object[] obj = builder.getParams();
-			for(int i = 0; i < obj.length; i++) {
-				if(obj[i] instanceof java.util.Date){
-					ps.setDate(i+1, (Date)obj[i]);
-				}
-				else{
-					ps.setObject(i+1, obj[i]);
-				}
+		Object[] obj = builder.getParams();
+		for(int i = 0; i < obj.length; i++) {
+			if(obj[i] instanceof java.util.Date){
+				ps.setDate(i+1, (Date)obj[i]);
 			}
-			rs = ps.executeQuery();
-			
-			List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
-			while (rs.next()) {
-				FDCustomerOrderInfo oInfo = new FDCustomerOrderInfo();
-				
-				oInfo.setSaleId(rs.getString("ID"));
-				oInfo.setDeliveryDate((java.util.Date) rs.getDate("REQUESTED_DATE"));
-				oInfo.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
-				oInfo.setAmount(rs.getDouble("AMOUNT"));
-				oInfo.setLastName(rs.getString("LAST_NAME"));
-				oInfo.setFirstName(rs.getString("FIRST_NAME"));
-				oInfo.setPhone(new PhoneNumber(rs.getString("PHONE")).getPhone());
-				oInfo.setAltPhone(new PhoneNumber(rs.getString("ALT_PHONE")).getPhone());
-				//oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
-				oInfo.setRouteNum(rs.getString("TRUCK_NUMBER"));
-				oInfo.setStopSequence(rs.getString("STOP_SEQUENCE"));
-				oInfo.setCutoffTime((java.util.Date) rs.getTimestamp("CUTOFFTIME"));
-				oInfo.setPaymentType(EnumPaymentType.getEnum(rs.getString("ON_FD_ACCOUNT")));
-				oInfo.setEmail(rs.getString("USER_ID"));
-				oInfo.setDeliveryType(rs.getString("DELIVERY_TYPE"));
-				oInfo.setVip("true".equals(rs.getString("VIP_CUST")));
-				oInfo.setChefsTable("1".equals(rs.getString("CHEFS_TABLE")));
-				oInfo.setIdentity(new FDIdentity(rs.getString("ERP_ID"), rs.getString("FD_ID")));
-				
-				lst.add(oInfo);
+			else{
+				ps.setObject(i+1, obj[i]);
 			}
-	
-			return lst;
-		} finally {
-			DaoUtil.closePreserveException(rs,ps,null);
 		}
+		ResultSet rs = ps.executeQuery();
+		
+		List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
+		while (rs.next()) {
+			FDCustomerOrderInfo oInfo = new FDCustomerOrderInfo();
+			
+			oInfo.setSaleId(rs.getString("ID"));
+			oInfo.setDeliveryDate((java.util.Date) rs.getDate("REQUESTED_DATE"));
+			oInfo.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+			oInfo.setAmount(rs.getDouble("AMOUNT"));
+			oInfo.setLastName(rs.getString("LAST_NAME"));
+			oInfo.setFirstName(rs.getString("FIRST_NAME"));
+			oInfo.setPhone(new PhoneNumber(rs.getString("PHONE")).getPhone());
+			oInfo.setAltPhone(new PhoneNumber(rs.getString("ALT_PHONE")).getPhone());
+			//oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
+			oInfo.setRouteNum(rs.getString("TRUCK_NUMBER"));
+			oInfo.setStopSequence(rs.getString("STOP_SEQUENCE"));
+			oInfo.setCutoffTime((java.util.Date) rs.getTimestamp("CUTOFFTIME"));
+			oInfo.setPaymentType(EnumPaymentType.getEnum(rs.getString("ON_FD_ACCOUNT")));
+			oInfo.setEmail(rs.getString("USER_ID"));
+			oInfo.setDeliveryType(rs.getString("DELIVERY_TYPE"));
+			oInfo.setVip("true".equals(rs.getString("VIP_CUST")));
+			oInfo.setChefsTable("1".equals(rs.getString("CHEFS_TABLE")));
+			oInfo.setIdentity(new FDIdentity(rs.getString("ERP_ID"), rs.getString("FD_ID")));
+			
+			lst.add(oInfo);
+		}
+		rs.close();
+		ps.close();
+
+		return lst;
 	}
 	
 	public static List<FDCustomerOrderInfo> findCustomersByCriteria(Connection conn, FDCustomerSearchCriteria criteria) throws SQLException {
@@ -297,22 +282,17 @@ class FDCustomerOrderInfoDAO {
 		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id and c.id = a.customer_id (+)";
 	
 	private static List<FDCustomerOrderInfo> customerSearch(Connection conn, CriteriaBuilder builder) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			String query = CUST_SEARCH_QUERY + " and " + builder.getCriteria();
-			ps = conn.prepareStatement(query);
-			Object[] obj = builder.getParams();
-			for(int i = 0; i < obj.length; i++) {
-				ps.setObject(i+1, obj[i]);
-			}
-			rs = ps.executeQuery();
-			List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
-			return lst;
-		} finally {
-			DaoUtil.closePreserveException(rs,ps,null);
+		String query = CUST_SEARCH_QUERY + " and " + builder.getCriteria();
+		PreparedStatement ps = conn.prepareStatement(query);
+		Object[] obj = builder.getParams();
+		for(int i = 0; i < obj.length; i++) {
+			ps.setObject(i+1, obj[i]);
 		}
+		ResultSet rs = ps.executeQuery();
+		List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
+		rs.close();
+		ps.close();
+		return lst;
 	}
 
 	private static final String CUST_BY_ORDER_QUERY =
@@ -324,21 +304,16 @@ class FDCustomerOrderInfoDAO {
 		 + "and c.id = fc.erp_customer_id";
 
 	private static List<FDCustomerOrderInfo> customerSearchByOrderNumber(Connection conn, String orderNumber) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		try {
+		PreparedStatement ps = conn.prepareStatement(CUST_BY_ORDER_QUERY);
+		ps.setString(1, orderNumber);
+		ResultSet rs = ps.executeQuery();
+		List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
 
-			ps = conn.prepareStatement(CUST_BY_ORDER_QUERY);
-			ps.setString(1, orderNumber);
-			rs = ps.executeQuery();
-			List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
-	
-			return lst;
-		} finally {
-			DaoUtil.closePreserveException(rs,ps,null);
-		}
+		rs.close();
+		ps.close();
 
+		return lst;
 	}
 
 	private static List<FDCustomerOrderInfo> processCustomerResultSet(ResultSet rs) throws SQLException {
@@ -372,193 +347,21 @@ class FDCustomerOrderInfoDAO {
 		+ " where DP.ID=? and DP.PURCHASE_ORDER_ID=s.id"
 		+ " and s.id=sa.sale_id and S.CROMOD_DATE=SA.ACTION_DATE and SA.ACTION_TYPE in ('CRO','MOD')  and cl.type(+)='DLV' and CL.SALESACTION_ID(+)=sa.id)) as SAVINGS from CUST.CHARGELINE CL, cust.salesaction sa, cust.sale s"
 		+" where cl.type='DLV' and CL.SALESACTION_ID=sa.id and s.DLV_PASS_ID= ? and s.status<>'CAN' and s.id=sa.sale_id and sa.ACTION_TYPE in ('CRO','MOD') and"
-		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? and s.E_STORE=? group by s.CUSTOMER_ID";
+		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? group by s.CUSTOMER_ID";
 		
-	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber,EnumEStoreId eStoreId) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			String savings="0";
-			ps = conn.prepareStatement(DELIVERY_PASS_SAVINGS);
-			ps.setString(1, dpNumber);
-			ps.setString(2, dpNumber);
-			ps.setString(3, customerPK);
-			ps.setString(4, eStoreId.getContentId());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				savings = rs.getString("SAVINGS");
-			}
-			return savings;
-		} finally {
-			DaoUtil.closePreserveException(rs, ps, null);
+	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber) throws SQLException {
+		String savings="0";
+		PreparedStatement ps = conn.prepareStatement(DELIVERY_PASS_SAVINGS);
+		ps.setString(1, dpNumber);
+		ps.setString(2, dpNumber);
+		ps.setString(3, customerPK);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			savings = rs.getString("SAVINGS");
 		}
+		rs.close();
+		ps.close();
 
-	}
-	
-	private static final String UNSETTLED_ORDERS = "select \"Delivery Date\","+
-			" MAX(DECODE(\"Status\",'STL',\"Order Count\")) \"Settled\", "+
-			" MAX(DECODE(\"Status\",'CBK',\"Order Count\")) \"Charge Back\","+
-			" MAX(DECODE(\"Status\",'STF',\"Order Count\")) \"Settlement Failed\","+
-			" MAX(DECODE(\"Status\",'ENR',\"Order Count\")) \"Enroute\","+
-			" MAX(DECODE(\"Status\",'PPG',\"Order Count\")) \"Payment Pending\","+
-			" MAX(DECODE(\"Status\",'CPG',\"Order Count\")) \"Capture Pending\","+
-			" MAX(DECODE(\"Status\",'STP',\"Order Count\")) \"GC Settlement Pending\","+
-			" MAX(DECODE(\"Status\",'REF',\"Order Count\")) \"Pending Refusal\","+
-			" MAX(DECODE(\"Status\",'POG',\"Order Count\")) \"GC Payment Pending\","+
-			" MAX(DECODE(\"Status\",'RPG',\"Order Count\")) \"GC Registration Pending\""+
-			" FROM ("+
-			" select count(s.id) \"Order Count\", sa.requested_Date \"Delivery Date\", s.status \"Status\""+
-			" from cust.sale s, cust.salesaction sa where s.id=sa.sale_id  and sa.action_type in ('CRO','MOD') and S.CROMOD_DATE=sa.action_date"+
-			" and sa.requested_date between trunc(sysdate-15) and trunc(sysdate-1) and s.status!='CAN' "+
-			" Group BY sa.requested_Date,s.status"+
-			" Order BY sa.requested_Date"+
-			" )"+
-			" Group BY \"Delivery Date\" Order BY \"Delivery Date\"";
-
-	public static List<UnsettledOrdersInfo> getUnsettledOrders(Connection conn, java.util.Date date) throws SQLException {
-		ResultSet rs = null;
-		Statement statement = null;
-		try {
-			statement = conn.createStatement();
-			rs = statement.executeQuery(UNSETTLED_ORDERS);
-			List<UnsettledOrdersInfo> unsettledOrders = new ArrayList<UnsettledOrdersInfo>();
-			while (rs.next()) {
-				UnsettledOrdersInfo order = new UnsettledOrdersInfo();
-				order.setDeliveryDate(rs.getDate("Delivery Date"));
-				order.setSettled(rs.getString("Settled"));
-				order.setChargeBack(rs.getString("Charge Back"));
-				order.setSettlementFailed(rs.getString("Settlement Failed"));
-				order.setEnroute(rs.getString("Enroute"));
-				order.setPaymentPending(rs.getString("Payment Pending"));
-				order.setCapturePending(rs.getString("Capture Pending"));
-				order.setPendingRefusal(rs.getString("Pending Refusal"));
-				order.setGCSettlementPending(rs.getString("GC Settlement Pending"));
-				order.setGCPaymentPending(rs.getString("GC Payment Pending"));
-				order.setGCRegistrationPending(rs.getString("GC Registration Pending"));
-
-				unsettledOrders.add(order);
-			}
-			return unsettledOrders;
-
-		} finally {
-			DaoUtil.close(rs,statement);
-		}
-	}
-	
-	private static final String Pending_Deliveries_Freshdirect = "SELECT COUNT(1) \"Order Count\", SA.REQUESTED_DATE \"Delivery Date\" FROM CUST.SALE S, " +
-			"CUST.SALESACTION SA WHERE S.STATUS='ENR' AND SA.REQUESTED_DATE BETWEEN SYSDATE-3 AND SYSDATE-1 AND S.CROMOD_DATE=SA.ACTION_DATE " +
-			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND S.ID=SA.SALE_ID AND S.TYPE='REG'"+
-			"AND S.E_STORE='FreshDirect'"+
-			"GROUP BY SA.REQUESTED_DATE ORDER BY SA.REQUESTED_DATE";
-	private static final String Pending_Deliveries_fdx = "SELECT COUNT(1) \"Order Count\", SA.REQUESTED_DATE \"Delivery Date\" FROM CUST.SALE S, " +
-			"CUST.SALESACTION SA WHERE S.STATUS='ENR' AND SA.REQUESTED_DATE BETWEEN SYSDATE-3 AND SYSDATE-1 AND S.CROMOD_DATE=SA.ACTION_DATE " +
-			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND S.ID=SA.SALE_ID AND S.TYPE='REG'"+
-			"AND S.E_STORE='FDX'"+
-			"GROUP BY SA.REQUESTED_DATE ORDER BY SA.REQUESTED_DATE";
-
-	public static Map<String, List<PendingOrder>> getPendingDeliveries(Connection conn) throws SQLException {
-		ResultSet rs1 = null;
-		ResultSet rs2 = null;
-		Statement statement = null;
-		try {
-			statement = conn.createStatement();
-			rs1 = statement.executeQuery(Pending_Deliveries_Freshdirect);
-			List<PendingOrder> freshDirectOrders = new ArrayList<PendingOrder>();
-			List<PendingOrder> fdx = new ArrayList<PendingOrder>();
-			while (rs1.next()) {
-				PendingOrder order = new PendingOrder();
-				order.setOrderCount(rs1.getString("Order Count"));
-				order.setDeliveryDate(rs1.getString("Delivery Date"));
-				freshDirectOrders.add(order);
-			}
-			rs2 = statement.executeQuery(Pending_Deliveries_fdx);
-			while (rs2.next()) {
-				PendingOrder order = new PendingOrder();
-				order.setOrderCount(rs2.getString("Order Count"));
-				order.setDeliveryDate(rs2.getString("Delivery Date"));
-				fdx.add(order);
-			}
-			Map<String, List<PendingOrder>> totalOrders = new HashMap<String, List<PendingOrder>>();
-			totalOrders.put("freshdirect", freshDirectOrders);
-			totalOrders.put("fdx", fdx);
-			return totalOrders;
-		} finally {
-			DaoUtil.close(rs1);
-			DaoUtil.close(rs2,statement);
-		}
-	}
-	
-	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where SEND_TIMESTAMP IS NULL and DESTINATION IS NOT NULL";
-
-	public static List<SilverPopupDetails> getSilverPopupDetails(Connection conn) throws SQLException {
-		ResultSet rs =null;
-		Statement statement = null;
-		try {
-			statement = conn.createStatement();
-			rs = statement.executeQuery(retrieve_silverpopupdetails);
-			List<SilverPopupDetails> details = new ArrayList<SilverPopupDetails>();
-			while (rs.next()) {
-				SilverPopupDetails silverPopup = new SilverPopupDetails();
-				silverPopup.setCustomerId(rs.getString("customer_id"));
-				silverPopup.setQualifier(rs.getString("qualifier"));
-				silverPopup.setDestination(rs.getString("destination"));
-				details.add(silverPopup);
-			}
-
-			return details;
-		} finally {
-			DaoUtil.close(rs,statement);
-		}
-	}
-	
-	private static final String GET_SHORT_SUBSTITUTE_ORDERS_SQL = "SELECT S.ID AS ORDER_ID, I.SHIP_STAT  FROM CUST.SALE S, CUST.SALESACTION SA, CUST.INVOICELINE I WHERE S.ID=SA.SALE_ID AND I.SALESACTION_ID=SA.ID AND I.SHIP_STAT" +
-																	" IS NOT NULL AND SA.ACTION_TYPE='INV' AND S.ID IN ";
-			
-	public static ShortSubstituteResponse getShortSubstituteOrders(StringBuffer orders, Connection conn) throws SQLException {
-		ResultSet rs =null;
-		Statement statement = null;
-		
-		ShortSubstituteResponse shortSubstituteResponse=new ShortSubstituteResponse();
-		Map<String, ShortSubstituteData> shortSubOrderMap=new HashMap<String, ShortSubstituteData>();
-		try {
-			StringBuffer selectQ = new StringBuffer(GET_SHORT_SUBSTITUTE_ORDERS_SQL);
-			selectQ.append(orders);
-			statement = conn.createStatement();
-			rs = statement.executeQuery(selectQ.toString());
-			ShortSubstituteData shortSubstituteData=null;
-			while (rs.next()) {
-				String orderId = rs.getString("order_id");
-				String shortAndSubstitute= rs.getString("SHIP_STAT");
-				
-				if (shortSubOrderMap.containsKey(orderId)) {
-					shortSubstituteData = shortSubOrderMap.get(orderId);
-					setShortSubstitute(shortSubstituteData, shortAndSubstitute,orderId);
-
-				} else {
-					shortSubstituteData = new ShortSubstituteData();
-					setShortSubstitute(shortSubstituteData, shortAndSubstitute,orderId);
-					shortSubOrderMap.put(orderId, shortSubstituteData);
-				}
-			}
-			if(!shortSubOrderMap.isEmpty()) {
-				shortSubstituteResponse.setShortSubstituteData(new ArrayList<ShortSubstituteData>(shortSubOrderMap.values()));
-			}
-			return shortSubstituteResponse ;
-		} finally {
-			DaoUtil.close(rs,statement);
-		}
-	}
-
-	public static void setShortSubstitute(
-			ShortSubstituteData shotSubstituteData, String shortAndSubstitute,
-			String orderId) {
-		shotSubstituteData.setOrderId(orderId);
-		if ("SB".equalsIgnoreCase(shortAndSubstitute)||"SS".equalsIgnoreCase(shortAndSubstitute)) {
-			shotSubstituteData.setShortAndSubstituteItem(shortAndSubstitute);
-		}
-		if ("SH".equalsIgnoreCase(shortAndSubstitute)) {
-			shotSubstituteData.setShortItem(shortAndSubstitute);
-		}
+		return savings;
 	}
 }

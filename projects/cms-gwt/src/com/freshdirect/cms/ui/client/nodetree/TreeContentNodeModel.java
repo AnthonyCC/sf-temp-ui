@@ -6,66 +6,64 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	
 	private static final long serialVersionUID = 6355813552570393744L;
 	
-	public static final String PATH_SEPARATOR = "|";
+	public static final String pathSeparator = "|";
 
     protected boolean hasChildren = true;
+    
 
     /**
      * Invalid constructor to be Serializable, don't use this.
      */
-    public TreeContentNodeModel() {
+	protected TreeContentNodeModel() {
 		super();
+//		path = pathSeparator + getKey();	//FIXME doesn't make sense, has no key, path will be invalid for sure
+		setPath( null );
 	}
-
+	
     /**
      * Creates a TreeContentNodeModel with no path.
      * @param type
      * @param label
      * @param key
      */
-    public TreeContentNodeModel(String type, String label, String key) {
-    	this(type, label, key, null);
+    public TreeContentNodeModel( String type, String label, String key ) {
+    	super( type, label, key );    	
+		setPath( null );
     }
-
+    
     /**
      * Creates a TreeContentNodeModel for root nodes (no parent)
      * @param node
      */
-	public TreeContentNodeModel(ContentNodeModel node) {
-		this(node, null);
+	public TreeContentNodeModel( ContentNodeModel node ) {
+		super( node );
+		setPath( pathSeparator + getKey() );
     }
-
+	
 	/**
 	 * Creates a TreeContentNodeModel for any node, you have to specify the parent node.
 	 * @param node
 	 * @param parent
 	 */
-	public TreeContentNodeModel(ContentNodeModel node, TreeContentNodeModel parent) {
-		super(node);
-		setPath(decoratePath(parent));
+	public TreeContentNodeModel( ContentNodeModel node, TreeContentNodeModel parent ) {	
+		super( node );
+		if ( parent != null ) {
+			setPath( parent.getPath() + pathSeparator + getKey() );			
+		} else {
+			setPath( pathSeparator + getKey() );
+		}
+    }
+	
+    public TreeContentNodeModel( String type, String label, String key, TreeContentNodeModel parent ) {
+    	super( type, label, key );    	
+		if ( parent != null ) {
+			setPath( parent.getPath() + pathSeparator + getKey() );			
+		} else {
+			setPath( pathSeparator + getKey() );
+		}
     }
 
-	/**
-     * Creates a TreeContentNodeModel for any node, you have to specify the parent node.
-     * @param type
-     * @param label
-     * @param key
-     * @param parent
-     */
-    public TreeContentNodeModel(String type, String label, String key, TreeContentNodeModel parent) {
-    	super(type, label, key);
-		setPath(decoratePath(parent));
-    }
-
-    private String decoratePath(TreeContentNodeModel parent) {
-        StringBuilder path = new StringBuilder();
-        if (parent != null){
-            path.append(parent.getPath());
-        }
-        path.append(PATH_SEPARATOR).append(getKey());
-        return path.toString();
-    }
-
+    
 	public void setPath(String path) {
 		set("path", path);
 	}	
@@ -78,6 +76,7 @@ public class TreeContentNodeModel extends ContentNodeModel {
 		return getPath();
 	}
 
+	
 	public boolean hasChildren() {
 		return hasChildren;
 	}
@@ -89,7 +88,7 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	@Override
 	public boolean equals( Object obj ) {
 		if ( obj instanceof TreeContentNodeModel && getPath() != null  )
-			return getPath().equals( ((TreeContentNodeModel)obj).getPath() );
+			return getPath().equals( ((TreeContentNodeModel)obj).getPath() );			
 		else 
 			return false;
 	}

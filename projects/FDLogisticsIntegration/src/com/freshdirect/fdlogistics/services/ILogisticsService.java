@@ -49,16 +49,12 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.Employees;
 import com.freshdirect.logistics.controller.data.response.FulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
-import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
-import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
-import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
-import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
@@ -118,9 +114,7 @@ public interface ILogisticsService {
 	Result removeOrdersfromLogistics(RemoveStandingOrderRequest removeStandingOrderRequest) throws FDLogisticsServiceException;
 	
 	StateCounty lookupStateCountyByZip(String zipcode) throws FDLogisticsServiceException;
-	
-	ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws FDLogisticsServiceException;
-	
+
 	public Map<String, Set<StateCounty>> getCountiesByState() throws FDLogisticsServiceException;
 	
 	public Depots getPickupLocations(PickupLocationsRequest pkupRequest) throws FDLogisticsServiceException;
@@ -172,12 +166,5 @@ public interface ILogisticsService {
 	
 	Result reconfirmReservation(ReconfirmReservationRequest reservationRequest) throws FDLogisticsServiceException;
 
-	RouteStopInfo getRouteStopInfo(String orderId) throws FDLogisticsServiceException;
-
-	ListOfFulfillmentInfoResponse getAllFulfillmentInfo()
-			throws FDLogisticsServiceException;
 	
-	RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException;
-	
-	RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException;
 }

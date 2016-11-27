@@ -319,12 +319,6 @@ public class PromoPublisher {
 		} catch (UnmarshallException e) {
 			LOGGER.error("Failed to getAllActiveWSPromotions content", e);
 			return null;
-		} finally {
-			try {
-				meth.releaseConnection();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 
 		return null;
@@ -378,12 +372,6 @@ public class PromoPublisher {
 		} catch (UnmarshallException e) {
 			LOGGER.error("Failed to getAllActiveWSPromotions content", e);
 			return null;
-		} finally {
-			try {
-				meth.releaseConnection();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 
 		return null;

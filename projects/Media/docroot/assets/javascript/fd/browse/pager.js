@@ -6,6 +6,7 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
+  var cm = fd.components.coremetrics;
 
   var pager = Object.create(WIDGET,{
     signal:{
@@ -67,6 +68,10 @@ var FreshDirect = FreshDirect || {};
           json.pageSize = newPageSize;
 
           this.render(json);
+
+          if (cm) {
+            cm.setEvent('page');
+          }
 
           $(this.placeholder).first().trigger('page-change');
         }

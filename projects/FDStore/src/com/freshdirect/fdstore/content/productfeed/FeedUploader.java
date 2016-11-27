@@ -78,7 +78,6 @@ public class FeedUploader {
 		ChannelSftp sftp = null;
 		Session session = null;
 		Channel channel = null;
-		FileInputStream fis = null;
 		
 		LOGGER.info("SFTP: connecting to host " + sftpHost);
 		
@@ -93,7 +92,7 @@ public class FeedUploader {
 			channel = session.openChannel("sftp");
 			sftp = (ChannelSftp) channel;
 			LOGGER.info("SFTP: Connecting..");
-			fis = new FileInputStream(prodFeedFilePath);
+			FileInputStream fis = new FileInputStream(prodFeedFilePath);
 			sftp.connect();
 			
 			if(sftpDirectory == null) {
@@ -106,13 +105,6 @@ public class FeedUploader {
 			throw new FDResourceException("feed sftp uploadFile to "+sftpHost+": "+e.getMessage(), e);
 		} finally{
 			LOGGER.info("SFTP: Disconnecting..");
-			try {
-				if (fis != null) {
-				    fis.close();
-				}
-			} catch (IOException e) {
-				LOGGER.warn("IOException "+e);
-			}
 			if(null !=sftp){
 				sftp.disconnect();
 			}

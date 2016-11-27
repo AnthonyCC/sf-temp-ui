@@ -15,6 +15,7 @@ import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
+import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -28,19 +29,18 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
-import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.framework.event.EnumEventSource;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
 
 public class SimpleCartLine implements FDCartLineI {
 	private static final long serialVersionUID = 1L;
 
-    private static final Random RND = new Random();
+	private static Random RND = new Random();
 
 	
 	private int randomId = RND.nextInt(1000);
@@ -59,7 +59,6 @@ public class SimpleCartLine implements FDCartLineI {
 	private double price = 10.0;
 	
 	private String atcItemId;
-	private ProductReference productRef;
 
 	@Override
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber)
@@ -124,7 +123,7 @@ public class SimpleCartLine implements FDCartLineI {
 	}
 
 	@Override
-    public FDInvoiceLineI getInvoiceLine() {
+	public ErpInvoiceLineI getInvoiceLine() {
 		return null;
 	}
 
@@ -394,11 +393,7 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public ProductReference getProductRef() {
-		return productRef;
-	}
-	
-	public void setProductRef(ProductReference productRef){
-		this.productRef = productRef;
+		return null;
 	}
 
 	@Override
@@ -460,8 +455,7 @@ public class SimpleCartLine implements FDCartLineI {
 		this.alcohol = alcohol;
 	}
 		
-	@Override
-    public boolean isWine() {
+	public boolean isWine() {
 		return wine;
 	}
 
@@ -469,8 +463,7 @@ public class SimpleCartLine implements FDCartLineI {
 		this.wine = wine;
 	}
 
-	@Override
-    public boolean isBeer() {
+	public boolean isBeer() {
 		return beer;
 	}
 
@@ -628,53 +621,43 @@ public class SimpleCartLine implements FDCartLineI {
 		return configuration.getSalesUnit();
 	}
 	
-	@Override
-    public double getGroupScaleSavings(){
+	public double getGroupScaleSavings(){
 		return 0.0;
 	}
 	
-	@Override
-    public void setGroupQuantity(double quantity){
+	public void setGroupQuantity(double quantity){
 		
 	}
 	
-	@Override
-    public double getGroupQuantity(){
+	public double getGroupQuantity(){
 		return 0.0;
 	}
-	@Override
-    public void setFDGroup(FDGroup group){
+	public void setFDGroup(FDGroup group){
 		
 	}
 
-	@Override
-    public FDGroup getFDGroup(){
+	public FDGroup getFDGroup(){
 		return null;
 	}
 
 	
-	@Override
-    public EnumSustainabilityRating getSustainabilityRating() {
+	public EnumSustainabilityRating getSustainabilityRating() {
 		
 		return null;
 	}
-	@Override
-    public FDGroup getOriginalGroup() {
+	public FDGroup getOriginalGroup() {
 		return null;
 	}
 	
-	@Override
-    public double getBasePrice() {
+	public double getBasePrice() {
 		return 0.0;
 	}
 	
-	@Override
-    public boolean isAddedFromSearch() {
+	public boolean isAddedFromSearch() {
 		return false;
 	}
 
-	@Override
-    public void setAddedFromSearch(boolean addedFromSearch) {
+	public void setAddedFromSearch(boolean addedFromSearch) {
 	}
 
 	@Override
@@ -848,39 +831,38 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public Double getScaleQuantity() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setScaleQuantity(Double scaleQuantity) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void setErpOrderLineSource(EnumEventSource source) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public EnumEventSource getErpOrderLineSource() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
     @Override
     public void setTaxCode(String taxCode) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
     public String getTaxCode() {
+        // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public String getMaterialGroup() {
-        return null;
-    }
-
-    @Override
-    public double getSaveAmount() {
-        return 0;
     }
 
 }

@@ -20,7 +20,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * </pre></blockquote> 
  */
 
-public class ServiceLocator implements ServiceLocatorI {
+public class ServiceLocator {
 
 	private final static Category LOGGER = LoggerFactory.getInstance( ServiceLocator.class );
 
@@ -40,7 +40,7 @@ public class ServiceLocator implements ServiceLocatorI {
 		this.ctx = ctx;
 	}
 
-	public Object getRemoteHome(String jndiHomeName) throws NamingException {
+	public EJBHome getRemoteHome(String jndiHomeName) throws NamingException {
 		EJBHome home = cache.get(jndiHomeName);
 		if ( home == null ) {
 			Object objref = this.ctx.lookup(jndiHomeName);

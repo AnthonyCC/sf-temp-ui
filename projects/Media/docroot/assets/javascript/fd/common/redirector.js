@@ -8,14 +8,10 @@ var FreshDirect = FreshDirect || {};
 		signal:{
 			value:'redirectUrl'
 		},
-    callback:{
+		callback:{
 			value:function( redirectUrl ) {
         if(redirectUrl && typeof redirectUrl === 'string'){
-          if (redirectUrl === 'currentUrl') {
-            location.reload();
-          } else {
-            location.href=redirectUrl;
-          }
+          location.href=redirectUrl;
         }
 			}
 		}

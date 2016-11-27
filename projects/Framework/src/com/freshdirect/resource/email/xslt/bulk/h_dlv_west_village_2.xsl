@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" /> 
 		<title>FreshDirect expands delivery on August 12th.</title>
@@ -78,7 +78,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <table cellpadding="0" cellspacing="0">
 <tr>
 <!-- =============== START LEFT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <!-- =============== END LEFT SPACER ================= -->
 
 <!-- ~~~~~~~~~~~~~~~ START CONTENT ~~~~~~~~~~~~~~~ -->
@@ -91,27 +91,27 @@ http://www.freshdirect.com/help/faq_home.jsp
 	<table cellpadding="0" cellspacing="0" width="90%">
                 <tr><td colspan="3" class="header"><font size="4"><b>FreshDirect expands delivery to the West Village!</b></font></td></tr>
                 <tr valign="top">
-                <td width="346"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br/><img src="/media_stat/images/template/email/west_village_2.gif" width="346" height="417" alt="Map" /><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/><font class="bodyCopySmall"><b>Note:</b> We do not currently deliver to addresses on Canal St.</font></td>
-                <td width="18"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" /></td>
-                <td width="100%"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
-                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
+                <td width="346"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" /><br/><img src="/media_stat/images/template/email/west_village_2.gif" width="346" height="417" alt="Map" /><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/><font class="bodyCopySmall"><b>Note:</b> We do not currently deliver to addresses on Canal St.</font></td>
+                <td width="18"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" /></td>
+                <td width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
+                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
                 <b>West Village Delivery Details</b>
-                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
                 <font color="#CC0000" class="red12px"><b>Deliveries Begin<br/>Tuesday August 12th, 2003</b></font>
-                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
                 Orders may be placed on the web today!
-                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/>
-                <b>Note:</b><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/>
+                <b>Note:</b><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4" /><br/>
                 <font color="#CC0000" class="red12px">Due to high demand delivery times may be limited for the first few delivery days.  Thank you for your understanding.</font>
-                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" />
+                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" />
 				<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt="" /></td></tr></table>
-                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br/>
+                <img src="/media_stat/images/layout/clear.gif" width="1" height="14" /><br/>
 				Order online at <a href="http://www.freshdirect.com">www.FreshDirect.com</a> and get <b>$50 worth of free fresh food*</b> (offer expires September 1, 2003) just for trying us. Choose from over 3,000 irresistibly fresh items, plus a full selection of organic foods and popular grocery and household brands. All delivered to your door, exactly the way you want, with <b>100% satisfaction guaranteed</b>.
 				</td>
                 </tr>
                 <tr>
         		<td colspan="3">
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/>
                 To top it off, delivery is free for the first month of service, and our drivers won't accept tips. You've waited long enough. Log on to <a href="http://www.freshdirect.com">www.FreshDirect.com</a> today.  
         
                 <p>Enjoy,</p>
@@ -133,7 +133,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <!-- ~~~~~~~~~~~~~~~ END CONTENT ~~~~~~~~~~~~~~~ -->
 
 <!-- =============== BEGIN RIGHT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <!-- =============== END RIGHT SPACER ================= -->
 </tr>
 </table>

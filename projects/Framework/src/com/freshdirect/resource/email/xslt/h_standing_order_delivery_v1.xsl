@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt='http://xsltsl.org/date-time' version="1.0">
 	<xsl:import href='stdlib.xsl'/>
-	<xsl:include href='h_so_cart_info_v1.xsl'/>
+	<xsl:include href='h_order_info_v1.xsl'/>
 	<xsl:include href='h_header_v1.xsl'/>
 	<xsl:include href='h_common_functions_v2.xsl'/>
 	<xsl:include href='h_footer_v1.xsl'/>
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>Reminder, your standing order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -44,7 +44,7 @@
 							<p>If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
 							</xsl:if>
 							
-							<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery . We'll also include an itemized, printed receipt with your delivery.</p>
+							<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
 
 							<p>We hope you enjoy everything in your order. Please <a href="http://www.freshdirect.com/">shop again soon</a>.</p>
 

@@ -10,17 +10,11 @@ var FreshDirect = FreshDirect || {};
   
   var focusedElementId;
   var DISPATCHER = fd.common.dispatcher;
-  var MULTISIGNALS = {
-    searchSections: ['searchParams', 'sections']
-  };
   var errorMessages={
      // "401": '<div class="unauthorized">Session expired, please refresh!</div>',
       "500": function (e) {
         var result = e.responseText,
-            message = {
-              primary: "Internal Error Occured",
-              secondary: "Please contact FreshDirect support!"
-            };
+            message = "Internal Error";
 
         try {
           message = JSON.parse(result).error;
@@ -46,23 +40,7 @@ var FreshDirect = FreshDirect || {};
 
   var successHandler = function( data ){
     try{
-      // single signals
       Object.keys( data ).forEach( _signalWidgets, data );
-      // multisignals
-      Object.keys(MULTISIGNALS).forEach(function (msignal) {
-        var keys = MULTISIGNALS[msignal],
-            msdata = {},
-            isIncruded = function (key) {
-              return Object.keys(data).indexOf(key) > -1;
-            };
-
-        if (keys.every(isIncruded)) {
-          keys.forEach(function (key) {
-            msdata[key] = data[key];
-          });
-          DISPATCHER.signal(msignal, msdata);
-        }
-      });
     } catch(e) {}
     try {
       if (focusedElementId) {
@@ -70,21 +48,26 @@ var FreshDirect = FreshDirect || {};
       }
     } catch(e) {}
   };
-
+  //APPDEV-3971
+  var loginSignupPopup = function (target, popupUrl) {
+	    if (fd.components && fd.components.ifrPopup) {
+	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5, mobWeb: fd.mobWeb});
+	    }
+	  };
+  var socialLogin = function (target) {
+		    loginSignupPopup(target, '/social/login.jsp');
+		  };
   var errorHandler = function( e ){
     var status = e.status, message;
     if(status == 401){
-    	var currentPage = window.location.pathname + window.location.search + window.location.hash;
-    	if ( fd.modules.common.login && !fd.modules.common.login.successTarget) {
-    		fd.modules.common.login.successTarget = currentPage;
-    	}
-	    var targetHolder = e.targetHolder || (fd.modules.common.login && fd.modules.common.login.successTarget);
+	    var targetHolder = $('#target-link-holder').attr("href");
+	    $('#target-link-holder').remove();
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");
-	    if (fd.modules.common && fd.modules.common.login) {
-	    	fd.modules.common.login.socialLogin(targetHolder);
-	    } else {
-	    	window.location.href = "/login/login.jsp";
+	    if (fd.properties.isSocialLoginEnabled) {
+	    socialLogin(e.targetHolder);
+	    }else{
+	    window.location.href = "/login/login.jsp";
 	    }
 }
         message = errorMessages[status];
@@ -131,7 +114,7 @@ var FreshDirect = FreshDirect || {};
             if(v==='show') { 
               $el.first().addClass('loading');
               spinner = $el.find('.spinner-container');
-              if (spinner.length > 0) {
+              if (spinner.size() > 0) {
                 sp = new window.Spinner(config.spinner.config || DEFAULT_SPINNER_CONFIG).spin(spinner[0]);
               }
             }
@@ -142,7 +125,7 @@ var FreshDirect = FreshDirect || {};
             if(!show) {
               $el.first().removeClass('loading');
               spinner = $el.find('.spinner-container');
-              if (spinner.length > 0) {
+              if (spinner.size() > 0) {
                 spinner.html('');
               }
             }

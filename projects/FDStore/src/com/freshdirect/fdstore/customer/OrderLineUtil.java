@@ -21,23 +21,22 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
-import com.freshdirect.storeapi.content.ComponentGroupModel;
-import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumProductLayout;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
-import com.freshdirect.storeapi.content.ProductReferenceImpl;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SkuModel;
 
 public class OrderLineUtil {
 	
@@ -185,9 +184,7 @@ public class OrderLineUtil {
 			theProduct.setDepartmentDesc("Recipe: " + recipe.getName());
 		} else {
 			DepartmentModel dept = prodNode.getDepartment();
-			if (dept != null) {
-			    theProduct.setDepartmentDesc(dept.getFullName());
-			}
+			theProduct.setDepartmentDesc(dept.getFullName());
 		}
 		
 		try {
@@ -554,22 +551,11 @@ public class OrderLineUtil {
 		                    */
 		        	return true;
 		        }
-		        ZoneInfo zone= userCtx!=null&&userCtx.getPricingContext()!=null?userCtx.getPricingContext().getZoneInfo():null;
+		        ZoneInfo zone=userCtx.getPricingContext().getZoneInfo();
 		        // find most recent fd product based on sku
 		        FDProductInfo productInfo;
 				try {
-//					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
-					if(prodSel instanceof FDModifyCartLineI && FDStoreProperties.isInvalidSkuCheckForModifyLinesAPIEnabled()){
-						if(null !=prodSel.getUserContext() && null!=prodSel.getUserContext().getPricingContext() && null!=prodSel.getUserContext().getPricingContext().getZoneInfo() 
-								&& null!=zone && prodSel.getUserContext().getPricingContext().getZoneInfo().equals(zone) ){
-							return false;
-						}
-						else{
-							productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode(),prodSel.getVersion());
-						}
-					}else{
-						productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
-					}
+					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
 					
 				} catch (FDSkuNotFoundException e) {
 					//throw new FDInvalidConfigurationException(e);
@@ -578,7 +564,7 @@ public class OrderLineUtil {
 					return true;
 				}
 		
-				if (!productInfo.isAvailable(zone!=null?zone.getSalesOrg():null,zone!=null?zone.getDistributionChanel():null)) {
+				if (!productInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
 					
 					/*throw new FDInvalidConfigurationException.Unavailable(
 							prodNode.getFullName()
@@ -593,14 +579,13 @@ public class OrderLineUtil {
 	public static List<FDCartLineI> getInvalidLines(List<FDCartLineI> productSelections, UserContext userCtx) {
 			List<FDCartLineI> invalidSelections = new ArrayList<FDCartLineI>(productSelections.size());
 
-		if(FDStoreProperties.isInvalidSkuCheckAPIEnabled()){
-			for ( FDCartLineI ps : productSelections ) {
-				
-					if(OrderLineUtil.isInvalid(ps,userCtx)) {
-						invalidSelections.add(ps);
-					}
-			}
+		for ( FDCartLineI ps : productSelections ) {
+			
+				if(OrderLineUtil.isInvalid(ps,userCtx)) {
+					invalidSelections.add(ps);
+				}
 		}
+
 		return invalidSelections;
 	}
 }

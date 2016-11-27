@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,73 +24,12 @@ import java.util.Set;
 import org.apache.commons.lang.enums.Enum;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Category;
+import org.apache.tools.ant.util.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.customer.EnumDeliveryType;
-import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
-import com.freshdirect.delivery.EnumPromoFDXTierType;
-import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
-import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
-import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
-import com.freshdirect.fdstore.promotion.AssignedCustomerStrategy;
-import com.freshdirect.fdstore.promotion.AudienceStrategy;
-import com.freshdirect.fdstore.promotion.CartStrategy;
-import com.freshdirect.fdstore.promotion.CompositeStrategy;
-import com.freshdirect.fdstore.promotion.CustomerStrategy;
-import com.freshdirect.fdstore.promotion.DCPDLineItemStrategy;
-import com.freshdirect.fdstore.promotion.DCPDiscountApplicator;
-import com.freshdirect.fdstore.promotion.DCPDiscountRule;
-import com.freshdirect.fdstore.promotion.DateRangeStrategy;
-import com.freshdirect.fdstore.promotion.DlvZoneStrategy;
-import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
-import com.freshdirect.fdstore.promotion.EnumOfferType;
-import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
-import com.freshdirect.fdstore.promotion.EnumPromotionType;
-import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
-import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
-import com.freshdirect.fdstore.promotion.FraudStrategy;
-import com.freshdirect.fdstore.promotion.GeographyStrategy;
-import com.freshdirect.fdstore.promotion.HeaderDiscountApplicator;
-import com.freshdirect.fdstore.promotion.HeaderDiscountRule;
-import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
-import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
-import com.freshdirect.fdstore.promotion.LineItemStrategyI;
-import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
-import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
-import com.freshdirect.fdstore.promotion.MinimumSubtotalStrategy;
-import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
-import com.freshdirect.fdstore.promotion.PercentOffApplicator;
-import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
-import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
-import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
-import com.freshdirect.fdstore.promotion.PromotionContextI;
-import com.freshdirect.fdstore.promotion.PromotionDlvDate;
-import com.freshdirect.fdstore.promotion.PromotionDlvDay;
-import com.freshdirect.fdstore.promotion.PromotionDlvTimeSlot;
-import com.freshdirect.fdstore.promotion.PromotionGeography;
-import com.freshdirect.fdstore.promotion.PromotionStrategyI;
-import com.freshdirect.fdstore.promotion.RecommendationStrategy;
-import com.freshdirect.fdstore.promotion.RecommendedLineItemStrategy;
-import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
-import com.freshdirect.fdstore.promotion.ReferAFriendStrategy;
-import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
-import com.freshdirect.fdstore.promotion.SampleLineApplicator;
-import com.freshdirect.fdstore.promotion.SampleStrategy;
-import com.freshdirect.fdstore.promotion.SignupDiscountApplicator;
-import com.freshdirect.fdstore.promotion.SignupDiscountRule;
-import com.freshdirect.fdstore.promotion.SignupStrategy;
-import com.freshdirect.fdstore.promotion.SkuLimitStrategy;
-import com.freshdirect.fdstore.promotion.StateCountyStrategy;
-import com.freshdirect.fdstore.promotion.UniqueUseStrategy;
-import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
@@ -104,15 +44,12 @@ import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductReference;
 import com.metaparadigm.jsonrpc.AbstractSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
 import com.metaparadigm.jsonrpc.ObjectMatch;
 import com.metaparadigm.jsonrpc.Serializer;
 import com.metaparadigm.jsonrpc.SerializerState;
 import com.metaparadigm.jsonrpc.UnmarshallException;
-
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 public class FDPromotionJSONSerializer extends AbstractSerializer {
 	private static final long serialVersionUID = 4602538095592746033L;
@@ -124,73 +61,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		FDPromoPaymentStrategyModel.class, FDPromotionNewModel.class,
 		FDPromoChangeModel.class, FDPromoChangeDetailModel.class,
 		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class,
-		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class,EnumDeliveryOption.class,
-		Promotion.class,
-		EnumPromotionType.class,
-		PromotionStrategyI.class,
-		ActiveInactiveStrategy.class,
-		AssignedCustomerStrategy.class,
-		AudienceStrategy.class,
-		CartStrategy.class,
-		CompositeStrategy.class,
-		CustomerStrategy.class,
-		DateRangeStrategy.class,
-		DlvZoneStrategy.class,
-		FraudStrategy.class,
-		GeographyStrategy.class,
-		LimitedUseStrategy.class,
-		MaxRedemptionStrategy.class,
-		MinimumSubtotalStrategy.class,
-		OrderTypeStrategy.class,
-		ProfileAttributeStrategy.class,
-		RecommendationStrategy.class,
-		RedemptionCodeStrategy.class,
-		ReferAFriendStrategy.class,
-		RuleBasedPromotionStrategy.class,
-		SampleStrategy.class,
-		SignupStrategy.class,
-		StateCountyStrategy.class,
-		UniqueUseStrategy.class,
-		PromotionApplicatorI.class,
-		DCPDiscountApplicator.class,
-		ExtendDeliveryPassApplicator.class,
-		HeaderDiscountApplicator.class,
-		LineItemDiscountApplicator.class,
-		PercentOffApplicator.class,
-		ProductSampleApplicator.class,
-		SampleLineApplicator.class,
-		SignupDiscountApplicator.class,
-		WaiveChargeApplicator.class,
-		AssignedCustomerParam.class,//For AssignedCustomerStrategy.java
-		EnumDCPDContentType.class,//For CartStrategy.java
-		FDMinDCPDTotalPromoData.class,//For CartStrategy.java
-		EnumCardType.class,//For CustomerStrategy.java
-		EnumOrderType.class,//For CustomerStrategy.java, OrderTypeStrategy.java
-		EnumComparisionType.class,//For CustomerStrategy.java
-		EnumDeliveryType.class,//For CustomerStrategy.java
-		PromotionDlvTimeSlot.class,//For DlvZoneStrategy.java
-		PromotionDlvDate.class,//For DlvZoneStrategy.java
-		PromotionDlvDay.class,//For DlvZoneStrategy.java
-		EnumPromoFDXTierType.class,	//For DlvZoneStrategy.java
-		PromotionGeography.class,//For GeographyStrategy.java
-		PromotionContextI.class,//For PromotionApplicatorI.java
-		DCPDiscountRule.class,//For DCPDiscountApplicator.java
-		HeaderDiscountRule.class,//For HeaderDiscountApplicator.java
-		FDPromoDollarDiscount.class,//For HeaderDiscountRule.java
-		ProductReference.class,//For ProductSampleApplicator.java
-		SignupDiscountRule.class,//For SignupDiscountApplicator.java
-		EnumChargeType.class,//For WaiveChargeApplicator.java
-		LineItemStrategyI.class,//For LineItemDiscountApplicator.java
-		DCPDLineItemStrategy.class,
-		MaxLineItemCountStrategy.class,
-		PerishableLineItemStrategy.class,
-		RecommendedLineItemStrategy.class,
-		SkuLimitStrategy.class,
-		ContentKey.class,//For DCPDLineItemStrategy.java
-		PromotionContextAdapter.class,
-		EnumOfferType.class
-		
-
+		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class,EnumDeliveryOption.class
 	};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
@@ -280,7 +151,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			} else if (m.getName().startsWith("is")) {
 				// boolean type
@@ -288,7 +159,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			}
 		}
@@ -398,9 +269,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 	 */
 	public void serializeArray(JSONArray arr, Iterable<?> arrval) {
 		for (Object val : arrval) {
-			if(null !=val){
-				arr.put(serializeRightHandSide(val));
-			}
+			arr.put(serializeRightHandSide(val));
 		}
 	}
 
@@ -536,7 +405,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					} else {
 						// Value is in not expected format, skip ...
 						// System.err.println("BANG[1] rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType);
-						// LOGGER.debug("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
+						// LOGGER.warn("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
 						continue;
 					}
 				} else if (Iterable.class.isAssignableFrom(valueType)) {
@@ -546,81 +415,23 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					
 					Collection coll = (Collection) rhs;
 					Collection valami;
-					ParameterizedType rt =null;
-					if(getter.getGenericReturnType() instanceof ParameterizedTypeImpl){
-						try {
-							rt = (ParameterizedType) getter.getGenericReturnType();
-						} catch (Exception e1) {
-							LOGGER.error("Exception in getter.getGenericReturnType():", e1);
-						}
-					}
 					if (List.class.equals(valueType)) {
-						if(null == rt){
-							valami = new ArrayList();
-						}else{
-							valami = createListOfType((Class<?>)rt.getActualTypeArguments()[0]);
-						}
+						valami = new ArrayList();
 					} else if (Set.class.equals(valueType)) {
-						if(null == rt){
-							valami = new HashSet();
-						}else{
-							valami = createSetOfType((Class<?>)rt.getActualTypeArguments()[0]);
-						}
+						valami = new HashSet();
 					} else {
 						valami = (Collection) valueType.newInstance();
 					}
 
-					
-					/*for (Object o : coll) {
+					for (Object o : coll) {
 						valami.add(deserializeRightHandSize(o));
-					}*/
-					
-					if(null !=rt){
-						Class classRt =(Class) rt.getActualTypeArguments()[0];
-						if(org.apache.commons.lang.enums.Enum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.Enum.class.equals(classRt) ||
-								org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt)){
-							try {
-								for (Object o : coll) {
-									if(null != o){
-										Field decl = classRt.getField(o.toString());
-										Object fld = decl.get(valueType);
-										valami.add(fld);
-									}
-								}
-							} catch (SecurityException e) {
-								LOGGER.error("SecurityException:", e);
-							} catch (IllegalArgumentException e) {
-								LOGGER.error("IllegalArgumentException:", e);
-							} catch (NoSuchFieldException e) {
-								LOGGER.error("NoSuchFieldException:", e);
-							}
-						}else{
-							for (Object o : coll) {
-								valami.add(deserializeRightHandSize(o));
-							}	
-						}
-					}else{
-						for (Object o : coll) {
-							valami.add(deserializeRightHandSize(o));
-						}
 					}
-					
+
 					silentInvoke(obj, setter, valami);
 				} else if (Map.class.isAssignableFrom(valueType)) {
 					ParameterizedType rt = (ParameterizedType) getter.getGenericReturnType();
-					Class<?> keyType = null;
-					Class<?> valType = null;
-					try {
-						keyType = (Class<?>) rt.getActualTypeArguments()[0];
-						if(rt.getActualTypeArguments()[1] instanceof ParameterizedTypeImpl){
-							valType =((ParameterizedTypeImpl)rt.getActualTypeArguments()[1]).getRawType();
-						}else{
-							valType = (Class<?>) rt.getActualTypeArguments()[1];
-						}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					final Class<?> keyType = (Class<?>) rt.getActualTypeArguments()[0];
+					final Class<?> valType = (Class<?>) rt.getActualTypeArguments()[1];
 					
 					// Map map = (Map) valueType.newInstance();
 					Map map;
@@ -636,9 +447,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 						
 						Object tKey = getDeserializedValue(key, keyType);
 						Object tVal = deserializeRightHandSize(val);
-						if (Set.class.equals(valType) && null !=tVal && tVal instanceof List){
-							tVal = new HashSet((List)tVal);
-						}
+						
 						map.put(tKey, tVal);
 					}
 					
@@ -653,8 +462,6 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		} catch (InstantiationException e) {
 			LOGGER.error("restoreObject", e);
 		} catch (IllegalAccessException e) {
-			LOGGER.error("restoreObject", e);
-		} catch (ClassCastException e){
 			LOGGER.error("restoreObject", e);
 		}
 		
@@ -691,20 +498,15 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		} else if (java.util.Date.class.isAssignableFrom(valueType)) {
 			// Date type
 			java.util.Date d = null;
-			/*try {
+			try {
 				d = DateUtils.parseIso8601DateTime(rhs.toString());
 			} catch (ParseException e) {
 			}
 			
 			if (d == null) {
 				d = new Date(Long.parseLong(rhs.toString()));
-			}*/
-			
-			try {
-				d = new Date(Long.parseLong(rhs.toString()));
-			} catch (NumberFormatException e) {
-				LOGGER.error("Failed to decode String:"+rhs.toString()+"to java.util.Date " + valueType, e);
 			}
+			
 			if (d != null)
 				return d;
 		} else if (org.apache.commons.lang.enums.Enum.class.isAssignableFrom(valueType)) {
@@ -723,8 +525,6 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 			return Double.parseDouble((String.valueOf(rhs)));
 		} else if (java.lang.Float.class.isAssignableFrom(valueType)) {
 			return Float.parseFloat(String.valueOf(rhs));
-		} else if (java.lang.Integer.class.isAssignableFrom(valueType)) {
-			return Integer.parseInt(String.valueOf(rhs));
 		} else if (boolean.class.isAssignableFrom(valueType) || java.lang.Boolean.class.isAssignableFrom(valueType)) {
 			return Boolean.parseBoolean(String.valueOf(rhs));
 		} else {
@@ -736,13 +536,5 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		LOGGER.warn("Failed to decode value '" + rhs + "' with type " + valueType.getName());
 		
 		return null;
-	}
-	
-	public static <T> Set<T> createSetOfType(Class<T> type) {
-	    return new HashSet<T>();
-	}
-	
-	public static <T> List<T> createListOfType(Class<T> type) {
-	    return new ArrayList<T>();
 	}
 }

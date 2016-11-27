@@ -3,8 +3,8 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='org.apache.commons.lang.StringUtils' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -18,7 +18,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <% //expanded page dimensions
 final int W_DEALS_TOTAL = 765;
 %>
@@ -276,7 +276,7 @@ List _pm=null;
 %>
 
 
-<fd:GetDealsSKU  id='dealsSKUs'>
+<fd:GetDealsSKU  id='dealsSKUs'> 
     <% sortedColl=(List)dealsSKUs;%>
 </fd:GetDealsSKU>
 <fd:javascript src="/assets/javascript/grocery_product.js"/>
@@ -339,6 +339,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <form name="groceryForm" id='grocery_form' method="POST">
 <fd:AddToCartPending id="grocery_form"/>
+<fd:CmFieldDecorator/>
 <%
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -356,13 +357,11 @@ if(productCode!=null && prodCatId !=null ) {
 %>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 <tr><td colspan="3">
-  <div id='oas_ProductNote'>
-    <script language="JavaScript">
-    <!--
-    OAS_AD('ProductNote');
-    //-->
-    </SCRIPT>
-  </div>
+        <script language="JavaScript">
+        <!--
+        OAS_AD('ProductNote');
+        //-->
+        </SCRIPT>
 </td></tr>
 <%}%>
   <fd:ProductGroup id='productNode' categoryId='<%= prodCatId %>' productId='<%= productCode %>'>
@@ -418,7 +417,7 @@ if(productCode!=null && prodCatId !=null ) {
         //get the first sku..in the event that this product is unavailabe. Ideally we should only be in this blokc
         // if the product is available
         minSku = (SkuModel)prodSkus.get(0);  // we only need one sku
-
+        
         for (ListIterator li=prodSkus.listIterator(); li.hasNext(); ) {
                         SkuModel sku = (SkuModel)li.next();
                         if ( sku.isUnavailable() ) {
@@ -431,7 +430,7 @@ if(productCode!=null && prodCatId !=null ) {
                 minSku = productNode.getSku(reqSkuCode);
         }
         FDProduct product = null;
-        boolean skuAvailable=false;
+        boolean skuAvailable=false; 
 %>
 <fd:FDProductInfo id="productInfo" skuCode="<%= minSku.getSkuCode() %>">
 <%  /* In preview mode..prods may not have an underlying FDProduct..so if the productInfo says its
@@ -485,7 +484,7 @@ if(productCode!=null && prodCatId !=null ) {
         <%        } %>
         </td>
 <% } %>
-</tr></table><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
+</tr></table><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
 <font class="title14" <% if (!skuAvailable) { %>color="#999999"<% } %>><%
         //
         // annotation mode
@@ -573,10 +572,10 @@ if(productCode!=null && prodCatId !=null ) {
 		<fd:PopupHandler id="grocery_form" event="onclick" elementId="addSingleToCart_big" skuCode="<%=minSku.getSkuCode()%>" noProduct="true" multiForm="true" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 
 	<fd:CCLCheck>
-		<div>
+		<div>       
 			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" style="margin: 5px 2px;"></a>
-		</div>
-		<div style="margin: 0 0 0 5px;"></div>
+		</div>		             
+		<div style="margin: 0 0 0 5px;"></div>		             
 	</fd:CCLCheck>
 
 <%@ include file="/includes/product/i_delivery_note.jspf" %>
@@ -585,7 +584,7 @@ if(productCode!=null && prodCatId !=null ) {
 <br><img src="/media_stat/images/layout/999999.gif" width="425" height="1" border="0" vspace"5"><br>
 <%  if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) { %>
           <br><fd:IncludeMedia name="<%= productNode.getProductDescription().getPath() %>" /><br>
-<%  }
+<%  } 
     if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {                        %>
                      <br><font class="title12">Heating Instructions</font><br>
                      <%=product.getNutritionInfoString(ErpNutritionInfoType.HEATING) %><br>
@@ -620,12 +619,12 @@ if ((Image)productNode.getZoomImage()!=null) {%>
             <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)">
             <img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
             </a>
-        </div>
+        </div>    
         <div id="sale_star" style="POSITION: absolute">
             <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)" border="0">
             <img style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" border="0" src="<%=dealsImage%>"> </a>
         </div>
- </div>
+ </div>       
 
 <% } else { %>
 <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
@@ -656,7 +655,7 @@ if(productCode != null || reqSkuCode!=null) {
         int currPage = 1;
         for (int j=0;j<allSkuModels.size();j++) {
                         SkuModel skuModel = (SkuModel)allSkuModels.get(j);
-
+                        
                         if(j%itemsToDisplay==0 && j !=0 ) currPage++;
                         if ((reqSkuCode!=null && skuModel.getSkuCode().equals(reqSkuCode) ) || reqSkuCode==null && ((ProductModel)skuModel.getParentNode()).getContentName().equals(productCode)) {
                                 pageNumber = currPage;
@@ -678,7 +677,7 @@ if (brandLogo !=null) {
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <%
 
@@ -704,28 +703,28 @@ if (FDStoreProperties.isAdServerEnabled()) {
 Html editorialMedia = currentFolder.getEditorial();
 if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank() && !bigProdShown) { %>
 	<tr>
-	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 	</tr>
 	<tr>
 	    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
 	</tr>
 <% } else { %>
 	<tr>
-	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
-	</tr>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+	</tr>	
 	<tr>
 		<td><font class="title11"><%=brandOrFolderName%></font> <font class="text9">(<%= skuCount %> items)</font><br></td>
 		<td align="right">Page: <%= pageNumberLinks %></td>
 	</tr>
 <% } %>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
 <tr>
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <%
 
@@ -736,13 +735,13 @@ if (!bigProdShown && brandPopupLink!=null) {
     <td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <tr valign="top">
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <%
 }
@@ -767,7 +766,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 }
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
+<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 
 <%
@@ -784,7 +783,7 @@ if(showThumbnails) {
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
                      String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getZonePriceInfo(user.getPricingContext().getZoneInfo()).getHighestDealPercentage()).append(".gif").toString();
-
+                     
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();
                         imgShownIndex++;
@@ -859,7 +858,7 @@ if(showThumbnails) {
 <%-- if we are adding to the cart via the form submit, then we need to set a variable in a hidden field --%>
 <input type="hidden" name="itemCount" value="<%= Math.min(itemsToDisplay, itemShownIndex+1) %>">
 
-<%-- the controller tag must also know if an item is added to the list from the side bar (i.e. that particular item) or the actual selected ones
+<%-- the controller tag must also know if an item is added to the list from the side bar (i.e. that particular item) or the actual selected ones 
      the values are "actual_selection" or "side_bar" + _ + item number
 <input type="hidden" name="source" value="cart_selection">
   --%>
@@ -891,9 +890,9 @@ Thumbnails <a href="<%=thumbNailURL%>">ON</a> | <b>OFF</b><%
 }
 %></td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
-<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <tr valign="top"><td CLASS="text10bold" width="370">Page: <%= pageNumberLinks %><br></td>

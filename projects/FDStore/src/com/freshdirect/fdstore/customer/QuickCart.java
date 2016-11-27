@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 /**
  * QuickCart class.

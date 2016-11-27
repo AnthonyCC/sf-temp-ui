@@ -4,6 +4,56 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 
   <!--weblogic-version:10.3.6-->
   <weblogic-enterprise-bean>
+    <ejb-name>VirtualProductLoader</ejb-name>
+    <stateless-session-descriptor>
+      <pool>
+        <max-beans-in-free-pool>3</max-beans-in-free-pool>
+      </pool>
+      <stateless-clustering></stateless-clustering>
+    </stateless-session-descriptor>
+    <resource-description>
+      <res-ref-name>jdbc/dbpool</res-ref-name>
+      <jndi-name>fddatasource</jndi-name>
+    </resource-description>
+    <ejb-reference-description>
+      <ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
+      <jndi-name>freshdirect.erp.Product</jndi-name>
+    </ejb-reference-description>
+    <enable-call-by-reference>true</enable-call-by-reference>
+    <jndi-name>
+    freshdirect.dataloader.VirtualProductLoader</jndi-name>
+  </weblogic-enterprise-bean>
+  <weblogic-enterprise-bean>
+    <ejb-name>GeoCodeLoader</ejb-name>
+    <stateless-session-descriptor>
+      <pool>
+        <max-beans-in-free-pool>10</max-beans-in-free-pool>
+      </pool>
+      <stateless-clustering></stateless-clustering>
+    </stateless-session-descriptor>
+    <resource-description>
+      <res-ref-name>jdbc/dbpool</res-ref-name>
+      <jndi-name>fddatasource</jndi-name>
+    </resource-description>
+    <enable-call-by-reference>true</enable-call-by-reference>
+    <jndi-name>freshdirect.dataloader.GeoCodeLoader</jndi-name>
+  </weblogic-enterprise-bean>
+  <weblogic-enterprise-bean>
+    <ejb-name>AddressScrubbingLoader</ejb-name>
+    <stateless-session-descriptor>
+      <pool>
+        <max-beans-in-free-pool>10</max-beans-in-free-pool>
+      </pool>
+      <stateless-clustering></stateless-clustering>
+    </stateless-session-descriptor>
+    <resource-description>
+      <res-ref-name>jdbc/dbpool</res-ref-name>
+      <jndi-name>fddatasource</jndi-name>
+    </resource-description>
+    <enable-call-by-reference>true</enable-call-by-reference>
+    <jndi-name>freshdirect.dataloader.AddressScrubbingLoader</jndi-name>
+  </weblogic-enterprise-bean>
+  <weblogic-enterprise-bean>
     <ejb-name>SAPLoader</ejb-name>
     <stateless-session-descriptor>
       <pool>
@@ -32,6 +82,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
       <jndi-name>freshdirect.erp.Product</jndi-name>
     </ejb-reference-description>
+    <ejb-reference-description>
+      <ejb-ref-name>ejb/BatchManager</ejb-ref-name>
+      <jndi-name>freshdirect.erp.BatchManager</jndi-name>
+    </ejb-reference-description>
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.dataloader.SAPLoader</jndi-name>
   </weblogic-enterprise-bean>
@@ -50,6 +104,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <res-ref-name>jdbc/dbpool</res-ref-name>
         <jndi-name>fddatasource</jndi-name>
       </resource-description>
+      <ejb-reference-description>
+        <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
+        <jndi-name>freshdirect.erp.Inventory</jndi-name>
+      </ejb-reference-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.payment.Notify</jndi-name>
     </weblogic-enterprise-bean>    
@@ -156,6 +214,27 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <jndi-name>
     freshdirect.dataloader.SAPProductPromotionLoader</jndi-name>
   </weblogic-enterprise-bean>
+<weblogic-enterprise-bean>
+    <ejb-name>ProfileCreatorCron</ejb-name>
+    <stateless-session-descriptor>
+      <pool>
+        <max-beans-in-free-pool>1</max-beans-in-free-pool>
+      </pool>
+      <stateless-clustering></stateless-clustering>
+    </stateless-session-descriptor>
+    <transaction-descriptor></transaction-descriptor>
+     <resource-description>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <jndi-name>fddatasource</jndi-name>
+      </resource-description>
+      <ejb-reference-description>
+        <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+        <jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
+      </ejb-reference-description>
+    <enable-call-by-reference>true</enable-call-by-reference>
+    <jndi-name>
+    freshdirect.dataloader.ProfileCreatorCron</jndi-name>
+  </weblogic-enterprise-bean>
    <weblogic-enterprise-bean>
     <ejb-name>SAPProductFamilyInfoLoader</ejb-name>
     <stateless-session-descriptor>
@@ -173,6 +252,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <jndi-name>
     freshdirect.dataloader.SAPProductFamilyInfoLoader</jndi-name>
   </weblogic-enterprise-bean>
+  <transaction-isolation>
+    <isolation-level>TransactionReadCommitted</isolation-level>
+    <method>
+      <ejb-name>VirtualProductLoader</ejb-name>
+      <method-name>loadData</method-name>
+    </method>
+  </transaction-isolation>
   <transaction-isolation>
     <isolation-level>TransactionReadCommitted</isolation-level>
     <method>
@@ -209,6 +295,16 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <method-name>*</method-name>
     </method>
   </transaction-isolation>
+  <!--   
+    <transaction-isolation>
+                <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+                <method>
+                        <ejb-name>GeoCodeLoader</ejb-name>
+                        <method-intf>Remote</method-intf>
+                        <method-name>*</method-name>
+                </method>
+        </transaction-isolation>
+  -->
   <weblogic-compatibility>
     <entity-always-uses-transaction>
     true</entity-always-uses-transaction>

@@ -12,7 +12,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
@@ -22,8 +21,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDPromotionNewModel extends ModelSupport {
 
-	
-	private static final long serialVersionUID = -2839952774343517449L;
 	private Set<String> assignedCustomerUserIds = new HashSet<String>();
 	private TreeMap<Date, FDPromoZipRestriction> zipRestrictions = new TreeMap<Date, FDPromoZipRestriction>();
 	private List<FDPromotionAttributeParam> attributeList = new ArrayList<FDPromotionAttributeParam>();
@@ -115,8 +112,6 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String DcpdMinSubtotal;
 	private String sapConditionType;
 	private String rafPromoCode;
-	private double capacityUtilization;
-	private String eStoreId;
 
 	private int publishes = 0;
 	
@@ -377,7 +372,6 @@ public class FDPromotionNewModel extends ModelSupport {
 		return false;
 	}
 
-	@JsonSetter
 	public void setAssignedCustomerUserIds(String assignedCustomerUserIds) {
 		this.assignedCustomerUserIds.clear();
 		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(
@@ -1308,22 +1302,6 @@ public class FDPromotionNewModel extends ModelSupport {
 	 */
 	public void setSapConditionType(String sapConditionType) {
 		this.sapConditionType = sapConditionType;
-	}
-
-	public double getCapacityUtilization() {
-		return capacityUtilization;
-	}
-
-	public void setCapacityUtilization(double capacityUtilization) {
-		this.capacityUtilization = capacityUtilization;
-	}
-
-	public String geteStoreId() {
-		return eStoreId;
-	}
-
-	public void seteStoreId(String eStoreId) {
-		this.eStoreId = eStoreId;
 	}
 	
 	

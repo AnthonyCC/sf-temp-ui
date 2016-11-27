@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class PaymentMethodRequest extends Message {
@@ -35,8 +34,6 @@ public class PaymentMethodRequest extends Message {
 	private String billingRef;
 	private String csv;
 	private String billingCtry;
-	private String captchaToken;
-	private boolean dlvPassCart;
 	
 	public String getBillingCtry() {
 		return billingCtry;
@@ -45,8 +42,7 @@ public class PaymentMethodRequest extends Message {
 		this.billingCtry = billingCtry;
 	}
 	public String getCsv() {
-		// if isPaymentMethodVerificationForMobileApiEnabled is false, return null so the payment gw will not do cvv verification.
-		return FDStoreProperties.isPaymentMethodVerificationForMobileApiEnabled()? csv : null;
+		return csv;
 	}
 	public void setCsv(String csv) {
 		this.csv = csv;
@@ -165,16 +161,6 @@ public class PaymentMethodRequest extends Message {
 	public void setBillingRef(String billingRef) {
 		this.billingRef = billingRef;
 	}
-	public String getCaptchaToken() {
-		return captchaToken;
-	}
-	public void setCaptchaToken(String captchaToken) {
-		this.captchaToken = captchaToken;
-	}
-	public boolean isDlvPassCart() {
-		return dlvPassCart;
-	}
-	public void setDlvPassCart(boolean dlvPassCart) {
-		this.dlvPassCart = dlvPassCart;
-	}
+	
+
 }

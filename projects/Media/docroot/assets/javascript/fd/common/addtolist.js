@@ -97,7 +97,7 @@ var FreshDirect = FreshDirect || {};
           /* APPDEV-4138 END */
           if(trimmed.length > 0){
         	  /* APPDEV-4138 START*/
-		   /* if(lists.indexOf(name)>-1)Â {*/
+		   /* if(lists.indexOf(name)>-1) {*/
         	
         	  if(lists.indexOf(name.toUpperCase())>-1) {
         	 /* APPDEV-4138 END */  
@@ -133,11 +133,8 @@ var FreshDirect = FreshDirect || {};
         },
         saveToNew: {
           value: function (changes) {
-               //fix for duplicate IDs
-        	  var findNewListId = (this.popupId === 'addtolistpopup') ? 'addtolist-newList1' : 'addtolist-newList' ;
-              var findSelectListId = (this.popupId === 'addtolistpopup') ? 'addtolist-selectList1' : 'addtolist-selectList' ;
-              var listName = $('#'+this.popupId).find('#'+findNewListId).val()
-                validator = this.validName(listName,$.makeArray($('#'+findSelectListId+' option')).map(function(e){
+            var listName = $('#'+this.popupId).find('#addtolist-newList').val()
+                validator = this.validName(listName,$.makeArray($('#addtolist-selectList option')).map(function(e){
                   return e.innerHTML;
                 }));
 
@@ -173,7 +170,7 @@ var FreshDirect = FreshDirect || {};
       value:null
     },
     trigger: {
-      value: '[data-component=product] button.addtolist, [data-component=product] a.addtolist, [data-component=product] span.addtolist'
+      value: '[data-component=product] button.addtolist, [data-component=product] span.addtolist'
     },
     popupId: {
       value: 'addtolistpopup'

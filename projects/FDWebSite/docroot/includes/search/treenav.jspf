@@ -1,13 +1,13 @@
 <%@	  page import="java.util.Iterator"
 %><%@ page import="java.util.List"
-%><%@ page import="com.freshdirect.storeapi.content.ContentNodeTree"
-%><%@ page import="com.freshdirect.storeapi.content.DomainValue"
+%><%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
-%><%@ page import="com.freshdirect.storeapi.content.CategoryNodeTree"
+%><%@ page import="com.freshdirect.fdstore.content.CategoryNodeTree"
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri='logic' prefix='logic'
-%><%--
+%><%-- 
 
 Category Navigator Panel - Search Page
 This file is included by /search.jsp
@@ -42,7 +42,7 @@ int noOfClassifications = search.getRecipeClassificationsMap().size();
  			<% if (noOfProducts > 0 && noOfRecipes > 0) { %>and<% } %>
  			<% if (noOfRecipes > 0) { %>recipes<% } %>
  		</a>
- 		<span style="color:grey; font-weight: normal;">(<% if (noOfProducts > 0) { %><%= noOfProducts %><% }
+ 		<span style="color:grey; font-weight: normal;">(<% if (noOfProducts > 0) { %><%= noOfProducts %><% } 
  			%><% if (noOfProducts > 0 && noOfRecipes > 0) { %>+<% }
  			%><% if (noOfRecipes > 0) { %><%= noOfRecipes %><% } %>)</span>
  	</div>
@@ -60,8 +60,8 @@ int noOfClassifications = search.getRecipeClassificationsMap().size();
 %>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding: 0 5px 0 25px;text-indent:-10px;width: 120px ! important">
 			<a style="margin-left: <%= d-1 %>em;" href="<%= nav.getCategoryAction(te.getContentKey().getId()) %>"><%= te.getFullName() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
 		</div>
-<%
-	}
+<% 
+	} 
 
 	%>
 </fd:ContentTreeTag>
@@ -80,17 +80,17 @@ int noOfClassifications = search.getRecipeClassificationsMap().size();
 				<a href="<%= nav.getJumpToFilteredRecipesAction(dv.getContentKey().getId()) %>"><%= dv.getLabel() %></a>&nbsp;<span style="color:grey">(<%= count %>)</span>
 			</div>
 <%
-
+				
 			}
 		}
 	}
 %>
-	<div class="text12bold" style="background-color: #E0E3D0;">&nbsp;</div>
+	<div class="text12bold" style="background-color: #E0E3D0;">&nbsp;</div> 
 </div>
 
 <%--
 	if (FDStoreProperties.isAdServerEnabled()) { %>
-<div style="width:150px; margin-top: 15px; overflow: hidden;" id='oas_LittleRandy'>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
 <script type="text/javascript">
 	OAS_AD('LittleRandy');
 </script>
@@ -102,3 +102,5 @@ int noOfClassifications = search.getRecipeClassificationsMap().size();
 <div style="width:150px; margin-top: 15px; overflow: hidden;">
 	<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
 </div>
+
+

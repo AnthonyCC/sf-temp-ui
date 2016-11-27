@@ -20,7 +20,7 @@ public class ProductReferenceImpl implements ProductReference, Serializable {
     public ProductReferenceImpl(String categoryId, String productId) {
         this.productId = productId;
         this.categoryId = categoryId;
-        this.key = ContentKey.getContentKey(FDContentTypes.PRODUCT, productId);
+        this.key = new ContentKey(FDContentTypes.PRODUCT, productId);
     }
     
     public ProductReferenceImpl(ProductModel model) {

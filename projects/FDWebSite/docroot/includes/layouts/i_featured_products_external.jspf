@@ -1,20 +1,21 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.DealsHelper"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
-<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.storeapi.content.ProductContainer"%>
+<%@page import="com.freshdirect.fdstore.content.ProductContainer"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
@@ -104,8 +105,13 @@
 		
 				<tr><td id="<%=temp_tdId%>">
 					<center>
+					<script type="text/javascript">
+						var cmPageCarousel = cmPageCarousel || {};
+						<%String handlerObj = "cmPageCarousel[\"" + temp_carouselId + "\"]"; %>
+						<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%=featExtIdPrefix%>' elementCategory="carousel"/>} 
+					</script>
 					<display:Carousel id="bnd" carouselId="<%=temp_carouselId%>" width="<%=featExtCarWidth%>" numItems="<%=featExtNumItems%>" showCategories="false" itemsToShow="<%= curRowUniqueItems %>" 
-							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>">
+							trackingCode="<%=featExtTrackCode%>" maxItems="<%=featExtMaxItems%>" parentId="<%=temp_tdId%>" eventHandlersObj='<%=handlerObj%>'>
 						<span class="smartstore-carousel-item">
 							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 								<% 

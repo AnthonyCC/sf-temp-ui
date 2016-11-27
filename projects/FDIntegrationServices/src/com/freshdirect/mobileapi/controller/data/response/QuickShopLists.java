@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.util.CommonFormatter;
-import com.freshdirect.storeapi.content.StarterList;
 
 /**
  * Generic form for lists used in Quickshop

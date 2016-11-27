@@ -33,7 +33,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
@@ -159,9 +158,9 @@ public class CategoryModel extends ProductContainer {
 					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
 						ppType = "PRESIDENTS_PICKS";
 					}
-					if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
+					/*if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
 						ppType = "PRODUCTS_ASSORTMENTS";
-					}
+					}*/
 				}
 				if(!"E_COUPONS".equals(ppType)){
 					synchronized (FDProductPromotionManager.getInstance()) {					
@@ -240,14 +239,13 @@ public class CategoryModel extends ProductContainer {
 			if(null != fDProductPromotionSkus)
 			for (FDProductPromotionInfo fDProductPromotionSku : fDProductPromotionSkus){
 				String sku = fDProductPromotionSku.getSkuCode();
-				//No need to refresh the productnfo.
-				/*if(!isPreview){
-					FDCachedFactory.refreshProductPromotionSku(sku); 
-				}*/
+				if(!isPreview){
+					FDCachedFactory.refreshProductPromotionSku(sku);
+				}
 				ProductModel productModel = null;
 				ProductModel prodModel = null;
 				try {
-					SkuModel skuModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, sku)));
+					SkuModel skuModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, sku)));
 					if(null !=skuModel){
 						prodModel = skuModel.getProductModel();
 						if(isPreview){
@@ -341,8 +339,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private final Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
-	//private final Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
-	private final Map<ZoneInfo, ProductPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
+	private final Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
 	
 	private String promotionPageType;
 	
@@ -608,17 +605,15 @@ public class CategoryModel extends ProductContainer {
 	        	}
 	        	
 	            //LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
-				if (! FDStoreProperties.isLocalDeployment() ) { //refreshes this.productGrabbers
-		            synchronized (CategoryModel.class) {
-		                if (globalSmartCategoryVersion > smartCategoryVersion) {
-		                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
-		                            + this.getContentKey().getId());
-		                    smartCategoryVersion = globalSmartCategoryVersion;
-		                    recommendedProductsRefMap.clear();
-		                }
-		            }
-				}
-				
+	            synchronized (CategoryModel.class) {
+	                if (globalSmartCategoryVersion > smartCategoryVersion) {
+	                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+	                            + this.getContentKey().getId());
+	                    smartCategoryVersion = globalSmartCategoryVersion;
+	                    recommendedProductsRefMap.clear();
+	                }
+	            }
+	            
 	            synchronized (recommendedProductsSync) {
 	                if ( recommenderChanged || recommendedProductsRefMap.get(pricingZone) == null )
 	                    recommendedProductsRefMap.put(pricingZone, new RecommendedProductsRef(threadPool, pricingZone));
@@ -639,7 +634,7 @@ public class CategoryModel extends ProductContainer {
 
     	// == [APPDEV-2910] add products picked by new product grabbers ==
 		{
-			if (! FDStoreProperties.isLocalDeployment() && getProductGrabbers() != null) { //refreshes this.productGrabbers
+			if (getProductGrabbers() != null) { //refreshes this.productGrabbers
 				GrabberServiceI grabber = ContentFactory.getInstance()
 						.getProductGrabberService();
 				if (grabber != null) {
@@ -652,6 +647,8 @@ public class CategoryModel extends ProductContainer {
 			}
 		}
 
+    	
+    	
         return prodList;
     }
 
@@ -970,8 +967,6 @@ public class CategoryModel extends ProductContainer {
 
 	        	if (prod.isInvisible() || prod.isHidden() || prod.isDiscontinued()) {
 	        		itr.remove();
-	        	} else {
-	        		return true;
 	        	}
 	        }
 	    }
@@ -1256,27 +1251,13 @@ public class CategoryModel extends ProductContainer {
 		return prodList;
 	}
 	
-	/*private synchronized boolean loadProductAssortmentPromotion(ZoneInfo zoneInfo, String promotionId){		
+	private synchronized boolean loadProductAssortmentPromotion(ZoneInfo zoneInfo, String promotionId){		
 		String currentProductPromotionType = getProductPromotionType();		
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
 			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && isValidAssortmentPromotion(currentProductPromotionType,promotionId)){
 				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneInfo, promotionId, currentProductPromotionType));
-			}
-			return true;
-        }
-	}
-	*/
-	private synchronized boolean loadProductAssortmentPromotion(ZoneInfo pricingZone, String promotionPageType){		
-		String currentProductPromotionType = getProductPromotionType();		
-		if (currentProductPromotionType == null ){
-		promotionPageType = currentProductPromotionType;
-			return false;			
-		} else {			
-			if (productAssortmentPromotionDataRefMap.get(pricingZone) == null || !currentProductPromotionType.equals(promotionPageType)){
-				promotionPageType = currentProductPromotionType;
-				productAssortmentPromotionDataRefMap.put(pricingZone, new ProductPromotionDataRef(threadPool,  pricingZone,promotionPageType));
 			}
 			return true;
         }

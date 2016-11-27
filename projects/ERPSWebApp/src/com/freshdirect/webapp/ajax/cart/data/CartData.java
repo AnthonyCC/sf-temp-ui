@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
-
 /**
  *	Simple java bean for cart contents. 
  *	Class structure is representing the resulting JSON structure. 	
@@ -22,6 +20,11 @@ public class CartData implements Serializable {
 	private String errorMessage;
 	
 	/**
+	 * Coremetrics script - to run on the client side
+	 */
+	private String coremetricsScript;
+	
+	/**
 	 * Number of items 
 	 */
 	private double itemCount;
@@ -30,11 +33,6 @@ public class CartData implements Serializable {
 	 * Order subtotal - formatted string
 	 */
 	private String subTotal;
-	
-	/**
-	 * Order saveAmount - formatted string
-	 */
-	private String saveAmount;
 	
 	/**
 	 * Is a Modify Order Cart ?
@@ -57,13 +55,18 @@ public class CartData implements Serializable {
 	 */
 	private Object header;
 	
-    private GoogleAnalyticsData googleAnalyticsData;
-
 	public String getErrorMessage() {
 		return errorMessage;
 	}	
 	public void setErrorMessage( String errorMessage ) {
 		this.errorMessage = errorMessage;
+	}
+	
+	public String getCoremetricsScript() {
+		return coremetricsScript;
+	}	
+	public void setCoremetricsScript( String coremetricsScript ) {
+		this.coremetricsScript = coremetricsScript;
 	}
 	
 	public List<Section> getCartSections() {
@@ -86,15 +89,7 @@ public class CartData implements Serializable {
 	public void setSubTotal( String subTotal ) {
 		this.subTotal = subTotal;
 	}
-	
-	public void setSaveAmount( String saveAmount ) {
-		this.saveAmount = saveAmount;
-	}
-	
-	public String getSaveAmount() {
-		return saveAmount;
-	}
-	
+
 	public boolean isModifyOrder() {
 		return isModifyOrder;
 	}	
@@ -116,15 +111,8 @@ public class CartData implements Serializable {
 		this.header = header;
 	}	
 	
-    public GoogleAnalyticsData getGoogleAnalyticsData() {
-        return googleAnalyticsData;
-    }
 
-    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
-        this.googleAnalyticsData = googleAnalyticsData;
-    }
-
-    public static class Section implements Serializable {
+	public static class Section implements Serializable {
 		
 		private static final long	serialVersionUID	= 1965764194639278346L;
 

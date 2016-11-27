@@ -14,9 +14,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -332,7 +330,7 @@ public class Product extends Message {
         }
 
         Image detailImage = new Image();
-        com.freshdirect.storeapi.content.Image detailImg = null;
+        com.freshdirect.fdstore.content.Image detailImg = null;
         if (LayoutType.WINE.equals(this.layoutType)) {
             detailImg = product.getImage(ImageType.WINE_ALT);
             if (detailImg == null) {
@@ -349,7 +347,7 @@ public class Product extends Message {
         detailImage.setType(ImageSizeType.MEDIUM);
 
         Image productImage = new Image();
-        com.freshdirect.storeapi.content.Image prodImg = product.getImage(ImageType.PRODUCT);
+        com.freshdirect.fdstore.content.Image prodImg = product.getImage(ImageType.PRODUCT);
         productImage.setHeight(prodImg.getHeight());
         productImage.setWidth(prodImg.getWidth());
         productImage.setSource(prodImg.getPath());
@@ -358,12 +356,12 @@ public class Product extends Message {
         images.add(detailImage);
         images.add(productImage);
 
-        com.freshdirect.storeapi.content.Image thumbBurstImage = product.getThumbBurstImage();
+        com.freshdirect.fdstore.content.Image thumbBurstImage = product.getThumbBurstImage();
         if (thumbBurstImage != null) {
             this.thumbBurst = new Image(thumbBurstImage.getPath(), thumbBurstImage.getHeight(), thumbBurstImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
+        com.freshdirect.fdstore.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
         if (largeBurstImage != null) {
             this.largeBurst = new Image(largeBurstImage.getPath(), largeBurstImage.getHeight(), largeBurstImage.getWidth());
         }
@@ -447,7 +445,7 @@ public class Product extends Message {
             }
         } catch (FDException e) {
             addErrorMessage("Error getting kosherRestrictions. Cause : " + e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         //this.earliestAvailabilityDate = product.getFilteredEarliestAvailabilityDate();
@@ -496,9 +494,8 @@ public class Product extends Message {
         this.setSashType(product.getSashType());
         
         this.setFilters(product.getFilters());
-        this.setNutrition(product.getNutrition());
-        this.setNutritionFacts(product.getNutritionFacts());
         
+        this.setNutritionFacts(product.getNutritionFacts());
         //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
         //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();
         //RSUNG: this.setCancellationNote(product.getCancellationNote());
@@ -517,11 +514,9 @@ public class Product extends Message {
         //improvement as asked for in FDX-903
         //gro_bounty_select - No Nutrition information for this product id.
         //hmr_bufchxfgr_10oz - Nutrition information available for this product id.
-        
-      //APPDEV-5816 - Commenting this condition below as hasNutritionFacts always returns empty 
-  /*      if(product.getDefaultProduct()!=null && product.getDefaultProduct().hasNutritionFacts())
+        if(product.getDefaultProduct()!=null && product.getDefaultProduct().hasNutritionFacts())
         this.setNutrition(product.getNutrition());
-        */
+        
         this.setHeatingInstructions(product.getHeatingInstructions());
         
     }

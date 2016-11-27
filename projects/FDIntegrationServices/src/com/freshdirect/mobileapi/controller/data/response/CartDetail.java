@@ -1,40 +1,23 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.model.data.Unavailability;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class CartDetail {
-
-    private final SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
-
     private List<AffiliateCartDetail> affiliates = new ArrayList<AffiliateCartDetail>();
 
     private List<SummaryLineCharge> summaryLineCharges = new ArrayList<SummaryLineCharge>();
 
-    private Date platterCutoffTime;
-    
-    private boolean purchaseDlvPassEligible;
+    private String platterCutoffTime;
 
     public String getPlatterCutoffTime() {
-        if (platterCutoffTime != null){
-            return formatter.format(platterCutoffTime);
-        } else {
-            return null;
-        }
-    }
-    
-    public Date getPlatterCutoffTimeMs() {
         return platterCutoffTime;
     }
-    
-    public void setPlatterCutoffTime(Date platterCutoffTime) {
+
+    public void setPlatterCutoffTime(String platterCutoffTime) {
         this.platterCutoffTime = platterCutoffTime;
     }
 
@@ -138,10 +121,6 @@ public class CartDetail {
     public void setIsEstimatedPrice(boolean isEstimatedPrice) {
         this.isEstimatedPrice = isEstimatedPrice;
     }
-    
-    private double dlvPassCharge;
-   
-    private String dlvPassId;
 
     /**
      * @author Rob
@@ -220,7 +199,7 @@ public class CartDetail {
      */
     public static class RedemptionPromotion {
 
-        public RedemptionPromotion(String code, String redemptionCode, RedemptionPromotionType type, String description
+        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
         		, boolean automatic, boolean applied, String warningMessage) {
             this.code = code;
             this.type = type;
@@ -228,13 +207,12 @@ public class CartDetail {
             this.automatic = automatic;
             this.applied = applied;
             this.warningMessage = warningMessage;
-            this.redemptionCode = redemptionCode;
         }
         
-        public RedemptionPromotion(String code, String redemptionCode, RedemptionPromotionType type, String description
+        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
         		, boolean automatic, boolean applied, String warningMessage, boolean displayAmount, String label) {
             
-            this(code, redemptionCode, type, description, automatic, applied, warningMessage);
+            this(code, type, description, automatic, applied, warningMessage);
             this.displayAmount = displayAmount;
             this.label = label;
         }
@@ -257,8 +235,6 @@ public class CartDetail {
         private boolean applied;
         
         private String warningMessage;
-        
-        private String redemptionCode;
 
         private String code;
 
@@ -323,14 +299,6 @@ public class CartDetail {
 		public void setWarningMessage(String warningMessage) {
 			this.warningMessage = warningMessage;
 		}
-		
-		public String getredemptionCode() {
-			return redemptionCode;
-		}
-
-		public void setredemptionCode(String redemptionCode) {
-			this.redemptionCode = redemptionCode;
-		}
         
     }
 
@@ -351,17 +319,16 @@ public class CartDetail {
      */
     public static class Discount {
 
-        public Discount(String code, String redemptionCode, DiscountType type, double amount, boolean automatic, String description) {
-            this(code, redemptionCode, type, amount, automatic);
+        public Discount(String code, DiscountType type, double amount, boolean automatic, String description) {
+            this(code, type, amount, automatic);
             this.description = description;
         }
 
-        public Discount(String code, String redemptionCode, DiscountType type, double amount, boolean automatic) {
+        public Discount(String code, DiscountType type, double amount, boolean automatic) {
             this.code = code;
             this.type = type;
             this.amount = amount;
             this.automatic = automatic;
-            this.redemptionCode = redemptionCode;
         }
 
         public enum DiscountType {
@@ -377,8 +344,6 @@ public class CartDetail {
         private String description;
 
         private String code;
-        
-        private String redemptionCode;
 
         private DiscountType type;
 
@@ -392,14 +357,6 @@ public class CartDetail {
             this.description = description;
         }
 
-        public String getRedemptionCode() {
-            return redemptionCode;
-        }
-
-        public void setRedemptionCode(String redemptionCode) {
-            this.redemptionCode = redemptionCode;
-        }
-        
         public String getCode() {
             return code;
         }
@@ -719,22 +676,6 @@ public class CartDetail {
         
         private String discountMsg;
         private double discountSavings;
-        
-        private String subSkuStatus;
-    	
-    	private String substitutedSkuCode;
-    	
-    	private String substituteProductName;
-    	
-    	private String susbtituteProductDefaultPrice;
-    	
-    	private String substituteProduct;
-    	
-    	private Double substituteSkuQuantity;
-    	
-    	private String substituteProductImageURL;
-    	
-    	private boolean dlvPassProduct;
     	
         public String getDiscountMsg() {
 			return discountMsg;
@@ -799,74 +740,7 @@ public class CartDetail {
 		public void setGroupScaleSavings(double groupScaleSavings) {
 			this.groupScaleSavings = groupScaleSavings;
 		}
-		
-		public String getSubSkuStatus() {
-			return subSkuStatus;
-		}
 
-		public void setSubSkuStatus(String subSkuStatus) {
-			this.subSkuStatus = subSkuStatus;
-		}
-
-		public String getSubstitutedSkuCode() {
-			return substitutedSkuCode;
-		}
-
-		public void setSubstitutedSkuCode(String substitutedSkuCode) {
-			this.substitutedSkuCode = substitutedSkuCode;
-		}
-
-		public String getSubstituteProduct() {
-			return substituteProduct;
-		}
-
-		public void setSubstituteProduct(String substituteProduct) {
-			this.substituteProduct = substituteProduct;
-		}
-
-		public String getSubstituteProductName() {
-			return substituteProductName;
-		}
-
-		public void setSubstituteProductName(String substituteProductName) {
-			this.substituteProductName = substituteProductName;
-		}
-
-		public String getSusbtituteProductDefaultPrice() {
-			return susbtituteProductDefaultPrice;
-		}
-
-		public void setSusbtituteProductDefaultPrice(
-				String susbtituteProductDefaultPrice) {
-			this.susbtituteProductDefaultPrice = susbtituteProductDefaultPrice;
-		}
-
-		public Double getSubstituteSkuQuantity() {
-			return substituteSkuQuantity;
-		}
-
-		public void setSubstituteSkuQuantity(Double substituteSkuQuantity) {
-			this.substituteSkuQuantity = substituteSkuQuantity;
-		}
-
-		public String getSubstituteProductImageURL() {
-			return substituteProductImageURL;
-		}
-
-		public void setSubstituteProductImageURL(
-				String substituteProductImageURL) {
-			this.substituteProductImageURL = substituteProductImageURL;
-		}
-
-		public boolean isDlvPassProduct() {
-			return dlvPassProduct;
-		}
-
-		public void setDlvPassProduct(boolean dlvPassProduct) {
-			this.dlvPassProduct = dlvPassProduct;
-		}
-
-		
     }
 
     public List<SummaryLineCharge> getSummaryLineCharges() {
@@ -903,11 +777,6 @@ public class CartDetail {
 	private String reservationId;
 	private double totalSavedAmount;
 	private double tip;
-	
-	private boolean isDeliveryPassCartOnly;
-	
-	private boolean dlvPassTimeslotNotMatched;
-	
 	public double getTip() {
 		return tip;
 	}
@@ -966,54 +835,4 @@ public class CartDetail {
 		this.reservationId = reservationId;
 	}
 	
-	private boolean isDpFreeTrialEligible = false;
-
-    public boolean isDpFreeTrialEligible() {
-        return isDpFreeTrialEligible;
-    }
-
-    public void setisDpFreeTrialEligible(boolean isDpFreeTrialEligible) {
-        this.isDpFreeTrialEligible = isDpFreeTrialEligible;
-    }
-    
-	public boolean isDeliveryPassCartOnly() {
-		return isDeliveryPassCartOnly;
-	}
-
-	public void setDeliveryPassCartOnly(boolean isDeliveryPassCartOnly) {
-		this.isDeliveryPassCartOnly = isDeliveryPassCartOnly;
-	}
-
-	public boolean isDlvPassTimeslotNotMatched() {
-		return dlvPassTimeslotNotMatched;
-	}
-
-	public void setDlvPassTimeslotNotMatched(boolean dlvPassTimeslotNotMatched) {
-		this.dlvPassTimeslotNotMatched = dlvPassTimeslotNotMatched;
-	}
-
-	public double getDlvPassCharge() {
-		return dlvPassCharge;
-	}
-
-	public void setDlvPassCharge(double dlvPassCharge) {
-		this.dlvPassCharge = dlvPassCharge;
-	}
-
-	public String getDlvPassId() {
-		return dlvPassId;
-	}
-
-	public void setDlvPassId(String dlvPassId) {
-		this.dlvPassId = dlvPassId;
-	}
-
-	public boolean isPurchaseDlvPassEligible() {
-		return purchaseDlvPassEligible;
-	}
-
-	public void setPurchaseDlvPassEligible(boolean purchaseDlvPassEligible) {
-		this.purchaseDlvPassEligible = purchaseDlvPassEligible;
-	}
-
 }

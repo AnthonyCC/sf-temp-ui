@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri='logic' prefix='logic'%>
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
   <title>Category/layout test page</title>
   <%@ include file="/test/reports/includes/groupedlayouts.jspf" %>

@@ -76,7 +76,7 @@ public class MediaAssociator {
 		if (m != null) {
 			Rule r = (Rule) m.get(suffix);
 			if (r != null) {
-				return new MediaAssociation(ContentKey.getContentKey(r.type, id),r.attributeName);
+				return new MediaAssociation(new ContentKey(r.type, id),r.attributeName);
 			}
 		}
 

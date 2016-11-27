@@ -21,18 +21,6 @@ public class SearchQuery extends Message {
 	private String brand;
 
 	private String upc;
-	
-	private String searchParams;
-	
-	private String pageType;
-	
-	private String pdUserId;
-	
-	private String lat;
-	
-	private String platform;
-	
-	private boolean includedeptandcat;
 
 	public String getQuery() {
 		return query;
@@ -96,53 +84,5 @@ public class SearchQuery extends Message {
 
 	public void setUpc(String upc) {
 		this.upc = upc;
-	}
-	
-	public String getSearchParams() {
-		return searchParams;
-	}
-
-	public void setSearchParamsc(String searchParams) {
-		this.searchParams = searchParams;
-	}
-	
-	public String getPageType() {
-		return pageType;
-	}
-
-	public void setPageType(String pageType) {
-		this.pageType = pageType;
-	}
-	
-	public String getPdUserId() {
-		return pdUserId;
-	}
-
-	public void setPdUserID(String pdUserId) {
-		this.pdUserId = pdUserId;
-	}
-	
-	public String getLat() {
-		return lat;
-	}
-
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-	
-	public String getPlatform() {
-		return platform;
-	}
-
-	public void setPlatform(String platform) {
-		this.platform = platform;
-	}
-
-	public boolean isIncludedeptandcat() {
-		return includedeptandcat;
-	}
-
-	public void setIncludedeptandcat(boolean includedeptandcat) {
-		this.includedeptandcat = includedeptandcat;
 	}
 }

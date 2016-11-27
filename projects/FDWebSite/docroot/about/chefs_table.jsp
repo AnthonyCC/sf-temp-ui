@@ -9,14 +9,11 @@ final int W_CHEFS_TABLE_TOTAL = 970;
 <fd:CheckLoginStatus id="user" guestAllowed="false" />
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Chef's Table"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Chef's Table</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Chef's Table</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% if (user.isChefsTable()) { %>
 <table cellpadding="0" cellspacing="0" border="0" width="<%=W_CHEFS_TABLE_TOTAL%>">
-<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
+<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
 <%-- main content row --%>
 <tr>
 <td class="text12">
@@ -40,7 +37,7 @@ Steve Michaelson<br>
 President, FreshDirect<br><br><br>
 </td>
 <td>&nbsp;</td>
-<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 <td>&nbsp;</td>
 <td valign="top" class="text12">
 
@@ -50,7 +47,7 @@ President, FreshDirect<br><br><br>
 		Exclusive <b>Chef's Table</b> services for
 our best customers include:
 <br><br>
-		<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/about/chefs_table_reserve_delivery.gif" width="167" height="12" border="0" vspace="8" alt="RESERVE DELIVERY"></a><br>Look for the new link in the<br><a href="/your_account/reserve_timeslot.jsp"><b>Your Account</b></a> section to place a standing, weekly reservation or to reserve a time <b>before</b> you place your order.<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
+		<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/about/chefs_table_reserve_delivery.gif" width="167" height="12" border="0" vspace="8" alt="RESERVE DELIVERY"></a><br>Look for the new link in the<br><a href="/your_account/reserve_timeslot.jsp"><b>Your Account</b></a> section to place a standing, weekly reservation or to reserve a time <b>before</b> you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8">
 		</td>
 	</tr>
 	<tr>
@@ -68,11 +65,11 @@ our best customers include:
 </tr>
 <%-- spacers --%>
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="464" height="14"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="14"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="14"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="14"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="464" height="14"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="10" height="14"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="10" height="14"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="210" height="14"></td>
 </tr>
 </table>
 <% } else { %>

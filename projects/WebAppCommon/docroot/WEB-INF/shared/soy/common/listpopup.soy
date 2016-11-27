@@ -20,47 +20,14 @@
   </form>
 {/template}
 
-
-/**
- * @param data shopping lists
- */
-{template .selectList1 private="true" autoescape="true"}
-  <form fdform="selectlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
-    <p>
-      <label for="addtolist-selectList1">Add to Existing List</label>
-      <select name="selectList" id="addtolist-selectList1" class="customsimpleselect">
-        {foreach $listInfo in $data}
-          <option value="{$listInfo.listId}">
-            {$listInfo.name}
-          </option>
-        {/foreach}
-      </select>
-      <button type="button" fdform-default-button class="addtolist-button-add enabled cssbutton green">Add</button>
-    </p>
-  </form>
-{/template}
-
 /**
  */
 {template .newList private="true" autoescape="true"}
   <form fdform="createlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
     <p>
       <label for="addtolist-newList">Create New List</label>
-      <span id="addtolist_error" class="error title14"></span>
-      <input type="text" id="addtolist-newList" aria-describedby="addtolist_error" maxlength="35">
-      <button type="button" fdform-default-button class="addtolist-button-go enabled cssbutton green">Create</button>
-    </p>
-  </form>
-{/template}
-
-/**
- */
-{template .newList1 private="true" autoescape="true"}
-  <form fdform="createlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
-    <p>
-      <label for="addtolist-newList1">Create New List</label>
-      <span id="addtolist_error1" class="error title14"></span>
-      <input type="text" id="addtolist-newList1" aria-describedby="addtolist_error1" maxlength="35">
+      <label class="error"></label>
+      <input type="text" id="addtolist-newList" maxlength="35">
       <button type="button" fdform-default-button class="addtolist-button-go enabled cssbutton green">Create</button>
     </p>
   </form>
@@ -73,12 +40,12 @@
 {template .addtolistpopup autoescape="true"}
 	{if isNonnull($data.data)}
 		{if length($data.data) > 0}
-			{call .selectList1}
+			{call .selectList}
 				{param data:$data.data /}
 			{/call}
 			<div class="addtolist-or"><span>or</span></div>
 		{/if}
-		{call .newList1 /}
+		{call .newList /}
 	{else}
 		{call .addtolistsignin }
 			{param url: $data.url /}

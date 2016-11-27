@@ -1,14 +1,14 @@
-<%@page import="com.freshdirect.storeapi.content.CMSWebPageModel"%>
+<%@page import="com.freshdirect.fdstore.content.CMSWebPageModel"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.Locale"%>
-<%@page import="com.freshdirect.storeapi.content.CMSPageRequest"%>
-<%@page import="com.freshdirect.storeapi.content.CMSSectionModel"%>
+<%@page import="com.freshdirect.fdstore.content.CMSPageRequest"%>
+<%@page import="com.freshdirect.fdstore.content.CMSSectionModel"%>
 <%@page import="com.freshdirect.wcms.CMSContentFactory"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head><title>Feed</title></head>
 	<body>
 		

@@ -6,12 +6,12 @@ package com.freshdirect.smartstore.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ProductModelImpl;
 
 /**
  * @author zsombor

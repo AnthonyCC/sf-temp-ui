@@ -5,7 +5,7 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='true' />
 <potato:merchant upSellName="upSellList" crossSellName="crossSellList" productId='${param.productId}' categoryId='${param.catId}'/>
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 		<meta charset="utf-8">
 		<title>Product Merchant Potato Test Page</title>

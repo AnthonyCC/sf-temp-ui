@@ -11,11 +11,10 @@
 
 <% 
 	int sessionUserLevel_footer = 0;
-	FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);	
-	if(sessionUser != null) {
-		sessionUserLevel_footer = sessionUser.getLevel();
-	}
-	FDUser user_footer = sessionUser.getUser();
+	FDSessionUser fdSessionUser1 = (FDSessionUser) session.getAttribute(SessionName.USER);	
+	if(fdSessionUser1 != null) {
+		sessionUserLevel_footer = fdSessionUser1.getLevel();
+	}	
     String bottomUri = request.getRequestURI();
 	String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
     String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
@@ -27,13 +26,15 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
     	botNav = deptId;
     } else if (!"".equals(catId)) {
         botNav = catId;
+    } else if (bottomUri.indexOf("/myfd") > -1 || request.getParameter("successPage") != null && request.getParameter("successPage").indexOf("/myfd") > -1) {
+        botNav = "myfd";
     } else if (bottomUri.indexOf("/jobs/intro") > -1) {
         botNav = "careers";
     } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
         botNav = "giftcards";
     } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) {
         botNav = "newprod";
-    } else if(sessionUser.isCorporateUser()) {
+    } else if(bottomUri.indexOf("/cos.jsp") > -1) {
         botNav = "office";
     } else {
         botNav = "off";
@@ -41,6 +42,8 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 } else {
     if (bottomUri.indexOf("/about/index.jsp") > -1) {
         botNav = "aboutus";
+    } else if (bottomUri.indexOf("/myfd") > -1) {
+        botNav = "myfd";
     } else if (bottomUri.indexOf("/jobs/intro") > -1) {
         botNav = "careers";
     } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
@@ -51,7 +54,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
         botNav = "community";
     } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) {
         botNav = "billorrights";
-    } else if(sessionUser.isCorporateUser()) {
+    } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) {
         botNav = "office";
     } else {
         botNav = "off";
@@ -86,150 +89,226 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 </script>
 --%>
-<div class="container globalfooter">
-	<div class="center">
-	<table data-component="footer-cont" role="presentation" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
-		<tr>
-			<td>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-				<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
-					<script type="text/javascript">
-						FreshDirect = FreshDirect || {};
-						FreshDirect.globalnav = FreshDirect.globalnav || {};
-						FreshDirect.globalnav.botNav = '<%=botNav%>';
-					</script>
-				
-				  <fd:IncludeMedia name="/media/layout/nav/globalnav/footer/bottom_global_nav.ftl" parameters="<%= params %>">
-				  </fd:IncludeMedia>
-				  
-				<% } else { %>
-						<fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
-						</fd:IncludeMedia>
-				<% } %>
-		</td>
-		</tr>
-		<tr>
-			<td class="text11bold" style="text-align: center; padding: 5px 0px;">
-				<% if (FDStoreProperties.isSocialFooterStatic()) { %>
-					<div id="socialFooterStatic">
-						<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
-							<div class="spritediv sprite-social-facebook"></div>
-								<div class="vahidden">Facebook</div>
-						</a>
-						<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
-							<div class="spritediv sprite-social-twitter"></div>
-								<div class="vahidden">Twitter</div>
-						</a>
-						<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
-							<div class="spritediv sprite-social-pinterest"></div>
-								<div class="vahidden">Pinterest</div>
-							</a>
-						<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
-							<div class="spritediv sprite-social-googleplus"></div>
-								<div class="vahidden">Google Plus</div>
-						</a>
-						<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
-							<div class="spritediv sprite-social-youtube"></div>
-								<div class="vahidden">Youtube</div>
-						</a>
-					</div>
-				<% } else { %>
-						<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
-							<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
-							<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
-							<div style="width: 81px; overflow: hidden;">
-							<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
-							<div class="atclear"></div>
-							</div>
-							<div class="atclear"></div>
-						</div>
-						<script type="text/javascript">
-							var addthis_config = {
-								data_ga_property: 'UA-20535945-1',
-								data_ga_social : true
-							};
-							if (!window['initAddThis']) {
-								window['initAddThis'] = function() {
-									if (window['addthis']) {
-										addthis.init();
-									} else {
-										setTimeout(initAddThis, 1000);
-									}
-								}
-								$jq(window).ready(function () {
-									var at = document.createElement('script'); 
-		
-									at.type = 'text/javascript'; 
-						
-									at.async = true;
-									at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
-						
-									+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
-									var sat = document.getElementsByTagName('script')[0]; 
-						
-									sat.parentNode.insertBefore(at, sat);
-								
-									initAddThis();
-								});
-							}
-						</script>
-				<% } %>
-				<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
-				<div style="float:left">
-					<a href="/category.jsp?catId=mobile&trk=bnav" style="display:inline-block;">
-	          <div class="spritediv sprite-nav-mobile_apps" style="float: left;"></div>
-	          <span style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</span>
-	        </a>
-				</div>
-				<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
-				<div style="float:right; padding: 10px 5px 0px 5px">
-					<a href="/index.jsp?serviceType=HOME">Home</a>
-					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-	        &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
-					
-					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-					&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-					&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="text11bold" style="text-align: center;">
-				<div style="width:100%; height:1px" class="dotted_separator_h"></div>
-			</td>
-		</tr>
-		<tr>
-			<td class="text11" style="padding-top: 10px; text-align: center;">
-				
-				
-				<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+<center>
+<table data-component="footer-cont" width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %>">
+	<tr>
+		<td>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
+			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+				<script type="text/javascript">
+					FreshDirect = FreshDirect || {};
+					FreshDirect.globalnav = FreshDirect.globalnav || {};
+					FreshDirect.globalnav.botNav = '<%=botNav%>';
+				</script>
 			
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
-					<a href="/help/privacy_policy.jsp">Privacy Policy</a>
-					&nbsp;<span style="color: #999999">|</span>
-					&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-					&nbsp;<span style="color: #999999">|</span>
-					&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
-				</fd:IncludeMedia>
-			</td>
-		</tr>
-		<tr>
-			<td class="text11" style="padding-top: 10px; text-align: center;">
-					<%@ include file="/shared/template/includes/copyright.jspf" %>
-			</td>
-		</tr>
-	</table>
+			  <fd:IncludeMedia name="/media/layout/nav/globalnav/footer/bottom_global_nav.ftl" parameters="<%= params %>">
+			  </fd:IncludeMedia>
+			  
+			<% } else { %>
+					<fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
+					</fd:IncludeMedia>
+			<% } %>
+	</td>
+	</tr>
+	<tr>
+		<td align="center" class="text11bold" style="padding: 5px 0px;">
+			<% if (FDStoreProperties.isSocialFooterStatic()) { %>
+				<div id="socialFooterStatic">
+					<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
+						<div class="spritediv sprite-social-facebook"></div>
+							<div class="vahidden">Facebook</div>
+					</a>
+					<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
+						<div class="spritediv sprite-social-twitter"></div>
+							<div class="vahidden">Twitter</div>
+					</a>
+					<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
+						<div class="spritediv sprite-social-pinterest"></div>
+							<div class="vahidden">Pinterest</div>
+						</a>
+					<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
+						<div class="spritediv sprite-social-googleplus"></div>
+							<div class="vahidden">Google Plus</div>
+					</a>
+					<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
+						<div class="spritediv sprite-social-youtube"></div>
+							<div class="vahidden">Youtube</div>
+					</a>
+				</div>
+			<% } else { %>
+				<% if (!new BrowserInfo(request).isIE6()) { %>
+					<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
+						<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+						<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+						<div style="width: 81px; overflow: hidden;">
+						<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+						<div class="atclear"></div>
+						</div>
+						<div class="atclear"></div>
+					</div>
+					<script type="text/javascript">
+						var addthis_config = {
+							data_ga_property: 'UA-20535945-1',
+							data_ga_social : true
+						};
+						if (!window['initAddThis']) {
+							window['initAddThis'] = function() {
+								if (window['addthis']) {
+									addthis.init();
+								} else {
+									setTimeout(initAddThis, 1000);
+								}
+							}
+							$jq(window).ready(function () {
+								var at = document.createElement('script'); 
 	
+								at.type = 'text/javascript'; 
+					
+								at.async = true;
+								at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
+					
+								+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
+								var sat = document.getElementsByTagName('script')[0]; 
+					
+								sat.parentNode.insertBefore(at, sat);
+							
+								initAddThis();
+							});
+						}
+					</script>
+				<% } else { %>
+					<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+				<% } %>
+			<% } %>
+			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
+			<div style="float:left">
+				<a href="/category.jsp?catId=mobile&trk=bnav">
+          <div class="spritediv sprite-nav-mobile_apps" style="float: left;">Our Mobile Apps</div>
+        </a>
+				<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
+			</div>
+			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
+			<div style="float:left">
+				<a href="/department.jsp?deptId=COS&trk=bnav">
+          <div class="spritediv sprite-nav-at_the_office" style="float: left;">At The Office</div>
+        </a>
+				<a href="/department.jsp?deptId=COS&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+			</div>
+			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
+			<div style="float:right; padding: 10px 5px 0px 5px">
+				<a href="/index.jsp">Home</a>
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+        &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
+				
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td align="center" class="text11bold">
+			<div style="width:100%; height:1px" class="dotted_separator_h"></div>
+		</td>
+	</tr>
+	<tr>
+		<td align="center" class="text11" style="padding-top: 10px">
+			<%@ include file="/shared/template/includes/copyright.jspf" %>
+			<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+			<br /><a href="/help/privacy_policy.jsp">Privacy Policy</a>
+			&nbsp;<font color="#999999">|</font>
+			&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
+			&nbsp;<font color="#999999">|</font>
+			&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
+		</td>
+	</tr>
+</table>
+
+<%
+	String turi = request.getRequestURI();
+	String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
+
+	if(turi.indexOf("help") > -1){
+		faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
+	}
+%>
+
+<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+</center>
+
+<% if (session != null && session.getAttribute(SessionName.USER) != null) { %>
 	<%
-		String turi = request.getRequestURI();
-		String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
-	
-		if(turi.indexOf("help") > -1){
-			faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
+		/* Digo1 Pixel */
+		SemPixelModel semPixel_DIGO1 = FDSemPixelCache.getInstance().getSemPixel("DiGo1");
+		FDUserI user_DIGO1 = (FDSessionUser)session.getAttribute(SessionName.USER);
+		semPixel_DIGO1.clearParams();
+		semPixel_DIGO1.setParam("footer", "true");
+	%>
+	<%
+		if(request.getRequestURI().endsWith("index.jsp") || request.getRequestURI().endsWith("cos.jsp") || request.getRequestURI().endsWith("welcome.jsp")) {
+			//add param so ftl can do different logic
+			semPixel_DIGO1.setParam("homepage", "true");
 		}
 	%>
+	<%
+		if(user_DIGO1.hasJustLoggedIn(false)) { //don't clear, we need the same check for DiGo2 (which will clear)
+			//add param so ftl can do different logic
+			semPixel_DIGO1.setParam("login", "true");
+		}
+	%>
+		<fd:SemPixelIncludeMedia pixelNames="DiGo1" />
+	<% /* Digo1 Pixel */ %>
 	
-	<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-	</div>
-</div>
+	<%-- <%
+		/* Digo2 Pixel */
+		SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
+		FDUserI user_DIGO2 = (FDSessionUser)session.getAttribute(SessionName.USER);
+		semPixel_DIGO2.clearParams();
+	
+		semPixel_DIGO2.setParam("reqUri", request.getRequestURI());
+	%>
+	<%
+		if(user_DIGO2.hasJustLoggedIn()) { //clear
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("login", "true");
+		}
+	%>
+	<%
+		if(user_DIGO2.hasJustSignedUp()) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("signup", "true");
+		}
+	%>
+	<%
+		if(
+			request.getRequestURI().endsWith("/index.jsp") || 
+			request.getRequestURI().endsWith("/cos.jsp") || 
+			request.getRequestURI().endsWith("/welcome.jsp")
+		) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("homepage", "true");
+		} else if (request.getRequestURI().indexOf("view_cart") > -1) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("viewcart", "true");
+		} else if (request.getRequestURI().indexOf("step_1") > -1) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("checkout_address", "true");
+		} else if (request.getRequestURI().indexOf("step_2") > -1) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("checkout_timeslots", "true");
+		} else if (request.getRequestURI().indexOf("step_3") > -1) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("checkout_payment", "true");
+		} else if (request.getRequestURI().indexOf("step_4_submit") > -1) {
+			//add param so ftl can do different logic
+			semPixel_DIGO2.setParam("checkout_review", "true");
+		}
+		//receipt doesn't use footer, code in step_4_receipt.jsp
+	%>
+		<fd:SemPixelIncludeMedia pixelNames="DiGo2" />
+ --%>	<% /* Digo2 Pixel */ %>
+ 
+ <% /* Including Pinterest Pixel */ %>
+ <fd:SemPixelIncludeMedia pixelNames="Pinterest" />
+<% } %>

@@ -5,7 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.FDSkuNotFoundException' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.framework.util.NVL' %>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
@@ -16,7 +16,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
 <%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.log4j.Category' %>
@@ -24,7 +24,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@page import="com.freshdirect.common.pricing.MaterialPrice"%>
 
@@ -52,7 +52,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	if("".equals(pCatId))
 		pCatId = catId;
 	ProductModel pm = ContentFactory.getInstance().getProductByName( pCatId, request.getParameter("productId") );
-	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm);
+	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
 	request.setAttribute("sitePage", "www.freshdirect.com/group.jsp");
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote,SideCartBottom");
 	
@@ -141,7 +141,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 
 		request.setAttribute("smList", skuModelList); //** expose result of group to the layout **
 	%>
-	<logic:iterate id="sku" collection="<%= skuModelList %>" type="com.freshdirect.storeapi.content.SkuModel" indexId="idx">
+	<logic:iterate id="sku" collection="<%= skuModelList %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
 	<%
 		LOGGER.debug("Left Nav Index "+idx);
 		/*
@@ -260,10 +260,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	String TX_JS_NAMESPACE     = "groupScale_JSnamespace"; // impression javascript namespace
 	 %>
 <tmpl:insert template='<%= templatePath %>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Group Scale Pricing"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Group Scale Pricing</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - Group Scale Pricing</tmpl:put>
 	<tmpl:put name='left_nav_manual' direct='true'>
 		<table border="0" cellspacing="0" cellpadding="0" align="center" width="150">
 			<tr>

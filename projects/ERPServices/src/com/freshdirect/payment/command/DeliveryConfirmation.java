@@ -25,13 +25,5 @@ public class DeliveryConfirmation implements PaymentCommandI {
 		paymentManager.deliveryConfirm(this.saleId);
 		
 	}
-//Introduced for Storefront2.0  to get the saleId
-	/**
-	 * @return the saleId
-	 */
-	public String getSaleId() {
-		return saleId;
-	}
-
 
 }

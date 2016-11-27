@@ -3,14 +3,16 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.mobileapi.controller.data.Image;
+
 public class FilterGroupItem {
+    private String label;
 
     private String id;
-    private String label;
-    private Integer hitCount;
+    
     private String subGroupName;
     private List<FilterGroupItem> subGroups;
-
+    
     public String getLabel() {
         return label;
     }
@@ -26,35 +28,27 @@ public class FilterGroupItem {
     public void setId(String id) {
         this.id = id;
     }
-
-    public Integer getHitCount() {
-        return hitCount;
+    
+    public void setSubGroupName (String subGString){
+    	this.subGroupName = subGString;
     }
-
-    public void setHitCount(Integer hitCount) {
-        this.hitCount = hitCount;
+    
+    public String getSubGroupName(){
+    	return this.subGroupName;
     }
-
-    public void setSubGroupName(String subGString) {
-        this.subGroupName = subGString;
+    
+    public List<FilterGroupItem> getSubGroups(){
+    	return subGroups;
     }
-
-    public String getSubGroupName() {
-        return this.subGroupName;
+    
+    public void setSubGroups(List<FilterGroupItem> newList){
+    	this.subGroups = newList;
     }
-
-    public List<FilterGroupItem> getSubGroups() {
-        return subGroups;
+    
+    public void addItemToSubGroup(FilterGroupItem item){
+    	if(this.subGroups == null)
+    		this.subGroups = new ArrayList<FilterGroupItem>();
+		this.subGroups.add(item);
     }
-
-    public void setSubGroups(List<FilterGroupItem> newList) {
-        this.subGroups = newList;
-    }
-
-    public void addItemToSubGroup(FilterGroupItem item) {
-        if (this.subGroups == null)
-            this.subGroups = new ArrayList<FilterGroupItem>();
-        this.subGroups.add(item);
-    }
-
+    
 }

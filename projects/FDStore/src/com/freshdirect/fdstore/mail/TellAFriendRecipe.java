@@ -11,7 +11,7 @@ import javax.servlet.ServletContext;
 
 import com.freshdirect.fdstore.*;
 import com.freshdirect.fdstore.util.*;
-import com.freshdirect.storeapi.content.*;
+import com.freshdirect.fdstore.content.*;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 
 /**

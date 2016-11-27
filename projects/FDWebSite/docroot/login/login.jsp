@@ -12,10 +12,7 @@ int W_LOGIN_TOTAL = 970;
 <% 
 FDUserI login_user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, login_user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-boolean isOAuthPage = false;
 String template = "/common/template/no_nav.jsp"; //default
-String pageType = "login";
-
 if (mobWeb) {
 	W_LOGIN_TOTAL = 320;
 	template = "/common/template/mobileWeb.jsp"; //mobWeb template
@@ -28,50 +25,39 @@ boolean isPopup = false;
 Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 String nextSuccesspage = ((String)session.getAttribute("nextSuccesspage")!=null)?(String)session.getAttribute("nextSuccesspage"):"/login/index.jsp";
 
-String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage"):null;
-String templateId = request.getParameter("template");
+String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
+
 	if (sPage != null) {
 		
 	    // determine the preSuccessPage from previous workflow
 	    session.setAttribute(SessionName.PREV_SUCCESS_PAGE, sPage); 		
-		sPage = sPage.toLowerCase();
+		
 		if (sPage.indexOf("type=popup") != -1){
 			template = "/common/template/large_pop.jsp";
 			isPopup = true;
 		}else if ( sPage.indexOf("gift_card") > 0 && FDStoreProperties.isGiftCardEnabled() ) {
 			template = "/common/template/giftcard.jsp";
-			pageType = "gc_login";
 		}else if ( sPage.indexOf("robin_hood") > 0 && FDStoreProperties.isRobinHoodEnabled() ) {
 			template = "/common/template/robinhood.jsp";
-		}else if (sPage.startsWith("/oauth/") || (templateId != null && templateId.equals("oauth"))) {
-			template = "/common/template/oAuth.jsp";
-			isOAuthPage = true;
 		}
 	}
 %>
 <tmpl:insert template='<%=template%>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Log In"/>
-    </tmpl:put>
-<%-- <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put> --%>
-<tmpl:put name='pageType' direct='true'><%= pageType %></tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<style>
-		.W_LOGIN_TOTAL { width: <%= (mobWeb || isOAuthPage) ? "100%" : W_LOGIN_TOTAL+"px" %>; }
-	</style>
 	
 	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
 		var nextpage = '<%=nextSuccesspage %>';
-		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>");
+		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>");
 		</script>
 	<%}%>
 	
-	<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_LOGIN_TOTAL" align="center">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb)?"100%":W_LOGIN_TOTAL%>" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 		
 		<tr>
-			<td colspan="2" class="W_LOGIN_TOTAL">
+			<td colspan="2" width="<%=W_LOGIN_TOTAL%>">
 				<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"> -->
 				<span class="Container_Top_CurrentCustLogin">CURRENT CUSTOMERS LOG IN NOW</span>
 			</td>

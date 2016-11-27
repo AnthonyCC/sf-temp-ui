@@ -4,16 +4,16 @@ var FreshDirect = FreshDirect || {};
 
 // module initialization
 (function (fd) {
-
+	
 	var $=fd.libs.$;
 
 	function filterValue(val) {
 		return !val.invalid && val['salesUnit'] && parseFloat(val['quantity'])>0;
 	};
-
+	
 	function atcFilter(items) {
-		var productList;
-
+		var productList; 
+		
 		return items.map(function(item){
 			delete item.DOMElement;
 			delete item.required;
@@ -23,13 +23,13 @@ var FreshDirect = FreshDirect || {};
 	}
 
 	function atcHandler(event){
-
+		
 		var productList = atcFilter(event.atcList),
 			request = { items:productList },
-			eventSource = $(document.body).data('eventsource');
-
-		$.extend(request,event.ATCMeta,event.eventSourceData);
-
+      eventSource = $(document.body).data('cmeventsource');
+		
+		$.extend(request,event.ATCMeta,event.cmData);
+    
     if (fd.components && fd.components.atcInfo) {
       fd.components.atcInfo.setServerMessage(request.items);
     }
@@ -41,31 +41,27 @@ var FreshDirect = FreshDirect || {};
     if (event.ignoreRedirect) {
       request.ignoreRedirect = true;
     }
-    
-    if (event.dlvPassCart) {
-        request.dlvPassCart = event.dlvPassCart;
-    }
 
     $(event.target).addClass('ATCinProgress');
-
+    
     //Close the popup after added product to the cart with delay on mobile
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     	setTimeout(function(){
         fd.common.transactionalPopup.popup.hide();
-      }, 1000);
+      }, 1000);    	
     }
-
-
+    
+    
 		fd.common.dispatcher.signal('server',{
 			url:'/api/addtocart',
 			data:{data:JSON.stringify(request)},
-			method:'POST'
-		});
+			method:'POST'			
+		});			
 	}
-
+	
 	function requiredValidator(items){
 		var valid = true;
-
+		
 		items.forEach(function(item){
 			var required = item.required;
 			if(required.length) {
@@ -94,27 +90,20 @@ var FreshDirect = FreshDirect || {};
 				});
 			}
 		});
-
+		
 		return valid;
 	}
-
+	
 	function usqValidator(items) {
 		return items.some(function(item){
-			return item.isAlcoholic === 'true';
-		});
+			return item.isAlcoholic === 'true'; 
+		});		
 	}
-
-    $(document.body).on('addToCart','[data-eventsource]',function(event){
-        if (event.eventSourceData && event.eventSourceData.eventSource) {
-          return;
-        }
-        event.eventSourceData = event.eventSourceData || {};
-        event.eventSourceData.eventSource = $(event.currentTarget).attr('data-eventsource');
-    });
-
+	
+	
 	var ATC_BUS = new Bacon.Bus();
 	var BASIC_ATC = ATC_BUS.filter(function(event){ return requiredValidator(event.items)}).toProperty();
-
+	
 	Bacon.combineWith(function(value,usqState){
 		//value.usqState = usqState;
 		value.usqState = fd.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1');
@@ -144,32 +133,26 @@ var FreshDirect = FreshDirect || {};
 				return !item.isAlcoholic;
 			});
 		}
-		value.items = newItems.filter(filterValue);
+		value.items = newItems.filter(filterValue); 
 		return value;
 	}).filter(function(event){
 		return event.items.length > 0;
 	}).onValue(function(event){
-		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect,event.dlvPassCart);
+		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect);
 	});
 
-
-  function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect,dlvPassCart){
-    var eventSourceData = {};
-    if (eventSource) {
-      eventSourceData.eventSource = eventSource;
-    }
-
+	
+	function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
 		$(triggerElement || document.body).trigger({
 			type:'addToCart',
 			atcList:items,
 			ATCMeta:(meta || {}),
 			valid:true,
-			eventSourceData:eventSourceData,
-			ignoreRedirect: !!ignoreRedirect,
-			dlvPassCart: !!dlvPassCart
-		});
+			cmData:eventSource ? {eventSource: eventSource} : {},
+      ignoreRedirect: !!ignoreRedirect
+		});		
 	}
-
+	
 	function addToCart(element, extraData) {
 		var items = fd.modules.common.productSerialize(element, true, true);
     ATC_BUS.push($.extend({items: items}, extraData));
@@ -215,7 +198,7 @@ var FreshDirect = FreshDirect || {};
   function formAddToCart(e) {
     var ATCButton = e.formEl.find('[data-component="ATCButton"]').first();
 
-    if (ATCButton.length) {
+    if (ATCButton.size()) {
       e.target = ATCButton;
       e.currentTarget = ATCButton;
     }
@@ -235,11 +218,11 @@ var FreshDirect = FreshDirect || {};
 	          return !$(el).hasClass('unavailable');
 	        }),
 	        sumsubtotal = 0;
-	   var $finalProductSize = $products.length;
+	   var $finalProductSize = $products.size();
 	    $products.each(function () {
 	      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
 	      if (subtotal.substring(1)!="0.00" && subtotal.substring(1)!="") {
-	        sumsubtotal += +(subtotal.substring(1));
+	        sumsubtotal += +(subtotal.substring(1));        
 	      }
 	      else{
 	    	  $finalProductSize  = $finalProductSize - 1;
@@ -260,3 +243,4 @@ var FreshDirect = FreshDirect || {};
   } , fd);
 
 }(FreshDirect));
+

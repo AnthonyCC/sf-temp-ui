@@ -1,12 +1,9 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import="com.freshdirect.storeapi.*" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@ page import="com.freshdirect.storeapi.application.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.cms.*" %>
+<%@ page import="com.freshdirect.cms.application.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.attributes.*" %>
+<%@ page import="com.freshdirect.fdstore.attributes.*" %>
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -149,11 +146,11 @@
     }
 %>
 <%
-	ContentType recipeType    = ContentType.Recipe;
+	ContentType recipeType    = ContentType.get("Recipe");
 	Set         allRecipeKeys = CmsManager.getInstance().getContentKeysByType(recipeType);
 
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>/ FD CLIG Unavailability Report /</title>
 </head>
@@ -182,7 +179,7 @@
 		<logic:iterate id         = "contentKey"
                        indexId    = "i"
                        collection = "<%= allRecipeKeys %>"
-                       type       = "com.freshdirect.cms.core.domain.ContentKey"
+                       type       = "com.freshdirect.cms.ContentKey"
         >
             <%
                 Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(contentKey.getId());
@@ -190,17 +187,17 @@
             <logic:iterate id         = "variant"
                            indexId    = "j"
                            collection = "<%= recipe.getVariants() %>"
-                           type       = "com.freshdirect.storeapi.content.RecipeVariant"
+                           type       = "com.freshdirect.fdstore.content.RecipeVariant"
             >
                 <logic:iterate id         = "section"
                                indexId    = "k"
                                collection = "<%= variant.getSections() %>"
-                               type       = "com.freshdirect.storeapi.content.RecipeSection"
+                               type       = "com.freshdirect.fdstore.content.RecipeSection"
                 >
                     <logic:iterate id         = "product"
                                    indexId    = "l"
                                    collection = "<%= section.getIngredients() %>"
-                                   type       = "com.freshdirect.storeapi.content.ConfiguredProduct"
+                                   type       = "com.freshdirect.fdstore.content.ConfiguredProduct"
                     >
                     <%
                         distinctProducts.add(new RecipeProductContainer(recipe,
@@ -257,7 +254,7 @@
 		</logic:iterate>
 	</table>
 </div>
-<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></div>
+<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></div>
 </body>
 </html>
 

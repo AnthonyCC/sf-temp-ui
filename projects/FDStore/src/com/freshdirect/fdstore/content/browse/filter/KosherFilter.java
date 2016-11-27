@@ -6,14 +6,13 @@ import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.AbstractProductItemFilter;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 public class KosherFilter extends AbstractProductItemFilter {
 	private static final Logger LOGGER = LoggerFactory.getInstance( KosherFilter.class );
@@ -42,8 +41,7 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 		try {
 			FDProduct fdProd = productItem.getFdProduct();
-			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			String plantID=ProductInfoUtil.getPickingPlantId(productItem.getFdProductInfo());
+			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 			FDKosherInfo kInfo = fdProd.getKosherInfo(plantID);
 			
 			final int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;

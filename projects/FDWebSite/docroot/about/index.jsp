@@ -3,7 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
-<fd:CheckLoginStatus id="user" />
+<fd:CheckLoginStatus />
 
 <%
 	String siteAccessPage = request.getParameter("siteAccessPage"); 
@@ -21,18 +21,13 @@
 
 
 <tmpl:insert template='<%= jspTemplate %>'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - About Us"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - About Us</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - About Us</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<% if ("dvlprs".equalsIgnoreCase(request.getParameter("catID"))) { %>
 		<%@ include file="/includes/i_about_preamble.jspf"%>
 	<% }else{
 		/* forward over to new about us home */
-		String aboutUsUrl = "/browse.jsp?id=about"; /* RES users */
-		if (user != null && user.isCorporateUser()) { aboutUsUrl = "/browse.jsp?id=cos_about_us"; } /* COS users */
-		if (!"/site_access/site_access.jsp".equals(jspTemplate)) { %><jsp:forward page="<%= aboutUsUrl %>"/><% }
+		if (!"/site_access/site_access.jsp".equals(jspTemplate)) { %><jsp:forward page="/department.jsp?deptId=about"/><% }
 		
 		if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("aboutus")){ %>
 			<% if ( request.getParameter("lang") != null) { %>

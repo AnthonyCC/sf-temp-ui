@@ -21,7 +21,6 @@ public class SinglePageCheckoutSuccessData {
 	private FormPaymentData payment;
 	private FormTimeslotData timeslot;
     private SemPixelData semPixelData;
-    private boolean goGreenShow;
 
 	public UnavailabilityData getAtpFailure() {
 		return atpFailure;
@@ -86,13 +85,5 @@ public class SinglePageCheckoutSuccessData {
     public void setSemPixelData(SemPixelData semPixelData) {
         this.semPixelData = semPixelData;
     }
-
-	public boolean isGoGreenShow() {
-		return goGreenShow;
-	}
-
-	public void setGoGreenShow(boolean goGreenShow) {
-		this.goGreenShow = goGreenShow;
-	}
 
 }

@@ -73,7 +73,7 @@ if (orderId != null) {
 	}
 } else {
 	//CrmSession.getSessionStatus(session).setSaleId(null);
-	%><%
+	%><crm:GetFDUser id="otherUser"><% user = (FDSessionUser) otherUser; %></crm:GetFDUser><%
 }
 
 // helper class
@@ -193,7 +193,7 @@ if(null != orderId){
 	<%
 		//recentLateIssue = util.getLateIssueForOrder( ldlv );
 		//if (recentLateIssue != null) {
-		String vsMessage = null;
+		String vsMessage = CallCenterServices.getVSMsgForOrderPage(ldlv.getErpSalesId()); 
 		if(vsMessage != null) {
 	%>			<div style="font-size: 120%; padding-bottom: 1em; color: red; font-weight: bold;"><%=vsMessage%></div>
 	<%

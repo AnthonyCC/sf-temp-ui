@@ -9,7 +9,6 @@ import com.freshdirect.framework.util.DateRange;
  */
 public class OneTimeRestriction extends AbstractRestriction {
 
-	private static final long serialVersionUID = 6671838232437021121L;
 	private final DateRange range;
 
 	public OneTimeRestriction(

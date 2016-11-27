@@ -26,7 +26,6 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -110,7 +109,7 @@ public class ExternalInterfaceController extends BaseController {
     		        		LOGGER.info("T001: Unable to find Order " + saleId);
     		        	}
     	        	} catch(Exception e) {
-    	        		//e.printStackTrace();
+    	        		e.printStackTrace();
     	        		LOGGER.info("T001_EXP: Unable to find Order " + saleId);
     	        	}
     	        }
@@ -130,7 +129,7 @@ public class ExternalInterfaceController extends BaseController {
      	    		   responseMessage = Message.createSuccessMessage("T002 Successfull.");
      	    	   } 
      	        } catch(Exception e) {
-	        		//e.printStackTrace();
+	        		e.printStackTrace();
 	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order ");
 	        	}
      	        if(responseMessage == null) {
@@ -139,10 +138,10 @@ public class ExternalInterfaceController extends BaseController {
 	  	        	responseMessage.addErrorMessage("T002 Failed.");
 	     	    }   
     		} else if(ACTION_GET_SMS_MESSAGE_RELAY.equals(action)){
-    			String mobileNumber=null;
+    			
     			try{
     				// Call SmsAlertsManager with the parameters of the request.
-    				mobileNumber=request.getParameter("sender");
+    				String mobileNumber=request.getParameter("sender");
     				String shortCode= request.getParameter("code");
     				String carrierName=request.getParameter("carrier");
     				String receivedDate=request.getParameter("received");
@@ -151,7 +150,7 @@ public class ExternalInterfaceController extends BaseController {
     				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FD);
     				responseMessage = Message.createSuccessMessage("T003 Successfull.");
     			} catch(Exception e) {
-	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received for this Mobile number"+mobileNumber);
+	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received ");
 	        	}
     			if(responseMessage == null) {
 	  	        	LOGGER.info("T003: Failed SMS Message Relay ");
@@ -163,10 +162,10 @@ public class ExternalInterfaceController extends BaseController {
     		//Start::Added by Sathishkumar Merugu for FDX SMS Alert
     		
     		else if(ACTION_GET_SMS_FDX_MESSAGE_RELAY.equals(action)){
-    			String mobileNumber=null;
+    			
     			try{
     				// Call SmsAlertsManager with the parameters of the request.
-    				mobileNumber=request.getParameter("sender");
+    				String mobileNumber=request.getParameter("sender");
     				String shortCode= request.getParameter("code");
     				String carrierName=request.getParameter("carrier");
     				String receivedDate=request.getParameter("received");
@@ -176,7 +175,7 @@ public class ExternalInterfaceController extends BaseController {
     				responseMessage = Message.createSuccessMessage("T004 Successfull.");
     			} catch(Exception e) {
 	        		responseMessage=Message.createFailureMessage("T004 Failed.");
-	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received for this Mobile number"+mobileNumber);
+	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received ");
 	  	        }  
 			if(responseMessage == null) {
 	  	        	LOGGER.info("T004: Failed FDX SMS Message Relay ");
@@ -190,7 +189,7 @@ public class ExternalInterfaceController extends BaseController {
     				
     			try{
     				String carrier = request.getParameter("carrier");
-    				if(!carrier.isEmpty() && carrier!=null){
+    				if("/deliv".equalsIgnoreCase(carrier) || "/uberrush".equalsIgnoreCase(carrier)){
     					carrier = StringUtils.upperCase(carrier.substring(1, carrier.length()));
     					FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
         				InputStream is = request.getInputStream();
@@ -204,23 +203,17 @@ public class ExternalInterfaceController extends BaseController {
 	        					sb.append(line);
 	        				}
         				}catch (IOException e) {
-        					//e.printStackTrace();
+        					e.printStackTrace();
         				} finally {
         					if (br != null) {
         						try {
         							br.close();
         						} catch (IOException e) {
-        							//e.printStackTrace();
+        							e.printStackTrace();
         						}
         					}
         				}
-        				Result	result=fDDeliveryManager.captureDeliveryEventNotification(carrier, sb.toString().trim());
-        				if(result.getStatus()!=null && result.getStatus().equals("FAILED")) {
-	    					responseMessage=Message.createFailureMessage(result.getErrors()!=null?result.getErrors().toString():"Error Occurred");
-	    					responseMessage.setStatus("FAILED");
-	    					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	    				}
-	    				else
+        				fDDeliveryManager.captureDeliveryEventNotification(carrier, sb.toString().trim());
         				responseMessage = Message.createSuccessMessage("T005 Successful.");
         				
     				}else{
@@ -239,8 +232,7 @@ public class ExternalInterfaceController extends BaseController {
 	       			  			 estDeliveryTime=temp[3]; 
 	       			  		 }
 	       			  	FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-	    				Result result= fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
-	    				
+	    				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
 	    				responseMessage = Message.createSuccessMessage("T005 Successful.");
 	    				}
 	       			  	 
@@ -250,7 +242,7 @@ public class ExternalInterfaceController extends BaseController {
     				
     				
     			} catch(Exception e) {
-    				//e.printStackTrace();
+    				e.printStackTrace();
     				responseMessage=Message.createFailureMessage("T005 Failed.");
     				LOGGER.info("T005_EXP: Unable to save fdx delivery info received ");
     			}  

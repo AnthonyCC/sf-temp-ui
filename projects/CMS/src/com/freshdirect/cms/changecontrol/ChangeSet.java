@@ -81,9 +81,4 @@ public class ChangeSet extends ModelSupport {
 		return nodeChanges;
 	}
 
-    @Override
-    public String toString() {
-        return "ChangeSet [userId=" + userId + ", modifiedDate=" + modifiedDate + ", nodeChanges=" + nodeChanges + ", note=" + note + "]";
-    }
-
 }

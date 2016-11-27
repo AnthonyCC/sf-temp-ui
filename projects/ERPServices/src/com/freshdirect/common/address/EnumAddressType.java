@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 /**@author ekracoff on Jun 29, 2004*/
 public class EnumAddressType extends ValuedEnum {
@@ -32,8 +29,8 @@ public class EnumAddressType extends ValuedEnum {
 	public static EnumAddressType getEnum(String type) {
 		return (EnumAddressType) getEnum(EnumAddressType.class, type);
 	}
-	@JsonCreator
-	public static EnumAddressType getEnum(@JsonProperty("value") int id) {
+
+	public static EnumAddressType getEnum(int id) {
 		return (EnumAddressType) getEnum(EnumAddressType.class, id);
 	}
 

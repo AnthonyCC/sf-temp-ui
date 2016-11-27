@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.util.MathUtil;
 
 /*
@@ -48,8 +49,8 @@ public class FDTaxUtil {
 		try{
 			if(request != null){
 				final String content = mapper.writeValueAsString(request);
-				LOGGER.debug("Avalara Request is "+content);
-//				System.out.println("Avalara Request is "+content);
+				LOGGER.info("Avalara Request is "+content);
+				System.out.println("Avalara Request is "+content);
 				postMethod.setRequestBody(content);
 			}
 			

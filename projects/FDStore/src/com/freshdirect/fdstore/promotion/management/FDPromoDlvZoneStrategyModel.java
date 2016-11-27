@@ -12,7 +12,6 @@ public class FDPromoDlvZoneStrategyModel extends ModelSupport {
 	private String[] dlvZones;
 	private List<FDPromoDlvTimeSlotModel> dlvTimeSlots;
 	private List<FDPromoDlvDayModel> dlvDayRedemtions;
-	private List<String> travelZones;
 	
 	public String getPromotionId() {
 		return promotionId;
@@ -60,12 +59,6 @@ public class FDPromoDlvZoneStrategyModel extends ModelSupport {
 			}
 		}
 		return daysList;
-	}
-	public List<String> getTravelZones() {
-		return travelZones;
-	}
-	public void setTravelZones(List<String> travelZones) {
-		this.travelZones = travelZones;
 	}
 	
 	

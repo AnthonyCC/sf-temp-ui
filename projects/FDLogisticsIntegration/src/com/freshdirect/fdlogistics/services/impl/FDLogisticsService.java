@@ -60,17 +60,13 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.Employees;
 import com.freshdirect.logistics.controller.data.response.FulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
-import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
-import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
-import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
-import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
@@ -95,7 +91,6 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 
 	private static final String DATE_CUTOFF_API ="/delivery/date/cutoffs";
 	private static final String STATECOUNTY_BYZIP_API ="/address/county/";
-	private static final String ZIP_ATTRIBUTES ="/address/zipattributes/";
 	private static final String STATECOUNTY__API ="/address/county";
 	
 	private static final String GEOCODEEXCEPTION_ADD_API ="/address/geocode/exception/add";
@@ -139,7 +134,6 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String ADD_SUBSCRIPTION_API ="/delivery/messaging/subscription/add";
 	private static final String FULFILLMENTINFO_API ="/delivery/fulfillmentinfo/";
-	private static final String ALL_FULFILLMENTINFO_API ="/delivery/fulfillmentinfo/all";
 	
 	private static final String RESERVE_SOTEMPLATE_API ="/reservation/sotemplate/reserve";
 	private static final String CANCEL_SOTEMPLATE_API ="/reservation/sotemplate/cancel/";
@@ -169,16 +163,13 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String GET_TRUCK_DETAILS_API ="/delivery/trucks/";
 	private static final String RESERVATION_RECONFIRM_API ="/reservation/reconfirm";
-	private static final String ROUTE_STOP_INFO ="/order/routestopInfo/";
-	private static final String ROUTE_DETAILS_BY_ROUTE_NO_API ="/delivery/routedetails/";
-	private static final String ROUTES_DETAILS_BY_CURRENT_DATE_API ="/delivery/routesdetails/";
+
 
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
 		AddressVerificationRequest request = new AddressVerificationRequest();
-	    request.setAddress(address);
+		request.setAddress(address);
 		String inputJson = buildRequest(request);
-		LOGGER.info(inputJson);
 		AddressVerificationResponse response =  getData(inputJson, getEndPoint(ADDRESSVERIFY_API), AddressVerificationResponse.class);
 		return response;		
 	}
@@ -389,13 +380,6 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	}
 
 	@Override
-	public ListOfFulfillmentInfoResponse getAllFulfillmentInfo() throws FDLogisticsServiceException {
-		ListOfFulfillmentInfoResponse response =  getData(null, getEndPoint(ALL_FULFILLMENTINFO_API), ListOfFulfillmentInfoResponse.class);
-		return response;
-	}
-
-	
-	@Override
 	public DeliveryZones getZone(DeliveryZoneRequest request) throws FDLogisticsServiceException {
 
 		String inputJson = buildRequest(request);
@@ -519,17 +503,6 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		return response;
 	
 	}
-	
-	//OPT-44 start
-	@Override
-	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode)
-			throws FDLogisticsServiceException {
-		
-		ZipCodeAttributes response =  getData(null, getEndPoint(ZIP_ATTRIBUTES+zipcode), ZipCodeAttributes.class);
-		return response;
-	
-	}
-	//OPT-44 end
 
 	@Override
 	public Map<String, Set<StateCounty>> getCountiesByState()
@@ -717,25 +690,4 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		Result response =  getData(inputJson, getEndPoint(RESERVATION_RECONFIRM_API), Result.class);
 		return response;	
 	}
-	
-	@Override
-	public RouteStopInfo getRouteStopInfo(String orderId) throws FDLogisticsServiceException {
-		RouteStopInfo response =  getData(null, getEndPoint(ROUTE_STOP_INFO+orderId), RouteStopInfo.class);
-		return response;
-	}
-	
-	@Override
-	public RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException {
-		RoutesData response =  getData(null, getEndPoint(ROUTE_DETAILS_BY_ROUTE_NO_API+routeNo), RoutesData.class);
-		return response;
-	}
-
-	@Override
-	public RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException {
-		RoutesData response =  getData(null, getEndPoint(ROUTES_DETAILS_BY_CURRENT_DATE_API), RoutesData.class);
-		return response;
-	}
-	
-	
-	
 }

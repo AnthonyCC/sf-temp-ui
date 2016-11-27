@@ -10,7 +10,6 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
@@ -113,7 +112,7 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 						user.isLoggedIn(true);
 						user.updateUserState();
 						//Set the Default Delivery pass status.
-						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null,null);
+						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 						user.getUser().setDlvPassInfo(dlvpassInfo);
 						session.setAttribute(SessionName.USER, user);
 					}
@@ -170,7 +169,7 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 			FDCustomerModel fdCustomer,
 			ErpCustomerModel erpCustomer,
 			FDSurveyResponse survey,
-			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException, ErpFraudException {
+			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException {
 
 			HttpSession session = this.getWebActionContext().getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);

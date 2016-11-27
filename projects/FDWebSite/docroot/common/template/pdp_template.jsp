@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -10,11 +10,11 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
   <tmpl:get name="seoMetaTag"/>
-  <%@ include file="/common/template/includes/seo_canonical.jspf" %>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   
   <tmpl:get name='facebookmeta'/>
@@ -34,10 +34,12 @@
   
 </head>
 
-<!--[if lt IE 9]><body class="ie8" data-eventsource="<tmpl:get name='eventsource'/>"><![endif]-->
-<!--[if gt IE 8]><body data-eventsource="<tmpl:get name='eventsource'/>"><![endif]-->
-<!--[if !IE]><!--><body data-eventsource="<tmpl:get name='eventsource'/>"><!--<![endif]-->
+<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
+<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
+<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
   
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+    
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 
 <%-- TODO --%>
@@ -58,7 +60,6 @@
     
     <section class="content">
       <!-- start : content -->
-      <!-- pdp_template.jsp -->
       <tmpl:get name='content'/>
       <!-- end : content -->      
     </section>

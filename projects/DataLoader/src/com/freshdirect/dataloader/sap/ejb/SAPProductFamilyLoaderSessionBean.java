@@ -19,19 +19,13 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.cache.CmsCaches;
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.erp.EnumApprovalStatus;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-/**
- *@deprecated Please use the SAPProductFamilyController and SAPProductFamilyLoaderServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
 public class SAPProductFamilyLoaderSessionBean extends SessionBeanSupport {
 
 	 private static Category LOGGER = LoggerFactory.getInstance( SAPProductFamilyLoaderSessionBean.class );
@@ -46,7 +40,6 @@ public class SAPProductFamilyLoaderSessionBean extends SessionBeanSupport {
      *
      * @return the bean's home interface name
      */
-    @Override
     protected String getResourceCacheKey() {
         return "com.freshdirect.dataloader.sap.ejb.SAPLoaderHome";
     }
@@ -198,7 +191,7 @@ public class SAPProductFamilyLoaderSessionBean extends SessionBeanSupport {
                     conn=getConnection();
                     for(String familyId: familyIds){
                     List<String> skuCodes = SAPProductFamilyLoaderDAO.fetchProductFamilyMasterInfo(conn,familyId);
-                        CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyId, skuCodes);
+                    EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyId, skuCodes);
                     }
                    
                     try {

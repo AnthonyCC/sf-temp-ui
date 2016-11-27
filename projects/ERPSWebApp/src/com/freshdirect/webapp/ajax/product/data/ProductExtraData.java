@@ -8,9 +8,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
-import com.freshdirect.storeapi.content.TitledMedia;
 
 
 /**
@@ -33,7 +33,6 @@ public class ProductExtraData implements Serializable {
 		public int logoWidth;
 		
 		public String name;
-		
 	}
 
 	public static class GroupScaleData implements Serializable {
@@ -46,6 +45,7 @@ public class ProductExtraData implements Serializable {
 		public String grpTotalPrice;			
 		public String version;
 	}
+	
 	
 	public static class LabelAndLink implements Serializable {
 		private static final long serialVersionUID = 7701246849203062432L;
@@ -180,151 +180,153 @@ public class ProductExtraData implements Serializable {
 	 * List of allergens  (Nutrition)
 	 * @see allergens.jspf
 	 */
-	private List<String> allergens;
+	protected List<String> allergens;
 	
 	/**
 	 * Brands 
 	 */
-	private List<BrandInfo> brands;
+	protected List<BrandInfo> brands;
 	
 	/**
 	 * Deli Buyer Guide data.
 	 * @see i_buy_guide.jspf
 	 */
-	private Map<String, Double> buyerGuide;
+	protected Map<String, Double> buyerGuide;
 	
 	/**
 	 * Storage Guide (inline media)
 	 */
 	@Deprecated
-	private String categoryStorageGuide;
+	protected String categoryStorageGuide;
 	
-	private String categoryStorageGuideLabel;
+	protected String categoryStorageGuideLabel;
 
-	private String categoryStorageGuideLink;
+	protected String categoryStorageGuideLink;
 
 	@Deprecated
-	private String cheesePopupPath;
+	protected String cheesePopupPath;
 	
 	@Deprecated
-	private String cheeseText;
+	protected String cheeseText;
 	
 	/**
 	 * List of claims (Nutrition)
 	 * @see claims.jspf
 	 */
-	private List<String> claims;
-	private String customerServiceContact;
+	protected List<String> claims;
+	 private String customerServiceContact;
 	
 	/**
 	 * List of links to Doneness Guide popup contents (inline media)
 	 * @see i_doneness_guide.jspf
 	 */
 	// 
-	 private List<LabelAndLink> donenessGuideList;
+	protected List<LabelAndLink> donenessGuideList;
 
-	private List<ProductData> familyProducts;
+	protected List<ProductData> familyProducts;
 	/**
 	 * Guaranteed Freshness (Perishable Product only)
 	 * Number of days of guaranteed freshness (if value > 0)
 	 * 
 	 * Zero or negative value is considered to be disregarded.
 	 */
-	private int freshness = 0;
+	protected int freshness = 0;
 	/**
 	 * Fresh Tips
 	 */
-	private LabelAndLink freshTips;
+	protected LabelAndLink freshTips;
 
-	private GroupScaleData groupScaleData;
+	protected GroupScaleData groupScaleData;
 	
 	/**
 	 * Heating instructions (Nutrition)
 	 * @see i_heating_instructions.jspf
 	 */
-	private String heatingInstructions;
+	protected String heatingInstructions;
 	
 	/**
 	 * 
 	 * @see i_how_to_cook.jspf
 	 */
 	// ?? TBD INLINE MEDIA HERE
-	private List<WebHowToCookIt> howToCookItList;
+	protected List<WebHowToCookIt> howToCookItList;
 	
 	/**
 	 * Ingredients description
 	 * NOTE: this might be part of {@link ProductExtraData#nutritions} data
 	 */
-	private String ingredients;
+	protected String ingredients;
+
 	
 	/**
 	 * Show Cheese 101 popup if true
 	 * @see i_cheese_101.jspf
 	 */
-	private boolean isCheese101;
+	protected boolean isCheese101;
 	 /**
 	 * New generic attribute for anything with a frozen media due to APPBUG-1705
 	 */
-	private boolean isFrozen;
+	protected boolean isFrozen;
 	 /**
 	 * Partially frozen meal - bakery  
 	 * Mutually exclusive with {@link ProductExtraData#isFrozenSeafood}
 	 */
-	private boolean isFrozenBakery;
+	protected boolean isFrozenBakery;
 	
 	/**
 	 * Partially frozen meal - seafood
 	 * Mutually exclusive with {@link ProductExtraData#isFrozenBakery}
 	 */
-	private boolean isFrozenSeafood;
+	protected boolean isFrozenSeafood;
 
-	private String kosherIconPath;
+	protected String kosherIconPath;
 
-	private String kosherPopupPath;
+	protected String kosherPopupPath;
 
 	/**
 	 * Kosher symbol
 	 * @see kosher.jspf
 	 */
-	private String kosherSymbol;
+	protected String kosherSymbol;
+	
 
 	/**
 	 * Kosher type
 	 * @see kosher.jspf
 	 */
-	private String kosherType;
+	protected String kosherType;
 	
 	/**
 	 * Collection of SKU nutrition info
 	 * A.k.a new-style nutrition panel
 	 */
-	private NutritionPanel nutritionPanel;
+	protected NutritionPanel nutritionPanel;
 	
 	/**
 	 * Old-style nutrition panel (partial content)
 	 */
-	private String oldNutritionPanel;
+	protected String oldNutritionPanel;
 	
 	/**
 	 * List of organic claims (Nutrition)
 	 * @see organic_claims.jspf
 	 */
-	private List<String> organicClaims;
+	protected List<String> organicClaims;
 
 	
-	private String origin;
+	protected String origin;
 	
 	/**
 	 * Origin aka COOL (USA, Ireland, USA, Chile and/or Argentina, etc.)
 	 */
-	private String originTitle;
+	 protected String originTitle;
 	
-	private String partiallyFrozenMedia;
+	protected String partiallyFrozenMedia;
 
 	/**
 	 * Path to product about box media asset (inline media)
 	 */
-	private String productAboutMedia;
+	protected String productAboutMedia;
 	
 	private String productAboutMediaPath;
 
@@ -332,13 +334,13 @@ public class ProductExtraData implements Serializable {
 	/**
 	 * Product description
 	 */
-	private String productDescription;
+	protected String productDescription;
 
 
 	/**
 	 * Path to product description note media asset (inline media)
 	 */
-	private String productDescriptionNote;
+	protected String productDescriptionNote;
 
 	
 	/**
@@ -350,33 +352,36 @@ public class ProductExtraData implements Serializable {
 	 * List of Related Recipes
 	 * @see i_related_recipes.jspf
 	 */
-    private List<RecipeData> relatedRecipes;
+	protected List<RecipeData> relatedRecipes;
 	
 	/**
 	 * Season Text
 	 * May contain escaped HTML tags!
 	 */
-	private String seasonText;
+	protected String seasonText;
 
 	/**
 	 * Serving Suggestions
 	 * @see i_serving_suggestions.jspf
 	 */
-	private String servingSuggestions;
+	protected String servingSuggestions;
+	
 
 	/**
 	 * Source map
 	 */
-	private Map<String,SourceData> source;
+	protected Map<String,SourceData> source;
+
 
 	/**
 	 * Storage Guide popup media - department and category level
 	 */
-	private String storageGuideCat;
+	 protected String storageGuideCat;
 	
-	private String storageGuideDept;
+	protected String storageGuideDept;
 
-	private String storageGuideTitle;
+
+	protected String storageGuideTitle;
 	
 	
 	/* placeholder for product family products */
@@ -385,27 +390,22 @@ public class ProductExtraData implements Serializable {
 	 * Usage List
 	 * 
 	 */
-	private List<String> usageList;
+	protected List<String> usageList;
 
 	/**
 	 * Product Rating
 	 * @see i_product_methods.jsp#getProdPageRatings()
 	 */
-	private WebProductRating webRating;
+	protected WebProductRating webRating;
 
 	/**
 	 * Wine details
 	 */
-	private WineData wineData;
+	protected WineData wineData;
 	
 	/* component group meal, optional products */
 	
-	private List<ProductData> optionalProducts;
-	
-	private String pageTitle;
-	private String nutritionCss;
-	
-	private String seoMetaDescription;
+	protected List<ProductData> optionalProducts;
 	
 	public List<ProductData> getOptionalProducts() {
 		return optionalProducts;
@@ -800,30 +800,5 @@ public class ProductExtraData implements Serializable {
     public void setWineData(WineData wineData) {
 		this.wineData = wineData;
 	}
-
-    public String getPageTitle() {
-        return pageTitle;
-    }
-
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
-    }
-    
-    public String getNutritionCss() {
-        return nutritionCss;
-    }
-
-    public void setNutritionCss(String nutritionCssp) {
-        this.nutritionCss = nutritionCssp;
-    }
-    
-
-    public String getSeoMetaDescription() {
-        return seoMetaDescription;
-    }
-
-    public void setSeoMetaDescription(String seoMetaDescription) {
-        this.seoMetaDescription = seoMetaDescription;
-    }
 
 }

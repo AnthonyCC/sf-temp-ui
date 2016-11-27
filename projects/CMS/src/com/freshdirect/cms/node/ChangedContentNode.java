@@ -112,9 +112,4 @@ public class ChangedContentNode implements ContentNodeI, NodeWrapperI {
     public boolean isChanged() {
         return !changes.isEmpty();
     }
-
-    @Override
-    public String toString() {
-        return "ChangedContentNode [originalNode=" + originalNode + ", changes=" + changes + "]";
-    }
 }

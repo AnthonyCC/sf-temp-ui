@@ -3,9 +3,6 @@ package com.freshdirect.fdstore;
 import java.util.Collections;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public final class FDConfiguration implements FDConfigurableI {
 
 	private static final long	serialVersionUID	= -6923366786443915310L;
@@ -24,17 +21,11 @@ public final class FDConfiguration implements FDConfigurableI {
 	}
 
 	/**
-	 * @param quantity
-	 *            quantity in sales unit
-	 * @param salesUnit
-	 *            Selected sales unit
-	 * @param options
-	 *            Map of selected options (characteristic name / char.value name
-	 *            pairs)
+	 * @param quantity quantity in sales unit
+	 * @param salesUnit Selected sales unit
+	 * @param options Map of selected options (characteristic name / char.value name pairs)
 	 */
-	@JsonCreator
-	public FDConfiguration(@JsonProperty("quantity") double quantity, @JsonProperty("salesUnit") String salesUnit,
-			@JsonProperty("options") Map<String, String> options) {
+	public FDConfiguration(double quantity, String salesUnit, Map<String,String> options) {
 		this.quantity = quantity;
 		this.salesUnit = salesUnit;
 		this.options = options;

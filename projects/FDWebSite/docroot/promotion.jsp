@@ -6,7 +6,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -37,13 +37,15 @@ final int W_PROMOTION_RIGHT = 100;
 			if ("kosher_temp".equalsIgnoreCase(deptId)) {
 				deptName = "Kosher";
 			} else {
-                ContentNodeModel currentNode = PopulatorUtil.getContentNode(deptId);
+                ContentFactory contentFactory = ContentFactory.getInstance();
+                ContentNodeModel currentNode = contentFactory.getContentNode(deptId);
                 deptName = ((DepartmentModel)currentNode).getFullName();
             }    
         }
         else if (catId != null) {
                 hasDepartment = true;
-                ContentNodeModel currentNode = PopulatorUtil.getContentNode(catId);
+                ContentFactory contentFactory = ContentFactory.getInstance();
+                ContentNodeModel currentNode = contentFactory.getContentNode(catId);
 				deptId = ((CategoryModel)currentNode).getDepartment().getContentName();
                 continueShoppingLink = response.encodeURL(deptLink+deptId+"&");
                 deptName = ((CategoryModel)currentNode).getDepartment().getFullName();
@@ -59,16 +61,13 @@ final int W_PROMOTION_RIGHT = 100;
 %>
 
 <tmpl:insert template='/common/template/no_nav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Promotion"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Promotion</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Promotion</tmpl:put>
     <tmpl:put name='content' direct='true'>
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
-      <td width="<%= W_PROMOTION_LEFT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_PROMOTION_LEFT %>" height="1"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-      <td width="<%= W_PROMOTION_RIGHT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_PROMOTION_RIGHT %>" height="1"></td>
+      <td width="<%= W_PROMOTION_LEFT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_LEFT %>" height="1"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      <td width="<%= W_PROMOTION_RIGHT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_RIGHT %>" height="1"></td>
     </tr>
     <tr>
     <td>&nbsp;</td>

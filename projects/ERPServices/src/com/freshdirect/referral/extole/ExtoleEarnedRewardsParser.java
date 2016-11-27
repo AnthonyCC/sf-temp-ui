@@ -51,8 +51,6 @@ public class ExtoleEarnedRewardsParser {
 		columnMapping.put("Reward Set Id", "rewardSetId");
 		columnMapping.put("Reward Value", "rewardValueString");
 		columnMapping.put("Reward Detail", "rewardDetail");
-		columnMapping.put("Campaign Id","campaignId");
-		columnMapping.put("Campaign Name","campaignName");
 
 		/* 	// using opencsv 2.3 jar
 		 * HeaderColumnNameTranslateMappingStrategy<FDRafCredit> strategy = new

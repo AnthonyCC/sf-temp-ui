@@ -1,15 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<taglib xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
-    version="2.1">
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
 
-    <description>FreshDirect data potato tag library</description>
-    <display-name>Data Potatoes</display-name>
-    <tlib-version>1.0</tlib-version>
-    <short-name>Potato</short-name>
-    <uri>fd-data-potatoes</uri>
+<taglib>
+	<tlib-version>3.1</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>Potato</short-name>
+	<uri>fd-data-potatoes</uri>
+	<display-name>Data Potatoes</display-name>
 
 	<tag>
 		<name>cartConfirm</name>
@@ -161,6 +159,43 @@
 	</tag>
 
 	<tag>
+		<name>recommender</name>
+		<tag-class>com.freshdirect.webapp.soy.RecommenderPotatoTag</tag-class>
+		<teiclass>com.freshdirect.webapp.soy.RecommenderPotatoTag$TagEI</teiclass>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>siteFeature</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxItems</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>currentNodeKey</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>cmEventSource</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>sendVariant</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>merchant</name>
 		<tag-class>com.freshdirect.webapp.soy.MerchantPotatoTag</tag-class>
 		<teiclass>com.freshdirect.webapp.soy.MerchantPotatoTag$TagEI</teiclass>
@@ -254,9 +289,15 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-<tag>
+    <tag>
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
+    </tag>
+
+	<!-- APPDEV-3901 -->
+    <tag>
+        <name>qsRecommender</name>
+        <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
     </tag>
     <tag>
         <name>singlePageCheckout</name>
@@ -295,68 +336,4 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
     </tag>
-	<tag>
-		<name>modulehandling</name>
-		<tagclass>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingPotatoTag</tagclass>
-		<info></info>
-		<attribute>
-			<name>name</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>moduleContainerId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>googleAnalytics</name>
-		<tagclass>com.freshdirect.webapp.ajax.analytics.tag.GoogleAnalyticsPotatoTag</tagclass>
-		<attribute>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
-		<name>storeCreditsPotato</name>
-		<tagclass>com.freshdirect.webapp.taglib.storecredits.StoreCreditsPotatoTag</tagclass>
-		<info></info>
-		<attribute>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>featureActive</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
-		<name>help</name>
-		<tagclass>com.freshdirect.webapp.taglib.help.HelpPotatoTag</tagclass>
-		<info></info>
-		<attribute>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
-		<name>contactUs</name>
-		<tagclass>com.freshdirect.webapp.taglib.contactus.ContactUsPotatoTag</tagclass>
-		<info></info>
-		<attribute>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	
 </taglib>

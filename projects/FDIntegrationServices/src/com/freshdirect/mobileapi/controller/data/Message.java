@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.mobileapi.controller.data.response.Configuration;
@@ -75,8 +74,6 @@ public class Message implements DateFormat, Cloneable {
     private Map<String, String> debug = new HashMap<String, String>();
 
     private Map<String, Object> notice = new HashMap<String, Object>();
-    
-    private AtpErrorData unavaialabilityData;
 
     public Map<String, Object> getNotice() {
         return notice;
@@ -176,28 +173,5 @@ public class Message implements DateFormat, Cloneable {
     public Configuration getConfiguration( ) {
         return configuration;
     }
-    
-    public AtpErrorData getUnavaialabilityData() {
-		return unavaialabilityData;
-	}
-
-	public void setUnavaialabilityData(AtpErrorData unavaialabilityData) {
-		this.unavaialabilityData = unavaialabilityData;
-	}
-	
-    @JsonIgnore
-    public boolean includeNullValue() {
-    	return true;
-    }
-    
-    public boolean isShowCaptcha() {
-		return showCaptcha || this.errors != null && this.errors.containsKey("captcha");
-	}
-
-	public void setShowCaptcha(boolean showCaptcha) {
-		this.showCaptcha = showCaptcha;
-	}
-
-	private boolean showCaptcha;
     
 }

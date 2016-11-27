@@ -10,6 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
@@ -33,9 +36,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.StoreModel;
 
 public class BrowseController extends BaseController {
 
@@ -43,8 +43,6 @@ public class BrowseController extends BaseController {
 
     private static final String ACTION_GET_DEPARTMENTS = "getDepartments";
     private static final String ACTION_GET_CATEGORIES = "getCategories";
-    private static final String ACTION_GET_CATEGORIES_OPTIMIZED = "getCategoryOptimized";
-    private static final String ACTION_GET_CATEGORIES_SORT_DETAILED = "getCategoriesSortDetail";
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
@@ -58,7 +56,6 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
-    private static final String ACTION_GET_SALE_ITEMS = "getSaleItems";
 
     @Override
 	protected boolean validateUser() {
@@ -74,7 +71,7 @@ public class BrowseController extends BaseController {
     	long startTime=System.currentTimeMillis();
     	LOG.debug("BrowseController PostData received: [" + postData + "]");
 
-        if (isExtraResponseRequested(request)) {
+        if (isCheckLoginStatusEnable(request)) {
             if (ACTION_GET_CATEGORIES.equals(action)) {
                 BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
                 populateResponseWithEnabledAdditionsForWebClient(user, res, request, null);
@@ -83,21 +80,6 @@ public class BrowseController extends BaseController {
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
                 return model;
             }
-        }
-        if (ACTION_GET_CATEGORIES_SORT_DETAILED.equals(action)) {
-            BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
-            setResponseMessage(model, res, user);
-            long endTime = System.currentTimeMillis();
-            LOG.debug(((endTime - startTime) / 1000) + " seconds");
-            return model;
-        }
-        
-        if (ACTION_GET_SALE_ITEMS.equals(action)) {
-        	BrowsePageResponse res = BrowseUtil.getSaleItems(user, request);
-            setResponseMessage(model, res, user);
-            long endTime = System.currentTimeMillis();
-            LOG.debug(((endTime - startTime) / 1000) + " seconds");
-            return model;
         }
 
         BrowseQuery requestMessage = null;
@@ -117,7 +99,7 @@ public class BrowseController extends BaseController {
         if (ACTION_NAVIGATION.equals(action)) {
             GlobalNavResult res = new GlobalNavResult();
             StoreModel store = ContentFactory.getInstance().getStore();
-            boolean isExtraResponse = isExtraResponseRequested(request);
+            boolean isExtraResponse = isCheckLoginStatusEnable(request);
             List<Department> departments = new ArrayList<Department>();
             for (DepartmentModel storeDepartment : store.getDepartments()) {
                 if (storeDepartment.getContentKey() != null && !storeDepartment.isHidden() && !storeDepartment.isHideIphone()) {
@@ -179,15 +161,8 @@ public class BrowseController extends BaseController {
                 long endTime = System.currentTimeMillis();
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
                 return model;
-            } 	else if (ACTION_GET_CATEGORIES_OPTIMIZED.equals(action)) {
-                Message res = BrowseUtil.getCategoryOptimized(requestMessage, user, request);
-                setResponseMessage(model, res, user);
-                long endTime = System.currentTimeMillis();
-                LOG.debug(((endTime - startTime) / 1000) + " seconds");
-                return model;
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
-	            final boolean isWebRequest = isExtraResponseRequested(request);
-	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user, isWebRequest);
+	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
 	        	result.setProductsFromModel(products);
 	        }else if(ACTION_GET_CATALOG_FOR_ADDRESS.equals(action)){
 	        	

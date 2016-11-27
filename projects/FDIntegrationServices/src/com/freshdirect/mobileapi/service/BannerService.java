@@ -6,12 +6,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BannerModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.content.BannerModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class BannerService {
 
@@ -27,7 +27,7 @@ public class BannerService {
 
 	private static void loadBanners() {
 		if (ALL_BANNERS.size() == 0) {
-	        Set<ContentKey> bannerKeys = CmsManager.getInstance().getContentKeysByType(ContentType.Banner);
+	        Set<ContentKey> bannerKeys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
 	        Map<String, BannerModel> banners = new HashMap<String, BannerModel>(bannerKeys.size() * 2);
 	        Map<String, BannerModel> bannersForEntities = new HashMap<String, BannerModel>(bannerKeys.size() * 2); 
 	        for (ContentKey key : bannerKeys) {

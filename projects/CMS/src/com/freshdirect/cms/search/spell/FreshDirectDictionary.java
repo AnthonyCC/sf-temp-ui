@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.StoreContentSource;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.SearchUtils;
 import com.freshdirect.cms.search.SynonymDictionary;
@@ -34,10 +33,9 @@ public class FreshDirectDictionary implements Dictionary {
 	private final boolean skipKeywords;
 	private final boolean primaryHomeKeywordsEnabled;
 	private final boolean parentRecursionEnabled;
-	private final StoreContentSource storeContentSource;
 
 	public FreshDirectDictionary(Collection<ContentNodeI> contentNodes, Map<ContentType, List<AttributeIndex>> indexes,
-			List<SynonymDictionary> synonymDictionaries, List<SynonymDictionary> spellingDictionaries, boolean skipKeywords, StoreContentSource storeContentSource) {
+			List<SynonymDictionary> synonymDictionaries, List<SynonymDictionary> spellingDictionaries, boolean skipKeywords) {
 		this.contentNodes = Collections.unmodifiableCollection(contentNodes);
 		this.indexes = indexes;
 		this.synonymDictionaries = synonymDictionaries;
@@ -45,7 +43,6 @@ public class FreshDirectDictionary implements Dictionary {
 		this.skipKeywords = skipKeywords;
 		this.primaryHomeKeywordsEnabled = FDStoreProperties.isPrimaryHomeKeywordsEnabled();
 		this.parentRecursionEnabled = FDStoreProperties.isSearchRecurseParentAttributesEnabled();
-		this.storeContentSource = storeContentSource;
 	}
 
 	@Override
@@ -110,8 +107,8 @@ public class FreshDirectDictionary implements Dictionary {
 
 		private Iterator<Term> nextValuesIterator() {
 			if (nodeIterator.hasNext()) {
-				if (nodeIndex % 10000 == 0)
-					LOGGER.debug("processed " + nodeIndex + " nodes (" + termIndex + " terms) so far");
+				if (nodeIndex % 1000 == 0)
+					LOGGER.info("processed " + nodeIndex + " nodes (" + termIndex + " terms) so far");
 				nodeIndex++;
 				return getValues(nodeIterator.next()).iterator();
 			} else {
@@ -130,7 +127,7 @@ public class FreshDirectDictionary implements Dictionary {
 			List<Term> values = new ArrayList<Term>();
 			for (AttributeIndex index : indexes) {
 				List<Term> collectedValues = SearchUtils.collectValues(node, index, !skipKeywords, primaryHomeKeywordsEnabled,
-						parentRecursionEnabled, storeContentSource);
+						parentRecursionEnabled);
 				values.addAll(collectedValues);
 			}
 			return values;

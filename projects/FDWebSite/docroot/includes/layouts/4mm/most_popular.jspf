@@ -1,0 +1,71 @@
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModelUtil"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="java.util.Collection"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_FEATURED_PRODUCTS_BND = 683;
+%>
+
+<%--
+  most_popular.jspf
+	requires:
+		DepartmentModel dept
+		FDUserI user;		
+	provides:
+		most popular carousel
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+	<%
+	{
+		CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", "4mm_popular");
+		if (cat != null) {
+	%>
+		<display:ItemGrabber id="categoryProducts" category="<%= cat %>" depth="0">
+		<display:UniqueFilter in="<%= categoryProducts %>" out="mostPopularProds" groupId="4mm-default">
+		<%
+		if ( mostPopularProds.size() > 0 ) { %>
+			<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)mostPopularProds ); %>
+			<div class="carousel-box">
+				<div class="separator"><img src="/media/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
+				<script type="text/javascript">
+					var popular_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId="4mm-popular" elementCategory="carousel"/>} 
+				</script>
+				<display:Carousel  id="popular_carousel" carouselId="popular_carousel" width="<%=W_FEATURED_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= mostPopularProds %>" trackingCode="mpop-4mm" maxItems="15" eventHandlersObj="popular_events">
+					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+						<% 
+							ProductModel pmCoup = (ProductModel)currentItem;
+							FDCustomerCoupon curCoupon = null;
+							if (pmCoup.getDefaultSku() != null && pmCoup.getDefaultSku().getProductInfo() != null) {
+								curCoupon = user.getCustomerCoupon(pmCoup.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pmCoup.getParentId(),pmCoup.getContentName());
+							}
+						%>
+						<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" 
+							useAlternateImage="true" className="productImage" height="90" enableQuickBuy="true" coupon="<%= curCoupon %>" />
+						<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+						<div class="productname">
+							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+						</div>
+						<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_4mmMostPop"></display:FDCoupon>
+					</display:GetContentNodeWebId>
+				</display:Carousel>
+			</div>
+		<% } %>
+		</display:UniqueFilter>
+		</display:ItemGrabber>
+	<%
+		}
+	}
+	%>
+

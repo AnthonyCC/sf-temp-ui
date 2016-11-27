@@ -1,10 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Help"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
     <tmpl:put name='content' direct='true'>
 	
 	<FONT CLASS="space4pix"><BR></FONT>
@@ -18,7 +14,7 @@
 		</TR>
 		<tr>
 		    <TD WIDTH="675" align="center">
-				<a href="/index.jsp" onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="return to home page" border="0"></a>
+				<a href="/index.jsp" onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="" border="0"></a>
 			<br><br><br><br><br><br><br>
 			</TD>		
 		</tr>

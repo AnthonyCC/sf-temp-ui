@@ -2,13 +2,10 @@
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import='com.freshdirect.fdstore.ecoupon.*' %>
 <%@ page import='com.freshdirect.fdstore.ecoupon.model.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.*' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
-<%@ page import='com.freshdirect.storeapi.application.*' %>
-<%@ page import='com.freshdirect.storeapi.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.cms.*' %>
+<%@ page import='com.freshdirect.cms.application.*' %>
+<%@ page import='com.freshdirect.cms.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='java.text.NumberFormat' %>
@@ -29,6 +26,7 @@
 	}
 %><% 	
 	String errorString = null;
+	int coupon_version = FDCouponManager.getMaxCouponsVersion();
 	CmsManager manager = CmsManager.getInstance();
 	Map<String, String> departments = new HashMap<String, String>();		
 	ContentKey storeKey = ContentFactory.getInstance().getStoreKey();
@@ -96,7 +94,7 @@
 	private List getProductsForAllDepartments(List<ProductModel> searchproducts,Map<String, String> departments,String searchTerm){
 		//***Iterate thru departments
 		for (String key : departments.keySet()) {
-			ContentKey deptKey = ContentKeyFactory.get(ContentType.Department, key);
+			ContentKey deptKey = ContentKey.decode("Department:"+key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);					
 			if(null !=depContentNode) {
 				Set subNodes = depContentNode.getChildKeys();
@@ -154,10 +152,7 @@
 %>
 
 <tmpl:insert template='/common/template/no_border_nonav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Coupons Savings History"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Coupons Savings History</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>Coupons Savings History</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 <link rel="stylesheet" href="/ccassets/css/promo.css" type="text/css">
@@ -310,7 +305,9 @@ color: #000000;
 		Calendar cal = Calendar.getInstance();  
 		cal.add(Calendar.DAY_OF_MONTH, -30);
 		List<FDCouponInfo> cList = new ArrayList<FDCouponInfo>();//FDCouponManager.getActiveCoupons(cal.getTime());
-		
+		if(!"done".equals(request.getParameter("submission"))) {
+			cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
+		}
 		//cList = FDCouponFactory.getInstance().getCoupons();
 		String selectedDepartment = null;
 		String selectedCategory = null;
@@ -324,7 +321,7 @@ color: #000000;
 				searchTerm = request.getParameter("search_term");
 				//search products,
 				if(null != searchTerm && !"".equals(searchTerm.trim())){
-					SearchResults results = StoreServiceLocator.contentSearch().searchProducts(searchTerm);
+					SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
 	                for ( FilteringSortingItem  node : results.getProducts() ) {
 	                    ContentNodeModel n1 = node.getNode();
 	                    if ( n1 instanceof ProductModel) {
@@ -349,6 +346,8 @@ color: #000000;
 	                List<ProductModel> searchproducts = new ArrayList<ProductModel>();
 	                cList.addAll(getCoupons(getProductsForAllDepartments(searchproducts,departments,searchTerm)));
 				}
+				//search coupon name, search coupon ID, search coupon value, 
+				cList.addAll(FDCouponManager.getCouponsForCRMSearch(searchTerm));
 				//search brands,
 				
 				
@@ -359,9 +358,12 @@ color: #000000;
 				selectedCategory = request.getParameter("category");
 				selectedBrand = request.getParameter("brand");	
 				
-				
+				if("-1".equals(selectedDepartment)) {
+					cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
+				}
+				else {
 					//get all products for selected brand
-					ContentKey departmentKey = ContentKeyFactory.get("Department:"+selectedDepartment);
+					ContentKey departmentKey = ContentKey.decode("Department:"+selectedDepartment);
 					ContentNodeI deptContentNode = manager.getContentNode(departmentKey);
 					cList = new ArrayList<FDCouponInfo>();
 					if(null !=deptContentNode) {
@@ -373,7 +375,7 @@ color: #000000;
 							ContentNodeI subContentNode =null;
 							boolean proceed = false;
 							if(breakloop){
-								ContentKey categoryKey = ContentKeyFactory.get("Category:"+selectedCategory);
+								ContentKey categoryKey = ContentKey.decode("Category:"+selectedCategory);
 								subContentNode = manager.getContentNode(categoryKey);
 								proceed = true;
 								
@@ -437,8 +439,10 @@ color: #000000;
 					
 						//finally get the coupons
 						cList.addAll(getCoupons(products));
-					
 					}
+					}
+			}else{
+				cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
 			}
 		}
 		
@@ -447,7 +451,7 @@ color: #000000;
 			StringBuilder sb = new StringBuilder();
 			// String key = (String) enumer.nextElement();
 			String value = (String) departments.get(key);
-			ContentKey deptKey = ContentKeyFactory.get("Department:"+key);
+			ContentKey deptKey = ContentKey.decode("Department:"+key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);
 			if(null !=depContentNode) {
 				sb.append("{");
@@ -820,7 +824,7 @@ color: #000000;
 				p.name = coupon.getShortDescription();
 				
 				if("FILTER".equals(request.getParameter("so_filter_submit")) && (request.getParameter("brand") != null && !"-1".equals(request.getParameter("brand")))) {
-					ContentKey brandKey = ContentKeyFactory.get(ContentType.Brand, request.getParameter("brand"));
+					ContentKey brandKey = ContentKey.decode("Brand:"+request.getParameter("brand"));
 					ContentNodeI brandContentNode = manager.getContentNode(brandKey);
 					BrandModel _bmodel = (BrandModel) ContentFactory.getInstance().getContentNodeByKey(brandKey);
 				

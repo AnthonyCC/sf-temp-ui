@@ -15,7 +15,6 @@
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.webapp.util.StandingOrderHelper' %>
-<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
 <%
@@ -26,10 +25,6 @@ String timeSlotId = null;
 ErpAddressModel address;
 boolean genericTimeSlot=false;
 boolean forceOrder = user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable() && Boolean.parseBoolean(request.getParameter("forceorder"));
-
-if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().isAddOnOrderEnabled()) {
-	forceOrder=true;
-}
 if(StandingOrderHelper.isSO3StandingOrder(user)){
 	genericTimeSlot=true;
 	address = currentStandingOrder.getDeliveryAddress();
@@ -84,19 +79,12 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		pageContext.setAttribute("advancedTimeslotMediaEnabled", advancedTimeslotMediaEnabled, PageContext.REQUEST_SCOPE);
 	%>
 
-<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-
-<%
-
-  // [APPDEV-2149] Generic timeslots have nothing to do with delivery pass
-  if(!abstractTimeslots && user.getSelectedServiceType() == EnumServiceType.CORPORATE) { %>
-
-	<%@ include file="/includes/delivery/i_delivery_pass_not_applied.jspf"%>
-
-<%}%>
+<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
+		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
+<% } %>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-<table role="presentation" CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
+<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
 	
 	<% String gridMediaIncludePath = ""; %>
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
@@ -109,7 +97,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		<tr>
 			<td colspan="2">
 	<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
-			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 	<% } %>
 	
 	<%	
@@ -165,7 +153,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 			%>
 			<fd:javascript src="/assets/javascript/fd/modules/common/utils.js"/>
 			<fd:javascript src="/assets/javascript/fd/modules/standingorder/nextdlvchooser.js"/>
-			<div><img width="18" alt="" border="0" height="18" src="/media_stat/images/timeslots/star_large.gif" style="margin-right:10px">
+			<div><img width="18" border="0" height="18" src="/media_stat/images/timeslots/star_large.gif" style="margin-right:10px">
 			<span class="title18"><%if (currentStandingOrder.getFrequency() != 1) {%>CHOOSE <%}%>START DATE</span></FONT>
 			<hr style="margin-bottom:10px">
 			<div class="text12bold" style="margin-bottom: 2em; width: 970px">
@@ -175,7 +163,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 	<script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(function() {
 		var f = new FreshDirect.modules.standingorder.NextDeliveryDateChooserObserver(<%= sodlv_selectable %>, <%= sodlv_candidates %>, 'soDeliveryWeekOffset');
-		var radios = YAHOO.util.Selector.query('input[type=button]', 'step2Form');
+		var radios = YAHOO.util.Selector.query('input[type=radio]', 'step2Form');
 		var i;
 		for (i=0; i<radios.length; i++) {
 			YAHOO.util.Event.on(radios[i], 'click', function(e) {
@@ -195,10 +183,10 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 	<tr><td>
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<% if(FDStoreProperties.isNewFDTimeslotGridEnabled()) { %>
-			<table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" id="legendCheckout">
+			<table cellpadding="0" cellspacing="0" width="100%" border="0" id="legendCheckout">
 				<tr>
 					<td>
-						<table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+						<table cellpadding="0" cellspacing="0" width="100%">
 							<tr>
 								<% if(soFirstNextText != null){ %>
 									<td valign="middle" align="left">
@@ -213,42 +201,42 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 									</td>
 								<% } %>
 								<td valign="middle" align="right">
-							 	<table role="presentation">
+							 	<table>
 									<tr>
 										<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 											<td class="timeslots_legend_ecofriendly">
 												<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" alt="Eco-Friendly" WIDTH="16" HEIGHT="16" border="0">
 											</td>
-											<td class="timeslots_legend_ecofriendly"><a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
+											<td class="timeslots_legend_ecofriendly"><a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
 											<td>&nbsp;</td>
 										<%}%>
 										<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
 											<td class="timeslots_legend_neighbourhood">
-												<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" alt="neighbourhood favourite" WIDTH="15" HEIGHT="20" border="0">
+												<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
 											</td>
 											<td class="timeslots_legend_neighbourhood">
-												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
+												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
 											</td>
 											<td>&nbsp;</td>
 										<%}%>
 										<%if(deliveryModel.getAlcoholRestrictedCount() > 0){%>
 											<td class="timeslots_legend_no_alcohol">
-												<img src="/media_stat/images/timeslots/no_alcohol.gif" alt="alcohol restricted" WIDTH="16" HEIGHT="16" border="0">
+												<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 										</td>
 											<td class="timeslots_legend_no_alcohol"> 
-												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
+												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 											</td>
 											<td>&nbsp;</td>
 										<%}%>
 										<%if(deliveryModel.getEarlyAMCount() > 0) { %>
 												<td class="timeslots_legend_early_delivery">
-													<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" alt="early unattended" WIDTH="20" HEIGHT="16" border="0">
+													<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
 												</td>
 												<td>
 												&nbsp;
 												</td>
 												<td Valign="top" class="timeslots_legend_early_delivery">
-												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</a></td>
+												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
 												<td>&nbsp;</td>
 										<% } %>
 									</tr>
@@ -259,7 +247,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 					</td>
 				</tr>
 			</table>
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/><br/>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><br/>
 		<% } %>
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 	</td></tr>

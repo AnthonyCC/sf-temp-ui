@@ -21,6 +21,23 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+  
+  
+  
+    <session>
+      <ejb-name>BINInfoManager</ejb-name>
+      <home>com.freshdirect.payment.ejb.BINInfoManagerHome</home>
+      <remote>com.freshdirect.payment.ejb.BINInfoManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.payment.ejb.BINInfoManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
     <session>
       <ejb-name>FDFactory</ejb-name>
       <home>com.freshdirect.fdstore.ejb.FDFactoryHome</home>
@@ -57,6 +74,26 @@ version="3.0">
         <ejb-ref-type>Session</ejb-ref-type>
         <home>com.freshdirect.erp.ejb.ErpInfoHome</home>
         <remote>com.freshdirect.erp.ejb.ErpInfoSB</remote>
+      </ejb-ref>
+      <ejb-ref>
+        <ejb-ref-name>ejb/ErpNutrition</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>
+        com.freshdirect.content.nutrition.ejb.ErpNutritionHome</home>
+        <remote>
+        com.freshdirect.content.nutrition.ejb.ErpNutritionSB</remote>
+      </ejb-ref>
+      <ejb-ref>
+        <ejb-ref-name>ejb/GrpPriceInfo</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.freshdirect.erp.ejb.ErpGrpInfoHome</home>
+        <remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
+      </ejb-ref>
+       <ejb-ref>
+        <ejb-ref-name>ejb/ErpProductFamily</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.freshdirect.erp.ejb.ErpProductFamilyHome</home>
+        <remote>com.freshdirect.erp.ejb.ErpProductFamilySB</remote>
       </ejb-ref>
     </session>
     <session>
@@ -174,12 +211,6 @@ version="3.0">
         <remote>com.freshdirect.customer.ejb.ErpCustomerEB</remote>
       </ejb-ref>
       <ejb-ref>
-        <ejb-ref-name>ejb/ErpCustomerInfo</ejb-ref-name>
-        <ejb-ref-type>Entity</ejb-ref-type>
-        <home>com.freshdirect.customer.ejb.ErpCustomerInfoHome</home>
-        <remote>com.freshdirect.customer.ejb.ErpCustomerInfoEB</remote>
-      </ejb-ref>
-      <ejb-ref>
         <ejb-ref-name>ejb/CrmManager</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
         <home>com.freshdirect.crm.ejb.CrmManagerHome</home>
@@ -219,6 +250,27 @@ version="3.0">
         <ejb-ref-type>Entity</ejb-ref-type>
         <home>com.freshdirect.customer.ejb.ErpCustomerHome</home>
         <remote>com.freshdirect.customer.ejb.ErpCustomerEB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>ErpInventoryManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpInventoryManagerHome</home>
+      <remote>
+      com.freshdirect.erp.ejb.ErpInventoryManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpInventoryManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
+        <ejb-ref-type>Entity</ejb-ref-type>
+        <home>com.freshdirect.erp.ejb.ErpInventoryHome</home>
+        <remote>com.freshdirect.erp.ejb.ErpInventoryEB</remote>
       </ejb-ref>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -284,6 +336,57 @@ version="3.0">
       </resource-env-ref>
     </session>
     <session>
+      <ejb-name>PaymentGateway</ejb-name>
+      <home>com.freshdirect.payment.ejb.PaymentGatewayHome</home>
+      <remote>com.freshdirect.payment.ejb.PaymentGatewaySB</remote>
+      <ejb-class>
+      com.freshdirect.payment.ejb.PaymentGatewaySessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <env-entry>
+        <env-entry-name>Timeout</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>30000</env-entry-value>
+      </env-entry>
+      <ejb-ref>
+        <ejb-ref-name>ejb/Payment</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.freshdirect.payment.ejb.PaymentHome</home>
+        <remote>com.freshdirect.payment.ejb.PaymentSB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jms/QueueFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+      <resource-env-ref>
+        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+        <resource-env-ref-type>
+        javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </session>
+    <session>
+      <ejb-name>GatewayActivityLog</ejb-name>
+      <home>
+      com.freshdirect.payment.ejb.GatewayActivityLogHome</home>
+      <remote>
+      com.freshdirect.payment.ejb.GatewayActivityLogSB</remote>
+      <ejb-class>
+      com.freshdirect.payment.ejb.GatewayActivityLogSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jms/QueueFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+      <resource-env-ref>
+        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+        <resource-env-ref-type>
+        javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </session>
+    <session>
       <ejb-name>ErpInfo</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpInfoHome</home>
       <remote>com.freshdirect.erp.ejb.ErpInfoSB</remote>
@@ -315,6 +418,36 @@ version="3.0">
       <home>com.freshdirect.content.attributes.ejb.AttributeFacadeHome</home>
       <remote>com.freshdirect.content.attributes.ejb.AttributeFacadeSB</remote>
       <ejb-class>com.freshdirect.content.attributes.ejb.AttributeFacadeSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>ErpNutritionSessionBean</ejb-name>
+      <home>
+      com.freshdirect.content.nutrition.ejb.ErpNutritionHome</home>
+      <remote>
+      com.freshdirect.content.nutrition.ejb.ErpNutritionSB</remote>
+      <ejb-class>
+      com.freshdirect.content.nutrition.ejb.ErpNutritionSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>BatchManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.BatchManagerHome</home>
+      <remote>com.freshdirect.erp.ejb.BatchManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.BatchManagerSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -372,6 +505,64 @@ version="3.0">
       </resource-ref>
     </session>
     <session>
+      <ejb-name>ZoneInfoManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpZoneInfoHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpZoneInfoSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpZoneInfoSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>GrpInfoManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpGrpInfoHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpGrpInfoSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>ErpProductFamily</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpProductFamilyHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpProductFamilySB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpProductFamilySessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>ProductPromotionInfoManager</ejb-name>
+      <home>
+      com.freshdirect.erp.ejb.ErpProductPromotionInfoHome</home>
+      <remote>
+      com.freshdirect.erp.ejb.ErpProductPromotionInfoSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpProductPromotionInfoSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
       <ejb-name>CouponManager</ejb-name>
       <home>
       com.freshdirect.fdstore.ecoupon.FDCouponManagerHome</home>
@@ -387,6 +578,50 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+    <session>
+      <ejb-name>CouponActivityLog</ejb-name>
+      <home>
+      com.freshdirect.fdstore.ecoupon.FDCouponActivityLogHome</home>
+      <remote>
+      com.freshdirect.fdstore.ecoupon.FDCouponActivityLogSB</remote>
+      <ejb-class>
+      com.freshdirect.fdstore.ecoupon.FDCouponActivityLogSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+      <resource-ref>
+        <res-ref-name>jms/QueueFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+      <resource-env-ref>
+        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+        <resource-env-ref-type>
+        javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </session>
+    
+     <session>
+      <ejb-name>BrandProductsAdManager</ejb-name>
+      <home>
+      com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerHome</home>
+      <remote>
+      com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerSessionBean
+      </ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session> 
     
     <session>
       <ejb-name>Reconciliation</ejb-name>
@@ -415,6 +650,26 @@ version="3.0">
         com.freshdirect.customer.ejb.ErpCustomerManagerHome</home>
         <remote>
         com.freshdirect.customer.ejb.ErpCustomerManagerSB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>PayPalReconciliation</ejb-name>
+      <home>com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationHome</home>
+      <remote>com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB</remote>
+      <ejb-class>
+      com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/Reconciliation</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+      	<home>com.freshdirect.payment.ejb.ReconciliationHome</home>
+      	<remote>com.freshdirect.payment.ejb.ReconciliationSB</remote>
       </ejb-ref>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -528,6 +783,146 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+    <session>
+      <ejb-name>EventLogger</ejb-name>
+      <home>com.freshdirect.event.ejb.EventLoggerHome</home>
+      <remote>com.freshdirect.event.ejb.EventLoggerSB</remote>
+      <ejb-class>
+      com.freshdirect.event.ejb.EventLoggerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>RecommendationEventLogger</ejb-name>
+      <home>
+      com.freshdirect.event.ejb.RecommendationEventLoggerHome</home>
+      <remote>
+      com.freshdirect.event.ejb.RecommendationEventLoggerSB</remote>
+      <ejb-class>
+      com.freshdirect.event.ejb.RecommendationEventLoggerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>COOLInfoManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpCOOLManagerHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpCOOLManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpCOOLManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>EmployeeInfoManager</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpEmployeeManagerHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpEmployeeManagerSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpEmployeeManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    <session>
+      <ejb-name>ErpRoutingGateway</ejb-name>
+      <home>
+      com.freshdirect.routing.ejb.ErpRoutingGatewayHome</home>
+      <remote>
+      com.freshdirect.routing.ejb.ErpRoutingGatewaySB</remote>
+      <ejb-class>
+      com.freshdirect.routing.ejb.ErpRoutingGatewaySessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jms/QueueFactory</res-ref-name>
+        <res-type>javax.jms.QueueConnectionFactory</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+      <resource-env-ref>
+        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+        <resource-env-ref-type>
+        javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+    </session>
+    <session>
+      <ejb-name>TicketService</ejb-name>
+      <home>
+      com.freshdirect.security.ticket.TicketServiceHome</home>
+      <remote>
+      com.freshdirect.security.ticket.TicketServiceSB</remote>
+      <ejb-class>
+      com.freshdirect.security.ticket.TicketServiceSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    
+    <!-- EWallet Audit Log Changes Start -->
+	<session>
+		<ejb-name>EwalletActivityLog</ejb-name>
+	    <home>
+	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogHome</home>
+	  	<remote>
+	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSB</remote>
+	  	<ejb-class>
+	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSessionBean</ejb-class>
+	  	<session-type>Stateless</session-type>
+	  	<transaction-type>Container</transaction-type>
+	  	<resource-ref>
+	    	<res-ref-name>jms/QueueFactory</res-ref-name>
+	    	<res-type>javax.jms.QueueConnectionFactory</res-type>
+	    	<res-auth>Container</res-auth>
+	  	</resource-ref>
+	  	<resource-env-ref>
+	    	<resource-env-ref-name>jms/Queue</resource-env-ref-name>
+	    	<resource-env-ref-type>
+	    	javax.jms.Queue</resource-env-ref-type>
+	  	</resource-env-ref>
+	</session>
+	
+	  <session>
+      <ejb-name>FDXOrderPickEligibleCron</ejb-name>
+      <home>
+      com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome</home>
+      <remote>
+      com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.FDXOrderPickEligibleSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+     
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    
+	
+	<!-- EWallet Audit Log Changes Session Tag End -->
+    
     <entity>
       <ejb-name>ErpProduct</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpProductHome</home>
@@ -565,6 +960,22 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </entity>    
+    <entity>
+      <ejb-name>ErpInventory</ejb-name>
+      <home>com.freshdirect.erp.ejb.ErpInventoryHome</home>
+      <remote>com.freshdirect.erp.ejb.ErpInventoryEB</remote>
+      <ejb-class>
+      com.freshdirect.erp.ejb.ErpInventoryEntityBean</ejb-class>
+      <persistence-type>Bean</persistence-type>
+      <prim-key-class>
+      com.freshdirect.framework.core.PrimaryKey</prim-key-class>
+      <reentrant>false</reentrant>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </entity>
     <entity>
       <ejb-name>ErpMaterial</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpMaterialHome</home>
@@ -637,22 +1048,6 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </entity>
-     <entity>
-      <ejb-name>ErpCustomerInfo</ejb-name>
-      <home>com.freshdirect.customer.ejb.ErpCustomerInfoHome</home>
-      <remote>com.freshdirect.customer.ejb.ErpCustomerInfoEB</remote>
-      <ejb-class>
-      com.freshdirect.customer.ejb.ErpCustomerInfoEntityBean</ejb-class>
-      <persistence-type>Bean</persistence-type>
-      <prim-key-class>
-      com.freshdirect.framework.core.PrimaryKey</prim-key-class>
-      <reentrant>false</reentrant>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </entity>
     <entity>
       <ejb-name>ErpSale</ejb-name>
       <home>com.freshdirect.customer.ejb.ErpSaleHome</home>
@@ -701,6 +1096,35 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </entity>
+    
+    <!-- EWallet Audit Log Implementation -->
+    <message-driven>
+      <ejb-name>EwalletActivityLogListener</ejb-name>
+      <ejb-class>
+      com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogListener</ejb-class>
+      <transaction-type>Container</transaction-type>
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>
+          messageSelector</activation-config-property-name>
+          <activation-config-property-value>
+          (MessageType='LOG_EWALLETAUDIT_ACTIVITY')</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>
+          destinationType</activation-config-property-name>
+          <activation-config-property-value>
+          javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </message-driven>
+    
+    <!-- EWallet Audit Log Implementation END -->
     
     <message-driven>
       <ejb-name>SapCommandListener</ejb-name>
@@ -860,13 +1284,37 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </message-driven>
+    <message-driven>
+        <ejb-name>CouponActivityLogListener</ejb-name>
+        <ejb-class>com.freshdirect.analytics.CouponActivityLogListener</ejb-class>
+        <transaction-type>Container</transaction-type>
+        
+      <activation-config>
+        <activation-config-property>
+          <activation-config-property-name>
+          messageSelector</activation-config-property-name>
+          <activation-config-property-value>
+          (MessageType='LOG_COUPON_ACTIVITY')</activation-config-property-value>
+        </activation-config-property>
+        <activation-config-property>
+          <activation-config-property-name>
+          destinationType</activation-config-property-name>
+          <activation-config-property-value>
+          javax.jms.Queue</activation-config-property-value>
+        </activation-config-property>
+      </activation-config>
+<!--         <message-selector>(MessageType='LOG_COUPON_ACTIVITY')</message-selector> -->
+<!--         <message-driven-destination> -->
+<!--             <destination-type>javax.jms.Queue</destination-type> -->
+<!--         </message-driven-destination> -->
+         <resource-ref>
+            <res-ref-name>jdbc/dbpool</res-ref-name>
+            <res-type>javax.sql.DataSource</res-type>
+            <res-auth>Container</res-auth>
+        </resource-ref>	   
+    </message-driven>
   </enterprise-beans>
   <assembly-descriptor>
-		<!-- Default interceptor that will apply to all methods for all beans -->
-		<interceptor-binding>
-		  <ejb-name>*</ejb-name>
-		  <interceptor-class>com.freshdirect.ejb.BeanInterceptor</interceptor-class>
-		</interceptor-binding>
     <!--
         ****************************
         *** Message Driven Beans ***
@@ -907,6 +1355,11 @@ version="3.0">
         -->
     <container-transaction>
       <method>
+        <ejb-name>BatchManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
         <ejb-name>ComplaintManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
@@ -923,6 +1376,36 @@ version="3.0">
       </method>
       <method>
         <ejb-name>DlvPassManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>COOLInfoManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>EmployeeInfoManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>ZoneInfoManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>GrpInfoManager</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+            <method>
+        <ejb-name>ErpProductFamily</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>ProductPromotionInfoManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
@@ -949,12 +1432,16 @@ version="3.0">
         *** Factory and Info Session Beans ***
         **************************************
         -->
-   
     <container-transaction>
       <method>
         <ejb-name>AttributeFacade</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>storeAttributes</method-name>
+      </method>
+      <method>
+        <ejb-name>ErpNutritionSessionBean</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
       </method>
       <trans-attribute>Required</trans-attribute>
     </container-transaction>
@@ -974,6 +1461,11 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>getAttributes</method-name>
       </method>
+      <method>
+        <ejb-name>ErpNutritionSessionBean</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>getNutrition</method-name>
+      </method>
       <trans-attribute>Supports</trans-attribute>
     </container-transaction>
     <!--
@@ -989,16 +1481,6 @@ version="3.0">
       </method>
       <method>
         <ejb-name>ErpCustomer</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpCustomerInfo</ejb-name>
-        <method-intf>Home</method-intf>
-        <method-name>*</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpCustomerInfo</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
@@ -1082,10 +1564,48 @@ version="3.0">
     </container-transaction>
     <!--
         *****************************
+        *** Inventory Entity Bean ***
+        *****************************
+        -->
+    <container-transaction>
+      <method>
+        <ejb-name>ErpInventory</ejb-name>
+        <method-name>*</method-name>
+      </method>
+      <trans-attribute>Supports</trans-attribute>
+    </container-transaction>
+    <container-transaction>
+      <method>
+        <ejb-name>ErpInventory</ejb-name>
+        <method-intf>Home</method-intf>
+        <method-name>create</method-name>
+      </method>
+      <method>
+        <ejb-name>ErpInventory</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>remove</method-name>
+      </method>
+      <method>
+        <ejb-name>ErpInventory</ejb-name>
+        <method-name>setFromModel</method-name>
+      </method>
+      <method>
+        <ejb-name>ErpInventory</ejb-name>
+        <method-name>setEntries</method-name>
+      </method>
+      <trans-attribute>Required</trans-attribute>
+    </container-transaction>
+    <!--
+        *****************************
         *** Gateway Session Beans ***
         *****************************
         -->
     <container-transaction>
+      <method>
+        <ejb-name>PaymentGateway</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
       <method>
         <ejb-name>SapGateway</ejb-name>
         <method-intf>Remote</method-intf>
@@ -1132,6 +1652,11 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
+            <method>
+      <ejb-name>PayPalReconciliation</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
       <method>
         <ejb-name>ErpMonitor</ejb-name>
         <method-intf>Remote</method-intf>
@@ -1139,6 +1664,11 @@ version="3.0">
       </method>
       <method>
         <ejb-name>ActivityLog</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>EventLogger</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
@@ -1150,6 +1680,11 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>logActivityNewTX</method-name>
       </method>
+       <method>
+                <ejb-name>GatewayActivityLog</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>logActivity</method-name>
+       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
     <!--
@@ -1175,6 +1710,11 @@ version="3.0">
       </method>
       <method>
         <ejb-name>CrmCase</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>ErpRoutingGateway</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
@@ -1226,6 +1766,11 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>logActivityNewTX</method-name>
       </method>
+       <method>
+                <ejb-name>EwalletActivityLog</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>logActivity</method-name>
+       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
     

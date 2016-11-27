@@ -4,7 +4,6 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%//***********************************  Error Handling ******************************************%>
 <%!
 
@@ -122,7 +121,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="693">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" VSPACE="3"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
 	</td>
 	</tr>
 </table>
@@ -147,7 +146,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="120"></td>
 	<td colspan="3" class="text11">
-		<IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR/><FONT class="space4pix"><BR/></FONT>
+		<IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR/><FONT class="space4pix"><BR/></FONT>
 	</td>
 	</tr>
 	<tr valign="middle">
@@ -168,7 +167,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><BR/></FONT></td>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><BR/></FONT></td>
 	</tr>
 	<tr valign="top">
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td>
@@ -185,7 +184,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		</td>
 	</tr>
 	<tr valign="top">
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR/></FONT>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR/></FONT>
 	</td>
 	</tr>
 </table>
@@ -201,13 +200,12 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<tr valign="top">
 	<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif"  border="0" alt="TERMS OF SERVICE">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-	<IMG src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" VSPACE="3"><BR></td>
+	<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR></td>
 	</tr>
 </table>
 <br/>
 <textarea cols="60" rows="7" readonly xname="tos">
-	<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/i_user_agreement.txt"></fd:IncludeMedia>
-	
+	<%@ include file="/includes/registration/i_user_agreement.txt" %>
 </textarea><br/><BR/>
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
@@ -228,7 +226,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <BR/>
 
 <table cellpadding="0" cellspacing="0" border="0" width="675">
-	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0"></td></tr>
+	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
 		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0"></td></tr>
-	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0"></td></tr>
+	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
 </table><BR>

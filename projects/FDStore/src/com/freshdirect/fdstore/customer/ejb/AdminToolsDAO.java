@@ -9,7 +9,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -35,54 +34,38 @@ public class AdminToolsDAO {
 														   + "group by fdc.fdcustid) ";
 
 	public static int fixBrokenAccounts( Connection conn ) throws SQLException {
-		PreparedStatement ps = null;
-		try {
-			ps = conn.prepareStatement(FIX_BROKEN_ACCOUNT_QUERY);
-			int updateCount = ps.executeUpdate();
-			return updateCount;
-		} finally {
-			DaoUtil.close(ps);
-		}
+		PreparedStatement ps = conn.prepareStatement( FIX_BROKEN_ACCOUNT_QUERY );
+		int updateCount = ps.executeUpdate();
+		return updateCount;
 	}
-
+	
 	private static final String CREATE_ACITIVITY_LOG = "INSERT INTO CUST.ACTIVITY_LOG(TIMESTAMP, CUSTOMER_ID, ACTIVITY_ID,SOURCE,INITIATOR,NOTE)VALUES(sysdate,?,?,?,?,? )";
 
 	public static int logCancelledReservations( Connection conn, List<FDCustomerReservationInfo> resvs, String initiator, String notes ) throws SQLException {
-        PreparedStatement ps = null; 
+		PreparedStatement ps = conn.prepareStatement( CREATE_ACITIVITY_LOG );
 
-        try {
-			ps = conn.prepareStatement( CREATE_ACITIVITY_LOG );
-	
-			for ( FDCustomerReservationInfo info : resvs ) {
-				ps.setString( 1, info.getIdentity().getErpCustomerPK() );
-				ps.setString( 2, EnumAccountActivityType.CANCEL_PRE_RESERVATION.getCode() );
-				ps.setString( 3, "CSR" );
-				ps.setString( 4, initiator );
-				ps.setString( 5, getReservationActivityNotes( info ) + " " + notes );
-				ps.addBatch();
-			}
-			ps.executeBatch();
-			return 0;
-        } finally {
-            DaoUtil.closePreserveException(null,ps);
-        }
+		for ( FDCustomerReservationInfo info : resvs ) {
+			ps.setString( 1, info.getIdentity().getErpCustomerPK() );
+			ps.setString( 2, EnumAccountActivityType.CANCEL_PRE_RESERVATION.getCode() );
+			ps.setString( 3, "CSR" );
+			ps.setString( 4, initiator );
+			ps.setString( 5, getReservationActivityNotes( info ) + " " + notes );
+			ps.addBatch();
+		}
+		ps.executeBatch();
+		return 0;
 	}
 	
 	private static final String FIX_SETTLEMENT_BATCH_QUERY = "update paylinx.cc_settlement set batch_status ='00', batch_response_msg='BATCH COMPLETE' where batch_id =?";
 
 	public static int fixSettlemnentBatch( Connection conn, String batch_id ) throws SQLException {
-		PreparedStatement ps = null;
-		try {
-			ps = conn.prepareStatement(FIX_SETTLEMENT_BATCH_QUERY);
-			ps.setString(1, batch_id);
-			int updateCount = ps.executeUpdate();
-			return updateCount;
-		} finally {
-			DaoUtil.close(ps);
-		}
+		PreparedStatement ps = conn.prepareStatement( FIX_SETTLEMENT_BATCH_QUERY );
+		ps.setString( 1, batch_id );
+		int updateCount = ps.executeUpdate();
+		return updateCount;
 	}
-
-	private static String getReservationActivityNotes(FDCustomerReservationInfo info) {
+	
+	private static String getReservationActivityNotes( FDCustomerReservationInfo info ) {
 		StringBuffer strBuf = new StringBuffer();
 		if ( info != null ) {
 			strBuf.append( DateUtil.formatDay( info.getBaseDate() ) );

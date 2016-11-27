@@ -32,8 +32,6 @@ import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
-import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
@@ -122,7 +120,7 @@ public class PricingFactory {
 			ErpMaterialPriceModel erpMaterialPrice = (ErpMaterialPriceModel)it.next();
 			
 			//if(sapZoneId.length() == 0 || sapZoneId.equals(erpMaterialPrice.getSapZoneId())){
-			currZoneInfo=new ZoneInfo(erpMaterialPrice.getSapZoneId(),"1000".equals(erpMaterialPrice.getSalesOrg())?FDStoreProperties.getDefaultFdSalesOrg():erpMaterialPrice.getSalesOrg(),"1000".equals(erpMaterialPrice.getDistChannel())?FDStoreProperties.getDefaultFdDistributionChannel():erpMaterialPrice.getDistChannel());
+			currZoneInfo=new ZoneInfo(erpMaterialPrice.getSapZoneId(),"1000".equals(erpMaterialPrice.getSalesOrg())?"0001":erpMaterialPrice.getSalesOrg(),"1000".equals(erpMaterialPrice.getDistChannel())?"01":erpMaterialPrice.getDistChannel());
 			if((zoneInfo==null)||zoneInfo.equals(currZoneInfo)){
 					subList.add(erpMaterialPrice);
 			}
@@ -156,15 +154,9 @@ public class PricingFactory {
 		if (DEBUG) LOGGER.debug("Building sales unit ratios");
 		SalesUnitRatio[] salesUnitRatios = buildSalesUnitRatios( material.getSalesUnits() );
 
-		return new Pricing(zonePriceList, cvPrices, salesUnitRatios,isWineOrSpirit(material.getAlcoholicContent()));
+		return new Pricing(zonePriceList, cvPrices, salesUnitRatios,EnumAlcoholicContent.NONE.equals(material.getAlcoholicContent())?false:true);
 	}
 
-	
-	public static boolean isWineOrSpirit(EnumAlcoholicContent alcoholType) {
-		
-		return EnumAlcoholicContent.isWineOrSpirit(alcoholType);
-		
-	}
 	private static MaterialPrice buildPromoPrice(ErpMaterialPriceModel erpPrice) {
 
 		// get scale unit from first erp price

@@ -25,7 +25,7 @@
     }
 %>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>Givex Number Encrypt/Decrypt Page</title>
 </head>

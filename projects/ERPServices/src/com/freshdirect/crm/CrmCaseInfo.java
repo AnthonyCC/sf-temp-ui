@@ -24,12 +24,7 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7559951530901887161L;
-
-	private final PropertyChangeSupport change = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport change = new PropertyChangeSupport(this);
     
     /** Holds value of property assignedAgentPK. */
     private PrimaryKey assignedAgentPK;
@@ -97,7 +92,7 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     private String customerTone;
 
     // holds assigned carton numbers (missing, misloaded, etc)
-    private List<String> cartonNumbers;
+    private List cartonNumbers;
     
     private boolean isPrivateCase;
     
@@ -442,7 +437,7 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	
 
 	// List<String>
-	public List<String> getCartonNumbers() {
+	public List getCartonNumbers() {
 		return this.cartonNumbers == null ? Collections.EMPTY_LIST : this.cartonNumbers;
 	}
 
@@ -457,50 +452,4 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	public void setPrivateCase(boolean isPrivateCase) {
 		this.isPrivateCase = isPrivateCase;
 	}
-
-	//  Used for Storefront 2.0 Implementation
-	/**
-	 * @return the originCode
-	 */
-	public String getOriginCode() {
-		return originCode;
-	}
-
-	/**
-	 * @return the priorityCode
-	 */
-	public String getPriorityCode() {
-		return priorityCode;
-	}
-
-	/**
-	 * @return the stateCode
-	 */
-	public String getStateCode() {
-		return stateCode;
-	}
-
-	/**
-	 * @return the subjectCode
-	 */
-	public String getSubjectCode() {
-		return subjectCode;
-	}
-	//Implemented for Storefront 2.0 . Do not use for Storefront 1.0
-	 public void setOrigin(CrmCaseOrigin oldOrigin,CrmCaseOrigin newOrigin) {
-	        this.originCode = newOrigin == null ? null : newOrigin.getCode();
-	        this.firePropertyChange("origin", oldOrigin, newOrigin);
-	   }
-	 public void setSubject(CrmCaseSubject oldSubject , CrmCaseSubject newSubject) {
-	        this.subjectCode = newSubject == null ? null : newSubject.getCode();
-	        this.firePropertyChange("subject", oldSubject, newSubject);
-	    }
-	 public void setPriority(CrmCasePriority oldPriority , CrmCasePriority newPriority) {
-	        this.priorityCode = newPriority == null ? null : newPriority.getCode();
-	        this.firePropertyChange("priority", oldPriority, newPriority);
-	   }
-	 public void setState(CrmCaseState oldState,CrmCaseState newState) {
-	        this.stateCode = newState == null ? null : newState.getCode();
-	        this.firePropertyChange("state", oldState, newState);
-	    }
 }

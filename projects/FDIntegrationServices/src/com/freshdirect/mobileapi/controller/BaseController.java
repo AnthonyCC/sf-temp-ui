@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -18,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
@@ -31,26 +30,36 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.FDCouponProperties;
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSComponentType;
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
+import com.freshdirect.fdstore.content.CMSImageModel;
+import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSSectionModel;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ImageBanner;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -60,8 +69,11 @@ import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
+import com.freshdirect.mobileapi.controller.data.CMSSectionProductModel;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
@@ -83,29 +95,20 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpContextWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpSessionWrapper;
-import com.freshdirect.mobileapi.service.CMSSectionProductCollectorService;
+import com.freshdirect.mobileapi.service.Oas247Service;
+import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
-import com.freshdirect.storeapi.content.CMSComponentType;
-import com.freshdirect.storeapi.content.CMSImageBannerModel;
-import com.freshdirect.storeapi.content.CMSImageModel;
-import com.freshdirect.storeapi.content.CMSPageRequest;
-import com.freshdirect.storeapi.content.CMSWebPageModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ImageBanner;
-import com.freshdirect.storeapi.content.StoreModel;
 import com.freshdirect.wcms.CMSContentFactory;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
 
 import freemarker.template.Configuration;
@@ -122,17 +125,7 @@ public abstract class BaseController extends AbstractController implements Messa
     private static final String FEED_PAGE_TYPE = "Feed";
     private static final String TODAYS_PICK_PAGE_TYPE = "TodaysPick";
 
-    //new page types below only available in the new getPageComponent endpoint, not the legacy getPage endpoint
-    private static final String CAROUSEL_BANNER_PAGE_TYPE = "CarouselBanner";
-    private static final String TODAYS_PICK_HEAD_PAGE_TYPE = "TodaysPickHead";
-    private static final String TODAYS_PICK_BODY_PAGE_TYPE = "TodaysPickBody";
-    private static final String FEED_HEAD_PAGE_TYPE = "FeedHead";
-    private static final String FEED_BODY_PAGE_TYPE = "FeedBody";
-
-    public enum UserCleanupMode {
-        SESSION_ONLY, /* just remove user from session */
-        SESSION_AND_COOKIE  /* remove user from session AND expire user cookie */
-    }
+    public static OasService oasService = new Oas247Service();
 
     protected static Map<String, String> configParams = new HashMap<String, String>();
 
@@ -167,7 +160,7 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     /**
-     * This has a
+     * This has a 
      */
     private static final String PRODUCT_TERMS_WRAPPER_TEMPLATE = "product-terms-wrapper.ftl";
 
@@ -197,11 +190,11 @@ public abstract class BaseController extends AbstractController implements Messa
 
     /**
      * Wraps HTML snippet product terms
-     *
+     * 
      * @param terms
      * @return
-     * @throws TemplateException
-     * @throws IOException
+     * @throws TemplateException 
+     * @throws IOException 
      */
     protected String getProductWrappedTerms(String terms) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
@@ -216,10 +209,10 @@ public abstract class BaseController extends AbstractController implements Messa
         return out.toString();
     }
 
-    /**
+    /** 
      * Extract what we need to get out of request/session wrappers in tagwrapper
      * and set it within our session (not request)
-     *
+     * 
      * @param actualSession
      * @param resultBundle
      */
@@ -276,16 +269,13 @@ public abstract class BaseController extends AbstractController implements Messa
 		return model;
 	}
 
-
+    
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     private final ModelAndView handleRequestInterna(HttpServletRequest request, HttpServletResponse response) throws JsonException,
             FDException, ServiceException {
         response.setContentType("text/xml");
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 0);
         ModelAndView model = getModelAndView(JSON_RENDERED);
         String action = request.getParameter("action");
         String version = request.getParameter("ver");
@@ -301,7 +291,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 }
 
                 try {
-                    if (isExtraResponseRequested(request)) {
+                    if (isCheckLoginStatusEnable(request)) {
                         user = getUser(request, response);
                     } else {
                         user = getUserFromSession(request, response);
@@ -350,17 +340,6 @@ public abstract class BaseController extends AbstractController implements Messa
 					String printedTrace = traceFor(uncaughtException);
 					Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
 	                setResponseMessage(model, responseMessage, user);
-	                try {
-		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {
-		                	LOGGER.error("FDCRITICALERROR01 for "
-		                			+ (user != null && user.getFDSessionUser() != null
-		                					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null
-		                							? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" )
-		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
-		                }
-	                } catch(Exception cantHandle) {
-	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController - "+cantHandle.getMessage());
-	                }
 				}
 			}
         }
@@ -368,32 +347,15 @@ public abstract class BaseController extends AbstractController implements Messa
         return model;
     }
 
-    private String getRootCauseStackTrace(Throwable e) {
-
-    	StringBuffer strBuf = new StringBuffer();
-    	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
-    	if(traces != null) {
-		    for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
-		    	strBuf.append(element).append(" ");
-		    }
-    	}
-	    return strBuf.toString();
-    }
-
-    protected boolean isExtraResponseRequested(HttpServletRequest request) {
-        String foodkickHeader = getExtraResponseRequests(request);
-        return foodkickHeader != null && !foodkickHeader.isEmpty();
-    }
-
-    protected String getExtraResponseRequests(HttpServletRequest request) {
+    protected boolean isCheckLoginStatusEnable(HttpServletRequest request) {
         String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
-        return foodkickHeader;
+        return foodkickHeader != null && !foodkickHeader.isEmpty();
     }
 
     protected boolean isResponseAdditionalEnable(HttpServletRequest request, EnumResponseAdditional responseAdditional) {
         boolean isResponseEnable = false;
-        if (isExtraResponseRequested(request)) {
-            String foodkickHeader = getExtraResponseRequests(request);
+        if (isCheckLoginStatusEnable(request)) {
+            String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
             for (String additional : StringUtils.commaDelimitedListToStringArray(foodkickHeader)) {
                 if (responseAdditional.toString().equalsIgnoreCase(additional.trim())) {
                     isResponseEnable = true;
@@ -403,29 +365,6 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return isResponseEnable;
     }
-
-//    protected EnumSet<EnumResponseAdditional> getAllResponseAdditionalEnables(HttpServletRequest request) {
-//    	EnumSet<EnumResponseAdditional> answer = null;
-//    	if (isExtraResponseRequested(request)) {
-//            String foodkickHeader = getExtraResponseRequests(request);
-//            answer = parseResponseAdditionalEnables(foodkickHeader);
-//        } else {
-//            answer = parseResponseAdditionalEnables("");
-//        }
-//        return answer;
-//    }
-
-//    public static EnumSet<EnumResponseAdditional> parseResponseAdditionalEnables(String foodkickHeader) {
-//    	EnumSet<EnumResponseAdditional> answer = EnumSet.noneOf(EnumResponseAdditional.class);
-//        for (String additional : StringUtils.commaDelimitedListToStringArray(foodkickHeader)) {
-//        	EnumResponseAdditional era = EnumResponseAdditional.fromString(additional);
-//        	if(era != null) {
-//        		answer.addAll(era.getImpliedSet());
-//            }
-//        }
-//        return answer;
-//    }
-
 
 	protected String traceFor(Throwable e) {
 		if (e == null) return "No Exception";
@@ -443,7 +382,7 @@ public abstract class BaseController extends AbstractController implements Messa
         try {
             String data = getPostData(request, response);
             if (data != null){
-                return getMapper().readValue(data, valueType);
+                return getMapper().readValue(getPostData(request, response), valueType);
             } else {
                 return null;
             }
@@ -488,10 +427,19 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.addWarningMessage(code, message);
         return responseMessage;
     }
-
+    
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
-            model.addObject("data", getJsonString(responseMessage, responseMessage.includeNullValue()));
+            try {
+            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
+            		responseMessage.addNoticeMessages(oasService.getMessages(user));
+            	} else {
+                    responseMessage.addNoticeMessages(oasService.getMessages());
+            	}
+            } catch (ServiceException e) {
+                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
+            }
+            model.addObject("data", getJsonString(responseMessage));
 
         } catch (JsonGenerationException e) {
             throw new JsonException(e);
@@ -504,18 +452,16 @@ public abstract class BaseController extends AbstractController implements Messa
 
     /**
      * The main method of concrete controllers
-     *
+     * 
      * @param request
      * @param response
      * @param model
      * @param action
      * @param user
      * @return
-     * @throws com.freshdirect.framework.template.TemplateException
-     * @throws IOException
      */
     protected abstract ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model,
-            String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException, IOException, com.freshdirect.framework.template.TemplateException;
+            String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException;
 
     protected void createUserSession(User user, String source, HttpServletRequest request, HttpServletResponse response) throws FDResourceException {
         //Order is important here as "UserUtil.createSessionUser" will refer to the code set in the previous step
@@ -532,7 +478,7 @@ public abstract class BaseController extends AbstractController implements Messa
         if (source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
             srcEnum = EnumTransactionSource.getTransactionSource(source);
         } else {
-            if (isExtraResponseRequested(request)) {
+            if (isCheckLoginStatusEnable(request)) {
                 srcEnum = EnumTransactionSource.FOODKICK_WEBSITE;
             } else {
                 srcEnum = EnumTransactionSource.IPHONE_WEBSITE;
@@ -540,18 +486,18 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return srcEnum;
     }
-
+    
     protected void setUserInSession(SessionUser sessionUser, HttpServletRequest request, HttpServletResponse response) {
         request.getSession().setAttribute(SessionName.USER, sessionUser.getFDSessionUser());
     }
-
-    protected void removeUserInSession(SessionUser user, UserCleanupMode logoutMode, HttpServletRequest request, HttpServletResponse response) {
-
+    
+    protected void removeUserInSession(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
+    	
     	if(user != null) {
-	    	user.touch();
+	    	user.touch();	       
     	}
     	HttpSession session = request.getSession();
-
+    	
     	// clear session
     	Enumeration e = session.getAttributeNames();
     	while (e.hasMoreElements()) {
@@ -560,11 +506,8 @@ public abstract class BaseController extends AbstractController implements Messa
     	}
     	// end session
     	session.invalidate();
-
-    	if (UserCleanupMode.SESSION_AND_COOKIE == logoutMode) {
-        	// remove cookie
-        	CookieMonster.clearCookie(response);
-    	}
+    	// remove cookie
+    	CookieMonster.clearCookie(response);
     	resetMobileSessionData(request);
     }
 
@@ -582,18 +525,11 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected String getJsonString(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
-        return getJsonString(obj, true);
-    }
-    protected String getJsonString(Object obj, boolean includeNullValue) throws JsonGenerationException, JsonMappingException, IOException{
-    	StringWriter writer = new StringWriter();
-    	ObjectMapper mapper = getMapper();
-    	if (!includeNullValue) {
-    		mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-    	}
-    	mapper.writeValue(writer, obj);
+        StringWriter writer = new StringWriter();
+        getMapper().writeValue(writer, obj);
         return writer.toString();
     }
-
+    
     protected String getSessionUserId(SessionUser user) {
     	if(user != null && user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
     		return user.getFDSessionUser().getIdentity().getErpCustomerPK();
@@ -610,7 +546,7 @@ public abstract class BaseController extends AbstractController implements Messa
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
     }
-
+    
     protected SessionUser fakeUser(HttpSession session, BrowseQuery query) {
     	fakedUserForRequest.set(Boolean.TRUE);
     	FDUser user = null;
@@ -634,60 +570,40 @@ public abstract class BaseController extends AbstractController implements Messa
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
     }
-
+    
     protected boolean isFakeUser() {
     	return fakedUserForRequest.get();
     }
 	protected com.freshdirect.mobileapi.controller.data.response.Configuration getConfiguration(
 			SessionUser user) {
 
-        FDUser fdUser = null != user && null != user.getFDSessionUser() ? user.getFDSessionUser().getUser() : null;
-
 		com.freshdirect.mobileapi.controller.data.response.Configuration configuration = new com.freshdirect.mobileapi.controller.data.response.Configuration();
 		configuration.setAkamaiImageConvertorEnabled(FeatureRolloutArbiter
-                .isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor, fdUser));
+				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
+						user.getFDSessionUser().getUser()));
 		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
-        XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
-        String storeVersion = null;
-        if (metadataService != null) {
-            storeVersion = metadataService.calculatePublishId();
-        }
-        configuration.setStoreVersion(storeVersion);
+		configuration.setStoreVersion(PublishId.getInstance().getPublishId());
 
-		configuration.setVerifyPaymentMethod(FDStoreProperties.isPaymentMethodVerificationForMobileApiEnabled());
+		configuration.setVerifyPaymentMethod(FDStoreProperties
+				.isPaymentMethodVerificationEnabled());
 		configuration.setEcouponEnabled(FDCouponProperties.isCouponsEnabled());
 		configuration.setAdServerUrl(FDStoreProperties.getAdServerUrl());
 
 		configuration.setTipRange(FDStoreProperties.getTipRangeConfig());
-
+		
 		configuration.setMiddleTierUrl(FDStoreProperties.getMiddleTierProviderURL());
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
-        configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
-        configuration.setLiveChatEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, fdUser));
 
-        configuration.setSelfCreditEnabled(isSelfCreditEnabled(fdUser));
 		return configuration;
 	}
-
-    private boolean isSelfCreditEnabled(FDUser fdUser) {
-        final boolean selfCreditFeatureEnabled = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.backOfficeSelfCredit, fdUser);
-        
-        boolean userCreditAbuser = true;
-        try {
-            userCreditAbuser = null != fdUser && fdUser.isCreditRestricted();
-        } catch (FDResourceException e) {
-            LOGGER.error("Could not retrieve Credit Alert Info of customer ID : " + fdUser.getUserId());
-        }
-        return selfCreditFeatureEnabled && !userCreditAbuser;
-    }
-
-    protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
+	
+	protected LoggedIn formatLoginMessage(SessionUser user) throws FDException  {
 	    LoggedIn responseMessage = new LoggedIn();
 
         OrderHistory history = user.getOrderHistory();
-        String cutoffMessage = ""; //user.getCutoffInfo();
+        String cutoffMessage = user.getCutoffInfo();
 
         OrderInfo closestPendingOrder = history
                 .getClosestPendingOrderInfo(new Date());
@@ -713,10 +629,9 @@ public abstract class BaseController extends AbstractController implements Messa
                 .setSuccessMessage("User has been logged in successfully.");
         responseMessage.setItemsInCartCount(user
                 .getItemsInCartCount());
-        responseMessage.setOrderCount(history.getValidOrderCount());
-        responseMessage.setFdxOrderCount(history.getSettledOrderCount(EnumEStoreId.FDX));
+        responseMessage.setOrderCount(user.getOrderHistory()
+                .getValidOrderCount());
         responseMessage.setFdUserId(user.getPrimaryKey());
-        responseMessage.setErpCustomerPK(getSessionUserId(user));
 
         // DOOR3 FD-iPad FDIP-474
         //Note: The field is inapproformatLoginMessagepriately named. It is not referring to whether or not the user is on the FD mailing
@@ -746,18 +661,19 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setBrowseEnabled(MobileApiProperties
                 .isBrowseEnabled());
 
+        // Added during Mobile Coremetrics Implementation
         responseMessage.setSelectedServiceType(user
                 .getSelectedServiceType() != null ? user
                 .getSelectedServiceType().toString() : "");
         responseMessage.setCohort(user.getCohort());
-        responseMessage.setTotalOrderCount(user.getTotalOrderCount());
-        if(user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getIdentity()!=null){
-        	responseMessage.setTcAcknowledge(user.getTcAcknowledge());
-        }
+        responseMessage.setTotalOrderCount(user
+                .getTotalOrderCount());
+        
+        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
+
         responseMessage.setMobileNumber(getMobileNumber(user));
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         responseMessage.setProviders(ExternalAccountManager.getConnectedProvidersByUserId(user.getUsername(), EnumExternalLoginSource.SOCIAL));
-        responseMessage.setZipCode(user.getZipCode());
         return responseMessage;
     }
 
@@ -774,43 +690,34 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return mobileNumber;
     }
-
+	
     protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = null;
-        if (user!=null && user.isLoggedIn()) {
+        if (user.isLoggedIn()) {
             responseMessage = formatLoginMessage(user);
         } else {
             responseMessage = new LoggedIn();
             responseMessage.setFailureMessage("User is not logged in.");
             responseMessage.setPlantId(BrowseUtil.getPlantId(user));
-            responseMessage.setZipCode(user.getZipCode());
         }
         return responseMessage;
     }
 
-    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
+    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) {
         FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
-                fdSessionUser = UserUtil.getSessionUserByCookie(request);
+                fdSessionUser = CookieMonster.loadCookie(request);
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }
             if (fdSessionUser != null) {
                 FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
             } else {
-                fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response);
+                fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
             }
-            EnumTransactionSource src = getTransactionSourceEnum(request, null);
-            if(fdSessionUser.getUser()!=null){
-            	fdSessionUser.getUser().setApplication(src);
-            }
-            fdSessionUser.isLoggedIn(true);
-            request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
+            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
-        }
-        if (validateUser() && fdSessionUser.getIdentity() == null) {
-            throw new NoSessionException("No session");
         }
         ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
         return SessionUser.wrap(fdSessionUser);
@@ -820,18 +727,26 @@ public abstract class BaseController extends AbstractController implements Messa
     protected void populateHomePages(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
         populateResponseWithEnabledAdditionsForWebClient(user, pageResponse, request, null);
 
+        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_FEEDS)) {
-            for (CMSWebPageModel page : getPages(user, pageRequest)) {
+            List<String> errorProductKeys = new ArrayList<String>();
+
+            for (CMSWebPageModel page : getPages(user, pageRequest, errorProductKeys, isWebRequest)) {
                 if (TODAYS_PICK_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
                     pageResponse.setPick(page);
                 } else if (FEED_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
                     pageResponse.setPage(page);
                 }
             }
-        }
 
+            for (String errorProductKey : errorProductKeys) {
+                pageResponse.addErrorMessage(errorProductKey);
+            }
+        }
+        
         // populate welcome carousel image banners
-        if (isExtraResponseRequested(request)) {
+        if (isWebRequest) {
             final StoreModel store = ContentFactory.getInstance().getStore();
             List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
             List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
@@ -847,57 +762,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    protected void populatePageComponents(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
-    	String originalPageType = pageRequest.getPageType();
-
-    	if(TODAYS_PICK_HEAD_PAGE_TYPE.equals(originalPageType)) {
-    		pageRequest.setPageType(TODAYS_PICK_PAGE_TYPE);
-    		pageRequest.setHeadSectionIndexes();
-    	} else if(TODAYS_PICK_BODY_PAGE_TYPE.equals(originalPageType)) {
-    		pageRequest.setPageType(TODAYS_PICK_PAGE_TYPE);
-    		pageRequest.setBodySectionIndexes();
-    	} else if(FEED_HEAD_PAGE_TYPE.equals(originalPageType)) {
-    		pageRequest.setPageType(FEED_PAGE_TYPE);
-    		pageRequest.setHeadSectionIndexes();
-    	} else if(FEED_BODY_PAGE_TYPE.equals(originalPageType)) {
-    		pageRequest.setPageType(FEED_PAGE_TYPE);
-    		pageRequest.setBodySectionIndexes();
-    	}
-
-
-        if (CAROUSEL_BANNER_PAGE_TYPE.equals(pageRequest.getPageType())) {
-            final StoreModel store = ContentFactory.getInstance().getStore();
-            List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
-            List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
-            if (imageBanners != null) {
-                for (ImageBanner imageBanner : imageBanners) {
-                    CMSImageBannerModel cmsImageBanner = convertImageBanner(imageBanner);
-                    if (cmsImageBanner != null){
-                        cmsImageBanners.add(cmsImageBanner);
-                    }
-                }
-            }
-            pageResponse.setWelcomeCarouselBanners(cmsImageBanners);
-        } else if (TODAYS_PICK_PAGE_TYPE.equals(pageRequest.getPageType())){
-        	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
-            for (CMSWebPageModel page : pgs) {
-                if (pageRequest.getPageType().equals(page.getType())) {
-                    pageResponse.setPick(page);
-                }
-            }
-        } else if (FEED_PAGE_TYPE.equals(pageRequest.getPageType())){
-        	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
-            for (CMSWebPageModel page : pgs) {
-                if (pageRequest.getPageType().equals(page.getType())) {
-                    pageResponse.setPage(page);
-                }
-            }
-        }
-
-        pageRequest.setPageType(originalPageType);
-    }
-
-    protected CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
+    private CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
         CMSImageBannerModel cmsImageBanner = null;
         if (imageBanner != null){
             cmsImageBanner = new CMSImageBannerModel();
@@ -918,7 +783,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return cmsImageBanner;
     }
-
+    
     private String convertTarget(ContentNodeModel node) {
         String encodedKey = null;
         if (node != null) {
@@ -945,17 +810,7 @@ public abstract class BaseController extends AbstractController implements Messa
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO) && messageResponse instanceof HasLoggedInField) {
             if (loginMessage == null) {
                 loginMessage = createLoginResponseMessage(user);
-				// check captcha attempt
-				loginMessage.addDisplayedCaptcha(CaptchaType.PAYMENT,
-						CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
-								request.getSession(), SessionName.PAYMENT_ATTEMPT));
-				loginMessage.addDisplayedCaptcha(CaptchaType.SIGN_IN,
-						CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(),
-								request.getSession(), SessionName.LOGIN_ATTEMPT));
-				loginMessage.addDisplayedCaptcha(CaptchaType.SIGN_UP,
-						CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(),
-								request.getSession(), SessionName.SIGNUP_ATTEMPT));
-			}
+            }
 
             if (!Message.STATUS_FAILED.equals(messageResponse.getStatus())) {
                 messageResponse.setStatus(loginMessage.getStatus());
@@ -971,7 +826,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest) {
+    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
         List<CMSWebPageModel> pages = null;
         if (pageRequest.isPreview()) {
             pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
@@ -982,17 +837,14 @@ public abstract class BaseController extends AbstractController implements Messa
                 pages = getCachedPages(pageRequest);
             }
         }
-        if (pages != null) {
-            for (CMSWebPageModel page : pages) {
-                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page, pageRequest);
-                pageRequest.limitSections(page);
-            }
+        for (CMSWebPageModel page : pages) {
+            addProductsToSection(user, page, errors, webRequest);
         }
         return pages;
     }
 
     private boolean isCachedPagesInvalid(CMSPageRequest pageRequest, List<CMSWebPageModel> cachedPages) {
-        boolean invalid = cachedPages == null || cachedPages.isEmpty();
+        boolean invalid = cachedPages.isEmpty();
 
         if (!invalid) {
             List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPages(pageRequest);
@@ -1006,9 +858,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     private List<CMSWebPageModel> getCachedPages(CMSPageRequest pageRequest) {
         List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
-        List<String> webPageTypes = (pageRequest.getPageType() != null)
-        		? Arrays.asList(pageRequest.getCacheKey())
-        		: Arrays.asList(pageRequest.asCacheKey(FEED_PAGE_TYPE), pageRequest.asCacheKey(TODAYS_PICK_PAGE_TYPE));
+        List<String> webPageTypes = (pageRequest.getPageType() != null) ? Arrays.asList(pageRequest.getPageType()) : Arrays.asList(FEED_PAGE_TYPE, TODAYS_PICK_PAGE_TYPE);
         for (String type : webPageTypes) {
             CMSWebPageModel cachedFeedPage = CMSContentFactory.getInstance().getCMSPageByName(type);
             if (cachedFeedPage != null) {
@@ -1018,12 +868,70 @@ public abstract class BaseController extends AbstractController implements Messa
         return pages;
     }
 
-    protected void setContextHeaders(HttpServletRequest request,  HttpContextWrapper wrapper) {
-    	wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
-    	wrapper.setTrueCleintIp(request.getHeader("True-Client-IP"));
-		wrapper.setForwardedFrom(request.getHeader("X-Forwarded-For"));
-		wrapper.setAkamaiEdgescape(request.getHeader("X-Akamai-Edgescape"));
-		wrapper.setRemoteAddr(request.getRemoteAddr());
+    private void addProductsToSection(SessionUser user, CMSWebPageModel page, List<String> errors, final boolean usePotatoes) {
+        if (page != null) {
+            List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
+            
+            if (usePotatoes) {
+                final FDUserI uzer = user.getFDSessionUser();
+                
+                // populate lightweight product potatoes
+                for (final CMSSectionModel section : page.getSections()) {
 
+                    final CMSPotatoSectionModel pSection = CMSPotatoSectionModel.withSection(section);
+                    List<String> productKeys = section.getProductList();
+                    if (productKeys == null)
+                        productKeys = Collections.emptyList();
+                    
+                    // collect potatoes in this collection
+                    final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>(productKeys.size());
+
+                    // turn product IDs to product potatoes
+                    for ( final String prodKey : productKeys ) {
+                        // extract CMS id
+                        final String prodId = prodKey.substring(FDContentTypes.PRODUCT.getName().length()+1);
+
+                        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, uzer, false);
+                        if (data != null) {
+                            potatoes.add(data);
+                        }
+                    }
+
+                    // populate section
+                    pSection.setProducts(potatoes);
+                    
+                    // insert new section
+                    sectionWithProducts.add(pSection);
+                }
+            } else {
+                // populate legacy mobile product models
+                for (CMSSectionModel section : page.getSections()) {
+                    CMSSectionProductModel sectionWithProduct = new CMSSectionProductModel(section);
+                    sectionWithProduct.setProducts(getProducts(user, section.getProductList(), errors));
+                    
+                    sectionWithProducts.add(sectionWithProduct);
+                }
+            }
+            page.setSections(sectionWithProducts);
+            
+        }
+    }
+
+    private List<com.freshdirect.mobileapi.controller.data.Product> getProducts(SessionUser user, List<String> productKeys, List<String> errors) {
+        List<com.freshdirect.mobileapi.controller.data.Product> products = new ArrayList<com.freshdirect.mobileapi.controller.data.Product>();
+        if (productKeys != null) {
+            for (String productKey : productKeys) {
+                try {
+                    com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(ContentKey.decode(productKey).getId(), null, null, user);
+                    if (product != null) {
+                        products.add(new Product(product));
+                    }
+                } catch (Exception e) {
+                    errors.add(productKey);
+                    LOGGER.error("Could not get product model.", e);
+                }
+            }
+        }
+        return products;
     }
 }

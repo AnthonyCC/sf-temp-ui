@@ -6,7 +6,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 	    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	    <title>Welcome to FreshDirect At The Office</title>
@@ -22,7 +22,7 @@
  <table style="font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; color:#333333; line-height:normal" align="center" bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" width="640">
         <tbody>
             <tr>
-                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" height="15" border="0" width="1"/>
+                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" height="15" border="0" width="1"/>
                 </td>
             </tr>
             <tr>
@@ -30,7 +30,7 @@
                     <table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="640">
                         <tbody>
                             <tr>
-                                <td style="LINE-HEIGHT: 13px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; COLOR: rgb(153,153,153); FONT-SIZE: 10px; FONT-WEIGHT: normal" align="left" height="20" valign="top"><a style="color:#360; text-decoration:underline" href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE">Start Exploring</a>
+                                <td style="LINE-HEIGHT: 13px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; COLOR: rgb(153,153,153); FONT-SIZE: 10px; FONT-WEIGHT: normal" align="left" height="20" valign="top"><a style="color:#360; text-decoration:underline" href="https://www.freshdirect.com/index.jsp">Start Exploring</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -47,11 +47,11 @@
                         <tbody>
                             <tr>
                                 <td align="left" valign="top" width="569">
-                                    <a href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE"><img style="DISPLAY: block" alt="FreshDirect" src="http://www.freshdirect.com/media/images/email/confirm_signup/COS_20120509_fd_ato_logo.gif" height="45" border="0" width="379"/>
+                                    <a href="https://www.freshdirect.com/index.jsp"><img style="DISPLAY: block" alt="FreshDirect" src="http://www.freshdirect.com/media/images/email/confirm_signup/COS_20120509_fd_ato_logo.gif" height="45" border="0" width="379"/>
                                     </a>
                                 </td>
                                 <td align="right" valign="bottom" width="77">
-                                    <a href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE"><img style="DISPLAY: block" alt="Shop Now" src="http://www.freshdirect.com/media/images/email/confirm_signup/shop_nowLTG.gif" height="32" border="0" width="77"/>
+                                    <a href="https://www.freshdirect.com/index.jsp"><img style="DISPLAY: block" alt="Shop Now" src="http://www.freshdirect.com/media/images/email/confirm_signup/shop_nowLTG.gif" height="32" border="0" width="77"/>
                                     </a>
                                 </td>
                                 <td align="right" valign="bottom" width="9"><img style="DISPLAY: block" alt="" src="http://www.freshdirect.com/media/images/email/confirm_signup/transparent_10x10.png" height="1" border="0" width="9"/>
@@ -73,7 +73,7 @@
                             <tr>
                                 <td style="font-family:Verdana, Arial,
 Helvetica, sans-serif; font-size:12px; color:#76973E; font-weight:bold;
-letter-spacing:0px;" align="left" height="17"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE">&#160;&#160;SHOP
+letter-spacing:0px;" align="left" height="17"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/index.jsp">&#160;&#160;SHOP
 NOW</a>
                                 </td>
                                 <td style="font-family:Verdana, Arial,
@@ -89,7 +89,8 @@ Helvetica, sans-serif; font-size:11px; color:#76973E; font-weight:bold;
 letter-spacing:0px" align="left">|</td>
                                 <td style="font-family:Verdana, Arial, Helvetica,
 sans-serif; font-size:12px; color:#76973E; font-weight:bold;
-letter-spacing:0px;" align="center"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/srch.jsp?pageType=pres_picks&amp;id=picks_love">FRESH DEALS</a>
+letter-spacing:0px;" align="center"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/srch.jsp?pageType=pres_picks&amp;id=picks_love">PRESIDENT'S
+PICKS</a>
                                 </td>
                                 <td style="font-family:Verdana, Arial,
 Helvetica, sans-serif; font-size:11px; color:#76973E; font-weight:bold;
@@ -128,7 +129,7 @@ letter-spacing:0px;" align="right"><a style="color:#76973E; text-decoration:none
                 <td align="left" bgcolor="#d9d9d9" valign="top" width="1"><img style="DISPLAY: block" alt="" src="http://www.freshdirect.com/media/images/email/confirm_signup/transparent_10x10.png" height="1" border="0" width="1"/>
                 </td>
                 <td align="center" bgcolor="#ffffff" valign="top" width="638">
-                    <a href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE"><img src="http://www.freshdirect.com/media/images/email/confirm_signup/slices_01_Welcome_confirm.jpg" alt="Welcome! So Great to Meet You!" style="border: 0; display: block;" height="103" border="0" width="638"/>
+                    <a href="https://www.freshdirect.com/index.jsp"><img src="http://www.freshdirect.com/media/images/email/confirm_signup/slices_01_Welcome_confirm.jpg" alt="Welcome! So Great to Meet You!" style="border: 0; display: block;" height="103" border="0" width="638"/>
                     </a>
                 </td>
                 <td align="right" bgcolor="#d9d9d9" valign="top" width="1"><img style="DISPLAY: block" alt="" src="http://www.freshdirect.com/media/images/email/confirm_signup/transparent_10x10.png" height="1" border="0" width="1"/>
@@ -156,7 +157,7 @@ letter-spacing:0px;" align="right"><a style="color:#76973E; text-decoration:none
                 <td align="left" bgcolor="#d9d9d9" valign="top" width="1"><img style="DISPLAY: block" alt="" src="http://www.freshdirect.com/media/images/email/confirm_signup/transparent_10x10.png" height="1" border="0" width="1"/>
                 </td>
                 <td align="center" bgcolor="#ffffff" valign="top" width="638">
-                    <a href="https://www.freshdirect.com/index.jsp?serviceType=CORPORATE"><img src="http://www.freshdirect.com/media/images/email/confirm_signup/slices_03_Welcome_confirm_cos.jpg" alt="We've been hoping to catch your eye, and we can't wait to share our finest and freshest with you. Here are some of the great things you can expect from us: -From favorites to new flavors, food that simply tastes great- -Great ideas and quick fixes make it easy to plan ahead- -Stress-free shopping so you can just sit back and enjoy- So come and check us out! We have the goods from our good (and responsible) friends at local farms, dairies and fisheries, and all the best-loved brands. Order today and get ready for the freshest, highest-quality food at the best prices delivered straight to your door, and (we hope) straight into your heart. START EXPLORING We're all so happy you're here" style="border: 0; display: block;" height="503" border="0" width="638"/>
+                    <a href="https://www.freshdirect.com/index.jsp"><img src="http://www.freshdirect.com/media/images/email/confirm_signup/slices_03_Welcome_confirm_cos.jpg" alt="We've been hoping to catch your eye, and we can't wait to share our finest and freshest with you. Here are some of the great things you can expect from us: -From favorites to new flavors, food that simply tastes great- -Great ideas and quick fixes make it easy to plan ahead- -Stress-free shopping so you can just sit back and enjoy- So come and check us out! We have the goods from our good (and responsible) friends at local farms, dairies and fisheries, and all the best-loved brands. Order today and get ready for the freshest, highest-quality food at the best prices delivered straight to your door, and (we hope) straight into your heart. START EXPLORING We're all so happy you're here" style="border: 0; display: block;" height="503" border="0" width="638"/>
                     </a>
                 </td>
                 <td align="right" bgcolor="#d9d9d9" valign="top" width="1"><img style="DISPLAY: block" alt="" src="http://www.freshdirect.com/media/images/email/confirm_signup/transparent_10x10.png" height="1" border="0" width="1"/>
@@ -286,7 +287,7 @@ underline">click here</span></a>.
                             <br/>For FreshDirect online Help or to contact us, please <a style="COLOR: rgb(51,102,0)" href="http://www.freshdirect.com/help/contact_fd.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: 
 underline">click here</span></a>.
                             <br/>
-                            <br/>2 St Ann's Ave Bronx, NY 10454
+                            <br/>23-30 Borden Ave. Long Island City, NY 11101
                             <br/>
                             <br/><a style="COLOR: #360" href="https://www.freshdirect.com/help/terms_of_service.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: 
 underline">Customer Agreement</span></a>

@@ -6,10 +6,10 @@
 // get the user.. don't assume host page  has created the var for us
 FDUserI i_fa_user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-If you have any questions, please e-mail <a href="mailto:<fd:GetServiceEmail />"><span class="offscreen">please email us at</span><fd:GetServiceEmail /> </a> anytime or call us at <%=i_fa_user.getCustomerServiceContact()%>, 
+If you have any questions, please e-mail <a href="mailto:<fd:GetServiceEmail />"><fd:GetServiceEmail /></a> anytime or call us at <%=i_fa_user.getCustomerServiceContact()%>, 
 <% List<FDCSContactHours> fdcsHours = FDCSContactHoursUtil.getFDCSHours();
 for (Iterator iterator = fdcsHours.iterator(); iterator.hasNext();) {
 	FDCSContactHours contactHours = (FDCSContactHours) iterator.next();%>
 	<%= contactHours.getDaysDisplay() %>&nbsp;<%= contactHours.getHoursDisplay() %>;
 <%}
-%> If you need to disconnect from the Internet, please <a href="/logout.jsp">Log Out<span class="offscreen">If you need to disconnect from the Internet</span></a> first. 
+%> If you need to disconnect from the Internet, please <a href="/logout.jsp">Log Out</a> first. 

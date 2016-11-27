@@ -27,10 +27,10 @@ final int W_YA_GC_ORDER_DETAILS_HALF = 460;
 					<td class="text12">The details of your purchase are below.</td>
 			</table>
 		</td>
-		<td width="40"><img src="/media_stat/images/layout/clear.gif" alt="" width="40" height="1" border="0"></td>
+		<td width="40"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" border="0"></td>
 		<td width="<%= W_YA_GC_ORDER_DETAILS_HALF %>">
 			<img src="/media_stat/images/navigation/payment_info.gif" width="100" height="15" border="0" alt="PAYMENT INFO" /><br />
-			<img src="/media_stat/images/layout/999966.gif" alt="" width="<%= W_YA_GC_ORDER_DETAILS_HALF - 50 %>" HEIGHT="1" border="0" vspace="3" /><br />
+			<img src="/media_stat/images/layout/999966.gif" width="<%= W_YA_GC_ORDER_DETAILS_HALF - 50 %>" HEIGHT="1" border="0" vspace="3" /><br />
 			<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_GC_ORDER_DETAILS_HALF %>">
 				<tr valign="top">
 					<td width="10"><br /></td>

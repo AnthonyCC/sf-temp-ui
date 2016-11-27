@@ -5,11 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-
 
 public abstract class GenericFilteringMenuBuilder<I extends FilteringSortingItem<? extends ContentNodeModel>> {
 

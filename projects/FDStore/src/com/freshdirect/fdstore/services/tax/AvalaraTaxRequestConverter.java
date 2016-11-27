@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -17,13 +18,13 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -32,7 +33,6 @@ import com.freshdirect.fdstore.services.tax.data.DetailLevel;
 import com.freshdirect.fdstore.services.tax.data.DocType;
 import com.freshdirect.fdstore.services.tax.data.GetTaxRequest;
 import com.freshdirect.fdstore.services.tax.data.Line;
-import com.freshdirect.framework.util.BeanUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class AvalaraTaxRequestConverter {
@@ -41,7 +41,7 @@ public class AvalaraTaxRequestConverter {
 	private int taxlineId = 1000;
 
 	public GetTaxRequest convert(AvalaraContext avalaraContext) {
-		LOGGER.info("Cart to Request conversion avalarabegin");
+		LOGGER.info("Cart to Request conversion begin");
 		FDCartI cart = avalaraContext.getCart();
 		GetTaxRequest taxRequest = new GetTaxRequest();
 		ErpAddressModel fdDeliveryaddress = cart.getDeliveryAddress();
@@ -91,23 +91,18 @@ public class AvalaraTaxRequestConverter {
 			customercode = getCustomerCode(order);
 		} else {
 			FDIdentity identity = cart.getOrderLines().get(0) != null ? cart.getOrderLines().get(0).getUserContext().getFdIdentity(): null;
-			String custSapId = cart.getOrderLines().get(0) != null ? cart.getOrderLines().get(0).getUserContext().getCustSapId(): null;
-			if (null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK()) ) {
-				if(null != custSapId){
-					customercode = custSapId;
-				} else {
-					try {
-						model = FDCustomerFactory.getErpCustomer(identity);
-						customercode = null != model ? model.getSapId()	: "DEFAULT_CUSTOMER_CODE";
-					} catch (FDResourceException e) {
-						customercode = "DEFAULT_CUSTOMER_CODE";
-					}
+			if (null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK())) {
+				try {
+					model = FDCustomerFactory.getErpCustomer(identity);
+					customercode = null != model ? model.getSapId()	: "DEFAULT_CUSTOMER_CODE";
+				} catch (FDResourceException e) {
+					customercode = "DEFAULT_CUSTOMER_CODE";
 				}
 			}
 		}
 		taxRequest.setCustomerCode(customercode);
 		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
-		LOGGER.info("Cart to Request conversion avalaraend:"+customercode);
+		LOGGER.info("Cart to Request conversion End");
 		return taxRequest;
 	}
 
@@ -126,7 +121,7 @@ public class AvalaraTaxRequestConverter {
 	private void createChargeTaxEntry(FDCartI cart,
 			List<Line> taxLines) {
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
-		if (BeanUtil.isNotEmpty(charges)) {
+		if (CollectionUtils.isNotEmpty(charges)) {
 			for (ErpChargeLineModel charge : charges) {
 				if (charge.getAmount() > 0.0d && null == charge.getDiscount()) {
 					Line taxLine = new Line();
@@ -184,10 +179,10 @@ public class AvalaraTaxRequestConverter {
 
 	private void createCartLinesTaxEntry(FDCartI cart, List<Line> taxLines) {
 
-		if (BeanUtil.isNotEmpty(cart.getOrderLines())) {
+		if (CollectionUtils.isNotEmpty(cart.getOrderLines())) {
 			for (FDCartLineI line : cart.getOrderLines()) {
 
-				FDInvoiceLineI invoice = line.getInvoiceLine();
+				ErpInvoiceLineI invoice = line.getInvoiceLine();
 				// invoice.
 				double price = line.getPrice();
 				double quantity = line.getQuantity();
@@ -265,10 +260,10 @@ public class AvalaraTaxRequestConverter {
 	private Address[] getDefaultOriginAddresses() {
 		Address address = new Address();
 		address.setAddressCode("Origin-01");
-		address.setLine1(FDStoreProperties.getFdDefaultBillingStreet());
-		address.setCity(FDStoreProperties.getFdDefaultBillingTown());
-		address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
-		address.setPostalCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+		address.setLine1("23 Borden Avenue");
+		address.setCity("Long Island City");
+		address.setCountry("US");
+		address.setPostalCode("11101");
 		Address[] originAddresses = { address };
 		return originAddresses;
 	}

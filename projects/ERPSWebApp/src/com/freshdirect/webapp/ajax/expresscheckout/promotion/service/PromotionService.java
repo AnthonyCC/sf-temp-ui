@@ -44,9 +44,6 @@ public class PromotionService {
     public List<ValidationError> applyPromotionCode(FormDataRequest promotionRequestData, FDSessionUser user, HttpSession session) throws FDResourceException {
         List<ValidationError> result = new ArrayList<ValidationError>();
         String redemptionCode = FormDataService.defaultService().get(promotionRequestData, PROMOTION_CODE_FIELD_ID);
-        if (redemptionCode != null) { //APPDEV-6527
-        	redemptionCode = redemptionCode.trim();
-        }
         String promoId = FDPromotionNewManager.getRedemptionPromotionId(redemptionCode);
         if (redemptionCode == null || redemptionCode.trim().isEmpty()) {
             result.add(new ValidationError(PROMOTION_CODE_FIELD_ID, SystemMessageList.MSG_EMPTY_USER_INPUT_AT_PROMOTION_CODE));

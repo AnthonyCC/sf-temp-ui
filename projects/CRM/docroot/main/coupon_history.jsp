@@ -144,6 +144,7 @@ FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 List promoRows = new ArrayList();
 String customerId=user.getIdentity().getErpCustomerPK();
 FDCustomerCouponWallet cWallet = user.getCouponWallet();
+List<FDCustomerCouponHistoryInfo> custCouponInfoList = FDCouponManager.getCustomersCouponUsage(customerId);
 /* Collection erpSaleInfos = ((ErpOrderHistory)user.getOrderHistory()).getErpSaleInfos();
 for(Iterator i = erpSaleInfos.iterator(); i.hasNext();){
     ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
@@ -180,6 +181,41 @@ for(Iterator i = erpSaleInfos.iterator(); i.hasNext();){
 	}
 	
 } */
+if(null !=custCouponInfoList){
+	for(Iterator ol = custCouponInfoList.iterator();ol.hasNext();){
+		double discountAmt = 0;
+		String coupon_id = null;
+		FDCustomerCoupon fdCoupon = null;
+		FDCustomerCouponHistoryInfo orderline = (FDCustomerCouponHistoryInfo) ol.next();
+		PromoRow p = new PromoRow();            
+			p.name = orderline.getCouponDesc();
+			p.amount = orderline.getDiscountAmt();
+			p.orderNum = orderline.getSaleId();
+			p.dateUsed = orderline.getSaleDate();
+			p.expires = "";	
+			//p.fdCoupon = fdCoupon;			
+			p.code = orderline.getCouponId();
+			if(null !=cWallet){
+				if(cWallet.isRedeemed(orderline.getCouponId())){
+					p.status = "Redeemed";
+					promoRows.add(p);
+				}else if(cWallet.isRedeemPending(orderline.getCouponId())){
+					p.status = "Redeem Pending";
+					promoRows.add(p);
+				}				
+			}
+			else {
+				if(orderline.getSaleStatus().equals(EnumSaleStatus.SETTLED)) {
+					p.status = "Redeemed";
+				} else {
+					p.status = "Redeem Pending";
+				}
+				//FDCouponInfo cInfo = FDCouponFactory.getInstance().getCoupon(orderline.getCouponId());
+				//p.fdCoupon = fdCoupon;	
+				promoRows.add(p); 
+			}
+	}
+}
 
 if(null !=cWallet){
 	Set<String> cCoupons = cWallet.getClippedActiveIds();

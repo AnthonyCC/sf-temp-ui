@@ -36,7 +36,7 @@ public class DraftValidationScope {
         ContentTypeServiceI typeService = builder.contentService.getTypeService();
 
         for (DraftChange change : builder.draftChanges) {
-            final ContentKey key = ContentKey.getContentKey(change.getContentKey());
+            final ContentKey key = ContentKey.decode(change.getContentKey());
             final ContentTypeDefI typeDef = typeService.getContentTypeDefinition(key.getType());
 
             AttributeDefI attributeDef = typeDef.getAttributeDef(change.getAttributeName());

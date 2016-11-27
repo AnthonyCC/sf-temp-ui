@@ -2,21 +2,19 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.storeapi.content.ProducerModel"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.EnumPopupType"%>
-<%@page import="com.freshdirect.storeapi.content.TitledMedia"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.PopulatorUtil"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="com.freshdirect.fdstore.FDNotFoundException"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
@@ -30,19 +28,17 @@ BrowserInfo bi = new BrowserInfo(request);
 
 String catId = request.getParameter("catId");
 
-if (catId == null){
-	throw new FDNotFoundException("Missing category identifier.");
-}
+if (catId == null)
+	throw new JspException("Missing category identifier.");
 
-CategoryModel cat = (CategoryModel) PopulatorUtil.getContentNode(catId);
+CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
+if (cat == null)
+	throw new JspException("Missing category " + catId);
 
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
 <tmpl:insert template='/common/template/gmap_nav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - What's Local"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>
 

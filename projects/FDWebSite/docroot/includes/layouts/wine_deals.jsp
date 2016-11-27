@@ -4,18 +4,18 @@
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.Collections"%>
 <%@page import="com.freshdirect.fdstore.content.util.SmartSearchUtils"%>
-<%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -117,10 +117,15 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 			</display:ItemGrabber>
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
+				<script type="text/javascript">
+					var cmPageCarousel = cmPageCarousel || {};
+					<%String handlerObj = "cmPageCarousel[\"" + cat.getContentKey().getId() + "\"]"; %>
+					<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-"+cat.getContentKey().getId()%>' elementCategory="carousel"/>} 
+				</script>
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
 						width="<%=W_WINE_DEALS_TOTAL-90%>" trackingCode="<%= trk %>"
 						hideContainer="<%= tabId %>" numItems="4" bottomHeader="<%= cat.getAltText() %>"
-						bottomHeaderClass="title14 wine-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" ><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
+						bottomHeaderClass="title14 wine-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" eventHandlersObj='<%=handlerObj%>'><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
 								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
@@ -144,7 +149,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 
 <%
 // sort by sale
-products = SmartSearchUtils.sortBySale(products, true);
+products = SmartSearchUtils.sortBySale(products, user.getPricingContext(), true);
 
 ProductModel product1 = products.size() > 0 ? products.get(0) : null;
 ProductModel product2 = products.size() > 1 ? products.get(1) : null;

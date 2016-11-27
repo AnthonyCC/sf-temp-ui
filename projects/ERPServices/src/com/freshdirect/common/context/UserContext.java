@@ -12,7 +12,6 @@ public class UserContext implements Serializable {
 
     private PricingContext pricingContext;
     private FDIdentity fdIdentity;
-    private String custSapId;
     private StoreContext storeContext;
     private FulfillmentContext fulfillmentContext;
 
@@ -68,20 +67,4 @@ public class UserContext implements Serializable {
 	public void setFulfillmentContext(FulfillmentContext fulfillmentContext) {
 		this.fulfillmentContext = fulfillmentContext;
 	}
-	public String getCustSapId() {
-		return custSapId;
-	}
-	public void setCustSapId(String custSapId) {
-		this.custSapId = custSapId;
-	}
-
-	@Override
-	public String toString() {
-		return "UserContext [pricingContext=" + pricingContext
-				+ ", fdIdentity=" + fdIdentity + ", custSapId=" + custSapId
-				+ ", storeContext=" + storeContext + ", fulfillmentContext="
-				+ fulfillmentContext + "]";
-	}
-	
-	
 }

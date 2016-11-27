@@ -48,6 +48,9 @@ if (request.getHeader("X-Requested-With") != null) {
 				%><span class="invisible addresstext"><%= LocationHandlerTag.formatAddressShortText(selectedAddress) %></span>
 				<span class="invisible addresszip"><%= selectedAddress.getZipCode() %></span>
 				<jsp:include page="/shared/locationbar/location_messages.jsp"/><%
+				if ("futureZoneNotification".equals(action)){
+					%><fd:CmRegistration force="true" wrapIntoScriptTag="true" email='<%= request.getParameter("futureZoneNotificationEmail") %>' address="<%=selectedAddress%>"/><%	
+				} 
 			}		
 		} else {
 			

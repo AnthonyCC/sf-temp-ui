@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -13,7 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -94,7 +94,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
                     }
                     outputRows.append("</td></tr>");
             }
-            outputRows.append("<tr><td colspan=\"3\"><IMG src=\"/media_stat/images/layout/clear.gif\" alt=\"\" WIDTH=\"1\" HEIGHT=\"4\"></td></tr></table></td>");
+            outputRows.append("<tr><td colspan=\"3\"><IMG src=\"/media_stat/images/layout/clear.gif\" WIDTH=\"1\" HEIGHT=\"4\"></td></tr></table></td>");
 
     return outputRows.toString();
 }
@@ -115,7 +115,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     boolean folderShown = false;
     String imagePath = null;
     String imageDim = "";
-    String clearImage = "/media_stat/images/layout/clear.gif"; 
+    String clearImage = "/media_stat/images/layout/clear.gif";
     String unAvailableImg="/media_stat/images/template/not_available.gif";
     String notAvailImgName = "";
     ContentNodeModel parentNode = currentFolder.getParentNode();
@@ -151,7 +151,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     boolean gotAvailProdImg = false;
 %>
 <%-- //start prod display --%>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%         if (displayCategory==null) {
             if (contentNode instanceof ProductModel) {
             displayCategory=(CategoryModel)currentFolder;
@@ -177,15 +177,15 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="MIDDLE">
-	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" border="0"></TD>
+	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD COLSPAN="4" CLASS="text11"><a href="/category.jsp?catId=<%=displayCategory%><%=trkCode%>"><img src="<%=catImg.getPath()%>" width="<%=catImg.getWidth()%>" height="<%=catImg.getHeight()%>" border="0"></a>&nbsp;&nbsp;<%=displayCategory.getBlurb()%></TD>
 </TR>
-<TR VALIGN="MIDDLE"><TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="2" ></TD></TR>
-<TR VALIGN="MIDDLE"><TD COLSPAN="4" BGCOLOR="#DDDDDD"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1"></TD></TR>
+<TR VALIGN="MIDDLE"><TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="2" ></TD></TR>
+<TR VALIGN="MIDDLE"><TD COLSPAN="4" BGCOLOR="#DDDDDD"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1"></TD></TR>
 <TR VALIGN="MIDDLE">
-	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8"></TD>
+	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8"></TD>
 </TR>
 </TABLE>
 <%
@@ -196,7 +196,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="TOP"><TD width="100"><%=col1.toString()%></td><%=outputProducts%></TR>
 <TR>
-<TD width="100"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"></TD><%//=outputUnavailProds%></TR>
+<TD width="100"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"></TD><%//=outputUnavailProds%></TR>
 </TABLE>
 <%
             } else if (unAvailableProds.size()>0) {
@@ -260,7 +260,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
                         col1.append(imageDim);
                         col1.append(">");
                 }
-                col1.append("<br><img src=\""+clearImage+"\" width=\"1\" alt=\"\" height=\"8\"><br><img name=\"");
+                col1.append("<br><img src=\""+clearImage+"\" width=\"1\" height=\"8\"><br><img name=\"");
                 col1.append(notAvailImgName);
                 col1.append("\" SRC=\"");
                 if (folderAsProduct || (product!=null && !product.isUnavailable())) {
@@ -270,7 +270,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
                     col1.append(unAvailableImg);
                 }
                 col1.append("\"");
-                col1.append("width=\"70\" alt=\"\" height=\"9\"");
+                col1.append("width=\"70\" height=\"9\"");
                 col1.append(">");
             }
 
@@ -373,15 +373,15 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="MIDDLE">
-	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" border="0"></TD>
+	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD COLSPAN="4" CLASS="text11"><a href="/category.jsp?catId=<%=displayCategory%><%=trkCode%>"><img src="<%=catImg.getPath()%>" width="<%=catImg.getWidth()%>" height="<%=catImg.getHeight()%>" border="0"></a>&nbsp;&nbsp;<%=displayCategory.getBlurb()%></TD>
 </TR>
-<TR VALIGN="MIDDLE"><TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="2" ></TD></TR>
-<TR VALIGN="MIDDLE"><TD COLSPAN="4" BGCOLOR="#DDDDDD"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1"></TD></TR>
+<TR VALIGN="MIDDLE"><TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="2" ></TD></TR>
+<TR VALIGN="MIDDLE"><TD COLSPAN="4" BGCOLOR="#DDDDDD"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1"></TD></TR>
 <TR VALIGN="MIDDLE">
-	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8"></TD>
+	<TD COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8"></TD>
 </TR>
 </TABLE>
 <%
@@ -393,7 +393,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="TOP"><TD width="100"><%=col1.toString()%></td><%=outputProducts%></TR>
 <TR>
-<TD width="100"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"></TD><%//=outputUnavailProds%></TR>
+<TD width="100"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"></TD><%//=outputUnavailProds%></TR>
 </TABLE>
 <% }
 } else if (unAvailableProds.size() > 0) { // move the stuff into the deferred list.

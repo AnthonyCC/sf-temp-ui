@@ -14,6 +14,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
@@ -30,16 +40,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.GetProductFilterTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -76,7 +76,7 @@ public class CouponBrowseController extends BaseController {
     				products.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
     			} catch (ModelException e) {
     				// TODO Auto-generated catch block
-    				//e.printStackTrace();
+    				e.printStackTrace();
     			}
         	}
         	for(Product p:products) {

@@ -1,12 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -19,12 +16,12 @@ final int W_BDNML_LEFT = 150;
 final int W_BDNML_CENTER = 629;
 final int W_BDNML_RIGHT = 191;
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-     <tmpl:get name="seoMetaTag"/>
-<%-- 	<title><tmpl:get name='title'/></title> --%>
+	<title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
@@ -45,6 +42,7 @@ final int W_BDNML_RIGHT = 191;
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" 
 	onload="<%= request.getAttribute("bodyOnLoad")%>" 
 	onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 <%
 	//
 	// annotation mode, add overlib stuff
@@ -70,7 +68,7 @@ final int W_BDNML_RIGHT = 191;
 				<% if ( request.getParameter("catId") !=null && ContentFactory.getInstance().getContentNode(request.getParameter("catId")) instanceof RecipeCategory) {
 					
 					// go find the recipeDepartment...(should be a method on contentFactory
-					ContentType cType = ContentType.RecipeDepartment;
+					ContentType cType = ContentType.get("RecipeDepartment");
 					Set s = CmsManager.getInstance().getContentKeysByType(cType);
 					// there can only be one (hmmmm, the Highlander effect)
 					RecipeDepartment rcpDept = null;

@@ -1,45 +1,9 @@
-body[developer] *:focus {
-   outline: #5fb069 solid 2px;
-  
-}
-:focus{
-	outline: #5fb069 solid 2px;
-}
-/* exceptions for focus */
-
-div#skip_to_content,
-.locabar-tab-fdx-cont,
-body:focus,
-html:focus,
-div:focus,
-*:active,
-a.accessibleOutlineFF:focus,
-cssbutton:focus,
-tr:focus,
-td:focus,
-fieldset:focus,
-.tabbed-carousel .tabs li:focus,
-#quickshop .qs-tabs a:focus,
-a.portrait-item-header-name:focus,
-[data-component="categorylink"]:focus,
-div#topnavitem_signup a,
-div#topnavitem_standingorders a,
-.dropdown-column li a:focus,
-.subdepartments > li > span > a:link{
-	outline:none;
-}
-.portrait-item-header-name{
-	display:block;
-}
-a.portrait-item-header-name:focus,[data-component="categorylink"]:focus .name{
-	text-decoration:underline !important;
-}
 /* disable ipad highlight */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-h3.centerline {
+h2.centerline {
   position: relative;
   display: block;
   height: 16px;
@@ -47,7 +11,7 @@ h3.centerline {
   border-top: 1px solid #cccccc;
 }
 
-h3.centerline span {
+h2.centerline span {
   position: relative;
   top: -13px;
   padding: 0 10px;
@@ -57,7 +21,7 @@ h3.centerline span {
   font-weight: bold;
 }
 
-.lt-ie8 h3.centerline span {
+.lt-ie8 h2.centerline span {
   top: -21px;
 
   zoom: 1;
@@ -172,14 +136,7 @@ h3.centerline span {
 
 .quantity_plus span,
 .quantity_minus span {
-  /*   display: none; */
-  position: absolute; 
-  overflow: hidden; 
-  clip: rect(0 0 0 0); 
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0; border: 0;
+  display: none;
 }
 
 .quantity_plus {
@@ -220,10 +177,12 @@ h3.centerline span {
   -webkit-user-select: none;
 }
 
-.qtyinput > button > div {/* display: none; */}
+.qtyinput > button > div {
+  display: none;
+}
 
 .qtyinput .qtywrapper > label > span {
-/*   display: none; */
+  display: none;
 }
 
 .qtyinput.small {
@@ -247,7 +206,7 @@ h3.centerline span {
 #i_viewcart .quantity_col {
   text-align:center;
   font-size:0;
-  /* width:100px; */
+  width:100px;
 }
 
 #vieworder_table select,
@@ -279,6 +238,7 @@ h3.centerline span {
 .qtyinput_fixedwidth {
   width: 100px;
 }
+
 .qtyinput .qtyprice {
   font-weight: bold;
 }
@@ -316,8 +276,7 @@ h3.centerline span {
    	cursor: default;
 }
 
-#popupcart .content .cartline[data-freeproduct='true'] .price,
-#popupcart .content .cartline .price.product-price-free{
+#popupcart .content .cartline[data-freeproduct='true'] .price.product-sample-free{
 	color: #c00;
 	font-weight: bold;
 }
@@ -400,23 +359,8 @@ section.main .breadcrumbs {
   list-style-type: none;
   margin: 0 0 20px;
   border-bottom: 1px solid #e0e3d0;
-  color: #408244;
+  color: #458b4c;
   text-decoration: underline;
-}
-
-section.main .browse-breadcrumbs-department .breadcrumbs {
-  padding: 6px 0 13px 0;
-  margin: 0;
-  border-bottom: none;
-}
-
-section.main .browse-breadcrumbs-category .breadcrumbs {
-	padding: 6px 0 0 0;
-	margin-bottom: 10px;
-	border-bottom: 1px solid #e0e3d0;
-}
-section.main .browse-breadcrumbs-subcategory .breadcrumbs {
-  border-bottom: none;
 }
 
 section.main .breadcrumbs li {
@@ -453,7 +397,6 @@ section.main .pager {
   overflow: hidden;
   padding: 5px;
   margin: 5px 0 5px;
-  height: 22px;
 }
 
 section.main .pager .pagination {
@@ -531,18 +474,17 @@ section.main .leftnav {
   padding-top: 10px;
 }
 
-section.main .leftnav h3.menuName {
+section.main .leftnav h2.menuName {
   font-size: 12px;
   color: #333;
   text-transform: uppercase;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
-  padding-left: 3px;
 }
 
 section.main .leftnav .menuBox {
   position: relative;
-  margin-top: 10px;
+  margin-top: 16px;
   background: #fffffa;
   border: 1px solid #dce6be;
   border-radius: 3px;
@@ -559,16 +501,16 @@ section.main .leftnav .menuBox .cssbutton {
   margin-top: 0;
 }
 
-.srch section.main .leftnav .menuBox:first-child h3 {
+.srch section.main .leftnav .menuBox:first-child h2 {
   margin-top: 3px;
 }
 
-section.main .leftnav h3 + .menuBox {
+section.main .leftnav h2 + .menuBox {
   margin-top: 10px;
 }
 
 section.main .leftnav .menuBox[data-selectiontype="LINK"] + .menuBox {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 section.main .leftnav .menuBox + .menuBox[data-selectiontype="LINK"] {
@@ -583,7 +525,7 @@ section.main .leftnav .menuBoxPadded {
 	padding-top: 30px !important;
 }
 
-section.main .leftnav .menuBox h3 {
+section.main .leftnav .menuBox h2 {
   font-size: 12px;
   font-weight: bold;
   color: #3d3d20;
@@ -595,7 +537,7 @@ section.main .leftnav .menuBox h3 {
   text-overflow: ellipsis;
 }
 
-section.main .leftnav .menuBox[data-selectiontype="LINK"] h3 {
+section.main .leftnav .menuBox[data-selectiontype="LINK"] h2 {
   display: none;
 }
 
@@ -725,9 +667,8 @@ section.main .leftnav .menuBox hr {
   padding: 0 5px;
   border-radius: 3px;
 }
-/* bug fix for Firefox */
-.no-touch .browse-popup-content li label:hover > span > span,
-.browse-popup-content li label:hover > span > span  {
+
+.no-touch .browse-popup-content li label:hover > span > span  {
   text-decoration: underline;
 }
 
@@ -891,19 +832,12 @@ section.main .leftnav .backbutton {
   text-align: center;
 }
 
-section.tabs .tabcontent .msback {
-  text-align: center;
-  float: right;
-}
-
-section.tabs .tabcontent a.back,
 section.main .leftnav button.back {
   color: #693;
   background: #fff;
   border: 1px solid #693;
 }
 
-section.tabs .ltabcontent a.back:hover,
 section.main .leftnav button.back:hover {
   background: #eee;
 }
@@ -980,9 +914,6 @@ section.main .leftnav .menuBox button.category.emptypopup {
     font-weight: bold;
     color: #333;
 }
-.wallet-title-footer {
-	padding-top: 20px;
-}
 .errorcontainer span.error em {
   font-style: normal;
   text-transform: lowercase;
@@ -1043,6 +974,7 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     left: 19px;
     cursor: pointer;
 }
+.wallet-first-card{ padding-left: 18px;}
 #PP-connect{
 	float: left;
     vertical-align: middle;
@@ -1095,11 +1027,6 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     opacity: .7;
 }
 
-.draftIndicator button {
-    cursor: pointer;
-    pointer-events: visible;
-}
-
 .draftIndicator[draft-name="main"],
 .draftIndicator[draft-name="Main"],
 .draftIndicator[draft-name="MAIN"] {
@@ -1116,15 +1043,16 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     text-decoration: underline;
     pointer-events: auto;
 }
-/* why are these duplicated from expressco.css? */
+
 .wallet-error-msg{
 	padding-bottom: 4px;
 }
 .wallet-error-msg span{
 	color: #c94747;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: bold;
     vertical-align: top;
+	width: 180px;
     display: inline-block;
     text-align: left;
     margin-left: 4px;
@@ -1141,37 +1069,4 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 }
 #PP_ERROR_WRAPPER #PP-connect{
     margin: 0;
-}
-.accessibleblurinput{
-	background-color:transparent;
-	border:1px inset;
-	user-select:none;
-	width:60px;
-}
-button.quantity_minus:focus,button.quantity_plus:focus,a.quantity_minus:focus,a.quantity_plus:focus{
-    background-color: #5fb067 !important;
-    border-color: #306238 !important;
-    box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
-    outline:none !important;
-}
-a.menu-header.header-skin.reset-link:focus{
-	background-color: #5fb067 !important;
-    border-color: #306238 !important;
-    box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
-	
-}
-button.standing-orders-3-so-settings-item-name-change:focus,#quickshop .qs-tabs a:focus {
-    text-decoration:underline !important;
-}
-/* a.header-logo:focus{ */
-/* 	outline: #5fb069 solid 2px !important; */
-/* } */
-a.lv-link:focus {
-    outline: 2px solid #5fb069;
-    display: inline-block;
-}
-input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
-	background-color: #ffff;
-    border: 1px solid #0000006e;
-    text-align: right;
 }

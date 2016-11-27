@@ -1,7 +1,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
@@ -19,11 +19,7 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 
 <%@page import="com.freshdirect.framework.util.DateUtil"%><fd:CheckLoginStatus />
 <tmpl:insert template='/common/template/robinhood.jsp'>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Donation</tmpl:put> --%>
- <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Donation"></fd:SEOMetaTag>
-  </tmpl:put>
-	
+	<tmpl:put name='title' direct='true'>FreshDirect - Donation</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
 		<%
@@ -137,7 +133,7 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 								<%} %>
 								
 							</tr>
-							<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td></tr>
+							<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td></tr>
 							<tr>
 								<td align="right" colspan="2"><a href="">
 									<input type="image" src="/media_stat/images/donation/robinhood/landing/btn_continue.gif" width="98" height="34" alt="Continue" name="rhLand_continue" id="rhLand_continue" border="0" onclick="$('rh_form').submit();return false;" />
@@ -155,10 +151,10 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 			}
 		%>
 			<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 			<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
 
 		</table>

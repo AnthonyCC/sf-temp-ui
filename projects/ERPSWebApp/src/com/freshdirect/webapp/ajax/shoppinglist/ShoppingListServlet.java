@@ -12,14 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.cache.CmsCaches;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -30,10 +33,6 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeVariant;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
@@ -41,30 +40,30 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 public class ShoppingListServlet extends BaseJsonServlet {
 
 	private static final long	serialVersionUID	= 4376343201345823580L;
-
+	
 	private static final Logger LOG = LoggerFactory.getInstance( ShoppingListServlet.class );
-
-
+	
+	
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false; //no need to synchronize
 	}
-
+	
 	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.GUEST;
-	}
+	}	
 
 	@Override
-	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {        
         getInternal( request, response, user, false, null );
 	}
-
+	
 	private static void getInternal( HttpServletRequest request, HttpServletResponse response, FDUserI user, boolean shoppingListPageRefreshNeeded, List<AddToListResponseItem> responseItems ) throws HttpErrorResponse {
-		try {
+		try {			
 			// Collect data
 			List<ShoppingListInfo> listInfos = collectListInfos( user );
-
+			
 			// Create response data object
 			ShoppingListResponseData responseData = new ShoppingListResponseData();
 			responseData.setListInfos( listInfos );
@@ -74,28 +73,28 @@ public class ShoppingListServlet extends BaseJsonServlet {
 				responseData.setListInfos( null );
 			};
 			writeResponseData( response, responseData );
-
+			
 		} catch ( Exception e ) {
 			returnHttpError( 500, "Error while getting shopping list infos for user " + user.getUserId(), e );	// 500 Internal Server Error
 		}
 	}
-
+	
 	@Override
 	protected void doPut( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
-
+		
 		if ( user.getLevel() < FDUserI.SIGNED_IN ) {
-        	// User did not login. Login required for delete/modify.
+        	// User did not login. Login required for delete/modify. 
         	returnHttpError( 401, "User not logged in!" );	// 401 Unauthorized
 		}
-
+                
 		// Parse request data
 		ShoppingListRequestData reqData = parseRequestData( request, ShoppingListRequestData.class );
-
-		List<ShoppingListChange> newListInfos = reqData.getListInfos();
+		 
+		List<ShoppingListChange> newListInfos = reqData.getListInfos(); 
 		if ( newListInfos == null ) {
 			returnHttpError( 400, "Bad JSON - listInfos is missing" );	// 400 Bad Request
 		}
-
+		
 		List<ShoppingListInfo> oldListInfos = collectListInfos( user );
 		Set<String> oldListIds = new HashSet<String>();
 		for ( ShoppingListInfo inf : oldListInfos ) {
@@ -110,48 +109,48 @@ public class ShoppingListServlet extends BaseJsonServlet {
 				LOG.warn( "Missing ID for shopping list change request, skipping." );
 				continue;
 			}
-
+			
 			if ( !oldListIds.contains( listId ) ) {
 				// It's not your list!
 				LOG.warn( "Invalid ID for shopping list change request : "+listId+" - list belongs to another customer or does not exist, skipping." );
 				continue;
 			}
-
+			
 			// ====== DELETE ======
 			if ( newInfo.isDelete() ) {
 				deleteList(user, listId);
 				continue;
 			}
 
-
+			
 			// ====== SET DEFAULT LIST ======
 			if ( newInfo.isDefault() ) {
 				user.setDefaultListId( newInfo.getListId() );
 			}
 
-
+			
 			// ====== RENAME ======
-			String newName = newInfo.getName();
+			String newName = newInfo.getName(); 
 			if ( newName != null && !newName.trim().equals( "" ) ) {
 				renameList(newInfo, listId, newName);
 				continue;
 			}
-
+			
 			if (newInfo.isEmpty()) {
 				deleteListItems(user, listId);
 				continue;
 			}
 		}
-
+		
 		//invalidate cache entry TODO: partial invalidation?
-        CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName, user.getIdentity().getErpCustomerPK());
-
+		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		
 		// Save user
 		saveUser( user );
-
+		
 		// Query and send back the new state
         getInternal( request, response, user, true, null );
-
+        
 	}
 
 	private void deleteListItems(FDUserI user, String listId) {
@@ -188,37 +187,37 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			LOG.error( "Failed to delete list: "+listId, e );
 		}
 	}
-
-
+	
+	
 	@Override
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
-
+		
 		// POST requires at least RECOGNIZED
 		if ( user.getLevel() < FDUserI.RECOGNIZED ) {
-        	// User level not sufficient.
+        	// User level not sufficient. 
         	returnHttpError( 401, "User auth level not sufficient!" ); // 401 Unauthorized
 		}
-
+        
 		// Parse request data
 		AddToListRequestData reqData = parseRequestData( request, AddToListRequestData.class );
-
-		String listId = reqData.getListId();
+		
+		String listId = reqData.getListId();		
 		String recipeId = reqData.getRecipeId();
 		String newListName = reqData.getListName();
 		String recipeName = null;
-
+		
 		if ( listId == null ) {
-			// Creating new list - just validate at this point
+			// Creating new list - just validate at this point			
 			if ( newListName == null || newListName.trim().equals( "" ) ) {
 				returnHttpError( 400, "No list name provided for new list" );	// 400 Bad Request
 			}
-
+			
 		} else if ( recipeId != null ) {
 			returnHttpError( 400, "Creating list from recipe only works when creating new list!" );	// 400 Bad Request
 		}
-
+		
 		List<AddToCartItem> items = null;
-
+		
 		if ( recipeId != null ) {
 			// Collect items from recipe ingredients
 			items = new ArrayList<AddToCartItem>();
@@ -227,32 +226,32 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			// Use item list from request
 			items = reqData.getItems();
 		}
-
+		
 		if ( items == null ) {
 			returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
 		}
-
+		
 		boolean listCreated = false;
 		if ( listId == null ) {
 			// Creating new list - now create the new list for real
-			try {
-
+			try {				
+				
 				listId = createList( user, newListName );
 				listCreated = true;
-
+				
 				//set the new list as default (if there is no default already)
 				if(user.getDefaultListId()==null || user.getDefaultListId().isEmpty()){
-					user.setDefaultListId( listId );
+					user.setDefaultListId( listId );					
 				}
-
+				
 			} catch ( FDResourceException e ) {
 				returnHttpError( 500, "System error (FDResourceException)", e );	// 500 Internal Server Error
 			} catch ( FDCustomerListExistsException e ) {
 				returnHttpError( 400, "List with same name already exists!", e );	// 400 Bad Request
 			}
-
+			
 		}
-
+		
 		// Get the list
 		FDCustomerList list = null;
 		try {
@@ -260,68 +259,68 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		} catch ( FDResourceException e ) {
 			returnHttpError( 500, "System error (FDResourceException)", e );	// 500 Internal Server Error
 		}
-
+		
 		if ( list == null ) {
 			returnHttpError( 500, "Failed to get shopping list : " + listId );	// 500 Internal Server Error
 		}
-
+		
 		//prepare response items holder
 		List<AddToListResponseItem> responseItems = new ArrayList<AddToListResponseItem>();
 		// Add items to list
 		addItemsToList( list, items, recipeId, recipeName, responseItems, listCreated );
 
-
+		
 		// Save list
 		try {
 			FDListManager.storeCustomerList(list);
 		} catch ( FDResourceException e ) {
 			returnHttpError( 500, "System error (FDResourceException) - couldn't persist shopping list", e );	// 500 Internal Server Error
-		}
-
+		}			
+		
 		//invalidate cache entry TODO: partial invalidation?
-        CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName, user.getIdentity().getErpCustomerPK());
-
+		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+	
 		// Save user
 		saveUser( user );
-
+					
 		getInternal(request, response, user, true, responseItems);
-
+		
 	}
 
 
 	private static void addItemsToList( FDCustomerList list, List<AddToCartItem> items, String recipeId, String recipeName, List<AddToListResponseItem> responseItems, boolean listCreated ) {
-
+		
 		for ( AddToCartItem item : items ) {
-
+			
 			AddToListResponseItem responseItem = new AddToListResponseItem();
 			try {
 				FDCustomerProductListLineItem listItem = createListLineItem(item, recipeId, false);
 				list.addLineItem( listItem );
-
+				
 				//create response item
 				responseItem.setItemName(listItem.getFullName());
 				responseItem.setMessage("Added to List");
 			} catch (FDResourceException e) {
 				responseItem.setMessage("Item not added to list: " + item.getLineId());
 			}
-
+			
 			responseItem.setLineId(item.getLineId());
 			responseItem.setListId(list.getId());
 			responseItem.setListName(list.getName());
 			responseItem.setListCreated(listCreated);
 			responseItems.add(responseItem);
 		}
-
+		
 		// Set recipe id for list
 		list.setRecipeId( recipeId );
 		list.setRecipeName(recipeName);
 		list.seteStoreType(ContentFactory.getInstance().getStore().getContentName());
 	}
-
+	
 	public static FDCustomerProductListLineItem createListLineItem(AddToCartItem item, String recipeId, boolean editItem) throws FDResourceException{
 		// extra fail-safe sales-unit/quantity handling
 		double quantity = CartOperations.extractQuantity( item );
-
+		
 		if ((item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty()) &&  quantity == 0.0) {
 			// has no sales-unit, nor quantity set => skip item
 			LOG.warn("Warning: skipped item " + item.getSkuCode() + ", because of missing quantity and sales-unit.");
@@ -347,7 +346,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 				throw new FDResourceException(e);
 			}
 		}
-
+		
 		// Paranoid check
 		if ( item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty() ) {
 			LOG.warn( "Missing salesunit!" );
@@ -357,20 +356,20 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		// create and add list item
 		FDConfiguration config = new FDConfiguration(quantity, item.getSalesUnit(), item.getConfiguration());
 		FDCustomerProductListLineItem listItem = new FDCustomerProductListLineItem(item.getSkuCode(), config, recipeId);
-
+		
 		if(editItem && item.getLineId()!=null){
-			listItem.setId(item.getLineId());
+			listItem.setId(item.getLineId());			
 		}
-
+		
 		return listItem;
 	}
 
 
 	private static String collectRecipeIngredients(List<AddToCartItem> items, String recipeId, String recipeVariantId ) {
 		//Collect recipe ingredients
-		Recipe recipe = (Recipe)ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.get( ContentType.Recipe, recipeId ) );
+		Recipe recipe = (Recipe)ContentFactory.getInstance().getContentNodeByKey( new ContentKey( ContentType.get( "Recipe" ), recipeId ) );
 		RecipeVariant recipeVariant = null;
-
+		
 		if( recipeVariantId != null ) {
 			List<RecipeVariant> variants = recipe.getVariants();
 			for ( RecipeVariant var : variants ) {
@@ -379,13 +378,13 @@ public class ShoppingListServlet extends BaseJsonServlet {
 					break;
 				}
 			}
-		}
+		}		
 		if ( recipeVariant == null ) {
 			recipeVariant = recipe.getDefaultVariant();
 		}
-
+		
 		List<ConfiguredProduct> ingredients = recipeVariant.getSections().get( 0 ).getIngredients();
-
+		
 		for ( ConfiguredProduct product : ingredients ) {
 			if (product.getProduct() != null) {
 				AddToCartItem item = new AddToCartItem();
@@ -401,14 +400,14 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		}
 		return recipe.getName();
 	}
-
+	
 	private static List<ShoppingListInfo> collectListInfos( FDUserI user ) {
 		String defaultListId = user.getDefaultListId();
 		List<FDCustomerListInfo> lists = user.getCustomerCreatedListInfos();
 		if ( lists == null ) {
 			return new ArrayList<ShoppingListInfo>();
 		}
-
+		
 		List<ShoppingListInfo> listInfos = new ArrayList<ShoppingListInfo>( lists.size() );
 		for ( FDCustomerListInfo list : lists ) {
 			if(list.geteStoreType()!=null&&list.geteStoreType().equalsIgnoreCase(ContentFactory.getInstance().getStore().getContentName())){
@@ -421,31 +420,31 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			listInfos.add( info );
 			}
 		}
-
+		
 		Collections.sort( listInfos, new Comparator<ShoppingListInfo>() {
 			@Override
 			public int compare( ShoppingListInfo o1, ShoppingListInfo o2 ) {
 				// Default list is always the first
 				if ( o1.isDefault() )
-					return -1;
+					return -1;				
 				if ( o2.isDefault() )
 					return 1;
-
+				
 				// Sort the rest alphabetically
 				return o1.getName().compareToIgnoreCase( o2.getName() );
 			}
 		} );
-
+		
 		return listInfos;
 	}
-
+		
 	private static String createList( FDUserI user, String name ) throws FDResourceException, FDCustomerListExistsException {
 		String newId = FDListManager.createCustomerCreatedList( user, name );
 		user.invalidateCache();
 		return newId;
 	}
-
-
+	
+	
 	@SuppressWarnings( "unused" )
 	private static void removeLineItem(FDUserI user, String lineId) throws FDResourceException {
 		FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));

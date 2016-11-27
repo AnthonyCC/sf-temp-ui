@@ -1,4 +1,22 @@
+/* font-face declarations */
 
+@font-face {
+	font-family: 'Eagle-Light';
+	src: url('/assets/css/fonts/eagle-light-webfont.eot');
+	src: local('☺'), url('/assets/css/fonts/eagle-light-webfont.woff') format('woff'), url('/assets/css/fonts/eagle-light-webfont.ttf') format('truetype'), url('/assets/css/fonts/eagle-light-webfont.svg#webfont6RHzfdZb') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Eagle-Bold';
+	src: url('/assets/css/fonts/eagle-bold-webfont.eot');
+	src: local('☺'), url('/assets/css/fonts/eagle-bold-webfont.woff') format('woff'), url('/assets/css/fonts/eagle-bold-webfont.ttf') format('truetype'), url('/assets/css/fonts/eagle-bold-webfont.svg#webfontXlJgVHrD') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* font-face declarations end */
 
 .deptnav-lastrow {
 	display:none;
@@ -49,17 +67,17 @@ h1.pdpTitle,
 	display: inline;
 }
 
-div.cssbutton.annotation,
-div.cssbutton.annotation:hover {
+span.cssbutton.annotation,
+span.cssbutton.annotation:hover {
   display:none;
   color: #000;
   overflow: hidden;
 }
 
-.pdp .productDisplay-akaName {
-	font-family:Verdana,sans-serif;
+.pdp h1 .productDisplay-akaName {
+  font-family:Verdana,sans-serif;
 	font-size:16px;
-	font-weight: normal;
+  font-weight: normal;
 	color:#333;
 	margin:2px 0 0 0;
 }
@@ -218,7 +236,6 @@ div.cssbutton.annotation:hover {
 .pdp .pdp-productconfig {
 	overflow:hidden;
 	clear:both;
-	padding: 20px 0 0;
 }
 
 .pdp .scale-deal {
@@ -278,10 +295,9 @@ div.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata {
-	padding: 10px 17px;
-	background-color: #f7f7f7;
+	margin-top:20px;
+	margin-bottom:20px;
 	font-weight:normal;
-	border-bottom: 1px solid #dce6be;
 }
 
 .pdp-atcdata .skucontrol-variations i {
@@ -291,7 +307,7 @@ div.cssbutton.annotation:hover {
 .pdp-atcdata .skucontrol-salesunit b {
 	display:block;
 	margin-bottom:15px;
-	font-size:14px;
+	font-size:12px;
 	font-family:Verdana,sans-serif;
 }
 
@@ -300,8 +316,8 @@ div.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata hr{
-	margin: 0;
-	height: 0;
+	margin-top:0px;
+	margin-bottom:20px;
 }
 
 .pdp-atcdata .salesunit{
@@ -349,9 +365,7 @@ div.cssbutton.annotation:hover {
 
 .pdp-atc {
 	min-height:70px;
-	border: 0;
-	padding: 17px 17px 10px;
-	background-color: #f7f7f7;
+	margin-top:20px;
 }
 
 .pdp-atc-buttons {
@@ -359,9 +373,11 @@ div.cssbutton.annotation:hover {
 }
 
 .pdp-atc-button-wrapper {
-	display:block;
+	display:inline-block;
 	position:relative;
-	margin-top: 22px;
+	/*margin-bottom:16px;*/
+	margin-left:7px;
+	margin-top: 16px;
 }
 
 .pdp-atc-button-wrapper .atc-info {
@@ -397,9 +413,7 @@ div.cssbutton.annotation:hover {
   font-weight:normal;
   cursor: pointer;
 }
-.pdp-atc #pdp-atc-addtolist{
-	margin: auto;
-}
+
 
 .pdp .pdp-evenbetter hr {
 	margin:20px 0;
@@ -409,7 +423,7 @@ div.cssbutton.annotation:hover {
 	position:relative;
 }
 
-.pdp .pdp-evenbetter .header {
+.pdp .pdp-evenbetter h2 {
 	font-family:"EagleBook";
 	font-size:21px;
 	color:#98659d;
@@ -417,15 +431,15 @@ div.cssbutton.annotation:hover {
 	font-weight:normal;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	-moz-osx-font-smoothing: grayscale;		
 }
 
-.pdp .pdp-evenbetter .header.familyproducts,
-.pdp .pdp-evenbetter .header.groupProducts {
+.pdp .pdp-evenbetter h2.familyproducts,
+.pdp .pdp-evenbetter h2.groupProducts {
 	color: #C00;
 }
 
-.pdp .pdp-likethat .header {
+.pdp .pdp-likethat h2 {
   font-family: Verdana, Arial, sans-serif;
   color:#333;
   font-size:20px;
@@ -467,6 +481,7 @@ div.cssbutton.annotation:hover {
 }
 
 .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
+  padding: 7px;
   font-size: inherit;
 }
 
@@ -579,7 +594,6 @@ div.cssbutton.annotation:hover {
 	border-bottom-right-radius:10px;
 	font-weight:normal;
 	text-shadow:none;
-	display:none;
 }
 
 #evenBetterPopup .pdp-evenbetter-learnmore:hover {
@@ -595,7 +609,7 @@ div.cssbutton.annotation:hover {
 	right:8px;
 	width:28px;
 	height:24px;
-	background-position:-122px -202px;
+	background-position:-122px -202px; 
 }
 
 
@@ -656,7 +670,7 @@ div.cssbutton.annotation:hover {
 	font-size:14px;
 }
 
-.pdp-evenbetter-price,
+.pdp-evenbetter-price, 
 .pdp-evenbetter-savestring {
 	display:inline;
 	margin-left:0.5em;
@@ -686,7 +700,7 @@ div.cssbutton.annotation:hover {
 .pdp .pdp-evenbetter-atc {
 	text-align: left;
 	background: white;
-	padding: 5px 15px 0 0;
+	padding: 0 15px 0 0;
 	width: 231px;
 	margin: 0 0 10px auto;
 	max-height:0;
@@ -704,60 +718,6 @@ div.cssbutton.annotation:hover {
 }
 
 #evenBetterPopup .skucontrol-variations {
-}
-/* Quantity Picker Overrides */
-.pdp-atc .pdp-atc-buttons .qtyinput,
-#evenBetterPopup .pdp-evenbetter-quantity .qtyinput,
-#evenBetterPopup .pdp-evenbetter-quantity {
-    width: auto;
-}
-.pdp-atc .quantity_plus,
-.pdp-atc .quantity_minus,
-.evenbetter-popup .quantity_plus,
-.evenbetter-popup .quantity_minus{
-    width: 36px;
-    color: #ffffff;
-    background-color: #4fa157;
-    border: 1px solid #4fa157;
-    height: 34px;
-    line-height: 32px;
-    font-size: 24px;
-	font-family: Verdana;
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    background-image: none;
-    text-decoration: none;
-    text-indent: 0;
-    padding: 0;
-    border-radius: 3px;
-    transition: background-color 0.12s ease-in-out 0s;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.pdp-atc .quantity_plus:hover,
-.pdp-atc .quantity_minus:hover,
-#evenBetterPopup .quantity_plus:hover,
-#evenBetterPopup .quantity_minus:hover{
-    background-color: #458d4e;
-    border: 1px solid #458d4e;
-}
-.pdp-atc .qtyinput input.qty,
-#evenBetterPopup .qtyinput input.qty {
-    width: 58px;
-    height: 36px;
-    font-size: 18px;
-    font-weight: bold;
-    margin: -1px 3px 0;
-    border: 2px #c2c2c2 solid;
-}
-.pdp-atc .qtyinput input.qty:hover,
-#evenBetterPopup input.qty:hover{
-    border-color: #68aa6d;
 }
 
 .pdp .skucontrol-variations-item select,
@@ -847,14 +807,14 @@ div.cssbutton.annotation:hover {
 	text-align:center;
     font-size:18px;
     color:#FFF;
-    line-height:27px;
+    line-height:27px;	
     float:left;
     position:relative;
     margin-left:-37px;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-
+	-moz-osx-font-smoothing: grayscale;		
+    
 }
 
 .pdp-freshness p{
@@ -864,7 +824,7 @@ div.cssbutton.annotation:hover {
 }
 
 .pdp-freshness img{
-	margin-left:-37px;
+	margin-left:-37px;	
 }
 
 .pdp-freshness .guarfresh{
@@ -875,7 +835,7 @@ div.cssbutton.annotation:hover {
 	line-height:27px; /* same as .pdp-freshness .days */
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	-moz-osx-font-smoothing: grayscale;		
 	text-decoration: none;
 }
 
@@ -884,7 +844,7 @@ div.cssbutton.annotation:hover {
 	text-decoration: none;
 }
 
-.pdp-freshness a:hover .atleast,
+.pdp-freshness a:hover .atleast, 
 .pdp-freshness a:active .atleast {
 	text-decoration: underline;
 }
@@ -903,7 +863,7 @@ div.cssbutton.annotation:hover {
 }
 
 .thumbnails img, .vertic-rule{
-  display:inline-block;
+  display:inline-block;  
   vertical-align:middle;
 }
 
@@ -938,7 +898,7 @@ div.cssbutton.annotation:hover {
 	cursor:auto;
 }
 
-.main-image .hd{
+.main-image .hd{ 
   left:362px;
   top:0px;
 
@@ -953,7 +913,7 @@ div.cssbutton.annotation:hover {
   background-repeat:no-repeat;
    */
 
-  overflow:hidden;
+  overflow:hidden; 
 
   box-shadow: 4px 4px 8px rgba(0,0,0,.5);
   border-radius:15px;
@@ -1004,17 +964,11 @@ button#pdp-atc-addtolist,
   padding: 10px 0;
   text-align: center;
 }
-.pdp-productconfig .pdp-atc .cssbutton[data-component="ATCButton"]{
-	width: 100%;
-}
+
 .pdp-accordion-item > div > table > tbody > tr > td,
 .pdp-accordion-item > div > table > tr > td {
   max-width: 300px;
 }
-.pdp-accordion-item > div > table > tbody > tr > td {
-padding-top:7px;
-}
-
 
 .ie8 .pdp-ecoupon{
   margin-bottom:-25px;
@@ -1031,7 +985,7 @@ padding-top:7px;
   margin:0 auto;
   width:450px;
   min-height:25px; /* max icon height is 22px */
-
+  
   border:1px solid #CC3300;
   /* rounded borders */
   -moz-border-radius: 10px;
@@ -1048,9 +1002,9 @@ padding-top:7px;
   bottom:0;
   left:0;
   width:18px;
-
+  
   background: #CC3300 url('/media_stat/images/template/system_msgs/exclaim_CC3300.gif') no-repeat center center;
-
+  
 /* rounder borders */
 -webkit-border-top-left-radius: 6px;
 -webkit-border-bottom-left-radius: 6px;
@@ -1071,6 +1025,7 @@ border-bottom-left-radius: 6px;
 }
 .width100 {
 	width:100%;
+	float:left;
 }
 .width50 {
 	width:50%;
@@ -1083,43 +1038,3 @@ border-bottom-left-radius: 6px;
 .floter_right {
 	float:right;
 }
-
-.subtotal-price-estimated {
-	padding-left: 10px;
-}
-.subtotal-price-estimated-additional {
-	color: #717171;
-	margin: 8px 0 0 15px;
-	white-space: normal;
-	width: 190px;
-	font-size: 12px;
-	line-height: 15px;
-}
-/*links in the pdp-accordion in pdp page */
-.pdp-accordion>li>div[aria-hidden="true"] {
-    visibility: hidden;
-}
-/* accessibility change */
-a.pdp-accordion-recipes-item {
-    padding-top: 7px;
-    outline: none;
-}
-/* Fix for extra wide overflow of select box in Pdp page */
-.pdp .span-8 select {
-    max-width: calc( 100% - 32px);
-}
-/* accessibility change for checkbox in pdp customize 
-.pdp .skucontrol-variations input[type="checkbox"]{
-	background-color:#fefefe;
-	
-}
-.pdp .skucontrol-variations input[type="checkbox"]:focus{
-	background-color: #fefefe;
-	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
-	border:none;
-}
-.pdp .skucontrol-variations input[type="checkbox"]:hover{
-	border:none;
-	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
-}
-*/

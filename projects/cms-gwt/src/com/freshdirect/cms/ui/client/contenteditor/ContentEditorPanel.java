@@ -25,26 +25,23 @@ import com.freshdirect.cms.ui.client.ActionBar;
 import com.freshdirect.cms.ui.client.Anchor;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.DetailPanel;
-import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.PreviewAnchor;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.client.action.SaveNodeAction;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
-import com.freshdirect.cms.ui.client.publish.PublishProgressListener;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.google.gwt.user.client.Window;
 
-public class ContentEditorPanel extends DetailPanel implements PublishProgressListener {
+public class ContentEditorPanel extends DetailPanel {
 
     private GwtNodeData contentNode;
     private NodeTree treePanel;
     private ActionBar actionBar;
     private Anchor compareLink;
     private Anchor compareCancelLink;
-    private Button saveButton;
     private Container<?> editorComponent; // root editor component
     private CompareNodesUtil compareUtil;
     private PreviewAnchor previewLink;
@@ -52,7 +49,6 @@ public class ContentEditorPanel extends DetailPanel implements PublishProgressLi
 
     public ContentEditorPanel() {
         setBorders(false);
-        MainLayout.getInstance().registerPublishProgressListener(this);
     }
 
     public void setupLayout() {
@@ -98,7 +94,7 @@ public class ContentEditorPanel extends DetailPanel implements PublishProgressLi
     protected void prepareButtons() {
         /** SAVE & DISCARD */
         if (contentNode.getPermission().isEditable()) {
-            saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
+            Button saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
@@ -109,9 +105,6 @@ public class ContentEditorPanel extends DetailPanel implements PublishProgressLi
             saveButton.setToolTip(new ToolTipConfig("Save", "Saves the workset."));
             saveButton.addStyleName("green-button");
             saveButton.setWidth(60);
-            if (MainLayout.getInstance().isPublishInProgress() && !CmsGwt.getCurrentUser().isDraftActive()) {
-                saveButton.disable();
-            }
             actionBar.addButton(saveButton);
         }
 
@@ -264,20 +257,5 @@ public class ContentEditorPanel extends DetailPanel implements PublishProgressLi
 
         editorComponent = null;
         compareLink = null;
-        MainLayout.getInstance().removePublishProgressListener(this);
-    }
-
-    @Override
-    public void onPublishStarted() {
-        if (saveButton != null && !CmsGwt.getCurrentUser().isDraftActive()) {
-            saveButton.disable();
-        }
-    }
-
-    @Override
-    public void onPublishFinished() {
-        if (saveButton != null) {
-            saveButton.enable();
-        }
     }
 }

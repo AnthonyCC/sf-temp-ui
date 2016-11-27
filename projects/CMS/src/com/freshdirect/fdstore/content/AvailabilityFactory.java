@@ -7,13 +7,11 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumDayPartValueType;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -37,7 +35,7 @@ public class AvailabilityFactory {
 
 	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product, FDProductInfo fdpi) {
 		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
-		String plantID=ProductInfoUtil.getPickingPlantId(fdpi);
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		
 		if (product.isAlcohol()) {
 			s.add(EnumDlvRestrictionReason.ALCOHOL);
@@ -73,7 +71,7 @@ public class AvailabilityFactory {
 		}
 		s.addAll(product.getMaterial().getBlockedDays(plantID).translate(DAY_REASONS));
 		
-		ZoneInfo zoneInfo= (null !=ContentFactory.getInstance().getCurrentUserContext() && null !=ContentFactory.getInstance().getCurrentUserContext().getPricingContext())? ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo(): null;
+		ZoneInfo zoneInfo=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
 		if(null !=zoneInfo){
 			String salesOrg = zoneInfo.getSalesOrg();
 			String distChannel = zoneInfo.getDistributionChanel();
@@ -95,16 +93,13 @@ public class AvailabilityFactory {
 
 	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo,String plantID) {
 
-		FDAvailabilityI fdAvailabilityInterface = NullAvailability.AVAILABLE;
+		FDAvailabilityI av = NullAvailability.AVAILABLE;
 		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule(plantID)) || (FDStoreProperties.getPreviewMode() && null == fdProductInfo.getATPRule(plantID))) {
-			return fdAvailabilityInterface;
+			return av;
 		}
-		//appdev 6184 changed fdproductinfo.getInventory(plantid) to be  more efficient.
+
 		ErpInventoryModel inventory = fdProductInfo.getInventory(plantID);
-//		EnumEStoreId eStore = ContentFactory.getInstance().getCurrentUserContext() != null &&
-//				ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null ?
-//								ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()
-//                : EnumEStoreId.FD;
+		
 		if (inventory != null) {
 			ProductModel productModel = skuModel.getProductModel();
 			if (productModel != null) {
@@ -112,8 +107,7 @@ public class AvailabilityFactory {
 			            inventory,
 			            productModel.getQuantityMinimum(),
 			            productModel.getQuantityMinimum(),
-			            productModel.getQuantityIncrement()
-			            );
+			            productModel.getQuantityIncrement());
 			} else {
 			    LOG.error("Product model for " + skuModel.getSkuCode() + " not found, however product info is available :" + fdProductInfo);
 			}
@@ -130,9 +124,7 @@ public class AvailabilityFactory {
 		}
 		*/
 
-		return fdAvailabilityInterface;
+		return av;
 	}
-	
-
 
 }

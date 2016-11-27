@@ -9,26 +9,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.freshdirect.cms.ui.client.FieldFactory;
+import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
+import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.user.client.Element;
 
 public class ContentForm extends FormPanel {
-
+	
 	GwtNodeData nodeData;
-
+	
 	public static final int FORM_WIDTH = 740;
 
 	final Set<String> keys; // attribute keys used in form
-
+	
 	final Map<String,FieldSet> sections;
-	final Map<String,List<String>> sectionKeys = new HashMap<String,List<String>>();
-
+	final Map<String,List<String>> sectionKeys = new HashMap<String,List<String>>();		
+		
 	protected void initForm() {
 		/*
 		 * Initialize visual appearance
@@ -37,13 +41,13 @@ public class ContentForm extends FormPanel {
 		setHeaderVisible(false);
 		setFrame(false);
 		setBorders(false);
-		setBodyBorder(false);
-		addStyleName("content-form");
+		setBodyBorder(false);	
+		addStyleName("content-form");		
 	}
-
+		
 	/**
 	 * Tabless page constructor
-	 *
+	 * 
 	 * @param source
 	 * @param contextPath
 	 */
@@ -56,18 +60,18 @@ public class ContentForm extends FormPanel {
 		initForm();
 
 		setStyleName("notab-form");
-		FormItemLayout layout = new FormItemLayout();
+		FormItemLayout layout = new FormItemLayout();		
 		layout.setParameterFactory(new AlternateRenderer(layout));
 		layout.setDefaultWidth(FORM_WIDTH);
-
+		
 		List<String> attrKeys = new ArrayList<String>( cn.getNode().getAttributeKeys() );
 		Collections.sort( attrKeys );
 
-
+		
 		FieldSet section = createSection(layout, null, attrKeys);
 		sectionKeys.put("<default>", attrKeys);
 		sections.put("<default>", section);
-
+		
 		add(section);
 	}
 
@@ -84,7 +88,7 @@ public class ContentForm extends FormPanel {
 		this.keys = new HashSet<String>();
 		this.sections = new HashMap<String,FieldSet>();
 		this.nodeData = cn;
-
+		
 		initForm();
 
 		final GwtNodeData nodeData = cn;
@@ -92,7 +96,7 @@ public class ContentForm extends FormPanel {
 		final TabDefinition tabDefinition = nodeData.getTabDefinition();
 
 		setHeading(nodeData.getNode().getLabel());
-
+		
 		int containerIndex = 0;
 
 		for (String sectionId : tabDefinition.getSectionIds(tabId)) {
@@ -107,18 +111,18 @@ public class ContentForm extends FormPanel {
 			sections.put(sectionId, section);
 			this.sectionKeys.put(sectionId, sectionKeys);
 			this.keys.addAll(sectionKeys);
-
+			
 			containerIndex += section.getItemCount();
 
 			add(section);
 
 		}
-	}
+	}	
 
 
 	/**
 	 * Create attribute section
-	 *
+	 * 
 	 * @param layout
 	 * @param sectionLabel Label of field section (optional)
 	 * @param collapsible Can it be collapsed?
@@ -140,17 +144,26 @@ public class ContentForm extends FormPanel {
 
 		section.setLayout( layout );
 		section.setWidth( FORM_WIDTH );
-
-		for ( String attributeKey : attrKeys ) {
+		
+		for ( String attributeKey : attrKeys ) {			
+			final GwtContentNode aNode = nodeData.getNode();
+			final ContentNodeAttributeI attribute = aNode.getOriginalAttribute(attributeKey);
+			final ContentPanel wysiwigPanel = FieldFactory.createWysiwygEditor(nodeData, attributeKey);
+			if(wysiwigPanel != null){
+				final Label label = new Label(attribute.getLabel());
+				label.setStyleName("x-form-item-label wysiwigLabel");
+				section.add(label);
+				section.add(wysiwigPanel);
+			}
 			Field<Serializable> field = FieldFactory.createStandardField( nodeData, attributeKey );
 			if ( field != null ) {
-				section.add( field );
+				section.add( field );			
 			}
 		}
-
+		
 		return section;
 	}
-
+	
 	public FieldSet getSection(String sectionId) {
 		if (sectionId == null) {
 			return sections.get("<default>");
@@ -158,25 +171,25 @@ public class ContentForm extends FormPanel {
 			return sections.get(sectionId);
 		}
 	}
-
+	
 	public Set<String> getKeys() {
 		return keys;
 	}
-
+	
 	public Map<String, FieldSet> getSections() {
 		return sections;
 	}
-
+	
 	public Map<String, List<String>> getSectionKeys() {
 		return sectionKeys;
 	}
-
-
+	
+	
 	@Override
 	protected void onRender(Element target, int index) {
 		// TODO Auto-generated method stub
 		super.onRender(target, index);
 		getElement().getStyle().setOverflow(Overflow.VISIBLE);
 	}
-
+	
 }

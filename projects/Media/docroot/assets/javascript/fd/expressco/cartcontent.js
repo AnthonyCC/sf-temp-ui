@@ -50,12 +50,11 @@ function button_enableDisable(buttonId, eORd){ /*String, Boolean*/
 }
 
 /*the function fired by hitting that green link within the excessive tip tooltip box */
-function populateCustomTipField(maxPossibleTip, e){
+function populateCustomTipField(maxPossibleTip){
 	/* place the maximum allowable tip value into the field, based upon subtotal */
-	var tipTextBox = e? $jq(e).parents('.cartsection__tax').find(etids.inp_tipTextBox) : $jq(etids.inp_tipTextBox);
-	tipTextBox.val( maxPossibleTip ).focus().select();
-	
-	tip_entered(tipTextBox);
+	$jq(etids.inp_tipTextBox).val( maxPossibleTip ).focus().select();
+
+	tip_entered();
 }
 
 /* this forces an entry to be a realistic money entry,
@@ -92,17 +91,18 @@ function money_format( input ){
 }
 
 /*this code inside needs to potentially be called from standard js functions as well as the soy template js code*/
-function tip_entered(tipTextBox){
+function tip_entered(){
 	/*clean the initial tip amount of unwanted characters or needless extra periods or trailing numbers after the 1st period */
-	tipTextBox = tipTextBox? tipTextBox : $jq(etids.inp_tipTextBox);
-	var tip = money_format( tipTextBox.val().trim() );
+	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
+	
+	console.log("now your'e a man! ", tip);
 	
 	var tipFloat = parseFloat(tip);
 
 	/*re-populate the optional custom tip textfield*/
 	$jq(etids.inp_tipTextBox).val( tip );
 
-	var subTotalStr = money_format( $jq('.st_val_subtotal').html() );
+	var subTotalStr = money_format( $jq('#hiddenSubTotal').val().trim() );
 
 	var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
 
@@ -117,7 +117,7 @@ function tip_entered(tipTextBox){
 		$jq(etids.btn_tipApply).prop('disabled', true);
 
 		/*this goes in the hover box for the excessive amount tip*/
-		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='' onclick='event.preventDefault();populateCustomTipField(" + roundedMaxTip + ", this)'>$" + roundedMaxTip + " for this order.</a></p></div>";
+		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='javascript:populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
 
 		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
 	    $jq(etids.div_toolTipTextBox).attr('tabindex', '0');
@@ -149,7 +149,11 @@ function tip_entered(tipTextBox){
 		if(tipFloat >= 0 && !isNaN(tip) && (tip.length > 0) ){
 			//$jq(etids.btn_tipApply).prop('disabled', false);
 			button_enableDisable(etids.btn_tipApply, true);
+			
+			console.log("kyle");
 		}else{
+			console.log("stan");
+			
 			button_enableDisable(etids.btn_tipApply, false);
 		}
 			
@@ -164,6 +168,8 @@ function tip_entered(tipTextBox){
 	}
 	
 	//cartcontent.update();
+	
+	console.log("everything cool updated with "+ tip +"?");
 }
 
 /* APPDEV-4904, get the chosen payment type for the customer */
@@ -231,84 +237,31 @@ function cart_content_template_htmlstr(){
 var etids = new Object();
 
 /*buttons, first for applying the tip, the next just to tell you that you did, doesn't actually do anything when clicked*/
-etids.btn_tipApply = ".tipApply";
-etids.btn_tipApplied = ".tipApplied";
+etids.btn_tipApply = "#tipApply";
+etids.btn_tipApplied = "#tipApplied";
 
 /*checkmark which shows up after applying tip*/
-etids.ck_tipAppliedTick = ".tipAppliedTick";
+etids.ck_tipAppliedTick = "#tipAppliedTick";
 
 /*select box to choose what tip you want*/
-etids.sel_tipDropdown = ".tipDropdown";
+etids.sel_tipDropdown = "#tipDropdown";
 
 /*hidden by default, until shown by means of choosing from above select box 'other amount'*/
-etids.inp_tipTextBox = ".tipTextBox";
+etids.inp_tipTextBox = "#tipTextBox";
 
 /*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
-etids.div_toolTipTextBox = ".toolTipTextBox";
+etids.div_toolTipTextBox = "#toolTipTextBox";
 
 /*the tooltip popup for too great of a tip*/
 etids.div_tooltipPopup = "#tooltipPopup";
 
-function parseTipTotal(data) {
-	/*only if etipping is turned on in the properties*/
-	if( !data || data.etipTotal == null || typeof data.etipTotal !== 'string'){
-		return;
-	}
-	
-	/*APPBUG-4312, make a new var from the etip amount into a float value to compare against zero*/
-	var parsedEtipTotal = parseFloat(data.etipTotal.replace(/\$/g, ""));
-	
-	/*APPBUG-4312, detects custom tip by the actual earlier granted amount, based on whether or not it is part of the list which populates the dropdown */
-
-	/*split the tip list that populates the dropdown into a string array*/
-	var tipAmountsArr = data.tipAmounts &&  data.tipAmounts.length? data.tipAmounts : data.tipAmountsStr.split(",");
-	
-	/*this will hold the value of the current member of the just made array above*/
-	var currentArrMem = "";
-	
-	/*to find out whether or not the current tip amount is actually within the tip dropdown list array*/
-	var boolInTipList = false;
-	for(var i=0; i<tipAmountsArr.length; i++){
-		/*remove the dollar sign from the current member of the array*/
-		currentArrMem = tipAmountsArr[i].replace(/\$/g, "");
-	    
-		/*if the current member IS a number AND the parsedFloated current tip amount equals the parsedFloated current member*/
-	    if ( !isNaN(currentArrMem) && (parseFloat(currentArrMem) == parsedEtipTotal) ){
-	    	/*so the current tip amount previously entered DOES exist within the dropdown array*/
-	    	boolInTipList = true;
-	    }
-	}
-	
-	/*if the currently placed tip amount is NOT within the tip dropdown array AND it equals more than 0,
-	then declare the customTip property of the data to be true.
-	NOTICE: this property could have been true before for other reasons*/
-	if( (boolInTipList == false) && (parsedEtipTotal > 0) ){
-		data.customTip = true;
-	}
-	
-	/*APPDEV-4887, if there is an etip total, then logically, it should be thought of as having a tip applied */
-	if( data.etipTotal && (parsedEtipTotal > 0) ){
-		data.tipApplied = true;
-	}
-	
-	/*
-	To address bug in which the soy template select box does not correctly recognize the etip amount as being the same as one of its members.
-	This makes it so that the amount will only have a decimal place when the digits to the RIGHT of the decimal place are both greater than zero.
-	e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
-
-	#APPBUG-4391, We don't need $ sign for manual tip changes
-	*/
-	return parsedEtipTotal;
-}
 (function (fd) {
 	'use strict';
 
 	var $ = fd.libs.$;
 	var WIDGET = fd.modules.common.widget;
-	var DISPATCHER = fd.common.dispatcher;
 	var requestCounter = 0;
 	var focusedElementId;
-	var retryOnCartContentError = true;
 	
 	//APPBUG-4365
 	var currentpagefile = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
@@ -337,11 +290,9 @@ function parseTipTotal(data) {
 				if( page == "view_cart.jsp" ){
 					data.eTippingEnabled = false;
 					
-					/* add sub total and save amount */
+					/*find out if the subtotal member of the data object will have an order total array member*/
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object" ){
-						data.subTotalBox.estimatedTotalBox.forEach(function (obj){
-							data.subTotalBox.subTotalBox.push(obj);
-						});
+						data.subTotalBox.subTotalBox.push( data.subTotalBox.estimatedTotalBox[0] );
 					}
 					
 					/*APPBUG-4365*/
@@ -356,7 +307,7 @@ function parseTipTotal(data) {
 					/* correct copy for when avalara is enabled in subtotal areas */
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object"  ){
 						if(data.avalaraEnabled == true){
-							/* WTF *//*data.subTotalBox.estimatedTotalBox[0]["text"] = "Order Subtotal with rodents";*/
+							data.subTotalBox.estimatedTotalBox[0]["text"] = "Order Subtotal with rodents";
 						}
 					}
 				}
@@ -400,10 +351,8 @@ function parseTipTotal(data) {
 					}
 				}
 				
-				$(this.placeholder).trigger('cartData', data);
-				
 				data.tipAmountsStr = data.tipAmounts.join(",");
-				data.mobWeb = fd.mobWeb;
+				
 				/* need to change between templates based on data param */
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
 				//var lineTemplate = $( the_placeholder ).data('ec-linetemplate');
@@ -413,14 +362,55 @@ function parseTipTotal(data) {
 				window.FreshDirect.cartTemplateObj.processFn = processFn;
 
 				this.updateTopCheckoutButton(data);
+				
+				/*only if etipping is turned on in the properties*/
+				if( data.etipTotal !== null && typeof data.etipTotal === 'string'){
+					/*APPBUG-4312, make a new var from the etip amount into a float value to compare against zero*/
+					var parsedEtipTotal = parseFloat(data.etipTotal.replace(/\$/g, ""));
+					
+					/*APPBUG-4312, detects custom tip by the actual earlier granted amount, based on whether or not it is part of the list which populates the dropdown */
 
-        // GTM related data processing
-        if (data.googleAnalyticsData) {
-          DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
-        }
-				var parsedTipTotal = parseTipTotal(data);
-				data.etipTotal = parsedTipTotal == null? data.etipTotal : parsedTipTotal;
+					/*split the tip list that populates the dropdown into a string array*/
+					var tipAmountsArr = data.tipAmountsStr.split(",");
+					
+					/*this will hold the value of the current member of the just made array above*/
+					var currentArrMem = "";
+					
+					/*to find out whether or not the current tip amount is actually within the tip dropdown list array*/
+					var boolInTipList = false;
+					for(var i=0; i<tipAmountsArr.length; i++){
+						/*remove the dollar sign from the current member of the array*/
+						currentArrMem = tipAmountsArr[i].replace(/\$/g, "");
+					    
+						/*if the current member IS a number AND the parsedFloated current tip amount equals the parsedFloated current member*/
+					    if ( !isNaN(currentArrMem) && (parseFloat(currentArrMem) == parsedEtipTotal) ){
+					    	/*so the current tip amount previously entered DOES exist within the dropdown array*/
+					    	boolInTipList = true;
+					    }
+					}
+					
+					/*if the currently placed tip amount is NOT within the tip dropdown array AND it equals more than 0,
+					then declare the customTip property of the data to be true.
+					NOTICE: this property could have been true before for other reasons*/
+					if( (boolInTipList == false) && (parsedEtipTotal > 0) ){
+						data.customTip = true;
+					}
+					
+					/*APPDEV-4887, if there is an etip total, then logically, it should be thought of as having a tip applied */
+					if( data.etipTotal && (parsedEtipTotal > 0) ){
+						data.tipApplied = true;
+					}
+					
+					/*
+					To address bug in which the soy template select box does not correctly recognize the etip amount as being the same as one of its members.
+					This makes it so that the amount will only have a decimal place when the digits to the RIGHT of the decimal place are both greater than zero.
+					e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
 
+					#APPBUG-4391, We don't need $ sign for manual tip changes
+					*/
+					data.etipTotal = parsedEtipTotal;
+				}
+				
 				/* APPDEV-4904 */
 				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
 				
@@ -435,18 +425,12 @@ function parseTipTotal(data) {
 		placeholder:{
 			value:'#cartcontent'
 		},
-		callback: {
-			value: function(value){
-				this.render(value);
-				fd.expressco.checkout.coFlowChecker.checkFlow();
-			}
-		},
 		updateTopCheckoutButton: {
 			value: function (data) {
-				var $placeholder = $jq('#checkoutbutton_bottom');
+				var $placeholder = $jq('#checkoutbutton_top');
 
-				if ($placeholder.length && expressco.checkoutBanner) {
-					$placeholder.html(expressco.checkoutBanner(data));
+				if($placeholder.size() && expressco.checkoutButton){
+					$placeholder.html(expressco.checkoutButton(data));
 					$(document).trigger('checkoutFlowImmediate-change');
 				}
 			}
@@ -540,10 +524,8 @@ function parseTipTotal(data) {
 								requestCounter: (++requestCounter)
 							},
 							change: (userData || {}),
-							warningMessage: fd.utils.getParameterByName('warning_message'),
 							page: currentpagefile
-						}),
-						fetch: fd.utils.getParameterByName('fetch')  ===  'true'
+						})
 					},
 					url: this.getRequestURI(),
 					type: reqType,
@@ -557,7 +539,7 @@ function parseTipTotal(data) {
 				var updateStream = $(cartcontent.placeholder).asEventStream('cartcontent-update');
 				var changeStream = $(cartcontent.placeholder).asEventStream('quantity-change').filter(function() {
 					var $el = $('input[name="dontupdatecartlines"]:checked');
-					return $el.length === 0;
+					return $el.size() === 0;
 				});
 				var dataStream = deleteStream.merge(updateStream).merge(changeStream);
 				var bouncedDataStream = dataStream.debounce(500);
@@ -576,13 +558,8 @@ function parseTipTotal(data) {
 					return ajax;
 				});
 				ajaxStream.onError(function() {
-					if (retryOnCartContentError) {
-						retryOnCartContentError = false;
-						cartcontent.update();
-					} else {
-						$(cartcontent.placeholder).
-						html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
-					}
+					$(cartcontent.placeholder).
+					html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
 					return false;
 				});
 				/* if user makes the form dirty before the ajax response comes back then we should not update UI
@@ -594,18 +571,12 @@ function parseTipTotal(data) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
 					cartcontent.render(ajaxData);
-
-					fd.common.dispatcher.signal('cartHeader', ajaxData);
-					fd.common.dispatcher.signal('checkoutCartHeader', ajaxData);
-					fd.common.dispatcher.signal('productSampleCarousel', ajaxData.carouselData);
-					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData.carouselData);
-					if (ajaxData.carouselData && ajaxData.carouselData.recommendationTabs) {
-						var selected = ajaxData.carouselData.recommendationTabs.filter(function (tab) { return tab.selected; })[0];
-						if (selected && selected.updateContent) {
-							fd.common.dispatcher.signal('cartCarousels', ajaxData.carouselData);
-						}
+					if(ajaxData.coremetrics) {
+						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
 					}
-					
+					fd.common.dispatcher.signal('cartHeader', ajaxData);
+					fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
+					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData);
 					if(focusedElementId) {
 						try {
 							document.getElementById(focusedElementId).focus();
@@ -615,26 +586,6 @@ function parseTipTotal(data) {
 					try {
 						fd.common.transactionalPopup.close();
 					} catch(e) {}
-					
-
-					/* make apply buttons disabled when input is also empty */
-					function toggleDisabled(selector, makeDisabled) {
-						var $elems = $(selector);
-						if (makeDisabled) {
-							$elems.addClass('disabled').prop('disabled', true);
-						} else {
-							$elems.removeClass('disabled').prop('disabled', false);
-						}
-					}
-					/* update load */
-					toggleDisabled('#promotional-code-applybtn,#apply-gift-card-applybtn', true);
-					
-					$(document).on('keyup change input', '#promotional-code', function(event) {
-						toggleDisabled('#promotional-code-applybtn', $(this).val() === '');
-					});
-					$(document).on('keyup change input', '#apply-gift-card', function(event) {
-						toggleDisabled('#apply-gift-card-applybtn', $(this).val() === '');
-					});
 				});
 
 				template_cleanup();
@@ -658,11 +609,9 @@ function parseTipTotal(data) {
 				$jq(etids.btn_tipApplied).hide();
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.ck_tipAppliedTick).hide();
-				var target = $jq(e.target || etids.sel_tipDropdown);
-				if(target.val() === "Other Amount"){
+				if($jq(etids.sel_tipDropdown).val() === "Other Amount"){
 					$jq(etids.sel_tipDropdown).hide();
-					$jq(etids.inp_tipTextBox).show();
-					$jq(e.currentTarget || e.target).parents('.cartetip-container').find(etids.inp_tipTextBox).focus().select();
+					$jq(etids.inp_tipTextBox).show().focus().select();
 					
 					/*APPBUG-4963, immediately disable the 'add tip' button, because there is nothing in the blank field */
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
@@ -679,7 +628,7 @@ function parseTipTotal(data) {
 				$jq(etids.btn_tipApplied).hide();
 
 				/*what used to be around here moved to this function*/
-				tip_entered($(e.target));
+				tip_entered();
 			}
 		}
 	});
@@ -770,131 +719,7 @@ function parseTipTotal(data) {
 	});
 	donationProductSampleCarousel.listen();
 
-	var cartCarousel = Object.create(WIDGET,{
-		signal:{
-			value:'cartCarousels'
-		},
-		template: {
-			value:common.viewCartTabbedCarousel
-		},
-		placeholder:{
-			value:'#cartCarousels'
-		},
-		callback: {
-			value: function(value){
-				this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
-				fd.components.carousel && fd.components.carousel.initialize();
-
-				/*remove extra e-tip element crap (sorry for this hack solution)*/
-				if( $(".cartsection__totalwrapper").length > 1 ){
-					$(".cartsection__totalwrapper:first div.subtotalboxes").remove();
-
-					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
-				}
-
-				/*kill certain accidental unwanted repetive elements*/
-				template_cleanup();
-			}
-		}
-	});
-	var checkoutCartHeaderData = {
-			deliveryFee: null,
-			tip: null,
-			estTotal: null,
-			estTotalLegend: null,
-			customTip: null,
-			isEBTused: null,
-			etipTotal: null,
-			tipAmounts: null,
-			tipApplied: null,
-			tipAppliedTick: null,
-			userRecognized: null,
-			userCorporate: null,
-			mobWeb: null,
-			saveAmount: null,
-			modifyOrder: null
-		};
-	var checkoutCartHeader = Object.create(WIDGET,{
-		signal:{
-			value: ['cartData','subTotalBox','checkoutCartHeader']
-		},
-		headerData: {
-			value: checkoutCartHeaderData
-		},
-		template: {
-			value: function(data) {
-				var subTotalBox = data.subTotalBox;
-				if (subTotalBox && subTotalBox.subTotalBox && subTotalBox.subTotalBox.length) {
-					// APPDEV-7055, do not show delivery fee if displayDeliveryFeeForCosUserInHeader is false and user is COS
-					var displayDeliveryFee = !subTotalBox.userCorporate || (fd && fd.properties && fd.properties.displayDeliveryFeeForCosUserInHeader);
-					if (displayDeliveryFee) {
-						subTotalBox.subTotalBox.forEach( function(box) {
-							if (box.id === 'deliveryfee') {
-								var showDeliveryPass = box.other && box.other.deliveryPassPopupNeeded;
-								var freeWithDeliveryPass = false;
-								var deliveryFeeValue = box.value;
-								if (!showDeliveryPass && box.value && box.value == 'FREE with DeliveryPass') {
-									deliveryFeeValue = '<div><span class="delivery-free-with-label">Free with</span><div class="delivery-pass-label">DeliveryPass</div></div>';
-									freeWithDeliveryPass = true;
-								}
-								checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: (freeWithDeliveryPass? null : box.other)}];
-							}
-						});
-					} else {
-						checkoutCartHeaderData.deliveryFee = null;
-					}
-					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;
-					checkoutCartHeaderData.userRecognized = subTotalBox.userRecognized;
-				}
-				//DP17-259
-				checkoutCartHeaderData.saveAmount = null;
-				if (subTotalBox && subTotalBox.estimatedTotalBox && subTotalBox.estimatedTotalBox.length) {
-					subTotalBox.estimatedTotalBox.forEach( function(box) {
-						if (box.id === 'ssOrderTotal') {
-							checkoutCartHeaderData.estTotal = box.value;
-							checkoutCartHeaderData.estTotalLegend = (box.other && box.other.mark) || '';
-						} else if (box.id === 'youSaved') {
-							checkoutCartHeaderData.saveAmount = box.value;
-						}
-					});
-				}
-				
-				if (data.eTippingEnabled && data.tipAmounts) {
-					checkoutCartHeaderData.etipTotal = parseTipTotal(data) || data.etipTotal;
-					checkoutCartHeaderData.tipAmounts = data.tipAmounts;
-					checkoutCartHeaderData.tipApplied = data.tipApplied;
-					checkoutCartHeaderData.isEBTused = data.isEBTused;
-					checkoutCartHeaderData.customTip = data.customTip;
-					checkoutCartHeaderData.tipAppliedTick = data.tipAppliedTick;
-				}
-				checkoutCartHeaderData.mobWeb = fd.mobWeb;
-				checkoutCartHeaderData.modifyOrder = checkoutCartHeaderData.modifyOrder || data.modifyOrder;
-				
-				return expressco.checkoutCartHeader(checkoutCartHeaderData);
-			}
-		},
-		placeholder:{
-			value:'#checkout-cart-header'
-		},
-		callback: {
-			value: function(value, signal){
-				if($(".deliverypass-payment").length > 0){
-					dialogWindowRealignFunc();
-				}
-				if (signal === 'subTotalBox')
-					value = {subTotalBox:value};
-				
-				this.render(value);
-				//fix duplicate ids
-                var $elem = $('#tt_optionalToolTip:first');
-                var newId = $elem.attr('id')+'_new';
-                $elem.attr('id', newId);
-                $elem.parent().attr('aria-describedby', newId);
-				template_cleanup();
-			}
-		}
-	});
-	checkoutCartHeader.listen();
+	
 	
 	var atcHandler = Object.create(fd.common.signalTarget, {
 		signal: {
@@ -905,10 +730,7 @@ function parseTipTotal(data) {
 				cartcontent.update();
 				/* close delivery pass popup */
 				if(fd.expressco.deliverypasspopup){
-					$("#deliverypasspopup .ec-popup-content").html(expressco.deliverypasspopupsuccess());
-					if($("#deliverypasscontent").length > 0){
-						doOverlayDialogNew("/includes/deliverypasspayment.jsp");
-					}
+					fd.expressco.deliverypasspopup.close();
 				}
 			}
 		}
@@ -956,12 +778,11 @@ function parseTipTotal(data) {
 		$(cartcontent.placeholder).trigger('cartcontent-update');
 	});
 
-	$(document).on('change','[data-component="changeETip"]',
+	$(document).on('change', cartcontent.placeholder + ' [data-component="changeETip"]',
 		cartcontent.onChangeETip.bind(cartcontent));
 
-	$(document).on('input','[data-component="tooltip"]',
+	$(document).on('input', cartcontent.placeholder + ' [data-component="tooltip"]',
 		cartcontent.onTipEntered.bind(cartcontent));
 
 	fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
-	fd.modules.common.utils.register('expressco', 'checkoutCartHeader', checkoutCartHeader, fd);
 }(FreshDirect));

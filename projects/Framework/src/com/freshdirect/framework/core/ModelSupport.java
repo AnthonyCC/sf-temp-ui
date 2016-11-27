@@ -30,8 +30,7 @@ public abstract class ModelSupport extends ModelBase {
 	 * @param id ID of the new PK
 	 */
 	public void setId( String id ) {
-		if (id != null)
-			this.setPK( new PrimaryKey( id ) );
+		this.setPK( new PrimaryKey( id ) );
 	}
 
 }

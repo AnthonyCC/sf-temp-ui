@@ -3,8 +3,9 @@
 		import="com.freshdirect.webapp.util.ConfigurationStrategy"
 		import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"
 		import="com.freshdirect.webapp.util.FDURLUtil"
+		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil" 
 		import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"
-		import="java.util.*"
+		import="java.util.Collections"
 		import="com.freshdirect.webapp.util.TransactionalProductImpression"
 		import="com.freshdirect.webapp.util.ProductImpression"
 		import="com.freshdirect.fdstore.content.EnumBurstType"
@@ -12,11 +13,11 @@
 		import="com.freshdirect.fdstore.customer.FDUserI"
 		import="com.freshdirect.fdstore.FDSkuNotFoundException"
 		import="com.freshdirect.fdstore.*"
-		import="com.freshdirect.storeapi.content.ProductModel"
+		import="com.freshdirect.fdstore.content.ProductModel"
 		import="com.freshdirect.fdstore.FDProduct"
 		import="com.freshdirect.WineUtil"
 %>
-<%@ taglib uri="display" prefix='display' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ attribute name="id" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="trkCode" required="true" rtexprvalue="true" type="java.lang.String" %>
@@ -71,7 +72,7 @@
 			<% ProductModel pm = (ProductModel)currentItem; %>
 			<% ProductImpression pi = confStrat.configure(pm, confContext); %>
 			<% if(recommendations != null) { %>
-				<a href="<%= FDURLUtil.getProductURI(pm, trkCode)%>" hidden style="display: none;" class="product-name-link"></a> 
+				<a href="<%= FDURLUtil.getProductURI(pm, trkCode)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
 				<%pageContext.setAttribute("PRODUCT_BOX_VARIANT",recommendations.getVariant().getId());
 			} %>
 			<div class="grid-item-container featurebox">
@@ -119,6 +120,7 @@
 %>
 <form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;">
 <fd:AddToCartPending id="<%= formName %>" action="addMultipleToCart" rebindSubmit="true"/>
+<fd:CmFieldDecorator/>
 <input type="hidden" name="itemCount" value="1">
 <fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 <div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>

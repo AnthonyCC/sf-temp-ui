@@ -47,7 +47,7 @@
 
 .pdp-cc .cc-incart-info {
 	font-size: 16px;
-	margin: 0 0 20px 10px;
+	margin: 0 0 20px 0;
 	text-transform: uppercase;
 	font-weight: bold;
 }
@@ -71,17 +71,12 @@
 	font-weight: bold;
 }
 
-.pdp-cc .product-info-free{
-	font-weight: bold;
-	color: #CC0000;
-}
-
 .pdp-cc .cc-product-actions {
 	margin:0;
 }
-.pdp-cc .cc-product-actions .addtolist{
-    margin-left: 20px;
-    font-size: 16px;
+
+.pdp-cc .cc-product-actions button {
+	margin-right: 10px;
 }
 
 .pdp.pdp-cc hr {
@@ -92,8 +87,8 @@
 	text-align: right;
 	margin:10px 0;
 }
-.pdp-cc .cc-actions a + a {
-	margin-left: 20px;
+.pdp-cc .cc-actions a {
+	margin-left: 5px;
 }
 
 .pdp-cc .cc-total {

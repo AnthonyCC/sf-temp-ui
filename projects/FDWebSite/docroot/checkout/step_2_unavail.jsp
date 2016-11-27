@@ -16,10 +16,10 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
 <potato:unavailability/>
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Unavailability"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Checkout - Unavailability</tmpl:put> --%>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Unavailability</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <div class="atpfailure">
@@ -38,10 +38,10 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
 <%-- Deliver Passes block --%>
 <c:if test="${!empty unavailabilityPotato.passes}">
 <table>
-		<tr valign="top"><td colspan="5" class="success13text">DeliveryPass</td></tr>
+		<tr valign="top"><td colspan="5" class="text11orbold">DeliveryPass</td></tr>
 		<tr><td class="text11"colspan="5">
 				We're sorry, the pass(es) below will be removed from your cart for the following reason(s).
-				<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4">
+				<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
 		</td></tr>
 		
 		<c:forEach var="line" items="${unavailabilityPotato.passes}">
@@ -77,6 +77,7 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
       window.FreshDirect.unavailability = window.FreshDirect.unavailability || {};
 
       window.FreshDirect.unavailability.data = <fd:ToJSON object="${unavailabilityPotato}" noHeaders="true"/>
+//       window.FreshDirect.coremetricsData = window.FreshDirect.unavailability.data.coremetrics; //TODO Coremetrics for ATC
  </script>
  </div>
  

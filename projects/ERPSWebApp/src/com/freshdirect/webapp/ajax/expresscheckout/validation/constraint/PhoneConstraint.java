@@ -1,37 +1,22 @@
 package com.freshdirect.webapp.ajax.expresscheckout.validation.constraint;
 
-import com.freshdirect.common.address.PhoneNumber;
+public class PhoneConstraint extends RegexConstraint {
 
-/*
- * You will find that in practice, this validation is being overriden by the phone validator in form.js
- */
-public class PhoneConstraint extends AbstractConstraint<String> {
+	public PhoneConstraint(boolean optional) {
+		super(optional);
+	}
 
-    private static final String ERROR_MESSAGE = "Valid phone number is required." + "<!-- PhoneConstraint -->";
+	private static final String ERROR_MESSAGE = "Valid phone number is required.";
+	private static final String REGEX = "^[\\d \\-()x]+$";
 
-    public PhoneConstraint(boolean optional) {
-        super(optional);
-    }
+	@Override
+	public String getErrorMessage() {
+		return ERROR_MESSAGE;
+	}
 
-    @Override
-    public String getErrorMessage() {
-        return ERROR_MESSAGE;
-    }
-
-    @Override
-    public boolean isValid(String value) {
-        String phoneNumber = PhoneNumber.normalize(value);
-        boolean valid = phoneNumber.length() == 10 && !phoneNumber.startsWith("0");
-
-        if (isOptional() && "".equals(value)) {
-            valid = true;
-        }
-
-        if (isForceInValid()) {
-            valid = false;
-        }
-
-        return valid;
-    }
+	@Override
+	protected String getRegexp() {
+		return REGEX;
+	}
 
 }

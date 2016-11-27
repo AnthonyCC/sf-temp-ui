@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.freshdirect.framework.webapp.ActionError;
-import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 
 public class LoginResponse implements Serializable{
 	
@@ -16,8 +15,6 @@ public class LoginResponse implements Serializable{
 	private String message;
 	private String successPage;
 	
-    private GoogleAnalyticsData googleAnalyticsData;
-
 	public LoginResponse() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -76,13 +73,5 @@ public class LoginResponse implements Serializable{
 		}
 		
 	}
-
-    public GoogleAnalyticsData getGoogleAnalyticsData() {
-        return googleAnalyticsData;
-    }
-
-    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
-        this.googleAnalyticsData = googleAnalyticsData;
-    }
 
 }

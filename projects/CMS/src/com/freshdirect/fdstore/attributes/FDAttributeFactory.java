@@ -25,7 +25,7 @@ import com.freshdirect.fdstore.attributes.cms.HtmlBuilder;
 import com.freshdirect.fdstore.attributes.cms.ImageBuilder;
 import com.freshdirect.fdstore.attributes.cms.PrimitiveBuilder;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.util.log.LoggerFactory;

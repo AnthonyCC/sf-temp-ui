@@ -3,7 +3,7 @@
 <%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
@@ -43,10 +43,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 <%@ include file="/quickshop/includes/order_nav.jspf" %>
 			
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put> --%>
-      <tmpl:put name="seoMetaTag" direct="true">
-      <fd:SEOMetaTag title="FreshDirect - Reorder - Shop from This Order"></fd:SEOMetaTag>
-      </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put>
    	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><a href="/quickshop/previous_orders.jsp"><img src="/media_stat/images/template/quickshop/qs_prev_orders_catnav.gif" width="80" height="38" border="0"></a><br><font class="space4pix"><br></font><%= orderNav.toString() %><br><br></tmpl:put>	
 	<tmpl:put name='content' direct='true'>
 
@@ -64,7 +61,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	<tr><td colspan="2" class="title18" align="center"><b><%= custFirstName.toUpperCase().charAt(0) + custFirstName.substring(1,firstNameLength).toLowerCase() %>'<%= custFirstName.toLowerCase().lastIndexOf("s") > -1 && custFirstName.toLowerCase().lastIndexOf("s") == firstNameLastIndex ? "" : "s" %> Order <%= currentOrder %></b></td></tr>
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 	<tr><td bgcolor="#996699" height="1" colspan="2"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></td></tr>
-	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td></tr>
 	<tr>
 	    <td valign="top"><ul><li></li></ul></td>
 	    <td class="text11"><b>Enter quantities in boxes on the left</b> (if you don't want an item, enter "0" quantity, or click the green button to zero all quantities).</td>

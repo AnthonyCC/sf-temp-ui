@@ -9,8 +9,8 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 
-	<xsl:variable name="site" select="'https://www.freshdirect.com'" />
-<!-- 	<xsl:variable name="site" select="'https://foodkick.freshdirect.com'" /> -->
+	<!--<xsl:variable name="site" select="'https://www.freshdirect.com'" />-->
+	<xsl:variable name="site" select="'https://foodkick.freshdirect.com'" />
 	<xsl:variable name="editorial_dir" select="concat($site, '/media/editorial/foodkick')" />
 	<xsl:variable name="img_dir" select="concat($site, '/media/images/email/foodkick')" />
 	<xsl:variable name="purple" select="'#732484'" />
@@ -28,7 +28,7 @@
 	<xsl:variable name="cell_style" select="concat( $fontfamily, 'text-align:left; white-space:nowrap;')" />
 	
 	<xsl:template match="fdemail">
-	<html lang="en-US" xml:lang="en-US">
+	<html>
 		<head>
 			<title>Congrats! You're In!</title>
 			<link rel="stylesheet" href="{$site}/assets/css/emails.css" />
@@ -47,7 +47,7 @@
 					<table width="" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
 						<tr>
 							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">
-								Welcome to FoodKick! + 30 Days of Free Delivery
+								Welcome to FoodKick! + 60 Days of Free Delivery
 							</td>
 							<td align="right" style="text-align:right; {$fontfamily} white-space:nowrap; width:152px">
 								&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a>
@@ -63,7 +63,7 @@
 				<table width="" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px; {$layout_w_str}">
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width=""><img src="{$img_dir}/hero.gif" /></td>
+						<td width=""><img src="{$img_dir}/hero_60.gif" /></td>
 						<td width="33%">&nbsp;</td>
 					</tr>
 					<tr>
@@ -118,7 +118,7 @@
 						<td width="33%">&nbsp;</td>
 						<!--<td width="{$layout_w}">-->
 						<td width="">
-							<a href="https://www.instagram.com/foodkick/"> <img src="{$img_dir}/insta.jpg" /></a>							  
+							<a href="https://www.instagram.com/foodkick/"> <img src="{$img_dir}/insta_60.gif" /></a>							  
 						</td>
 						<td width="33%">&nbsp;</td>
 					</tr>

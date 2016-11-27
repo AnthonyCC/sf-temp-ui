@@ -34,7 +34,7 @@ SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 		String minSubtotalPrefix = String.valueOf(minSubtotal);
 		minSubtotalPrefix = minSubtotalPrefix.substring(0, minSubtotalPrefix.indexOf('.'));
                 
-		String offerDuration = "<img src='/media_stat/images/layout/clear.gif' alt='' width='140' height='10'>";
+		String offerDuration = "<img src='/media_stat/images/layout/clear.gif' width='140' height='10'>";
 		if(expDate != null && DateUtil.getDiffInDays(new Date(), expDate) <= 30) 
 			offerDuration = "Exipres " + DATE_FORMATTER.format(expDate);
 %>
@@ -65,7 +65,7 @@ if (isQuickshop) {
 				<img src="/media_stat/images/template/promotions/off_this_order_<%=maxAmountPrefix%>.gif" border="0"><br>
                                 <img src="/media_stat/images/template/promotions/order_or_more_<%=minSubtotalPrefix%>.gif" vspace="2" border="0"><br>
                                 <a href="/promotion.jsp<%=params%>">See offer details</a><br>
-                                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br>
+                                <img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
 				<%  if (promo_user.getShoppingCart().getSubTotal() >= minSubtotal) { %>
 				You have <b><%=JspMethods.formatPrice(left)%></b> left.
                                 <font class="space2pix"><br><br></font>
@@ -74,7 +74,7 @@ if (isQuickshop) {
 		</tr>
                 <!--<tr>
 			<td align="left"><a href="/promotion.jsp<%=params%>">See offer details</a>
-			<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"></td>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td>
 		</tr>-->
 		<tr>
             <td bgcolor='#CC0033' align="center" style="color: #FFFFFF;"><%=offerDuration%></td>

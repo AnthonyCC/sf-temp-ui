@@ -30,7 +30,7 @@ final int W_RH_DONATION_TOTAL_TOTAL = 970;
 	</tr>
 	<tr>
 		<td colspan="3" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_RH_DONATION_TOTAL_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/ff9933.gif" /><br />
+			<img style="margin: 2px 0;" width="<%=W_RH_DONATION_TOTAL_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
 		</td>
 	</tr>
 	<tr>

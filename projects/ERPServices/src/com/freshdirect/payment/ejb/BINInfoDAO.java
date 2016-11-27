@@ -17,7 +17,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 
@@ -28,9 +27,9 @@ public class BINInfoDAO {
 	private static Category LOGGER = LoggerFactory.getInstance( BINInfoDAO.class );
 	
 	public static String createHistoryData(Connection conn) throws SQLException	{
-		PreparedStatement ps = null;
+		   
 	       try {    	
-	    	    ps = conn.prepareStatement("INSERT INTO CUST.BIN_HISTORY (VERSION, DATE_CREATED,STATUS) VALUES (?,SYSDATE,?)");
+	    	    PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.BIN_HISTORY (VERSION, DATE_CREATED,STATUS) VALUES (?,SYSDATE,?)");
 	    	    String version = SequenceGenerator.getNextId(conn, "CUST", "BIN_HISTORY_SEQ");
 			    ps.setLong(1, Long.parseLong(version));
 			    //ps.setTimestamp(2, timestamp);
@@ -39,13 +38,11 @@ public class BINInfoDAO {
 			    if (rowsaffected != 1) {
 			        throw new SQLException("Unable to create new version.  Couldn't update BIN_HISTORY table.");
 			    }		    		    
-			  //  ps.close();
+			    ps.close();
 			    return version;
 	       }catch(SQLException e){
 	      	 throw e;
-		} finally {
-			DaoUtil.close(ps);
-		}
+	       }	    
 	}
 	
 	public static void storeBINInfo(Connection conn, List<List<BINInfo>> binInfosList) throws SQLException{
@@ -76,10 +73,11 @@ public class BINInfoDAO {
 				}
 			}
 			ps.executeBatch();
-		//	ps.close();
+			ps.close();
 			
 		} finally {
-			DaoUtil.close(ps);
+			if (ps != null)
+				ps.close();
 		}		
 	}
 	
@@ -87,27 +85,20 @@ public class BINInfoDAO {
 	public static NavigableMap<Long,BINInfo> getLatestBINInfo(Connection conn) throws SQLException{
 		NavigableMap<Long,BINInfo> binInfoMap= new ConcurrentSkipListMap<Long,BINInfo>();
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		ResultSet rs1 = null;
-		PreparedStatement ps1 =null;
-		try {
-			ps = conn.prepareStatement("SELECT * FROM  CUST.BIN_INFO BI WHERE  BI.VERSION=(SELECT MAX(VERSION) "
-					+ " FROM CUST.BIN_HISTORY) and BI.CARD_TYPE='VI' ");
-			rs = ps.executeQuery();
-			loadBINInfosFromResultSet(binInfoMap, rs);
-			rs.close();
-			ps.close();
-
-			ps1 = conn.prepareStatement("SELECT * FROM  CUST.BIN_INFO BI WHERE  BI.VERSION=(SELECT MAX(VERSION) "
-					+ " FROM CUST.BIN_HISTORY) and BI.CARD_TYPE='MC' ");
-			rs1 = ps1.executeQuery();
-			loadBINInfosFromResultSet(binInfoMap, rs1);
-		} finally {
-			DaoUtil.close(ps1);
-			DaoUtil.close(rs1);
-			DaoUtil.close(ps);
-			DaoUtil.close(rs);
-		}
+		
+		ps=conn.prepareStatement("SELECT * FROM  CUST.BIN_INFO BI WHERE  BI.VERSION=(SELECT MAX(VERSION) " +
+					" FROM CUST.BIN_HISTORY) and BI.CARD_TYPE='VI' ");
+		ResultSet rs = ps.executeQuery();
+		loadBINInfosFromResultSet(binInfoMap, rs);
+		rs.close();
+		ps.close();
+		
+		PreparedStatement ps1=conn.prepareStatement("SELECT * FROM  CUST.BIN_INFO BI WHERE  BI.VERSION=(SELECT MAX(VERSION) " +
+				" FROM CUST.BIN_HISTORY) and BI.CARD_TYPE='MC' ");
+		ResultSet rs1 = ps1.executeQuery();
+		loadBINInfosFromResultSet(binInfoMap, rs1);
+		rs1.close();
+		ps1.close();
 		return binInfoMap;
 	}
 
@@ -145,11 +136,10 @@ public class BINInfoDAO {
 				return rs.getInt(1);			
 			}
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			rs.close();
+			ps.close();
 		}		
 		return 0;
 	}
-	
 }
 

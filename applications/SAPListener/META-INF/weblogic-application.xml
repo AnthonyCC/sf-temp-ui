@@ -6,10 +6,6 @@
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
   </listener>
   <listener>
-    <listener-class>com.freshdirect.dataloader.invoice.WLSInvoiceBatchServer2</listener-class>
-    <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
-  </listener>
-  <listener>
     <listener-class>com.freshdirect.dataloader.material.WLSSapGlobalMaterialServer</listener-class>
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
   </listener>
@@ -37,12 +33,6 @@
     <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer</listener-class>
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
   </listener>
-   
-  <listener>
-    <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer2</listener-class>
-	<listener-uri>DataLoaderEJB-WL.jar</listener-uri>
-  </listener>
-  
   <listener>
     <listener-class>com.freshdirect.dataloader.zonepricing.WLSSapZoneServer</listener-class>
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataset>
+
+<CUST.SS_OFFLINE_RECOMMENDATION CUSTOMER_ID="10" SITE_FEATURE_ID="DYF" POSITION="1" VARIANT_ID="simple-variant" PRODUCT_ID="a1" NAME="A1" 
+	LINK="/product.jsp?catId=c1&amp;amp;productId=a1" IMAGE_PATH="a1_image" IMAGE_WIDTH="1" IMAGE_HEIGHT="1" PRICE="$2.00/ea"/>
+<CUST.SS_OFFLINE_RECOMMENDATION CUSTOMER_ID="10" SITE_FEATURE_ID="DYF" POSITION="2" VARIANT_ID="simple-variant" PRODUCT_ID="a2" NAME="A2" 
+	LINK="/product.jsp?catId=c1&amp;amp;productId=a2" IMAGE_PATH="a2_image" IMAGE_WIDTH="1" IMAGE_HEIGHT="1" PRICE="$3.00/ea"/>
+<CUST.SS_OFFLINE_RECOMMENDATION CUSTOMER_ID="7" LAST_MODIFIED="day_1" SITE_FEATURE_ID="DYF" POSITION="0" VARIANT_ID="test_variant" PRODUCT_ID="prod1" NAME="Product Name" LINK="/product.jsp?id=prod1" IMAGE_PATH="/prod1/image.jpg" IMAGE_WIDTH="100" IMAGE_HEIGHT="100" PRICE="5"/>
+
+
+</dataset>

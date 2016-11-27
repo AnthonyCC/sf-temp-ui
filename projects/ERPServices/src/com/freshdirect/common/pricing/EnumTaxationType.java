@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
  
 /**
  * 
@@ -16,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public class EnumTaxationType extends Enum implements java.io.Serializable {
 
-	private static final long serialVersionUID = 5260939614258808057L;
+	
 	public final static EnumTaxationType TAX_AFTER_ALL_DISCOUNTS = new EnumTaxationType("0","ZEC2","Apply tax on the final price of line item, after all discounts");;
 	public final static EnumTaxationType TAX_AFTER_INTERNAL_DISCOUNTS = new EnumTaxationType("1","ZEC1","Apply tax on the price of line item, after giving only internal discounts");
 //	public final static EnumTaxationType TAX_AFTER_EXTERNAL_DISCOUNTS = new EnumTaxationType("2","AFT_EXT_DISC", "Apply tax on the price of line item, after giving only external discounts");
@@ -32,7 +29,6 @@ public class EnumTaxationType extends Enum implements java.io.Serializable {
 		this.description = description;
 	}
 	
-	@JsonCreator
 	public static EnumTaxationType getEnum(String name) {
 		return (EnumTaxationType) getEnum(EnumTaxationType.class, name);
 	}
@@ -55,10 +51,5 @@ public class EnumTaxationType extends Enum implements java.io.Serializable {
 
 	public String getCode() {
 		return code;
-	}
-	@JsonValue
-	public String toString() {
-		return super.getName();
-	}
-
+	}	
 }

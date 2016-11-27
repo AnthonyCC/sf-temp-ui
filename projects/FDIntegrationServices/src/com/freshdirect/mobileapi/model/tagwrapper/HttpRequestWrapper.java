@@ -20,15 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpHeaders;
-import org.apache.log4j.Category;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class HttpRequestWrapper implements HttpServletRequest {
 
-	private static final Category LOGGER = LoggerFactory.getInstance(HttpRequestWrapper.class);
-	
-	Map<Object, Object> backingMap = new HashMap<Object, Object>();
+    Map<Object, Object> backingMap = new HashMap<Object, Object>();
 
     HttpSessionWrapper session;
 
@@ -61,10 +56,11 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public void addValue(Object name, Object value) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-            LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
+            throw new IllegalAccessError("setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
+        } else {
+            backingMap.put(name, value);
         }
-        backingMap.put(name, value);
     }
 
     @Override
@@ -91,15 +87,6 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public String getHeader(String arg0) {
         if(arg0.equals(HttpHeaders.REFERER)){
             return referer;
-        }
-        if(arg0.equals("True-Client-IP")){
-            return this.getTrueClientIp();
-        }
-        if(arg0.equals("X-Forwarded-For")){
-            return this.getForwardedFrom();
-        }
-        if(arg0.equals("X-Akamai-Edgescape")){
-        	return this.getAkamaiEdgeScape();
         }
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
@@ -224,12 +211,14 @@ public class HttpRequestWrapper implements HttpServletRequest {
     @Override
     public Object getAttribute(String name) {
         //Coding defensively. Is something unexpected happens, throw exception
+        Object param = null;
         if (!expectedGets.contains(name)) {
-        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: getAttribute with param name: [" + name
+            throw new IllegalAccessError("getAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
+        } else {
+            param = backingMap.get(name);
         }
-        
-        return backingMap.get(name);
+        return param;
     }
 
     @Override
@@ -287,13 +276,14 @@ public class HttpRequestWrapper implements HttpServletRequest {
         //Coding defensively. Is something unexpected happens, throw exception
         String param = null;
         if (!expectedGets.contains(name)) {
-        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: getParameter with param name: [" + name
+            throw new IllegalAccessError("getParameter with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        }
-        if (null != backingMap.get(name)) {
-            param = backingMap.get(name).toString();
         } else {
-            param = null;
+            if (null != backingMap.get(name)) {
+                param = backingMap.get(name).toString();
+            } else {
+                param = null;
+            }
         }
         return param;
     }
@@ -357,10 +347,10 @@ public class HttpRequestWrapper implements HttpServletRequest {
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
 
-//    @Override
-//    public String getRemoteAddr() {
-//        throw new IllegalAccessError("this method has not been implemented in this wrapper");
-//    }
+    @Override
+    public String getRemoteAddr() {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+    }
 
     @Override
     public String getRemoteHost() {
@@ -412,10 +402,11 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public void setAttribute(String name, Object value) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
+            throw new IllegalAccessError("setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
+        } else {
+            backingMap.put(name, value);
         }
-        backingMap.put(name, value);
     }
 
     @Override
@@ -437,45 +428,5 @@ public class HttpRequestWrapper implements HttpServletRequest {
     
     public void setReferer(String referer) {
         this.referer = referer;
-    }
-    
-    private String trueclientip = "";
-    
-    public String getTrueClientIp() {
-        return trueclientip;
-    }
-    
-    public void setTrueClientIp(String trueclientip) {
-        this.trueclientip = trueclientip;
-    }
-    
-    private String forwardedfrom = "";
-    
-    public String getForwardedFrom() {
-        return forwardedfrom;
-    }
-    
-    public void setForwardedFrom(String forwardedfrom) {
-        this.forwardedfrom = forwardedfrom;
-    }
-    
-    private String remoteaddr = "";
-    
-    public String getRemoteAddr() {
-        return remoteaddr;
-    }
-    
-    public void setRemoteAddr(String remoteaddr) {
-        this.remoteaddr = remoteaddr;
-    }
-    
-    private String akamaiedgescape = "";
-    
-    public String getAkamaiEdgeScape() {
-        return akamaiedgescape;
-    }
-    
-    public void setAkamaiEdgeScape(String akamaiedgescape) {
-        this.akamaiedgescape = akamaiedgescape;
     }
 }

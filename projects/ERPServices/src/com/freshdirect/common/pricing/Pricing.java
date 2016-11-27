@@ -34,18 +34,18 @@ public class Pricing implements Serializable {
 	private ZonePriceListing zonePriceList;
 	private CharacteristicValuePrice[] cvPrices;
 	private SalesUnitRatio[] salesUnits;
-	private boolean isWineOrSpirit;
+	private boolean isAlcohol;
 
 	/**
 	 * @param materialPrices array of material pricing conditions
 	 * @param cvPrices array of characteristic value pricing conditions
 	 * @param salesUnits array of sales unit ratios
 	 */
-	public Pricing(ZonePriceListing zonePriceList, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits, boolean isWineOrSpirit) {
+	public Pricing(ZonePriceListing zonePriceList, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits, boolean isAlcohol) {
 		this.zonePriceList=zonePriceList;
 		this.cvPrices=cvPrices;
 		this.salesUnits=salesUnits;
-		this.isWineOrSpirit=isWineOrSpirit;
+		this.isAlcohol=isAlcohol;
 	}
 
 	/**
@@ -159,12 +159,12 @@ public class Pricing implements Serializable {
 	private ZonePriceModel _getZonePrice(ZoneInfo pricingZoneInfo) {
 		try {
 		
-			ZonePriceModel zpModel = this.zonePriceList.getZonePrice((pricingZoneInfo!=null && pricingZoneInfo.hasParentZone())?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
+			ZonePriceModel zpModel = this.zonePriceList.getZonePrice(pricingZoneInfo.hasParentZone()?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
 			if(zpModel == null) {
 				//::FDX:do a item cascading to its parent until we find a price info.
-				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo!=null?pricingZoneInfo.getPricingZoneId():null);
-				if(zoneInfo!=null && zoneInfo.getParentZone()!=null)
-					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo!=null?pricingZoneInfo.getSalesOrg():null,pricingZoneInfo!=null?pricingZoneInfo.getDistributionChanel():null));
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo.getPricingZoneId());
+				if(zoneInfo.getParentZone()!=null)
+					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()));
 			}
 			return zpModel;
 		}
@@ -181,12 +181,12 @@ public class Pricing implements Serializable {
 	public ZonePriceModel getZonePrice(ZoneInfo pricingZoneInfo) {
 		ZoneInfo zone=pricingZoneInfo;
 		ZonePriceModel zpModel=_getZonePrice(zone);
-		while(zone!=null && zpModel==null && zone.hasParentZone()) {
+		while(zpModel==null && zone.hasParentZone()) {
 			zone=zone.getParentZone();
 			zpModel=_getZonePrice(zone);
 		}
 		try {
-			if(null!= zpModel && null !=pricingZoneInfo && !pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isWineOrSpirit) {
+			if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isAlcohol) {
 				MaterialPrice[] baseIndicatorMaterialPrice=getBaseIndicatorMaterialPrice(zpModel.getMaterialPrices());
 				return new ZonePriceModel(zpModel.getPricingZone(),baseIndicatorMaterialPrice);
 			}else 

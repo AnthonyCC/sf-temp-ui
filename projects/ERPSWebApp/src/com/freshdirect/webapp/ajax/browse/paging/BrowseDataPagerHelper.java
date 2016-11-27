@@ -6,13 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
-import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
 public class BrowseDataPagerHelper {
@@ -33,7 +30,7 @@ public class BrowseDataPagerHelper {
 	 * @param cmsFilteringNavigator
 	 * @return
 	 */
-	public static void createPagerContext(BrowseData browseData, CmsFilteringNavigator cmsFilteringNavigator, FDUserI user) {
+	public static void createPagerContext(BrowseData browseData, CmsFilteringNavigator cmsFilteringNavigator) {
 		
 		PagerData pagerData = new PagerData();
 		pagerData.setPageSize(cmsFilteringNavigator.getPageSize());
@@ -57,7 +54,7 @@ public class BrowseDataPagerHelper {
 		Iterator<SectionData> sectionDataIterator = browseData.getSections().getSections().iterator();
 		
 		while (sectionDataIterator.hasNext()) {
-			fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, pagerData.isAll(), cmsFilteringNavigator, user);
+			fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, pagerData.isAll());
 		}
 		
 		pagerData.setItemCount(fetchResults.get(ITEM_COUNT));
@@ -93,12 +90,12 @@ public class BrowseDataPagerHelper {
 	 * @param fetchResults
 	 * @return
 	 */
-	private static Map<String, Integer> fetchSectionData(SectionData sectionData, Map<String, Integer> fetchResults, boolean all, CmsFilteringNavigator nav, FDUserI user) {
+	private static Map<String, Integer> fetchSectionData(SectionData sectionData, Map<String, Integer> fetchResults, boolean all) {
 		
 		if (sectionData.getSections() != null && sectionData.getSections().size() > 0) {
 			Iterator<SectionData> sectionDataIterator = sectionData.getSections().iterator();
 			while (sectionDataIterator.hasNext()) {
-				fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, all, nav, user);
+				fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, all);
 				if (fetchResults.get(MARKED_FOR_REMOVAL) != null && !all) { //dropping sections that won't be displayed on the current page
 					fetchResults.remove(MARKED_FOR_REMOVAL);
 					sectionDataIterator.remove();
@@ -123,7 +120,6 @@ public class BrowseDataPagerHelper {
 
 			//fetching already passed by the current page
 			if (fetchResults.get(LOGICAL_ITEM_COUNT).compareTo(fetchResults.get(CURRENT_PAGE_LAST_ITEM_INDEX)) > -1) { 
-				populateProducts(entityList, fetchResults, nav, user, -1);
 				//accumulating logical item index by '(int)rounding' to the next PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD multiple
 //				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityList.size() - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 				fetchResults.put(LOGICAL_ITEM_COUNT, entityList.size() + fetchResults.get(LOGICAL_ITEM_COUNT)); 
@@ -178,10 +174,11 @@ public class BrowseDataPagerHelper {
 			
 			itemNumberToBeDropped -= spacerCount; //account for spacers
 			
-			int itemFailedToPopulated = populateProducts(entityList, fetchResults, nav, user, fetchResults.get(CURRENT_PAGE_LAST_ITEM_INDEX) - fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX));
-			fetchResults.put(ITEM_COUNT, fetchResults.get(ITEM_COUNT) - itemFailedToPopulated);
-			itemNumberToBeDropped -= itemFailedToPopulated;
-			
+			for (int i = 0; i < itemNumberToBeDropped; i++) {
+				if (!all) {
+					entityList.remove(entityList.size() - 1);
+				}
+			}
 			//we reached the end of current page so we need the last item index 
 			fetchResults.put(LAST_ITEM_INDEX, fetchResults.get(LAST_ITEM_INDEX) - Math.max(0, itemNumberToBeDropped));
 			
@@ -190,40 +187,9 @@ public class BrowseDataPagerHelper {
 //				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityListSize - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 				fetchResults.put(LOGICAL_ITEM_COUNT, entityListSize + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 			}
-		}
+		} 
 		
 		return fetchResults;
 		
 	}
-	
-	private static int populateProducts(List<ProductData> productList, Map<String, Integer> fetchResults, CmsFilteringNavigator nav, FDUserI user, int displaySize){
-		Iterator<ProductData> productIterator = productList.iterator();
-		int validProductNumber = 0;
-		int productRemoved = 0;
-		while (productIterator.hasNext()) {
-			ProductData product = productIterator.next();
-			// if displaySize is -1, display all items.
-			if (displaySize == -1 || validProductNumber <= displaySize) {
-				if (!populateProductData(product, nav, user)) {
-					productRemoved++;
-					productIterator.remove();
-				} else {
-					validProductNumber++;
-				}
-			} else {
-				productIterator.remove();
-			}
-
-		}
-		return productRemoved;
-	}
-	
-	private static boolean populateProductData(ProductData productData, CmsFilteringNavigator nav, FDUserI user) {
-		try {
-			ProductDetailPopulator.populateBrowseProductData(productData, user, nav, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
-		} catch(Exception e) {
-			return false;
-		}
-    	return true;
-    }
 }

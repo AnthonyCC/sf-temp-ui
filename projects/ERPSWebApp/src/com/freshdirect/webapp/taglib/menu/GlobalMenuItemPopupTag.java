@@ -11,7 +11,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.freshdirect.storeapi.content.GlobalMenuItemModel;
+import com.freshdirect.fdstore.content.GlobalMenuItemModel;
 
 /**
  * Fetches and includes the associated Global Menu Layout for the given Global Menu Layout ID.

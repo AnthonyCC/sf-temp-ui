@@ -5,23 +5,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Recommender;
+import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Recommender;
-import com.freshdirect.storeapi.content.RecommenderStrategy;
-import com.freshdirect.storeapi.smartstore.CmsRecommenderService;
 
-@Service
 public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 
 	private static final Logger	LOG					= LoggerFactory.getInstance( CmsRecommenderServiceImpl.class );

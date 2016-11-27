@@ -1,17 +1,16 @@
 <%@page import="com.freshdirect.customer.EnumATCContext"%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
-<%@ page import="com.freshdirect.storeapi.*"%>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
-<%@ page import="com.freshdirect.storeapi.content.*"%>
-<%@ page import='com.freshdirect.storeapi.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="java.util.*"%>
@@ -30,6 +29,7 @@
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -108,10 +108,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>
 
-<%-- 	<tmpl:put name="title" direct="true">FreshDirect - New products</tmpl:put> --%>
-	  <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - New products"></fd:SEOMetaTag>
-      </tmpl:put>
+	<tmpl:put name="title" direct="true">FreshDirect - New products</tmpl:put>
 	<tmpl:put name="activeView">grid</tmpl:put>
 	<tmpl:put name="noResult"><%= itemCount == 0 ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage"><%= searchNav.getSearchTerm()==null || searchNav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
@@ -123,6 +120,11 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		<% } %>
 	</tmpl:put>
 	<tmpl:put name="content-title">New Products</tmpl:put>
+
+	<tmpl:put name="content-header">
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_filter" searchNavigator="<%= searchNav %>" />
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_sort" searchNavigator="<%= searchNav %>" />
+	</tmpl:put>
 
 	<tmpl:put name="count-header">
 		<strong><%= itemCount %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!

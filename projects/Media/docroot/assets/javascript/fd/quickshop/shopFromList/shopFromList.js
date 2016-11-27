@@ -115,7 +115,7 @@ var FreshDirect = FreshDirect || {};
                 }
               }
             }
-            
+
             return ('to' in value) && (value.to === 'shoppingListPageRefreshNeeded') && value.body;
           }).map(function (value) {
             // fd.quickshop.common.tabMeta.update(true);
@@ -150,23 +150,6 @@ var FreshDirect = FreshDirect || {};
     },
     callback:{
       value:reload
-    }
-  }).listen();
-
-  Object.create(fd.common.signalTarget,{
-    signal:{
-      value:'YOUR LISTS'
-    },
-    callback:{
-      value: function(data) {
-        //update remove all items confirm popup
-        var headerText = 'Would you also like to delete this list?';
-        var selectedList = [].concat( data.YOUR_LISTS.filter(function(d) { return !!d.selected; }) );
-        if (selectedList.length && selectedList[0].name) {
-          headerText = "Would you like to also delete &apos;"+fd.utils.escapeHtml(selectedList[0].name)+"&apos;?";
-        }
-        $('.qs-actions .qs-deletelist').attr('data-confirm-header', headerText);
-      }
     }
   }).listen();
 

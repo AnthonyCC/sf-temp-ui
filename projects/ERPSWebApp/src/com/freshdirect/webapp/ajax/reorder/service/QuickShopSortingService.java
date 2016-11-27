@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
 public class QuickShopSortingService {

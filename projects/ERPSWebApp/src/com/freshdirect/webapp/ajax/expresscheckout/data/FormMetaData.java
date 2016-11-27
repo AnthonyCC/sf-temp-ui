@@ -1,29 +1,17 @@
 package com.freshdirect.webapp.ajax.expresscheckout.data;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FormMetaData {
 
 	private List<FormMetaDataItem> cardType;
 	private List<FormMetaDataItem> state;
-	private List<FormMetaDataItemCountry> country;
+	private List<FormMetaDataItem> country;
 	private List<FormMetaDataItem> expireMonth;
 	private List<FormMetaDataItem> expireYear;
 	private boolean enableECheck;
 	private boolean enableEbtCheck;
 	private String paymentPromoOAS;
-	
-	private Map<String, Integer> countryCodeIndexMap = new HashMap<String, Integer>();
-
-	public Map<String, Integer> getCountryCodeIndexMap() {
-		return countryCodeIndexMap;
-	}
-
-	public void setCountryCodeIndexMap(Map<String, Integer> countryCodeIndexMap) {
-		this.countryCodeIndexMap = countryCodeIndexMap;
-	}
 
 	public List<FormMetaDataItem> getState() {
 		return state;
@@ -33,11 +21,11 @@ public class FormMetaData {
 		this.state = state;
 	}
 
-	public List<FormMetaDataItemCountry> getCountry() {
+	public List<FormMetaDataItem> getCountry() {
 		return country;
 	}
 
-	public void setCountry(List<FormMetaDataItemCountry> country) {
+	public void setCountry(List<FormMetaDataItem> country) {
 		this.country = country;
 	}
 

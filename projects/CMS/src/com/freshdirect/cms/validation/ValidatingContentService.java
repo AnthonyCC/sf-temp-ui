@@ -16,7 +16,6 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.MaskContentService;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.application.service.SimpleContentService;
-import com.freshdirect.cms.config.ContentValidatorConfiguration;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
 /**
@@ -33,21 +32,16 @@ public class ValidatingContentService extends ProxyContentService {
 
 	private final List<ContentValidatorI> validators;
 
-	public ValidatingContentService(ContentServiceI service) {
+	public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
 		super(service);
-
-		this.validators = ContentValidatorConfiguration.getValidatorList();
+		this.validators = validators;
 	}
 
-    public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
-        super(service);
-        
-        this.validators = validators;
-    }
-
+	/**
+	 * @throws ContentValidationException
+	 */
 	@Override
 	public CmsResponseI handle(CmsRequestI request) {
-
 	    DraftContext draftContext = request.getDraftContext();
 		MaskContentService masked = new MaskContentService(getProxiedService(),
 				new SimpleContentService(getTypeService()));
@@ -71,9 +65,7 @@ public class ValidatingContentService extends ProxyContentService {
 			throw new ContentValidationException(delegate);
 		}
 
-		CmsResponseI response = request.isDryMode() ? new CmsResponse() : super.handle(request);
-		
-		return response;
+		return request.isDryMode() ? new CmsResponse() : super.handle(request);
 	}
 
 	private Set<ContentKey> getKeys(Collection<ContentNodeI> nodes) {

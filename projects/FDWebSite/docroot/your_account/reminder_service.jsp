@@ -15,9 +15,9 @@ final int W_YA_REMINDER_SERVICE = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Your Account - Delivery Addresses" pageId="remainder_service"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="remainder_service"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <%! String[] dayNames = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};%>
@@ -25,7 +25,7 @@ final int W_YA_REMINDER_SERVICE = 970;
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%>
 <fd:ReminderEmailController actionName="updateReminder" result="result" customerInfo="<%=custInfo%>">
-  <table role="presentation" width="<%= W_YA_REMINDER_SERVICE %>" align="center" border="0" cellpadding="0" cellspacing="0">
+  <table width="<%= W_YA_REMINDER_SERVICE %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text11">
@@ -41,9 +41,9 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			</tr>
 			<tr>
 				<td colspan="2">
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br>
-          <img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_REMINDER_SERVICE %>" height="1" border="0"><br>
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
+          <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_REMINDER_SERVICE %>" height="1" border="0"><br>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0">
 				</td>
 			</tr>
 			<tr>
@@ -63,9 +63,15 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			<tr valign="top">
         <td colspan="2">
           <div class="continue-shopping text-left">
-            <a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
-             CONTINUE SHOPPING
-            <BR>from <FONT CLASS="text11bold">Home Page</A></FONT>
+            <a class="no-decor" href="/index.jsp">
+              <div class="col-left">
+                <button class="cssbutton green icon-arrow-left-before notext round"></button>
+              </div>
+              <div class="col-right">
+                <p><span class="continue-shopping-label">Continue Shopping</span></p>
+                <p>from <strong>Home Page</strong></p>
+              </div>
+            </a>
           </div>
         </td>
 			</tr>

@@ -20,7 +20,35 @@
 	<tmpl:put name="header" direct="true"><jsp:include page="/includes/customer_header.jsp" /></tmpl:put>
 
     	<tmpl:put name='content' direct='true'>
-			
+			<crm:GetFDUser id="user">
+	            <%
+	                ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.EBT);  // defaulting to ErpCreditCardModel 
+	                String actionName = "addPaymentMethod";
+	                String retPage = request.getParameter("returnPage");
+	                if (retPage == null) {
+	                	retPage = "/main/account_details.jsp";
+	                }
+	            %>
+				<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">
+<% 
+if (!result.hasError("payment_method_fraud") && !result.hasError("technical_difficulty")) {%>
+<fd:ErrorHandler result='<%=result%>' field='<%=listOfFields%>'>
+<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
+	if( result.hasError("auth_failure") ) {
+		errorMsg=result.getError("auth_failure").getDescription();
+	} %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+</fd:ErrorHandler>
+<%} else {%>
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+	
+		<%@ include file="/includes/i_error_messages.jspf" %>
+	</fd:ErrorHandler>
+
+<%} %>
+<%@ include file="/includes/ebt_card_details.jspf" %>
+				</crm:CrmPaymentMethodController>
+			</crm:GetFDUser>
 		<br clear="all">
 	    </tmpl:put>
 

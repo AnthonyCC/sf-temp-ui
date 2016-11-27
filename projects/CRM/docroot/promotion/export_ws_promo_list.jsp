@@ -17,6 +17,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory"%>
 
 <%

@@ -11,7 +11,6 @@ package com.freshdirect.customer;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -24,22 +23,17 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class ErpCustomerCreditModel extends ErpCreditModel {
 
-	private static final long serialVersionUID = -6588304371080075878L;
 	private PrimaryKey complaintPk;
 	private double remainingAmount = 0;
 	private Date createDate;
 	private String cDate;
 	private String saleId;
-	private String eStore;
-	private String customerId;
 
 	public ErpCustomerCreditModel() {
 		super();
 	}
-
-	public ErpCustomerCreditModel(@JsonProperty("complaintPk") PrimaryKey complaintPk,
-			@JsonProperty("department") String department, @JsonProperty("amount") double amount,
-			@JsonProperty("affiliate") ErpAffiliate affiliate) {
+	
+	public ErpCustomerCreditModel(PrimaryKey complaintPk, String department, double amount, ErpAffiliate affiliate) {
 		super(department, amount, affiliate);
 		this.complaintPk = complaintPk;
 		this.remainingAmount = amount;
@@ -89,29 +83,5 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	public String getSaleId() {
 		return saleId;
 	}
-
-	public String geteStore() {
-		return eStore;
-	}
-
-	public void seteStore(String eStore) {
-		this.eStore = eStore;
-	}
-
-	public String getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
-	
-	@Override
-	public void setId( String id ) {
-		if (id != null) {
-			super.setId(id);
-		}
-			
-	}
-
 }
+

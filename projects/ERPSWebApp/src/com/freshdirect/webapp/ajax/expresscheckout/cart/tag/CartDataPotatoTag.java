@@ -30,7 +30,7 @@ public class CartDataPotatoTag extends SimpleTagSupport {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
-            StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
+	        StandingOrderHelper.clearSO3Context(user,request,standingOrder);
 	        
 			CartData result = CartDataService.defaultService().loadCartData(request, user);
 			Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);

@@ -11,7 +11,7 @@
     <xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
     <head>
         <BASE href="http://www.freshdirect.com" />
         <title>Lobster Friday.</title>
@@ -32,7 +32,7 @@
 
 <table cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
     <table cellpadding="0" cellspacing="0" width="90%">
         <tr>
@@ -48,7 +48,7 @@
              Whether it's date night, family night, or you're just happy to have made it through another week, every Friday is cause for celebration! Every week, Montauk lobstermen deliver their catch to Gosman's, who rush the live lobsters to us on Thursday. We steam them for you, bringing a lobster dinner to your door on Friday evening. Your lobster dinner is delicious cold, or warm it for a moment on the grill. We'll include our tangy cocktail sauce and creamy, spicy wasabi mayonnaise for dipping.
              <br/><br/><a href="http://www.freshdirect.com/product.jsp?productId=hmrsea_splitlobstr&amp;catId=hmr_entree_sea&amp;trk=lob01">Click here to Learn More!</a>
              </td>
-            <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+            <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
             <td valign="top"><a href="http://www.freshdirect.com/product.jsp?productId=hmrsea_splitlobstr&amp;catId=hmr_entree_sea&amp;trk=lob01"><img src="http://www.freshdirect.com/media_stat/images/template/email/lobster_friday/lobster.jpg" width="285" height="226" border="0" /></a>
             <br/>
             <a href="http://www.freshdirect.com/product.jsp?productId=hmrsea_splitlobstr&amp;catId=hmr_entree_sea&amp;trk=lob01"><img src="http://www.freshdirect.com/media_stat/images/template/email/lobster_friday/lob_price.gif" width="285" height="22" border="0" /></a></td>
@@ -66,7 +66,7 @@
                 <!-- Wine img1 -->
                     <a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_hopeestate_1&amp;catId=win_luscious&amp;trk=lob01"><img src="http://www.freshdirect.com/media_stat/images/template/email/lobster_friday/bc_hopeestate.jpg" width="45" height="121" border="0" /></a>
                 </td>
-                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
                 <td valign="top" class="bodyCopySmall">
                   <!--wine text1-->
                     <b><a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_hopeestate_1&amp;catId=win_luscious&amp;trk=lob01">Hope Estate Chardonnay<br/>
@@ -74,12 +74,12 @@
                     Fans of rich, toasty, full-throttle Chardonnays will be thrilled at both the style and price of this big, toasty, buttery, down-under wonder, which tastes more like a Meursault than it has a right to.
                     <br/><br/><a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_hopeestate_1&amp;catId=win_luscious&amp;trk=lob01">Click here to Learn More!</a>
                 </td>
-                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
                 <td valign="top">
                 <!-- Wine img2 -->
                     <a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_terrapin_1&amp;catId=win_soft&amp;trk=lob01"><img src="http://www.freshdirect.com/media_stat/images/template/email/lobster_friday/bc_terrapin.jpg" width="45" height="121" border="0" /></a>
                 </td>
-                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
                 <td valign="top" class="bodyCopySmall">
                   <!--wine text2-->
                     <b><a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_terrapin_1&amp;catId=win_soft&amp;trk=lob01">Terrapin Bay Chardonnay<br/>
@@ -94,7 +94,7 @@
     </table>
    </p>
 </td>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 		<title>Important: Organic Valley Milk Notice</title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -28,7 +28,7 @@
 <table cellpadding="0" cellspacing="0">
 <tr>
 <!-- =============== START LEFT SPACER =============== -->
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <!-- =============== END LEFT SPACER ================= -->
 
 <!-- ~~~~~~~~~~~~~~~ START CONTENT ~~~~~~~~~~~~~~~ -->
@@ -71,7 +71,7 @@
 <!-- ~~~~~~~~~~~~~~~ END CONTENT ~~~~~~~~~~~~~~~ -->
 
 <!-- =============== BEGIN RIGHT SPACER =============== -->
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <!-- =============== END RIGHT SPACER ================= -->
 </tr>
 </table>

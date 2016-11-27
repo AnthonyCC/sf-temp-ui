@@ -5,7 +5,7 @@
  */
 {template .formatDecimalPrice}
 	{if $price - floor($price) == 0}
-		${floor($price)}
+		${floor($price)}.00
 	{elseif $price * 10 - floor($price * 10) == 0}
 		${$price}0
 	{else}
@@ -20,10 +20,8 @@
  * @param? scaleUnit
  */
 {template .price autoescape="false"}
-	{if $price == 0}
-		<span class="free-price">FREE</span>
-	{elseif $wasPrice}
-		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>{call common.formatDecimalPrice}{param price:$wasPrice /}{/call}</s>
+	{if $wasPrice}
+		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>${$wasPrice}</s>
 	{else}
 		{call common.formatDecimalPrice}{param price:$price /}{/call}{if $scaleUnit}/{$scaleUnit}{/if}
 	{/if}
@@ -62,13 +60,10 @@
 * @param? abFeatures
 * @param? ifSingleUL
 * @param? mobWeb
-* @param? itemPerLine
 */
 {template .productList autoescape="false"}
-	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '2017') : '2017' /}
-	{let $ifSingleUL: $ifSingleUL ? $ifSingleUL : ($productCardVersion == '2018' ? true : false) /}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
-	{let $itemPerLineFinal: $itemPerLine ? $itemPerLine : (($version == '4_0' or $productCardVersion == '2018') ? 4 : 5) /}
+	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 5 /}
 	{let $itemPerLineFinal: $mobWeb ? 2 : $itemPerLineFinal /}
 	{call common.fixedProductList data="all"}
 		{param itemPerLine:$itemPerLineFinal /}
@@ -77,7 +72,6 @@
 		{param numProducts: $numProducts /}
 		{param ifSingleUL: $ifSingleUL /}
 		{param mobWeb:$mobWeb /}
-		{param abFeatures:$abFeatures /}
 	{/call}
 {/template}
 
@@ -88,9 +82,7 @@
 * @param? itemPerLine
 * @param? showConfig
 * @param? isHookLogic
-* @param? abFeatures
 * @param? mobWeb
-* @param? ifSingleUL
 */
 {template .fixedProductList autoescape="false"}
 
@@ -101,14 +93,11 @@
 	{let $l: $nProducts - $fProducts /}
 	{let $lines: ceiling($l / $ipl) /}
 	{for $line in range(0, $lines)}
-		{if (not $ifSingleUL) or ($ifSingleUL and $line == 0)}
-			<ul class="products transactional{if (not $ifSingleUL) and $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
-		{/if}
-
+		<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
   		{for $col in range(0, $ipl)}
       		{if $fProducts + $col + $line * $ipl < $nProducts}
 	        	{let $product: $productList[$fProducts + $col + $line * $ipl] /}
-	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' regularProduct isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (((not $ifSingleUL) and $col==0)?' firstInLine':'')  /}
+	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
 	        	{if $product.productId == '!_SPACER_!'}
 	        		/* SPACER */
 	        		<li class="portrait-item data-component="product" data-transactional-trigger="false"><!-- {$product.productId} --></li>
@@ -118,15 +107,11 @@
 		          		{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine') /}
 		          		{param showConfig: $showConfig /}
 		          		{param mobWeb:$mobWeb /}
-						{param abFeatures:$abFeatures /}
 		        	{/call}
 	        	{/if}
       		{/if}
     	{/for}
-    	
-		{if (not $ifSingleUL) or ($ifSingleUL and $line == $lines - 1)}
-			</ul>
-		{/if}
+    	</ul>
 	{/for}
 {/template}
 
@@ -153,28 +138,4 @@
 		{param ifSingleUL:true /}
 		{param mobWeb:$mobWeb /}
 	{/call}
-{/template}
-
-
-/**
-* @param? prefix
-* @param uuid
-* @param? catId
-* @param? productId
-* @param? skuCode
-* @param? suffix
-* @param? separator
-* @param? listId
-* @param? originalLineId
-*/
-{template .getUUID autoescape="false"}
-{let $separator: $separator ? $separator : '_' /}
-{if $prefix}{$prefix}{$separator}{/if}
-{if $uuid}{$uuid}{/if}
-{if $catId}{$separator}{$catId}{/if}
-{if $productId}{$separator}{$productId}{/if}
-{if $skuCode}{$separator}{$skuCode}{/if}
-{if $suffix}{$separator}{$suffix}{/if}
-{if $listId}{$separator}{$listId}{/if}
-{if $originalLineId}{$separator}{$originalLineId}{/if}
 {/template}

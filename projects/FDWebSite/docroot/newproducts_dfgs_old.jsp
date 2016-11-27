@@ -1,15 +1,15 @@
 <%@   page import='com.freshdirect.webapp.util.*'%><%@ page
-	import="com.freshdirect.storeapi.content.DomainValue"%><%@ page
+	import="com.freshdirect.fdstore.content.DomainValue"%><%@ page
 	import='com.freshdirect.framework.webapp.*'%><%@ page
 	import='com.freshdirect.webapp.taglib.fdstore.*'%><%@ page
 	import='com.freshdirect.content.attributes.*'%><%@ page
 	import="com.freshdirect.fdstore.util.URLGenerator"%><%@ page
 	import="com.freshdirect.fdstore.util.NewProductsNavigator"%><%@ page
 	import="com.freshdirect.fdstore.*"%><%@ page
-	import="com.freshdirect.storeapi.*"%><%@ page
-	import="com.freshdirect.storeapi.fdstore.FDContentTypes"%><%@ page
-	import="com.freshdirect.storeapi.content.*"%><%@ page
-	import='com.freshdirect.storeapi.attributes.*'%><%@ page
+	import="com.freshdirect.cms.*"%><%@ page
+	import="com.freshdirect.cms.fdstore.FDContentTypes"%><%@ page
+	import="com.freshdirect.fdstore.content.*"%><%@ page
+	import='com.freshdirect.fdstore.attributes.*'%><%@ page
 	import='com.freshdirect.webapp.taglib.fdstore.SessionName'%><%@ page
 	import="java.util.*"%><%@ page import="java.net.URLEncoder"%><%@ page
 	import="java.text.DecimalFormat"%><%@ page
@@ -42,10 +42,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 %>
 <fd:GetNewProducts id="newProds" nav="<%= nav %>" simpleView="true">
 	<tmpl:insert template='/common/template/new_products_nav.jsp'>
-	<tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - New Products"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put> --%>
+		<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 		<tmpl:put name='banner2' direct='true'>
 			<tr>
 				<td colspan="2" align="right" style="margin-right: 48px"><br />
@@ -64,7 +61,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 		<tmpl:put name='rightNav' direct='true'>
 			<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" align="right" class="rnav">
 			<div style="margin-left:<%=W_NEWPRODUCTS_DFGS_CENTER_PADDING%>px;">
-			<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1"><br />
+			<img src="/media_stat/images/layout/clear.gif" height="10" width="1"><br />
 			<%@ include file="/common/template/includes/right_side_nav.jspf"%>
 			</div>
 			</td>
@@ -74,7 +71,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 		</tmpl:put>
 		<tmpl:put name='header_seperator' direct='true'>
 			<tr>
-				<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" bgcolor="#999966" colspan="2"><img width="1" height="1" alt="" src="/media_stat/images/layout/999966.gif"></td>
+				<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" bgcolor="#999966" colspan="2"><img width="1" height="1" src="/media_stat/images/layout/999966.gif"></td>
 			</tr>
 		</tmpl:put>
 		<tmpl:put name='header_2' direct='true'><br /><div style="width: <%=W_NEWPRODUCTS_DFGS_LEFT%>px;"><%@ include file="/includes/i_header_new.jspf" %></div></tmpl:put>

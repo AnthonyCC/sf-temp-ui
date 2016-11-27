@@ -56,11 +56,6 @@
 		<to last="true">/search.do?upc=$2&amp;ver=$1</to>
 	</rule>
 
-    <rule>
-        <from>^/v/([0-9]+)/search/web/(.*)</from>
-        <to last="true">/search.do?action=searchWeb&amp;&amp;ver=$1</to>
-    </rule>
-
 	<!-- Search with payload -->
 	<rule>
 		<from>^/v/([0-9]+)/search/$</from>
@@ -89,11 +84,6 @@
 		<from>^/v/([0-9]+)/product/catid/(.*)/id/(.*)</from>
 		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;ver=$1</to>
 	</rule>
-	
-	<rule>
-		<from>^/v/([0-9]+)/productx/catid/(.*)/id/(.*)</from>
-		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=getproductdetail&amp;ver=$1</to>
-	</rule>
 
 	<!-- View More Info -->
 	<rule>
@@ -121,10 +111,6 @@
 	<rule>
 		<from>^/v/([0-9]+)/user/update/$</from>
 		<to last="true">/user.do?action=updateUser&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/user/updateex/$</from>
-		<to last="true">/user.do?action=updateUserEx&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/user/name/$</from>
@@ -160,6 +146,11 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/login/$</from>
 		<to last="true">/login.do?action=login&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/loginXE/$</from>
+		<to last="true">/login.do?action=loginXE&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Session -->
@@ -377,15 +368,6 @@
         <to last="true">/register.do?action=getemailpreferences&amp;ver=$1</to>
     </rule>
     
-    	<rule>
-        <from>^/v/([0-9]+)/(.*)/account/getmobilegogreenpreferences/</from>
-        <to last="true">/register.do?action=getmobilegogreenpreferences&amp;ver=$1</to>
-    </rule>
-    	<rule>
-        <from>^/v/([0-9]+)/(.*)/account/setmobilegogreenpreferences/</from>
-        <to last="true">/register.do?action=setmobilegogreenpreferences&amp;ver=$1</to>
-    </rule>
-    
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
 		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>
@@ -420,10 +402,6 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/getselectedeliverydaddress/</from>
 		<to last="true">/checkout.do?action=getselecteddeliveryaddress&amp;ver=$1</to>
 	</rule>
-   <rule>
-        <from>^/v/([0-9]+)/(.*)/checkout/isDeliveryAddressUnattended/</from>
-        <to last="true">/checkout.do?action=isDeliveryAddressUnattended&amp;ver=$1</to>
-    </rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/getpmverifystatus/</from>
 		<to last="true">/checkout.do?action=getpmverifystatus&amp;ver=$1</to>
@@ -634,12 +612,12 @@
 		<to last="true">/order.do?action=modifyorder&amp;orderId=$3&amp;ver=$1</to>
 	</rule>
 	
-	<!-- Set Overlay False -->
+	<!-- Modify Check -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/setoverlayfalse</from>
-		<to last="true">/order.do?action=setoverlayfalse&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>
+		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
 	</rule>
-	
+
 	<!-- Modify Check -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>
@@ -650,12 +628,6 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/cancelmodify/</from>
 		<to last="true">/order.do?action=cancelmodify&amp;ver=$1</to>
-	</rule>
-	
-	<!-- Get Modify Orders -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/modifiable$</from>
-		<to last="true">/order.do?action=getmodifiableorders&amp;ver=$1</to>
 	</rule>
 
 	<!-- Logout -->
@@ -685,11 +657,6 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/ping/</from>
 		<to last="true">/login.do?action=ping&amp;ver=$1</to>
-	</rule>
-	
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/initiatesessionuser/</from>
-		<to last="true">/login.do?action=initiatesessionuser&amp;ver=$1</to>
 	</rule>
 
 	<!-- Refresh -->
@@ -894,42 +861,8 @@
 	</rule>
 	
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/credits/</from>
-		<to last="true">/account.do?action=getcredits&amp;ver=$1</to>
-	</rule>
-	
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/creditedorders/</from>
-		<to last="true">/account.do?action=getcreditedorders&amp;ver=$1</to>
-	</rule>
-	
-	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/profile/add/</from>
 		<to last="true">/account.do?action=addProfile&amp;ver=$1</to>
-	</rule>
-	
-	<!--  DeliveryPass Free Trial Subscription -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/dpfreetrial/</from>
-		<to last="true">/account.do?action=dpFreeTrial&amp;ver=$1</to>
-	</rule>
-	
-	<!--  DeliveryPass Info -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpinfo/</from>
-		<to last="true">/account.do?action=getDpInfo&amp;ver=$1</to>
-	</rule>
-	
-	<!--  DeliveryPass List -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdplist/</from>
-		<to last="true">/product.do?action=getDpList&amp;ver=$1</to>
-	</rule>
-
-	<!--  DeliveryPass Auto Renew -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/dpautorenew$</from>
-		<to last="true">/account.do?action=dpAutoRenew&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Delivery Pass Accept Terms and Conditions -->
@@ -937,11 +870,11 @@
 		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>
 		<to last="true">/account.do?action=acceptDeliveryPassTermsAndConditions&amp;ver=$1</to>
 	</rule>
-	
-	<!--  DeliveryPass All Plans -->
+
+	<!-- Email capture -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpallplans/</from>
-		<to last="true">/account.do?action=getAllDlvPassPlans&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/emailcapture/(.*)</from>
+		<to last="true">/emailcapture.do?email=$2&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Email capture ex-->
@@ -956,28 +889,11 @@
 		<to last="true">/configvalue.do?key=$2&amp;ver=$1</to>
 	</rule>
 	
-		<!-- config -->
-    <rule>
-        <from>^/v/([0-9]+)/configuration/warmup</from>
-        <to last="true">/configvalue.do?action=warmup&amp;ver=$1</to>
-    </rule>
-	
 	<!-- config -->
 	<rule>
 		<from>^/v/([0-9]+)/configuration</from>
 		<to last="true">/configvalue.do?action=all&amp;ver=$1</to>
 	</rule>
-	
-	<!-- route info -->
-	<rule>
-        <from>^/v/([0-9]+)/route/deliveryinfo/(.*)</from>
-        <to last="true">/routeinfo.do?action=deliveryinfo&amp;ver=$1</to>
-    </rule>
-    <rule>
-        <from>^/v/([0-9]+)/route/deliveryinfoallroutes/(.*)</from>
-        <to last="true">/routeinfo.do?action=deliveryinfoall&amp;ver=$1</to>
-    </rule>
-
 
 	<!-- Help -->
 	<rule>
@@ -995,18 +911,6 @@
 	<rule>
 		<from>^/v/([0-9]+)/browse/categories/(.*)</from>
 		<to last="true">/browse.do?action=getCategories&amp;browseTerm=$2&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/browse/getCategory/(.*)</from>
-		<to last="true">/browse.do?action=getCategoryOptimized&amp;browseTerm=$2&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/browse/categoriessortdetail/(.*)</from>
-		<to last="true">/browse.do?action=getCategoriesSortDetail&amp;browseTerm=$2&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/browse/getsaleitems/(.*)</from>
-		<to last="true">/browse.do?action=getSaleItems&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/browse/sortoptionsforcategory/(.*)</from>
@@ -1080,10 +984,6 @@
 		<from>^/v/([0-9]+)/home/getPage/(.*)</from>
 		<to last="true">/home.do?action=getPage&amp;ver=$1</to>
 	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/home/getPageComponent/(.*)</from>
-		<to last="true">/home.do?action=getPageComponent&amp;ver=$1</to>
-	</rule>
 
 	<!-- Home -->
 	<rule>
@@ -1098,10 +998,6 @@
 		<from>^/v/([0-9]+)/home/all/(.*)</from>
 		<to last="true">/home.do?action=getAllDetails&amp;ver=$1</to>
 	</rule>
-    <rule>
-        <from>^/v/([0-9]+)/home/module/(.*)</from>
-        <to last="true">/home.do?action=getModule&amp;ver=$1</to>
-    </rule>
 
 	<!-- Recipes -->
 	<rule>
@@ -1139,10 +1035,6 @@
 	<rule>
 		<from>^/v/([0-9]+)/pickslistiPhone/getall/(.*)</from>
 		<to last="true">/pickslist.do?action=getAlliPhone&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/pickslistiPhoneImageBanners/getall/(.*)</from>
-		<to last="true">/pickslist.do?action=getAlliPhoneImageBanners&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/pickslist/getdetail/(.*)</from>
@@ -1218,10 +1110,22 @@
 		<from>^/v/([0-9]+)/ewalletstatus/(.*)</from>
 		<to last="true">/ewallet.do?action=getEWalletStatus&amp;ver=$1</to>
 	</rule>
-				
+	
+	<rule>
+		<from>^/v/([0-9]+)/ewalletprecheckout/(.*)</from>
+		<to last="true">/ewalletprecheckout.do?action=ewalletPrecheckout&amp;ver=$1</to>
+	</rule>			
+	<rule>
+		<from>^/v/([0-9]+)/ewalletexpresscheckout/(.*)</from>
+		<to last="true">/ewalletexpresscheckout.do?action=ewalletExpresscheckout&amp;ver=$1</to>
+	</rule>			
 		<rule>
 		<from>^/v/([0-9]+)/ewalletcheckout/(.*)</from>
 		<to last="true">/ewalletcheckout.do?action=ewalletCheckout&amp;ver=$1</to>
+	</rule>	
+	<rule>
+		<from>^/v/([0-9]+)/ewalletcheckoutdata/(.*)</from>
+		<to last="true">/ewalletcheckoutdata.do?action=ewalletCheckoutData&amp;ver=$1</to>
 	</rule>	
 	 -->	
 	 
@@ -1249,15 +1153,7 @@
 		<from>^/v/([0-9]+)/disconnectWallet/(.*)</from>
 		<to last="true">/ewalletstdcheckout.do?action=disconnectWallet&amp;ver=$1</to>
 	</rule>			
-    <rule>
-        <from>^/v/([0-9]+)/adqueryparams</from>
-        <to last="true">/ad.do?action=queryparams&amp;ver=$1</to>
-    </rule>         
-    <rule>
-        <from>^/v/([0-9]+)/recommender/cart</from>
-        <to last="true">/recommend.do?action=cart&amp;ver=$1</to>
-    </rule>         
-
+		
 		
 	<!-- Test -->
 	<rule>
@@ -1285,20 +1181,5 @@
 	<!--		<from>^/([^v])(.*)$</from>-->
 	<!--		<to>/v/1/$1$2</to>-->
 	<!--	</rule>-->
-	
-	<!-- Self-Credit -->
-	<rule>
-		<from>^/v/([0-9]+)/selfcredit/orders/</from>
-		<to last="true">/selfcredit.do?action=getSelfCreditOrderHistory&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/selfcredit/orderdetails/(.*)</from>
-		<to last="true">/selfcredit.do?action=getSelfCreditOrderDetails&amp;orderId=$2&amp;ver=$1</to>
-	</rule>
-	<rule>
-		<from>^/v/([0-9]+)/selfcredit/issuecredit</from>
-		<to last="true">/selfcredit.do?action=postIssueSelfCredit&amp;ver=$1</to>
-	</rule>
-	
 </urlrewrite>
 

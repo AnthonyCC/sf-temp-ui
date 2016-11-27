@@ -84,7 +84,7 @@ public class SFTPFileProcessor {
 		return new FileSelector(){
        	 
             public boolean includeFile(FileSelectInfo fileSelectInfo) throws Exception {
-                return fileSelectInfo.getFile().getName().toString().toLowerCase().indexOf(getExtension().toLowerCase())!=-1?true:false;
+                return fileSelectInfo.getFile().getName().toString().indexOf(getExtension())!=-1?true:false;
             }
  
             public boolean traverseDescendents(FileSelectInfo fileSelectInfo) throws Exception {
@@ -129,30 +129,6 @@ public class SFTPFileProcessor {
 	    return  downloadedFiles;
 	}
 	
-	
-	/**
-	 *  This method is just for testing purpose 
-	 *  keep extracted zip file in work location to process settlement files
-	 * @return
-	 * @throws IOException
-	 */
-	
-	public List<String> getLocalFiles() throws IOException{
-		
-		File fileDir=new File(context.getLocalHost());
-
-        List<String> downloadedFiles=new ArrayList<String>(fileDir.listFiles().length);
-
-        for(File f:fileDir.listFiles()){
-        	
-        	if(f.getName().indexOf("A")>0|| f.getName().indexOf("B")>0 && !f.isDirectory()){
-        		
-			  downloadedFiles.add(f.getName());
-        }}
-
-        return downloadedFiles;
-	}
-	
 	public List<String> getFiles() throws IOException {
 		
 		
@@ -168,34 +144,23 @@ public class SFTPFileProcessor {
 		        
 		        FileObject[] children=remoteFileObject.findFiles(fs);
 		        LocalFile localFile =	  (LocalFile) fsManager.resolveFile(context.getLocalHost());
-		        LOGGER.info("Copying files to local folder..");
 		        localFile.copyFrom(remoteFileObject,fs);
-		        LOGGER.info("Copied "+children.length+" files to local folder..");
+		        
 		        //extract files and delete from remote server
 		        
 		        List<String> downloadedFiles=new ArrayList<String>(children.length);
-		        LOGGER.info("Extracting zip files..");
 		        for(int i=0;i<children.length;i++) {
-		        	LOGGER.info("Extracting zip file : "+children[i].getName().getBaseName());
 					ZipFile zipFile = new ZipFile(context.getLocalHost()+children[i].getName().getBaseName());
 					if (zipFile.isEncrypted()) {
-						LOGGER.info("Zip file "+children[i].getName().getBaseName()+" is encrypted.");
 						zipFile.setPassword(context.getPassword());
 					}
 					
 					if(PaymentFileType.SETTLEMENT_FAILURE.equals(context.getFileType())) {
-						LOGGER.info("This file contains settlement failures..");
 						String STFfileName=DataLoaderProperties.getSettlementFailureFileName()+PaymentFileType.SETTLEMENT_FAILURE.getExtension();
 						zipFile.extractFile(STFfileName, context.getLocalHost());
-						LOGGER.info("File Name  : "+ zipFile.getFile()!=null?zipFile.getFile():" ");
 						File f=new File(context.getLocalHost()+STFfileName);
-						// APPDEV-7503 : Changed the below file name File Fromant from Minute to milisec. With min it was over riding the earlier extracted file with the same file name. This change will keep all the extracted file with different milisec file name. 
-						File f1=new File (context.getLocalHost()+DataLoaderProperties.getSettlementFailureFileName()+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.mmm").format(new Date())+PaymentFileType.SETTLEMENT_FAILURE.getExtension());
-						boolean success=f.renameTo(f1);
-						if(success)
-							LOGGER.info("Renamed file :"+f.getName()+" to "+f1.getName());
-						else 
-							LOGGER.info("Could not rename file :"+f.getName()+" to "+f1.getName());
+						File f1=new File (context.getLocalHost()+DataLoaderProperties.getSettlementFailureFileName()+ new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date())+PaymentFileType.SETTLEMENT_FAILURE.getExtension());
+						f.renameTo(f1);
 						downloadedFiles.add(f1.getName());
 						
 					} else {

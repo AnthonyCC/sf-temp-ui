@@ -1,6 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -11,7 +11,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_NEWWINES_TOTAL = 601;
@@ -102,7 +102,7 @@ String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId"); 
 Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
 int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
-ContentNodeModel currentFolder=PopulatorUtil.getContentNode(catId);
+ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNode(catId);
 final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 String daysIndx=null;
 
@@ -156,14 +156,11 @@ int itemsToDisplay = 20;
 
 List displayList = new ArrayList();
 String pagingLinks = "";
-String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <tmpl:insert template='/common/template/bestcellars/all_navs.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+ <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
   <tmpl:put name='content' direct='true'>
+   <oscache:cache time="3600" key='<%= "newwines/" + days %>'>
 <%
 try {
 	NewProductsNavigator nav = new NewProductsNavigator(request);
@@ -197,7 +194,7 @@ Integer len = new Integer(itemsToDisplay);
 <%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=1"><%= DAYS_1 %> days</a><%}%> | 
 <%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=2"><%= DAYS_2 %> days</a><%}%> | 
 <%if (DAYS_3==days){%><b><%= DAYS_3 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=3"><%= DAYS_3 %> days</a><%}%>&nbsp;
-   <br><img src="/media_stat/images/layout/clear.gif" alt="" height="24">
+   <br><img src="/media_stat/images/layout/clear.gif" height="24">
   </td>
 </tr>
 </table>
@@ -208,8 +205,8 @@ if (displayList.size()!=0) {
 <%
 } else {   %>
     <table cellspacing="0" cellpadding="0"  border="0" width="<%=W_NEWWINES_TOTAL%>"><tr><td>
-      <img src="/media_stat/images/layout/clear.gif" alt="" height="54"><br>&nbsp;&nbsp;<b>No new wines within the last <%=days%> days.<b><br>
-      <img src="/media_stat/images/layout/clear.gif" alt="" height="24">
+      <img src="/media_stat/images/layout/clear.gif" height="54"><br>&nbsp;&nbsp;<b>No new wines within the last <%=days%> days.<b><br>
+      <img src="/media_stat/images/layout/clear.gif" height="24">
     </td></tr></table>
 <%
 } %>
@@ -244,6 +241,8 @@ if (itemsToDisplay == 12) {
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
+<oscache:usecached />
 <% } %>
+</oscache:cache>
  </tmpl:put>
 </tmpl:insert>

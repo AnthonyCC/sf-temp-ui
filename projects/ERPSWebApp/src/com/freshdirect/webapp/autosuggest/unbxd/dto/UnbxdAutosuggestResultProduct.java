@@ -1,4 +1,4 @@
-/*package com.freshdirect.webapp.autosuggest.unbxd.dto;
+package com.freshdirect.webapp.autosuggest.unbxd.dto;
 
 public class UnbxdAutosuggestResultProduct {
 
@@ -17,4 +17,3 @@ public class UnbxdAutosuggestResultProduct {
         return "[autosuggest: " + autosuggest + "]";
     }
 }
-*/

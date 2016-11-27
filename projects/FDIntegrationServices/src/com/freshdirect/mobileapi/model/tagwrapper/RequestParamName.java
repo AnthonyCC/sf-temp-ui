@@ -9,8 +9,7 @@ public interface RequestParamName {
     public static final String REQ_PARAM_ACTION = "action";
 
     public static final String REQ_PARAM_PAYMENT_METHOD_ID = "paymentMethodList";
-    public static final String REQ_PARAM_IS_ACCOUNT_LEVEL = "isAccountLevel";
-    public static final String REQ_PARAM_IS_DLV_PASS_CART = "dlvPassCart";
+
     public static final String REQ_PARAM_BILLING_REF = "billingRef";
 
     public static final String REQ_PARAM_BYPASS_ACCOUNT_CHECK = PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK;
@@ -318,11 +317,17 @@ public interface RequestParamName {
     
     public static final String  REQ_PARAM_MERGE_PENDING="mergePending";
     
-    public static final String REQ_PARAM_IS_QUICKBUY = "quickBuy";
+    public static final String REQ_PARAM_IS_QUICKBUY = "quickBuy";  
+
+    public static final String REQ_PARAM_CM_PAGEID="coremetricsPageId";
+    
+    public static final String REQ_PARAM_CM_PAGECONTENT_HIERARCHY = "coremetricsPageContentHierarchy";  
     
     public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
     
     public static final String REQ_PARAM_TABLE_WIDTH = "tableWidth";
+    
+    public static final String REQ_PARAM_CM_VIRTUAL_CATEGORY = "coremetricsVirtualCategory"; 
     
     public static final String REQ_PARAM_VARIANT_ID = "variantId";
     
@@ -345,13 +350,5 @@ public interface RequestParamName {
     
     public static final String TAXATION_TYPE = "TAXATION_TYPE";
     
-    public static final String BYPASS_CART_VALIDATION = "BYPASS_CART_VALIDATION";
-    
     public static final String REQ_PARAM_CARTLINE = "cartLine";
-    
-    public static final String REQ_PARAM_GO_GREEN = "go_green";
-    
-    public static final String REQ_PARAM_DATA = "data";
-    
-    public static final String REQ_PARAM_CAPTCHA_TOKEN = "captchaToken";
 }

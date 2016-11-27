@@ -70,7 +70,6 @@ public class AutocompleteService {
     }
 
     public List<String> getAutocompletions(String prefix) {
-        LOGGER.debug("Autocomplete request for '" + prefix + "'");
         List<HitCounter> result = getAutocompletionHits(prefix);
 
         List<String> words = new ArrayList<String>(Math.min(result.size(), MAX_AUTOCOMPLETE_HITS));

@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ErpPromotionHistory implements Serializable {
 
 	private static final long	serialVersionUID	= -1153376310120005350L;
@@ -15,7 +13,7 @@ public class ErpPromotionHistory implements Serializable {
 	/** Map saleId -> Set of usedPromotionCodes */
 	private final Map<String,Set<String>> erpPromoHistoryInfo;
 
-	public ErpPromotionHistory(@JsonProperty("erpPromoHistoryInfo") Map<String,Set<String>> erpPromoHistoryInfo) {
+	public ErpPromotionHistory(Map<String,Set<String>> erpPromoHistoryInfo) {
 		this.erpPromoHistoryInfo = erpPromoHistoryInfo;
 	}
 
@@ -57,14 +55,4 @@ public class ErpPromotionHistory implements Serializable {
 		}
 		return usedPromoCodes;
 	}
-
-	
-	@Override
-	public String toString() {
-		return "ErpPromotionHistory [erpPromoHistoryInfo="
-				+ erpPromoHistoryInfo + "]";
-	}
-	
-	
-	
 }

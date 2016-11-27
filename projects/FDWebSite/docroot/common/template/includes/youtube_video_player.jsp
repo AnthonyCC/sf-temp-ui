@@ -1,6 +1,6 @@
-<%@ page import="com.freshdirect.storeapi.content.YoutubeVideoModel"%>
+<%@ page import="com.freshdirect.fdstore.content.YoutubeVideoModel"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <%
 String videoId=(String)request.getParameter("id");
 String title=(String)request.getParameter("title");
@@ -17,10 +17,6 @@ if(videoHeight == null) videoHeight="90%";
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	<%if(isPopup !=null) { %>
 		<fd:AnalyticsInit/>
 		<!-- Load the swfobject library-->

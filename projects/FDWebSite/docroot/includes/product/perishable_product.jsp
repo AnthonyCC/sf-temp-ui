@@ -3,13 +3,14 @@
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
@@ -20,7 +21,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <% //expanded page dimensions
@@ -112,12 +113,12 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 						boolean showStackedShelfLife = labelCount == valueCount && valueCount > 0 && labelCount > 0;
 						if(skuSize == 1 || showStackedShelfLife) {
 					%>
-							<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" alt="" height="10" border="0" hspace="0" vspace="0">
+							<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" height="10" border="0" hspace="0" vspace="0">
 							<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6"></td>
-									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PERISHABLE_PRODUCT_LEFT-12 %>" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_LEFT-12 %>" height="1"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 								</tr>
 								<tr>
 									<td colspan="3" align="center" valign="top">
@@ -126,12 +127,12 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 											<table border="0" cellspacing="0" cellpadding="0" width="<%=W_PERISHABLE_PRODUCT_LEFT-2%>">
 											<%if(shelfLifeList.isEmpty() && skuSize == 1) { %>
 												<tr valign="top">
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
-													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" alt="" width="27" height="27" border="0"></td>
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
-													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="gaurenteed fresh" width="129" height="10"><br />
+													<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
 													<span class="text12">at least </span><span class="title12"><%=shelfLife%> day<%= (Integer.parseInt(shelfLife) > 1) ? "s": ""%></span><span class="text12"><br/> from delivery</span></td>
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 												</tr>
 											<% } else if(showStackedShelfLife) {
 												// calculate lowest shelf life in stack sku group
@@ -158,11 +159,11 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 												%>
 														<tr valign="top">
 														<% if(printHeader) { %>
-															<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="0"></td>
-															<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" alt="" width="27" height="27" border="0"></td>
-															<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="0"></td>
-															<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="guaranteed fresh" width="129" height="10">
-															<img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="10">
+															<td><img src="/media_stat/images/layout/clear.gif" width="5" height="0"></td>
+															<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
+															<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
+															<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">
+															<img src="/media_stat/images/layout/clear.gif" width="9" height="10">
 														<%
 															 printHeader = false;
 														} else { %>
@@ -171,14 +172,14 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 														<% } %>
 															<table><tr><td>
 															<span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> day<%= (Integer.parseInt(daysFresh) > 1) ? "s": ""%></span><span class="text12"> from delivery</span></td>
-															<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="0"></td>
+															<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
 															</tr></table>
 														</tr>
 												<%
 													}
 												}%>
 												<tr>
-													<td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
+													<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
 												</tr>
 											<%
 											//reset list
@@ -190,15 +191,15 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 									</td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6"></td>
-									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 								</tr>
 							</table>
 							<table width="<%=W_PERISHABLE_PRODUCT_LEFT%>">
 								<tr>
 									<td align="right">
-									<img src="/media_stat/images/layout/clear.gif" alt="" width="100%" height="6">
+									<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
 									<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 									</td>
 								</tr>
@@ -213,7 +214,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			<% if (!mobWeb) { /* skip tables in mobWeb */ %></td><% } %>
 			<% if (!mobWeb) { /* skip tables in mobWeb */ %>
 			<td width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>">
-				<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" alt="" height="1" border="0" hspace="0" vspace="0">
+				<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" height="1" border="0" hspace="0" vspace="0">
 			</td>
 			<% } %>
 	

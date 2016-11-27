@@ -35,7 +35,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.VersionedEntityBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -276,14 +275,12 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public VersionedPrimaryKey ejbFindBySkuCode(String skuCode) throws FinderException {
 
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;	
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=(select max(version) from erps.material where skucode=?)");
+			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=(select max(version) from erps.material where skucode=?)");
 			ps.setString(1, skuCode);
 			ps.setString(2, skuCode);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
@@ -291,15 +288,21 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
 
+			rs.close();
+			ps.close();
+
 			return vpk;
 
 		} catch (SQLException sqle) {
 			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
-			DaoUtil.close(conn);
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				throw new EJBException(sqle);
 			}
+		}
 
 	}
 	
@@ -311,14 +314,12 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public VersionedPrimaryKey ejbFindBySkuCodeAndVersion(String skuCode, int version) throws FinderException {
 
 		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=?");
+			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=?");
 			ps.setString(1, skuCode);
 			ps.setInt(2, version);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
@@ -326,14 +327,20 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
 
+			rs.close();
+			ps.close();
+
 			return vpk;
 
 		} catch (SQLException sqle) {
 			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
-			DaoUtil.close(conn);
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				throw new EJBException(sqle);
+			}
 		}
 
 	}
@@ -350,77 +357,49 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 */
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
+		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+		ps.setString(1, vpk.getId());
+		ps.setInt(2, vpk.getVersion());
 		
-		ErpMaterialPayload p = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, " +
-					"TAXABLE,  MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
-			
-			ps.setString(1, vpk.getId());
-			ps.setInt(2, vpk.getVersion());
-			
-			rs = ps.executeQuery();
-			if (!rs.next())
-			{
-				return null;
-			}
-
-			p = new ErpMaterialPayload();
-			p.sapId = rs.getString(1);
-			p.skuCode = rs.getString(2);
-			p.baseUnit = rs.getString(3);
-			p.description = rs.getString(4);
-			p.quantityCharacteristic = rs.getString(5);
-			p.salesUnitCharacteristic = rs.getString(6);
-			p.UPC = rs.getString(7);
-			p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
-					p.taxable = "X".equalsIgnoreCase(rs.getString(9));
-			// p.daysFresh = rs.getString(10);
-			p.materialType = rs.getString(10);
-			p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(11));
-			p.taxCode = rs.getString(12);
-			p.materialGroup = rs.getString(13);
-     
-//			rs.close();
-//			ps.close();
-		} catch (Exception e) {
-			throw new SQLException(e);
-		} finally {
-			if(null != rs){
-				try {
-					rs.close();
-				} catch (Exception e) {
-					
-				}
-			}
-			
-			if(null != ps){
-				try {
-					ps.close ();
-				} catch (Exception e) {
-					
-				}
-			}
+		ResultSet rs = ps.executeQuery();
+		if (!rs.next())
+		{
+			return null;
 		}
+
+		ErpMaterialPayload p = new ErpMaterialPayload();
+		p.sapId = rs.getString(1);
+		p.skuCode = rs.getString(2);
+		p.baseUnit = rs.getString(3);
+		p.description = rs.getString(4);
+		p.quantityCharacteristic = rs.getString(5);
+		p.salesUnitCharacteristic = rs.getString(6);
+		p.UPC = rs.getString(7);
+      p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
+		p.taxable = "X".equalsIgnoreCase(rs.getString(9));
+      p.daysFresh = rs.getString(10);
+      p.materialType = rs.getString(11);
+      p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(12));
+      p.taxCode = rs.getString(13);
+      p.materialGroup = rs.getString(14);
+      
+		rs.close();
+		ps.close();
 
 		// load children
-		if(null != p){
-			p.prices.setParentPK(pk);
-			p.prices.load(conn);
-			p.salesUnits.setParentPK(pk);
-			p.salesUnits.load(conn);
-			p.classes.setParentPK(pk);
-			p.classes.setEJBHome(getClassHome());
-			p.classes.load(conn);
-			p.displaySalesUnitList.setParentPK(pk);
-			p.displaySalesUnitList.load(conn);
-			p.plantMaterials.setParentPK(pk);
-			p.plantMaterials.load(conn);
-			p.materialSalesAreas.setParentPK(pk);
-			p.materialSalesAreas.load(conn);
-		}
+		p.prices.setParentPK(pk);
+		p.prices.load(conn);
+		p.salesUnits.setParentPK(pk);
+		p.salesUnits.load(conn);
+		p.classes.setParentPK(pk);
+		p.classes.setEJBHome(getClassHome());
+		p.classes.load(conn);
+		p.displaySalesUnitList.setParentPK(pk);
+		p.displaySalesUnitList.load(conn);
+		p.plantMaterials.setParentPK(pk);
+		p.plantMaterials.load(conn);
+		p.materialSalesAreas.setParentPK(pk);
+		p.materialSalesAreas.load(conn);
 
 		return p;
 	}

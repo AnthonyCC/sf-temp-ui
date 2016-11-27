@@ -10,10 +10,7 @@ package com.freshdirect.framework.util;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
-
-import com.freshdirect.framework.core.PropertyDao;
 
 /**
  * Useful methods for loading runtime configurations
@@ -84,6 +81,5 @@ public class ConfigHelper {
             }
         }
     }
-    
-    
+
 }

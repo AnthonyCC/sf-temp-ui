@@ -47,20 +47,19 @@ public class DraftChangeControllerTest {
 
     @Test
     public void testCreateDraftChange() {
-        Draft draft = EntityFactory.createDraft();
-        List<DraftChange> draftChanges = Arrays.asList(EntityFactory.createDraftChange(draft));
-        Mockito.when(draftChangeService.loadAllChangesByDraft((Mockito.eq(draft)))).thenReturn(draftChanges);
+        List<DraftChange> draftChanges = Arrays.asList(EntityFactory.createDraftChange());
+        Mockito.when(draftChangeService.loadAllDraftChanges()).thenReturn(draftChanges);
         List<DraftChange> loadedDraftChangesAfterCreation = underTest.createDraftChange(draftChanges);
         Mockito.verify(draftChangeService).createDraftChange(draftChanges);
-        Mockito.verify(draftChangeService).loadAllChangesByDraft((Mockito.eq(draft)));
+        Mockito.verify(draftChangeService).loadAllDraftChanges();
         Assert.assertEquals(draftChanges, loadedDraftChangesAfterCreation);
     }
 
     @Test
     public void testloadDraftChangesByDraft() {
         Draft draft = EntityFactory.createDraft();
-        List<DraftChange> draftChanges = Arrays.asList(EntityFactory.createDraftChange(draft));
-        Mockito.when(draftChangeService.loadAllChangesByDraft(Mockito.eq(draft))).thenReturn(draftChanges);
+        List<DraftChange> draftChanges = Arrays.asList(EntityFactory.createDraftChange());
+        Mockito.when(draftChangeService.loadAllChangesByDraft(Mockito.any(Draft.class))).thenReturn(draftChanges);
         List<DraftChange> loadedDraftChanges = underTest.loadDraftChangesByDraft(draft);
         Mockito.verify(draftChangeService).loadAllChangesByDraft(draft);
         Assert.assertEquals(draftChanges, loadedDraftChanges);

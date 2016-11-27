@@ -16,7 +16,7 @@
 	margin:0 8px 0 0;
 }
 
-#breadcrumbs li span {
+#breadcrumbs li label {
 	background: #eedfee;
 	padding:0 8px 0 0;
 	cursor:pointer;
@@ -24,7 +24,7 @@
 	display:inline-block;
 }
 
-#breadcrumbs li span:before {
+#breadcrumbs li label:before {
 	content:' ';
 	display:inline-block;
 	width:12px;
@@ -34,22 +34,11 @@
 	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -175px -561px  #eedfee;
 }
 
-.no-touch #breadcrumbs li span:hover {
+.no-touch #breadcrumbs li label:hover {
 	text-decoration:underline;
 }
 
-.no-touch #breadcrumbs li span:focus {
-	text-decoration:underline;
-}
-
-#breadcrumbs li span:hover:before {
+#breadcrumbs li label:hover:before {
 	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -160px -561px  #eedfee;
 }
 
-#breadcrumbs li span:focus:before {
-	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -160px -561px  #eedfee;
-}
-
-ul#breadcrumbs li span{
-	outline:none;
-}

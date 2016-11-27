@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdService;
 import com.freshdirect.fdstore.brandads.service.HLBrandProductAdProviderFactory;
@@ -78,28 +79,9 @@ public static HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdReque
 		}
 		
 	}
+
 	
-	public static HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) {
-		HLBrandProductAdResponse hlBrandProductAdResponse=null;
-		
-		try {
-			hlBrandProductAdResponse =getService().getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
-		} catch (BrandProductAdServiceException e) {
-			LOG.error("Exception while getting getHLadproductToHomeByFDPriority metadata:"+e.getMessage());
-		}
-		
-		return hlBrandProductAdResponse;		
-	}
+
+
 	
-	public static HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) {
-		HLBrandProductAdResponse hlBrandProductAdResponse=null;
-		
-		try {
-			hlBrandProductAdResponse =getService().getPdpAdProduct(hLBrandProductAdRequest);
-		} catch (BrandProductAdServiceException e) {
-			LOG.error("Exception while getting HLBrandProductAd metadata:"+e.getMessage());
-		}
-		
-		return hlBrandProductAdResponse;		
-	}
 }

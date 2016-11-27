@@ -54,7 +54,7 @@ public class ContentFactory {
     /** Map of String (IDs) -> ContentNodeModel */
     private final Map<String, ContentNodeModel> nodesByIdCache;
 
-    /** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.storeapi.content.ContentNodeModel} */
+    /** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeModel} */
     private final Map<ContentKey, ContentNodeModel> nodesByKeyCache;
 
     /** Map of sku codes / content keys */
@@ -62,12 +62,10 @@ public class ContentFactory {
 
     private final Map<ProductModel, Map<String, Date>> newProductCache;
     private final Map<ProductModel, Map<String, Date>> backInStockProductCache;
-    private final Map<ContentKey, Set<ContentKey>> parentKeysByKeyCache;
-    
+
     private ThreadLocal<UserContext> currentUserContext;
     private ThreadLocal<Boolean> eligibleForDDPP;
     private ThreadLocal<DraftContext> currentDraftContext;
-    private ThreadLocal<HashMap<String, Object>> userAllSoData;
 
     private class WineIndex {
 
@@ -166,7 +164,6 @@ public class ContentFactory {
         keyBySkuCodeCache = new LruCache<String, ContentKey>(40000);
         newProductCache = new ConcurrentHashMap<ProductModel, Map<String, Date>>();
         backInStockProductCache = new ConcurrentHashMap<ProductModel, Map<String, Date>>();
-        parentKeysByKeyCache = new ConcurrentHashMap<ContentKey, Set<ContentKey>>();
 
         currentUserContext = new ThreadLocal<UserContext>() {
 
@@ -192,14 +189,6 @@ public class ContentFactory {
             protected DraftContext initialValue() {
                 LOGGER.debug("initializing draft context with main draft.");
                 return DraftContext.MAIN;
-            }
-        };
-        
-        userAllSoData = new ThreadLocal<HashMap<String,Object>> () {
-        	@Override
-            protected HashMap<String,Object> initialValue() {
-                LOGGER.debug("initializing draft context with main draft.");
-                return null;
             }
         };
     }
@@ -239,7 +228,7 @@ public class ContentFactory {
             model = getContentNodeFromCache(id);
 
             if (model == null) {
-                model = ContentNodeModelUtil.constructModel(id, isAllowToUseContentCache(id));
+                model = ContentNodeModelUtil.constructModel(id, isAllowToUseContentCache());
             }
 
             if (model == null) {
@@ -250,11 +239,11 @@ public class ContentFactory {
     }
 
     public ContentNodeModel getContentNode(String type, String id) {
-        return getContentNodeByKey(ContentKey.getContentKey(ContentType.get(type), id));
+        return getContentNodeByKey(new ContentKey(ContentType.get(type), id));
     }
 
     public ContentNodeModel getContentNode(ContentType type, String id) {
-        return getContentNodeByKey(ContentKey.getContentKey(type, id));
+        return getContentNodeByKey(new ContentKey(type, id));
     }
 
     @Deprecated
@@ -394,7 +383,7 @@ public class ContentFactory {
         domainModel = (Domain) getContentNodeFromCache("Domain:" + domainId);
 
         if (domainModel == null) {
-            ContentKey key = ContentKey.getContentKey("Domain:" + domainId);
+            ContentKey key = ContentKey.decode("Domain:" + domainId);
             // Don't cache regular way; do our own caching
             domainModel = (Domain) ContentNodeModelUtil.constructModel(key, false);
         }
@@ -411,7 +400,7 @@ public class ContentFactory {
 
         if (domainValueModel == null) {
             // Don't cache regular way; do our own caching
-            ContentKey key = ContentKey.getContentKey("DomainValue:" + domainValueId);
+            ContentKey key = ContentKey.decode("DomainValue:" + domainValueId);
             domainValueModel = (DomainValue) ContentNodeModelUtil.constructModel(key, false);
             List<ContentKey> domainValueKeys = ((Domain) domainValueModel.getParentNode()).getDomainValueKeys();
             for (int i = 0; i < domainValueKeys.size(); i++) {
@@ -430,7 +419,7 @@ public class ContentFactory {
 
     private List<ProductModel> getProdRefsForSku(String skuCode) {
         List<ProductModel> productReferences = new ArrayList<ProductModel>();
-        ContentNodeI skuNode = getContentNode(ContentKey.getContentKey(FDContentTypes.SKU, skuCode));
+        ContentNodeI skuNode = getContentNode(new ContentKey(FDContentTypes.SKU, skuCode));
         if (skuNode != null) {
             for (ContentKey productKey : getParentKeys(skuNode.getKey())) {
                 for (ContentKey categoryKey : getParentKeys(productKey)) {
@@ -449,15 +438,12 @@ public class ContentFactory {
         return model;
     }
 
+    public ContentNodeModel getCachedContentNodeByKey(ContentKey key) {
+        return getContentNodeFromCache(key);
+    }
+
     public Set<ContentKey> getParentKeys(ContentKey key) {
-        Set<ContentKey> parentContentKeys = parentKeysByKeyCache.get(key);
-        if (parentContentKeys == null){
-            parentContentKeys = cmsManager.getParentKeys(key, getCurrentDraftContext());
-            if (isAllowToUseContentCache(key.getId())) {
-                parentKeysByKeyCache.put(key, parentContentKeys);
-            }
-        }
-        return Collections.unmodifiableSet(parentContentKeys);
+        return Collections.unmodifiableSet(cmsManager.getParentKeys(key, getCurrentDraftContext()));
     }
 
     public UserContext getCurrentUserContext() {
@@ -496,7 +482,7 @@ public class ContentFactory {
                 Map<String, Map<String, Date>> skus = FDCachedFactory.getNewSkus();
                 Map<ProductModel, Map<String, Date>> newCache = new HashMap<ProductModel, Map<String, Date>>(skus.size());
                 for (Map.Entry<String, Map<String, Date>> entry : skus.entrySet()) {
-                    SkuModel sku = (SkuModel) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, entry.getKey()));
+                    SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
                     // !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
                     try {
 
@@ -625,7 +611,7 @@ public class ContentFactory {
                 Map<String, Map<String, Date>> skus = FDCachedFactory.getBackInStockSkus();
                 Map<ProductModel, Map<String, Date>> newCache = new HashMap<ProductModel, Map<String, Date>>(skus.size());
                 for (Map.Entry<String, Map<String, Date>> entry : skus.entrySet()) {
-                    SkuModel sku = (SkuModel) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, entry.getKey()));
+                    SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
                     // !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
                     try {
                         if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
@@ -741,7 +727,7 @@ public class ContentFactory {
         WineIndex newIndex = new WineIndex();
         // fetch wine domains
         LOGGER.info("WINE INDEX: collecting domains...");
-        FDFolder domains = (FDFolder) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.FDFOLDER, "domains"));
+        FDFolder domains = (FDFolder) getContentNodeByKey(new ContentKey(FDContentTypes.FDFOLDER, "domains"));
         for (ContentNodeModel node : domains.getChildren()) {
             if (!node.getContentKey().getType().equals(FDContentTypes.DOMAIN))
                 continue;
@@ -752,13 +738,13 @@ public class ContentFactory {
         LOGGER.info("WINE INDEX: collected " + wineDomains.size() + " domains.");
 
         LOGGER.info("WINE INDEX: collecting all wine products...");
-        CategoryModel byRegion = (CategoryModel) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.CATEGORY, winePrefix + "_region"));
+        CategoryModel byRegion = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix + "_region"));
         if (byRegion != null)
             newIndex.all.addAll(byRegion.getAllChildProductKeys());
-        CategoryModel byType = (CategoryModel) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.CATEGORY, winePrefix + "_type"));
+        CategoryModel byType = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix + "_type"));
         if (byType != null)
             newIndex.all.addAll(byType.getAllChildProductKeys());
-        CategoryModel more = (CategoryModel) getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.CATEGORY, winePrefix + "_more"));
+        CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix + "_more"));
         if (more != null)
             newIndex.all.addAll(more.getAllChildProductKeys());
         LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
@@ -1035,16 +1021,9 @@ public class ContentFactory {
     }
 
     public void updateContentNodeCaches(String nodeId, ContentNodeModel nodeModel) {
-        if (isAllowToUseContentCache(nodeId)) {
+        if (isAllowToUseContentCache()) {
             nodesByIdCache.put(nodeId, nodeModel);
             nodesByKeyCache.put(nodeModel.getContentKey(), nodeModel);
-        }
-    }
-
-    public void removeContentNodeCaches(ContentKey key) {
-        if (isAllowToUseContentCache(key.getId())) {
-            nodesByIdCache.remove(key.getId());
-            nodesByKeyCache.remove(key);
         }
     }
 
@@ -1067,19 +1046,10 @@ public class ContentFactory {
     }
 
     public boolean isAllowToUseContentCache(String nodeId) {
-        boolean isAllowToUseContentCache = isAllowToUseContentCache();
+        boolean isAllowToUseContentCache = getCurrentDraftContext().isMainDraft();
         if (!isAllowToUseContentCache){
             isAllowToUseContentCache = !DraftService.defaultService().isContentKeyChanged(getCurrentDraftContext().getDraftId(), nodeId);
         }
         return isAllowToUseContentCache;
     }
-
-	public HashMap<String, Object> getUserAllSoData() {
-		return userAllSoData.get();
-	}
-
-	public void setUserAllSoData(HashMap<String, Object> userAllSoData) {
-		this.userAllSoData.set(userAllSoData);
-	}
-		  
 }

@@ -1,11 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-
 <tmpl:insert template='/shared/template/small_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Our Honest Pricing Policy"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Our Honest Pricing Policy</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - Our Honest Pricing Policy</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 	        <table width="100%"><tr><td><FONT CLASS="title12">Taxes, Deposits &amp; Fees</FONT><br><br>
 		In accordance with state law, FreshDirect charges sales tax on certain items.  The tax rate applied may vary depending on your delivery area<P>

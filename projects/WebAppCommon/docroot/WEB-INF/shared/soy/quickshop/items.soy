@@ -65,8 +65,6 @@
  * @param? tempConfig title of an item
  * @param? changed if true, then item is changed
  * @param? replaced if true, then item is replaced
- * @param? abFeatures
- * @param? mobWeb
  */
 {template .itemQS22 autoescape="false"}
 {if $item.available}
@@ -78,8 +76,6 @@
 			{param tempConfig:true /}
 			{param changed:true /}
 			{param replaced:$replaced /}
-			{param mobWeb:$mobWeb /}
-			{param abFeatures:$abFeatures /}
 		{/call}
 	{elseif $type=='ymal'}
 		{call .YMALItem}
@@ -124,14 +120,14 @@
 	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
 	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 		<div class="itemlist-item-productimage_wrapper">
-				<div class="itemlist-item-burst_wrapper">
+			<div class="itemlist-item-burst_wrapper">
 				{if $item.discontinued}
-					<img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage">
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
 				{else}
-					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage"></a>
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 				{/if}
-					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-				</div>
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
 		</div>
 		<div class="itemlist-item-header-buttons">
 			{if $type == 'shopfromlists' and not $replaced}
@@ -207,18 +203,12 @@
  * @param? changed if true, then item is changed
  * @param? tempConfig if true, then item is a temporary customization
  * @param? replaced if true, then item is replaced
- * @param? abFeatures
- * @param? mobWeb
  */
 {template .availableItemQS22 autoescape="false"}
-	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '[abFeatures.productCard not set]') : '[abFeatures not set]' /}
 	{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
 	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
 	{let $isEligibleForStandingOrders: ($item.soData and $item.soData.settingsData.soSettings and $item.soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}
-	 data-productcardversion="{$productCardVersion}"
-	 data-ismobweb="{$mobWeb}"
-	>
+	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}>
 		<form class="itemlist-item-controls smaller" data-component="product-controls" action="#" fdform="qsatc_{$item.itemId}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
 			<div class="itemlist-item-controls-subtotal">
 				{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
@@ -248,26 +238,20 @@
 			<div class="itemlist-item-addtocart">
 				{if $replaced}
 					{if $item.customizePopup}<button fdform-default-button type="button" class="customize cssbutton orange cssbutton-flat small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
-					{else}<button fdform-default-button type="button" class="addtocart cssbutton orange medium {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+					{else}<button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
 					{/if}
 				{else}
 					{if not $item.customizePopup }<button fdform-default-button type="button" class="addtocart cssbutton cssbutton-flat orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
-					{else}<button type="button" class="customize cssbutton orange medium {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
+					{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
 					{/if}
 				{/if}
 				{call common.atcInCart}
 					{param amount:$item.inCartAmount /}
 					{param atcItemId:$item.itemId /}
 				{/call}
-				{if $isEligibleForStandingOrders}
-					{if length($item.soData.settingsData.soData) > 0}
-						{call common.soResults /}
-						{call common.soShowBtn /}
-					{else}
-						{call common.soRecurring}
-							{param useButton: true /}
-						{/call}
-					{/if}
+				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
+					{call common.soResults /}
+					{call common.soShowBtn /}
 				{/if}
 			</div>
 			{call common.productData}
@@ -282,13 +266,15 @@
 				{param productPageUrl:$item.productPageUrl /}
 			{/call}
 		</form>
-		<div class="portrait-item-productimage_wrapper itemlist-item-productimage_wrapper">
-			{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
-				<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
-					<img class="portrait-item-productimage itemlist-item-productimage lazyload"  data-src="{($mobWeb or $productCardVersion != '2018') ? $item.productDetailImage : $item.productZoomImage}"  alt="{$item.productAltText}" />
-					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-				</div>
-			{if not $item.discontinued}</a>{/if}
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				{if $item.discontinued}
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
+				{else}
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+				{/if}
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
 			{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
 		</div>
 		<div class="itemlist-center-content">
@@ -339,7 +325,7 @@
 			</div>
 			{if $item.available}
 				<div class="itemlist-item-header-buttons">
-					<button class="addtolist cssbutton transparent purple noboxshadow txtunderline color-green" data-alignpopup="tc-bc">Add to List</button>
+					<button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
 					{if $type == 'shopfromlists' and not $replaced}
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
@@ -359,6 +345,9 @@
 				{if $item.replacement and not $item.useReplacement}
 					<div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
 				{/if}
+			{/if}
+			{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
+				{call common.soRecurring /}
 			{/if}
 		</div>
 	</li>
@@ -385,9 +374,9 @@
 		<div class="itemlist-item-productimage_wrapper">
 			<div class="itemlist-item-burst_wrapper">
 				{if $item.discontinued}
-					<img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage">
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
 				{else}
-					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage"></a>
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 				{/if}
 				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 			</div>
@@ -467,7 +456,7 @@
 <li class="itemlist-item {not $item.available ? 'unavailable' : ''}" data-component="product">
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
-			<img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage">
+			<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
 			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{/call}
 		</div>
 	</div>
@@ -499,7 +488,7 @@
 	<li class="itemlist-item unavailable {if $item.useReplacement}replaced{/if}" data-component="product">
 		<div class="itemlist-item-productimage_wrapper">
 			<div class="itemlist-item-burst_wrapper">
-				<img src="{$item.productImage}" alt="{$item.productAltText}" class="itemlist-item-productimage">
+				<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
 				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{/call}
 			</div>
 		</div>

@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +30,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -42,6 +42,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
@@ -52,7 +53,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -65,10 +66,8 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
@@ -79,11 +78,11 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
@@ -97,27 +96,27 @@ import com.freshdirect.webapp.util.ShoppingCartUtil;
  */
 public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-    private static final long serialVersionUID = 1746010651799902520L;
+	private static Category LOGGER 	= LoggerFactory.getInstance( ModifyOrderControllerTag.class );
 
-    private static final Category LOGGER = LoggerFactory.getInstance(ModifyOrderControllerTag.class);
+	private final String CANCEL_ACTION 			= "cancel";
+	private final String MODIFY_ACTION 			= "modify";
+	private final String RETURN_ACTION 			= "return";
+	private final String RESUBMIT_ACTION 		= "resubmit";
+	private final String CANCEL_MODIFY_ACTION 	= "cancelModify";
+	private final String NEW_AUTHORIZATION		= "new_authorization";
+	private final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
+	private final String REDELIVERY_ACTION		= "redelivery";
+	private final String CHARGE_ORDER_ACTION	= "charge_order";
+	private final String AUTO_RENEW_AUTH	= "auto_renew_auth";
+	private final String PLACE_AUTO_RENEW_ORDER	= "place_auto_renew_order";
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
 
-    private static final String CANCEL_ACTION = "cancel";
-    private static final String MODIFY_ACTION = "modify";
-    private static final String RETURN_ACTION = "return";
-    private static final String RESUBMIT_ACTION = "resubmit";
-    private static final String CANCEL_MODIFY_ACTION = "cancelModify";
-    private static final String NEW_AUTHORIZATION = "new_authorization";
-    private static final String REDELIVERY_ACTION = "redelivery";
-    private static final String AUTO_RENEW_AUTH = "auto_renew_auth";
-    private static final String EWALLET_SESSION_ATTRIBUTE_NAME = "EWALLET_CARD_TYPE";
-    private static final String WALLET_SESSION_CARD_ID = "WALLET_CARD_ID";
-
+	
 	private String action;
 	private String orderId;
 	private String result;
 	private String successPage;
-	private String errorPage;
-	private boolean isMobileRequest = false;
 
 	public void setAction(String s) {
 		this.action = s;
@@ -133,10 +132,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
     public void setSuccessPage(String sp) {
         this.successPage = sp;
     }
-    
-    public void setErrorPage(String errorPage) {
-        this.errorPage = errorPage;
-    }
 
     @Override
     public int doStartTag() throws JspException {
@@ -145,7 +140,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		ActionResult results = new ActionResult();
 		
 		HttpSession session = request.getSession();
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 		
 		boolean actionPerformed = false;
 
@@ -161,16 +155,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			// Check action attribute
 			//
 			if ( CANCEL_ACTION.equalsIgnoreCase(this.action) ) {
-				//if user is in modify order mode, cancel that first
-				if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
-					String modOrderId = ((FDModifyCartModel)currentUser.getShoppingCart()).getOriginalOrder().getSale().getId();
-					
-					//but only if the order id being cancelled is the one being modified
-					if (this.orderId.equalsIgnoreCase(modOrderId)) {
-						this.cancelModifyOrder(request, results);
-					}
-				}
-				
 				this.cancelOrder(request, results);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
@@ -181,6 +165,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				actionPerformed = true;
 			} else if ( NEW_AUTHORIZATION.equalsIgnoreCase(this.action) ) {
 				this.doNewAuthorization(request, results);
+				actionPerformed = true;
+			} else if ( NEW_AUTHORIZATION_FAILED_SETTLEMENT.equalsIgnoreCase(this.action) ) {
+				this.doResubmitPayment(request, results);
 				actionPerformed = true;
 			} else if ( RETURN_ACTION.equalsIgnoreCase(this.action) ) {
 				this.returnOrder(request, results);
@@ -200,18 +187,29 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}else if ( REDELIVERY_ACTION.equals(this.action)){
 				this.redeliverOrder(request, results);
 				actionPerformed = true;
+			} else if ( CHARGE_ORDER_ACTION.equalsIgnoreCase(this.action) ) {
+				this.chargeOrder(request, results);
+				actionPerformed = true;
 			} else if ( AUTO_RENEW_AUTH.equalsIgnoreCase(this.action) ) {
 				this.auto_renew_auth(request, results);
 				actionPerformed = true;
+			}else if ( PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) ) {
+				this.place_auto_renew_order(request, results);
+				actionPerformed = true;
+				StringBuffer successPage = new StringBuffer();
+				successPage.append(this.successPage);
+				successPage.append(this.orderId);
+				setSuccessPage(successPage.toString());
 			}
+
 
 
 		} else { 
 			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				LOGGER.debug("GET + cancelModify");
-				// we got a GET, not a POST, but that's fine.. :)
-				this.cancelModifyOrder(request, results);
-				actionPerformed = true;
+			LOGGER.debug("GET + cancelModify");
+			// we got a GET, not a POST, but that's fine.. :)
+			this.cancelModifyOrder(request, results);
+			actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				this.modifyOrder(request, results);
 				actionPerformed = true;
@@ -225,48 +223,25 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 		}
 
-		this.setOrderActivityPermissions(results);		
-		pageContext.setAttribute(result, results);
-		
 		//
 		// redirect to success page if an action was successfully performed
 		// and a success page was defined
 		//
-		if (actionPerformed && results.isSuccess() && successPage!=null && !"noSuccess".equals(successPage)) {
+		if (actionPerformed && results.isSuccess() && successPage!=null) {
 			LOGGER.debug("Success, redirecting to: "+successPage);
 			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 			try {
 				response.sendRedirect(response.encodeRedirectURL(successPage));
 				JspWriter writer = pageContext.getOut();
 				writer.close();
-				return SKIP_BODY;
 			} catch (IOException ioe) {
 				throw new JspException(ioe.getMessage());
 			}
 		}
+		if ( !PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) && request.getRequestURI().indexOf("place_auto_renew_order")<0 )
+			this.setOrderActivityPermissions(results);
 
-		if (actionPerformed && results.isSuccess() && "noSuccess".equals(successPage)) {
-			try {
-				JspWriter writer = pageContext.getOut();
-				writer.close();
-				return SKIP_BODY;
-			} catch (IOException ioe) {
-				throw new JspException(ioe.getMessage());
-			}
-		}
-
-		if (results.isFailure() && errorPage != null && !errorPage.isEmpty()) {
-		    LOGGER.debug("Success, redirecting to: "+errorPage);
-            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            try {
-                response.sendRedirect(response.encodeRedirectURL(errorPage));
-                JspWriter writer = pageContext.getOut();
-                writer.close();
-                return SKIP_BODY;
-            } catch (IOException ioe) {
-                throw new JspException(ioe.getMessage());
-            }
-        }
+		pageContext.setAttribute(result, results);
 		return EVAL_BODY_BUFFERED;
 
 	} // method doStartTag
@@ -355,9 +330,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				*/
 			}
 
-			if(null != origOrder.getStandingOrderId() && null != user.getUpcomingSOinstances() && !user.getUpcomingSOinstances().isEmpty()) {
-				user.getUpcomingSOinstances().remove(origOrder.getStandingOrderId());
-			}
 			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays, true);
 			if(restoredRsv != null){
 				user.setReservation(restoredRsv);
@@ -411,25 +383,18 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
 			throw new JspException("No customer was found for the requested action.");
 		}
-		
 		//
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results, isMobileRequest());
+			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results);
 
 			//set user as having seen the overlay and used it (in case of login step)
 			currentUser.setSuspendShowPendingOrderOverlay(true);
-			//set inform ordermodify flag
-			currentUser.setShowingInformOrderModify(true);
-        } catch (FDException ex) {
-            LOGGER.warn("Unable to create modify cart", ex);
-            throw new JspException(ex.getMessage());
-        } catch (ErpTransactionException ex) {
-            results.addError(new ActionError(ex.getMessage()));
-            LOGGER.error("Current sale status incompatible with requested action", ex);
-            errorPage = "/your_account/order_details.jsp?hasTransException="+true+"&orderId=" + orderId;
-        }
+		}catch (FDException ex) {
+			LOGGER.warn("Unable to create modify cart", ex);
+			throw new JspException(ex.getMessage());
+		}
 	}
 
 	
@@ -445,44 +410,22 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.info("Unable to release the in_modify lock for orderId"+currentOrderId);
 		}
 		
-		/* save FDCustomerEStore model before restore cart, which invalidates and reloads */
-        try {
-        	if (currentUser != null && currentUser.getIdentity() != null && currentUser.getIdentity().getErpCustomerPK() != null) {
-            	LOGGER.debug("Updating FDCustomerEStore (custId:"+currentUser.getIdentity().getErpCustomerPK()+")");
-				FDCustomerManager.updateFDCustomerEStoreInfo(currentUser.getFDCustomer().getCustomerEStoreModel(), currentUser.getFDCustomer().getId());	
-        	}
-		} catch (FDResourceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		FDCustomerManager.clearModifyCartlines(currentOrderId);
 		ShoppingCartUtil.restoreCart(session);
-			
+	
 		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
 		//Clear any hold amounts.
 		gcList.clearAllHoldAmount();
         
 		//reset user to see pendingOrder overlay again since they didn't check out
 		currentUser.setSuspendShowPendingOrderOverlay(false);
-		//clear inform ordermodify flag
-		currentUser.setShowingInformOrderModify(false);
-		
 	}
 
 
 	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
-			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results, boolean isMobileRequest)
-					throws FDResourceException, FDInvalidConfigurationException, ErpTransactionException{
+			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results)
+					throws FDResourceException, FDInvalidConfigurationException{
 
-	    FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
-	    if(order.isMakeGood()){
-	    	LOGGER.warn("Customers may not maodify Make Good Order. OrderID: "+orderId+" ,Customer_ID: "+order.getCustomerId());
-	    	throw new ErpTransactionException("Customers may not modify orders in this state: Make Good. Please contact Customer Service to continue.");
-	    }
-        order.getSale().assertStatusModifySale();
-	    
-		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
+		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel ) {
 			// there's a modify order already going on ...
 			LOGGER.warn("An order is already opened for modification, cancel it first");
 			
@@ -497,10 +440,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
 		}
 
-		if (isMobileRequest && currentUser != null && currentUser.getIdentity() != null && currentUser.getIdentity().getErpCustomerPK() != null) {
-			FDCustomerManager.updateFDCustomerEStoreInfo(currentUser.getFDCustomer().getCustomerEStoreModel(), currentUser.getFDCustomer().getId());	
-    	}
 
+		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
+		
 		ModifyOrderHelper.handleModificationCutoff(order, currentUser, session, results);
 				
 		FDCustomerManager.storeUser(currentUser.getUser());
@@ -509,7 +451,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use dlvpassapplied flag for applying charge
 		FDUser fdUser =  currentUser.getUser();
 		ModifyOrderHelper.handleDlvPass(cart, fdUser);
-				
+		
 		if (mergePending) {
 			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
 			
@@ -556,15 +498,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
 		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
 		
-		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(cart.getOriginalOrder().getSale().getId(), fdUser.getUserContext());
-		
-		if(fdUser.getMasqueradeContext() == null && (null != modifiedCartlines && modifiedCartlines.size() > 0)){
-			cart.addOrderLines(modifiedCartlines);
-		}
-		
-		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
-		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
-				
 		//Reload gift card balance.
 		ModifyOrderHelper.loadGiftCardsIntoCart(currentUser, order);
 		
@@ -575,6 +508,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			ModifyOrderHelper.handleReservation(order, cart);
 		}
 		
+		
 		// resolve the redemption promotions
 		ModifyOrderHelper.handleRedemptionPromotions(currentUser, order);
 		//Refresh customer's coupon wallet.
@@ -584,9 +518,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		
 		FDCustomerManager.updateOrderInModifyState(order);
         
-		currentUser.resetUserContext();
-		currentUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(currentUser.getUserContext(false)));
-
         return cart;
 	}
 	
@@ -874,9 +805,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
 					}
 					modCart.refreshAll(true);
-					
-
-					int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? user.getOrderHistory().getValidOrderCount("1400") : -1;
 					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus(),false);
 
 				}
@@ -920,7 +848,130 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
 		}
 	} 
-	
+	protected void place_auto_renew_order(HttpServletRequest request, ActionResult results) throws JspException {
+		HttpSession session = request.getSession();
+
+		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
+			throw new JspException("No customer was found for the requested action.");
+		}
+		//
+		// Select new payment and resubmit order
+		//
+		String paymentId = request.getParameter("payment_id");
+		if (paymentId != null && !"".equals(paymentId.trim())) {
+			try {
+				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
+				/// String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
+				//
+				// Get payment method
+				//
+				ErpPaymentMethodI paymentMethod = null;
+				ErpPaymentMethodI tmpPM = null;
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
+					ErpPaymentMethodI p = it.next();
+					tmpPM = p;
+					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
+						paymentMethod = tmpPM;
+						break;
+					}
+				}
+				Date checkDate = new Date();
+		        results.addError(
+		    	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
+		    	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
+		    	        );
+				if ( results.isSuccess() ) {
+					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+
+		        	ErpAddressModel address= FDCustomerManager.getLastOrderAddress(user.getIdentity());
+					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
+					if (arSKU != null){
+						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext());
+					}else{
+						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
+					
+					}
+				}
+			} catch (FDResourceException ex) {
+				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+			} catch(DeliveryPassException ex) {
+				LOGGER.error("Error performing a Delivery pass operation. ", ex);
+				//There was delivery pass validation failure.
+				results.addError(new ActionError("delivery_pass_error","Error performing a Delivery pass operation. "+ex.getMessage()));
+			}
+		} else {
+			LOGGER.warn("No payment id selected by user");
+			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
+		}
+	} 
+
+	protected void doResubmitPayment(HttpServletRequest request, ActionResult results) throws JspException {
+		HttpSession session = request.getSession();
+
+		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
+			throw new JspException("No customer was found for the requested action.");
+		}
+		//
+		// Select new payment and resubmit order
+		//
+		String paymentId = request.getParameter("payment_id");
+		if (paymentId != null && !"".equals(paymentId.trim())) {
+			try {
+				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
+				//
+				// Get specified payment method
+				//
+				ErpPaymentMethodI paymentMethod = null;
+				ErpPaymentMethodI tmpPM = null;
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
+					ErpPaymentMethodI p = it.next();
+					tmpPM = p;
+					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
+						paymentMethod = tmpPM;
+						break;
+					}
+				}
+				//
+				// Get list of charges
+				//
+				Collection<ErpChargeLineModel> charges = new ArrayList<ErpChargeLineModel>();
+				if ( !"true".equalsIgnoreCase(request.getParameter("waive_"+paymentId)) ) {
+					ErpChargeLineModel line = new ErpChargeLineModel();
+					// !!! NEED TO READ THIS DYNAMICALLY FROM SOMEWHERE
+					line.setAmount(2.99);
+					line.setType(EnumChargeType.CC_DECLINED);
+					line.setReasonCode("RESUBMT");
+					charges.add(line);
+				}
+
+				EnumPaymentResponse response = CallCenterServices.resubmitPayment(this.orderId, paymentMethod, charges);
+				//
+				// Check for any "Not approved" response
+				//
+				if ( !EnumPaymentResponse.APPROVED.equals(response) ) {
+					results.addError(new ActionError("declinedCCD", "There was a problem with the selected payment method."));
+				}
+
+			} catch (ErpTransactionException ex) {
+				LOGGER.error("Current sale status incompatible with requested action", ex);
+				results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
+			} catch (FDResourceException ex) {
+				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+			}
+		} else {
+			LOGGER.warn("No payment id selected by user");
+			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
+		}
+	}
+
+
 	protected void setOrderActivityPermissions(ActionResult results) {
 
 		HttpSession session = pageContext.getSession();
@@ -964,6 +1015,76 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 
 	}
+
+	protected void chargeOrder(HttpServletRequest request, ActionResult results) throws JspException {
+		HttpSession session = request.getSession();
+		
+
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		if(!EnumTransactionSource.CUSTOMER_REP.equals(user.getApplication())) {
+			throw new JspException("This action can only be performed in CRM");
+		}
+		if (user.getLevel() < FDUserI.SIGNED_IN) {
+			throw new JspException("No customer was found for the requested action.");
+		}
+		//
+		// Select new payment and resubmit order
+		//
+		
+		String paymentId = NVL.apply(request.getParameter("payment_id"), "").trim();
+		boolean waiveFee = request.getParameter("waive") != null;
+		String additionalCharge = NVL.apply(request.getParameter("additional_charge"), "").trim();
+		
+		if("".equals(paymentId)){
+			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
+		}
+		
+		
+		try {
+			
+			ErpPaymentMethodI paymentMethod = FDCustomerManager.getPaymentMethod(user.getIdentity(), paymentId);
+			if(paymentMethod == null) {
+				results.addError(new ActionError("no_payment_selected", "No payment method found for selected ID."));
+			}
+			
+			if ( results.isSuccess() ) {
+	        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+	        	double addCharge = !waiveFee && !"".equals(additionalCharge) ? Double.parseDouble(additionalCharge) : 0;
+	        	FDCustomerManager.chargeOrder(AccountActivityUtil.getActionInfo(session), orderId, paymentMethod, true, cra, addCharge);
+	        	CrmSession.invalidateCachedOrder(session);
+
+			}
+		} catch (ErpFraudException ex) {
+			LOGGER.warn("Possible fraud occured", ex);
+			results.addError(new ActionError("order_status", "Possible fraud occured. "+ex.getFraudReason().getDescription()));
+
+		} catch (ErpAuthorizationException ex) {
+			LOGGER.warn("Authorization failed", ex);
+			results.addError(new ActionError("order_status", "Authorization failed."));
+	
+		} catch (FDPaymentInadequateException ex) {
+			LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
+			results.addError(new ActionError("payment_inadequate", SystemMessageList.MSG_PAYMENT_INADEQUATE));
+
+		} catch (ErpTransactionException ex) {
+			LOGGER.error("Current sale status incompatible with requested action", ex);
+			results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
+
+		} catch (FDResourceException ex) {
+			LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+			results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+		}
+		 catch (ErpAddressVerificationException ex) {
+				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				
+				String message =ex.getMessage();
+				if(message!=null)
+				    message=message.replace("9999",user.getCustomerServiceContact());
+				LOGGER.debug("ex.getMessage() :"+message);
+				results.addError(new ActionError("technical_difficulty", message));
+			}
+		
+	}
 	private static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=null;
@@ -971,12 +1092,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				EnumReservationType.STANDARD_RESERVATION, customerID, addressID,false, null,20,null,false,null,null);
 		return reservation;
 		
-	}
-	public boolean isMobileRequest() {
-		return isMobileRequest;
-	}
-	public void setMobileRequest(boolean isMobileRequest) {
-		this.isMobileRequest = isMobileRequest;
 	}
 	
 } // ModifyOrderControllerTag

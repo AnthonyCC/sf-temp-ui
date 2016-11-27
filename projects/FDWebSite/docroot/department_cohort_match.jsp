@@ -1,5 +1,5 @@
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.RatingUtil'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%!
 	final Logger LOG = LoggerFactory.getInstance("department_cohort_match.jsp");
 %>
@@ -75,15 +75,12 @@
 	request.setAttribute("sitePage", departmentModel.getPath());
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight,4mmAd1,4mmAd2");
 
-    String title = "FreshDirect - " + departmentModel.getFullName();
 %>
 
 <tmpl:insert template='/common/template/no_nav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - <%= departmentModel.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
+	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
 		/*
 		int ttl=14400; 
@@ -106,6 +103,9 @@
 		}
 		*/
 	%>
+	<%-- oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>' --%>
+	
+	<%-- try { --%>
 		<% if (departmentModel.getAltTemplatePath() != null && departmentModel.getAltTemplatePath().trim().length() > 0) { 
 			LOG.debug("including template path: "+departmentModel.getAltTemplatePath().trim());
 			%><fd:IncludeMedia name="<%= departmentModel.getAltTemplatePath().trim() %>" parameters="<%= params %>" /><%
@@ -115,5 +115,10 @@
 		%>
 	<% /*} catch (Exception ex) {
 		LOG.error("error while generating department page body", ex);*/  		%>
+		<%--oscache:usecached/ --%>
+<%--   	<% } %> --%>
+	
+	<%-- /oscache:cache --%>
+		
 </tmpl:put>
 </tmpl:insert>

@@ -11,7 +11,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDPromotionEligibility"%>
 <%@page import="com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter"%>
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>SAVE CART</title>
 </head>

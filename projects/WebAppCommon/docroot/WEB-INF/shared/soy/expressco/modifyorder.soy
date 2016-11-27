@@ -11,21 +11,21 @@
 	  Modifying, {$modifyCartData.soOrderDate} Delivery 
 	  <div class='modifyorder-so-title'>{$modifyCartData.soName} | Order #{$modifyCartData.orderId}</div>	    
   	</p>
-  	<a class="cssbutton cssbutton-flat orange transparent modifyorder-cancelbutton cancel-modify-order-btn" data-gtm-source="view-cart" href="/your_account/cancel_modify_order.jsp">
-	  Cancel Changes
+  	<a href="/your_account/cancel_modify_order.jsp">
+	  <button class="cssbutton cssbutton-flat green transparent modifyorder-cancelbutton">Cancel Changes</button>
 	</a>
   {else}
   	<p class='modifyorder-title'>
 	  Modifying, Order#: {$modifyCartData.orderId}  		
   	</p>
-  	<a class="cssbutton orange transparent modifyorder-cancelbutton cancel-modify-order-btn" data-gtm-source="view-cart" href="/your_account/cancel_modify_order.jsp">
-	  Cancel Changes
+  	<a href="/your_account/cancel_modify_order.jsp">
+	  <button class="cssbutton blue modifyorder-cancelbutton">Cancel Changes</button>
 	</a>
   {/if}
   <hr class='modifyorder-hr'>
   <div class="modifyorder-details">
-  	<div class="modifyorder-cutoff">Complete delivery changes by {$modifyCartData.cutoffTime}</div>
-  	<div class="modifyorder-info">Modifying your order's delivery date may affect product pricing and availability.</div>
+  	<div class="modifyorder-cutoff">Modifications must be completed by: {$modifyCartData.cutoffTime}</div>
+  	<div class="modifyorder-info">The price and availability of some items may change. If your new delivery date is on or after {$modifyCartData.oneWeekLater} all of your items will be updated to reflect today's prices.</div>
   </div>  
 </div>
 {/if}

@@ -3,8 +3,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -27,7 +26,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <fd:CheckLoginStatus />
 <%!

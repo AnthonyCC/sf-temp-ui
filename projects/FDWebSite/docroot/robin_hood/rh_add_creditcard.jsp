@@ -12,10 +12,7 @@ final int W_RH_ADD_CREDITCARD_TOTAL = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/robinhood.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit Card</tmpl:put> --%>
-     <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Add Credit Card"></fd:SEOMetaTag>
-    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit Card</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 <%
@@ -32,9 +29,9 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
-    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
     <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 </tr>
 <tr>
@@ -43,22 +40,22 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 </tr>
 <tr>
     <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
-    <td class="errortext" width="100%" bgcolor="#FFFFFF">
+    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
                 <%= SystemMessageList.MSG_GC_CC_INVALID %>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 	</td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 </tr>
 <tr>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
 </tr>
 <tr>
-    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 </tr>
 </table>
 <br>
@@ -92,7 +89,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 		<tr>
 			<td class="text11" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 				Please enter new credit card information. <BR> 
-				<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 			</td>
 		</tr>
 </table>
@@ -110,7 +107,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	<tr>	
 		<td width="693" CLASS="text12">
 			To learn more about our <font class="text11bold">Security Policies</font>, 
-			<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
+			<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
 		</td>
 	</tr>
 </TABLE>
@@ -120,9 +117,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 <br><br>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">

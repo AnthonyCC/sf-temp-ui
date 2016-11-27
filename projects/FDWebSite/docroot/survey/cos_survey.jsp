@@ -7,7 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.framework.util.NVL'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <fd:CheckLoginStatus />
 
 <%
@@ -133,11 +133,7 @@
 		<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
 	<% } %>
 
-  <% String title = "FreshDirect - " + currentFolder.getFullName(); %>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="<%= title %>"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
 		
@@ -230,7 +226,7 @@
 					</tr>
 					<tr>
 						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Email Address<fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
-						<td><input type="text" size="25" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+						<td><input type="text" size="25" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 					</tr>
 					<tr>
 						<td colspan="4" align="left">

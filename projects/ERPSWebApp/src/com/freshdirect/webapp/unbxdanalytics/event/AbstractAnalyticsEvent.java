@@ -13,14 +13,10 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
     @JsonIgnore
     protected final long timestamp;
 
-    @JsonIgnore
-    protected final boolean cosAction;
-    
-    public AbstractAnalyticsEvent(Visitor visitor, LocationInfo location, boolean cosAction) {
+    public AbstractAnalyticsEvent(Visitor visitor, LocationInfo location) {
         this.visitor = visitor;
         this.location = location;
         this.timestamp = System.currentTimeMillis();
-        this.cosAction = cosAction;
     }
 
     @JsonIgnore
@@ -64,20 +60,18 @@ public abstract class AbstractAnalyticsEvent implements AnalyticsEventI {
         return location.referrer;
     }
 
-	@Override
-	public boolean isCosAction() {
-		return cosAction;
-	}
-    
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
+
         buf.append("{")
             .append("type:").append(getType()).append("; ")
             .append("uid:").append(visitor.getUID()).append("; ")
             .append("visit_type:").append(visitor.getVisitType()).append("; ")
             .append("ref:").append(location.url).append("; ")
             .append("}");
+        ;
+
         return buf.toString();
     }
 }

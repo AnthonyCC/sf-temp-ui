@@ -1,16 +1,13 @@
 package com.freshdirect.cms;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.freshdirect.fdstore.FDException;
 
 /**
- * Immutable, typed key for a {@link com.freshdirect.cms.ContentNodeI} instance.
+ * Unmutable, typed key for a {@link com.freshdirect.cms.ContentNodeI} instance.
  * Keys can be represented as strings in the format <code>ContentType:id</code>.
  */
 public class ContentKey implements Serializable {
@@ -19,11 +16,11 @@ public class ContentKey implements Serializable {
 
     private static final char SEPARATOR = ':';
     private static final Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
-    private static final ReentrantLock LOCK = new ReentrantLock();
-    private static final Map<String, ContentKey> CONTENT_KEY_CACHES = new HashMap<String, ContentKey>();
 
-    private final ContentType type;
+	private final ContentType type;
 	private final String id;
+
+	
 
 	/**
 	 * @param type content type (non-null)
@@ -31,7 +28,7 @@ public class ContentKey implements Serializable {
 	 * 
 	 * @throws IllegalArgumentException for invalid key parameters
 	 */
-	private ContentKey(ContentType type, String id) {
+	public ContentKey(ContentType type, String id) {
 		if (type == null) {
 			throw new IllegalArgumentException("ContentType cannot be null");
 		}
@@ -79,7 +76,7 @@ public class ContentKey implements Serializable {
 	 * @return encoded version of key
 	 */
 	public String getEncoded() {
-		return encodeKey(type, id);
+		return type.getName() + SEPARATOR + id;
 	}
 
 	/**
@@ -90,7 +87,7 @@ public class ContentKey implements Serializable {
 	 * 
 	 * @throws IllegalArgumentException for malformed keys
 	 */
-	private static ContentKey decode(String key) {
+	public static ContentKey decode(String key) {
 		if ( key == null ) {
 			throw new IllegalArgumentException("Invalid null key ");
 		}
@@ -114,43 +111,20 @@ public class ContentKey implements Serializable {
 	 * @throws InvalidContentKeyException if key format is invalid (ie. contains white space)
 	 */
 	public static ContentKey create(ContentType type, String id) throws InvalidContentKeyException {
-	    validateKey(id);
-	    return getContentKey(type, id);
+		ContentKey key = new ContentKey(type, id);
+
+		// validate key.id
+		Matcher matcher = ContentKey.NAME_PATTERN.matcher(id);
+		if(!matcher.matches()) {
+			/*
+			LOGGER.info("requested content id \'"+id+"\' does not match pattern "+ContentKey.NAME_PATTERN.pattern());
+			delegate.record(" \""+ id + "\" must contain only letters, numbers, underscore and '-'", null);
+			return;*/
+			throw new InvalidContentKeyException();
+		}
+
+		return key;
 	}
-
-    public static ContentKey getContentKey(ContentType type, String id) {
-        return getContentKey(encodeKey(type, id));
-    }
-
-    private static String encodeKey(ContentType type, String id) {
-        return type.getName() + SEPARATOR + id;
-    }
-
-    public static ContentKey getContentKey(String key) {
-        ContentKey contentKey = CONTENT_KEY_CACHES.get(key);
-        if (contentKey == null) {
-            contentKey = ContentKey.decode(key);
-            try {
-                LOCK.lock();
-                CONTENT_KEY_CACHES.put(key, contentKey);
-            } finally {
-                LOCK.unlock();
-            }
-        }
-        return contentKey;
-    }
-
-    private static void validateKey(String id) throws InvalidContentKeyException {
-        // validate key.id
-        Matcher matcher = ContentKey.NAME_PATTERN.matcher(id);
-        if(!matcher.matches()) {
-            /*
-            LOGGER.info("requested content id \'"+id+"\' does not match pattern "+ContentKey.NAME_PATTERN.pattern());
-            delegate.record(" \""+ id + "\" must contain only letters, numbers, underscore and '-'", null);
-            return;*/
-            throw new InvalidContentKeyException();
-        }
-    }
 
 	/**
 	 * Null safe equality.
@@ -165,7 +139,6 @@ public class ContentKey implements Serializable {
 	public static class InvalidContentKeyException extends FDException {
 		private static final long serialVersionUID = -4393163976420522249L;
 	}
-	public final static ContentKey NULL_KEY = ContentKey.getContentKey(ContentType.NULL_TYPE, "null");
-	
+	public final static ContentKey NULL_KEY = new ContentKey(ContentType.NULL_TYPE, "null");
 
 }

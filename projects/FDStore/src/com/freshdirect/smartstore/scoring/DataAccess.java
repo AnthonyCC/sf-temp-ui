@@ -3,8 +3,8 @@ package com.freshdirect.smartstore.scoring;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * This interface encapsulates the API, which the DataGenerator use to access various variables for a ContentNodes, 

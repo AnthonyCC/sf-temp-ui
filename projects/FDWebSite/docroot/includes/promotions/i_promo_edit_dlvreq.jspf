@@ -321,7 +321,7 @@
 														}
 													}
 												} else {
-													document.getElementById("hidden_error").innerHTML="<font class=\"errortext\">Please select the option to see the counties</font>";
+													document.getElementById("hidden_error").innerHTML="<font class=\"text11rbold\">Please select the option to see the counties</font>";
 												}
 											}
 										</script>

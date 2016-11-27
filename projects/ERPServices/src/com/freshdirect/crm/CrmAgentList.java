@@ -34,13 +34,4 @@ public class CrmAgentList implements Serializable {
 		});
 		return lst;
 	}
-
-	
-	// Introduced for Storefront 2.0
-	public List<CrmAgentModel> getAgents() {
-		return agents;
-	}
-	
-	
-	
 }

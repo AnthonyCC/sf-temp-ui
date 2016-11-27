@@ -22,48 +22,38 @@
 }
 
 .fixedPopupContent {
-  max-width: 900px;
+	max-width:900px;
 	display:inline-block;
-	-webkit-box-shadow: 0px 5px 30px 0px rgba(0,0,0,0.3);
-	-moz-box-shadow: 0px 5px 30px 0px rgba(0,0,0,0.3);
-	box-shadow: 0px 5px 30px 0px rgba(0,0,0,0.3);
+	box-shadow:2px 2px 8px rgba(0, 0, 0, 0.4);
 	z-index:1002;
 	background:white;
+	border:1px solid #8E7092;
 	vertical-align:middle;
 	text-align:left;
-	max-height: 600px;
+	max-height:95%;
+	overflow:hidden;
 	display:inline-flex;
 	flex-direction:column;
-	-webkit-overflow-scrolling: touch;
-/* 	overflow-y:auto; */
-/* 	overflow-x:hidden; */
-/* 	height:100%; */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* fix for the create account scroll bar in IE */
-#ajaxpopup .fixedPopupContent{
-	height:100%;
-}
-#ajaxpopup .fixedPopupContent.success{
-	height:auto;
-}
 .fixedpopup .qs-popup-header {
 	background:transparent;
 	min-height:30px;
 }
 
 .fixedpopup .qs-popup-content {
-	padding: 15px 30px;
+	padding:0 20px 15px 15px;
 	overflow:auto;
 	display:inline-block;
 	overflow-y:auto;
 	overflow-x:hidden;
-	-webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 }
 
 #ifrPopup iframe {
 	width:520px;
-	height:300px;
+	height:300px;	
   -webkit-overflow-scrolling: touch;
 }
 
@@ -113,7 +103,8 @@
 	line-height: 30px;
 	padding: 0 30px 0 10px;
 }
-.qs-popup-help-icon, .qs-popup-close-icon, .close-icon {
+.qs-popup-help-icon,
+.qs-popup-close-icon {
 	position: absolute;
 	top: 7px;
 	right: 7px;
@@ -125,30 +116,21 @@
 	text-indent: -9999px;
 	overflow: hidden;
 	cursor: pointer;
-	z-index:1;
 }
-.qs-popup-close-icon, .close-icon {
+.qs-popup-close-icon {
   display: none;
-  top: -35px;
-  right: -35px;
-  width: 25px;
-  height: 25px;
-  background: url(/media_stat/images/close.png) no-repeat;
-  background-size: 100%;
+	top: 5px;
+	width: 18px;
+	height: 18px;
+	background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
 }
-
-@media (max-height: 680px) {
-  .qs-popup-close-icon, .close-icon {
-    top: 0;
-  }
-}
-.qs-hidehelp .qs-popup-help-icon, .qs-hidehelp .help-icon, .help-icon {
+.qs-hidehelp .qs-popup-help-icon {
   display: none;
 }
-.qs-hasclose .qs-popup-close-icon, .qs-hasclose .close-icon, .close-icon {
+.qs-hasclose .qs-popup-close-icon {
   display: block;
 }
-.qs-hasclose .qs-popup-help-icon, .qs-hasclose .help-icon, .help-icon {
+.qs-hasclose .qs-popup-help-icon {
   right: 40px;
 }
 .qs-popup-content {
@@ -270,25 +252,4 @@
   margin: 0 10px;
   display: inline-block;
   white-space: nowrap;
-}
-
-/* overlay fix */
-[data-ismobweb="true"] .fixedPopupHelper {
-  display:none;
-}
-
-[data-ismobweb="true"] .fixedPopupContent {
-  position:absolute;
-  box-sizing: border-box;
-  top:45px;
-  right:0;
-  bottom: 0;
-  left:0;
-  right: 0;
-  margin: 0 auto;
-  max-height: 100%;
-}
-
-[data-ismobweb="true"] .qs-popup-close-icon, [data-ismobweb="true"] .close-icon {
-  right:10px;
 }

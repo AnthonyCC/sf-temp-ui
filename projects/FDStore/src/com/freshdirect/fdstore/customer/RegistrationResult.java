@@ -8,7 +8,6 @@
  */
 package com.freshdirect.fdstore.customer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -18,19 +17,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RegistrationResult implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1793702353434813275L;
 	private final FDIdentity identity;
-	@JsonProperty("foundFraud")
 	private final boolean foundFraud;
 
 	public RegistrationResult(FDIdentity id) {
 		this(id, false);
 	}
-	
-	public RegistrationResult(@JsonProperty("identity") FDIdentity id, @JsonProperty("foundFraud") boolean b) {
+
+	public RegistrationResult(FDIdentity id, boolean b) {
 		super();
 		this.identity = id;
 		this.foundFraud = b;

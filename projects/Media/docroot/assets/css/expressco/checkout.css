@@ -1,54 +1,9 @@
 h1.checkout {
   margin-top: 15px;
-  margin-bottom: 0;
   font-weight: bold;
   color: #333;
 }
 
 h1.checkout:before {
   font-size: 1.3em;
-}
-.skipnav {
-	-webkit-transition: all 0.2s ease-in-out !important;
-	-moz-transition: all 0.2s ease-in-out !important;
-	transition: all 0.2s ease-in-out !important;
-	background: transparen !importantt;
-	left: 0 !important;
-	padding-bottom: 1rem !important;
-	padding-left: 1.5rem !important;
-	padding-right: 1.5rem !important;
-	padding-top: 1rem !important;
-	position: absolute !important;
-	top: -4.2rem !important;
-	z-index: 1000 !important;
-	color: #408244 !important;
-	background-color: #ffffff !important;
-    border: 1px solid #4fa157 !important;
-    padding: 13px 20px !important;
-}
-
-.skipnav:focus {
-	-webkit-transition: all 0.2s ease-in-out !important;
-	-moz-transition: all 0.2s ease-in-out !important;
-	transition: all 0.2s ease-in-out !important;
-	background: #ffffff !important;
-	left: 0 !important;
-	outline: 0 !important;
-	position: absolute !important;
-	top: 0px !important;
-	color: #5fb069 !important;
-	font-size: 14px  !important;
-    font-weight: bold  !important;
-    font-family: verdana  !important;
-    line-height: 1  !important;
-    outline: none  !important;
-    text-align: center  !important;
-    text-decoration: none  !important;
-    width: auto  !important;
-    padding-bottom: 13px !important;
-}
-
-.skipnav:hover{
-	color: #5fb069 !important;
-	text-decoration: underline !important;
 }

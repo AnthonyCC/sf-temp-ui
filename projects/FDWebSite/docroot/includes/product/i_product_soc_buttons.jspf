@@ -1,35 +1,29 @@
 <%-- ProductModel productNode: required --%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"
-		import="com.freshdirect.framework.util.StringUtil"
+		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"
 		import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo" %>
-<% if (FDStoreProperties.isSocialButtonsEnabled()) {
+<% if (FDStoreProperties.isSocialButtonsEnabled() && !new BrowserInfo(request).isIE6()) {
 	final String BASE = FDStoreProperties.getHostUrl();
 	final String url = BASE + "/product.jsp?catId=" + productNode.getCategory().getContentName() + "&productId=" + productNode.getContentName();
 	final String img = BASE + productNode.getZoomImage().getPath();
+	final String cmOffsiteItem = productNode.getCategory().getContentName() + "_" + productNode.getContentName();
 	%>
 
 	<!-- AddThis Button BEGIN -->
 	
 <div class="addthis_toolbox addthis_default_style" style="padding-bottom: 5px; padding-top: 5px; vertical-align: middle;">
-	<a class="addthis_button_facebook_like" aria-label="like this product on facebook" style="vertical-align: middle;" fb:like:layout="button_count" addthis:url='<%=StringUtil.addParameterToUrl(url,"trk","fb")%>' style="width:89px"></a>
-	<a class="addthis_button_tweet" aria-label="share this product on twitter" style="width:89px" addthis:url='<%=StringUtil.addParameterToUrl(url,"trk","tw")%>'></a>
-	<a class="addthis_button_google_plusone" aria-label="share this product on google" g:plusone:size="medium" style="width:72px" addthis:url='<%=StringUtil.addParameterToUrl(url,"trk","gp")%>'></a>
-	<a class="addthis_button_pinterest_pinit" aria-label="share this product on pinterest" pi:pinit:url='<%=StringUtil.addParameterToUrl(url,"trk","pin")%>' pi:pinit:media="<%=img%>"></a> 
+	<a class="addthis_button_facebook_like" style="vertical-align: middle;" fb:like:layout="button_count" addthis:url='<%=CmMarketingLinkUtil.getSocialLink(url, "facebook", cmOffsiteItem)%>&trk=fb' style="width:89px"></a>
+	<a class="addthis_button_tweet" style="width:89px" addthis:url='<%=CmMarketingLinkUtil.getSocialLink(url, "twitter", cmOffsiteItem)%>&trk=tw'></a>
+	<a class="addthis_button_google_plusone" g:plusone:size="medium" style="width:72px" addthis:url='<%=CmMarketingLinkUtil.getSocialLink(url, "gplus", cmOffsiteItem)%>&trk=gp'></a>
+	<a class="addthis_button_pinterest_pinit" pi:pinit:url='<%=CmMarketingLinkUtil.getSocialLink(url, "pin", cmOffsiteItem)%>&trk=pin' pi:pinit:media="<%=img%>"></a> 
 	</div>
 	<script type="text/javascript">
 		if (!window['initAddThis']) {
-			window['initAddThisCounter'] = 60;
 			window['initAddThis'] = function() {
-				if (window['addthis']) {
-					//addthis.init();	
+				if (addthis) {
+					addthis.init();	
 				} else {
-					/* limit to 30 secs before giving up */
-					if (window['initAddThisCounter'] && window['initAddThisCounter']-- > 0) {
-						setTimeout(initAddThis, 500);
-					} else {
-						window['initAddThis'] = null;
-						window['initAddThisCounter'] = null;
-					}
+					setTimeout(initAddThis, 500);
 				}
 			}
 			$jq(document).ready(function () { initAddThis(); });

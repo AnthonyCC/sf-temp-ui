@@ -15,8 +15,9 @@ body {
   font-family: Verdana, "DejaVu Sans", sans-serif;
 }
 
-/* Link colors with reference to style guide(ux) high contrast color for links*/
-a, a:link { color: #408244; text-decoration: none; }
+/* Link colors */
+a, a:link { color: #458b4c; text-decoration: none; }
+a:visited { color: #777;text-decoration: none; }
 a:hover, a:active, a:focus { color: #5fb069; text-decoration: underline; }
 
 /* Headings

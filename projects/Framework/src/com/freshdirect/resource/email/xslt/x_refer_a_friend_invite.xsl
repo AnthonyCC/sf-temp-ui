@@ -8,7 +8,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US" xmlns:v="urn:schemas-microsoft-com:vml">
+<html xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 	<title>Refer A Friend Invitation</title>
 	<link rel="stylesheet" href="https://www.freshdirect.com/media/images/profile/raf_email/emails.css"/>
@@ -79,7 +79,7 @@
 	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
 	<tbody>
 	<tr>
-	<td><a href="http://www.freshdirect.com/index.jsp?serviceType=HOME"><img style="DISPLAY: block" alt="Go to FreshDirect" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_go_to_freshdirect.gif" usemap="#Map" border="0" height="34" width="150" /></a></td>
+	<td><a href="http://www.freshdirect.com/index.jsp"><img style="DISPLAY: block" alt="Go to FreshDirect" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_go_to_freshdirect.gif" usemap="#Map" border="0" height="34" width="150" /></a></td>
 	<td><a href="http://www.freshdirect.com/category.jsp?catId=picks_love"><img style="DISPLAY: block" alt="President's Picks" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_presidents_picks.gif" usemap="#Map" border="0" height="34" width="130" /></a></td>
 	<td><a href="https://www.freshdirect.com/newproducts.jsp"><img style="DISPLAY: block" alt="New Products" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_new_products.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>
 	<td><a href="https://www.freshdirect.com/your_account/manage_account.jsp"><img style="DISPLAY: block" alt="Your Account" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_your-account.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>
@@ -120,7 +120,7 @@
 	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
 	<tbody>
 	<tr>
-	<td style="LINE-HEIGHT: 14px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; COLOR: #999; FONT-SIZE: 10px" align="left">Please add announcements@.freshdirect.com to your address book to ensure our emails reach your inbox.<br /><br />For FreshDirect online Help or to contact us, please <a style="COLOR: rgb(51,102,0)" href="http://www.freshdirect.com/help/contact_fd.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">click here</span></a>.<br /><br />2 St Ann's Ave Bronx, NY 10454<br /><br /><a style="COLOR: #360" href="https://www.freshdirect.com/help/terms_of_service.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">Customer Agreement</span></a><br /><xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.</td></tr></tbody></table>
+	<td style="LINE-HEIGHT: 14px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; COLOR: #999; FONT-SIZE: 10px" align="left">Please add announcements@.freshdirect.com to your address book to ensure our emails reach your inbox.<br /><br />For FreshDirect online Help or to contact us, please <a style="COLOR: rgb(51,102,0)" href="http://www.freshdirect.com/help/contact_fd.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">click here</span></a>.<br /><br />23-30 Borden Ave. Long Island City, NY 11101<br /><br /><a style="COLOR: #360" href="https://www.freshdirect.com/help/terms_of_service.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">Customer Agreement</span></a><br />2014 Fresh Direct, LLC. All Rights Reserved.</td></tr></tbody></table>
 
 	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
 	<tbody>

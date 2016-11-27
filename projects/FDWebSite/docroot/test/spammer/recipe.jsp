@@ -7,13 +7,13 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<html lang="en-US" xml:lang="en-US">
+<html>
 <body>
 <%!
 

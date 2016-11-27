@@ -1,48 +1,9 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
-<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%><%@page import="org.apache.log4j.Logger"%>
-<%@page import="com.freshdirect.framework.util.FDExceptionUtil"%>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
-
-<%!
-	Logger LOGGER = LoggerFactory.getInstance("error.jsp");
-
-	//Very dirty way of logging broken pipe and connnection reset without refactoring exception handling.
-	public void logError(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
-		if (FDExceptionUtil.isConnectionResetOrBrokenPipe(errorMessage)){
-		    log500(request,user,"FDWEBERROR-04", errorMessage);
-		}
-		else if (FDExceptionUtil.isCheckoutPaymentError(errorMessage)){
-		    log500(request,user,"FDWEBERROR-05", errorMessage);
-		}
-		else{
-		    log500(request,user,errorCode,errorMessage);
-		}
-	}
-
-	public void log500(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
-		try {
-			LOGGER.warn(errorCode + " for "
-	    		+ " : User=" + (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
-	    		+ " : Cookie=" + CookieMonster.getCookie(request) 
-	    		+ " : Request URL=" + request.getRequestURL().append("?"+request.getQueryString())
-	    		+ " : Referer=" + request.getHeader("referer") 
-	    		+ " : User-Agent=" + request.getHeader("User-Agent")
-	    		+ " : ErrorMessage=" + errorMessage); 
-		} catch (Exception exp) {
-			LOGGER.warn("FDWEBERROR-03 error logging error " + exp.getMessage());
-		}
-	}
-%>
-
 <%
+
 /****
  * Error page
  *
@@ -51,32 +12,27 @@
  */
 
 try {
-	
-  FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	
   if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
     // AJAX errors
     String message = AjaxErrorHandlingService.defaultService().prepareErrorMessageForAjaxCall(request, response);
     String primaryErrorMessage = AjaxErrorHandlingService.defaultService().getPrimaryErrorMessage(message);
     String secondaryErrorMessage = AjaxErrorHandlingService.defaultService().getSecondaryErrorMessage(message);
-    
-    logError(request, user, "FDWEBERROR-01", message);
-%>
+  %>
   {"error": {"primary": "<%= primaryErrorMessage%>", "secondary": "<%= secondaryErrorMessage%>"}}
-<%
+  <%
   } else {
     // standard JSP errors
     response.setStatus(500);
-    logError(request, user, "FDWEBERROR-02", FDExceptionUtil.getRootCauseStackTrace(exception));
-        
- %>
- 
+
+    if (exception != null) { 
+
+      JspLogger.GENERIC.error("Got an error page", exception);
+      %>
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <%-- <title>FreshDirect - Something went wrong...</title> --%>
-   <fd:SEOMetaTag title="FreshDirect - Something went wrong..."/>
+  <title>FreshDirect - Something went wrong...</title>
   <style>
     body {
       font-family: Verdana, Arial, sans-serif;
@@ -165,59 +121,14 @@ try {
       </pre>
     </c:if>
   </div>
-  <script>
-    window.FreshDirect = window.FreshDirect || {};
-    var fd = window.FreshDirect;
-    var dataLayer = window.dataLayer || [];
-    
-    fd.gtm = fd.gtm || {};
-    fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
-    fd.gtm.auth = '<%= FDStoreProperties.getGoogleTagManagerAuthToken() %>';
-    fd.gtm.preview = '<%= FDStoreProperties.getGoogleTagManagerPreviewId() %>';
-
-    dataLayer.push({
-      'config-ga-key': '<%= FDStoreProperties.getGoogleAnalyticsKey() %>',
-      'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
-    });
-
-    dataLayer.push({
-      event: 'error',
-      eventCategory: 'Error',
-      eventAction: '500 Error',
-      eventLabel: '500 Error'
-    });
-
-    // load google tag manager
-    (function(fd) {
-      var loadGTM = function (w,d,s,l,i) {
-        w[l]=w[l]||[];
-        w[l].push({
-            'gtm.start':new Date().getTime(),
-            event:'gtm.js'
-        });
-
-        var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),
-            dl=l!=='dataLayer'?'&l='+l:'';
-
-        j.async=true;
-        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+(fd.gtm.auth ? '&gtm_auth='+fd.gtm.auth : '')+(fd.gtm.preview ? '&gtm_preview='+fd.gtm.preview+'&gtm_cookies_win=x' : '');
-        f.parentNode.insertBefore(j,f);
-      };
-
-      loadGTM(window, document, 'script', 'dataLayer', fd.gtm.key);
-
-    }(FreshDirect));
-
-  </script>
-
 </body>
 </html>
-<%
+      <%
+    }
   } // end of standard JSP error page
 } catch (Exception fatalError) {
   JspLogger.GENERIC.error("FatalError in error page", fatalError);
-%>
+  %>
 	<%=  String.valueOf(fatalError) %>
 <%
 }

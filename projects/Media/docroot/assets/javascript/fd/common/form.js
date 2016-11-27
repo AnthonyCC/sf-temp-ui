@@ -92,12 +92,9 @@ var FreshDirect = FreshDirect || {};
   forms.validateInputField = function (e) {
     var $el = $(e.currentTarget),
         id = $el.parents(this.selector).first().attr(this.attrPrefix),
-	    errors = [];
-    
-    if (!id || id === '') { return errors; }
-    
-    var form = this.get(id),
-	    validators = this.getValidators($el, form);
+        form = this.get(id),
+        errors = [],
+        validators = this.getValidators($el, form);
 
     if (validators.length) {
       this.clearFieldErrors($el, form);
@@ -122,8 +119,7 @@ var FreshDirect = FreshDirect || {};
         formEl = this.getEl(form.id);
 
     if (e.keyCode === 13) {
-    	if (formEl.attr(this.attrPrefix+'-no-submit-on-keydown')) { return; }
-    	// submit on enter
+      // submit on enter
       e.preventDefault();
       e.stopPropagation();
 
@@ -161,7 +157,7 @@ var FreshDirect = FreshDirect || {};
         $errorHolder = $('['+this.attrPrefix+'="'+form.id+'"] ['+this.attrPrefix+'-error-for="'+name+'"]').first(),
         pfx = this.attrPrefix,
         customHandler = form.errorHandlers && form.errorHandlers[name],
-        $parent = $errorHolder.length ? $errorHolder : $el.parent();
+        $parent = $errorHolder.size() ? $errorHolder : $el.parent();
 
     // if custom error handler found
     if (customHandler) {
@@ -171,7 +167,7 @@ var FreshDirect = FreshDirect || {};
       }
     }
 
-    if ($el.length === 0) {
+    if ($el.size() === 0) {
       $el = $('['+this.attrPrefix+'-error-container="'+form.id+'"],['+this.attrPrefix+'="'+form.id+'"] ['+this.attrPrefix+'-error-container]');
       $parent = $el;
     }
@@ -181,28 +177,12 @@ var FreshDirect = FreshDirect || {};
     }
 
     setTimeout(function () {
-        var hashName = utils.createHash(name + error);
-        if ($el.attr('invalid')) {
-          if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorhash="'+hashName+'"]').length === 0) {
-              if ($el.closest('form').attr(pfx+'-displayerrorafter') !== undefined || $el.attr(pfx+'-displayerrorafter') !== undefined) {
-                  var $temp = $parent;
-                  if ($el.attr(pfx+'-displayerrorafterselector') !== undefined ) {
-                      $temp = $($el.attr(pfx+'-displayerrorafterselector'));
-                      if (!$temp.length) {
-                          $temp = $parent;
-                      }
-                  }
-                  if ($temp.hasClass('select-wrapper')) { /* use after because selects use ::after pseudo-element */
-                      $temp.after('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
-                  } else { /* default append, not safe for elems that user ::after */
-                      $temp.append('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
-                  }
-              } else {
-                  $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
-              }
-          }
+      if ($el.attr('invalid')) {
+        if (!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) {
+          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '')+'>'+error+'</span>');
         }
-      }, 100);
+      }
+    }, 100);
 
     $el.attr('invalid', true);
   };
@@ -433,7 +413,7 @@ var FreshDirect = FreshDirect || {};
         // check for label
         if ($el) {
           label = $el.closest('label').first();
-          if (label.length > 0) {
+          if (label.size() > 0) {
             label.attr('for', id);
           } else {
             ph = $el.attr('placeholder');
@@ -462,9 +442,8 @@ var FreshDirect = FreshDirect || {};
     // TODO check if 'blur' is needed
     $(document).on('change', this.selector+' input, '+this.selector+' select, '+this.selector+' textarea', this.validateInputField.bind(this));
     $(document).on('keydown', this.selector+' input, '+this.selector+' select', this.keyDownHandler.bind(this));
-    // if this is andriod, bind to textInput event also.
-    var focusedBindEvents = fd && fd.mobWeb && navigator.userAgent.toLowerCase().indexOf('android') !== -1? 'paste keydown textInput focus' : 'paste keydown focus';
-    $(document).on(focusedBindEvents, '['+this.attrPrefix+'-formatter]', this.focusedFormatter.bind(this));
+
+    $(document).on('paste keydown focus', '['+this.attrPrefix+'-formatter]', this.focusedFormatter.bind(this));
     $(document).on('change', '['+this.attrPrefix+'-formatter]', this.formatter.bind(this));
 
     // try to create unique ids for fields that are missing it
@@ -481,12 +460,8 @@ var FreshDirect = FreshDirect || {};
     callback: {
       value: function (data) {
         var id = data.fdform,
-            form = forms.get(id),
-            validationFailureFunc = (form && form.validationFailure);
+            form = forms.get(id);
 
-        if (validationFailureFunc) {
-        	validationFailureFunc(data);
-        }
         forms.showErrors(form, data.errors, true);
 
         if (data.result) {
@@ -562,7 +537,7 @@ var FreshDirect = FreshDirect || {};
   forms.successFns.reset = function (id) {
     var formEl = forms.getEl(id);
 
-    if (formEl.length) {
+    if (formEl.size()) {
       formEl[0].reset();
     }
   };
@@ -572,7 +547,7 @@ var FreshDirect = FreshDirect || {};
     $('[fdform-container="'+id+'"]').hide();
     $('[fdform-container-'+id+']').hide();
 
-    if (formEl.length) {
+    if (formEl.size()) {
       formEl[0].reset();
     }
   };
@@ -582,7 +557,7 @@ var FreshDirect = FreshDirect || {};
     $('[fdform-container="'+id+'"]').show();
     $('[fdform-container-'+id+']').show();
 
-    if (formEl.length) {
+    if (formEl.size()) {
       formEl[0].reset();
     }
   };
@@ -630,7 +605,7 @@ var FreshDirect = FreshDirect || {};
       this.clearFieldErrors($(el), {id: formid});
     }.bind(forms));
 
-    if ($checkedfields.length === 0) {
+    if ($checkedfields.size() === 0) {
       errors = addError(errors, $fields.first(), 'Please select one of the marked options!', "onerequired-"+group);
       $fields.attr('invalid', true);
     }
@@ -677,7 +652,7 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
-
+  
 //floor validator
   forms.registerValidator('[fdform-v-floor]', function (field) {
     var errors = [],
@@ -690,7 +665,7 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
-
+  
 //street addess 1 validator
   forms.registerValidator('[fdform-v-address1]', function (field) {
     var errors = [],
@@ -703,116 +678,16 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
-  
-//phone extension validator
-  forms.registerValidator('[fdform-v-phoneext]', function (field) {
-    var errors = [],
-        $field = $(field),
-        phoneext = $field.val();
 
-    if (phoneext!==null && phoneext!=="" && phoneext.length > 5 ) {
-      errors = addError(errors, field, 'Please provide valid phone extension!');
-    }
 
-    return errors;
-  });
-  
-//phone extension validator
-  forms.registerValidator('[fdform-v-deliveryinst]', function (field) {
-    var errors = [],
-        $field = $(field),
-        deliveryinst = $field.val();
-
-    if (deliveryinst!==null && deliveryinst!=="" && deliveryinst.length > 255 ) {
-      errors = addError(errors, field, 'Please provide valid delivery instructions!');
-    }
-
-    return errors;
-  });
-
-//billing reference validator
-  forms.registerValidator('[fdform-v-billingref]', function (field) {
-    var errors = [],
-        $field = $(field),
-        billingReference = $field.val();
-
-    if (billingReference!==null && billingReference!=="" && billingReference.length > 25 ) {
-      errors = addError(errors, field, 'Billing reference should not exceed 25 letters!');
-    }
-
-    return errors;
-  });
-
-  var checkPhoneInput = function (keyCode, e, mask, $el) {
-	  var val = $el.val(),
-	  	pos = $el.prop('selectionStart'),
-	  	oldch, ch, newpos;
-	  if (keyCode >= 48 && keyCode <= 57 && pos < mask.length) {
-        // numbers
-        ch = (keyCode - 48) + '';
-        oldch = val.substr(pos, 1);
-
-        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
-          oldch = val.substr(newpos, 1);
-          pos = newpos;
-        }
-
-        if (newpos < mask.length) {
-          var newValue = val.substr(0, pos) + ch + val.substr(pos+1);
-	      $el.val(newValue);
-          setTimeout(function () {
-			$el[0].setSelectionRange(pos+1, pos+1);
-	  	  });
-        }
-
-        e.preventDefault();
-      } else if (keyCode >= 96 && keyCode <= 105 && pos < mask.length) {
-        // keypad
-        ch = (keyCode - 96) + '';
-        oldch = val.substr(pos, 1);
-
-        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
-          oldch = val.substr(newpos, 1);
-          pos = newpos;
-        }
-
-        if (newpos < mask.length) {
-          var newValue = val.substr(0, pos) + ch + val.substr(pos+1);
-          $el.val(newValue);
-          $el[0].setSelectionRange(pos+1, pos+1);
-        }
-
-        e.preventDefault();
-      } else if (keyCode === 32 && pos < mask.length) {
-        // Space
-        $el[0].setSelectionRange(pos+1, pos+1);
-
-        e.preventDefault();
-      } else if (keyCode === 8 && pos > 0) {
-        // BS
-        $el.val(val.substr(0, pos-1) + mask.substr(pos-1, 1) + val.substr(pos));
-        $el[0].setSelectionRange(pos-1, pos-1);
-
-        e.preventDefault();
-      } else if (keyCode === 37 || keyCode === 39 || keyCode === 9) {
-        // cursors/tab, do nothing
-      } else if (keyCode === 229){
-        // Andriod specific event, unrecognizable key code
-        setTimeout(function () {
-        	$el[0].setSelectionRange(pos, pos);
-        });
-        e.preventDefault();
-      } else {
-        e.preventDefault();
-      }
-  }
   // default formatters
-  var enableTextInputCheck = false;
+
   // phone number formatter
   forms.registerFormatter('phone', function ($el, focused, e) {
     var val = $el.val(),
-    	pos = $el.prop('selectionStart'),
-        mask = $el.attr('fdform-mask') || $el.prop('placeholder');
+        pos = $el.prop('selectionStart'),
+        mask = $el.attr('fdform-mask') || $el.prop('placeholder'),
+        ch, oldch, newpos;
 
     if (!val || val.length < mask.length) {
       $el.val(mask);
@@ -832,24 +707,56 @@ var FreshDirect = FreshDirect || {};
     if (e.type === 'paste') {
       e.preventDefault();
     }
-    if (e.type === 'textInput' ) {
-    	if (enableTextInputCheck) {
-    		var textEntered = e.originalEvent && e.originalEvent.data;
-    			// allow number only
-	    		if (textEntered && textEntered < 10) {
-	    			for (var i = 0; i < textEntered.length; i++) {
-	    				var charCode = textEntered.charCodeAt(i);
-	    				checkPhoneInput(charCode, e, mask, $el);
-	    			}	
-    			} else {
-    				e.preventDefault();
-    			}
-		} else {
-			e.preventDefault();
-		}
-    } else if (e.type === 'keydown') {
-      checkPhoneInput(e.keyCode, e, mask, $el);
-      enableTextInputCheck = e.keyCode === 229;
+
+    if (e.type === 'keydown') {
+      if (e.keyCode >= 48 && e.keyCode <= 57 && pos < mask.length) {
+        // numbers
+        ch = (e.keyCode - 48) + '';
+        oldch = val.substr(pos, 1);
+
+        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
+          oldch = val.substr(newpos, 1);
+          pos = newpos;
+        }
+
+        if (newpos < mask.length) {
+          $el.val(val.substr(0, pos) + ch + val.substr(pos+1));
+          $el[0].setSelectionRange(pos+1, pos+1);
+        }
+
+        e.preventDefault();
+      } else if (e.keyCode >= 96 && e.keyCode <= 105 && pos < mask.length) {
+        // keypad
+        ch = (e.keyCode - 96) + '';
+        oldch = val.substr(pos, 1);
+
+        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
+          oldch = val.substr(newpos, 1);
+          pos = newpos;
+        }
+
+        if (newpos < mask.length) {
+          $el.val(val.substr(0, pos) + ch + val.substr(pos+1));
+          $el[0].setSelectionRange(pos+1, pos+1);
+        }
+
+        e.preventDefault();
+      } else if (e.keyCode === 32 && pos < mask.length) {
+        // Space
+        $el[0].setSelectionRange(pos+1, pos+1);
+
+        e.preventDefault();
+      } else if (e.keyCode === 8 && pos > 0) {
+        // BS
+        $el.val(val.substr(0, pos-1) + mask.substr(pos-1, 1) + val.substr(pos));
+        $el[0].setSelectionRange(pos-1, pos-1);
+
+        e.preventDefault();
+      } else if (e.keyCode === 37 || e.keyCode === 39 || e.keyCode === 9) {
+        // cursors/tab, do nothing
+      } else {
+        e.preventDefault();
+      }
     }
 
   });

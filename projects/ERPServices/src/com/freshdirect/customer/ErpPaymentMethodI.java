@@ -5,7 +5,6 @@ import java.util.Date;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -18,7 +17,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @author     $Author$
  * @stereotype fd-interface
  */
-public interface ErpPaymentMethodI extends AddressI, ModelI {
+public interface ErpPaymentMethodI extends AddressI {
 
     public EnumPaymentMethodType getPaymentMethodType();
 
@@ -176,9 +175,5 @@ public interface ErpPaymentMethodI extends AddressI, ModelI {
 	
 	public void setDeviceId(String deviceId);
 	public String getDeviceId();
-	public boolean isDebitCard();
-	public void setDebitCard(boolean isDebitCard);
-	public String getDisplayableAccountNumber();
-	public String getAccountNumLast4() ;
 }
 

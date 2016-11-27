@@ -34,8 +34,7 @@ class BillingInfoImpl implements BillingInfo{
 	public void setEwalletTxId(String ewalletTxId) {
 		this.ewalletTxId = ewalletTxId;
 	}
-	public BillingInfoImpl() {
-	}
+
 	public BillingInfoImpl(Merchant merchant,PaymentMethod pymtMethod) {
 		this.merchant=merchant;
 		this.pymtMethod=pymtMethod;

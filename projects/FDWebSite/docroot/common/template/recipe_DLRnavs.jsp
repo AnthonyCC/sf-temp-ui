@@ -1,13 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
 <%@ page import='java.util.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -23,35 +20,29 @@ final int W_RECIPE_DLR_NAVS_RIGHT = 191;
 %>
 
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-     <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<style>
-		.W_RECIPE_DLR_NAVS_TOTAL { width: <%= W_RECIPE_DLR_NAVS_TOTAL %>px; }
-		.W_RECIPE_DLR_NAVS_LEFT { width: <%= W_RECIPE_DLR_NAVS_LEFT %>px; }
-		.W_RECIPE_DLR_NAVS_CENTER { width: <%= W_RECIPE_DLR_NAVS_CENTER %>px; }
-		.W_RECIPE_DLR_NAVS_RIGHT { width: <%= W_RECIPE_DLR_NAVS_RIGHT %>px; }
-	</style>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
-	data-pagetype="<tmpl:get name='pageType'/>"
->
+<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	// go find the recipeDepartment...(should be a method on contentFactory
-	ContentType cType = ContentType.RecipeDepartment;
+	ContentType cType = ContentType.get("RecipeDepartment");
 	Set s = CmsManager.getInstance().getContentKeysByType(cType);
 	// there can only be one (hmmmm, the Highlander effect)
 	RecipeDepartment rcpDept = null;
 
 	if (!s.isEmpty()) {
  	   ContentKey cKey = (ContentKey) s.iterator().next();
-           rcpDept = (RecipeDepartment) PopulatorUtil.getContentNode(cKey.getId());
+           rcpDept = (RecipeDepartment) ContentFactory.getInstance().getContentNode(cKey.getId());
 	}
 	//
 	// annotation mode, add overlib stuff
@@ -61,54 +52,53 @@ final int W_RECIPE_DLR_NAVS_RIGHT = 191;
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 	<fd:javascript src="/assets/javascript/overlib_mini.js"/>
 <%	} %>
-<%@ include file="/common/template/includes/globalnav.jspf" %>
+<%@ include file="/common/template/includes/globalnav.jspf" %> 
+<CENTER CLASS="text10">
+<TABLE WIDTH="<%=W_RECIPE_DLR_NAVS_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DLR_NAVS_LEFT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DLR_NAVS_CENTER%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DLR_NAVS_RIGHT%>" height="1" border="0"></TD>
+</TR>
+<TR>
+	<td width="<%=W_RECIPE_DLR_NAVS_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+</TR>
+<TR>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_TOTAL%>" COLSPAN="3">
+	<%-- Start Department Nav for Recipe --%> 
+	   <%@ include file="/common/template/includes/i_recipe_dept_nav.jspf"%>
+	<%-- END Recipe Department Nav --%> 
 
-	<section class="container">
-		<CENTER CLASS="text10">
-		<TABLE class="W_RECIPE_DLR_NAVS_TOTAL" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-		<TR>
-			<TD class="W_RECIPE_DLR_NAVS_LEFT"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DLR_NAVS_LEFT" height="1" border="0"></TD>
-			<TD class="W_RECIPE_DLR_NAVS_CENTER"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DLR_NAVS_CENTER" height="1" border="0"></TD>
-			<TD class="W_RECIPE_DLR_NAVS_RIGHT"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DLR_NAVS_RIGHT" height="1" border="0"></TD>
-		</TR>
-		<TR>
-			<td class="W_RECIPE_DLR_NAVS_TOTAL" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
-		</TR>
-		<TR>
-			<TD class="W_RECIPE_DLR_NAVS_TOTAL" COLSPAN="3">
-			<%-- Start Department Nav for Recipe --%> 
-			   <%@ include file="/common/template/includes/i_recipe_dept_nav.jspf"%>
-			<%-- END Recipe Department Nav --%> 
-		
-			</TD>
-		</TR>
-		<TR>
-			<TD class="W_RECIPE_DLR_NAVS_TOTAL" BGCOLOR="#999966" COLSPAN="3"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
-		</TR>
-		<TR VALIGN="TOP">
-			<TD class="W_RECIPE_DLR_NAVS_LEFT" BGCOLOR="#E0E3D0">
-				<!-- Recipe Start Left Nav -->
-				<tmpl:get name='leftnav'/>
-		                <%@include file="/common/template/includes/i_recipe_leftnav.jspf"%>
-		
-				<!-- END RECIPE SIDE NAV -->
-				<img src="/media_stat/images/layout/clear.gif" alt="" height="1" class="W_RECIPE_DLR_NAVS_LEFT">
-			</TD>
-			<TD class="W_RECIPE_DLR_NAVS_CENTER" align="center">
-				<img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DLR_NAVS_CENTER" height="15"><br>
-				<!-- content lands here -->
-				<tmpl:get name='content'/>
-				<!-- content ends above here-->
-				<br><br>
-			</TD>
-			<TD class="W_RECIPE_DLR_NAVS_RIGHT" align="center">
-				<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1" border="0"><br>
-				<%@ include file="/common/template/includes/right_side_nav.jspf" %>
-			</TD>
-		</TR>
-		</TABLE>
-		</CENTER>
-	</section>
+	</TD>
+</TR>
+<TR>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_TOTAL%>" BGCOLOR="#999966" COLSPAN="3"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+</TR>
+<TR VALIGN="TOP">
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_LEFT%>" BGCOLOR="#E0E3D0">
+		<!-- Recipe Start Left Nav -->
+		<tmpl:get name='leftnav'/>
+		<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+                <%@include file="/common/template/includes/i_recipe_leftnav.jspf"%>
+		</oscache:cache>
+
+		<!-- END RECIPE SIDE NAV -->
+		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_RECIPE_DLR_NAVS_LEFT%>">
+	</TD>
+	<TD width="<%=W_RECIPE_DLR_NAVS_CENTER%>" align="center">
+		<img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DLR_NAVS_CENTER%>" height="15"><br>
+		<!-- content lands here -->
+		<tmpl:get name='content'/>
+		<!-- content ends above here-->
+		<br><br>
+	</TD>
+	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_RIGHT%>" align="center">
+		<img src="/media_stat/images/layout/clear.gif" height="10" width="1" border="0"><br>
+		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
+	</TD>
+</TR>
+</TABLE>
+</CENTER>
 <%@ include file="/common/template/includes/footer.jspf" %>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>

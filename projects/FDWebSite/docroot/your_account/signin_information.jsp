@@ -7,63 +7,57 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
-<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
-<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
-<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import="com.freshdirect.common.address.PhoneNumber"%>
 <%@ page import="java.util.HashMap" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-
-<%
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-	String pageTemplate = "/common/template/dnav_pwdstrng.jsp";
-	if (mobWeb) {
-		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
-	}
+<% //expanded page dimensions
+final int W_YA_SIGNIN_INFO = 970;
 %>
-
-<tmpl:insert template='<%= pageTemplate %>'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put> --%>
+<%@page import="com.freshdirect.common.address.PhoneNumber"%><fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<tmpl:insert template='/common/template/dnav_pwdstrng.jsp'>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info" pageId="signin_info"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="signin_info"></fd:SEOMetaTag>
 	</tmpl:put>
   <tmpl:put name='customhead' direct='true'>
     <jwr:style src="/your_account.css" media="all"/>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
-<fd:javascript src="/assets/javascript/webpurify.jQuery.js" />
+<script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/assets/javascript/webpurify.jQuery.js"></script>
 
 	<script type="text/javascript">
-		$jq(document).ready(function() {
-			$jq.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+		jQuery.noConflict();
+		jQuery(document).ready(function() {
+			jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+			
 		});
 		
-		function checkForProfanity() {
-			if ($jq("#displayName").val().length > 0) {
-				$jq.webpurify.check( jQuery("#displayName").val(), function(isProfane) {
-					if(!isProfane) {
-						$jq("#profaneText").html("");
-						document.updateDisplayName.submit();
-					} else {
-						$jq("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
-						return false;
+		function checkForProfanity(){
+		if(jQuery("#displayName").val().length>0)
+			{
+			jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
+				if(!isProfane)
+					document.updateDisplayName.submit();
+				else
+					{
+					jQuery("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
+					return false;
 					}
-				});
-			} else {
+			});
+			}
+		else
+			{
 				document.updateDisplayName.submit();
 			}
 		}	
 		</script>
 		
-		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
+		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 					<script language="javascript">
 						function curvyCornersHelper(elemId, settingsObj) {
 							if (document.getElementById(elemId)) {
@@ -156,6 +150,7 @@ String confirmationMsg = "";		// used in 'i_confirmation_messages.jspf'
 
 String newlyLinkedSocialNetworkProvider = "";
 
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());  
@@ -444,95 +439,123 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 							EnumUserInfoName.ALT_EMAIL.getCode(), EnumUserInfoName.DLV_WORK_PHONE.getCode(),
 							EnumUserInfoName.DLV_CELL_PHONE.getCode(),EnumUserInfoName.DISPLAY_NAME.getCode(), "mobile_number", "text_option"}; 
 %>
+<fd:ErrorHandler result='<%=result%>' field='<%=checkInfoForm%>'>
+	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>	
+</fd:ErrorHandler>
 
+<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
+	<%@ include file="/includes/i_error_messages.jspf" %>	
+</fd:ErrorHandler>
 
-<div class="youraccount">
-	<div class="youraccount_error">
-		<fd:ErrorHandler result='<%=result%>' field='<%=checkInfoForm%>'>
-			<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>	
-			<%@ include file="/includes/i_error_messages.jspf" %>	
-		</fd:ErrorHandler>
+<table class="youraccount" width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">
+<tr>
+	<td colspan="6">
+    <h1>Your Account Preferences</h1>
+		Change your user name, password, and other account preferences.<br>
+    <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="8"><br>
+	</td>
+</tr>
+<tr>
+	<td><img src="/media_stat/images/layout/clear.gif" width="40" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="100" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="80" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="135" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="220" height="8" border="0" alt=""></td>
+</tr>
 
-		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
-			<%@ include file="/includes/i_error_messages.jspf" %>	
-		</fd:ErrorHandler>
-	</div>
+<tr>
+	<td colspan="6">
+    <h2>Change Your E-mail/User Name <i>* Required Information</i></h2>
+	</td>
+</tr>
 
-	<div class="youraccount_header">
-		<h1><%= mobWeb ? "" : "Your " %>Account Preferences</h1>
-		Change your user name, password, and other account preferences.
-	</div>
-    
+<form name="update_user_name" method="post">
+<input type="hidden" name="actionName" value="changeUserID">
+	<tr>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* E-mail Address</label></td>
+		
+		
+		<% 
+			if((user.isVoucherHolder() && user.getMasqueradeContext()== null)){	
+		%> 
+		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
+		
+		<% } else { %>
+		
+		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
+		<%} %>
+		
+		<td colspan="2">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+		
+		
+		<% 
+			if (!(user.isVoucherHolder() && user.getMasqueradeContext()== null)) {
+		%>
+			<td align="right">
+        <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+        <button class="cssbutton small orange">Save Changes</button>
+      </td>	
+		<%	} %>
+		
+	</tr>
+	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+	<tr>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat E-mail Address</label></td>
+		
+		
+		<% 
+			if ((user.isVoucherHolder() && user.getMasqueradeContext() == null)){	
+		%> 
+		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" readonly="readonly"  name="repeat_email"></td>
+		
+		<% } else { %>
+		
+		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" name="repeat_email"></td>
+		<%} %>
+		
+		
+		
+		
+		
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="2"></td>
+		<td colspan="3" class="text9" style="padding-top:3px;">
+			Example: you@isp.com.<br> You will use this to access the site.
+			<br><br><br>
+		</td>
+		<td></td>
+	</tr>
+</form>
 
-<div class="youraccount_user_email" id="signin_user_email">
-	<h2>Change Your E-mail/User Name <i>* Required Information</i></h2>
-
-	<form fdform name="update_user_name" method="post"  fdform-displayerrorafter>
-		<div class="youraccount_email">
-			<input type="hidden" name="actionName" value="changeUserID">
-			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>">* E-mail Address</label></div>
-			<% 
-				if((user.isVoucherHolder() && user.getMasqueradeContext()== null)){	
-			%> 
-				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>" aria-describedby="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="text9" size="28" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
-				
-			<% } else { %>
-				
-				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>" aria-describedby="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="text9" size="28" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
-			
-			<%} %>
-				
-				<div class="youraccount_left_3"><span id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-				
-				<div class="youraccount_left_1"><label for="repeat_email">* Repeat E-mail Address</label></div>
-			<% 
-				if ((user.isVoucherHolder() && user.getMasqueradeContext() == null)){	
-			%> 
-				<div class="youraccount_left_2"><input id="repeat_email" aria-describedby="repeat_email_error" type="text" class="text9" size="28" readonly="readonly" name="repeat_email"></div>
-				
-			<% } else { %>
-				
-				<div class="youraccount_left_2"><input id="repeat_email" aria-describedby="repeat_email_error" type="text" class="text9" size="28" name="repeat_email"></div>
+<tr>
+	<td colspan="6">
 	
-			<%} %>
-						
-				<div class="youraccount_left_3"><span id="repeat_email_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-			
-				<div class="youraccount_left_2 youraccount_left_2_space">
-					Example: you@isp.com.
-					</br>You will use this to access the site.
-				</div>
-				
-			<% 
-				if (!(user.isVoucherHolder() && user.getMasqueradeContext()== null)) {
-			%>
-				<div class="youraccount_right">
-					<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-					<button class="cssbutton small orange">Save Changes</button>
-				</div>
-			<%	} %>
-			<div class="clear"></div>
-		</div>
-	</form>
-</div>
-
-<div class="youraccount_user_password" id="signin_user_password">
-
 		<%  boolean isPasswordAddedForSocialUser = UserUtil.isPasswordAddedForSocialUser(identity.getErpCustomerPK());
-			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){
+			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){	
 		%>
       <h2>Add a password <i>* Required Information</i></h2>
 		<%	} else { %>		
       <h2>Change Your Password <i>* Required Information</i></h2>
-		<%	} %>
+		<%	} %>	
+	</td>
+</tr>
 
-<form fdform name="update_change_password" method="post"  fdform-displayerrorafter>
+<form name="update_change_password" method="post">
 <input type="hidden" name="actionName" value="changePassword">
-	<div class="youraccount_password">
-		<!--  Changed for Password Strength Display -->
-		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.PASSWORD.getCode()%>">* Password</label></div>
+
+    <!--  Changed for Password Strength Display -->
+	<tr>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Password</label></td>
 		
 		<!--  Added for Password Strength Display -->
+		<td colspan="2">
 		<div class="container1">		
 		<div class="content-group password">
 		<div class="subgroup">
@@ -548,221 +571,282 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 					</ul>
 				</div>
 			</div><!-- // .password-hinter -->
-			<div class="youraccount_left_2">
-				<input id="<%=EnumUserInfoName.PASSWORD.getCode()%>" name="password" size="28" class="password" aria-describedby="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" data-indicator="pwindicator" type="password">
+			<div>
+				<input id="password1" name="password" size="28" style="width:150px; padding:1px;" class="password" data-indicator="pwindicator" type="password">
+				<span class="case-sensitive">Passwords are case sensitive</span>
 			</div>
-			<div class="youraccount_left_3"><span class="case-sensitive">Passwords are case sensitive</span></div>
 			<!--  
 			<div id="pwindicator">
 	               <div class="bar"></div>
 	               <div class="label"></div>
 	        </div>
 	        -->
-		</div><!-- // .subgroup -->
+		</div><!-- // .subgroup -->			
 		</div><!-- // .content-group -->
 		</div><!-- // .container -->
+	    </td>
+		<td></td>
 	    <!-- Added for Password Strength Display -->
 	    
 		<!--  
 		<td colspan="2">			
-			<input class="text9" size="28" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" value="<%=password%>" id="password1" onkeyup="passwordChanged();">
+			<input class="text9" size="28" type="password" style="width:150px; padding:1px;" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" value="<%=password%>" id="password1" onkeyup="passwordChanged();">
 			<span id="strength">Type Password</span>
 		</td>
 		<td></td>
 		-->
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
+		
+	</tr>
+	
+	<tr>
+		<td colspan="2"></td>
+		<td>			
+			<div id="pwindicator">
+	               <div class="bar"></div>
+	               <div class="label"></div>
+	        </div>   		    
+		</td>
+		<td colspan="2"></td>
+		<td></td>
+	</tr>	
 
-		<div id="pwindicator">
-			<div class="bar"></div>
-			<div class="label"></div>
-		</div>
-		
-		<div class="youraccount_left_3">
-			<span id="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" class="errortext">
+	<tr>
+		<td colspan="2" ></td>
+		<td>
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
-				<%=errorMsg%>
-			</fd:ErrorHandler>
-			</span>
-		</div>
-		
+				 <span class="text11rbold"><%=errorMsg%></span>
+   		    </fd:ErrorHandler>
+		</td>
+		<td colspan="2"></td>
+		<td></td>
+	</tr>
 	<!--  Changed for Password Strength Display -->
 
-		<div class="youraccount_left_1"><label for="repeat_password">* Repeat Password</label></div>
-		<div class="youraccount_left_2"><input id="repeat_password" aria-describedby="repeat_password_error" type="password" class="text9" size="28" name="confirmPassword"></div>
-		<div class="youraccount_left_3"><span id="repeat_password_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-		
-		<div class="youraccount_left_2 youraccount_left_2_space">
-			Must be at least six characters.
-			</br>Passwords are case-sensitive.
-		</div>
-		
-		<div class="youraccount_right">
-			<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-			<button class="cssbutton small orange">Save Changes</button>
-		</div>
-		<div class="clear"></div>
-	</div>
+	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+	<tr valign="top">
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat Password</label></td>
+		<td><input type="password" class="text9" size="28" style="width:150px; padding:1px;" name="confirmPassword"></td>
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="2"></td>
+		<td colspan="3" class="text9" style="padding-top:3px;">
+			Must be at least six characters.<br>
+			Passwords are case-sensitive.<br>
+			<br><br>
+		</td>
+		<td></td>
+	</tr>
 </form>
-</div>
 
-<div class="youraccount_user_name" id="signin_user_name">
-	<h2>Change Your Display Name</h2>
-	
-	<form fdform method="post" name="updateDisplayName"  fdform-displayerrorafter>
-		<input type="hidden" name="actionName" value="changeDisplayName">
-		<div class="youraccount_name">
-	
-			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>">Display Name</label></div>
-			<div class="youraccount_left_2"><input class="text9" size="28" maxlength="30" aria-describedby="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>_error"  type="text" id="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>" name="displayName" value="<%=displayName%>"></div>
-			<div class="youraccount_left_3"><span id="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-			<span id="profaneText" class="errortext" style="display:block;width:250px"></span>
-			
-			<div class="youraccount_right">
-				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-			    <button type="button" onclick="checkForProfanity();"class="cssbutton small orange">Save Changes</button>
-			</div>
-			<div class="clear"></div>
-		</div>		
-	</form>
-</div>
 
-<div class="youraccount_user_contact" id="signin_user_contact">
-	<form fdform method="post" name="updateContactInformation"  fdform-displayerrorafter>
-	<input type="hidden" name="actionName" value="changeContactInfo">
-	<div class="youraccount_contact">
-		<h2>Change Your Contact Information <i>* Required Information</i></h2>
-		
-		<div class="youraccount_left_1"><label for="title">Title</label></div>
+<tr>
+	<td colspan="6">
+    <h2>Change Your Display Name</h2>
+	</td>
+</tr>
+<form method="post" name="updateDisplayName">
+<input type="hidden" name="actionName" value="changeDisplayName">
+
+
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Display Name</label></td>
+	<td><input class="text9" size="28" maxlength="30" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+  <span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
+  <td align="right">
+    <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+    <button type="button" onclick="checkForProfanity();"class="cssbutton small orange">Save Changes</button>
+  </td>	
 	
-		<div class="youraccount_left_2">
-			<select class="text9 customsimpleselect" id="title" name="title" value="">
-		       <option <%="".equalsIgnoreCase(title)?"selected":""%> ></option>		
-		       <option <%="MR.".equalsIgnoreCase(title)?"selected":""%> >Mr.</option>
-		       <option <%="MRS.".equalsIgnoreCase(title)?"selected":""%>>Mrs.</option>
-		       <option <%="MS.".equalsIgnoreCase(title)?"selected":""%>>Ms</option>
-		       <option <%="DR.".equalsIgnoreCase(title)?"selected":""%> >Dr.</option>		
-			</select>
-		</div>
-	  
-		<div class="youraccount_left_1"><label for="dlvfirstname">* First Name</label></div>
-		<div class="youraccount_left_2"><input class="text9" size="28" maxlength="20" type="text" id="dlvfirstname" aria-describedby="dlvfirstname_error" name="first_name" value="<%=firstName%>" required="true"></div>
-		<div class="youraccount_left_3"><span class="text9">(full name or first initial)</span> <span id="dlvfirstname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-		<div class="youraccount_left_1"><label for="dlvlastname">* Last Name</label></div>
-		<div class="youraccount_left_2"><input class="text9" id="dlvlastname" aria-describedby="dlvlastname_error" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true"></div>
-		<div class="youraccount_left_3"><span id="dlvlastname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-	
-		<div class="youraccount_left_1"><%=!user.isCorporateUser() ? "* " : "" %><label for="dlvhomephone"> Home Phone #</label></div>
-		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="homephone" aria-describedby="dlvhomephone_error" id="dlvhomephone" title="Home Phone" value="<%=homePhone%>" required="true"><label for="uci_homePhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for home phone</p></span></label><input type="text" maxlength="6" width="45px" size="4" class="text9 ext56" id="uci_homePhone_ext" name="ext" value="<%=homePhoneExt%>"></div>
-		<div class="youraccount_left_3"><span id="dlvhomephone_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-	
-		<div class="youraccount_left_1"><%=user.isCorporateUser() ? "* " : "" %><label for="busphone">Work Phone #</label></div>
-		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="busphone" aria-describedby="busphone_error" id="busphone" title="Business Phone" value="<%=busPhone%>"><label for="uci_busPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for work phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="busphoneext" id="uci_busPhone_ext" value="<%=busPhoneExt%>"></div>
-		<div class="youraccount_left_3"><span id="busphone_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-	
-		<div class="youraccount_left_1"><label for="dlvcellphone">Cell/Alt. #</label></div>
-	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" aria-describedby="dlvcellphone_error" name="cellphone" id="dlvcellphone" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
-		<div class="youraccount_left_3"><span id="dlvcellphone_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-	
-		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>">Other Email</label></div>
-	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" aria-describedby="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_error" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>"></div>
-		<div class="youraccount_left_3"><span id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-	
-		<%  if (user.isDepotUser() || user.isCorporateUser()) { %>
-			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>">* Work Department</label></div>
-	    	<div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" aria-describedby="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_error" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>"></div>
-			<div class="youraccount_left_3"><span id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
-			<%  if(user.isDepotUser()){
-	            com.freshdirect.fdlogistics.model.FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
-	            if (depot.getRequireEmployeeId()) { %>
-					<div class="youraccount_left_1"><label for="employeeId">* Employee Id</label></div>
-	   				<div class="youraccount_left_2"><input type="text" id="employeeId" size="28" maxlength="45" class="text9" name="employeeId" value="<%=employeeId%>"></div>
-	
-		<%          }
-		        }
-		    }    %>
-		    
-		    <div class="youraccount_right">
-			    <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-		    	<button class="cssbutton small orange">Save Changes</button>
-		    </div>	    	
-	    	<div class="clear"></div>
-	    </div>
-	</form>
-</div>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""><br><br></td></tr>
+</form>
+
+<form method="post" name="updateContactInformation">
+<input type="hidden" name="actionName" value="changeContactInfo">
+<tr>
+	<td colspan="6">
+    <h2>Change Your Contact Information <i>* Required Information</i></h2>
+	</td>
+</tr>
+
+
+<tr>
+	<td colspan="2" align="right" class="text12" style="padding-right:5px;"><label>Title</label></td>
+	<td colspan="3">
+	<select class="text9" name="title"	value="">
+       <option <%="".equalsIgnoreCase(title)?"selected":""%> ></option>		
+       <option <%="MR.".equalsIgnoreCase(title)?"selected":""%> >Mr.</option>
+       <option <%="MRS.".equalsIgnoreCase(title)?"selected":""%>>Mrs.</option>
+       <option <%="MS.".equalsIgnoreCase(title)?"selected":""%>>Ms</option>
+       <option <%="DR.".equalsIgnoreCase(title)?"selected":""%> >Dr.</option>		
+	</select></td>
+  <td align="right">
+    <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+    <button class="cssbutton small orange">Save Changes</button>
+  </td>	
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* First Name</label></td>
+	<td><input class="text9" size="28" maxlength="20" type="text" name="first_name" value="<%=firstName%>" required="true" style="width:150px; padding:1px;"></td>
+	<td colspan="3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Last Name</label></td>
+	<td><input class="text9" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true" style="width:150px; padding:1px;"></td>
+	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=!user.isCorporateUser() ? "* " : "" %><label> Home Phone #</label></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="homephone" id="uci_homePhone" title="Home Phone" value="<%=homePhone%>" required="true" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="ext" value="<%=homePhoneExt%>" style="width: 45px;"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=user.isCorporateUser() ? "* " : "" %><label>Work Phone #</label></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="busphone" id="uci_busPhone" title="Business Phone" value="<%=busPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="busphoneext" value="<%=busPhoneExt%>" style="width: 45px;"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Cell/Alt. #</label></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" id="uci_cellPhone" title="Cell Phone" value="<%=cellPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="cellphoneext" value="<%=cellPhoneExt%>" style="width: 45px;"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Other Email</label></td>
+    <td><input type="text" size="28" maxlength="45" class="text9" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>" style="width:150px; padding:1px;"></td>
+	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<%  if (user.isDepotUser() || user.isCorporateUser()) { %>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Work Department</label></td>
+    <td><input type="text" size="28" maxlength="45" class="text9" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>" style="width:150px; padding:1px;"></td>
+	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr> 
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+    <%  if(user.isDepotUser()){
+            com.freshdirect.fdlogistics.model.FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
+            if (depot.getRequireEmployeeId()) { %>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Employee Id</label></td>
+    <td valign="top" colspan="4"><input type="text" size="28" maxlength="45" class="text9" name="employeeId" value="<%=employeeId%>" style="width:150px; padding:1px;"></td>
+</tr> 
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
+<%          }
+        }
+    }    %>
+</form>
 
 <% if (FDStoreProperties.isEmailOptdownEnabled()) { %>
-<div class="youraccount_user_email_pref" id="signin_user_email_pref">
-	<form fdform id="update_email_preference_level" name="update_email_preference_level" method="post"  fdform-displayerrorafter>
+	<form id="update_email_preference_level" name="update_email_preference_level" method="post">
 		<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
-		<div class="youraccount_email_pref">
-	        <h2>Email Preferences</h2>
-	        <fieldset><legend class="offscreen">Email Preferences:</legend>
-			<div class="youraccount_left_1"><input class="radio" type="radio" id="receive_emailLevel2" name="receive_emailLevel" value="2" <%="2".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></div>
-			<div class="youraccount_left_2">
-				<strong><label for="receive_emailLevel2">It's okay for FreshDirect to send me food offers, news and updates from time to time.</label></strong>
-				</br>You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else. <a href="/help/privacy_policy.jsp">Click here to view our Privacy Policy.</a>
-			</div>
-			<div class="youraccount_left_1"><input class="radio" type="radio" id="receive_emailLevel1" name="receive_emailLevel" value="1" <%="1".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></div>
-			<div class="youraccount_left_2"><strong><label for="receive_emailLevel1">It's okay for FreshDirect to email me, but no more than one newsletter or offer each week.</label></strong></div>
-			<div class="youraccount_left_1"><input class="radio" type="radio" id="receive_emailLevel0" name="receive_emailLevel" value="0" <%="0".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></div>
-			<div class="youraccount_left_2"><strong><label for="receive_emailLevel0">Please don't send me emails unless they are directly related to my orders or important service information.</label></strong></div>
-			</fieldset>
-			<div class="youraccount_right">
-				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-	        	<button class="cssbutton small orange">Save Changes</button>
-	        </div>
-	        <div class="clear"></div>
-		</div>
+		<tr>
+			<td colspan="6"><br /><br />
+        <h2>Email Preferences</h2>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right" style="padding-top:5px; padding-right:5px;">
+				<input class="radio" type="radio" id="receive_emailLevel2" name="receive_emailLevel" value="2" <%="2".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+			<td colspan="4" style="padding-top:5px;" class="text12">
+				<strong>It's okay for FreshDirect to send me food offers, news and updates from time to time.</strong><br />
+				You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else. <a href="/help/privacy_policy.jsp">Click here to view our Privacy Policy.</a><br /><br />
+			</td>
+      <td align="right">
+        <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+        <button class="cssbutton small orange">Save Changes</button>
+      </td>	
+		</tr>
+		<tr valign="top">
+			<td align="right" style="padding-top:5px; padding-right:5px;">
+				<input class="radio" type="radio" id="receive_emailLevel1" name="receive_emailLevel" value="1" <%="1".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+			<td colspan="4" style="padding-top:5px;" class="text12">
+				<strong>It's okay for FreshDirect to email me, but no more than one newsletter or offer each week.</strong><br /><br />
+			</td>
+			<td><!--  --></td>
+		</tr>
+		<tr valign="top">
+			<td align="right" style="padding-top:5px; padding-right:5px;">
+				<input class="radio" type="radio" id="receive_emailLevel0" name="receive_emailLevel" value="0" <%="0".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+			<td colspan="4" style="padding-top:5px;" class="text12">
+				<strong>Please don't send me emails unless they are directly related to my orders or important service information.</strong><br /><br />
+			</td>
+			<td><!--  --></td>
+		</tr>
 	</form>
-</div>
 
-<div class="youraccount_user_phone" id="signin_user_phone">
-	<form fdform id="update_mail_phone_preference" name="update_mail_phone_preference" method="post"  fdform-displayerrorafter>
-		<input type="hidden" name="actionName" value="changeMailPhonePreference">
-		<div class="youraccount_phone">
-			<h2>Mail And Phone Preferences</h2>
-			<fieldset><legend class="offscreen">mail and phone preferences:</legend>
-			<div class="youraccount_left_1 ext56 mailnphne1"><input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>></div>
-			<div class="youraccount_left_2 emailphne mailnphne2"><strong><label for="noContactMail">Please do not send me offers, and marketing messages in the mail.</label></strong></div>
-			<div class="youraccount_left_1 ext56 mailnphne1"><input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>></div>
-			<div class="youraccount_left_2 emailphne mailnphne2" style="text-align:left;">
-				<strong><label for="noContactPhone">Please do not contact me by phone about offers and other updates.</label></strong>
-				</br>We may still attempt to call you about issues or problems with a specific order you have scheduled for delivery.
-			</div>
-			</fieldset>
-			<div class="youraccount_right">
-				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-				<button class="cssbutton small orange">Save Changes</button>
-			</div>
-			<div class="clear"></div>
-		</div>
+
+
+	<form id="update_mail_phone_preference" name="update_mail_phone_preference" method="post">
+	<input type="hidden" name="actionName" value="changeMailPhonePreference">
+	<tr>
+		<td colspan="6"><br /><br />
+      <h2>Mail And Phone Preferences</h2>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+			<input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>>
+		</td>
+		<td colspan="4" style="padding-top:5px;" class="text12">
+			<strong>Please do not send me offers, and marketing messages in the mail.</strong><br /><br />
+		</td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right">
+			<input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>>
+		</td>
+		<td colspan="4" class="text12">
+			<strong>Please do not contact me by phone about offers and other updates.</strong><br />
+			We may still attempt to call you about issues or problems with a specific order you have scheduled for delivery.<br /><br />
+		</td>
+		<td><!--  --></td>
+	</tr>
 	</form>
-</div>
 <% }else{ %>
-<div class="youraccount_user_email_pref" id="signin_user_email_pref">
-	<form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
-		<input type="hidden" name="actionName" value="changeEmailPreference">
-		<div class="youraccount_email_pref">
-			<h2>Email Preferences</h2>
-			<fieldset><legend class="offscreen">email preferences:</legend>
-			<div class="youraccount_left_1"><input class="radio" id="receive_mail" type="checkbox" name="receive_mail" value="yes" <%="yes".equalsIgnoreCase(sendNewsLetter) ? "checked":""%>></div>
-			<div class="youraccount_left_2">
-				<label for="receive_mail"><b>Please send me food offers, news and updates from time to time.</b></label>
-				</br>You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else.
-			</div>
-			
-			<div class="youraccount_left_1"><input class="radio" type="checkbox" id="isSendPlainTextEmail" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></div>
-			<div class="youraccount_left_2">
-				<label for="isSendPlainTextEmail"><b>Send me plain text e-mail.</b></label>
-				</br>Select this option if your e-mail program is unable to receive HTML formatted e-mail.
-			</div></fieldset>
-			<div class="youraccount_right">
-				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-				<button class="cssbutton small orange">Save Changes</button>
-			</div>
-			<div class="clear"></div>
-		</div>
+
+
+	<form name="update_email_preference" method="post">
+	<input type="hidden" name="actionName" value="changeEmailPreference">
+	<tr>
+		<td colspan="6"><br><br>
+      <h2>Email Preferences</h2>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="receive_mail" value="yes" <%="yes".equalsIgnoreCase(sendNewsLetter) ? "checked":""%>></td>
+		<td colspan="4" style="padding-top:5px;" class="text12"><b>Please send me food offers, news and updates from time to time.</b><br>
+		You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else.<br><br>
+		</td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></td>
+		<td colspan="4" class="text12"><b>Send me plain text e-mail.</b><br>
+		Select this option if your e-mail program is unable to receive HTML formatted e-mail.<br><br></td>
+		<td></td>
+	</tr>
 	</form>
-</div>
 <% } %>
 
 
@@ -771,125 +855,289 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <% } %>
 
 
+
+
 <!-- mobile preferences-->
-<div class="youraccount_user_mobile_pref" id="signin_user_mobile_pref">
-<form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
+<form name="update_email_preference" method="post">
 	<input type="hidden" name="actionName" value="mobilepreferences">
 	<input type="hidden" name="mobile_existing" value="<%=mobile_number%>">
 	<input type="hidden" name="order_notice_existing" value="<%=order_notices%>">
 	<input type="hidden" name="order_exception_existing" value="<%=order_exceptions%>">
 	<input type="hidden" name="offer_existing" value="<%=offers%>">
-	<input type="hidden" name="partner_existing" value="<%=partner_messages%>">
-	<div class="youraccount_mobile_pref">
-	<h2>Mobile Preferences</h2>
-	<p>
-		<b>Want to get SMS text notifications about your order?</b> Sign up now, and we'll text you important (and delicious!) information about your delivery. You may opt out at any time by sending STOP to 37374 or simply unchecking all the alert types below.
-	</p>
-	<p>
-		Messages will be sent to the following mobile number:
-		</br><fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_short.html" />
-	</p>
-	
-	<div class="youraccount_left_1 youraccount_full_width"><label for="mobile_number">* Mobile Number</label></div>
-	<div class="youraccount_left_2 youraccount_full_width"><input type="text" id="mobile_number" aria-describedby="mobile_number_error" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>"></div>
-	<div class="youraccount_left_3"><span id="mobile_number_error">
-		<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		</span>
-	</div>
-
+	<input type="hidden" name="partner_existing" value="<%=partner_messages%>">	
+	<tr>
+		<td colspan="6"><br><br>
+      <h2>Mobile Preferences</h2>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="6" align="left" style="padding-right:5px;" class="text12"><b>Want to get SMS text notifications about your order? </b> Sign up now, and we'll text you important (and delicious!) information about your delivery. You may opt out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
+	</tr>
+	<tr><td colspan="6">&nbsp;</td></tr>
+	<tr>
+		<td colspan="6" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="left" colspan="6">
+			<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_short.html" />
+		</td>
+	</tr>
+	<tr><td colspan="6">&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Mobile Number</label></td>
+    	<td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
+		<td colspan="2" width="500"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
+	</tr> 
+	<tr><td colspan="6">&nbsp;</td></tr>
+	<tr><td colspan="6"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+	<%-- <tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br />
+		</td>
+		<td align="right"></td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
+		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br /><br /><br /></td>
+		<td></td>
+	</tr>--%>
 <%if("FD".equals(eStoreId))
-	{%>	<fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="order_notices">FreshDirect Order Notices</label></div>
-		<div class="accordion"><input type="checkbox" id="order_notices_accordion" />
-			<label for="order_notices_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
-			<div class="text12" id="article" align="left">
-				<p><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way!</p>
-			</div>
-		</div>
+	{%>	
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">FreshDirect Order Notices</td>
+	</tr> 
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top">
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_notices" />
+							<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12" id="article" align="left">
+								<strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.  
+								<br /><br /><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
+							<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="order_exceptions">FreshDirect Order Alerts</label></div>
-		<div class="accordion"><input type="checkbox" id="order_exceptions_accordion"> 
-			<label for="order_exceptions_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
-			<div class="text12" id="article1" align="left">
-				<p><strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances.</p>
-				<p><strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.</p>
-				<p><strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman./<p>
-			</div>
-		</div>
-		
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="offers">FreshDirect Perks</label></div>
-		<div class="accordion"><input type="checkbox" id="offers_accordion"> 
-			<label for="offers_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
-			<div class="text12" id="article2" align="left">
-				Get the inside scoop on exciting new features, exclusive promotions, and more!
-			</div>
-		</div></fieldset>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">FreshDirect Order Alerts</td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_exceptions"> 
+							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12"   id="article1" align="left">
+								<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
+								<br /><br />
+								<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
+								<br /><br />
+								<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
+								<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">FreshDirect Perks</td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="offers"> 
+							<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><pre class="text12bold">Description</pre></label>
+							<div class="text12" id="article2" align="left">
+								Get the inside scoop on exciting new features, exclusive promotions, and more!
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<%} 
 else{  %>
 	<!--start: Added by Sathishkumar Merugu for SMS FDX alert. -->
-    <fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="order_notices">Delivery Updates</label></div>
-	<div class="accordion"><input type="checkbox" id="order_notices_accordion" />
-		<label for="order_notices_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
-		<div class="text12" id="article" align="left">
-			<p><strong>Out for Delivery:</strong></p>
-			<p><strong>You are Next: </strong> deferred until delivery personnel are equipped with handhelds.</p>
-			<p><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way!</p>
-		</div>
-	</div>
+
 	
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="order_exceptions">Order Status</label></div>
-	<div class="accordion"><input type="checkbox" id="order_exceptions_accordion"> 
-		<label for="order_exceptions_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
-		<div class="text12"   id="article1" align="left">
-			<p><strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances.</p>
-			<p><strong>Delivery Attempt:</strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.</p>
-			<p><strong>Unattended/Doorman:</strong> Know when your order has been left for you at your preferred location or with your doorman.</p>
-		</div>
-	</div>
-	
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="offers">Offers</label></div>
-	<div class="accordion"><input type="checkbox" id="offers_accordion">
-		<label for="offers_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
-		<div class="text12" id="article2" align="left">
-			Get the inside scoop on exciting new features, exclusive promotions, and more!
-		</div>
-	</div>
-	</fieldset>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">Delivery Updates </td>
+	</tr> 
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top">
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_notices" />
+							<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12" id="article" align="left">
+								<strong>Out for Delivery:</strong> 
+								<br /><br />
+								<strong>You are Nex: </strong> deferred until delivery personnel are equipped with handhelds.  
+								<br /><br /><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
+							<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">Order Status </td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_exceptions"> 
+							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12"   id="article1" align="left">
+								<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
+								<br /><br />
+								<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
+								<br /><br />
+								<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
+								<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
+		<td colspan="5" class="text12bold"> Offers</td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="offers"> 
+							<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><pre class="text12bold">Description</pre></label>
+							<div class="text12" id="article2" align="left">
+								Get the inside scoop on exciting new features, exclusive promotions, and more!
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<% }%>
 	
 	<!--End: Added by Sathishkumar Merugu for SMS FDX alert. -->
+	
+	 <%-- <tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="partner_messages" value="Y" <%=partner_messages ? "checked":""%>></td>
+		<td colspan="4" class="text12bold">FreshDirect Partner Messages</td>
+		<td></td>
+	</tr>
+	<tr valign="top">
+		<td  align="right" colspan="3" style="padding-left: 90px;">
+		<table  border="0" cellpadding="0" cellspacing="0" >
+			<tr valign="top" ><td  align="left" style="width: 100%">
+			<div class="accordion"><input type="checkbox" id="partner_messages"> 
+				<label for="partner_messages" class="text12bold">Description</label>
+				<div class="text12"   id="article3" align="left">
+					Get relevant exclusive promotions, news, discounts and information from FreshDirect trusted partners
+				<br /><br /><br />
+				</div>
+			</div>
+			</td></tr>
+			</table>
+		</td>
+	</tr>  --%>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="left" colspan="6">
+			<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_medium.html" />
+		</td>
+	</tr>	
+	</form>
+	
+	<form name="go_green" method="post">
+	<input type="hidden" name="actionName" value="otherpreferences">	
+	<tr>
+		<td colspan="6"><br><br>
+      <h2>Other</h2>
+		</td>
+	</tr>
+	<tr>	
+    <td align="right" valign="top" colspan="6">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
+	</tr>
+	<tr>
+		<td colspan="6">
+			<span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"><br>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+		<input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">I want to turn off paper statement delivery and receive my statements online.<br><br />
+		</td>
+		<td></td>
+	</tr>
+	</form>
 
-	<div class="youraccount_right">
-		<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-		<button class="cssbutton small orange">Save Changes</button>
-	</div>
-	<div class="clear"></div>
-	<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_medium.html" />
-	</div>
-</form>
-</div>
-
-<div class="youraccount_continue">
-	<a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
-    CONTINUE SHOPPING
-    <BR>from <FONT CLASS="text11bold">Home Page</A></FONT>
-</div>
-
-</div>
+</table>
 
 <script type="text/javascript">
-	FreshDirect.PhoneValidator.register(document.getElementById("uci_homePhone"));
-	FreshDirect.PhoneValidator.register(document.getElementById("uci_busPhone"));
-	FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
+FreshDirect.PhoneValidator.register(document.getElementById("uci_homePhone"));
+FreshDirect.PhoneValidator.register(document.getElementById("uci_busPhone"));
+FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 </script>
+
+<br>
+<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_SIGNIN_INFO %>">
+	<tr valign="top" BGCOLOR="#FF9933"><td width="<%= W_YA_SIGNIN_INFO %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" HSPACE="0" width="1" height="1" border="0"></td></tr>
+</table>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
+<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_SIGNIN_INFO %>">
+<tr valign="top">
+	<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" align="LEFT"></a></td>
+	<td width="<%= W_YA_SIGNIN_INFO - 35 %>">
+		<a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+		<br>from <FONT class="text11bold"><a HREF="/index.jsp">Home Page</a></FONT><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" alt="">
+	</td>
+</tr>
+</table>
 
 </fd:RegistrationController>
 </tmpl:put>

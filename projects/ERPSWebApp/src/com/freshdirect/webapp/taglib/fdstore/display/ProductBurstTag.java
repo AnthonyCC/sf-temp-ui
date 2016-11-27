@@ -7,11 +7,11 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -67,6 +67,8 @@ public class ProductBurstTag extends BodyTagSupportEx {
 		if (highestDeal < FDStoreProperties.getBurstsLowerLimit() || highestDeal > FDStoreProperties.getBurstUpperLimit())
 			highestDeal = 0;
 
+		BrowserInfo browser = new BrowserInfo(request);
+		boolean supportsPng = !browser.isInternetExplorer();
 		String lgsm = large ? "lg" : "sm";
 		int size = large ? 55 : 35;
 
@@ -84,12 +86,7 @@ public class ProductBurstTag extends BodyTagSupportEx {
 			buf.append('_');
 			buf.append(highestDeal);
 			render = true;
-        } /*else if (product.isGoingOutOfStock()) {
-            buf.append("/media_stat/images/bursts/brst_");
-            buf.append(lgsm);
-            buf.append("_goos");
-            render = true;
-		}*/ else if (product.isBackInStock()) {
+		} else if (product.isBackInStock()) {
 			buf.append("/media_stat/images/bursts/brst_");
 			buf.append(lgsm);
 			buf.append("_bis");
@@ -99,11 +96,11 @@ public class ProductBurstTag extends BodyTagSupportEx {
 			buf.append(lgsm);
 			buf.append("_new");
 			render = true;
-        }
+		}
 
 		if (render) {
 			buf.append('.');
-			buf.append("png");
+			buf.append(supportsPng ? "png" : "gif");
 			buf.append("\" width=\"");
 			buf.append(size);
 			buf.append("\" height=\"");

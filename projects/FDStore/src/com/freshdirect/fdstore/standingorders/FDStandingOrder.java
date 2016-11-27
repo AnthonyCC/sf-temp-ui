@@ -59,7 +59,6 @@ public class FDStandingOrder extends ModelSupport {
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 	String zone;
-	String zoneNew;
 	FDStandingOrderAltDeliveryDate altDeliveryInfo;
 
 	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/qs_so_details.jsp";
@@ -80,12 +79,6 @@ public class FDStandingOrder extends ModelSupport {
 	
 	double tipAmount;
 	
-	private boolean reminderOverlayForNewSo;
-	
-	Date deleteDate; 		
-
-	String oldAddressId;
-	
 	public FDStandingOrder() {
 		super();
 	}
@@ -105,11 +98,6 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setTipAmount(double tipAmount) {
 		this.tipAmount = tipAmount;
-	}
-
-	//Introduced For Storefront 2.0 Implementation
-	public void setCustomerIdentity(FDIdentity customerIdentity) {
-		this.customerIdentity = customerIdentity;
 	}
 
 	public String getCustomerId() {
@@ -326,11 +314,11 @@ public class FDStandingOrder extends ModelSupport {
 		}
 	}
 
-	public static final String DATE_FORMAT = "EEEE, MMMM d,";
+	public static final String DATE_FORMAT = "EEEE, MMMM d.";
 	public static final String DATE_FORMAT_SHORT = "MM/dd/yy";
 	public static final String DATE_FORMAT_LONG =  "EEEE, MMMM d., yyyy";
 
-	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d,");
+	private final DateFormat dateFormatter =  new SimpleDateFormat("EEEE, MMMM d.");
 	private final DateFormat dateFormatterShort =  new SimpleDateFormat("MM/dd/yy");
 	private final DateFormat dayFormat =  new SimpleDateFormat("EEEE"); 
 	private final DateFormat monthDateFormat =  new SimpleDateFormat("MMMM d"); 
@@ -368,7 +356,6 @@ public class FDStandingOrder extends ModelSupport {
 		
 		ADDRESS( "We no longer deliver to the address you set up for this standing order.", "Use the link below to modify this standing order and choose a different address.",true ), 
 		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options.",true ), 
-		PAYMENT_DEL("The payment method is no longer available in system.","Please select another payment method for this template.", false),
 		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age.",true ), 
 		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true ), 		
 		TIMESLOT_MINORDER( "The order subtotal was below our $x minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true),
@@ -376,10 +363,8 @@ public class FDStandingOrder extends ModelSupport {
 		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance.",true ),
 		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address.",true ), 
 		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days.", false ),
-		RELEASE_TIMESLOT( "Your delivery timeslot has expired.", "Please click the link below to select a new delivery timeslot", true ),
-		UNACTIVATED_SO("The standing order template is not activated.","Your selected order was deactivated.",true),
-		PERSISTING_ERROR("Skipping template due to persiting error.","Email sent to customer reg persisting error.", true);
-		
+		RELEASE_TIMESLOT( "Your delivery timeslot has expired.", "Please click the link below to select a new delivery timeslot", true );
+
 		private String errorHeader;
 		private String errorDetail;
 		private boolean sendEmail;
@@ -430,8 +415,8 @@ public class FDStandingOrder extends ModelSupport {
 	
 	@ExcludeFromXmlSerializer
 	public FDUserI getUser() throws FDResourceException, FDAuthenticationException {
-		return FDCustomerManager.recognize( getCustomerIdentity() );
-	}
+		return FDCustomerManager.recognize( getCustomerIdentity() );	
+	}	
 	
 	@ExcludeFromXmlSerializer
 	public FDCustomerInfo getUserInfo() throws FDResourceException {
@@ -502,11 +487,6 @@ public class FDStandingOrder extends ModelSupport {
     }
 	
 	@ExcludeFromXmlSerializer
-    public List<FDOrderInfoI> getAllUpcomingOrders(FDUserI user) throws FDResourceException, FDAuthenticationException {
-            return FDStandingOrdersManager.getInstance().getAllUpcomingOrders( user, this );
-    }
-	
-	@ExcludeFromXmlSerializer
 	public String getLandingPage() {
 		return new StringBuilder().append(STANDING_ORDER_DETAIL_PAGE).append("?ccListId=" + this.getCustomerListId()).toString();
 	}
@@ -533,14 +513,6 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setZone(String zone) {
 		this.zone = zone;
-	}
-
-	public String getZoneNew() {
-		return zoneNew;
-	}
-
-	public void setZoneNew(String zoneNew) {
-		this.zoneNew = zoneNew;
 	}
 
 	public FDOrderInfoI getUpcomingDelivery() {
@@ -670,28 +642,5 @@ public class FDStandingOrder extends ModelSupport {
 	
 	public String getLastErrorCode(){
 		return this.lastError;
-	}
-
-	public boolean isReminderOverlayForNewSo() {
-		return reminderOverlayForNewSo;
-	}
-	public void setReminderOverlayForNewSo(boolean reminderOverlayForNewSo) {
-		this.reminderOverlayForNewSo = reminderOverlayForNewSo;
-	}
-
-	public Date getDeleteDate() {
-		return deleteDate;
-	}
-
-	public void setDeleteDate(Date deleteDate) {
-		this.deleteDate = deleteDate;
-	}
-
-	public String getOldAddressId() {
-		return oldAddressId;
-	}
-
-	public void setOldAddressId(String oldAddressId) {
-		this.oldAddressId = oldAddressId;
 	}
 }

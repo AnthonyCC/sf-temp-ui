@@ -24,8 +24,7 @@ public class GoGreenService {
 		FDCustomerManager.storeGoGreenPreferences(user.getIdentity().getErpCustomerPK(), goGreen);
 	}
 	
-	public String loadGoGreenOption(FDUserI user) throws FDResourceException {
+	public boolean loadGoGreenOption(FDUserI user) throws FDResourceException {
 		return FDCustomerManager.loadGoGreenPreference(user.getIdentity().getErpCustomerPK());
 	}
-	
 }

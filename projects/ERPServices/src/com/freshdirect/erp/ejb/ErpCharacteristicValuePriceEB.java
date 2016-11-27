@@ -16,7 +16,6 @@ import com.freshdirect.framework.core.EntityBeanRemoteI;
  *
  * @version    $Revision$
  * @author     $Author$
- * @deprecated
  */
 public interface ErpCharacteristicValuePriceEB extends EntityBeanRemoteI {
 

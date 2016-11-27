@@ -13,7 +13,7 @@ var FreshDirect = FreshDirect || {};
   function markProductChanged($su) {
     var $product = $su.$product || $su.parents('[data-component=product]').first();
 
-    if ($product && $product.length) {
+    if ($product && $product.size()) {
       $su.$product = $product;
       $product.addClass('changed');
     }

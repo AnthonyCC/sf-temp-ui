@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.ZoneInfo;
 
 public class ZonePriceListing implements Serializable {
-	
-	public static final String DEFAULT_SALES_ORG = FDStoreProperties.getDefaultFdSalesOrg();
-	public static final String DEFAULT_FDX_SALES_ORG = FDStoreProperties.getDefaultFdxSalesOrg();
-	public static final String DEFAULT_DIST_CHANNEL = FDStoreProperties.getDefaultFdDistributionChannel();
-	public static final String MASTER_DEFAULT_ZONE = ErpServicesProperties.getMasterDefaultZoneId();
+	public static final String DEFAULT_SALES_ORG = "0001";
+	public static final String DEFAULT_FDX_SALES_ORG = "1300";
+	public static final String DEFAULT_DIST_CHANNEL = "01";
+	public static final String MASTER_DEFAULT_ZONE = "0000100000";
 	public static final String RESIDENTIAL_DEFAULT_ZONE = "0000100001";
 	public static final String CORPORATE_DEFAULT_ZONE = "0000100002";
 	

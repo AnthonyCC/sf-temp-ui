@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,18 +47,26 @@ import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmQueueInfo;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
-import com.freshdirect.customer.CustomerCreditModel;
+import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCannedText;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
+import com.freshdirect.customer.ejb.ErpCustomerEB;
+import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.deliverypass.DeliveryPassModel;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -65,11 +74,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-/**
- *@deprecated This class methods are moved to backoffice project.
- * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
- */
-@Deprecated
+
 public class CrmManagerSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 6027777576711960489L;
 
@@ -82,10 +87,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         return "com.freshdirect.crm.ejb.CrmManagerHome";
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException {
         try{
             CrmAgentHome home = this.getCrmAgentHome();
@@ -108,10 +109,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }*/
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws CrmAuthorizationException, FDResourceException {
         try{
             CrmAgentHome home = this.getCrmAgentHome();
@@ -129,10 +126,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException, FinderException{
         try{
             CrmAgentEB agentEB = this.getCrmAgentHome().findByPrimaryKey(new PrimaryKey(agentPk));
@@ -142,10 +135,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public CrmAgentList getAllAgents() throws FDResourceException {
         try{
             Collection<CrmAgentEB> agentEB = this.getCrmAgentHome().findAll();
@@ -161,10 +150,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
         Connection conn = null;
         try{
@@ -182,10 +167,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public List<CrmQueueInfo> getQueueOverview() throws FDResourceException {
         Connection conn = null;
         try {
@@ -203,10 +184,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
         Connection conn = null;
         try {
@@ -224,10 +201,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException {
         try{
             CrmCaseEB caseEB = this.getCrmCaseHome().findByPrimaryKey(new PrimaryKey(casePk));
@@ -239,10 +212,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public CrmAgentModel loginAgent(String userId, String password) throws FDResourceException, CrmAuthenticationException {
         try{
             CrmAgentEB agentEB = this.getCrmAgentHome().findByUserIdAndPassword(userId, password);
@@ -259,10 +228,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
         try{
         	 CrmAgentHome home = this.getCrmAgentHome();
@@ -282,10 +247,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
         try{
         	CrmCaseModel caseModel = this.getSystemCase(caseInfo);
@@ -297,10 +258,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException {
         try {
             CrmCaseModel caseModel = this.getSystemCase(caseInfo);
@@ -312,10 +269,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	private CrmAgentModel getSystemUser() throws FDResourceException {
 		try {
 			if (this.systemUser == null) {
@@ -328,10 +281,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	  /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	private CrmCaseModel getSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
 		CrmCaseModel cm = new CrmCaseModel();
 		
@@ -359,10 +308,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return cm;
 	}
     
-	  /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction caseAction, PrimaryKey agentPk) throws FDResourceException, CrmAuthorizationException {
         try {
             CrmCaseEB caseEB = getCrmCaseHome().findByPrimaryKey(caseInfo.getPK());
@@ -442,10 +387,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     private CrmCaseOperation actionAllowed(String agentRole, String caseSubject, String caseState, String actionType) throws CrmAuthorizationException, FDResourceException {
     	Connection conn = null;
         try {
@@ -472,10 +413,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     }
     
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -499,10 +436,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public void unlockCase(PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -521,10 +454,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -542,11 +471,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
     }
-    
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
+
     public List<CrmCaseOperation> getOperations() throws FDResourceException {
         Connection conn = null;
         try {
@@ -564,10 +489,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException {
 		Connection conn = null;
 		try{
@@ -588,10 +509,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException{
 		Connection conn = null;
 		try{
@@ -613,10 +530,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException{
 		Connection conn = null;
 		try{
@@ -641,10 +554,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	public CrmCustomerHeaderInfo getCustomerHeaderInfo(String customerId) throws FDResourceException {
 		Connection conn = null;
 		try{
@@ -662,11 +571,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
+    
     private CrmAgentHome getCrmAgentHome() {
         try {
             return (CrmAgentHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmAgent");
@@ -675,10 +580,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
     private CrmCaseHome getCrmCaseHome() {
         try {
             return (CrmCaseHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmCase");
@@ -687,10 +588,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
 			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
@@ -698,10 +595,23 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
+	
+    private DlvPassManagerHome getDlvPassManagerHome() {
+        try {
+            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+	private ErpCustomerHome getErpCustomerHome() {
+		try {
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+    
     public PrimaryKey  createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -835,7 +745,200 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
 
 	
+	public void incrDeliveryCount(DeliveryPassModel model, 
+			CrmAgentModel agentmodel, 
+			int delta, 
+			String note, 
+			String reasonCode, 
+			String saleId) throws FDResourceException, CrmAuthorizationException {
+		try {
+			/*
+			 *  CSR would only add 1 delivery to BSGS DP/or one week to unlimited DP. Anything 
+			 *  higher supervisor would have to do.
+			 */
+			//Get the No.Of credits given for this order.
+			ErpActivityRecord template = new ErpActivityRecord();
+			template.setCustomerId(model.getCustomerId());
+			template.setDeliveryPassId(model.getPK().getId());
+			template.setChangeOrderId(saleId);
+			//BSGS Pass.
+			template.setActivityType(EnumAccountActivityType.CREDIT_DLV_PASS);
+			Collection<ErpActivityRecord> credits = ActivityLog.getInstance().findActivityByTemplate(template);
+			if((credits.size()+delta) >3){
+				//He has already got 3 or more weeks extensions on this order. Further extensions
+				//need to handled by the supervsior.
+	            CrmAgentHome home = this.getCrmAgentHome();
+	            CrmAgentEB eb = home.findByPrimaryKey(agentmodel.getPK());
+	            CrmAgentModel user = (CrmAgentModel)eb.getModel();
+	            if(!user.isSupervisor()){
+	                throw new CrmAuthorizationException("You are not authorized to perform this action. Please contact your Supervisor.");
+	            }
+			}
+			
+			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
+			dlvPassManagerSB.creditDelivery(model, delta);
+			//Create a activity log to track the delivery credits.
+			for(int i=0;i<delta;i++) {
+				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CREDIT_DLV_PASS, 
+																	agentmodel.getUserId(), 
+																	note, 
+																	model,
+																	saleId,
+																	reasonCode);
+				logActivity(activityRecord);
+			}
+			
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}catch(FinderException e){
+            throw new FDResourceException(e);
+        }		
+	}	
 	
+	public void incrExpirationPeriod(DeliveryPassModel model, 
+									CrmAgentModel agentmodel, 
+									int noOfDays, 
+									String note, 
+									String reasonCode, 
+									String saleId) throws FDResourceException, CrmAuthorizationException {
+		try {
+			/*
+			 *  CSR would only add upto 3 delivery to BSGS DP/or one week to unlimited DP. Anything 
+			 *  higher supervisor would have to do.
+			 */
+			//Get the No.Of credits given for this order.
+			ErpActivityRecord template = new ErpActivityRecord();
+			template.setCustomerId(model.getCustomerId());
+			template.setDeliveryPassId(model.getPK().getId());
+			template.setChangeOrderId(saleId);
+			//Unlimited Pass.
+			template.setActivityType(EnumAccountActivityType.EXTEND_DLV_PASS);
+			Collection<ErpActivityRecord> extns = ActivityLog.getInstance().findActivityByTemplate(template);
+			if((extns.size()+(int)(noOfDays/7)) >3){//must come from template.
+				
+	            CrmAgentHome home = this.getCrmAgentHome();
+	            CrmAgentEB eb = home.findByPrimaryKey(agentmodel.getPK());
+	            CrmAgentModel user = (CrmAgentModel)eb.getModel();
+	            if(!user.isSupervisor()){
+	                throw new CrmAuthorizationException("You are not authorized to perform this action. Please contact your Supervisor.");
+	            }
+			}
+			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
+			dlvPassManagerSB.extendExpirationPeriod(model, noOfDays);
+			//Create a activity log to track the delivery credits.
+			for(int i=0;i<(int)(noOfDays/7);i++) {
+				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.EXTEND_DLV_PASS, 
+																	agentmodel.getUserId(), 
+																	note, 
+																	model,
+																	saleId,
+																	reasonCode);
+				logActivity(activityRecord);
+			}
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch(FinderException e){
+            throw new FDResourceException(e);
+        }		
+	}	
+	
+	private boolean isAutoRenewDPCustomer(String hasAutoRenewDP_Val) {
+		
+		boolean isAutoRenewDPCustomer=false;
+		if(hasAutoRenewDP_Val!=null && !hasAutoRenewDP_Val.equals("") && hasAutoRenewDP_Val.equalsIgnoreCase("Y")) {
+			isAutoRenewDPCustomer=true;
+		}
+		return isAutoRenewDPCustomer;
+			
+	}
+	
+	   
+	public void cancelDeliveryPass(DeliveryPassModel model, 
+								CrmAgentModel agentmodel, 
+								String note, 
+								String reasonCode, 
+								String saleId) throws FDResourceException{
+		try {
+			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
+			model.setStatus(EnumDlvPassStatus.CANCELLED);
+					
+			model.setExpirationDate(new Date());
+			dlvPassManagerSB.cancel(model);
+			if(model.getType().isAutoRenewDP()) {
+				ErpCustomerEB erpCustomer = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
+				ErpCustomerInfoModel custInfo=erpCustomer.getCustomerInfo();
+				if(isAutoRenewDPCustomer(custInfo.getHasAutoRenewDP()) ) {
+						List<DeliveryPassModel> autoRenewPasses=dlvPassManagerSB.getUsableAutoRenewPasses(model.getCustomerId());
+						if(autoRenewPasses.size()==0) {
+						
+							custInfo.setHasAutoRenewDP("N");
+							erpCustomer.setCustomerInfo(custInfo);
+							ErpActivityRecord rec = new ErpActivityRecord();
+							rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF);
+							rec.setCustomerId(model.getCustomerId());
+							rec.setSource(EnumTransactionSource.SYSTEM);
+							rec.setInitiator(agentmodel.getUserId());
+							logActivity(rec);
+						}
+				}
+			}
+
+			//Create a activity log to track the delivery credits.
+			ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, 
+																agentmodel.getUserId(), 
+																note, 
+																model,
+																saleId,
+																reasonCode);
+			logActivity(activityRecord);
+			
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (FinderException fe) {
+			throw new FDResourceException(fe);		} 
+	}
+	
+		
+	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException {
+		try {
+			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
+			dlvPassManagerSB.reactivate(model);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}		
+	}
+	
+	private ErpActivityRecord createActivity(EnumAccountActivityType type, 
+			String initiator, 
+			String note, 
+			DeliveryPassModel model, 
+			String saleId, 
+			String reasonCode) {
+			ErpActivityRecord rec = new ErpActivityRecord();
+			rec.setActivityType(type);
+			
+			rec.setSource(EnumTransactionSource.CUSTOMER_REP);
+			rec.setInitiator(initiator);
+			rec.setCustomerId(model.getCustomerId());
+			
+			StringBuffer sb = new StringBuffer();
+			if (note != null) {
+			sb.append(note);
+			}
+			rec.setNote(sb.toString());
+			rec.setDeliveryPassId(model.getPK().getId());
+			rec.setChangeOrderId(saleId);
+			rec.setReason(reasonCode);
+			return rec;
+	}
 	
 	private void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
@@ -1304,6 +1407,16 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
+	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws RemoteException, FDResourceException {
+		try{
+		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
+		return sb.getDeliveryPassInfo(dlvPassId);
+		}
+		catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
+	}
+	
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1318,6 +1431,24 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
+		}
+	}
+	
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException,RemoteException {
+		try{
+		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
+		List dps = sb.getDeliveryPasses(custId);
+		Iterator iter = dps.iterator();
+		while(iter.hasNext()) {
+			DeliveryPassModel dp = (DeliveryPassModel) iter.next();
+			if(dp.getStatus() == EnumDlvPassStatus.ACTIVE || dp.getStatus() == EnumDlvPassStatus.READY_TO_USE) {
+				return dp;
+			}
+		}
+		return null;
+		}
+		catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		}
 	}
 	
@@ -1366,59 +1497,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
-	
-	public boolean isCRMRestrictionEnabled() throws FDResourceException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(CRM_RESTRICTION_ENABLED_CHECK);
-			String value="";
-			rset = pstmt.executeQuery();
-			if(rset.next()) {
-				value=rset.getString("NAME");
-				if(StringUtil.isEmpty(value)) return false;
-				if(value.toLowerCase().indexOf("true")!=-1) {	
-					return true;
-				}
-			}
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(rset);
-			close(pstmt);
-			close(conn);
-		}
-		return false;
-	}
-	
-	public  String getAllowedUsers() throws FDResourceException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(CRM_ALLOWED_USERS);
-			String value="";
-			rset = pstmt.executeQuery();
-			if(rset.next()) {
-				
-				value= rset.getString("DESCRIPTION");
-				if(StringUtil.isEmpty(value)) return "ALL";
-				return value;
-			}
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(rset);
-			close(pstmt);
-			close(conn);
-		}
-		return "ALL";
-	}
-	
-	
 	public static String DLV_PASS_CHECK = "SELECT reason FROM CUST.ACTIVITY_LOG where customer_id=? and sale_id=? and reason in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)";
 	
 	public static String UPDATE_REJECT_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'R' where AUTO_LATE_DELIVERY_ID=? and (status is null or status != 'A')";
@@ -1442,8 +1520,4 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 									"cust.fdcustomer f " +
 									"where sale_id = ? and AUTO_LATE_DELIVERY_ID=? " +
 									"and a.customer_id = f.erp_customer_id";
-	
-	public static String CRM_RESTRICTION_ENABLED_CHECK = "select NAME from cust.activity_type where code='CRM_OFF'";
-	
-	public static String CRM_ALLOWED_USERS = "select DESCRIPTION from cust.activity_type where code='CRM_AU'";
 }

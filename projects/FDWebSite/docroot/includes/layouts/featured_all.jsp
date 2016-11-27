@@ -1,8 +1,9 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -46,7 +47,7 @@ final int W_FEATURED_PADDING = 14;
     boolean showPrices = ((ProductContainer)currentFolder).isFavoriteShowPrice();
     String imagePath = null;
     String imageDim = "";
-    String clearImage = "/media_stat/images/layout/clear.gif"; 
+    String clearImage = "/media_stat/images/layout/clear.gif";
     String unAvailableImg="/media_stat/images/template/not_available.gif";
     String notAvailImgName = "";
     
@@ -80,6 +81,9 @@ final int W_FEATURED_PADDING = 14;
     ContentNodeModel aliasNode = null;
     ContentNodeModel prodParent = null;
     Comparator priceComp = new ProductModel.PriceComparator();
+
+	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
 	boolean hideFi = false;
 	if (currentFolder instanceof CategoryModel)
@@ -126,7 +130,7 @@ final int W_FEATURED_PADDING = 14;
 			</tr>
 			
 			<tr valign="top" align="CENTER">
-				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.storeapi.content.ProductModel" indexId="index"><%
+				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel" indexId="index"><%
 				
 					ProductModel productNode = contentNode;
 					ProductImpression pi = new ProductImpression( productNode );
@@ -169,7 +173,7 @@ final int W_FEATURED_PADDING = 14;
     StringBuffer appendColumnPrices = new StringBuffer(200);
 %>
 
-<logic:iterate id='contentNode' collection="<%=sortedCollection%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+<logic:iterate id='contentNode' collection="<%=sortedCollection%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 
 	<%      
 		if ( displayCategory == null ) {
@@ -209,7 +213,7 @@ final int W_FEATURED_PADDING = 14;
             
 				<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 					<tr valign="middle">
-					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
 					</tr>
 					<tr valign="middle">
 					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
@@ -221,7 +225,7 @@ final int W_FEATURED_PADDING = 14;
 						<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 					</tr>
 					<tr valign="middle">
-					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 					</tr>
 				</table>
 				
@@ -339,7 +343,7 @@ final int W_FEATURED_PADDING = 14;
                     col1.append(unAvailableImg);
                 }
                 col1.append("\"");
-                col1.append("width=\"70\" alt=\"\" height=\"9\"");
+                col1.append("width=\"70\" height=\"9\"");
                 col1.append(">");
                 
                 
@@ -353,7 +357,7 @@ final int W_FEATURED_PADDING = 14;
 				
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
-				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + ".png" : prodLabel.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave.png" :prodLabel.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new.png":clearImage;
+				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prodLabel.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prodLabel.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"):clearImage;
 
 				col1.append("<img name=\"" + burstImgName + "\" src=\"" + burstImage + "\" width=\"35px\" height=\"35px\" style=\"border: 0; " + ( deal > 0 ? "" : "display: none;" ) + "\">");                
                 
@@ -459,7 +463,7 @@ final int W_FEATURED_PADDING = 14;
 
 				ProductLabeling prdLbl = new ProductLabeling(user, product);
 				
-				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + ".png" : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave.png":prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new.png": clearImage;
+				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
 
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
 						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ", 80, 80)" );
@@ -508,7 +512,7 @@ final int W_FEATURED_PADDING = 14;
 <% if (productLinks.size() > 0) { %>
 	<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 		<tr valign="middle">
-			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
 		</tr>
 		<tr valign="middle">
 		    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
@@ -517,7 +521,7 @@ final int W_FEATURED_PADDING = 14;
 			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD" ><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 		</tr>
 		<tr valign="middle">
-			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 		</tr>
 	</table>
 	

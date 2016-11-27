@@ -1,5 +1,5 @@
-<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.EnumTrackingSource"%>
 <%@ taglib uri="template" prefix="tmpl"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
@@ -20,12 +20,8 @@
 		}
 	}
 	
-	String title = "FreshDirect - " + pageName;
 	%>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="<%= title %>"/>
-  </tmpl:put>
-<%--   <tmpl:put name="title" direct="true"><%= title %></tmpl:put> --%>
+	<tmpl:put name="title" direct="true">FreshDirect - <%= pageName %></tmpl:put>
 
 	<tmpl:put name="content" direct="true">
 	<jsp:include page="/includes/layouts/wine_filter.jsp"/>

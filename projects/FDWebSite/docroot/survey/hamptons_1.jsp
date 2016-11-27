@@ -48,10 +48,7 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Hamptons Delivery Survey"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>Hamptons Delivery Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:ReceiptSurvey actionName="validateSurvey" result="result" successPage="/survey/hamptons_2.jsp" survey="<%=Hamptons05%>">
 <table width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
@@ -59,23 +56,23 @@ response.setDateHeader ("Expires", 0);
 <tr>
 	<td colspan="7" class="text12" align="center"><br>
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to homepage"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <form method="POST" name="hamptonsSurvey1" action="/survey/hamptons_1.jsp">
 	<tr>
 		<td colspan="7" class="text12"><br><span class="title18">Summertime Hamptons Delivery Survey</span><br><span class="space4pix"><br></span>
 		FreshDirect knows that our customers love our service and the fresh food we deliver. We are currently working hard to try to extend our service to make deliveries to the Hamptons this summer. Your responses to this brief survey will help us understand our customers' needs. Of course, in accordance with the FreshDirect Privacy Policy, all of your answers will be kept confidential.
-<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="8"><br>
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
-    	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-    	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
-    	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-   		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
+    	<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+    	<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
+    	<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+   		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
 	</tr>
 	<% int quesCount = 0; %>
 	    <logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -129,7 +126,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="7" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" <%--onClick="javascript:checkForm(hamptonsSurvey1); return false;"--%> alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="7" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" <%--onClick="javascript:checkForm(hamptonsSurvey1); return false;"--%> alt="SUBMIT"><br><br><br></td></tr>
 </form>
 <% } %>
 </table>

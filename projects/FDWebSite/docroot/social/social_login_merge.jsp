@@ -7,14 +7,15 @@
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.framework.util.StringUtil'%>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType'%>
-<%@ page import='com.freshdirect.webapp.util.FDURLUtil'%>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-   <%--  <title>FreshDirect</title> --%>
-      <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<title></title>
+
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+
 <% 
 	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
@@ -270,7 +271,7 @@ $jq(function(){
 	/* _oneall.push([ 'social_login', 'set_callback_uri',
 			'http://127.0.0.1:7001/social/social_login_success.jsp' ]); */
 	_oneall.push([ 'social_login', 'set_callback_uri',
-			       		'<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?successPage=" + FDURLUtil.safeURLEncode(request.getParameter("successPage"))  %>' ]);
+			       		'<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"  %>' ]);
 	_oneall.push([ 'social_login', 'set_event', 'on_login_redirect',
 			my_on_login_redirect ]);
 	_oneall.push([ 'social_login', 'do_render_ui', 'social_login_demo' ]);

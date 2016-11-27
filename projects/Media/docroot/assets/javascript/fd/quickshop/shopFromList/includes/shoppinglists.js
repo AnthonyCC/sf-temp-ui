@@ -12,14 +12,13 @@ var FreshDirect = FreshDirect || {};
   function findSelected(element) {
     var a = this[element],
         selected = null;
-    if (a && a.hasOwnProperty('forEach')) { /* check if a is usable */
-	    a.forEach(function (el) {
-	      if(el.selected) {
-	        selected = el;
-	        DISPATCHER.signal('listheader',{title:el.name});
-	      }
-	    });
-    }
+
+    a.forEach(function (el) {
+      if(el.selected) {
+        selected = el;
+        DISPATCHER.signal('listheader',{title:el.name});
+      }
+    });
 
     return selected;
   }
@@ -39,7 +38,7 @@ var FreshDirect = FreshDirect || {};
         var el = (element) ? element : $(this.placeholder);
         
         var selected = $('input[type="radio"]:checked',el).first();
-        return { yourListId: (!!selected.length && selected.val()) || null };
+        return { yourListId: (!!selected.size() && selected.val()) || null };
       }
     },
     render:{

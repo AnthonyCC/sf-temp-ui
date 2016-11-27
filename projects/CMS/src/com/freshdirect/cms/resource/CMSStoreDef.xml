@@ -57,9 +57,6 @@
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="PickListItem"/>
 				<DestinationDef contentType="DarkStore"/>
-				<DestinationDef contentType="ModuleContainer"/>
-				<DestinationDef contentType="ModuleGroup"/>
-				<DestinationDef contentType="Module"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -157,7 +154,7 @@
 			<RelationshipDef name="newProductsPageSortOptions" cardinality="Many" label="New Products Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
-			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="Fresh Deals Page Sort Options">
+			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="President's Picks Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
 			<RelationshipDef name="staffPicksPageSortOptions" cardinality="Many" label="Staff's Picks Page Sort Options">
@@ -175,7 +172,7 @@
             <RelationshipDef name="newProductsPageTopMediaBanner" cardinality="One" label="New Products Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
-            <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="Fresh Deals Page Top Media Banner">
+            <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="President Picks Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
             <RelationshipDef name="staffPicksPageTopMediaBanner" cardinality="One" label="Staff Picks Page Top Media Banner">
@@ -196,9 +193,6 @@
 			<RelationshipDef name="iPhoneHomePagePicksLists" label="iPhone Home Page Picks Lists" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
-			<RelationshipDef name="iPhoneHomePageImageBanners" label="iPhone Homepage Image Banners" cardinality="Many">
-                <DestinationDef contentType="ImageBanner" />
-            </RelationshipDef>
 			<RelationshipDef name="tabletIdeasRecipeTags" label="Tablet Ideas Recipe Tags (Theme Page)" cardinality="Many">
 				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>
@@ -246,7 +240,6 @@
 			<AttributeDef type="S" name="PAGE_TITLE" label="Page Title" inheritable="false"/>
 			<AttributeDef type="S" name="SEO_META_DESC_FDX" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef type="S" name="PAGE_TITLE_FDX" label="Page Title FDX" inheritable="false"/>
-			<AttributeDef type="B" name="SKIP_SITEMAP" label="Skip Sitemap" inheritable="false"/>
 			<EnumDef type="S" name="bannerLocation"  label="SuperDepartment Banner Location">
 				<EnumValue value="TOP" label="TOP"/>
 				<EnumValue value="BOTTOM" label="BOTTOM"/>
@@ -259,11 +252,6 @@
 				<EnumValue value="FULL_WIDTH" label="FULL WIDTH"/>
 				<EnumValue value="TWO_TWO" label="2/2"/>
 				<EnumValue value="THREE_ONE" label="3/1"/>
-			</EnumDef>
-			<EnumDef type="S" name="catalog"  label="Catalog" required="true">
-				<EnumValue value="ALL" label="ALL"/>
-				<EnumValue value="RESIDENTAL" label="RESIDENTAL"/>
-				<EnumValue value="CORPORATE" label="CORPORATE"/>				
 			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
@@ -418,12 +406,6 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
-			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
-			<EnumDef type="S" name="catalog"  label="Catalog" required="true">
-				<EnumValue value="ALL" label="ALL"/>
-				<EnumValue value="RESIDENTAL" label="RESIDENTAL"/>
-				<EnumValue value="CORPORATE" label="CORPORATE"/>				
-			</EnumDef>			
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -643,7 +625,7 @@
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
             <AttributeDef type="B" name="HIDE_FEATURED_ITEMS"  label="Hide featured items" inheritable="true"/>
 			<EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
-				<EnumValue value="PRESIDENTS_PICKS" label="Fresh Deals"/>
+				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
 				<EnumValue value="E_COUPONS" label="E-Coupons"/>
 				<EnumValue value="PRODUCTS_ASSORTMENTS" label="Products Assortments"/>
 			</EnumDef>
@@ -653,9 +635,6 @@
 				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
 				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
 			</EnumDef>
-            <AttributeDef type="S" name="featuredRecommenderTitle" label="Title"/>
-            <AttributeDef type="B" name="featuredRecommenderRandomizeProducts" label="Randomize Products (only if Source Category is set)"/>
-            <AttributeDef type="S" name="featuredRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
 			<AttributeDef type="S" name="catMerchantRecommenderTitle" label="Title" inheritable="true"/>
 			<AttributeDef type="B" name="catMerchantRecommenderRandomizeProducts" label="Randomize Products" inheritable="true"/>
 			<AttributeDef type="B" name="hideIfFilteringIsSupported"  label="Hide If Filtering Is Supported"/>
@@ -690,14 +669,12 @@
 				<EnumValue value="BELOW_DEPARTMENT" label="On/Appearing below depratment"/>
 				<EnumValue value="BELOW_LOWEST_LEVEL_CATEGROY" label="On/Appearing below lowest level category"/>
 				<EnumValue value="OFF" label="Turned off"/>
-				<EnumValue value="ORIGINAL" label="On/Appearing in original order"/>
 			</EnumDef>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
-			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			<AttributeDef name="PrimaryText" type="S" label="Primary Text" inheritable="false"/>
 			<AttributeDef name="SecondaryText" type="S" label="Secondary Text" inheritable="false"/>
 		</AttributeDefs>
@@ -874,9 +851,6 @@
 			<RelationshipDef name="middleMedia" label="Middle Media" cardinality="One">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
-            <RelationshipDef name="featuredRecommenderSourceCategory" label="Source Category" cardinality="One">
-                <DestinationDef contentType="Category" />
-            </RelationshipDef>
 			<RelationshipDef name="catMerchantRecommenderProducts" label="Products" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>
@@ -973,7 +947,7 @@
 
                 <EnumValue value="111" label="Multi Category Layout (with Quickbuy)"/><!-- Multi + QB layout [APPDEV-2386] -->
 
-                <EnumValue value="200" label="Fresh Deals"/><!-- promo page -->
+                <EnumValue value="200" label="President's Picks"/><!-- promo page -->
                 <EnumValue value="201" label="E-Coupons"/><!-- E-Coupons -->
                 <EnumValue value="301" label="Recipe Mealkit Category"/> <!-- Handpicked MealKit Category -->
 			</EnumDef>
@@ -1075,7 +1049,6 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
-			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			
 			<AttributeDef type="S" name="PAIR_IT_HEADING" label="PAIR IT - HEADING"/>
 			<AttributeDef type="S" name="PAIR_IT_TEXT" label="PAIR IT - TEXT"/>
@@ -2485,9 +2458,7 @@
 				<EnumValue value="E_COUPON_POPULARITY" label="e-Coupon Popularity"/>
 				<EnumValue value="E_COUPON_START_DATE" label="e-Coupon Start Date"/>
 				<EnumValue value="RECENCY" label="Recency"/>
-				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>
-				<EnumValue value="FAVS_FIRST" label="Favs First"/>	
-				<EnumValue value="STAFF_PICKS_OUR_FAVS" label="Staff Picks Our Favs"/>	
+				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>				
 			</EnumDef>
 		</AttributeDefs>
 	</ContentTypeDef>
@@ -2545,7 +2516,6 @@
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" required="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" required="false"/>
 			<AttributeDef name="URL" type="S" label="URL of the  page" required="false"/>
-			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			<EnumDef type="S" name="WebPageType"  label="WebPage Type">
 				<EnumValue value="FEED" label="FEED"/>
 				<EnumValue value="TODAYSPICK" label="TODAYSPICK"/>
@@ -2666,8 +2636,7 @@
 			<AttributeDef name="linkOneType" type="S" label="Link 1 Type" required="false"/>
 			<AttributeDef name="linkTwoText" type="S" label="Link 2 Text" required="false"/>
 			<AttributeDef name="linkTwoURL" type="S" label="Link 2 URL" required="false"/>
-			<AttributeDef name="linkTwoType" type="S" label="Link 2 Type" required="false"/>
-			<AttributeDef name="bannerURL" type="S" label="Banner URL" required="false"/>		
+			<AttributeDef name="linkTwoType" type="S" label="Link 2 Type" required="false"/>		
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef cardinality="One" name="ImageBannerImage" label="Image">
@@ -2752,111 +2721,5 @@
 		    <AttributeDef name="name" type="S" label="Name" required="false"/>
 		</AttributeDefs>
 	</ContentTypeDef>
-	
-	<ContentTypeDef name="ModuleContainer" generateId="false">
-		<AttributeDefs>
-			<AttributeDef type="S" name="name" label="Name" required="true"/>
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="modulesAndGroups" label="Modules and Groups" cardinality="Many">
-				<DestinationDef contentType="Module" />
-				<DestinationDef contentType="ModuleGroup" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>
-	
-	<ContentTypeDef name="ModuleGroup" generateId="false">
-		<AttributeDefs>
-			<AttributeDef type="S" name="name" label="Name" required="true"/>	
-			<AttributeDef type="S" name="moduleGroupTitle" label="Module Group Title" required="false"/>
-			<AttributeDef type="S" name="moduleGroupTitleTextBanner" label="Module Group Title Text Banner" required="false"/>	
-			<AttributeDef type="S" name="viewAllButtonURL" label="View All Button URL" required="false"/>
-			<AttributeDef type="B" name="hideViewAllButton"  label="Hide View All Button" required="false"/>		
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="modules" label="Modules" cardinality="Many">
-				<DestinationDef contentType="Module" />
-			</RelationshipDef>
-			<RelationshipDef name="viewAllSourceNode" label="View All Source Node" cardinality="One">
-				<DestinationDef contentType="Category" />
-				<DestinationDef contentType="Department" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>
-	
-	<ContentTypeDef name="Module" generateId="false">
-		<AttributeDefs>
-			<AttributeDef type="S" name="name" label="Name" required="true"/>
-			<AttributeDef type="S" name="moduleTitle" label="Module Title" required="false"/>
-			<AttributeDef type="S" name="moduleTitleTextBanner" label="Module Title Text Banner" required="false"/>
-			<AttributeDef type="S" name="viewAllButtonLink" label="View All Button Link" required="false"/>
-			<AttributeDef type="S" name="contentTitle" label="Content Title" required="false"/>
-			<AttributeDef type="S" name="contentTitleTextBanner" label="Content Title Text Banner" required="false"/>
-			<AttributeDef type="S" name="heroTitle" label="Hero Title" required="false"/>
-			<AttributeDef type="S" name="heroSubtitle" label="Hero Subtitle" required="false"/>
-			<AttributeDef type="S" name="headerTitle" label="Header Title" required="false"/>
-			<AttributeDef type="S" name="headerSubtitle" label="Header Subtitle" required="false"/>
-			<AttributeDef type="B" name="hideViewAllButton"  label="Hide View All Button" required="false"/>	
-			<AttributeDef type="B" name="hideProductName"  label="Hide Product Name" required="false"/>	
-			<AttributeDef type="B" name="hideProductPrice"  label="Hide Product Price" required="false"/>
-			<AttributeDef type="B" name="hideProductBadge"  label="Hide Product Badge" required="false"/>
-			<AttributeDef type="B" name="useViewAllPopup"  label="Show View all Overlay" required="false"/>
-			<AttributeDef type="B" name="showViewAllOverlayOnImages"  label="Show View all Overlay On Images" required="false"/>
-			<EnumDef type="S" name="productSourceType"  label="Product Source Type" required="true">
-				<EnumValue value="GENERIC" label="GENERIC"/>
-				<EnumValue value="BROWSE" label="BROWSE"/>
-				<EnumValue value="TOP_ITEMS" label="TOP_ITEMS"/>
-				<EnumValue value="PRES_PICKS" label="PRES_PICKS"/>
-				<EnumValue value="FEATURED_RECOMMENDER" label="FEATURED_RECOMMENDER"/>
-				<EnumValue value="MOST_POPULAR_PRODUCTS" label="MOST_POPULAR_PRODUCTS"/>
-				<EnumValue value="BRAND_FEATURED_PRODUCTS" label="BRAND_FEATURED_PRODUCTS"/>
-				<EnumValue value="STAFF_PICKS" label="STAFF_PICKS"/>
-				<EnumValue value="CRITEO" label="CRITEO"/>
-			</EnumDef>			
-			<EnumDef type="S" name="displayType"  label="Display Type" required="true">
-				<EnumValue value="PRODUCT_CAROUSEL_MODULE" label="PRODUCT_CAROUSEL_MODULE"/>
-				<EnumValue value="PRODUCT_LIST_MODULE" label="PRODUCT_LIST_MODULE"/>
-				<EnumValue value="IMAGEGRID_MODULE" label="IMAGEGRID_MODULE"/>
-				<EnumValue value="ICON_CAROUSEL_MODULE" label="ICON_CAROUSEL_MODULE"/>
-				<EnumValue value="OPENHTML_MODULE" label="OPENHTML_MODULE"/>
-				<EnumValue value="EDITORIAL_MODULE" label="EDITORIAL_MODULE"/>
-			</EnumDef>
-			<EnumDef type="S" name="productListRowMax"  label="Maximum Row number of ProductList">
-				<EnumValue value="1" label="1"/>
-				<EnumValue value="2" label="2"/>
-				<EnumValue value="3" label="3"/>
-			</EnumDef>
-                        <EnumDef type="S" name="productMaxLimit"  label="Product Maximum Limit">
-                                <EnumValue value="1" label="1"/>
-                                <EnumValue value="2" label="2"/>
-                                <EnumValue value="3" label="3"/>
-                        </EnumDef>
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="imageGrid" label="Image Grid" cardinality="Many">
-				<DestinationDef contentType="ImageBanner" />
-			</RelationshipDef>
-			<RelationshipDef name="openHTML" label="Open HTML media" cardinality="One">
-				<DestinationDef contentType="Html" />
-			</RelationshipDef>
-			<RelationshipDef name="iconList" label="Icon List" cardinality="Many">
-				<DestinationDef contentType="ImageBanner" />
-			</RelationshipDef>
-			<RelationshipDef name="heroGraphic" label="Hero Graphic" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="headerGraphic" label="Header Graphic" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="editorialContent" label="Editorial Content" cardinality="One">
-				<DestinationDef contentType="Html" />
-			</RelationshipDef>
-			<RelationshipDef name="sourceNode" label="Source Node" cardinality="One">
-				<DestinationDef contentType="Category" />
-				<DestinationDef contentType="Department" />
-				<DestinationDef contentType="Brand" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>	
-			
+		
 </CMSDef>

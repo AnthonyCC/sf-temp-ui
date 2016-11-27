@@ -4,11 +4,8 @@ final int W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL = 601;
 final int W_RECIPE_SUBCAT_BODY_PAGENAV_LEFT = 421;
 final int W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT = 180;
 %>
-<style>
-	.W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL { width: <%= W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL %>px; }
-	.W_RECIPE_SUBCAT_BODY_PAGENAV_LEFT { width: <%= W_RECIPE_SUBCAT_BODY_PAGENAV_LEFT %>px; }
-	.W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT { width: <%= W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT %>px; }
-</style>
+
+
 <%
 /**
  * Used by i_recipe_sbucat_body.jspf
@@ -20,8 +17,8 @@ final int W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT = 180;
 
 %>
 
-<table border="0" cellspacing="0" cellpadding="0" class="W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL">
-<tr valign="top"><td class="text10bold" class="W_RECIPE_SUBCAT_BODY_PAGENAV_LEFT">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL%>">
+<tr valign="top"><td class="text10bold" width="<%=W_RECIPE_SUBCAT_BODY_PAGENAV_LEFT%>">
 <%
 StringBuffer sb = new StringBuffer();
 String pgPart="pgPart=" + itemsToDisplay;
@@ -43,7 +40,7 @@ for (int pgNum = 0; pgNum < pageNumbers; ) {
 %>
 <%= cntRecipes %> recipe<%= cntRecipes > 1 ? "s" : ""%> &mdash; Page: <%= sb %>
 <br></td>
-<td align="right" class="W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT">Display <%
+<td align="right" width="<%=W_RECIPE_SUBCAT_BODY_PAGENAV_RIGHT%>">Display <%
 if (itemsToDisplay == 15) {
 %>
 <b>15</b> |

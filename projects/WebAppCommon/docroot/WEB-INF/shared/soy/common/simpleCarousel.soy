@@ -4,51 +4,26 @@
  * @param items some path, list of items
  * @param itemType item variant
  * @param? title optional title string
- * @param? eventSource optional event source
- * @param? abFeatures
+ * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
- * @param? isIconCarousel
- * @param? moduleData
- * @param? siteFeature
- * @param? extraClass
  */
 {template .simpleCarousel autoescape="false"}
-<div data-component="carousel" class="first" product-count="{length($items)}">
-	{if $siteFeature}<!-- {$siteFeature} -->{/if}/* testing */
+<div data-component="carousel" class="first">
 	{if $title}<h2>{$title}</h2>{/if}
 	<div data-component="carousel-mask" class="transactional">
 		<ul data-component="carousel-list" data-carousel-page="0">
 			{foreach $item in $items}
-				{if $isIconCarousel}
-					{call common.iconCarouselItem}
-						{param item:$item /}
-						{param moduleData:$moduleData /}
-						{param itemIndex:index($item) /}
-					{/call}
-				{else}
-					{delcall common.carouselItem variant="$itemType"}
-						{param item:$item /}
-						{param itemCount:length($items) /}
-						{param eventSource:$eventSource /}
-						{param abFeatures:$abFeatures /}
-						{param mobWeb:$mobWeb /}
-						{param moduleData:$moduleData /}
-                        {param itemIndex:index($item) /}
-                        {param extraClass}{if $extraClass}{$extraClass}{/if}{/param}
-					{/delcall}
-				{/if}
+			{delcall common.carouselItem variant="$itemType"}
+				{param item:$item /}
+				{param cmEventSource:$cmEventSource /}
+				{param mobWeb:$mobWeb /}
+			{/delcall}
 			{/foreach}
 		</ul>
 	</div>
 	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
-	<button data-component="carousel-next" data-carousel-nav="next"
-	{if $moduleData and not $moduleData.hideViewAllButton}data-carousel-view-all{/if}>next</button>
-	{if $moduleData and not $moduleData.hideViewAllButton and ($moduleData.contentTitle or $moduleData.moduleTitle)}
-		<div data-component="carousel-view-all">
-			<a {if $moduleData and $moduleData.useViewAllPopup}data-view-all-popup data-module-id={if $moduleData and $moduleData.moduleId}{$moduleData.moduleId}{/if} href="#" {else}href="{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}"{/if} data-viewallinfo="Home Page Carousel,{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}">view all
-				<div class="offscreen">{if $moduleData and $moduleData.contentTitle}{$moduleData.contentTitle}{else}{$moduleData.moduleTitle}{/if}</div>
-			</a>
-		</div>
-	{/if}
+	<button data-component="carousel-next" data-carousel-nav="next">next</button>
 </div>
 {/template}
+
+              

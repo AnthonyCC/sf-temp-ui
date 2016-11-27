@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
-import com.freshdirect.mobileapi.model.AdProducts;
 import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 
 public class SearchResult extends Message {
     private String didYouMean;
@@ -18,10 +14,8 @@ public class SearchResult extends Message {
     private Integer totalResultCount = 0;
 
     private List<ProductSearchResult> products = new ArrayList<ProductSearchResult>();
-    private List<ProductSearchResult> favproducts = new ArrayList<ProductSearchResult>();
 
     private List<String> productIds;    
-    private List<String> favProductIds;
 
     private List<FilterOption> brands = new ArrayList<FilterOption>();
 
@@ -49,14 +43,6 @@ public class SearchResult extends Message {
 
     public void setProducts(List<ProductSearchResult> products) {
         this.products = products;
-    }
-    
-    public List<ProductSearchResult> getFavProducts() {
-        return favproducts;
-    }
-
-    public void setFavProducts(List<ProductSearchResult> favproducts) {
-        this.favproducts = favproducts;
     }
 
     public List<FilterOption> getBrands() {
@@ -90,44 +76,12 @@ public class SearchResult extends Message {
         }
     }
     
-    public void setFavProductsFromModel(List<com.freshdirect.mobileapi.model.Product> products) {
-        this.favproducts.clear();
-        for (com.freshdirect.mobileapi.model.Product product : products) {
-            this.favproducts.add(ProductSearchResult.wrap(product));
-        }
-    }
-    
-    private List<AdProducts> adProducts = new ArrayList<AdProducts>();
-	private String pageBeacon;
-    
-    public List<AdProducts> getAdProducts() {
-		return adProducts;
-	}
-
-	public void setAdProducts(List<AdProducts> adProducts) {
-		this.adProducts = adProducts;
-	}
-	public String getPageBeacon() {
-		return pageBeacon;
-	}
-
-	public void setPageBeacon(String pageBeacon) {
-		this.pageBeacon = pageBeacon;
-	}
     public void setProductIds(List<String> productIds){
     	this.productIds = productIds;
     }
     
     public List<String> getProductIds(){
     	return this.productIds;
-    }
-    
-    public void setFavProductIds(List<String> favpProductIds){
-    	this.favProductIds = favpProductIds;
-    }
-    
-    public List<String> getFavProductIds(){
-    	return this.favProductIds;
     }
 
     public Integer getTotalResultCount() {

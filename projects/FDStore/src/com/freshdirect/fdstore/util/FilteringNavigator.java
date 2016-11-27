@@ -15,12 +15,12 @@ import javax.servlet.ServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.SortTypeI;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.content.util.QueryParameter;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.SortTypeI;
 
 public class FilteringNavigator {
 	public static final Logger LOGGER = Logger.getLogger(FilteringNavigator.class);
@@ -862,7 +862,7 @@ public class FilteringNavigator {
 	// convenience method
 	private static String safeURLEncode(String str) {
 		try {
-			return URLEncoder.encode(str!=null?str:"", "ISO-8859-1");
+			return URLEncoder.encode(str, "ISO-8859-1");
 		} catch (UnsupportedEncodingException e) {
 			// NOTE: this should never happen!
 			return "";

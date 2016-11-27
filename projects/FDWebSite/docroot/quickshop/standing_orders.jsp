@@ -25,11 +25,6 @@
 <fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.NEW_SO3_DETAIL %>"/>
 
 <tmpl:insert template='/quickshop/includes/standing_order.jsp'>
-
-  <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="Freshdirect-StandingOrder" pageId="standing_orders"></fd:SEOMetaTag>
-  </tmpl:put>
-
   <tmpl:put name="soytemplates"><soy:import packageName="standingorder"/><soy:import packageName="expressco"/></tmpl:put>
 
   <tmpl:put name='soSelected'>selected</tmpl:put>
@@ -51,9 +46,6 @@
 					<%@ include file="/quickshop/includes/first_standing_order.jspf" %>
 				</div>
 		    <% } %>
-		    <% if(user.isSoFeatureOverlay()){ %>
- 				<script>setTimeout(function(){ doOverlayDialogNew("/quickshop/includes/feature_change_tutorial.jsp"); }, 1000);</script>
- 			<% } %>
 	   	<%  } %>
     	
     <script>
@@ -64,14 +56,13 @@
     </tmpl:put>
 
   <tmpl:put name="extraCss">
-    <jwr:style src="/timeslots.css" media="all" />
+    <fd:css href="/assets/css/timeslots.css" media="all" />
     <jwr:style src="/expressco.css" media="all" />
   </tmpl:put>
   
 	
   <tmpl:put name="extraJs">
     <fd:javascript src="/assets/javascript/timeslots.js" />
-    <%@ include file="/shared/template/includes/ccl.jspf" %> <%-- FIXME: absolute horror, currently needed for some functionality on standing orders pages, an extreme cleanup or replacement would be essential here ... --%>
   </tmpl:put>
 
 </tmpl:insert>

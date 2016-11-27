@@ -8,11 +8,12 @@
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
   <tmpl:get name="seoMetaTag"/>
     
+ <%--  <%@ include file="/common/template/includes/metatags.jspf" %> --%>
   <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
   <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
   <%@ include file="/shared/template/includes/i_head_end.jspf" %>
@@ -21,7 +22,8 @@
 </head>
 
 <body>
-
+      
+  <%@ include file="/shared/template/includes/i_body_start.jspf" %>       
   <%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
      
   <div id="main" class="container staticpage">

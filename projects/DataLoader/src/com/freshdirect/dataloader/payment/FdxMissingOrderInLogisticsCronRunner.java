@@ -28,10 +28,8 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class FdxMissingOrderInLogisticsCronRunner {
 
@@ -44,10 +42,7 @@ public class FdxMissingOrderInLogisticsCronRunner {
 			ctx = getInitialContext();
 			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
 			DlvManagerSB dlvManagerSB = dlvManager.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
-				FDECommerceService.getInstance().queryForMissingFdxOrders();
-			else
-				dlvManagerSB.queryForMissingFdxOrders();
+			dlvManagerSB.queryForMissingFdxOrders();
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

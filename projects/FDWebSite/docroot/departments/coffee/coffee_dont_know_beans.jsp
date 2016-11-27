@@ -1,13 +1,13 @@
 <%@ page import="java.util.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_COFFEE_DONT_KNOW_BEANS_TOTAL = 765;
@@ -15,11 +15,7 @@ final int W_COFFEE_DONT_KNOW_BEANS_TOTAL = 765;
 
 
 <tmpl:insert template='/common/template/right_dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Don't Know Beans"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put> --%>
-
+    <tmpl:put name='title' direct='true'>FreshDirect - Dont't Know Beans</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>">
 			 <tr>
@@ -56,7 +52,7 @@ final int W_COFFEE_DONT_KNOW_BEANS_TOTAL = 765;
 					  <INPUT TYPE="radio" CLASS="radio"  NAME="question3" VALUE="2"> Black<BR>
 				</TD>
 				<TD WIDTH="14"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="5" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
-				<TD><IMG SRC="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="250" BORDER="0" VSPACE="0"></TD>
+				<TD><IMG SRC="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="250" BORDER="0" VSPACE="0"></TD>
 				<TD WIDTH="41"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="20" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
 				<TD CLASS="text13" width="<%=(W_COFFEE_DONT_KNOW_BEANS_TOTAL-55)/2%>">
 				    <FONT CLASS="text13bold">Do you drink flavored coffees?</FONT><BR>

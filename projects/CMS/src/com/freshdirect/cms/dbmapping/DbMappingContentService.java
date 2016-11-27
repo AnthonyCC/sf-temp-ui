@@ -2,7 +2,6 @@ package com.freshdirect.cms.dbmapping;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
-
-import org.apache.log4j.Category;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
@@ -25,18 +22,15 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.util.CollectionUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * Content service that exposes arbitrary JDBC SQL queries as content objects.
+ * Content service that exposes arbitary JDBC SQL queries as content objects.
  * Definitions are automatically discovered based on JDBC metadata.
  * 
  * @see com.freshdirect.cms.dbmapping.TableMapping
  * @see com.freshdirect.cms.dbmapping.RelationshipMapping
  */
 public class DbMappingContentService extends AbstractContentService implements DbMappingContentServiceI {
-
-    private final Category LOGGER = LoggerFactory.getInstance(DbMappingContentService.class);
 
 	private final DataSource dataSource;
 	private final DbMappingTypeService typeService;
@@ -67,7 +61,6 @@ public class DbMappingContentService extends AbstractContentService implements D
 			return keys;
 
 		} catch (SQLException e) {
-            LOGGER.error(MessageFormat.format("Error getting content keys for context {0} and content type definitions {1}", draftContext, typeService.getContentTypeDefinitions()), e);
 			throw new CmsRuntimeException(e);
 		} finally {
 			if (conn != null) {
@@ -91,7 +84,6 @@ public class DbMappingContentService extends AbstractContentService implements D
 			conn = dataSource.getConnection();
 			return def.queryKeys(conn);
 		} catch (SQLException e) {
-            LOGGER.error(MessageFormat.format("Error getting content keys by type for context {0} and content type {1}", draftContext, type), e);
 			throw new CmsRuntimeException(e);
 		} finally {
 			if (conn != null) {
@@ -145,7 +137,6 @@ public class DbMappingContentService extends AbstractContentService implements D
 
 			return nodeMap;
 		} catch (SQLException e) {
-            LOGGER.error(MessageFormat.format("Error getting content nodes for context {0} and content keys {1}", draftContext, keys), e);
 			throw new CmsRuntimeException(e);
 		} finally {
 			if (conn != null) {

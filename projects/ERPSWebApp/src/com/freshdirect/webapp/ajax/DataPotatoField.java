@@ -9,23 +9,22 @@ import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.EnumTemplateType;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.EnumTemplateType;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.BrowsePopulator;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.cart.data.CartConfirmData;
 import com.freshdirect.webapp.ajax.product.ProductAnnotationDataPopulator;
@@ -111,12 +110,11 @@ public class DataPotatoField {
 	
     private static String populateEditUrl(String cartLineId, ProductData productData) {
         String editUrl;
-        //no longer needed
-        //if (productData.getHolidayMealBundleContainer().getMealIncludeDatas() == null) {
+        if (productData.getHolidayMealBundleContainer().getMealIncludeDatas() == null) {
             editUrl = String.format(CARTLINE_MODIFY_URL, cartLineId);
-        //} else {
-        //    editUrl = String.format(PDP_MODIFY_URL, productData.getProductId(), productData.getCatId());
-        //}
+        } else {
+            editUrl = String.format(PDP_MODIFY_URL, productData.getProductId(), productData.getCatId());
+        }
         return editUrl;
     }
 	
@@ -128,7 +126,7 @@ public class DataPotatoField {
 		try {
 			
 			// first get a ProductData for product level attributes
-            ProductData productData = ProductDetailPopulator.createProductDataForCarousel(user, product, FDStoreProperties.getPreviewMode());
+			ProductData productData = ProductDetailPopulator.createProductDataForCarousel( user, product );
 			if (variantId != null) {
 				productData.setVariantId(variantId);
 				productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId) );
@@ -178,7 +176,7 @@ public class DataPotatoField {
 		
 		if ( keys != null ) {
 			for ( ContentKey key : keys ) {
-				if ( key.getType().equals( ContentType.Product ) ) {
+				if ( key.getType().equals( ContentType.get( "Product" ) ) ) {
 					String catId = null;
 					Map<String, ?> productData = digProduct( user, catId, key.getId() );
 					if ( productData != null ) {
@@ -259,13 +257,9 @@ public class DataPotatoField {
 		return null;
 	}
 	
-	public static Map<String,?> digBrowse(BrowseData browseData) {
-		return SoyTemplateEngine.convertToMap(browseData);
-	}
-	
 	public static Map<String,?> digBrowse(CmsFilteringFlowResult result) {
 		try {
-			return digBrowse(BrowsePopulator.createBrowseData(result));
+			return SoyTemplateEngine.convertToMap(BrowsePopulator.createBrowseData(result));
 
 		} catch ( HttpErrorResponse e ) {
 			LOG.error( "Failed to get browse info.", e );
@@ -285,7 +279,7 @@ public class DataPotatoField {
 	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context, String grpId, String grpVersion ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, grpId, grpVersion, true );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, grpId, grpVersion );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );

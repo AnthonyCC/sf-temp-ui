@@ -14,21 +14,20 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDNotFoundException;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.GlobalNavigationModel;
+import com.freshdirect.fdstore.content.RecipeCategory;
+import com.freshdirect.fdstore.content.RecipeDepartment;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentKeyFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.GlobalNavigationModel;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.RecipeCategory;
-import com.freshdirect.storeapi.content.RecipeDepartment;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -41,14 +40,14 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest)ctx.getRequest();
 		FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
-
+		
 		try {
-
+		
 			String deptId = request.getParameter("deptId");
 			String catId = request.getParameter("catId");
 			String browseId = request.getParameter("id");
 			String globalUri = request.getRequestURI();
-
+	
 			//fallback and check attributes on param fail
 				if (deptId == null || "".equals(deptId)) {
 					deptId = (request.getAttribute("deptId")!=null)?request.getAttribute("deptId").toString():"";
@@ -62,12 +61,12 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					browseId = (request.getAttribute("browseId")!=null)?request.getAttribute("browseId").toString():"";
 					if ("".equals(browseId.toString())) { browseId = null; }
 				}
-
+	
 			String thisDept = "";
-
+	
 			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
 				GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
-				HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>();
+				HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>(); 
 				for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
 					if (contentNode instanceof SuperDepartmentModel) {
 						for (DepartmentModel dept : ((SuperDepartmentModel) contentNode).getDepartments()) {
@@ -76,15 +75,20 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					}
 				}
 
-				String ppicksId = ContentKeyFactory.getPresidentsPicksCategoryKey().getId();
+				String ppicksId;
+				try {
+					ppicksId = ContentKeyFactory.getIntance().getPresidentsPicksCategoryKey().getId();
+				} catch (InvalidContentKeyException exc) {
+					ppicksId = "picks_love";
+				}
 
 				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList(ppicksId, "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
-
+	
 				if (browseId != null) {
-                    ContentNodeModel thisObj = ContentFactory.getInstance().getContentNode(browseId);
+					ContentNodeModel thisObj = findContentNode(browseId);
 					if (bottomTopNavCategories.contains(browseId)) {
 							thisDept = browseId;
-
+						
 					} else if (thisObj instanceof SuperDepartmentModel) {
 						thisDept = thisObj.getContentName();
 					} else if (thisObj instanceof DepartmentModel) {
@@ -106,21 +110,21 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 						}
 					}
 				} else if (catId != null){
-                    ContentNodeModel thisObj = ContentFactory.getInstance().getContentNode(catId);
+					ContentNodeModel thisObj = findContentNode(catId);
 					ContentNodeModel thisDeptObj = findParentOfCategory (catId);
 					String sdRelation = "";
 					if (bottomTopNavCategories.contains(thisObj.getParentNode().getContentName())) {
 						thisDept = thisObj.getParentNode().getContentName();
 					} else if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
 						thisDept = sdRelation;
-                    } else if (thisDeptObj != null) {
-                        thisDept = thisDeptObj.getContentName();
+					} else {
+						thisDept = thisDeptObj.getContentName();
 					}
 				} else if (deptId != null) {
 					if ("kosher_temp".equalsIgnoreCase(deptId)){
 						thisDept = "kos";
 					} else {
-                        ContentNodeModel thisDeptObj = PopulatorUtil.getContentNode(deptId);
+						ContentNodeModel thisDeptObj = findContentNode(deptId);
 						String sdRelation = "";
 						if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
 							thisDept = sdRelation;
@@ -128,14 +132,14 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 							thisDept = thisDeptObj.getContentName();
 						}
 					}
-
-
+		
+					
 				} else {
 					//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
-					if (globalUri.startsWith("/recipe_dept.jsp") ||
-					    globalUri.startsWith("/recipe_cat.jsp") ||
-					    globalUri.startsWith("/recipe_subcat.jsp") ||
-					    globalUri.startsWith("/recipe.jsp") ||
+					if (globalUri.startsWith("/recipe_dept.jsp") || 
+					    globalUri.startsWith("/recipe_cat.jsp") || 
+					    globalUri.startsWith("/recipe_subcat.jsp") || 
+					    globalUri.startsWith("/recipe.jsp") || 
 					    globalUri.startsWith("/recipe_search.jsp") ) {
 					  thisDept = RecipeDepartment.getDefault().getContentName();
 					}
@@ -148,33 +152,33 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					if ("kosher_temp".equalsIgnoreCase(deptId)){
 						thisDept = "kos";
 					} else {
-                        ContentNodeModel thisDeptObj = ContentFactory.getInstance().getContentNode(deptId);
+						ContentNodeModel thisDeptObj = findContentNode(deptId);
 						thisDept = thisDeptObj.getContentName();
 					}
-
-
+		
+					
 				} else {
 					//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
-					if (globalUri.startsWith("/recipe_dept.jsp") ||
-					    globalUri.startsWith("/recipe_cat.jsp") ||
-					    globalUri.startsWith("/recipe_subcat.jsp") ||
-					    globalUri.startsWith("/recipe.jsp") ||
+					if (globalUri.startsWith("/recipe_dept.jsp") || 
+					    globalUri.startsWith("/recipe_cat.jsp") || 
+					    globalUri.startsWith("/recipe_subcat.jsp") || 
+					    globalUri.startsWith("/recipe.jsp") || 
 					    globalUri.startsWith("/recipe_search.jsp") ) {
 					  thisDept = RecipeDepartment.getDefault().getContentName();
 					}
 				}
-
+				
 			}
-
+	
 			boolean isAtHome = true;
 			if(	globalUri.indexOf("login")> -1 ||
 				globalUri.indexOf("promotion")> -1 ||
 				globalUri.indexOf("newproducts")> -1 ||
-				globalUri.indexOf("quickshop")> -1 ||
-				globalUri.indexOf("checkout")> -1 ||
-				globalUri.indexOf("help")> -1 ||
-				globalUri.indexOf("site_access")> -1 ||
-				globalUri.indexOf("about")> -1  ||
+				globalUri.indexOf("quickshop")> -1 || 
+				globalUri.indexOf("checkout")> -1 || 
+				globalUri.indexOf("help")> -1 || 
+				globalUri.indexOf("site_access")> -1 || 
+				globalUri.indexOf("about")> -1  || 
 				globalUri.indexOf("registration")> -1  ||
 				globalUri.indexOf("your_account")> -1 ||
 				globalUri.indexOf("search")> -1 ||
@@ -192,14 +196,18 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 				navigation = thisDept;
 			}
 			ctx.setAttribute("navigation", navigation);
-        } catch (FDResourceException e) {
+		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 
 	}
 
-    private ContentNodeModel findParentOfCategory(String catId) throws FDNotFoundException {
-        ContentNodeModel categoryNode = ContentFactory.getInstance().getContentNode(catId);
+	private ContentNodeModel findContentNode (String deptId) throws FDResourceException {
+		return ContentFactory.getInstance().getContentNode(deptId);
+	}
+
+	private ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
+		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNode(catId);
 		ContentNodeModel dept = null;
 		if (categoryNode instanceof RecipeCategory) {
 			dept = RecipeDepartment.getDefault();
@@ -210,7 +218,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 	}
 
 	private String checkSuperDepartmentRelation(ContentNodeModel thisDeptObj, Map<String, String> relatedDepartmentIds) {
-
+	
 		for (String id : relatedDepartmentIds.keySet()) {
 			if (id.equals(thisDeptObj.getContentName())) {
 				return relatedDepartmentIds.get(id);

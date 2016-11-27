@@ -3,7 +3,6 @@ FreshDirect.standingorder.USQPopupOpen = false;
 FreshDirect.standingorder.isItSOAlcoholPopup = false;
 FreshDirect.standingorder.alcoholVerified = "N";
 FreshDirect.standingorder.healthWarningCookie = null;
-var $jq = $jq || FreshDirect.libs.$ || window.jQuery;
 /* refactor these addToSo calls to make them all one */
 function addToSoEvenBetter($clickedButton) {
 	var that = $clickedButton;
@@ -27,7 +26,7 @@ $jq('button[data-component="addToSOButton"]').on('click', function() {
 });
 
 function AddProductToSO(element, ids, that){
-	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){		
 		if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize(element, true, true))){
 			$jq.post('/api/standingOrderCartServlet',
 				{
@@ -101,20 +100,7 @@ function addToSoSuccessHandler($contextElem, data) {
 	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">'+data.name+'</a>');
 	$soResultsCont.find('.so-results-items-total').html(data.productCount+', '+'<span class="total">$'+data.amount+'</span>');
 	$soResultsCont.find('.so-results-changes-required').html(data.message);
-	
-	$jq('#customizePopup').addClass('so-review-success'); 
-	$jq('#customizePopup .so-review-header').text("Added to");
-	$jq('#customizePopup .so-review-date').text(data.name);
-	$jq('#customizePopup .so-review-link').html('<a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
-	$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').remove();
-	if(data.reminderOverlayForNewSo){
-		$jq('#customizePopup .so-review-selected').before('<button type="button" onclick="reviewSOOkHandler()" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
-		$jq('#customizePopup a.so-review-min-not-show-text-link').attr('href','/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id);
-		$jq('#customizePopup a.so-review-min-not-show-go-so').attr('href','/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id);
-	} else {
-		$jq('#customizePopup .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
-	}
-	
+
 	$soResultsCont.toggleClass('so-close');
 	
 	function soResultsClose() {
@@ -177,76 +163,9 @@ $jq('.pdp-evenbetter-soPreShow .cssbutton[data-component="showSOButton"]').on('c
 });
 
 
-//$jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
-//	e.stopPropagation();
-//	window.location = "/quickshop/standing_orders.jsp";
-//	return false;
-//});
+$jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
+	e.stopPropagation();
+	window.location = "/quickshop/standing_orders.jsp";
+	return false;
+});
 
-function disableAlertMinMetSO(){
-	$jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').prop( "disabled", true );
-	postStandingOrderData($jq('#customizePopup .so-select').val().split(':')[0],'turnOffReminderOverlay');
-}
-
-function disableAccidentalAtcSO(){
-	$jq('.so-accidental-atc #so-accidental-atc-checkbox:checked').prop( "disabled", true );
-	postStandingOrderData(0,'turnOffCartOverlayFirsttime');
-}
-
-function addToSONextHandler() {
-	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true)) && $jq("#customizePopup .skucontrol-quantity input.qty").val()!= 0){
-		$jq('#customizePopup').addClass('so-review');
-		getStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'deliveryBegins');
-		$jq('#customizePopup .so-review-selected').text($jq('#customizePopup .so-select option:selected').text());
-		if($jq('#customizePopup .skucontrol-quantity input.qty').val() == 1){
-			itemQuantity = $jq('#customizePopup .skucontrol-quantity input.qty').val() + ' item';
-		} else {
-			itemQuantity = $jq('#customizePopup .skucontrol-quantity input.qty').val() + ' items';
-		}
-		$jq('#customizePopup .rightColumn').append('<div class="so-review-item-total">' + itemQuantity + ' (' + $jq('#customizePopup .skucontrol-quantity .subtotal .subtotal-inner').text() + ')</div>');
-	}
-};
-
-function reviewSOOkHandler(){
-	$jq('#customizePopup').addClass('so-review-min-met-alert');
-}
-
-function getStandingOrderData(ids, action){
-	var dataString = "soId=" + ids[0];
-	$jq.ajax({
-        url: '/api/manageStandingOrder',
-        type: 'GET',
-        data: dataString,
-        success: function(data){
-        	if('deliveryBegins'==action){
-        		if(data.lastError=="MINORDER"){
-        			var totalAfterAdd = $jq("#customizePopup .subtotal-inner").text().replace(/\$/g, '');
-        			totalAfterAdd = Number(totalAfterAdd) + data.amount;
-        			if(totalAfterAdd > data.soSoftLimit){
-        				$jq('#customizePopup .so-review-date').html('<b>Congratulations!</b><br/>Add this item, and the $' + data.soSoftLimit + ' order minimum will be met.').addClass('so-review-date-add');
-        			} else{
-        				$jq('#customizePopup .so-review-date').text('Order Minimum Not Met').addClass('so-review-date-red');
-            			$jq('#customizePopup .so-review-min-details').addClass('show');
-        			}
-        		} else{
-        			$jq('#customizePopup .so-review-date').text(ids[2] + ', ' + ids[3]);
-        			$jq('#customizePopup .so-review-selected').addClass('show');
-        		}
-        		$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show');
-        	}
-        }
- 	});
-}
-
-function postStandingOrderData(id, action){
-	$jq.post('/api/standingOrderCartServlet',
-			{		data: JSON.stringify({
-					actiontype: action,
-					standingOrderId: id,
-					})
-			},function(data){
-				if(action == "turnOffCartOverlayFirsttime"){
-					FreshDirect.standingorder.isSoCartOverlayFirstTime = false;
-				}
-	})	
-}

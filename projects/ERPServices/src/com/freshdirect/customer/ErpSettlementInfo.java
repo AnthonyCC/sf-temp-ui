@@ -2,8 +2,6 @@ package com.freshdirect.customer;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 
@@ -18,8 +16,7 @@ public class ErpSettlementInfo implements Serializable {
 	private boolean settlementFailedAfterSettled;
 	private EnumCardType cardType;
 	
-	@JsonCreator
-	public ErpSettlementInfo ( @JsonProperty("invoiceNumber") String invoiceNumber, @JsonProperty("affiliate") ErpAffiliate affiliate) {
+	public ErpSettlementInfo (String invoiceNumber, ErpAffiliate affiliate) {
 		this.invoiceNumber = invoiceNumber;
 		this.affiliate = affiliate;
 	}

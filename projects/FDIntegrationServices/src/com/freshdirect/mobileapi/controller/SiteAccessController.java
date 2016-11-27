@@ -1,17 +1,22 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -25,13 +30,19 @@ import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class SiteAccessController extends BaseController {
+public class SiteAccessController extends BaseController implements SessionName {
 
-    private static final String ACTION_CHECK_BY_ZIP = "checkbyzipcode";
-    private static final String ACTION_CHECK_OAS_ALERT = "globalalerts";
-    private static final String ACTION_CHECK_BY_ADDRESS = "checkbyaddress";
-    private static final String ACTION_CHECK_BY_ADDRESS_EX = "checkbyaddressEX";
+    private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
+    public static final String ACTION_CHECK_BY_ZIP = "checkbyzipcode";
+    
+    public static final String ACTION_CHECK_OAS_ALERT = "globalalerts";
+
+    public static final String ACTION_CHECK_BY_ADDRESS = "checkbyaddress";
+
+    public static final String ACTION_CHECK_BY_ADDRESS_EX = "checkbyaddressEX";
+    
+    
     protected boolean validateUser() {
         return false;
     }
@@ -42,77 +53,67 @@ public class SiteAccessController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, NoSessionException, JsonException {
-        Message responseMessage = null;
-        if (ACTION_CHECK_BY_ZIP.equals(action)) {
+    	if (ACTION_CHECK_BY_ZIP.equals(action)) {
     		ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class);
-    		responseMessage = checkByZipcode(requestMessage, request, response, user);
-        } else if (ACTION_CHECK_BY_ADDRESS.equals(action)) {
+            model = checkByZipcode(model, requestMessage, request, response);
+        }else if (ACTION_CHECK_BY_ADDRESS.equals(action)) {
         	ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class);
-        	responseMessage = checkByAddress(requestMessage, request, response);
-        } else if (ACTION_CHECK_BY_ADDRESS_EX.equals(action)) {
+            model = checkByAddress(model, requestMessage, request, response);
+        }else if (ACTION_CHECK_BY_ADDRESS_EX.equals(action)) {
         	ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class);
-        	responseMessage = checkByAddressEX(requestMessage, request, response, user);
-        } else if (ACTION_CHECK_OAS_ALERT.equals(action)) {
-            responseMessage = checkOasAlert(request, response);
+            model = checkByAddressEX(model, requestMessage, request, response, user);
+        }else if (ACTION_CHECK_OAS_ALERT.equals(action)) {        	
+            model = checkoasalert(model, request, response);
         }
-    	setResponseMessage(model, responseMessage, user);
         return model;
     }
 
-    private Message checkByZipcode(ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser sessionUser)
-            throws FDException, NoSessionException {
-        FDUserI user = (sessionUser == null) ? null : sessionUser.getFDSessionUser();
-        SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(user);
+
+    /**
+     * @param model
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView checkByZipcode(ModelAndView model, ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response) 
+    			throws FDException, NoSessionException, JsonException  {
+        SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(null);
         ResultBundle resultBundle = tagWrapper.checkByZipcode(requestMessage);
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         Message responseMessage = null;
-        if (isExtraResponseRequested(request)) {
-            if (result.isSuccess()) {
-                AddressModel address = new AddressModel();
-                address.setZipCode(requestMessage.getZipCode());
-                address.setCustomerAnonymousAddress(true);
-                sessionUser.setAddress(address);
-                EnumServiceType serviceType = EnumServiceType.getEnum(requestMessage.getServiceType());
-                Visitor messageResponse = formatVisitorMessage(requestMessage.getZipCode(), serviceType, requestMessage, resultBundle);
-                messageResponse.setLogin(createLoginResponseMessage(sessionUser));
-                messageResponse.setConfiguration(getConfiguration(sessionUser));
-                messageResponse.setStatus(Message.STATUS_SUCCESS);
-                responseMessage = messageResponse;
-            } else {
-                EnumServiceType serviceType = EnumServiceType.getEnum(requestMessage.getServiceType());
-                Visitor messageResponse = formatVisitorMessage(requestMessage.getZipCode(), serviceType, requestMessage, resultBundle);
-                messageResponse.setStatus(Message.STATUS_FAILED);
-                messageResponse.addErrorMessages(result.getErrors(), sessionUser);
-                responseMessage = messageResponse;
-            }
+        SessionUser user = null;
+        if (result.isSuccess()) {
+            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+            user = getUserFromSession(request, response);
+            user.setUserContext();
+            user.setEligibleForDDPP();
+        	//Create a new Visitor object.
+            responseMessage = formatVisitorMessage(user, requestMessage, resultBundle);
+            resetMobileSessionData(request);
+            
         } else {
-            if (result.isSuccess()) {
-                request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
-                sessionUser = getUserFromSession(request, response);
-                sessionUser.setUserContext();
-                sessionUser.setEligibleForDDPP();
-                // Create a new Visitor object.
-                responseMessage = formatVisitorMessage(sessionUser, requestMessage, resultBundle);
-                resetMobileSessionData(request);
-            } else {
-                responseMessage = getErrorMessage(result, request);
-            }
+            responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
-
-        return responseMessage;
+        setResponseMessage(model, responseMessage, user);
+        return model;
     }
+    
+    private ModelAndView checkoasalert(ModelAndView model, HttpServletRequest request, HttpServletResponse response) 
+			throws FDException, NoSessionException, JsonException  {
+	    Message responseMessage = new Message();	     
+	    SessionUser user = null;   
+	    setResponseMessage(model, responseMessage, user);
+	    return model;
+}
 
-    private Message checkOasAlert(HttpServletRequest request, HttpServletResponse response) {
-        Message responseMessage = new Message();
-        return responseMessage;
-    }
-
-    private Message checkByAddress(ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response) 
-			throws FDException, NoSessionException {
+    private ModelAndView checkByAddress(ModelAndView model, ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response) 
+			throws FDException, NoSessionException, JsonException  {
 		SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(null);
 		ResultBundle resultBundle = tagWrapper.checkByAddress(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
@@ -133,11 +134,12 @@ public class SiteAccessController extends BaseController {
 		    responseMessage = getErrorMessage(result, request);
 		}
 		responseMessage.addWarningMessages(result.getWarnings());
-		return responseMessage;
+		setResponseMessage(model, responseMessage, user);
+		return model;
     }
-
-    private Message checkByAddressEX(ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) 
-			throws FDException, NoSessionException {
+    
+    private ModelAndView checkByAddressEX(ModelAndView model, ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) 
+			throws FDException, NoSessionException, JsonException  {
 		SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(user.getFDSessionUser());
 		ResultBundle resultBundle = tagWrapper.checkByAddress(requestMessage, ACTION_CHECK_BY_ADDRESS_EX);
 		ActionResult result = resultBundle.getActionResult();
@@ -157,38 +159,40 @@ public class SiteAccessController extends BaseController {
 		responseMessage = formatVisitorMessageNone(result);	
 		}		
 		responseMessage.addWarningMessages(result.getWarnings());
-		return responseMessage;
+		setResponseMessage(model, responseMessage, user);
+		return model;
     }
     
-    private Visitor formatVisitorMessage(SessionUser user, ZipCheck requestMessage, ResultBundle resultBundle) {
-        return formatVisitorMessage(user.getZipCode(), user.getServiceType(), requestMessage, resultBundle);
-    }
+    private Message formatVisitorMessage(SessionUser user, ZipCheck requestMessage, ResultBundle resultBundle) throws FDException {
+        Message responseMessage = null;
 
-    private Visitor formatVisitorMessage(String zipCode, EnumServiceType serviceType, ZipCheck requestMessage, ResultBundle resultBundle) {
-        Visitor responseMessage = new Visitor();
-        responseMessage.setZipCode(zipCode);
-        responseMessage.setServiceType(serviceType);
+        responseMessage = new Visitor();
+        ((Visitor) responseMessage).setZipCode(user.getZipCode());
+        ((Visitor) responseMessage).setServiceType(user.getServiceType());
         EnumDeliveryStatus dlvStatus = (EnumDeliveryStatus)resultBundle.getExtraData(
         					SiteAccessControllerTagWrapper.REQUESTED_SERVICE_TYPE_DLV_STATUS);
-        responseMessage.setDeliveryStatus(dlvStatus != null ? dlvStatus.getName() : "");
+        ((Visitor) responseMessage).setDeliveryStatus(dlvStatus != null ? dlvStatus.getName() : "");
                 
-        responseMessage.setAvailableServiceTypes((Set)resultBundle.getExtraData(
-				SiteAccessControllerTagWrapper.AVAILABLE_SERVICE_TYPES));
-
+        ((Visitor) responseMessage).setAvailableServiceTypes((Set)resultBundle.getExtraData(
+				SiteAccessControllerTagWrapper.AVAILABLE_SERVICE_TYPES));     
+                
+        //AddressModel address = user.getAddress();
         if(requestMessage.getAddress1() != null){
-        	responseMessage.setAddress1(requestMessage.getAddress1());
-        	responseMessage.setApartment(requestMessage.getApartment());
-        	responseMessage.setCity(requestMessage.getCity());
-        	responseMessage.setState(requestMessage.getState());
+        	((Visitor) responseMessage).setAddress1(requestMessage.getAddress1());
+        	((Visitor) responseMessage).setApartment(requestMessage.getApartment());
+        	((Visitor) responseMessage).setCity(requestMessage.getCity());
+        	((Visitor) responseMessage).setState(requestMessage.getState());
+        	
         }
         return responseMessage;
     }
-
-    private Message formatVisitorMessageNone(ActionResult result) {
-        Visitor responseMessage = new Visitor();
+    
+    private Message formatVisitorMessageNone(ActionResult result) throws FDException {
+        Message responseMessage = null;
+        responseMessage = new Visitor();
         responseMessage.setStatus(Message.STATUS_FAILED);
-        responseMessage.addErrorMessages(result.getErrors(), null);
-        responseMessage.setServiceType(EnumServiceType.NONE);
+        responseMessage.addErrorMessages(result.getErrors(), null);        
+        ((Visitor) responseMessage).setServiceType(EnumServiceType.getEnum("NONE"));        
         return responseMessage;
     }
 }

@@ -8,14 +8,13 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.ReceiptData;
@@ -48,8 +47,6 @@ public class ReceiptBoxService {
     private static final String REMOVE_GIFT_CARD_URL_PARAMETER = "?action=removeGiftCard";
     private static final String ORDER_TOTAL_TEXT = "ORDER TOTAL";
     private static final String ORDER_ESTIMATED_TOTAL_TEXT = "ESTIMATED TOTAL";
-    private static final String ORDER_TOTAL_TEXT_MOD56 = "Order Total";
-    private static final String ORDER_ESTIMATED_TOTAL_TEXT_MOD56 = "Est. Order Total";
     private static final String CREDITS_TEXT = "Credit Applied";
     private static final String CREDITS_ID = "credits";
     private static final String DISCOUNT_ID = "discount";
@@ -62,7 +59,6 @@ public class ReceiptBoxService {
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String TIP_TEXT = "Optional Tip";
     private static final String TIP_ID = "tip";
-    private static final String ORDER_FREE_TRIAL_MSG = "ORDER_FREE_TRIAL_MSG";
 
     private static final ReceiptBoxService INSTANCE = new ReceiptBoxService();
 
@@ -94,22 +90,15 @@ public class ReceiptBoxService {
             receiptBox.add(data);
         }
     }
-    
+
     public void populateDeliveryChargeToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order, FDUserI user) {
-    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaivedByDlvPass(EnumChargeType.DELIVERY) && null ==order.getDeliveryPassId();
-    	
-        if (order.isDlvPassApplied() || freeTrialOptinBasedDPApplied) {
+        if (order.isDlvPassApplied()) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(DELIVERY_CHARGE_ID);
             data.setText(DELIVERY_CHARGE_NAME);
             String deliveryPassAppliedMessage = DeliveryPassUtil.getDlvPassAppliedMessage(user);
             data.setValue(deliveryPassAppliedMessage);
-            
-            if(freeTrialOptinBasedDPApplied) {
-            	data.getOther().put(ORDER_FREE_TRIAL_MSG, freeTrialOptinBasedDPApplied);
-            }
             receiptBox.add(data);
-            
         } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
             if (order.isChargeWaived(EnumChargeType.DELIVERY)) {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
@@ -214,14 +203,7 @@ public class ReceiptBoxService {
         }
         receiptBox.add(data);
     }
-    
-    public void populateSaveAmountBox(ReceiptData receiptData, FDOrderI order) {
-    	double saving = order.getSaveAmount(true);
-    	if (saving > 0) {
-	         receiptData.setSaveAmount(JspMethods.formatPrice(saving));
-    	}
-    	
-    }
+
     public void populateDiscountsToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order) {
         if (order.getTotalDiscountValue() >= 0) {
             final List<ErpDiscountLineModel> discountLineModels = order.getDiscounts();
@@ -256,27 +238,15 @@ public class ReceiptBoxService {
         }
     }
 
-    public void populateOrderTotalToBox(ReceiptData receiptData, FDOrderI order, FDUserI user) {
+    public void populateOrderTotalToBox(ReceiptData receiptData, FDOrderI order) {
         final String totalValue = JspMethods.formatPrice(order.getTotal());
-        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.modOrderConfirmPageRedesign, user)) {
-            if (order.isEstimatedPrice()) {
-            	receiptData.setEstimatedTotal(true);
-                receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT_MOD56 + ESTIMATED_PRICE_MARK);
-            } else {
-            	receiptData.setEstimatedTotal(false);
-                receiptData.setTotalLabel(ORDER_TOTAL_TEXT_MOD56);
-            }
-            receiptData.setTotal(totalValue);
+
+        if (order.isEstimatedPrice()) {
+            receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT);
+            receiptData.setTotal(totalValue + ESTIMATED_PRICE_MARK);
         } else {
-            if (order.isEstimatedPrice()) {
-            	receiptData.setEstimatedTotal(true);
-                receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT);
-                receiptData.setTotal(totalValue + ESTIMATED_PRICE_MARK);
-            } else {
-            	receiptData.setEstimatedTotal(false);
-                receiptData.setTotalLabel(ORDER_TOTAL_TEXT);
-                receiptData.setTotal(totalValue);
-            }
+            receiptData.setTotalLabel(ORDER_TOTAL_TEXT);
+            receiptData.setTotal(totalValue);
         }
     }
 

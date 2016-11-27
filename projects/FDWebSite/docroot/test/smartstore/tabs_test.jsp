@@ -9,10 +9,10 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.SortedMap"%>
 <%@page import="java.util.TreeMap"%>
-<%@page import="com.freshdirect.storeapi.ContentNodeI"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.cms.ContentNodeI"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
@@ -135,7 +135,7 @@
 	}
 %>
 <%@page import="com.freshdirect.smartstore.TabRecommendation"%>
-<%@page import="java.util.Set"%><html lang="en-US" xml:lang="en-US">
+<%@page import="java.util.Set"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>CART TABS TEST PAGE</title>
@@ -299,7 +299,7 @@ p.fi{margin:20px 0px;}
 	   					Triggering item: <%
 	   					if (source != null) {
 	   				%><span style="font-weight: normal;" title="<%= source.getFullName() + " (" +
-	   								source.getContentKey().getType().name() + ")" %>"><%=source.getContentKey().getId()%></span><%
+	   								source.getContentKey().getType().getName() + ")" %>"><%=source.getContentKey().getId()%></span><%
 	   					} else {
 	   				%><span class="not-found">&lt;unidentified&gt;</span><%
 	   					}

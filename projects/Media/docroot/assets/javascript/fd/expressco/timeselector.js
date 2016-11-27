@@ -10,8 +10,7 @@ var FreshDirect = FreshDirect || {};
 
   var timeslot = Object.create(DRAWER_WIDGET,{
     signal:{
-      value:'timeslot',
-      writable: true
+      value:'timeslot' // TODO
     },
     contentTemplate: {
       value: expressco.timeselectorcontent
@@ -32,7 +31,7 @@ var FreshDirect = FreshDirect || {};
     },
     expandDefaultColumn: {
       value: function(timeSlot){
-        if(!timeSlot || !timeSlot.getID){
+        if(!timeSlot){
           return;
         }
 
@@ -60,46 +59,33 @@ var FreshDirect = FreshDirect || {};
         }
       }
     },
-    renderContent: {
-    	value: function(drawerTemplateData) {
-			$(timeslot.contentHolder()).html('<p class="center">Loading...</p>');
-			this.getActualTimeSlotAjax.always( function() {
-				$(timeslot.contentHolder()).html(timeslot.contentTemplate(drawerTemplateData));
-				var drawerContent = $(timeslot.contentHolder() + ' [data-component="timeselectorcontent"]');
-				drawerContent.html(this.timeSlotJspData && this.timeSlotJspData.html);
-				if (this.timeSlotJspData && !this.timeSlotJspData.error) {
-					timeslot.initTimeSlot();
-				}
-				$(timeslot.contentHolder()).show();
-			}.bind(this));
-    	}
+    renderContent:{
+      value:function(drawerTemplateData){
+        $(timeslot.contentHolder()).html('');
+        $(timeslot.contentHolder()).html(timeslot.contentTemplate(drawerTemplateData));
+      }
     },
     getActualTimeSlotJsp:{
       value:function(requestConfig){
-        this.getActualTimeSlotAjax = $.ajax(requestConfig);
-        this.hasRenderedContent = false;
-        
-        this.getActualTimeSlotAjax.fail(function(){
-        	this.timeSlotJspData = {
-    			error: true,
-    			html: '<p class="error">Something went wrong. Please refresh the page to continue.</p>'
-        	};
-          return false;
-        }.bind(this));
+        var ajax = Bacon.fromPromise($.ajax(requestConfig));
+        var drawerContent = timeslot.contentHolder() + ' [data-component="timeselectorcontent"]';
 
-        this.getActualTimeSlotAjax.done(function(ajaxData) {
-        	this.timeSlotJspData = {
-    			error: false,
-    			html: ajaxData
-        	};
-        }.bind(this));
+        ajax.onError(function(){
+          $(drawerContent).html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
+          return false;
+        });
+
+        ajax.onValue(function(ajaxData){
+          $(drawerContent).html(ajaxData);
+          timeslot.initTimeSlot();
+        });
       }
     },
     initTimeSlot:{
-      value: function() {
+      value:function(){
         var note;
 
-        if (FreshDirect.fdTSDisplay) {
+        if(FreshDirect.fdTSDisplay){
           window.fdTSDisplay = new FreshDirect.fdTSDisplay("fdTSDisplay");
         }
 
@@ -107,7 +93,7 @@ var FreshDirect = FreshDirect || {};
 
         note = $(timeslot.contentHolder()).find('.timeslot-note');
 
-        if (note.length) {
+        if (note.size()) {
           $('.timeslot-note').remove();
           note.insertBefore($('#ec-drawer'));
         }
@@ -115,47 +101,35 @@ var FreshDirect = FreshDirect || {};
     },
     renderPreview:{
       value:function(data){
-        if (fd.mobWeb) {
-          data.mobWeb = true;
-        }
         $(timeslot.previewHolder()).html(timeslot.previewTemplate(data));
       }
     },
     callback:{
-      value:function( value, signal) {
-    	  if (this.isOpenSignal(signal)) {
-    		  if (!this.hasRenderedContent) {
-    			  timeslot.renderContent(this.data);
-    			  this.hasRenderedContent = true;
-    		  }
-    	  } else {
-    		  this.data = value;
-    		  timeslot.renderPreview(value);
-    		  timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
-    		  
-    		  if ($("#soFreq2").length > 0) {
-    			  $("#soFreq2").select2({
-    				  minimumResultsForSearch: Infinity
-    			  });
-    		  };
-    	  }
+      value:function( value ) {
+        timeslot.renderContent(value);
+        timeslot.renderPreview(value);
+        timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
+        if($("#soFreq").length > 0){
+        	$("#soFreq").select2({
+				minimumResultsForSearch: Infinity 
+        	});
+        };
+        if($("#soFreq2").length > 0){
+        	$("#soFreq2").select2({
+				minimumResultsForSearch: Infinity 
+        	});
+        };
       }
     },
     serialize:{
-      value:function(timeslotId){
+      value:function(){
         var ser = {};
-        if (timeslotId && fd.mobWeb) {
-          ser['deliveryTimeslotId'] = timeslotId
-        } else {
-          var deliveryId = $("[fdform='timeslot'] #deliveryTimeslotId").val();
-          ser['deliveryTimeslotId'] = deliveryId;
 
-          $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
-            ser[k.name] = k.value;
-          });
-          ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="button"][value="'+deliveryId+'"]').data('sofirstdate')||'';
-        }
-
+        $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
+          ser[k.name] = k.value;
+        });
+        ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="radio"]:checked').data('sofirstdate')||''; 
+        
         DISPATCHER.signal('server', {
           url: '/api/expresscheckout/timeslot',
           method: 'POST',
@@ -167,24 +141,9 @@ var FreshDirect = FreshDirect || {};
           }
         });
       }
-    },
-    selectedTimeslot:{
-      value: function() {
-        return Object.create(FreshDirect.common.signalTarget,{
-          signal: {
-            value: 'selectedTimeslotId'
-          },
-          callback:{
-            value:function( selectedTimeslotId ) {
-              timeslot.serialize(selectedTimeslotId);
-            }
-          }
-        });
-      }
     }
   });
 
-  timeslot.selectedTimeslot().listen();
   timeslot.listen();
 
   $(document).on('click', timeslot.contentHolder() + " [data-component='timeslotchangebutton']", timeslot.serialize.bind(timeslot));

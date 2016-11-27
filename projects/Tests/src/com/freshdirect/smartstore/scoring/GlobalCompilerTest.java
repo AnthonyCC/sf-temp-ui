@@ -2,7 +2,6 @@ package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,10 +18,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModelImpl;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
@@ -52,9 +49,7 @@ public class GlobalCompilerTest extends TestCase {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/GlobalCompilerTest.xml");
 
-        CmsManager.setInstance(new CmsManager(service,
-                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
-
+        CmsManager.setInstance(new CmsManager(service, null));
     	
         input = new MockDataAccess() {
             public List fetchContentNodes(SessionInput input,  String name) {
@@ -72,14 +67,14 @@ public class GlobalCompilerTest extends TestCase {
                     return set;
                 }
                 if ("content".equals(name)) {
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a1")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a3")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3")));
                     return set;
                 }
                 if ("content2".equals(name)) {
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "bbb")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "bbb")));
                     return set;
                 }
                 return null;

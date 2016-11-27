@@ -3,13 +3,11 @@ package com.freshdirect.affiliate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.dao.ErpAffiliateDAO;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.enums.EnumModel;
@@ -20,9 +18,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
  */
 public class ErpAffiliate extends EnumModel {
 
-	private static final long serialVersionUID = -8959977127099286821L;
-
-	private static Map<String, ErpAffiliate> enums = null;
+	private static Map enums = null;
 
 	public static final String CODE_FD = "FD";
 	public static final String CODE_WBL = "WBL";
@@ -33,22 +29,17 @@ public class ErpAffiliate extends EnumModel {
 
 	private final String depositConditionType;
 	private final String taxConditionType;
-	private final Map<EnumCardType, String> merchants; //PaymentType (VISA, MC, ECHECK, AMEX and DISC)-> marchant
-	@JsonProperty("paymentechTxDivisions")
-	private final Set<String> paymentechTxDivisions;
+	private final Map merchants; //PaymentType (VISA, MC, ECHECK, AMEX and DISC)-> marchant
+	private final Set paymentechTxDivisions;
 
-	public ErpAffiliate(@JsonProperty("code") String code, @JsonProperty("name") String name,
-			@JsonProperty("description") String description, @JsonProperty("taxConditionType") String taxConditionType,
-			@JsonProperty("depositConditionType") String depositConditionType,
-			@JsonProperty("merchants") Map<EnumCardType, String> merchants, 
-			@JsonProperty("paymentechTxDivisions") Set<String> paymentechTxDivisions ) {
+	public ErpAffiliate(String code, String name, String description, String taxConditionType, String depositConditionType, Map merchants, Set paymentechTxDivisions) {
 		super(code, name, description);
 		this.depositConditionType = depositConditionType;
 		this.taxConditionType = taxConditionType;
 		this.merchants = Collections.unmodifiableMap(merchants);
 		this.paymentechTxDivisions = Collections.unmodifiableSet(paymentechTxDivisions);
 	}
-	
+
 	public String getDepositConditionType() {
 		return depositConditionType;
 	}
@@ -65,14 +56,14 @@ public class ErpAffiliate extends EnumModel {
 		return (String) this.merchants.get(cardType);
 	}
 	
-	public String getPaymentechTxDivision() {
-		return this.paymentechTxDivisions.isEmpty() ? "" : this.paymentechTxDivisions.iterator().next();
+	public String getPayementechTxDivision() {
+		return this.paymentechTxDivisions.isEmpty() ? "" : (String)this.paymentechTxDivisions.iterator().next();
 	}
 	
 	public static ErpAffiliate getAffiliateByTxDivision(String division){
 		loadEnums();
-		for(Iterator<ErpAffiliate> i = enums.values().iterator(); i.hasNext(); ) {
-			ErpAffiliate aff = i.next();
+		for(Iterator i = enums.values().iterator(); i.hasNext(); ) {
+			ErpAffiliate aff = (ErpAffiliate) i.next();
 			if(aff.paymentechTxDivisions.contains(division)){
 				return aff;
 			}
@@ -83,8 +74,8 @@ public class ErpAffiliate extends EnumModel {
 	
 	public static ErpAffiliate getAffiliateByMerchant(EnumCardType paymentType, String merchant) {
 		loadEnums();
-		for(Iterator<ErpAffiliate> i = enums.values().iterator(); i.hasNext(); ) {
-			ErpAffiliate aff = i.next();
+		for(Iterator i = enums.values().iterator(); i.hasNext(); ) {
+			ErpAffiliate aff = (ErpAffiliate) i.next();
 			if(aff.merchants.containsKey(paymentType) && aff.merchants.containsValue(merchant)) {
 				return aff;
 			}
@@ -93,13 +84,13 @@ public class ErpAffiliate extends EnumModel {
 		return getPrimaryAffiliate();
 	}
 	
-	public Map<EnumCardType, String> getMerchants() {
+	public Map getMerchants() {
 		return this.merchants;
 	}
 	
 	public static ErpAffiliate getPrimaryAffiliate() {
 		loadEnums();
-		return enums.get(CODE_FD);
+		return (ErpAffiliate) enums.get(CODE_FD);
 	}
 	public static ErpAffiliate getPrimaryAffiliate(EnumEStoreId eStore) {
 		loadEnums();
@@ -108,25 +99,25 @@ public class ErpAffiliate extends EnumModel {
 
 	public static ErpAffiliate getEnum(String code) {
 		loadEnums();
-		return enums.get(code);
+		return (ErpAffiliate) enums.get(code);
 	}
 
-	public static Map<String, ErpAffiliate> getEnumMap() {
+	public static Map getEnumMap() {
 		loadEnums();
 		return Collections.unmodifiableMap(enums);
 	}
 
-	public static List<ErpAffiliate> getEnumList() {
+	public static List getEnumList() {
 		loadEnums();
-		return Collections.unmodifiableList(new ArrayList<ErpAffiliate>(enums.values()));
+		return Collections.unmodifiableList(new ArrayList(enums.values()));
 	}
 
 	private static void loadEnums() {
 		if (enums == null) {
-			enums = new HashMap<String, ErpAffiliate>();
-			List<ErpAffiliate> lst = loadEnums(ErpAffiliateDAO.class);
-			for (Iterator<ErpAffiliate> i = lst.iterator(); i.hasNext();) {
-				ErpAffiliate e = i.next();
+			enums = new HashMap();
+			List lst = loadEnums(ErpAffiliateDAO.class);
+			for (Iterator i = lst.iterator(); i.hasNext();) {
+				ErpAffiliate e = (ErpAffiliate) i.next();
 				enums.put(e.getCode(), e);
 			}
 		}

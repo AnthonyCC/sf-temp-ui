@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -17,7 +18,6 @@ import com.freshdirect.mobileapi.model.data.HelpTopic;
 import com.freshdirect.mobileapi.model.data.HelpTopics;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
-import com.freshdirect.storeapi.application.CmsManager;
 
 public class HelpController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(HelpController.class);
@@ -76,10 +76,8 @@ public class HelpController extends BaseController {
         } else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
             try {
                 String recallContent = ProductUtil.readContent(PRODUCT_RECALLS_PATH);
-                if(!isExtraResponseRequested(request)){
-                	StringBuilder sb = new StringBuilder(recallContent);
-                	recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
-                }
+                StringBuilder sb = new StringBuilder(recallContent);
+                recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
                 SafetyDetails prodRecall = createSafetyDetails("Product Recalls", "prodRecall", recallContent);
                 SafetyDetails cookingStorage = createSafetyDetails("Cooking & Storage", "cookStorage", ProductUtil.readContent(COOKING_STOREAGE_PATH));
                 SafetyDetails foodSafety = createSafetyDetails("Handling Food Safety", "foodSafety", ProductUtil.readContent(HANDLING_FOOD_SAFETY_PATH));
@@ -98,7 +96,7 @@ public class HelpController extends BaseController {
                 data = "";
             }
         } else {
-            if (isExtraResponseRequested(request)) {
+            if (isCheckLoginStatusEnable(request)) {
                 data = ProductUtil.readContent(FDX_WEB_HELP_PATH);
             } else {
                 if (EnumEStoreId.FDX.equals(CmsManager.getInstance().getEStoreEnum())) {

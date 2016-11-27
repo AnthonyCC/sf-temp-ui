@@ -3,16 +3,15 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-    <tmpl:get name="seoMetaTag"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <title><tmpl:get name='title'/></title>
+	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+        <fd:javascript src="/assets/javascript/common_javascript.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(585,400); window.focus();" topmargin="10" marginheight="10">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 <center>
 <a name="top"></a>
@@ -22,8 +21,8 @@
 	<td colspan="2"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="freshdirect    (close window)"></a></td>
 </tr>-->
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="10"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="10"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="260" height="10"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="260" height="10"></td>
 </tr>
 <tr valign="top">
 	<td colspan="2" align="center">
@@ -35,7 +34,7 @@
 	<%-- content ends above here--%>
 	</td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td></tr>
 <!-- APPDEV-4198 POPUP debranding FDX project
 <tr>
 	<td><a href="#top">Back to top</a></td>
@@ -43,6 +42,5 @@
 </tr>-->
 </table>
 </center>
-<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </body>
 </html>

@@ -25,11 +25,10 @@ public enum EnumQuickShopFilteringValue implements FilteringValue {
 	ORGANIC("organic","Organic",4,false,"PREFERENCES",false,false,false),
 	ON_SALE("onSale","Sale Items",4,false,"PREFERENCES",false,false,false),
 
-	BRAND("brand","Brand",5,false,"BRAND", false,false,false),
-
 	YOUR_LISTS("yourLists", "YOUR LISTS,", 1, true, "YOUR LISTS", false, false, false),
 	STARTER_LISTS("starterLists", "STARTER LISTS,", 1, true, "STARTER LISTS", false,false,false);
-
+	
+	
 	private String name;
 	private String displayName;
 	private boolean multiSelect; //is the given domain supporting multiselect. If yes then we need to create the domain's menus before filtering

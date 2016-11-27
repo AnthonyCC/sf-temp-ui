@@ -26,7 +26,6 @@ import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -34,7 +33,6 @@ import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.ExpiringReference;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -61,7 +59,7 @@ public class CrmManager {
 
 		private CrmAgentList populateAgentsCache(){
 			try {
-					return CrmManager.getInstance().getCrmManagerSB().getAllAgents();
+				return CrmManager.getInstance().getCrmManagerSB().getAllAgents();
 			} catch (RemoteException e) {
 				LOGGER.info("Cannot talk to CrmManagerSB");
 			} catch(FDResourceException fe){
@@ -75,7 +73,7 @@ public class CrmManager {
 
 		protected List<CrmQueueInfo> load() {
 			try {
-					return getCrmManagerSB().getQueueOverview();
+				return getCrmManagerSB().getQueueOverview();
 			} catch (RemoteException ex) {
 				throw new FDRuntimeException(ex);
 			} catch (FDResourceException ex) {
@@ -97,7 +95,7 @@ public class CrmManager {
 				CrmManagerHome home =
 					(CrmManagerHome) manager.serviceLocator.getRemoteHome("freshdirect.crm.Manager");
 				CrmManagerSB sb = home.create();
-					manager.setOperations(sb.getOperations());
+				manager.setOperations(sb.getOperations());
 			} catch (NamingException e) {
 				throw new FDResourceException(e);
 			} catch (CreateException e) {
@@ -112,7 +110,7 @@ public class CrmManager {
 	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk)
 		throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException {
 		try {
-				return this.getCrmManagerSB().createAgent(agent, userPk);
+			return this.getCrmManagerSB().createAgent(agent, userPk);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -120,7 +118,7 @@ public class CrmManager {
 
 	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException {
 		try {
-				this.getCrmManagerSB().updateAgent(agent, userPk);
+			this.getCrmManagerSB().updateAgent(agent, userPk);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -128,8 +126,7 @@ public class CrmManager {
 
 	public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getAgentByPk(agentPk);
-				
+			return this.getCrmManagerSB().getAgentByPk(agentPk);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		} catch (FinderException e) {
@@ -164,10 +161,18 @@ public class CrmManager {
 		}*/
 		return agentListCache.get();
 	}
+
+	public Map<CrmAgentRole, List<String>> getAllAgentsFromLDAP(boolean useCache) throws FDResourceException {
+		if (useCache){
+			return CrmLdapAccessor.getLdapGroupMembersMap();
+		}
+		CrmLdapAccessor.init();
+		return CrmLdapAccessor.getLdapGroupMembersMap();
+	}
 	
 	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().findCases(template);
+			return this.getCrmManagerSB().findCases(template);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
@@ -179,7 +184,7 @@ public class CrmManager {
 
 	public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getCSROverview();
+			return this.getCrmManagerSB().getCSROverview();
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
@@ -206,7 +211,7 @@ public class CrmManager {
 
 	public CrmAgentModel loginAgent(String username, String password) throws CrmAuthenticationException, FDResourceException {
 		try {
-				return this.getCrmManagerSB().loginAgent(username, password);
+			return this.getCrmManagerSB().loginAgent(username, password);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -214,7 +219,7 @@ public class CrmManager {
 
 	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
 		try {
-				return this.getCrmManagerSB().createCase(caseModel);
+			return this.getCrmManagerSB().createCase(caseModel);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -222,7 +227,7 @@ public class CrmManager {
 
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException {
 		try {
-				return this.getCrmManagerSB().createSystemCase(caseInfo);
+			return this.getCrmManagerSB().createSystemCase(caseInfo);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -231,7 +236,7 @@ public class CrmManager {
 	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction caseAction, PrimaryKey agentPk)
 		throws FDResourceException, CrmAuthorizationException {
 		try {
-				this.getCrmManagerSB().updateCase(caseInfo, caseAction, agentPk);
+			this.getCrmManagerSB().updateCase(caseInfo, caseAction, agentPk);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -239,7 +244,7 @@ public class CrmManager {
 
 	public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().lockCase(agentPK, casePK);
+			return this.getCrmManagerSB().lockCase(agentPK, casePK);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -247,7 +252,7 @@ public class CrmManager {
 
 	public void unlockCase(PrimaryKey casePK) throws FDResourceException {
 		try {
-				this.getCrmManagerSB().unlockCase(casePK);
+			this.getCrmManagerSB().unlockCase(casePK);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -255,7 +260,7 @@ public class CrmManager {
 
 	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().closeAutoCase(casePK);
+			return this.getCrmManagerSB().closeAutoCase(casePK);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -264,7 +269,7 @@ public class CrmManager {
 
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException {
 		try {
-				this.getCrmManagerSB().downloadCases(agentPK, queue, subject, numberToDownload);
+			this.getCrmManagerSB().downloadCases(agentPK, queue, subject, numberToDownload);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -288,7 +293,7 @@ public class CrmManager {
 	
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException{
 		try {
-				this.getCrmManagerSB().saveSessionStatus(status);
+			this.getCrmManagerSB().saveSessionStatus(status);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -296,7 +301,7 @@ public class CrmManager {
 	
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException{
 		try {
-				return this.getCrmManagerSB().getSessionStatus(agentPK);
+			return this.getCrmManagerSB().getSessionStatus(agentPK);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -305,7 +310,7 @@ public class CrmManager {
 
 	public PrimaryKey createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException, RemoteException {
 		try {
-				return this.getCrmManagerSB().createLateIssue(lateIssue);
+		   return this.getCrmManagerSB().createLateIssue(lateIssue);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmLateIssuerSB");
 		}
@@ -313,7 +318,7 @@ public class CrmManager {
 
 	public void updateLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException,FinderException, RemoteException {
 		try {
-				this.getCrmManagerSB().updateLateIssue(lateIssue);
+		   this.getCrmManagerSB().updateLateIssue(lateIssue);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmLateIssuerSB");
 		}
@@ -353,7 +358,7 @@ public class CrmManager {
 	}
 	
 	public CrmLateIssueModel getRecentLateIssueForOrder(String orderId) throws FDResourceException {
-			try {	
+			try {
 			return orderId==null ? null 
 				: this.getCrmManagerSB().getRecentLateIssueForOrder(orderId);
 		}catch (RemoteException e) {
@@ -370,9 +375,56 @@ public class CrmManager {
 		}
 	}
 
+	public void incrDeliveryCount(DeliveryPassModel model, 
+								CrmAgentModel agentModel, 
+								int delta, 
+								String note, 
+								String reasonCode, 
+								String saleId) throws FDResourceException, CrmAuthorizationException {
+		try {
+			
+			this.getCrmManagerSB().incrDeliveryCount(model, agentModel, delta, note, reasonCode, saleId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing delivery count.");
+		}
+	}	
+	
+	public void incrExpirationPeriod(DeliveryPassModel model, 
+									CrmAgentModel agentModel, 
+									int noOfDays, 
+									String note, 
+									String reasonCode, 
+									String saleId) throws FDResourceException, CrmAuthorizationException{
+		try {
+			this.getCrmManagerSB().incrExpirationPeriod(model, agentModel, noOfDays, note, reasonCode, saleId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing expiration period.");
+		}
+	}	
+	
+	public void cancelDeliveryPass(DeliveryPassModel model,
+								CrmAgentModel agentModel,
+								String note, 
+								String reasonCode, 
+								String saleId) throws FDResourceException{
+		try {
+			this.getCrmManagerSB().cancelDeliveryPass(model, agentModel, note, reasonCode, saleId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
+		}
+	}	
+
+	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException{
+		try {
+			this.getCrmManagerSB().reactivateDeliveryPass(model);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
+		}
+	}
+
 	public String lookupAccount(String accountNum) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().lookupAccount(accountNum);
+			return this.getCrmManagerSB().lookupAccount(accountNum);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while performing Account Lookup.");
 		}
@@ -380,7 +432,7 @@ public class CrmManager {
 	
 	public List<String> lookupOrders(String accountNum) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().lookupOrders(accountNum);
+			return this.getCrmManagerSB().lookupOrders(accountNum);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while performing Order Lookup.");
 		}
@@ -401,7 +453,7 @@ public class CrmManager {
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID)throws FDResourceException {
 		try {
-				this.getCrmManagerSB().logViewAccount(agent, customerID);
+			this.getCrmManagerSB().logViewAccount(agent, customerID);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while log view account activity.");
 		}
@@ -409,7 +461,7 @@ public class CrmManager {
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID,EnumAccountActivityType activityType, String maskedAcctNumber)throws FDResourceException {
 		try {
-				this.getCrmManagerSB().logViewAccount(agent, customerID, activityType, maskedAcctNumber);
+			this.getCrmManagerSB().logViewAccount(agent, customerID, activityType, maskedAcctNumber);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while log view account activity.");
 		}
@@ -417,7 +469,7 @@ public class CrmManager {
 	
 	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().createCannedText(cannedText);
+			return this.getCrmManagerSB().createCannedText(cannedText);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while creating canned text.");
 		}		
@@ -425,7 +477,7 @@ public class CrmManager {
 
 	public void updateCannedText(ErpCannedText cannedText, String id) throws FDResourceException {
 		try {
-				this.getCrmManagerSB().updateCannedText(cannedText, id);
+			this.getCrmManagerSB().updateCannedText(cannedText, id);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while updating canned text.");
 		}		
@@ -433,7 +485,7 @@ public class CrmManager {
 	
 	public void deleteCannedText(String id) throws FDResourceException {
 		try {
-				this.getCrmManagerSB().deleteCannedText(id);
+			this.getCrmManagerSB().deleteCannedText(id);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while deleting canned text.");
 		}		
@@ -441,15 +493,15 @@ public class CrmManager {
 	
 	public ErpCannedText getCannedTextById(String id) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getCannedTextById(id);
+			return this.getCrmManagerSB().getCannedTextById(id);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting canned text.");
 		}		
 	}
-	
+
 	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getAllCannedTextInCategory(category);
+			return this.getCrmManagerSB().getAllCannedTextInCategory(category);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text in category.");
 		}		
@@ -457,7 +509,7 @@ public class CrmManager {
 
 	public Collection<ErpCannedText> getAllCannedText() throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getAllCannedText();
+			return this.getCrmManagerSB().getAllCannedText();
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text.");
 		}		
@@ -465,8 +517,7 @@ public class CrmManager {
 
 	public Map<String,Set<EnumComplaintDlvIssueType>> getDeliveryIssueTypes(String customerId) throws FDResourceException {
 		try {
-			Map<String,Set<String>> m = null;
-				 m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
+			Map<String,Set<String>> m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
 			Map<String,Set<EnumComplaintDlvIssueType>> t_m = new HashMap<String,Set<EnumComplaintDlvIssueType>>();
 
 			// transform 
@@ -486,7 +537,7 @@ public class CrmManager {
 	
 	public String getLastDeliveredOrder(String customerId) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getLastDeliveredOrder(customerId);
+			return this.getCrmManagerSB().getLastDeliveredOrder(customerId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
@@ -494,7 +545,7 @@ public class CrmManager {
 	
 	public CrmAgentModel getAgentByLdapId(String agentLdapId) throws FDResourceException,CrmAuthenticationException {
 		try {
-				return this.getCrmManagerSB().getAgentByLdapId(agentLdapId);
+			return this.getCrmManagerSB().getAgentByLdapId(agentLdapId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
@@ -505,15 +556,15 @@ public class CrmManager {
 	}
 	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter) throws FDResourceException{
 		try {
-				return this.getCrmManagerSB().getAuthorizations(role, filter);
+			return this.getCrmManagerSB().getAuthorizations(role, filter);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting authorizations.");
 		}
 	}
 	
 	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException {
-		try {	
-				return this.getCrmManagerSB().getOrderForLateCredit(saleId,autoId);
+		try {			
+			return this.getCrmManagerSB().getOrderForLateCredit(saleId,autoId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getOrderForLateCredit.");
 		}
@@ -521,7 +572,7 @@ public class CrmManager {
 	
 	public boolean isCaseCreatedForOrderLateDelivery(String saleId) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().isCaseCreatedForOrderLateDelivery(saleId);
+			return this.getCrmManagerSB().isCaseCreatedForOrderLateDelivery(saleId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
 		}
@@ -529,25 +580,39 @@ public class CrmManager {
 	
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().isOrderCreditedForLateDelivery(saleId);
+			return this.getCrmManagerSB().isOrderCreditedForLateDelivery(saleId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
 		}
 	}
 	
-
+	public DeliveryPassModel getDeliveryPassInfo(String dlvPassId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getDeliveryPassInfoById(dlvPassId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getDeliveryPassInfo.");
+		}
+	}
+	
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {		
 		try {
-				this.getCrmManagerSB().updateAutoLateCredit(autoId, orderId);
+			this.getCrmManagerSB().updateAutoLateCredit(autoId, orderId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting updateAutoLateCredit.");
 		}
 	}
 	
+	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getActiveDP(custId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
+		}
+	}
 	
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {
 		try {
-				this.getCrmManagerSB().updateLateCreditsRejected(autoId, agent);
+			this.getCrmManagerSB().updateLateCreditsRejected(autoId, agent);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}
@@ -555,38 +620,9 @@ public class CrmManager {
 	
 	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().isDlvPassAlreadyExtended(orderId, customerId);
+			return this.getCrmManagerSB().isDlvPassAlreadyExtended(orderId, customerId);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
-		}
-	}
-	
-	public boolean isCRMRestrictionEnabled() throws FDResourceException {
-		try {
-				return this.getCrmManagerSB().isCRMRestrictionEnabled();
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB for isCrmRestrictionEnabled().");
-		}
-	}
-	
-	public boolean isCRMRestrictedForAgent(String ldapId) throws FDResourceException {
-		if(StringUtil.isEmpty(ldapId))
-			return true;
-		
-		try {
-			if(ldapId.toLowerCase().indexOf("crmqa")!=-1) return false;
-			else {
-				String allowedUsers = null;
-					 allowedUsers=this.getCrmManagerSB().getAllowedUsers();
-					
-				if("ALL".equals(allowedUsers)) return false;
-				else  {
-					return allowedUsers.toLowerCase().indexOf(ldapId.toLowerCase())!=-1?false:true;
-				}
-			}
-			
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB for getAllowedUsers().");
 		}
 	}
 	
@@ -596,5 +632,4 @@ public class CrmManager {
 		sc.setToDateStr("12-16-2011 00:00");
 		CrmManager.getInstance().getAuthorizations(null, sc);
 	}
-	
 }

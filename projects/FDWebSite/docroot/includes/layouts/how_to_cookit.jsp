@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -15,7 +15,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final String W_HOW_TO_COOK_IT_TOTAL = "100%";
@@ -93,13 +93,13 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
     Comparator<SkuModel> priceComp = new ProductModel.PriceComparator();
 %>
-    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
+    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
-        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef);
-        if (!(product.isDiscontinued() || product.isUnavailable())) {
+        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef, user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+        if (product.isDiscontinued() || product.isUnavailable()) continue;
         ContentNodeModel prodParent = product.getParentNode(); 
         List<SkuModel> skus = product.getSkus(); 
-        if (!(prodParent==null || !(prodParent instanceof CategoryModel))) {
+        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
 
 	for (ListIterator<SkuModel> li=skus.listIterator(); li.hasNext(); ) {
 		SkuModel sku = li.next();
@@ -111,7 +111,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
         SkuModel sku = null;
         String prodPrice = null;
-        if (!(skuSize==0)) {  // skip this item..it has no skus.  Hmmm?
+        if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
             sku = skus.get(0);  // we only need one sku
         }
@@ -165,9 +165,6 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
         favoriteProducts.append("\" WIDTH=\"8\" HEIGHT=\"1\"></TD>");
         favoritesShow++;
         if (favoritesShow==4) break;  // only show 4 favoites.
-        }
-        }
-        }
 %>
  </logic:iterate>
 <%
@@ -191,14 +188,14 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
     favoriteProducts=null;
     boolean gotAvailProdImg = false;
 %>
-    <logic:iterate id='displayCategory' collection="<%= sortedColl %>" type="com.freshdirect.storeapi.content.CategoryModel">
+    <logic:iterate id='displayCategory' collection="<%= sortedColl %>" type="com.freshdirect.fdstore.content.CategoryModel">
 <%
 		//CategoryModel displayCategory = null;
 		//displayCategory=(CategoryModel)contentNode;
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" border="0"></TD>
+	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4" CLASS="title11"><%=displayCategory.getFullName()%></td></tr>
@@ -217,13 +214,13 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <%
                // get the list of products that are eligible to be prepared for this group
                List<ProductModel> htciProdList = displayCategory.getHowToCookItProducts();
-               if (!(htciProdList==null || htciProdList.size() ==0)) {
+               if (htciProdList==null || htciProdList.size() ==0) continue;
                 col1.setLength(0);
                 productLinks.clear();
                 productPrices.clear();
                 gotAvailProdImg = false;
 %>                
-    <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.storeapi.content.ProductModel">
+    <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
         if (product.isDiscontinued() || product.isUnavailable()) continue;
         CategoryModel prodCategory = (CategoryModel)product.getParentNode(); 
@@ -280,5 +277,4 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <TR VALIGN="TOP">
 	<TD align="center" width="<%=W_HOW_TO_COOK_IT_IMG%>"><%=col1.toString()%></td><%=outputProducts%></TR>
 </Table>
-<%} %>
 </logic:iterate>

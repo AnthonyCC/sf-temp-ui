@@ -1,7 +1,6 @@
 package com.freshdirect.mail.service;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
@@ -70,7 +69,9 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
-		LOGGER.info( "Begin-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
+		LOGGER.info( "Recipient: " + mailTo
+				+ "\nSender: " + mailFrom
+				+ "\nTitle: " + mailTitle);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug( "Recipient: " + mailTo
 				+ "\nSender: " + mailFrom
@@ -86,7 +87,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			mailBody = new XSLTransformer().transform(mailBodyXml, xslPath);
 		} catch (TransformerException ex) {
 			// silently consume it, no point in throwing it back to the queue
-			LOGGER.error("MAILPREPERROR: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle + ":\n", ex);
+			LOGGER.error("XSL transformation failed, consuming message", ex);
 			return;
 		}
 
@@ -94,18 +95,18 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(mailFrom, mailTo, mailCc, mailBcc, mailTitle, mailBody, isHtml, personalLabel);
 		} catch (MessagingException ex) {
-			LOGGER.error("MAILSENDERROR: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle + ":\n", ex);
+			LOGGER.error("Unable to send message, throwing RuntimeException", ex);
 			throw new RuntimeException("Unable to send message: " + ex.getMessage());
 		}
 
-		LOGGER.info( "End-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
-		} else if(msg instanceof ObjectMessage){
+		LOGGER.debug("message sent");
+		}else if(msg instanceof ObjectMessage){
 			boolean gc = false;
 			boolean iphone = false;
 			try {
 				ObjectMessage objMsg = (ObjectMessage)msg;
 				FDFtlEmail fdFtlEmail = (FDFtlEmail)objMsg.getObject();
-				Map<String,Serializable> parameters = fdFtlEmail.getParameters();
+				Map<String,Object> parameters = fdFtlEmail.getParameters();
 				if(null != (String)parameters.get(MailName.GC_FTL_PATH)) {
 					gc = true;
 				}
@@ -125,7 +126,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 				mailBody = processFtl(parameters, gc, iphone);
 				ErpMailSender mailer = new ErpMailSender();
 				mailer.sendMail(mailFrom, mailTo, mailCc, mailTitle, mailBody, isHtml, personalLabel);
-				LOGGER.info( "EndObjectMessage-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
+				LOGGER.debug("message sent");
 			} catch (JMSException e) {
 				LOGGER.error("JMSException trying to send email", e);
 			} catch(TemplateException te){
@@ -152,7 +153,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 	 * @throws IOException
 	 * @throws TemplateException
 	 */
-	private String processFtl(Map<String,Serializable> parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
+	private String processFtl(Map<String,Object> parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
 		String mailBody;
 		BaseTemplateContext context = new BaseTemplateContext(parameters);
 		StringWriter writer = new StringWriter();

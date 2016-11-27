@@ -2,8 +2,6 @@ package com.freshdirect.webapp.ajax.cart.data;
 
 import java.io.Serializable;
 
-import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
-
 public class AddToCartResponseDataItem implements Serializable {
 	
 	private static final long	serialVersionUID	= 5260328381889774679L;
@@ -15,7 +13,6 @@ public class AddToCartResponseDataItem implements Serializable {
 	private int cartlineId;
 	private String productId;
 	private String categoryId;
-    private GoogleAnalyticsData googleAnalyticsData;
 	
 	
 	public AddToCartResponseDataItem() {		
@@ -85,15 +82,7 @@ public class AddToCartResponseDataItem implements Serializable {
 	}
 
 
-    public GoogleAnalyticsData getGoogleAnalyticsData() {
-        return googleAnalyticsData;
-    }
-
-    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
-        this.googleAnalyticsData = googleAnalyticsData;
-    }
-
-    public static enum Status {
+	public static enum Status {
 		SUCCESS, WARNING, ERROR;
 	}
 

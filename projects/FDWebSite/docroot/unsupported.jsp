@@ -9,7 +9,7 @@ final int W_UNSUPPORTED_TOTAL = 765;
 <tmpl:insert template='/common/template/right_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Unsupported browser</tmpl:put>
 <tmpl:put name="seoMetaTag" direct="true">
-<%-- 	<fd:SEOMetaTag title="FreshDirect - Unsupported browser"></fd:SEOMetaTag> --%>
+	<fd:SEOMetaTag title="FreshDirect - Unsupported browser"></fd:SEOMetaTag>
 </tmpl:put>
 
 <tmpl:put name='content' direct='true'>
@@ -20,7 +20,7 @@ final int W_UNSUPPORTED_TOTAL = 765;
                    : request.getHeader("Referer");
 %>
 
-<table role="presentation" width="<%=W_UNSUPPORTED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_UNSUPPORTED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td colspan="2">
 	<fd:IncludeMedia name="/media/editorial/site_pages/lists/unsupported.html">

@@ -1,7 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.model.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.FDProductInfo" %>
 <%@ page import="com.freshdirect.fdstore.FDCachedFactory" %>
 <%@ page import="java.util.*" %>
@@ -10,11 +10,11 @@
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
@@ -26,18 +26,19 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 
 <fd:CheckLoginStatus guestAllowed='true' id="displayTestsUser" />
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>FDCoupon Display Test Page</title>
-
+	
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/yui.jspf" %>
 	<style>
@@ -90,24 +91,24 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 		} else if (productNode.isDiscontinued()) {
 		    throw new JspException("Product Discontinued :"+request.getParameter("productId"));
 		}
-
-
-
+		
+		
+		
 		String tgAction = request.getParameter("action")!=null ? request.getParameter("action") :  "addToCart";
-
+		
 		EnumProductLayout prodPageLayout = productNode.getProductLayout();
-
+		
 		if ( prodPageLayout.canAddMultipleToCart()  ) {
 			tgAction="addMultipleToCart";
 		}
 		if ("true".equals(request.getParameter("ccl"))) {
 			tgAction = "CCL";
 		}
-
-
+		
+		
 		//** values for the shopping cart controller
 		String sPage = FDURLUtil.toDirectURL(FDURLUtil.getCartConfirmPageURI(request, productNode));
-
+		
 		String jspTemplate;
 		if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 			jspTemplate = "/common/template/usq_sidenav.jsp";
@@ -121,29 +122,27 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 				int leadTime = _fdprod.getMaterial().getLeadTime();
 			%>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
-
-    <div id='oas_ProductNote'>
+		
 			<script type="text/javascript">
 				OAS_AD('ProductNote');
 			</script>
-    </div>
-
+		
 		<%} else {%>
 		    <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 		<%}%>
-
-
+		
+		
 		<% if(leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff()) { %>
-			<CENTER><span class="text11"><b>CURRENTLY AVAILABLE - </b></span><span class="errortext text11"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</span>.<br /></CENTER>
+			<CENTER><span class="text11"><b>CURRENTLY AVAILABLE - </b></span><span class="text11rbold text11"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</span>.<br /></CENTER>
 			<span class="text11">To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</span><p />
 		<% } %>
-
+		
 		<fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 		<%  //hand the action results off to the dynamic include
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			String cartMode = CartName.ADD_TO_CART;
 			FDCartLineI templateLine = null ;
-
+			
 			request.setAttribute("actionResult", actionResult);
 			request.setAttribute("user", user);
 			request.setAttribute("productNode", productNode);
@@ -152,15 +151,15 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 		%>
 		<%@ include file="/includes/product/cutoff_notice.jspf" %>
 		<%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
-		<!-- product layout : <%= prodPageLayout.getLayoutPath() %> -->
-
+		<!-- product layout : <%= prodPageLayout.getLayoutPath() %> --> 
+		
 		<jsp:include page="<%= prodPageLayout.getLayoutPath() %>" flush="false"/>
-
+		
 		</fd:FDShoppingCart>
 	</div>
-
+	
 	<hr />
-
+	
 		Orderline Test (PRODUCT context):
 		<div class="test_cont1">
 			<fd:FDShoppingCart id='cart' result='actionResult' source='<%= request.getParameter("fdsc.source")%>' >
@@ -173,9 +172,9 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 				</logic:iterate>
 			</fd:FDShoppingCart>
 		</div>
-
+	
 	<hr />
-
+	
 		Orderline Test (VIEWCART context):
 		<div class="test_cont1">
 			<fd:FDShoppingCart id='cart' result='actionResult' source='<%= request.getParameter("fdsc.source")%>' >
@@ -188,9 +187,9 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 				</logic:iterate>
 			</fd:FDShoppingCart>
 		</div>
-
+	
 	<hr />
-
+	
 		Orderline Test (CHECKOUT context):
 		<div class="test_cont1">
 			<fd:FDShoppingCart id='cart' result='actionResult' source='<%= request.getParameter("fdsc.source")%>' >
@@ -203,14 +202,14 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 				</logic:iterate>
 			</fd:FDShoppingCart>
 		</div>
-
+	
 	<hr />
-
+	
 		Orderline Test (VIEWORDER context):
 		<div class="test_cont1">
 			<fd:FDShoppingCart id='cart' result='actionResult' source='<%= request.getParameter("fdsc.source")%>' >
 				<% FDUserI user = (FDUserI) session.getAttribute(SessionName.USER); %>
-				<logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="idx">
+				<logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="idx">	
 					<div style="margin-left: 8px; text-indent: -8px; font-weight:bold;">
 						<%=orderLine.getDescription()%>
 						<display:FDCoupon coupon="<%= user.getCustomerCoupon(orderLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartline"></display:FDCoupon>
@@ -218,14 +217,14 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 				</logic:iterate>
 			</fd:FDShoppingCart>
 		</div>
-
+	
 	<hr />
-
+	
 	<% FDCustomerCoupon custCoupon = null; %>
 	<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>">
 		<% custCoupon = displayTestsUser.getCustomerCoupon(productInfo.getUpc(), EnumCouponContext.PRODUCT); %>
 	</fd:FDProductInfo>
-
+	
 		FDCouponTag Tests (default Product Context):
 		<div class="test_cont">
 			<div class="fleft" style="width: 40%;">
@@ -238,7 +237,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">showClipBox</th>
@@ -252,7 +251,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" showClipBox="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">isClipped</th>
@@ -266,7 +265,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" isClipped="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">showCouponImage</th>
@@ -280,7 +279,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" showCouponImage="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">couponImageUrl</th>
@@ -294,7 +293,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" couponImageUrl="/media/images/ecoupon/badge-small.gif"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">showMsg</th>
@@ -308,7 +307,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" showMsg="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">couponMsg</th>
@@ -322,7 +321,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" couponMsg="Long Test Message Test Message"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">showDetailsLink</th>
@@ -336,7 +335,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" showDetailsLink="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">showStatusMsg</th>
@@ -350,7 +349,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><display:FDCoupon coupon="<%= custCoupon %>" showStatusMsg="false"></display:FDCoupon></td>
 					</tr>
 				</table>
-
+					
 			</div>
 			<div class="test_cont fright" style="width: 59%;">
 				<strong>Manual Calls (getContent() called after each set call):</strong>
@@ -367,7 +366,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td><%= manFdCouponTag.getContent(pageContext) %></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setShowClipBox, getClipBoxHtml()</th>
@@ -385,7 +384,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setShowClipBox back to default, true */
 					manFdCouponTag.setShowClipBox(true);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setIsClipped, getClipBoxHtml()</th>
@@ -403,7 +402,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setIsClipped back to default, false */
 					manFdCouponTag.setIsClipped(false);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setShowCouponImage, getImageHtml()</th>
@@ -421,7 +420,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setIsClipped back to default, true */
 					manFdCouponTag.setShowCouponImage(true);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="3">setCouponImageUrl, getImageHtml()</th>
@@ -437,7 +436,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setIsClipped back to default, null */
 					manFdCouponTag.setCouponImageUrl(null);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setShowMsg(), getMsgHtml()</th>
@@ -455,7 +454,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setShowMsg back to default, true */
 					manFdCouponTag.setShowMsg(true);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="6">setCouponMsg(), getMsgHtml()</th>
@@ -473,7 +472,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setCouponMsg back to default, null */
 					manFdCouponTag.setCouponMsg(null);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setShowDetailsLink(), getDetailsHtml()</th>
@@ -491,7 +490,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setCouponMsg back to default, true */
 					manFdCouponTag.setShowDetailsLink(true);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="2">getDetailsHtml() (no override)</th>
@@ -500,7 +499,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 						<td class="bordR"><%= manFdCouponTag.getDetailsHtml() %></td><td><%= manFdCouponTag.getContent(pageContext) %></td>
 					</tr>
 				</table>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">setCouponDetailsText(), getCouponDetailsText(), getDetailsContentHtml() (hidden)</th>
@@ -524,7 +523,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setCouponMsg back to default, null */
 					manFdCouponTag.setCouponDetailsText(null);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="4">[setCouponStatusText("status msg")] setShowStatusMsg(), getStatusTextHtml()</th>
@@ -543,7 +542,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					manFdCouponTag.setShowStatusMsg(true);
 					manFdCouponTag.setCouponStatusText(null);
 				%>
-
+				
 				<table>
 					<tr>
 						<th colspan="3">setCouponStatusText(), getStatusTextHtml()</th>
@@ -609,7 +608,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 					/* set setCouponStatusText back to default, false */
 					manFdCouponTag.setCouponStatusText(null);
 				%>
-
+				
 			</div>
 		</div>
 

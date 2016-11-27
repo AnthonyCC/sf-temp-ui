@@ -4,7 +4,7 @@
 
 <%@page import="java.lang.management.ManagementFactory"%>
 <%@page import="java.io.ObjectOutputStream"%>
-<%@page import="java.io.FileOutputStream"%><html lang="en-US" xml:lang="en-US">
+<%@page import="java.io.FileOutputStream"%><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Session Dump</title>

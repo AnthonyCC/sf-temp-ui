@@ -3,11 +3,13 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Rob
+ *
+ */
 public class DeliveryAddresses extends CheckoutResponse {
 
     private String preSelectedId;
-    
-    private String selectedId;
 
     private double residentialDeliveryMinimum = 0;
 
@@ -44,16 +46,24 @@ public class DeliveryAddresses extends CheckoutResponse {
     }
 
     private List<Depot> depot = new ArrayList<Depot>();
-    
+
+    /**
+     * 
+     */
     public DeliveryAddresses() {
     }
 
-    public DeliveryAddresses(String preSelectedId, String selectedId, List<com.freshdirect.mobileapi.model.ShipToAddress> residentialAddresses,
+    /**
+     * @param preSelectedId
+     * @param residentialAddresses
+     * @param corporateAddresses
+     * @param depotAddresses
+     */
+    public DeliveryAddresses(String preSelectedId, List<com.freshdirect.mobileapi.model.ShipToAddress> residentialAddresses,
             List<com.freshdirect.mobileapi.model.ShipToAddress> corporateAddresses,
             List<com.freshdirect.mobileapi.model.Depot> depotAddresses) {
 
         this.preSelectedId = preSelectedId;
-        this.selectedId = selectedId;
 
         if (null != residentialAddresses) {
             for (com.freshdirect.mobileapi.model.ShipToAddress residentialAddress : residentialAddresses) {
@@ -105,14 +115,6 @@ public class DeliveryAddresses extends CheckoutResponse {
 
     public void setPreSelectedId(String preSelectedId) {
         this.preSelectedId = preSelectedId;
-    }
-
-    public String getSelectedId() {
-        return selectedId;
-    }
-
-    public void setSelectedId(String selectedId) {
-        this.selectedId = selectedId;
     }
 
 }

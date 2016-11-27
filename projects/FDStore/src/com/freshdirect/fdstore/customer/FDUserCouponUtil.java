@@ -12,6 +12,8 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.EnumCouponDisplayStatus;
@@ -22,8 +24,6 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class FDUserCouponUtil implements Serializable {
 
@@ -152,7 +152,7 @@ public class FDUserCouponUtil implements Serializable {
 				}
 			}
 			
-			if(isCouponAvailable && !(EnumCouponContext.PRODUCT.equals(ctx) && null !=user.getCouponWallet() && user.getCouponWallet().isExpired(couponId)) && (null !=couponDiscount || checkForPendingCoupons(user,couponId,ctx))){
+			if(isCouponAvailable && !(EnumCouponContext.PRODUCT.equals(ctx)&& user.getCouponWallet().isExpired(couponId)) && (null !=couponDiscount || checkForPendingCoupons(user,couponId,ctx))){
 				// Check if the cartline has specific status, else fetch the current status for coupon & customer
 				if(cartLine != null && cartLine.getCouponStatus() != null) {
 					couponStatus = cartLine.getCouponStatus();

@@ -1,19 +1,15 @@
 package com.freshdirect.fdstore.content;
 
 public enum EnumBurstType {
-    NEW("new"),
-    DEAL("deal"),
-    YOUR_FAVE("fave"),
-    BACK_IN_STOCK("back"),
-    PRODUCT_SAMPLE("free"),
-    GOING_OUT_OF_STOCK("going");
+	NEW("new"), DEAL("deal"), YOUR_FAVE("fave"), BACK_IN_STOCK("back"), PRODUCT_SAMPLE("free");
 	
 	/**
 	 * Tracking Code
 	 */
-    private String code;
+	String code;
 
 	private EnumBurstType(String code) {
+		// TODO Auto-generated constructor stub
 		this.code = code;
 	}
 

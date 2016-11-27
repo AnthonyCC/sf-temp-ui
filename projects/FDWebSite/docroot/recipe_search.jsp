@@ -1,18 +1,18 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
-<%@ page import='com.freshdirect.storeapi.node.*'%>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
+<%@ page import='com.freshdirect.cms.node.*'%>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_RECIPE_SEARCH_TOTAL = 601;
@@ -25,18 +25,13 @@ RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
 request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 %>
 <tmpl:insert template='/common/template/recipe_DLRnavs.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put> --%>
-    <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Recipe Search"></fd:SEOMetaTag>
-    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" alt="Advanced recipe search" width="118" height="64" vspace="17" border="0"></a>
 	</tmpl:put>
-	<tmpl:put name='pageType' direct='true'>recipe_search</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <style type="text/css">
-.W_RECIPE_SEARCH_TOTAL { width: <%= W_RECIPE_SEARCH_TOTAL %>px; }
 .section {
  border-bottom: 1px solid #f93;
  padding-bottom: 1em;
@@ -52,7 +47,7 @@ fieldset {
  margin-bottom: 1em;
 }
 
-label.legend, .dropdown_recipe label, label.keyword {
+label.legend, .dropdown label, label.keyword {
  display: block;
  font-size: 10pt;
  font-weight: bold;
@@ -72,7 +67,7 @@ input.submit {
  padding: 4px;
 }
 
-.dropdown_recipe select {
+.dropdown select {
  font-family: Verdana, sans-serif;
  font-size: 7pt;
  width: 210px;
@@ -160,6 +155,8 @@ boolean searchPerformed = false;
 	
 	unfilteredQuery = cleanedUnfilteredQuery;
 	
+	%><fd:CmPageView wrapIntoScriptTag="true" searchTerm='<%=unfilteredQuery%>' searchResultsSize='<%=recipes.size()%>'/><%
+	
 	if (recipes.isEmpty()) {
 		%>
 		<h2>No matching recipes found</h2>
@@ -179,12 +176,12 @@ boolean searchPerformed = false;
 			if (aParam.length() == aParam.indexOf("=")+1) continue;  //param has no value
 			
 			if (aParam.startsWith("recipeSource") && aParam.length() > "recipeSource=".length()) {
-			    RecipeSource rs = (RecipeSource) PopulatorUtil.getContentNode(request.getParameter("recipeSource"));
+			    RecipeSource rs = (RecipeSource)ContentFactory.getInstance().getContentNode(request.getParameter("recipeSource"));
 			    resultHeading="RECIPES FROM \""+rs.getName()+"\"";
 			}
 			
 			if (aParam.startsWith("recipeAuthor") && aParam.length() > "recipeAuthor=".length()) {
-			    RecipeAuthor ra = (RecipeAuthor) PopulatorUtil.getContentNode(request.getParameter("recipeAuthor"));
+			    RecipeAuthor ra = (RecipeAuthor)ContentFactory.getInstance().getContentNode(request.getParameter("recipeAuthor"));
 			    resultHeading="RECIPES BY "+ra.getName();
 			}
 			
@@ -195,7 +192,7 @@ boolean searchPerformed = false;
 		}
 		
 		%>
-		<div class="resultsHeading" class="W_RECIPE_SEARCH_TOTAL">
+		<div class="resultsHeading" style="width:<%=W_RECIPE_SEARCH_TOTAL%>px;">
 		<h1><%=resultHeading%></h1>
 		<%
         List classifications = (List) pageContext.getAttribute("classifications");
@@ -250,6 +247,7 @@ boolean searchPerformed = false;
 <%
 if (!searchPerformed) {
 	%>
+	<fd:CmPageView wrapIntoScriptTag="true" searchTerm="" searchResultsSize="0"/>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><form name="recipeSearch"><td valign="top">
 	<div class="section" style="padding-bottom: 2em;">
 		<label for="keyword" class="keyword" style="font-size: 9pt; font-family:Verdana, Helvetica, sans-serif;"><b>Search for:</b></label>
@@ -266,7 +264,7 @@ if (!searchPerformed) {
 			countDropdown++;
 			%>
 			
-			<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+			<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 			<label for="<%= id %>"><%= crit.getName() %></label>
 			<select id="<%= id %>" name="<%= id %>" class="text9" style="width:200px;">
 				<option value="">All</option>
@@ -287,7 +285,7 @@ if (!searchPerformed) {
 		countDropdown++;
 		%>
 		
-		<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+		<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 		<label for="recipeSource">Cookbooks</label>
 		<select id="recipeSource" name="recipeSource" class="text9" style="width:200px;">
 			<option value="">All</option>
@@ -305,9 +303,9 @@ if (!searchPerformed) {
 		<%= countDropdown%2==0 ? "<br clear =\"all\">":""%>
 		<% countDropdown++; %>
 		
-		<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+		<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 		<label for="recipeAuthor">Authors</label>
-		<select name="recipeAuthor" id="recipeAuthor" class="text9" style="width:200px;">
+		<select name="recipeAuthor" class="text9" style="width:200px;">
 			<option value="">All</option>
 			<%
 			for (Iterator i = RecipeAuthor.findAllAvailable().iterator(); i.hasNext(); ) {
@@ -332,7 +330,7 @@ if (!searchPerformed) {
 			RecipeSearchCriteria crit = (RecipeSearchCriteria) i.next();
 			%>
 			<div class="section">
-				<fieldset><legend><label class="legend" style="padding-bottom: 3px;"><%= crit.getName() %></legend></label>
+				<label class="legend" style="padding-bottom: 3px;"><%= crit.getName() %></label>
 				<% 
 				String[] params = request.getParameterValues(crit.getContentName());
 				List paramList = params==null ? Collections.EMPTY_LIST : Arrays.asList(params);
@@ -357,7 +355,7 @@ if (!searchPerformed) {
 						<td width="20"><input type="checkbox" id="<%= id %>" name="<%= crit.getContentName() %>" value="<%= dv.getContentName() %>" <%= sel ? "checked" : "" %> /></td>
 						<td width="126" style="padding-top:0.35em;"><label for="<%= id %>"><%= dv.getLabel() %></label></td>
 					</tr>
-					<tr><td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt=""></td><td><img src="/media_stat/images/layout/clear.gif" width="124" height="1" alt=""></td></tr></table>
+					<tr><td><img src="/media_stat/images/layour/clear.gif" width="20" height="1" alt=""></td><td><img src="/media_stat/images/layour/clear.gif" width="124" height="1" alt=""></td></tr></table>
 					</div>
 					<% 
 					
@@ -386,7 +384,6 @@ if (!searchPerformed) {
 				}
 				%>
 				<div></div>
-				</fieldset>
 				</div>
 			<%
 		}

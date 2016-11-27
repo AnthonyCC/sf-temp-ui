@@ -1,126 +1,167 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.CreateException;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.smartstore.ejb.ScoreFactorSB;
 
 public class DatabaseScoreFactorProvider {
 
-	private static Logger LOGGER = LoggerFactory.getInstance(DatabaseScoreFactorProvider.class);
+    private static Logger                      LOGGER         = LoggerFactory.getInstance(DatabaseScoreFactorProvider.class);
 
-	private static DatabaseScoreFactorProvider instance = null;
+    private static DatabaseScoreFactorProvider instance       = null;
 
-	private String eStoreId = EnumEStoreId.FD.getContentId();
+    private ScoreFactorSB                      scoreFactorSB  = null;
 
-	public static synchronized DatabaseScoreFactorProvider getInstance() {
-		if (instance == null) {
+    private String eStoreId	= EnumEStoreId.FD.getContentId();
+    
+    public synchronized static DatabaseScoreFactorProvider getInstance() {
+        if (instance == null) {
+            try {
+                instance = new DatabaseScoreFactorProvider();
+            } catch (RemoteException e) {
+                LOGGER.warn("Could not create " + DatabaseScoreFactorProvider.class.getName() + " instance", e);
+                throw new FDRuntimeException(e);
+            } catch (CreateException e) {
+                LOGGER.warn("Could not create " + DatabaseScoreFactorProvider.class.getName() + " instance", e);
+                throw new FDRuntimeException(e);
+            } catch (NamingException e) {
+                LOGGER.warn("Could not create " + DatabaseScoreFactorProvider.class.getName() + " instance", e);
+                throw new RuntimeException(e);
+            }
+        }
+        return instance;
+    }
 
-			instance = new DatabaseScoreFactorProvider();
+    public Map<String,double[]> getPersonalizedFactors(String erpCustomerId, List<String> factors) {
+        try {
+            if (erpCustomerId == null) {
+                return Collections.emptyMap();
+            }
+            return getSessionBean().getPersonalizedFactors(eStoreId, erpCustomerId, factors);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-		}
-		return instance;
-	}
+    public Map<String,double[]> getGlobalFactors(List<String> factors) {
+        try {
+            return getSessionBean().getGlobalFactors(eStoreId, factors);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-	public Map<String, double[]> getPersonalizedFactors(String erpCustomerId, List<String> factors) {
+    public Set<String> getGlobalFactorNames() {
+        try {
+            return getSessionBean().getGlobalFactorNames();
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-		if (erpCustomerId == null) {
-			return Collections.emptyMap();
-		}
+    public Set<String> getPersonalizedFactorNames() {
+        try {
+            return getSessionBean().getPersonalizedFactorNames();
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-		return FDECommerceService.getInstance().getPersonalizedFactors(eStoreId, erpCustomerId, factors);
+    public Set<String> getPersonalizedProducts(String erpCustomerId) {
+        try {
+            return getSessionBean().getPersonalizedProducts(eStoreId, erpCustomerId);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-	}
+    public Set<String> getGlobalProducts() {
+        try {
+            return getSessionBean().getGlobalProducts(eStoreId);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-	public Map<String, double[]> getGlobalFactors(List<String> factors) {
-		return FDECommerceService.getInstance().getGlobalFactors(eStoreId, factors);
-
-	}
-
-	public Set<String> getGlobalFactorNames() {
-		return FDECommerceService.getInstance().getGlobalFactorNames();
-
-	}
-
-	public Set<String> getPersonalizedFactorNames() {
-		return FDECommerceService.getInstance().getPersonalizedFactorNames();
-
-	}
-
-	public Set<String> getPersonalizedProducts(String erpCustomerId) {
-		return FDECommerceService.getInstance().getPersonalizedProducts(eStoreId, erpCustomerId);
-
-	}
-
-	public Set<String> getGlobalProducts() {
-		return FDECommerceService.getInstance().getGlobalProducts(eStoreId);
-
-	}
-
-	/**
-	 * Return a list of product recommendation for a given product by a recommender
-	 * vendor.
-	 *
-	 * @param recommender
-	 * @param key
-	 * @return List<ContentKey>
-	 * @throws RemoteException
-	 */
+    /**
+     * Return a list of product recommendation for a given product by a
+     * recommender vendor.
+     * 
+     * @param recommender
+     * @param key
+     * @return List<ContentKey>
+     * @throws RemoteException
+     */
 	@Deprecated
-	public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) {
-		List<ContentKey> contentKeys = new ArrayList<ContentKey>();
-		List<String> result = FDECommerceService.getInstance().getProductRecommendations(recommender, key.getId());
-		for (String productId : result) {
-			contentKeys.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, productId));
-		}
-		return contentKeys;
+    public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) {
+        try {
+            return getSessionBean().getProductRecommendations(recommender, key);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-	}
-
-	/**
-	 * Return a list of personal recommendation (ContentKey-s) for a user by a
-	 * recommender vendor.
-	 *
-	 * @param recommender
-	 * @param erpCustomerId
-	 * @return List<ContentKey>
-	 * @throws RemoteException
-	 */
+    /**
+     * Return a list of personal recommendation (ContentKey-s) for a user by a
+     * recommender vendor.
+     * 
+     * @param recommender
+     * @param erpCustomerId
+     * @return List<ContentKey>
+     * @throws RemoteException
+     */
 	@Deprecated
-	public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) {
-		List<ContentKey> contentKeys = new ArrayList<ContentKey>();
-		List<String> result = FDECommerceService.getInstance().getPersonalRecommendations(recommender, erpCustomerId);
-		for (String productId : result) {
-			contentKeys.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, productId));
-		}
-		return contentKeys;
+    public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) {
+        try {
+            return getSessionBean().getPersonalRecommendations(recommender, erpCustomerId);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
 
-	}
+    private DatabaseScoreFactorProvider() throws NamingException, RemoteException, CreateException {
+    	this.eStoreId = CmsManager.getInstance().getEStoreId();
 
-	private DatabaseScoreFactorProvider() {
-		this.eStoreId = CmsManager.getInstance().getEStoreId();
+        scoreFactorSB = FDServiceLocator.getInstance().getScoreFactorHome().create();
+    }
 
-	}
 
-	@Deprecated
-	public EnumWinePrice getPreferredWinePrice(String erpCustomerId) {
-
-		String result = FDECommerceService.getInstance().getPreferredWinePrice(erpCustomerId);
-		return EnumWinePrice.valueOf(result);
-
-	}
-
+    private final ScoreFactorSB getSessionBean() {
+        return scoreFactorSB;
+    }
+    
+    @Deprecated
+    public EnumWinePrice getPreferredWinePrice(String erpCustomerId) {
+        try {
+            return scoreFactorSB.getPreferredWinePrice(erpCustomerId);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
+    
 }

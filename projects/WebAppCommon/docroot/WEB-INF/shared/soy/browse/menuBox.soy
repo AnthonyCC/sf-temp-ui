@@ -7,20 +7,8 @@
 {if ($menuBox.items and length($menuBox.items) > 0) or $menuBox.name}
   <div class="menuBox" data-component="menubox" data-type="{$menuBox.displayType}" data-id="{$menuBox.id}" data-selectiontype="{$menuBox.selectionType}" data-filter="{if $menuBox.boxType == 'FILTER'}{$menuBox.id}{else}id{/if}" data-boxtype="{$menuBox.boxType}" {if $menuBox.shouldSetAll}data-shouldsetall="true"{/if} {if $menuBox.selectedLabel}data-menu-selected{/if}>
     {if $menuBox.displayType == 'SIMPLE'}
-      {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}
+      {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
       {if $menuBox.items and length($menuBox.items) > 0}
-      <fieldset>
-      <legend>
-      <span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
-      {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
-      {else}
-      filter products by category
-      {/if}
-      {/if}
-      </span>
-      </legend>
       <ul>
       {foreach $item in $menuBox.items}
         {if $item.urlParameter}
@@ -36,11 +24,10 @@
         	{/if}
         {/if}
       {/foreach}
-     </ul>
-    </fieldset>
+      </ul>
      {/if} 
     {elseif $menuBox.displayType == 'POPUP'}
-      {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}      
+      {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}      
       	{foreach $item in $menuBox.items}
       		{if $menuBox.selectedLabel}
       			{if $item.selected}
@@ -76,7 +63,7 @@
         </div>
       </div>
     {elseif $menuBox.displayType == 'CENTER_POPUP'}
-      <h3>{$menuBox.name}</h3>
+      <h2>{$menuBox.name}</h2>
       <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-down2-after" aria-haspopup="true">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
@@ -110,18 +97,6 @@
   {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
   {for $col in range(0, $maxcols)}
     {if $col * $n + $mod < $l}
-      <fieldset>
-      <legend>
-      <span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
-      {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
-      {else}
-      filter products by category
-      {/if}
-      {/if}
-      </span>
-      </legend>
       <ul>
       {for $i in range($col * $n + ($col < $mod ? $col : $mod), ($col + 1) * $n + ($col+1 < $mod ? $col+1 : $mod ))}
         {if $l > $i}
@@ -132,7 +107,6 @@
         {/if}
       {/for}
       </ul>
-     </fieldset>
     {/if}
   {/for}
 {/template}
@@ -173,20 +147,7 @@
 * @param menuBox list of menuitems
 */
 {template .popupLayout autoescape="false"}
- 
-   <fieldset>
-      <legend>
-      <span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
-      {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
-      {else}
-      filter products by category
-      {/if}
-      {/if}
-      </span>
-      </legend> 
-   <ul>
+  <ul>
   {foreach $item in $menuBox.items}
     {if $item.name != 'marker'}
       {if $item.urlParameter}
@@ -198,26 +159,10 @@
         <li><h3 class="section-big">{$item.name}</h3></li>
       {/if}
     {else}
-      </ul>
-      </fieldset>
-
-     <fieldset>
-     <legend>
-     <span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
-      {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
-      {else}
-      filter products by category
-      {/if}
-      {/if}
-      </span>
-      </legend>
-       <ul>
+      </ul><ul>
     {/if}
   {/foreach}
   </ul>
- </fieldset>
 {/template}
 
 /**

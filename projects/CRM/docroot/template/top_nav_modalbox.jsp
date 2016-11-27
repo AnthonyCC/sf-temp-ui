@@ -10,6 +10,7 @@
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
         <link rel="stylesheet" type="text/css" href="/ccassets/css/crm.css" />
         <link rel="stylesheet" type="text/css" href="/ccassets/css/case.css" />        
+		<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
         <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
         <fd:css href="/assets/css/giftcards.css"/>
         <fd:css href="/assets/css/timeslots.css"/>

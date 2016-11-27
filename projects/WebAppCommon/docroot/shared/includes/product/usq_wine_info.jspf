@@ -3,18 +3,19 @@
 	
 	@param ProductModel productNode
 
---%><%@ page import="com.freshdirect.storeapi.content.CategoryModel"%>
+--%><%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@ page import="com.freshdirect.storeapi.content.Image"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@ page import="com.freshdirect.storeapi.content.MediaI"%>
-<%@ page import="com.freshdirect.storeapi.content.Html"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.Html"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_WINE_INFO_TOTAL = 601;
@@ -66,7 +67,7 @@ final int W_WINE_INFO_RIGHT = 437;
 				}
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr><td style="border-top:solid 1px #CCCCCC;" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr><td style="border-top:solid 1px #CCCCCC;" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <tr>
     <td width="5%">
 		<img src="<%= perfPairThumbNail.getPath() %>" border="0" alt="test image" title="" />
@@ -77,7 +78,7 @@ final int W_WINE_INFO_RIGHT = 437;
 		<div style="padding-top:4px; font-style:italic;"><%= perfectPair.getBlurb() %></div>
      </td>   
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
 <%
 			}
@@ -256,7 +257,13 @@ final int W_WINE_INFO_RIGHT = 437;
 	<% } %>
 	<div style="<%= hasLeftColumn ? "float: left; width: " + W_WINE_INFO_RIGHT +"px" : "" %>">
 			<%-- DESC --%>
+   		<% if ( FDStoreProperties.useOscache() ) { %> 
+	        <oscache:cache time="300">
 				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+			</oscache:cache>
+   		<% } else { %>			        
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+   		<% } %>
    	</div>
    	<% if (hasLeftColumn) { %><div style="clear: both; font-size: 0px;"></div><% } %>
 </div>

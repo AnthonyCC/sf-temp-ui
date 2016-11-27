@@ -39,7 +39,7 @@
 			<br/><br/>
 			To top it off, delivery is free for the first three orders, and our drivers won't accept tips.<br/>
 			<br/><br/>
-			You've waited long enough. Log on to <a href="http://www.freshdirect.com/index.jsp?serviceType=HOME">www.freshdirect.com</a> today.<br/>
+			You've waited long enough. Log on to <a href="http://www.freshdirect.com/index.jsp">www.freshdirect.com</a> today.<br/>
 			<br/>
 			<br/>
 			<b>Enjoy,</b><br/>

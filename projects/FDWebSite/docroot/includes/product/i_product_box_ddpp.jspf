@@ -138,6 +138,14 @@
 												$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonFP').data('usedCTA', false);
 											});
 										}, 2000);
+										//coremetrics tracking
+										fdCoremetrics.trackAddToCartEvent();
+										<%--
+											here is the place where you can do further changes,
+											e.g. disable quantity and add-to-cart controls
+											updateYourCartPanel();
+											--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+										--%>
 									},
 									failure: function(o) {
 										status.removeClass('prodATCStatusSuccess').addClass('prodATCStatusError').html("Connection error");
@@ -150,6 +158,7 @@
 						</script>
 						<form method="get" action="#" id="<%= TX_FORM_NAMEi %>" name="<%= TX_FORM_NAMEi %>" onsubmit="return <%= TX_JS_NAMESPACEi %>.formSubmit();">
 							<fd:AddToCartPending id="<%= TX_FORM_NAMEi %>" action="addMultipleToCart" rebindSubmit="true"/>
+							<fd:CmFieldDecorator/>
 							<input type="hidden" name="itemCount" value="1" />
 							<fd:TxProductControl txNumber="0" namespace="<%= TX_JS_NAMESPACEi %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 							<div class="subtotalInfo"><span id="FPsubtotalEstPrefix_<%= seqDDPP %>" style="display: none;">est. </span>subtotal: <span id="FPsubtotalEst_<%= seqDDPP %>"></span><span class="subtotalInfoPrice" id="FPsubtotal_<%= seqDDPP %>"></span></div>
@@ -277,6 +286,14 @@
 														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
 													});
 												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
+												<%--
+													here is the place where you can do further changes,
+													e.g. disable quantity and add-to-cart controls
+													updateYourCartPanel();
+													--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+												--%>
 											},
 											failure: function(o) {
 												status.html("Connection error");
@@ -394,6 +411,14 @@
 														$jq('#<%= TX_FORM_NAMEi %>').find('.CTAButtonNFP').data('usedCTA', false);
 													});
 												}, 2000);
+												//coremetrics tracking
+												fdCoremetrics.trackAddToCartEvent();
+												<%--
+													here is the place where you can do further changes,
+													e.g. disable quantity and add-to-cart controls
+													updateYourCartPanel();
+													--this is not the proper place to do customize callbacks, the qb dialog is still open at this point. -batchley
+												--%>
 											},
 											failure: function(o) {
 												status.html("Connection error");

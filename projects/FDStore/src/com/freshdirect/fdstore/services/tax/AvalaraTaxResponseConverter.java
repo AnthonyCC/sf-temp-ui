@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.services.tax;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
@@ -14,11 +15,10 @@ import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.services.tax.data.CommonResponse.Message;
-import com.freshdirect.fdstore.services.tax.data.CommonResponse.SeverityLevel;
 import com.freshdirect.fdstore.services.tax.data.GetTaxResult;
 import com.freshdirect.fdstore.services.tax.data.TaxLine;
-import com.freshdirect.framework.util.BeanUtil;
+import com.freshdirect.fdstore.services.tax.data.CommonResponse.Message;
+import com.freshdirect.fdstore.services.tax.data.CommonResponse.SeverityLevel;
 
 public class AvalaraTaxResponseConverter {
 	
@@ -68,7 +68,7 @@ public class AvalaraTaxResponseConverter {
 	private boolean populateCartLinesWithResult(FDCartI cart, TaxLine lineResult) {
 		boolean isTaxProds = false;
 		List<FDCartLineI> cartLines = cart.getOrderLines();
-		if(BeanUtil.isNotEmpty(cartLines)){
+		if(CollectionUtils.isNotEmpty(cartLines)){
 			for(FDCartLineI cartLine : cartLines){
 				if(StringUtils.equals(lineResult.getLineNo(),cartLine.getCartlineId()) || StringUtils.equals(lineResult.getLineNo(),cartLine.getOrderLineId())){
 					if(!lineResult.getTaxability() || lineResult.getExemption() != 0.0){
@@ -89,7 +89,7 @@ public class AvalaraTaxResponseConverter {
 	private boolean populateErpChargeLinesWithResult(FDCartI cart, TaxLine taxLine){
 		boolean isTaxSet = false;
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
-		if(BeanUtil.isNotEmpty(charges)){
+		if(CollectionUtils.isNotEmpty(charges)){
 			for(ErpChargeLineModel charge: charges){
 				if(charge.getType().getCode().equals(taxLine.getLineNo())){
 					if(!taxLine.getTaxability() || taxLine.getExemption() != 0.0){

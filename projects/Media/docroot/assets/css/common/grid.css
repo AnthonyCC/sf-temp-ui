@@ -39,7 +39,6 @@
 .container {
   width: 970px;
   margin: 0 auto;
-  max-width: 100%;
 }
 
 /* Use this class on any div.span / container to see the grid. */

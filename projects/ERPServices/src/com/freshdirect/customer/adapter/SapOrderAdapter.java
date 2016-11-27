@@ -103,7 +103,7 @@ public class SapOrderAdapter implements SapOrderI {
 
 		this.createOrderLines();
 	}
-	
+
 	/**
 	 * private method to create SapOrderLineAdapter from ErpOrderLines
 	 */
@@ -562,7 +562,7 @@ public class SapOrderAdapter implements SapOrderI {
 		public EnumATPRule getAtpRule() {
 			
 			//return this.fdProduct.getMaterial().getAtpRule();
-			return this.fdProduct.getMaterial().getMaterialPlants().get(getPickingPlantId()).getAtpRule();
+			return this.fdProduct.getMaterial().getMaterialPlants().get(plantInfo.getPlantId()).getAtpRule();
 		}
 
 		public double getFixedPrice() {
@@ -588,21 +588,6 @@ public class SapOrderAdapter implements SapOrderI {
 		@Override
 		public String getPickingPlantId() {
 			return orderLine.getPlantID();
-		}
-
-		@Override
-		public String getAffiliateCode() {
-			return orderLine.getAffiliateCode();
-		}
-
-		@Override
-		public ErpOrderLineModel getOrderLine() {
-			return orderLine;
-		}
-
-		@Override
-		public FDProduct getFdProduct() {
-			return fdProduct;
 		}
 	}
 
@@ -640,13 +625,6 @@ public class SapOrderAdapter implements SapOrderI {
 		
 		return  this.erpOrder.getPaymentMethod().getReferencedOrder();
 		
-	}
-// introduced for storefront2.0
-	/**
-	 * @return the erpOrder
-	 */
-	public ErpAbstractOrderModel getErpOrder() {
-		return erpOrder;
 	}
 	
 

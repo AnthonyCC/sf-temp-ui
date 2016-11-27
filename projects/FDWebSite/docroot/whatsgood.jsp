@@ -1,4 +1,3 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
 <%
 
@@ -10,7 +9,7 @@
 	mediaPathTempBase="/media/editorial/whats_good/";
 
 	// set deptId default
-	deptId = request.getParameter("deptId");
+	deptId = request.getParameter("deptid");
 
 	//set deptId default
 	if (deptId==null || "".equals(deptId)) { deptId="wgd"; }
@@ -38,16 +37,13 @@
 	log(myDebug, "PAGE email mode: "+emailPage);
 	params.put("baseUrl", baseUrl);
 		log(myDebug, "PAGE baseUrl set: "+baseUrl);
-		
-	ContentNodeModel node = PopulatorUtil.getContentNode(deptId);
+	
 %>
 
-<tmpl:insert template='<%= templatePath %>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - What's Good"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put> --%>
+	<tmpl:insert template='<%= templatePath %>'>
+	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(deptId)%>"/>
 	
 	<%
 		//--------OAS Page Variables-----------------------

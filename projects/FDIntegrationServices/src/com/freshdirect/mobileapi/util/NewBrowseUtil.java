@@ -25,8 +25,17 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.BannerModel;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategorySectionModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -64,15 +73,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.storeapi.content.BannerModel;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategorySectionModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
@@ -127,7 +127,7 @@ public class NewBrowseUtil {
     					if (recommendedItems != null && recommendedItems.size() == 0 && contentId.equals(FLOWER_DEPARTMENT)) {
     						String cat = getSingleCategory(department);
     						if (cat != null) {
-        						CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(ContentType.Category, cat);
+        						CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(ContentType.get("Category"), cat);
         						recommendedItems = ProductRecommenderUtil.getMerchantRecommenderProducts(category);
         						deptCarouselResult.setTitle(category.getCatMerchantRecommenderTitle());
     						}
@@ -143,7 +143,7 @@ public class NewBrowseUtil {
 																		, null
 																		, EnumCouponContext.PRODUCT));								
 						} catch (ModelException e) {
-							//e.printStackTrace();
+							e.printStackTrace();
 						}
     				}
     			}					
@@ -160,7 +160,7 @@ public class NewBrowseUtil {
     			result.setDeptCarouselResult(deptCarouselResult);
     			
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}  
     		if(deptCarouselResult.getProducts() == null || deptCarouselResult.getProducts().isEmpty()) {
     			deptCarouselResult.setSuccessMessage("No recommendations found.");
@@ -196,7 +196,7 @@ public class NewBrowseUtil {
         		categoryCarouselResult = getProductsFromCarouselForCategory(contentId, model, user, request, response,carouselProductCount);
 			} catch (JsonException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
         	result.setCategoryCarouselResult(categoryCarouselResult);
         	
@@ -373,7 +373,7 @@ public class NewBrowseUtil {
 										
 							} catch (JsonException e) {
 								// TODO Auto-generated catch block
-								//e.printStackTrace();
+								e.printStackTrace();
 							}
 
 							if (loadCategoriesCarouselCount <= 0)
@@ -473,7 +473,7 @@ public class NewBrowseUtil {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			return map;
 		}

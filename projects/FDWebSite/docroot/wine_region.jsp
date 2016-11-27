@@ -1,6 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
@@ -11,7 +11,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%
 String catId = request.getParameter("catId"); 
@@ -64,17 +64,13 @@ List sortStrategy = new ArrayList();
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, false));
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_WINE_COUNTRY, false));
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, SortStrategyElement.SORTNAME_NAV, false));
-
-String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy%>'/>
 
 <tmpl:insert template='/common/template/bestcellars/no_rightnav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+ <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
   <tmpl:put name='content' direct='true'>
+   <oscache:cache time="3600" key='<%="winebyregion/"+request.getQueryString() %>'>
   <script>
   <!--
       function doFilter(filterValue) {
@@ -130,10 +126,10 @@ String title = "FreshDirect - " + currentFolder.getFullName();
           lastFilterValue=null;
           lastCatId = parentCat.getContentName();
           Image _img  = parentCat.getCategoryLabel();
-          String imgPath = _img!=null ?  _img.getPath()  : "/media_stat/images/layout/clear.gif"; 
+          String imgPath = _img!=null ?  _img.getPath()  : "/media_stat/images/layout/clear.gif";
          
 %>
-        <tr><td><%if (shownALabel){%><br><%}%><img src="<%=imgPath%>" alt=""></td></tr>
+        <tr><td><%if (shownALabel){%><br><%}%><img src="<%=imgPath%>"></td></tr>
 <%        shownALabel = true;
       }
       if (lastFilterValue==null || !lastFilterValue.equalsIgnoreCase(curFilterValue)) {
@@ -153,5 +149,6 @@ String title = "FreshDirect - " + currentFolder.getFullName();
   }  
 %>
 </table>
+</oscache:cache>
  </tmpl:put>
 </tmpl:insert>

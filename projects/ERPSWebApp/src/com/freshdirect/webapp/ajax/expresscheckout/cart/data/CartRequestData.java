@@ -15,8 +15,6 @@ public class CartRequestData implements Serializable {
 
 	private Object header;
 	private Map<Integer,Change> change;
-    private String page;
-    private String warningMessage;
 	
 	public Object getHeader() {
 		return header;
@@ -31,23 +29,7 @@ public class CartRequestData implements Serializable {
 		this.change = change;
 	}
 	
-    public String getPage() {
-        return page;
-    }
-
-    public void setPage(String page) {
-        this.page = page;
-    }
-
-    public String getWarningMessage() {
-        return warningMessage;
-    }
-
-    public void setWarningMessage(String warningMessage) {
-        this.warningMessage = warningMessage;
-    }
-
-    public static class Change implements Serializable {
+	public static class Change implements Serializable {
 		
 		private static final long	serialVersionUID	= -506884437929605359L;
 		

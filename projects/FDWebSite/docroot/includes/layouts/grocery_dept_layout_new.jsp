@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -14,7 +14,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_GROCERY_DEPT_LAYOUT_NEW_TOTAL = 765;
@@ -96,13 +96,13 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 	
 					<!-- separator  -->
 					<tr><td colspan="5">
-						<br/><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
+						<br/><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
 						<font CLASS="space4pix"><br/><br/></font>
 					</td></tr>
 				<% } %>
 
 	            <tr>
-	                <td colspan="5"><img src="<%= BrowseHeader %>" alt=""><br/><br/></td>
+	                <td colspan="5"><img src="<%= BrowseHeader %>"><br/><br/></td>
 	            </tr>
 	            
 				<%
@@ -149,7 +149,7 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 		            if (categoryModel.getContentName().equalsIgnoreCase(newProdsFldrId)) {
 		                tmpColumn.append("&nbsp;<img src=\"/media_stat/images/template/newproduct/star_CC0033.gif\" width=\"12\" height=\"12\"  border=\"0\">");
 		            } 
-		            tmpColumn.append("<br><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"5\"  border=\"0\"><br>");
+		            tmpColumn.append("<br><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"5\"  border=\"0\"><br>");
 		
 		            if (count < firstRowSize) {
 			            listColumn1.append(tmpColumn.toString());
@@ -167,9 +167,9 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 				
 				<tr>
 					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_IMG%>" valign="top" align="center"><%= imageCell.toString() %></td>
-					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
 					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TEXT%>" valign="top" class="text13bold"><%= listColumn1.toString() %></td>
-					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
 					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TEXT%>" valign="top" class="text13bold"><%= listColumn2.toString() %></td>
 				</tr><%-- end of categories --%>
 
@@ -181,7 +181,7 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 					<!-- separator  -->
 					<tr>
 						<td colspan="5">
-							<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br />
+							<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br />
 							<font class="space4pix"><br /><br /></font>
 						</td>
 					</tr>
@@ -214,7 +214,7 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 		        if (featuredCats != null && featuredCats.size() > 0) { %>
 					<!-- separator  -->
 		            <tr><td colspan="5"><br/>
-	            		<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
+	            		<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
 	            		<font CLASS="space4pix"><br/><br/></font>
 	            		<img src="/media_stat/images/layout/dfgs_featured_brands.gif" width="115" height="10" border="0"><br/><br/>
 		            </td></tr>
@@ -237,7 +237,7 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 			                    Image bLogo = brandMod.getLogoMedium();
 			                    if (bLogo==null) {
 			                        bLogo = new Image();
-			                        bLogo.setPath("/media_stat/images/layout/clear.gif"); 
+			                        bLogo.setPath("/media_stat/images/layout/clear.gif");
 			                        bLogo.setWidth(12);
 			                        bLogo.setHeight(30);
 			                     };

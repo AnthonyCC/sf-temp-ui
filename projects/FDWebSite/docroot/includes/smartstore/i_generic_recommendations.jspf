@@ -7,11 +7,12 @@
 <%@page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@page import="com.freshdirect.fdstore.util.ProductLabeling"%>
 <%@page import="com.freshdirect.fdstore.promotion.PromoVariantModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.webapp.util.ConfigurationContext"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -238,6 +239,7 @@ if (optionalParams.size() > 0) {
 %>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= (formQueryParams != null && formQueryParams.trim().length() > 0 ? formUri+"?"+formQueryParams : formUri) %>#cartRec" style="margin:0px">
 					<fd:AddToCartPending id='<%= "id_" + tx_pricing_FormName%>' action="addMultipleToCart" ajax="<%= isAjax %>"/>
+					<fd:CmFieldDecorator/>
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 					 <input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1<%= (formQueryParams != null && formQueryParams.trim().length() > 0 ? "&"+formQueryParams : "") %>#cartRec">
 					<input type="hidden" name="fdsc.source"  value="SS">
@@ -429,6 +431,7 @@ if (optionalParams.size() > 0) {
 				</form>
 <script type="text/javascript">
 var cmPageCarousel = cmPageCarousel || {};
+cmPageCarousel["<%=_uid%>"] = <fd:CmElement wrapIntoFunction="true" variant='<%=((Variant) request.getAttribute("genericRecommendationsVariant")).getId()%>' elementCategory="carousel"/>;
 
 <% if (cnt_showFirstBtn) { %>
 YAHOO.util.Event.on('ra_bwd_<%= _uid %>', 'click', OST_<%= tx_pricing_FormName %>.confirmedPage, function() {

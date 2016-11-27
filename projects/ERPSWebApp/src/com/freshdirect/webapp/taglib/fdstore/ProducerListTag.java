@@ -6,11 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProducerModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProducerModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
@@ -58,7 +58,7 @@ public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
 
         @Override
         protected String getResultType() {
-            return "java.util.List<com.freshdirect.storeapi.content.ProducerModel>";
+            return "java.util.List<com.freshdirect.fdstore.content.ProducerModel>";
         }
         
     }

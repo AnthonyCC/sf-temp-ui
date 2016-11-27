@@ -299,9 +299,8 @@ public class MasterpassData {
 	 * @param configFile
 	 */
 	public MasterpassData(String configFile){
-		if (configFile == null || configFile.isEmpty())
-			configFile = FDStoreProperties.getMasterpassEnvironment();
 		
+		configFile = FDStoreProperties.getMasterpassEnvironment();
 		Properties props = loadProperties(configFile);
 		
 		this.callbackDomain = props.getProperty("callbackdomain");
@@ -627,6 +626,12 @@ public class MasterpassData {
 	}
 	public void setShippingSuppression(Boolean shippingSuppression) {
 		this.shippingSuppression = shippingSuppression;
+	}
+	public boolean getAuthLevelBasic() {
+		return authLevelBasic;
+	}
+	public void setAuthLevelBasic(boolean authLevelBasic) {
+		this.authLevelBasic = authLevelBasic;
 	}
 	public Boolean getRewards() {
 		return rewards;
@@ -1231,9 +1236,6 @@ public class MasterpassData {
 	 */
 	public void setAuthLevelBasic(Boolean authLevelBasic) {
 		this.authLevelBasic = authLevelBasic;
-	}
-	public Boolean getAuthLevelBasic() {
-		return authLevelBasic;
 	}
 	
 }

@@ -77,34 +77,4 @@ public class CrmCaseOperation implements Serializable {
 		return template == null || actual.equals(template);
 	}
 
-	
-	// Introduced For Storefront 2.0 Implementation
-	/**
-	 * @return the subjectCode
-	 */
-	public String getSubjectCode() {
-		return subjectCode;
-	}
-
-	/**
-	 * @return the startStateCode
-	 */
-	public String getStartStateCode() {
-		return startStateCode;
-	}
-
-	/**
-	 * @return the endStateCode
-	 */
-	public String getEndStateCode() {
-		return endStateCode;
-	}
-
-	/**
-	 * @return the actionTypeCode
-	 */
-	public String getActionTypeCode() {
-		return actionTypeCode;
-	}
-
 }

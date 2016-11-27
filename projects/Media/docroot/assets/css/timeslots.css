@@ -1,4 +1,5 @@
 .tsCol {
+	margin-top/**/: 20px;
 	border: 1px solid #ccc;
 }
 #timeslots_grid_CRef, #timeslots_gridAdv_CRef, #timeslots_gridAdvNew_CRef {
@@ -10,33 +11,14 @@
 	width: 223px;
 }
 
-#timeslot-tab-content input[type="button"] {
+#timeslot-tab-content input[type="radio"] {
 	height: 13px;
 }
 
-#tsContainer a:focus,#tsContainer a:hover{
-	text-decoration:none;
-}
-#tsContainer .tsHeaderC a{
-	color:#000;
-}
-#tsContainer .tsHeaderC a:focus table{
-	background-color:#4fa157;
-}
-#tsContainer .tsHeaderC a:focus{
-	color:#000;
-}
 table.tsContainer td {
 	border: 1px solid #ccc;
 }
-#tsContainer .tsHeaderE a:visited,#tsContainer .tsHeaderE a:focus{
-	background-color:red;
-	/*border-top-left-radius:8px;
-	border-top-right-radius:8px;*/
-}
-#tsContainer .tsHeaderE a:focus .tsHeaderE_top img{
-	display:none;
-}
+
 .tsTable {
 	border-collapse: collapse;
 	cursor: pointer;
@@ -85,11 +67,6 @@ table.tsHeaderC, .tsHeaderC {
 	padding-top: 0px;
 }
 
-table.tsHeaderC.midweekdp, .tsHeaderC.midweekdp {
-	height: 70px;
-	background-position-y: bottom;
-}
-
 .tsHeaderC td {
 	border:0px solid #ccc;
 	height:56px;
@@ -97,22 +74,13 @@ table.tsHeaderC.midweekdp, .tsHeaderC.midweekdp {
 	background-color:#FBFBFB;
 	padding-top:0px;
 }
-.tsHeaderC.midweekdp td{
-	height: 70px;
-}
 
 table.tsHeaderE, .tsHeaderE {
 	border: 0px solid #ccc;
 	height: 66px;
 	width: 100%;
-	background-color: #579d5b;
+	background-color: #78ABDC;
 	padding-top: 0px;
-}
-
-table.tsHeaderE.midweekdp, .tsHeaderE.midweekdp {
-	height: 80px;
-	margin-top: -5px;
-	padding-top: 5px;
 }
 
 td.footer_container {
@@ -180,6 +148,7 @@ div.tsDayNameE {
 .tsDayDateE {
 	font-size:12px;
 	color:#FFFFFF;
+	font-weight:bold;
 	font-family: Verdana, Arial, sans-serif;
 	overflow: hidden;
 }
@@ -361,6 +330,9 @@ span.tsAdvanceHeader {
 .tsTable td div div, td.tsFooter, .tsTable td div {
 	border: 0 none;
 } 
+table.tsTable td table.tsTable td {
+	border-top: 1px solid #ccc;
+}
 
 .tsTable td .tsTable td {
 	margin-left: 0;
@@ -436,7 +408,7 @@ div.tsHeaderC {
 	float: left;
 }
 .tsDiscountPropC {
-	padding: 0 0 0 4px;
+	padding:2px 0 0 4px;
 }
 
 /*Variable minimum order slot*/
@@ -497,7 +469,7 @@ div.tsHeaderC {
 
 /* same day */
 .tsPremiumE {
-	color: #579d5b;
+	color: #78ABDC;
 	font-weight: bold;
 	font-size: 11px; 
 	font-family: Verdana, Arial, sans-serif;
@@ -513,7 +485,7 @@ div.tsHeaderC {
 	height: 28px;
 }
 .tsPremiumC {
-	color: #579d5b;
+	color: #78ABDC;
 	font-weight: bold;
 	font-size: 10px; 
 	font-family: Verdana, Arial, sans-serif;
@@ -532,6 +504,9 @@ div.tsHeaderC {
 	float: left; 
 	margin-top: 5px; 
 	margin-bottom: -5px;
+}
+.cutoffLR .cutoffDispChild div.premSlotTimer,
+.cutoffLR .cutoffDispChild div.premSlotMsg {
 }
 .premSlotTimer {
 	font-size: 18px;
@@ -846,7 +821,7 @@ td.noTopBorder {
 .dayPart {
 	cursor: pointer;
 }
-#tsContainer td .dayPart td {
+.dayPart td {
 	font-size: 1px;
 	line-height: 1px;
 	background-color: #ccc;
@@ -967,8 +942,8 @@ td.noTopBorder {
 }
 
 .cutoffLR, .cutoffLR .cutoffDispChild {
-	background-color: #f4f4f3;
-	color: #575860;
+	background-color: #f7f7f7;
+	font-weight: bold;
 	text-align: center;
 	height: 27px;
 }
@@ -1082,9 +1057,9 @@ td.noTopBorder {
 	background: #FFFFFF;
 }
 
-#tsContainer input[type="button"] {
-     position: absolute;
-     left: -999em;
+#tsContainer input[type="radio"] {
+    position: absolute;
+    left: -999em;
 }
 
 #tsContainer input:focus, [data-component="timeselectorcontent"] textarea:focus {
@@ -1095,14 +1070,14 @@ td.noTopBorder {
     box-shadow: none;
     outline: none;
 }
-#tsContainer input[type="button"][checked] + label::before {
+#tsContainer input[type="radio"]:checked + label::before {
     background: #4fa157;
     box-shadow: 0 0 0 1px #4fa157;
 }
-#tsContainer input[type="button"]:focus + label::before {
+#tsContainer input[type="radio"]:focus + label::before {
     box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
 }
-#tsContainer input[type="button"] + label::before {
+#tsContainer input[type="radio"] + label::before {
     background: #fafafa;
     box-shadow: 0 0 0 1px #c2c2c2;
     content: '\a0';
@@ -1113,27 +1088,4 @@ td.noTopBorder {
     line-height: 14px;
     margin-right: 10px;
     vertical-align: 2px;
-}
-
-.standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE, .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC{
-	visibility:hidden !important;
-}
-
-.tsHeaderE, .tsTableE {
-	width: 223px;
-	border-right-color: rgb(51, 51, 51);
-	box-sizing: border-box;
-}
-
-/* same day */
-#tsContainer [class*="cutoff"] {
-	display: none;
-	visibility: hidden;
-}
-/* daypart should be 1px, borders on above/below cells make it LOOK 3px total */
-#tsContainer tr.dayPart, #tsContainer td .dayPart td {
-	height: 1px;
-	line-height: 1px;
-	font-size: 1px;
-	display: block;
 }

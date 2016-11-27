@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
-  var SIGNALTARGET = fd.common.signalTarget;
 
   var carousels = Object.create(WIDGET,{
     signal:{
@@ -23,7 +22,7 @@ var FreshDirect = FreshDirect || {};
         var crls = $('[data-component="carousel"]'),
             maxHeight = 0;
 
-        if (crls.length > 1) {
+        if (crls.size() > 1) {
           crls.each(function () {  
             maxHeight = Math.max(maxHeight, $(this).height()); 
           });
@@ -57,47 +56,4 @@ var FreshDirect = FreshDirect || {};
   carousels.alignPairs();
 
   fd.modules.common.utils.register("browse", "carousels", carousels, fd);
-  
-  var carouselType = Object.create(SIGNALTARGET,{
-    signal:{
-      value:'carouselType'
-    },
-    callback:{
-      value:function(data){
-        var queryParams = 'type=' + data.type;
-        if (data.type==='search'){
-          queryParams += '&productId=' + data.productId;
-        }
-        this.DISPATCHER.signal('server', {
-          url: '/api/carousel?' + queryParams
-        });
-      }
-    }
-  });
-
-  carouselType.listen();
-
-  fd.modules.common.utils.register("browse", "carouselType", carouselType, fd);
-}(FreshDirect));
-
-(function (fd) {
-  if (window.FreshDirect.browse.data.searchParams.pageType == 'PRES_PICKS') {
-    fd.common.dispatcher.signal('server',{
-      url:'/api/carousel?type=pres-picks',
-      method:'GET'
-    });
-  }
-}(FreshDirect));
-
-(function (fd) {
-  if (window.FreshDirect.browse.data.searchParams.pageType == 'SEARCH') {
-	  try {
-		fd.common.dispatcher.signal('server',{
-		  url:'/api/carousel?type=search&productId=' + window.FreshDirect.browse.data.sections.sections[0].products[0].productId,
-		  method:'GET'
-		});  
-	  } catch (e) {
-		  /* no products, do nothing */
-	  }
-  }
 }(FreshDirect));

@@ -9,19 +9,13 @@ package com.freshdirect.deliverypass;
 */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.StringUtils;
-
-import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.deliverypass.ejb.DlvPassTypeDAO;
 import com.freshdirect.enums.EnumModel;
-import com.freshdirect.fdstore.EnumEStoreId;
 
 /**
  * @author skrishnasamy
@@ -40,16 +34,12 @@ public class DeliveryPassType extends EnumModel {
 	private boolean isFreeTrialDP;
 	private boolean isFreeTrialRestricted;
 	private String autoRenewalSKU;
-	private List<Integer> eligibleDlvDays;
-	private List<EnumDeliveryType> deliveryTypes;
-	private List<EnumEStoreId> eStoreIds;
-	private String shortName;
 	
 	
 	public int getDuration() {
 		return duration;
 	}
-	
+
 	public boolean isUnlimited() {
 		return unlimited;
 	}
@@ -62,31 +52,18 @@ public class DeliveryPassType extends EnumModel {
 		return profileValue;
 	}
 
-	public DeliveryPassType(@JsonProperty("code") String code, @JsonProperty("name") String name,
-			@JsonProperty("noOfDeliveries") int noOfDlvs, @JsonProperty("duration") int duration,
-			@JsonProperty("unlimited") boolean unlimited, @JsonProperty("profileValue") String profileValue,
-			@JsonProperty("autoRenewDP") boolean isAutoRenewDP, @JsonProperty("freeTrialDP") boolean isFreeTrialDP,
-			@JsonProperty("freeTrialRestricted") boolean isFreeTrialRestricted,
-			@JsonProperty("autoRenewalSKU") String autoRenewalSKU,
-			@JsonProperty("eligibleDlvDays") List<Integer> eligibleDlvDays,
-			@JsonProperty("deliveryTypes") List<EnumDeliveryType> deliveryTypes,
-			@JsonProperty("eStoreIds") List<EnumEStoreId> eStoreIds,
-			@JsonProperty("shortName") String shortName) {
+	public DeliveryPassType(String code, String name, int noOfDlvs, int duration, boolean unlimited, String profileValue, boolean isAutoRenewDP, boolean isFreeTrialDP,boolean isFreeTrialRestricted, String autoRenewalSKU ) {
 		super(code, name, null);
 		this.noOfDeliveries = noOfDlvs;
 		this.duration = duration;
 		this.unlimited = unlimited;
-		this.profileValue = profileValue;
-		this.isAutoRenewDP = isAutoRenewDP;
-		this.isFreeTrialDP = isFreeTrialDP;
-		this.isFreeTrialRestricted = isFreeTrialRestricted;
-		this.autoRenewalSKU = autoRenewalSKU;
-		this.setEligibleDlvDays(eligibleDlvDays);
-		this.deliveryTypes = deliveryTypes;
-		this.eStoreIds = eStoreIds;
-		this.shortName = shortName;
+		this.profileValue=profileValue;
+		this.isAutoRenewDP=isAutoRenewDP;
+		this.isFreeTrialDP=isFreeTrialDP;
+		this.isFreeTrialRestricted=isFreeTrialRestricted;
+		this.autoRenewalSKU=autoRenewalSKU;
 	}
-
+    
 	public static DeliveryPassType getEnum(String code) {
 		loadEnums();
 		return enums.get(code);
@@ -167,39 +144,6 @@ public class DeliveryPassType extends EnumModel {
 
 	public String getAutoRenewalSKU() {
 		return autoRenewalSKU;
-	}
-
-	public List<Integer> getEligibleDlvDays() {
-		return eligibleDlvDays;
-	}
-
-	public void setEligibleDlvDays(List<Integer> eligibleDlvDays) {
-		this.eligibleDlvDays = eligibleDlvDays;
-	}
-
-
-	public List<EnumDeliveryType> getDeliveryTypes() {
-		return deliveryTypes;
-	}
-
-	public void setDeliveryTypes(List<EnumDeliveryType> deliveryTypes) {
-		this.deliveryTypes = deliveryTypes;
-	}
-
-	public List<EnumEStoreId> geteStoreIds() {
-		return eStoreIds;
-	}
-
-	public void seteStoreIds(List<EnumEStoreId> eStoreIds) {
-		this.eStoreIds = eStoreIds;
-	}
-
-	public String getShortName() {
-		return shortName;
-	}
-
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
 	}
 	
 }

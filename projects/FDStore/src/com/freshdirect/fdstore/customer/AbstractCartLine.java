@@ -20,9 +20,9 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.content.AvailabilityFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.storeapi.content.AvailabilityFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
@@ -34,8 +34,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	/** Random ID, not persisted */
 	private final int randomId = RND.nextInt();
 
-	private final FDInvoiceLineModel firstInvoiceLine;
-	private final FDInvoiceLineModel lastInvoiceLine;
+	private final ErpInvoiceLineI firstInvoiceLine;
+	private final ErpInvoiceLineI lastInvoiceLine;
 	private final ErpReturnLineModel returnLine;
 
 	private final String variantId;
@@ -45,17 +45,6 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx) {
 		super(sku, productRef, configuration, variantId, userCtx);
 
-		this.firstInvoiceLine = null;
-		this.lastInvoiceLine = null;
-		this.returnLine = null;
-		
-		this.variantId = variantId;
-	}
-	
-	//Introduced for Storefront 2.0 implementation only.
-	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx, String plantId) {
-		super(sku, productRef, configuration, variantId, userCtx,plantId);
-		
 		this.firstInvoiceLine = null;
 		this.lastInvoiceLine = null;
 		this.returnLine = null;
@@ -72,35 +61,25 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public AbstractCartLine(
-	        ErpOrderLineModel orderLine,
-	        ErpInvoiceLineI firstInvoiceLine,
-	        ErpInvoiceLineI lastInvoiceLine,
-	        ErpReturnLineModel returnLine,
-	        boolean lazy) {
-	        super(orderLine, lazy);
+		ErpOrderLineModel orderLine,
+		ErpInvoiceLineI firstInvoiceLine,
+		ErpInvoiceLineI lastInvoiceLine,
+		ErpReturnLineModel returnLine,
+		boolean lazy) {
+		super(orderLine, lazy);
 
-	        if (firstInvoiceLine==null) {
-	    		this.firstInvoiceLine = null;
-			} else {
-				this.firstInvoiceLine = new FDInvoiceLineModel(firstInvoiceLine,getUserContext());
-			}
-	        if (lastInvoiceLine==null){
-	        	this.lastInvoiceLine = null;
-	        } else {
-	        this.lastInvoiceLine = new FDInvoiceLineModel(lastInvoiceLine,getUserContext());
-	        }
-	        this.returnLine = returnLine;
+		this.firstInvoiceLine = firstInvoiceLine;
+		this.lastInvoiceLine = lastInvoiceLine;
+		this.returnLine = returnLine;
 
-	        this.variantId = orderLine.getVariantId();
-	    }
+		this.variantId = orderLine.getVariantId();
+	}
 
-	@Override
-    public int getRandomId() {
+	public int getRandomId() {
 		return this.randomId;
 	}
 	
-	@Override
-    public String getCartlineId(){
+	public String getCartlineId(){
 		return this.orderLine.getCartlineId();
 	}
 
@@ -108,31 +87,26 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// PRICING
 	//
 
-	@Override
-    public Discount getDiscount() {
+	public Discount getDiscount() {
 		return this.orderLine.getDiscount();
 	}
 
-	@Override
-    public void setDiscount(Discount discount) {
+	public void setDiscount(Discount discount) {
 		this.orderLine.setDiscount(discount);
 		this.fireConfigurationChange();
 	}
 
 	
-	@Override
-    public ErpCouponDiscountLineModel getCouponDiscount() {
+	public ErpCouponDiscountLineModel getCouponDiscount() {
 		return this.orderLine.getCouponDiscount();
 	}
 
-	@Override
-    public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
+	public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
 		this.orderLine.setCouponDiscount(discount);
 		this.fireConfigurationChange();
 	}
 	
-	@Override
-    public void clearCouponDiscount(){
+	public void clearCouponDiscount(){
 		this.setCouponDiscount(null);
 		this.setCouponStatus(null);
 		this.setCouponApplied(false);
@@ -141,36 +115,31 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// INVOICE, RETURN
 	//
 
-	@Override
-    public boolean hasInvoiceLine() {
+	public boolean hasInvoiceLine() {
 		return this.getInvoiceLine() != null;
 	}
 
-	@Override
-    public FDInvoiceLineModel getInvoiceLine() {
+	public ErpInvoiceLineI getInvoiceLine() {
 		return this.lastInvoiceLine;
 	}
 
-	public FDInvoiceLineModel getFirstInvoiceLine() {
+	public ErpInvoiceLineI getFirstInvoiceLine() {
 		return this.firstInvoiceLine;
 	}
 
-	public FDInvoiceLineModel getLastInvoiceLine() {
+	public ErpInvoiceLineI getLastInvoiceLine() {
 		return this.lastInvoiceLine;
 	}
 
-	@Override
-    public ErpReturnLineI getReturnLine() {
+	public ErpReturnLineI getReturnLine() {
 		return this.returnLine;
 	}
 
-	@Override
-    public boolean hasReturnLine() {
+	public boolean hasReturnLine() {
 		return this.getReturnLine() != null;
 	}
 
-	@Override
-    public boolean hasRestockingFee() {
+	public boolean hasRestockingFee() {
 		return this.returnLine == null ? false : this.returnLine.isRestockingOnly();
 	}
 
@@ -178,55 +147,46 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// CONVENIENCE
 	//
 
-	@Override
-    public ErpAffiliate getAffiliate() {
+	public ErpAffiliate getAffiliate() {
 		return this.orderLine.getAffiliate();
 	}
 
-	@Override
-    public boolean isSample() {
+	public boolean isSample() {
 		return this.getDiscount() != null && EnumDiscountType.SAMPLE.equals(this.getDiscount().getDiscountType());
 	}
 
-	@Override
-    public boolean hasTax() {
+	public boolean hasTax() {
 		double value = this.hasInvoiceLine() ? this.getInvoiceLine().getTaxValue() : this.getTaxValue();
 		return value > 0;
 	}
 
-	@Override
-    public boolean hasDepositValue() {
+	public boolean hasDepositValue() {
 		double value = this.hasInvoiceLine() ? this.getInvoiceLine().getDepositValue() : this.getDepositValue();
 		return value > 0;
 	}
 
-	@Override
-    public String getMaterialNumber() {
+	public String getMaterialNumber() {
 		return this.orderLine.getMaterialNumber();
 	}
 	
-	@Override
-    public String getMaterialGroup(){
+	public String getMaterialGroup(){
 		return this.orderLine.getMaterialGroup();
 	}
 
-	@Override
-    public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
+	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
 		FDProduct fdp = this.lookupFDProduct();
 		FDProductInfo fdpi = this.lookupFDProductInfo();
 		return AvailabilityFactory.getApplicableRestrictions(fdp,fdpi);
 	}
 
-	@Override
-    public String getOrderLineId() {
+	public String getOrderLineId() {
 		if(this.orderLine.getPK() == null)
 			return this.orderLine.getOrderLineId() == null? "": this.orderLine.getOrderLineId();
 		else
 			return this.orderLine.getPK().getId();
 	}
 
-	@Override
-    public String getOrderLineNumber() {
+	public String getOrderLineNumber() {
 		return this.orderLine.getOrderLineNumber();
 	}
 		
@@ -234,8 +194,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// FORMATTING, DISPLAY
 	// 
 
-	@Override
-    public String getDeliveredQuantity() {
+	public String getDeliveredQuantity() {
 		if (!this.hasInvoiceLine()) {
 			return "";
 		}
@@ -246,41 +205,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		}
 	}
 
-	@Override
-    public String getSubstitutedQuantity() {
-		FDInvoiceLineI invLine = this.getInvoiceLine();
-		if (null!=invLine && null!= invLine.getSubstitutedSkuCode() && !"".equalsIgnoreCase(invLine.getSubstitutedSkuCode().trim())) {
-			return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getQuantity());
-		} else {
-			return "";
-		}
-	}
-	
-	public String getSubstituteProductName() {
-		if (!this.hasInvoiceLine()) {
-			return "";
-		}
-		return this.getFirstInvoiceLine().getSubstituteProductName(); 
-	
-	}
-	
-	public String getSubstituteProductDefaultPrice() {
-		if (!this.hasInvoiceLine()) {
-			return "";
-		}
-		return this.getFirstInvoiceLine().getSubstituteProductDefaultPrice();
-	}
-	
-	public String getSubSkuStatus(){
-		if (!this.hasInvoiceLine()) {
-			return "";
-		}
-		return this.getFirstInvoiceLine().getSubSkuStatus();
-	}
-	
-	
-	@Override
-    public String getReturnedQuantity() {
+	public String getReturnedQuantity() {
 		if (!this.hasReturnLine()) {
 			return "";
 		}
@@ -291,8 +216,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		}
 	}
 
-	@Override
-    public String getDisplayQuantity() {
+	public String getDisplayQuantity() {
 		StringBuffer qty = new StringBuffer();
 
 		if (this.isSoldBySalesUnits()) {
@@ -329,8 +253,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return qty.toString();
 	}
 
-	@Override
-    public String getReturnDisplayQuantity() {
+	public String getReturnDisplayQuantity() {
 
 		StringBuffer qty = new StringBuffer();
 
@@ -364,25 +287,21 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return qty.toString();
 	}
 
-	@Override
-    public boolean hasAdvanceOrderFlag() {
+	public boolean hasAdvanceOrderFlag() {
 		FDProduct fdp = this.lookupFDProduct();
 		return fdp.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(),false);
 	}
 	
 
-	@Override
-    public String getVariantId() {
+	public String getVariantId() {
 		return this.variantId;
 	}
 
-	@Override
-    public void setOrderLineId(String orderLineId){
+	public void setOrderLineId(String orderLineId){
 		this.orderLine.setOrderLineId(orderLineId);
 	}
 	
-	@Override
-    public boolean isDiscountApplied() {
+	public boolean isDiscountApplied() {
 		return ((this.getDiscount() != null && (EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType()) 
 				|| EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())))|| 
 				(this.getCouponDiscount()!=null && EnumDiscountType.DOLLAR_OFF.equals(this.getCouponDiscount().getDiscountType())));
@@ -420,16 +339,14 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	/**
 	 * @return the couponStatus
 	 */
-	@Override
-    public EnumCouponStatus getCouponStatus() {
+	public EnumCouponStatus getCouponStatus() {
 		return couponStatus;
 	}
 
 	/**
 	 * @param couponStatus the couponStatus to set
 	 */
-	@Override
-    public void setCouponStatus(EnumCouponStatus couponStatus) {
+	public void setCouponStatus(EnumCouponStatus couponStatus) {
 		this.couponStatus = couponStatus;
 	}
 	
@@ -442,6 +359,31 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	public void setCouponApplied(boolean applied) {
 		this.couponApplied =applied;
 		
+	}
+
+	public String getCoremetricsPageId() {
+		return this.orderLine.getCoremetricsPageId();
+	}
+
+	public void setCoremetricsPageId(String coremetricsPageId) {
+		this.orderLine.setCoremetricsPageId(coremetricsPageId);
+	}
+
+	public String getCoremetricsPageContentHierarchy() {
+		return this.orderLine.getCoremetricsPageContentHierarchy();
+	}
+
+	public void setCoremetricsPageContentHierarchy(
+			String coremetricsPageContentHierarchy) {
+		this.orderLine.setCoremetricsPageContentHierarchy(coremetricsPageContentHierarchy);
+	}
+
+	public String getCoremetricsVirtualCategory() {
+		return this.orderLine.getCoremetricsVirtualCategory();
+	}
+
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		this.orderLine.setCoremetricsVirtualCategory(coremetricsVirtualCategory);
 	}
 
 	@Override

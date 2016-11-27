@@ -75,10 +75,4 @@ public class ErpGCDlvInformationHolder extends ModelSupport {
 	public void setGiftCard(ErpGiftCardModel giftCard) {
 		this.giftCard = giftCard;
 	}
-	
-	@Override
-	public void setId(String id) {
-		if (id != null)
-			super.setId(id);
-	}
 }

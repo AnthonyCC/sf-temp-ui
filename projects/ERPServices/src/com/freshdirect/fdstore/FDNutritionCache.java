@@ -1,12 +1,18 @@
 package com.freshdirect.fdstore;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.ecomm.gateway.ErpNutritionService;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -26,17 +32,18 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 		return instance;
 	}
 	
-	protected Map<String, ErpNutritionModel> loadData(Date since) {
-		try {
-			LOGGER.info("REFRESHING: " + (since == null? "0" : since.getTime()));
-
-			Map<String, ErpNutritionModel> data;
-			data = ErpNutritionService.getInstance().loadNutrition(since);
+	protected Map<String,ErpNutritionModel> loadData(Date since){
+		try{
+			LOGGER.info("REFRESHING");
+			ErpNutritionSB sb = this.lookupNutritionHome().create();
+			Map<String,ErpNutritionModel> data = sb.loadNutrition(since);
 			
-			LOGGER.info("REFRESHED: " + (since == null? "0" : since.getTime()) + " , size:" + data.size());
+			LOGGER.info("REFRESHED: " + data.size());
 			return data;
-		} catch (Exception e) {
-			LOGGER.error("REFRESH FAILED: " + (since == null? "0" : since.getTime()), e);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			throw new FDRuntimeException(e);
+		} catch (CreateException e) {
 			throw new FDRuntimeException(e);
 		}
 	}
@@ -57,6 +64,12 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 		return ((ErpNutritionModel)item).getLastModifiedDate();
 	}
 	
-	
+	private ErpNutritionHome lookupNutritionHome() {
+		try {
+			return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition");
+		} catch (NamingException ne) {
+			throw new EJBException(ne);
+		}
+	}
 
 }

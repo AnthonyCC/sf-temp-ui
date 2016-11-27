@@ -18,10 +18,10 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 
 public class LineItemDiscountApplicator implements PromotionApplicatorI {
    
-	private double minSubtotal=0.0;
+	private double minSubTotal=0.0;
 	private double percentOff=0.0;
 	private boolean favoritesOnly;
-	private DlvZoneStrategy dlvZoneStrategy;
+	private DlvZoneStrategy zoneStrategy;
 	private HeaderDiscountRule discountRule=null;
 	private int skuLimit = 0;
 	private double maxPercentageDiscount=0.0;
@@ -34,22 +34,17 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	private CartStrategy cartStrategy;
 	
 	public LineItemDiscountApplicator(double minAmount,double percentoff, double maxPercentageDiscount) { //, int maxItemCount,boolean applyHeaderDiscount){
-		this.minSubtotal=minAmount;
+		this.minSubTotal=minAmount;
 		this.percentOff=percentoff;
 		this.maxPercentageDiscount = maxPercentageDiscount;
 	}
 	
 	public LineItemDiscountApplicator(double minAmount) { //, int maxItemCount,boolean applyHeaderDiscount){
-		this.minSubtotal=minAmount;
+		this.minSubTotal=minAmount;
 	}
 	
-	public LineItemDiscountApplicator() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public double getMinSubtotal() {
-		return this.minSubtotal;
+		return this.minSubTotal;
 	}
 	public void addLineItemStrategy(LineItemStrategyI strategy) {
 		this.lineItemStrategies.add(strategy);
@@ -83,7 +78,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
-		int ev = dlvZoneStrategy != null ? dlvZoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		int ev = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
 		if(ev == PromotionStrategyI.DENY) return false;
 		
 		ev = cartStrategy != null ? cartStrategy.evaluate(promotionCode, context, true) : PromotionStrategyI.ALLOW;
@@ -91,7 +86,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
 		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
-		if (preDeduction < this.minSubtotal) {
+		if (preDeduction < this.minSubTotal) {
 			return false;
 		} 
 		//If discount is applied only for favorite items only(smart savings) then check the promo variant
@@ -355,12 +350,12 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		this.favoritesOnly = favoritesOnly;
 	}
 	
-	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
-		this.dlvZoneStrategy = zoneStrategy;
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
 	}
 
 	public DlvZoneStrategy getDlvZoneStrategy() {
-		return this.dlvZoneStrategy;
+		return this.zoneStrategy;
 	}
 
 	public HeaderDiscountRule getDiscountRule() {
@@ -388,25 +383,4 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
 	}
-
-	public void setMinSubtotal(double minSubTotal) {
-		this.minSubtotal = minSubTotal;
-	}
-
-	public double getMaxPercentageDiscount() {
-		return maxPercentageDiscount;
-	}
-
-	public void setMaxPercentageDiscount(double maxPercentageDiscount) {
-		this.maxPercentageDiscount = maxPercentageDiscount;
-	}
-
-	public List getLineItemStrategies() {
-		return lineItemStrategies;
-	}
-
-	public void setLineItemStrategies(List lineItemStrategies) {
-		this.lineItemStrategies = lineItemStrategies;
-	}
-
 }

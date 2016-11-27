@@ -2,9 +2,6 @@ package com.freshdirect.customer;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * Type-safe enumeration for order statuses.
  */
@@ -31,7 +28,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public final static EnumSaleStatus					SUBMITTED					= new EnumSaleStatus( "SUB", "Submitted", "Submitted", true );
 
 	/** Order was canceled by customer */
-	public final static EnumSaleStatus					CANCELED					= new EnumSaleStatus( "CAN", "Cancelled", "Canceled", false );
+	public final static EnumSaleStatus					CANCELED					= new EnumSaleStatus( "CAN", "Cancelled", "Cancelled", false );
 
 	/** Order in process, after cut-off time, cannot be change */
 	public final static EnumSaleStatus					INPROCESS					= new EnumSaleStatus( "PRC", "In process", "In process", true );
@@ -82,7 +79,6 @@ public class EnumSaleStatus implements java.io.Serializable {
 		STATUSCODE_MAP.put( this.statusCode, this );
 	}
 
-	@JsonValue
 	public String getStatusCode() {
 		return this.statusCode;
 	}
@@ -99,7 +95,6 @@ public class EnumSaleStatus implements java.io.Serializable {
     	return this.pending;
     }
 
-    @JsonCreator
 	public static EnumSaleStatus getSaleStatus(String statusCode) {
 		return STATUSCODE_MAP.get( statusCode.toUpperCase() );
 	}
@@ -143,10 +138,6 @@ public class EnumSaleStatus implements java.io.Serializable {
 		return this.equals(NEW);
 	}
 
-	public boolean isSapSubmitPending() {
-		return this.equals(NEW) || this.equals(MODIFIED) ;
-	}
-	
 	@Override
 	public String toString() {
 		return statusCode;

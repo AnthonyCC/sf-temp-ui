@@ -8,13 +8,12 @@
  */
 package com.freshdirect.framework.core;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
-
+import java.sql.SQLException;
+import java.sql.Connection;
+import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 /**
  * Provides an efficient way of finding DataSources.
@@ -26,7 +25,6 @@ public class DataSourceLocator {
 
 	/** DataSource objects hashed by home interface names */
 	private final static HashMap dataSourceCache = new HashMap();
-	static String DEFAULT_DATASOURCE_CACHE_KEY = "";
 
     /**
      * Retreives a DataSource using information provided by an enterprise
@@ -41,16 +39,12 @@ public class DataSourceLocator {
 	public static DataSource getDataSource(String cacheKey) throws NamingException {
 		DataSource ds = (DataSource) dataSourceCache.get( cacheKey );
 		if (ds==null) {
-			ds = DataSourceLocator.getUncachedDataSource();
+			ds = DataSourceLocator.getDataSource();
 			synchronized (dataSourceCache) {
 				dataSourceCache.put(cacheKey, ds);
 			}
 		}
 		return ds;
-	}
-
-	public static DataSource getDataSource() throws NamingException {
-		return getDataSource(DEFAULT_DATASOURCE_CACHE_KEY);
 	}
 	
     /**
@@ -100,7 +94,7 @@ public class DataSourceLocator {
      *
      * @throws NamingException if any problems were encountered while trying to find the DataSource
      */
-	private static DataSource getUncachedDataSource() throws NamingException {
+	public static DataSource getDataSource() throws NamingException {
     	InitialContext initCtx = null;
         try {
             initCtx = new InitialContext();
@@ -121,7 +115,7 @@ public class DataSourceLocator {
      */
 	private static Connection getConnection() throws SQLException {
 		try {
-			return DataSourceLocator.getDataSource(DEFAULT_DATASOURCE_CACHE_KEY).getConnection();
+			return DataSourceLocator.getDataSource().getConnection();
         } catch (NamingException ne) {
             throw new SQLException("Unable to find DataSource to get Connection: " + ne.getMessage());
 		}

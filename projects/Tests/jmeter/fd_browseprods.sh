@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Retrieve product browse urls.
 # Command line options:

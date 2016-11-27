@@ -23,15 +23,15 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.mobileapi.controller.data.Coupon;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.SkuModel;
 
 public class Sku {
     private static final Logger LOG = Logger.getLogger(Sku.class);
@@ -146,10 +146,10 @@ public class Sku {
             return new Sku(priceCalc, skuModel, coupon,plantID);
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (FDSkuNotFoundException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
@@ -289,10 +289,10 @@ public class Sku {
             }
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (FDSkuNotFoundException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return scales;
     }
@@ -398,7 +398,7 @@ public class Sku {
     //Added for Group Scale
     public FDGroup getFDGroup(){
     	if(getGroupPrice() > 0.0)
-    		return productInfo.getGroup(priceCalc.getPricingContext() .getZoneInfo());
+    		return productInfo.getGroup(priceCalc.getPricingContext() .getZoneInfo().getSalesOrg(),priceCalc.getPricingContext().getZoneInfo().getDistributionChanel());
     	else 
     		return null;
    }

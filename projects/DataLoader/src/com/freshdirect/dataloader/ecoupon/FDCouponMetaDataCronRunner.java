@@ -16,14 +16,12 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDCouponMetaDataCronRunner {
 
@@ -36,16 +34,12 @@ public class FDCouponMetaDataCronRunner {
 		try {
 			LOGGER.info("FDCouponMetaDataCron Started.");
 //			FDCouponManager.loadAndSaveCoupons(null);
+			ctx = getInitialContext();
+			FDCouponManagerHome managerHome = (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
+			FDCouponManagerSB sb = managerHome.create();
 			FDCouponActivityContext activityContext = new FDCouponActivityContext(EnumTransactionSource.SYSTEM, "SYSTEM", null);
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
-				FDECommerceService.getInstance().loadAndSaveCoupons(activityContext);
-			} else {
-				ctx = getInitialContext();
-				FDCouponManagerHome managerHome = (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
-				FDCouponManagerSB sb = managerHome.create();
-				sb.loadAndSaveCoupons(activityContext);
-				LOGGER.info("FDCouponMetaDataCron Stopped.");
-			}
+			sb.loadAndSaveCoupons(activityContext);
+			LOGGER.info("FDCouponMetaDataCron Stopped.");
 		} catch (Exception e){
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));

@@ -46,11 +46,11 @@
 	FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
 	if (successPage == null) {
 		if(userx.isCorporateUser()){
-			response.sendRedirect(response.encodeRedirectURL("/index.jsp?serviceType=CORPORATE"));
+			response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS"));
 		}else if (userx.isDepotUser()){
-			response.sendRedirect(response.encodeRedirectURL("/index.jsp?serviceType=DEPOT"));
+			response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
 		}else{
-			response.sendRedirect(response.encodeRedirectURL("/index.jsp?serviceType=HOME"));
+			response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
 		}
 	}else{
 		response.sendRedirect(response.encodeRedirectURL(successPage));

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
   <jwr:style src="/grid.css" media="all" />
   <jwr:style src="/oldglobal.css" media="all" />
@@ -36,7 +36,7 @@
       Congrats, you've qualified for a <span class="product-sample-free">FREE</span>
       Sample! Choose 2.</h2>
 
-      <div data-component="carousel" data-eventsource="view_cart" data-apiendpoint=
+      <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint=
       "/api/qs/ymal">
         <div data-component="carousel-mask" class="transactional light-carousel">
           <ul data-component="carousel-list" data-carousel-page="0">
@@ -80,7 +80,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;1.89&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -141,7 +141,7 @@
       Congrats, you've qualified for a <span class="product-sample-free">FREE</span>
       Sample! Choose 2.</h2>
 
-      <div data-component="carousel" data-eventsource="view_cart" data-apiendpoint=
+      <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint=
       "/api/qs/ymal">
         <div data-component="carousel-mask" class="transactional light-carousel">
           <ul data-component="carousel-list" data-carousel-page="0">
@@ -185,7 +185,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;3.79&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -260,7 +260,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;1.89&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -319,7 +319,7 @@
       Congrats, you've qualified for a <span class="product-sample-free">FREE</span>
       Sample! Choose 2.</h2>
 
-      <div data-component="carousel" data-eventsource="view_cart" data-apiendpoint=
+      <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint=
       "/api/qs/ymal">
         <div data-component="carousel-mask" class="transactional light-carousel">
           <ul data-component="carousel-list" data-carousel-page="0">
@@ -360,7 +360,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;2.99&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;2&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } , { &quot;price&quot;: &quot;2.5&quot;, &quot;lowerBound&quot;: &quot;2&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -432,7 +432,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;3.79&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -507,7 +507,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;1.89&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -564,7 +564,7 @@
       Congrats, you've qualified for a <span class="product-sample-free">FREE</span>
       Sample! Choose 2.</h2>
 
-      <div data-component="carousel" data-eventsource="view_cart" data-apiendpoint=
+      <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint=
       "/api/qs/ymal">
         <div data-component="carousel-mask" class="transactional light-carousel">
           <ul data-component="carousel-list" data-carousel-page="0">
@@ -605,7 +605,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;2.99&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;2&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } , { &quot;price&quot;: &quot;2.5&quot;, &quot;lowerBound&quot;: &quot;2&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -677,7 +677,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;3.79&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -752,7 +752,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;1.89&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"
@@ -827,7 +827,7 @@
                     Quantity: 1
                   </div>
 
-                  <div class="portrait-item-addtocart" data-eventsource="view_cart">
+                  <div class="portrait-item-addtocart" data-cmeventsource="view_cart">
                     <div class="subtotal" data-component="subtotal" data-template=
                     "common.subtotalTransactionalInner" data-prices=
                     "[ { &quot;price&quot;: &quot;1.89&quot;, &quot;lowerBound&quot;: &quot;0&quot;, &quot;upperBound&quot;: &quot;Infinity&quot;, &quot;pricingUnit&quot;: &quot;EA&quot; } ]"

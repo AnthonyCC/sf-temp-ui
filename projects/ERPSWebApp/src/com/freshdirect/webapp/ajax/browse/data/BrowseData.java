@@ -2,14 +2,11 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
@@ -24,14 +21,7 @@ public class BrowseData implements Serializable {
 		private boolean usePopularCategoriesLayout;
 		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer();
 		private int limit;
-		private boolean ifSingleUL;
 
-		public boolean isIfSingleUL() {
-			return ifSingleUL;
-		}
-		public void setIfSingleUL(boolean ifSingleUL) {
-			this.ifSingleUL = ifSingleUL;
-		}
 		public List<SectionData> getSections() {
 			return sections;
 		}
@@ -135,24 +125,6 @@ public class BrowseData implements Serializable {
 		
 	}	
 	
-    public static class CarouselTypeContainer implements Serializable {
-        private static final long serialVersionUID = -1355425455491477559L;
-        private Map<String, String> attributes = new HashMap<String, String>();
-
-        @JsonAnyGetter
-        public Map<String, String> getAttributes() {
-            return attributes;
-        }
-
-        public void setAttributes(Map<String, String> attributes) {
-            this.attributes = attributes;
-        }
-
-        public void addAttribute(String key, String value) {
-            this.attributes.put(key, value);
-        }
-    }
-
 	public static class DescriptiveDataCointainer implements Serializable, DescriptiveDataI {
 		
 		private static final long serialVersionUID = 4991670021932771599L;
@@ -323,26 +295,16 @@ public class BrowseData implements Serializable {
 	
 	public static class AssortProducts implements Serializable {
 		private static final long serialVersionUID = 2252485502495019016L;
-		//private Map<String, List<ProductData>> cats = new HashMap<String, List<ProductData>>();
-		private List<ProductData> unfilteredAssortedProducts = new ArrayList<ProductData>(); // added this list as part of APPDEV-5920 - sort bar for staff picks
-		private List<CategoryKey> catKeys= new ArrayList<CategoryKey>();
-		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer(); // added this for passing filter labels to (search) content.soy 
-		private Map<String, List<ProductData>> cats = new TreeMap<String, List<ProductData>>(new Comparator<String>() {
+		private Map<String, List<ProductData>> cats = new HashMap<String, List<ProductData>>();
+		private List<ProductData> products = new ArrayList<ProductData>();
 
-			@Override
-			public int compare(String category1, String category2) {
-				CategoryKey categoryKey1=getCategoryKeyForCategory(category1, catKeys);
-				CategoryKey categoryKey2=getCategoryKeyForCategory(category2, catKeys);
-				//Added the condition as part of APPBUG-4991. When all the products have the same category position, the comparator was returning only one category header name
-				//If the category position is 0- we are now comparing by category name
-				if(0==categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition())){
-					return categoryKey1.getCategoryName().compareTo(categoryKey2.getCategoryName());
-				}else{
-					return categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition());
-				}
-				
+		public List<ProductData> getProducts(String cat) {
+			if (cats.containsKey(cat)) {
+				return cats.get(cat);
+			} else {
+				return new ArrayList<ProductData>();
 			}
-		});
+		}
 
 		public Map<String, List<ProductData>> getCats() {
 			return cats;
@@ -352,119 +314,12 @@ public class BrowseData implements Serializable {
 			this.cats = cats;
 		}
 
-		public List<CategoryKey> getCatKeys() {
-			return catKeys;
-		}
-
-		public void setCatKeys(List<CategoryKey> catKeys) {
-			this.catKeys = catKeys;
-		}
-		
-		public void addCategoryKeys(CategoryKey categoryKey){
-			getCatKeys().add(categoryKey);
-		}
-		public FilterLabelDataCointainer getFilterLabels() {
-			return filterLabels;
-		}
-
-		public void setFilterLabels(FilterLabelDataCointainer filterLabels) {
-			this.filterLabels = filterLabels;
-		}
-
-		public List<ProductData> getUnfilteredAssortedProducts() {
-			return unfilteredAssortedProducts;
-		}
-
-		public void setUnfilteredAssortedProducts(
-				List<ProductData> unfilteredAssortedProducts) {
-			this.unfilteredAssortedProducts = unfilteredAssortedProducts;
-		}
-
 		public void addProdDataToCat(String curCat, ProductData productData) {
-			
-			if(this.cats.containsKey(curCat)){
-            	List<ProductData> productDataList=this.cats.get(curCat);
-            	productDataList.add(productData);
-            	/*Commented the below code as it is overriding the sort behavior in staff picks sort bar*/
-            /*	Collections.sort(productDataList, new Comparator<ProductData>() {
-
-					@Override
-					public int compare(ProductData o1, ProductData o2) {
-						Integer p1=o1.getPriority();
-						Integer p2=o2.getPriority();
-						return p1.compareTo(p2);
-					}
-				});
-*/            	this.cats.put(curCat, productDataList);
-            } else {
-            	List<ProductData> productDataList=new ArrayList<ProductData>();   	
-            	productDataList.add(productData);
-            	this.cats.put(curCat, productDataList);
-            }
+			List<ProductData> temp = this.getProducts(curCat);
+			temp.add(productData);
+			this.getCats().put(curCat, temp);
 		}
 	}
-	
-	/* Created this class as part of APPDEV -5920 Staff picks sort bar implementation */
-	public static class CategoryKey implements Serializable{
-	
-		private static final long serialVersionUID = 1L;
-		private String categoryName;
-		private Integer categoryPosition;
-		public String getCategoryName() {
-			return categoryName;
-		}
-		public void setCategoryName(String categoryName) {
-			this.categoryName = categoryName;
-		}
-		public Integer getCategoryPosition() {
-			return categoryPosition;
-		}
-		public void setCategoryPosition(Integer categoryPosition) {
-			this.categoryPosition = categoryPosition;
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((categoryName == null) ? 0 : categoryName.hashCode());
-			result = prime * result + categoryPosition;
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			CategoryKey other = (CategoryKey) obj;
-			if (categoryName == null) {
-				if (other.categoryName != null)
-					return false;
-			} else if (!categoryName.equals(other.categoryName))
-				return false;
-			if (categoryPosition != other.categoryPosition)
-				return false;
-			return true;
-		}
-		
-		
-	} 
-	
-	private static CategoryKey getCategoryKeyForCategory(String category, List<CategoryKey> categoryKeys){
-		CategoryKey categoryKey=null;
-		for (CategoryKey key:categoryKeys){
-			if(key.getCategoryName().equalsIgnoreCase(category)){
-				categoryKey=key;
-				break;
-			}
-			
-		}
-		return categoryKey;
-	}
-	
 	public static class HLBrandAdProducts implements Serializable {
 	
 		private static final long serialVersionUID = -4153578565069486053L;
@@ -472,20 +327,11 @@ public class BrowseData implements Serializable {
 		
 		private List<ProductData> products = new ArrayList<ProductData>();
 		private String pageBeacon = null;
-		private int hlProductsCount;
-		private String hlEmptyProductsPagebeacon;
-		
 		
 		
 		private Map<String, List<ProductData>> hlSelectionOfProductList = new HashMap<String, List<ProductData>>();
 		
 		private Map<String, String> hlSelectionsPageBeacons = new HashMap<String, String>();
-		
-		private Map<String, Integer> hlCatProductsCount = new HashMap<String, Integer>();
-		
-		private Map<String, String> hlSelectionsEmptyProductsPageBeacons = new HashMap<String, String>();
-		
-		public String updatePdpPageBeacon;
 		
 		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
 			return hlSelectionOfProductList;
@@ -519,47 +365,6 @@ public class BrowseData implements Serializable {
 		public void setHlSelectionsPageBeacons(
 				Map<String, String> hlSelectionsPageBeacons) {
 			this.hlSelectionsPageBeacons = hlSelectionsPageBeacons;
-		}
-
-		public int getHlProductsCount() {
-			return hlProductsCount;
-		}
-
-		public void setHlProductsCount(int hlProductsCount) {
-			this.hlProductsCount = hlProductsCount;
-		}
-
-		public Map<String, Integer> getHlCatProductsCount() {
-			return hlCatProductsCount;
-		}
-
-		public void setHlCatProductsCount(Map<String, Integer> hlCatProductsCount) {
-			this.hlCatProductsCount = hlCatProductsCount;
-		}
-
-		public String getHlEmptyProductsPagebeacon() {
-			return hlEmptyProductsPagebeacon;
-		}
-
-		public void setHlEmptyProductsPagebeacon(String hlEmptyProductsPagebeacon) {
-			this.hlEmptyProductsPagebeacon = hlEmptyProductsPagebeacon;
-		}
-
-		public Map<String, String> getHlSelectionsEmptyProductsPageBeacons() {
-			return hlSelectionsEmptyProductsPageBeacons;
-		}
-
-		public void setHlSelectionsEmptyProductsPageBeacons(
-				Map<String, String> hlSelectionsEmptyProductsPageBeacons) {
-			this.hlSelectionsEmptyProductsPageBeacons = hlSelectionsEmptyProductsPageBeacons;
-		}
-		
-		public String getUpdatePdpPageBeacon() {
-			return updatePdpPageBeacon;
-		}
-
-		public void setUpdatePdpPageBeacon(String updatePdpPageBeacon) {
-			this.updatePdpPageBeacon = updatePdpPageBeacon;
 		}
 	}
 		
@@ -704,11 +509,7 @@ public class BrowseData implements Serializable {
 	private DDPPProducts ddppProducts = new DDPPProducts();
 	private AssortProducts assortProducts = new AssortProducts();
 	private HLBrandAdProducts adProducts = new HLBrandAdProducts();
-	private String productId;
     private String topMedia;
-    private CarouselTypeContainer carouselType;
-
-    private GoogleAnalyticsData googleAnalyticsData;
 	
 	public PagerData getPager() {
 		return pager;
@@ -725,22 +526,12 @@ public class BrowseData implements Serializable {
 	public CarouselDataCointainer getCarousels() {
 		return carousels;
 	}
-	public void setCarousels(CarouselDataCointainer c) {
-		carousels = c;
-	}
 	public DescriptiveDataCointainer getDescriptiveContent() {
 		return descriptiveContent;
-	}
-	public void setDescriptiveContent(DescriptiveDataCointainer d) {
-		descriptiveContent = d;
 	}
 	public MenuDataCointainer getMenuBoxes() {
 		return menuBoxes;
 	}
-	public void setMenuBoxes(MenuDataCointainer m) {
-		menuBoxes = m;
-	}
-	
 	public SortDataCointainer getSortOptions() {
 		return sortOptions;
 	}
@@ -777,28 +568,5 @@ public class BrowseData implements Serializable {
 	public void setAdProducts(HLBrandAdProducts adProducts) {
 		this.adProducts = adProducts;
 	}
-
-    public GoogleAnalyticsData getGoogleAnalyticsData() {
-        return googleAnalyticsData;
-    }
-
-    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
-        this.googleAnalyticsData = googleAnalyticsData;
-    }
-	public String getProductId() {
-		return productId;
-	}
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-    public CarouselTypeContainer getCarouselType() {
-        return carouselType;
-    }
-
-    public void setCarouselType(CarouselTypeContainer carouselType) {
-        this.carouselType = carouselType;
-    }
-
 
 }

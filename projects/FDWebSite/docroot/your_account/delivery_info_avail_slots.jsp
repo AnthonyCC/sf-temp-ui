@@ -11,24 +11,21 @@
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
+<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
-<%@ page import='com.freshdirect.storeapi.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <%
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
@@ -37,6 +34,9 @@ if("true".equals(request.getParameter("chefstable"))) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 }
 %>
+
+<fd:CheckLoginStatus />
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 boolean isStaticSlot = true;
@@ -47,7 +47,7 @@ String actionName = null;
 ActionResult result=null;
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-TimeslotContext timeSlotCtx = TimeslotContext.CHECK_AVAILABLE_TIMESLOTS;
+TimeslotContext timeSlotCtx = TimeslotContext.CHECK_AVAILABLE_TIMESLOTS; 
 
 if (user.isChefsTable()) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
@@ -71,67 +71,30 @@ if (mobWeb) {
 	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 	String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/your_account/delivery_info_avail_slots.jsp" : request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
-		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
 	}
 }
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-<%-- 	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="Available Delivery Slots" pageId="delivery_info_avail"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<%= mobWeb ? "" :"<div id=\"content\">" %>
-			<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
-				<%@ include file="/help/delivery_info_nav.jspf" %>
-			</div>
+		<%//Finds the address%>
+		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 	
-			<%//Finds the address%>
-			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+		<%//Finds the address & render the timeslots %>
+		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 	
-		<% if (FDStoreProperties.isDfpEnabled()){
-		%>
-			<div id="oas_DFPDeliveryTimeslotMessage" ad-size-width='875' ad-size-height='100'>
-				<script type="text/javascript">OAS_AD('DFPDeliveryTimeslotMessage');</script>
-			</div>
-		<%} %>
-
-			<%//Finds the address & render the timeslots %>
-	    	<% if (!mobWeb) { %>
-			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-			<script>window.FreshDirect = window.FreshDirect || {};
-					window.FreshDirect.gtm = window.FreshDirect.gtm || {};
-					window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
-					window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'View Timeslots'} });</script>
-	    	<%} else {%>
-	      		<div class="timeslot-selector delivery-info-timeslot"></div>
-	      	<% }%>
-	<%= mobWeb ? "" :"</div>" %>
 	</tmpl:put>
 	<tmpl:put name="extraCss">
-	  <jwr:style src="/timeslots.css" media="all" />
+	  <fd:css href="/assets/css/timeslots.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraJs">
-	  <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+	  <fd:javascript src="/assets/javascript/timeslots.js" />
 	</tmpl:put>
   	<tmpl:put name="jsmodules">
     	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-      <% if (mobWeb) { %>
-        <script type="text/javascript">
-        var getTimeslots = function () {
-          if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {
-            var DISPATCHER = FreshDirect.common.dispatcher;
-
-            DISPATCHER.signal('server', {
-              url: '/api/expresscheckout/timeslot',
-              method: 'GET'
-            });
-          } else {
-            setTimeout(getTimeslots, 100);
-          }
-        };
-        getTimeslots();
-        </script>
-        <% }%>
 	</tmpl:put>
 </tmpl:insert>

@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
@@ -29,7 +29,7 @@ List<ProductModel> sort(final String orderBy, final PricingContext orderZone, fi
 		if (byProduct) {
 			sorted.add(node);
 		} else {
-			sorted.add(ProductPricingFactory.getInstance().getPricingAdapter(node));
+			sorted.add(ProductPricingFactory.getInstance().getPricingAdapter(node, orderZone));
 		}
 	}
 	Collections.sort(sorted, new Comparator<ProductModel>() {
@@ -211,9 +211,9 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.freshdirect.smartstore.scoring.HelperFunctions"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.HashSet"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.fdstore.pricing.ProductModelPricingAdapter"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
@@ -238,7 +238,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 <%@page import="com.freshdirect.smartstore.RecommendationServiceConfig"%>
 <%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>PRODUCT ZONE PRICING PAGE</title>
@@ -532,7 +532,7 @@ function orderLink(orderBy, orderZone, orderAscending, nextOrderBy) {
 				<%
 					for (PricingContext zone : zones) {
 						boolean isUserZone = zone.getZoneInfo().getPricingZoneId().equals(zoneId);
-						ProductModel pa = ProductPricingFactory.getInstance().getPricingAdapter(product);
+						ProductModel pa = ProductPricingFactory.getInstance().getPricingAdapter(product, zone);
 				%>
 				<td class="text12 right b-bottom<%=isUserZone ? " user-zone" : ""%>"><%=pa.isUnavailable() ? n_a : pa.getPriceFormatted(0.)%></td>
 				<td class="text12 right b-bottom<%=isUserZone ? " user-zone" : ""%>"><%=pa.isUnavailable() ? n_a : pa.getDealPercentage()%></td>

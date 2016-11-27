@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>Our Thanksgiving Feast!</title>
@@ -39,12 +39,12 @@
 <xsl:template name="mail_body">
 	<table width="610" cellpadding="0" cellspacing="0" align="center" bgcolor="#FFFFFF">
 		<tr>
-			<td rowspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1"/></td>
+			<td rowspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1"/></td>
 			<td colspan="2" align="center"><br/>
 			<a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=thanks_03dhb"><img src="http://www.freshdirect.com/media_stat/images/logos/turkey.gif" width="195" height="81" border="0" alt="FreshDirect"/><br/>
 			<img src="http://www.freshdirect.com/media/images/promotions/thanks_03dhb.gif" width="610" height="61" border="0" vspace="6" alt="Our Thanksgiving Feast!"/></a>
 			</td>
-			<td rowspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1"/></td>
+			<td rowspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1"/></td>
 		</tr>
 		<tr>
 			<td colspan="2" class="promoProduct">
@@ -56,11 +56,11 @@
 		<tr valign="top">
 			<td class="promoProduct">
 			<img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/choose_turkey.gif" width="225" height="10"/><br/>
-			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 			<b>$119.99</b> - <a href="http://www.freshdirect.com/product.jsp?catId=hmr_thanks&amp;productId=hmr_thanks_bx_01&amp;trk=thanks_03dhb"><font color="#336600"><u>12-14lb Turkey Dinner (Serves 4-6)</u></font></a><br/>
-			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>
+			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>
 			<b>$199.99</b> - <a href="http://www.freshdirect.com/product.jsp?catId=hmr_thanks&amp;productId=hmr_thanks_bx_02&amp;trk=thanks_03dhb"><font color="#336600"><u>16-20lb Turkey Dinner (Serves 8-12)</u></font></a><br/>
-			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>
+			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>
 			<b>$259.99</b> - <a href="http://www.freshdirect.com/product.jsp?catId=hmr_thanks&amp;productId=hmr_thanks_bx_03&amp;trk=thanks_03dhb"><font color="#336600"><u>22-24lb Turkey Dinner (Serves 14-18)</u></font></a><br/>
 			<br/><br/>
 			<b>Included Side Dishes:</b><br/>
@@ -102,7 +102,7 @@
 			<a href="http://www.freshdirect.com?trk=thanks_03dhb"><img src="http://www.freshdirect.com/media_stat/images/template/email/logo_url.gif" width="264" height="35" vspace="6" border="0" alt="www.FreshDirect.com"/></a><br/>
 			Price and availability subject to change. Please see Web site for current 
 			prices and availability.<br/>
-			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+			<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 			<xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/><br/>
 			</td>
 		</tr>

@@ -12,6 +12,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -21,22 +22,6 @@ public class JMXUtil {
 	private static final Logger LOGGER = LoggerFactory.getInstance(JMXUtil.class);
 	
 	public static final String FRESHDIRECT_DOMAIN = "com.freshdirect";
-	
-	public static String storefrontVersion;
-	
-	public static String getStorefrontVersion() {
-		
-		if(storefrontVersion == null) {
-			/* to differentiate weblogic(1) vs tomcat(2) */
-			String isCatalina = System.getProperty("catalina.base");
-			if (isCatalina != null && isCatalina.trim().length() > 0) {
-				storefrontVersion = "2";
-			} else {
-				storefrontVersion = "1";
-			}
-		}
-		return storefrontVersion;
-	}
 	
 	static MBeanServer server ;
 	

@@ -29,7 +29,6 @@ public class DeliveryPassModel extends ModelSupport {
 	private int usageCount = 0;
 	private int noOfCredits = 0;
 	private Date orgExpDate;
-	private Date activationDate;
 	
 	private EnumDlvPassStatus status;
 
@@ -43,7 +42,7 @@ public class DeliveryPassModel extends ModelSupport {
 							String description, String purchaseOrderId,
 							Date purchaseDate, double amount,
 							int totalNoOfDlvs, int remainingDlvs,
-							Date expDate, int usageCnt, EnumDlvPassStatus status, Date activationDate) {
+							Date expDate, int usageCnt, EnumDlvPassStatus status) {
 		super();
 		this.setPK(pk);
 		this.setCustomerId(customerId);
@@ -63,7 +62,6 @@ public class DeliveryPassModel extends ModelSupport {
 		
 		this.setUsageCount(usageCnt);
 		this.setStatus(status);
-		this.setActivationDate(activationDate);
 	}
 	/*
 	 * This contructor is called when Delivery pass is loaded up from the Database.
@@ -72,7 +70,7 @@ public class DeliveryPassModel extends ModelSupport {
 			String description, String purchaseOrderId,
 			Date purchaseDate, double amount,
 			int totalNoOfDlvs, int remainingDlvs, Date orgExpDate,
-			Date expDate, int usageCnt, int numCredits, EnumDlvPassStatus status,Date activationDate) {
+			Date expDate, int usageCnt, int numCredits, EnumDlvPassStatus status) {
 			super();
 			this.setPK(pk);
 			this.setCustomerId(customerId);
@@ -88,7 +86,6 @@ public class DeliveryPassModel extends ModelSupport {
 			this.setUsageCount(usageCnt);
 			this.setNoOfCredits(numCredits);
 			this.setStatus(status);
-			this.setActivationDate(activationDate);
 }
 	
 	/**
@@ -260,14 +257,6 @@ public class DeliveryPassModel extends ModelSupport {
 
 	public void setOrgExpirationDate(Date orgExpDate) {
 		this.orgExpDate = orgExpDate;
-	}
-	
-	public Date getActivationDate() {
-		return activationDate;
-	}
-	
-	public void setActivationDate(Date activationDate) {
-		this.activationDate = activationDate;
 	}
 
 }

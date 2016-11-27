@@ -1,52 +1,22 @@
 {namespace common}
 /**
  * @param item some path, list of items
- * @param? itemCount the index of the item in items list - used as class
- * @param? eventSource optional event source
- * @param? abFeatures
+ * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
- * @param? moduleData
- * @param? itemIndex
- * @param? extraClass
- *
+ * 
  */
 {deltemplate common.carouselItem variant="'grid'"}
 {call common.transactionalGridItem data="all"}
-	{param extraClass}carouselTransactionalItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
-	{param eventSource:$eventSource /}
-	{param abFeatures:$abFeatures /}
+	{param extraClass:'carouselTransactionalItem' /}
+	{param cmEventSource:$cmEventSource /}
 	{param mobWeb:$mobWeb /}
-	{param moduleData:$moduleData /}
-	{param itemIndex:$itemIndex /}
 {/call}
 {/deltemplate}
 
 /**
  * @param item some path, list of items
- *
+ * 
  */
 {deltemplate common.carouselItem variant="'line'"}
 {call quickshop.item data="all" /}
-{/deltemplate}
-
-/**
- * @param item some path, list of items
- * @param? itemCount the total length of items list - used as class
- * @param? eventSource optional event source
- * @param? abFeatures
- * @param? mobWeb
- * @param? moduleData
- * @param? itemIndex
- * @param? extraClass
- *
- */
-{deltemplate common.carouselItem variant="'grid_prodSample'"}
-{call common.transactionalGridItem data="all"}
-    {param extraClass}carouselTransactionalItem productSamplingItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
-	{param eventSource:$eventSource /}
-	{param abFeatures:$abFeatures /}
-	{param mobWeb:$mobWeb /}
-	{param moduleData:$moduleData /}
-	{param itemIndex:$itemIndex /}
-{/call}
 {/deltemplate}

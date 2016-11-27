@@ -1,7 +1,6 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
@@ -101,6 +100,14 @@
 				if(!"".equals(productView) && !"reviews".equalsIgnoreCase(productView)) { 
 				%>
 				 <%=separatorChar%> <a class="bazaarvoice-show-reviews-link" href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=reviews<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Reviews</a>
+
+				<script>
+				  (function ($) {
+				      $(document.body).delegate(".bazaarvoice-show-reviews-link", 'click', function (e) {
+						<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>"/>
+				      });
+				  }(jQuery));
+				</script>
 				<%
 				}else{
 				%>
@@ -297,7 +304,7 @@
 			String seasonText = productNode.getSeasonText();
 				
 			if (seasonText!=null) {
-					%><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" style="margin: 6px 0;" width="100%" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" alt="" style="margin: 6px 0;" width="100%" height="1"><br />
+					%><br /><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br />
 				<%
 				}
 
@@ -313,11 +320,11 @@
 					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 					<%
 						
-						if ( productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo)) != null ) { 
+						if ( productInfo.getSustainabilityRating(plantID) != null ) { 
 							
 							String rating="";
 							boolean skipDisplay = true;
-							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
 							
 							if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 								if (enumRating.getId() == 0) {
@@ -407,12 +414,17 @@
                         <%
                CategoryModel _parentNode = (CategoryModel) productNode.getParentNode();
 			if (_parentNode.getCategoryStorageGuideMedia() != null) {
-					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=_parentNode.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
+					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=_parentNode.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
 				<%
 				}
 			}
 		}
 	} catch (Exception ex) {
 			ex.printStackTrace();
+	%>
+		<% if ( FDStoreProperties.useOscache() ) { %>
+			<oscache:usecached />
+		<% } %>
+	<%
 	}
 %>

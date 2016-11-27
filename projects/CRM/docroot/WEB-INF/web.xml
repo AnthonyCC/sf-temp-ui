@@ -155,6 +155,10 @@
     <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>FeedPublishServlet</servlet-name>
+    <servlet-class>com.freshdirect.fdstore.cms.FeedPublishServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>JavascriptServlet</servlet-name>
     <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
     <init-param>
@@ -184,25 +188,26 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+   <servlet>
+    <servlet-name>skuReplaceServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.standingorder.SkuReplacementServlet</servlet-class>
+  </servlet> 
   <servlet>
     <servlet-name>excelExportServlet</servlet-name>
     <servlet-class>com.freshdirect.webapp.ajax.standingorder.ExcelExportServlet</servlet-class>
   </servlet> 
   
   
-  <context-param>
-        <param-name>contextClass</param-name>
-        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>com.freshdirect.cms.configuration com.freshdirect.storeapi.configuration</param-value>
-    </context-param>
-    
-  <listener>
+  <!-- START  Logistics Integration Configuration -->
+  <!--  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/logistics-integrationservices.xml</param-value>
+  </context-param>
+        -->
+ <!--  <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+   -->
   <servlet>
     <servlet-name>fdlogistics</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -310,6 +315,14 @@
     <url-pattern>/promo_publish</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>FeedPublishServlet</servlet-name>
+    <url-pattern>/feed_publish</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>skuReplaceServlet</servlet-name>
+    <url-pattern>/api/skuReplaceServlet</url-pattern>
+  </servlet-mapping> 
+  <servlet-mapping>
     <servlet-name>excelExportServlet</servlet-name>
     <url-pattern>/api/excelExportServlet</url-pattern>
   </servlet-mapping>
@@ -365,6 +378,10 @@
       <taglib-location>/WEB-INF/shared/tld/struts-html.tld</taglib-location>
     </taglib>
     <taglib>
+      <taglib-uri>oscache</taglib-uri>
+      <taglib-location>/WEB-INF/shared/tld/oscache.tld</taglib-location>
+    </taglib>
+    <taglib>
       <taglib-uri>bean</taglib-uri>
       <taglib-location>/WEB-INF/shared/tld/struts-bean.tld</taglib-location>
     </taglib>
@@ -386,6 +403,7 @@
       <url-pattern>/no_auth.jsp</url-pattern>
       <url-pattern>/main/error.jsp</url-pattern>
       <url-pattern>/promo_publish</url-pattern>
+      <url-pattern>/feed_publish</url-pattern>
       <url-pattern>/admin_service</url-pattern>
       <http-method>POST</http-method>
       <http-method>GET</http-method>

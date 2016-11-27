@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.UserContext;
@@ -35,7 +34,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String orderLineId;
     
     private String affiliateCode;
-    private ErpAffiliate affiliate;
+
     private FDSku sku;
     private FDConfiguration configuration;
     
@@ -45,7 +44,6 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	private String configurationDesc;
 	private String departmentDesc;
     private double price;
-    private double unscaledPrice;
 	private boolean perishable;
     private double taxRate;
     private String taxCode;
@@ -85,6 +83,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private EnumTaxationType taxationType;
     
+    private String coremetricsPageId;
+    private String coremetricsPageContentHierarchy;
+    private String coremetricsVirtualCategory;
+
     private ExternalAgency externalAgency; //e.g. Foodily
 	private String externalSource; //e.g. Recipe source
 	private String externalGroup; //e.g. Recipe name
@@ -195,17 +197,12 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.orderLineId = orderLineId;
 	}
 
-	@JsonIgnore
 	public ErpAffiliate getAffiliate() {
-		if (affiliate != null) {
-			return affiliate;
-		}
 		ErpAffiliate affiliate = ErpAffiliate.getEnum(this.affiliateCode);
 		return affiliate == null ? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD) : affiliate;
 	}
 
 	public void setAffiliate(ErpAffiliate affiliate) {
-		this.affiliate = affiliate;
 		this.affiliateCode = affiliate == null ? null : affiliate.getCode();
 	}
 
@@ -217,18 +214,15 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.sku = sku;
 	}
 
-	@Override
-    public String getSalesUnit() {
+	public String getSalesUnit() {
 		return this.configuration.getSalesUnit();
 	}
 
-	@Override
-    public double getQuantity() {
+	public double getQuantity() {
 		return this.configuration.getQuantity();
 	}
-	@JsonIgnore
-	@Override
-    public Map<String,String> getOptions() {
+
+	public Map<String,String> getOptions() {
 		return this.configuration.getOptions();
 	}
 
@@ -257,12 +251,6 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     public double getPrice(){ return price; }
     public void setPrice(double price){ 
     	this.price = price; 
-    }
-    public void setUnscaledPrice(double price) {
-    	unscaledPrice = price;
-    }
-    public double getUnscaledPrice(){
-    	return unscaledPrice;
     }
 
 	public boolean isPerishable(){ return this.perishable; }
@@ -463,12 +451,37 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.taxationType = taxationType;
 	}
 
+	public String getCoremetricsPageId() {
+		return coremetricsPageId;
+	}
+
+	public void setCoremetricsPageId(String coremetricsPageId) {
+		this.coremetricsPageId = coremetricsPageId;
+	}
+
+	public String getCoremetricsPageContentHierarchy() {
+		return coremetricsPageContentHierarchy;
+	}
+
+	public void setCoremetricsPageContentHierarchy(
+			String coremetricsPageContentHierarchy) {
+		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
+	}
+
 	public EnumATCContext getAddedFrom() {
 		return addedFrom;
 	}
 
 	public void setAddedFrom(EnumATCContext addedFrom) {
 		this.addedFrom = addedFrom;
+	}
+
+	public String getCoremetricsVirtualCategory() {
+		return coremetricsVirtualCategory;
+	}
+
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
 	}
 
 	public String getExternalGroup() {
@@ -569,18 +582,6 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	public void setMaterialGroup(String materialGroup) {
 		this.materialGroup = materialGroup;
-	}
-
-	// Implemented only for StoreFront 2.0 Implementation.
-	public String getAffiliateCode() {
-		return affiliateCode;
-	}
-	
-	@Override
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
 	}
 	
 }

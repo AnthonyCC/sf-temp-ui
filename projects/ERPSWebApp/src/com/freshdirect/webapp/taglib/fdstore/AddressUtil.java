@@ -14,6 +14,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
@@ -50,24 +51,29 @@ public class AddressUtil {
         }
 
 		// overwrite fields with new address
-		shpAddrToModify.setFrom(address);
-
-		foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session),
-				!user.isDepotUser(), shpAddrToModify);
-		user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
-		user.setAddress(shpAddrToModify);
-
+        shpAddrToModify.setFrom(address);
+                
+        try {
+            
+			foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), shpAddrToModify);
+            user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
+            user.setAddress(shpAddrToModify);
+            
 //		      zero lat and long to clear cache and force geocode when order is placed (see dlvManagerDAO.getZoneCode())
-		AddressInfo info = address.getAddressInfo();
-		if (info != null) {
-			info.setLatitude(0.0);
-			info.setLongitude(0.0);
-		}
+	        AddressInfo info = address.getAddressInfo();	        
+	        if(info != null){
+	        	info.setLatitude(0.0);
+	        	info.setLongitude(0.0);
+	        }
 
-		if (foundFraud) {
-			user.updateUserState();
-		}
-
+			if (foundFraud) {
+				user.updateUserState();
+			}
+			
+        } catch (ErpDuplicateAddressException ex){
+            LOGGER.error("AddressUtil:updateShipToAddress(): ErpDuplicateAddressException caught while trying to update a shipping address to the customer info:", ex);
+            result.addError(new ActionError("duplicate_user_address", "The information entered for this address matches an existing address in your account."));
+        }
         return foundFraud;
     }
 
@@ -92,37 +98,8 @@ public class AddressUtil {
         FDDeliveryAddressVerificationResponse response = null;
 		try {
 		
-		/**
-		 * This calls verifyAddress service
-		 * This verifyAddress does all the below things: 
-			 1) Scrub Address
-			 2) Check Address
-			 3) Geocode result
-			 4) Delivery services
-		 * But here we want only scrub address
-		 * In addition if the address is alread scrubbed we don not need to do anything here.
-		 *
-		 */
 		response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
 				
-		verifyAddress(address, useApartment, result, response);
-        
-        if(result.isFailure()) {
-        	return address;
-        }
-        //
-        // all's well, return fixed/cleaned corrected address
-        //
-        return response.getAddress();
-       } catch (FDInvalidAddressException e) {
-		LOGGER.info("FDInvalidAddressException thrown during address scrub " + e.getMessage());
-       }
-	
-		return address;
-			
-    }
-
-	public static void verifyAddress(AddressModel address, boolean useApartment, ActionResult result, FDDeliveryAddressVerificationResponse response) {
 		String apartment = address.getApartment();
 		
         LOGGER.debug("Scrubbing response: "+response.getVerifyResult());
@@ -155,9 +132,20 @@ public class AddressUtil {
 
             //
             // return original broken address is there was an error
-            //            
+            //
+            return address;
         }
-	}
+        //
+        // all's well, return fixed/cleaned corrected address
+        //
+        return response.getAddress();
+       } catch (FDInvalidAddressException e) {
+		LOGGER.info("FDInvalidAddressException thrown during address scrub");
+       }
+	
+		return address;
+			
+    }
 
 	public static FDDeliveryZoneInfo getZoneInfo(FDUserI user, AddressModel address, ActionResult result, Date date, CustomerAvgOrderSize iPackagingModel, EnumRegionServiceType serviceType) throws FDResourceException {
 
@@ -208,7 +196,22 @@ public class AddressUtil {
 		return stateAbbrevs.contains(state.toUpperCase());
 	}
 
-	
+	public static boolean validateTriState(String state) {
+		return triStateAbbrevs.contains(state.toUpperCase());
+	}
+
+	private final static Set<String> triStateAbbrevs = new HashSet<String>();
+	static {
+		triStateAbbrevs.add("NJ");
+		triStateAbbrevs.add("CT");
+		triStateAbbrevs.add("NY");
+		triStateAbbrevs.add("PA");
+		
+		triStateAbbrevs.add("DC");
+		triStateAbbrevs.add("DE");
+		triStateAbbrevs.add("MD");
+		triStateAbbrevs.add("VA");
+	}
 	private final static Set<String> stateAbbrevs = new HashSet<String>();
 	static {
 		stateAbbrevs.add("AL");

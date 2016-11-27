@@ -259,32 +259,4 @@ public class CrmCaseTemplate extends ModelSupport {
 		lockedAgentPK = key;
 	}
 
-	
-	// Introduced for Storefront 2.0 implementation.
-	public Set getStateCodes() {
-		return stateCodes;
-	}
-
-	public void setStateCodes(Set stateCodes) {
-		this.stateCodes = stateCodes;
-	}
-
-	public String getOriginCode() {
-		return originCode;
-	}
-
-	public String getPriorityCode() {
-		return priorityCode;
-	}
-
-	public String getQueueCode() {
-		return queueCode;
-	}
-
-	public String getSubjectCode() {
-		return subjectCode;
-	}
-
-	
-	
 }

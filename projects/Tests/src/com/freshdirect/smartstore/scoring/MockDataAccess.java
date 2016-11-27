@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 
 public abstract class MockDataAccess implements DataAccess {

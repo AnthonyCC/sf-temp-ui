@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
@@ -18,8 +17,6 @@ public class BrowseResult extends Message {
     private Integer resultCount = 0;
     
     private List<ProductSearchResult> products = new ArrayList<ProductSearchResult>();
-    
-    private List<String> productids = new ArrayList<String>();
     
     private List<Department> departments = new ArrayList<Department>();
 
@@ -103,23 +100,5 @@ public class BrowseResult extends Message {
 	//DOOR3 FD-iPad FDIP-1046
 	public void setFeaturedCard(Idea featuredCard) {
 		this.featuredCard = featuredCard;
-	}
-
-	public List<String> getProductids() {
-		return productids;
-	}
-
-	public void setProductids(List<String> productids) {
-		this.productids = productids;
-	}
-	
-	private SortOptionInfo sortOptionInfo;
-
-	public SortOptionInfo getSortOptionInfo() {
-		return sortOptionInfo;
-	}
-
-	public void setSortOptionInfo(SortOptionInfo sortOptionInfo) {
-		this.sortOptionInfo = sortOptionInfo;
 	}
 }

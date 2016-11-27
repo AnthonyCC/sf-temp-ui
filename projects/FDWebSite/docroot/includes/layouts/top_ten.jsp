@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
@@ -9,7 +9,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 
@@ -57,7 +57,7 @@ int itemNum = 1;
 Image img = null;
 %>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
-<logic:iterate id="topTenItem" collection="<%= availableList %>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+<logic:iterate id="topTenItem" collection="<%= availableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 if (itemNum>10) break;
 	if ((topTenItem instanceof ProductModel) || ( (topTenItem instanceof CategoryModel) && ((CategoryModel)topTenItem).getShowSelf()==true)) {

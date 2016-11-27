@@ -3,7 +3,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.giftcard.EnumGCDeliveryMode' %>
 <%@ page import='com.freshdirect.fdstore.giftcard.*' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.framework.util.FormatterUtil' %>
@@ -18,64 +18,64 @@ final int W_YA_GIFTCARDS = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Gift Cards</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Gift Cards</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Your Account - Your Gift Cards" pageId="giftcard"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="giftcard"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:RedemptionCodeController actionName="noaction" result="redemptionResult">
 	<div class="gcResendBox">
-		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox"><form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter>
-			<span class="title18">Resend Gift Card</span>
+		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox">
+			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
 			<input type="hidden" id="gcType" value="" />
-			<table role="presentation" class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%">
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
-					<td width="130" align="right"><label for="gcResendRecipName">Recipient Name:</label></td>
+					<td width="130" align="right">Recipient Name:</td>
 					<td><input id="gcResendRecipName" value="" /></td>
 				</tr>
 				<tr valign="middle">
-					<td width="130" align="right"><label for="gcResendRecipEmail">Recipient Email (edit):</label></td>
+					<td width="130" align="right">Recipient Email (edit):</td>
 					<td><input id="gcResendRecipEmail" value="" /></td>
 				</tr>
 				<tr>
-					<td width="130" align="right"><label>Amount:</label></td>
-					<td><span class="text14"  id="gcResendRecipAmount"><!--  --></span></td>
+					<td width="130" align="right">Amount:</td>
+					<td><span id="gcResendRecipAmount"><!--  --></span></td>
 				</tr>
 				<tr>
-					<td width="130" align="right"><label for="gcResendRecipMsg">Personal Message:</label></td>
+					<td width="130" align="right">Personal Message:</td>
 					<td><textarea id="gcResendRecipMsg"></textarea></td>
 				</tr>
 				<tr>
-					<td width="150" align="right"><button class="cssbutton transparent small green" onclick="Modalbox.hide(); return false;">CANCEL</button></td>
-					<td><button onclick="recipResendEmail(); return false;" class="cssbutton small green space" >RESEND</button></td>
+					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
+					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
 				</tr>
 			</table>
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 			<div id="gcResendErr">&nbsp;</div>
-		</form></div>
+		</div>
 	</div>
 <% 
     FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
     boolean showAllReceived = (request.getParameter("showAllReceived") != null && request.getParameter("showAllReceived").equals("true")) ? true :false;
     boolean showAllPurchased = (request.getParameter("showAllPurchased") != null && request.getParameter("showAllPurchased").equals("true")) ? true :false;
 %>
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td>
                     <span class="topHeader">Gift Cards</span>
 					<!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
+					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
 				</td>
 			</tr>
 		</table>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		<%
 			String sPage = "/your_account/giftcards.jsp";
 			if (request.getParameter("trk") != null) {
@@ -110,12 +110,13 @@ final int W_YA_GIFTCARDS = 970;
 			</fd:ErrorHandler>            
             
         <form method="post">
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="middle">
 				<td style="height: 25px;" align="center">
 					<!-- <img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Have a New Gift card? Enter the Code Here" /> -->
-					<span class="Container_Top_YourAccGiftCard"><label for="givexNum_field">Have a New Gift card? Enter the Code Here</label></span>
-					 <input type="text" id="givexNum_field" name="givexNum" /> <button class="cssbutton small orange" name="gcApplyCode" >APPLY</button>				</td>
+					<span class="Container_Top_YourAccGiftCard">Have a New Gift card? Enter the Code Here</span>
+					 <input type="text"name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
+				</td>
 			</tr>
 			<tr>
 				<td align="center">
@@ -125,16 +126,16 @@ final int W_YA_GIFTCARDS = 970;
 			</tr>
 		</table>
         </form>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		</fd:GiftCardController>
 		<fd:GetGiftCardReceived id='giftcards'>
 
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Gift Cards You Have Received</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
+					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
 				</td>
 			</tr>
 			<tr>
@@ -142,16 +143,16 @@ final int W_YA_GIFTCARDS = 970;
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
-							<th width="85">Certificate #</th>
-							<th width="100">Date Received</th>
-							<th>Sender</th>
-							<th width="80">Gift Amount</th>
-							<th width="80">Balance</th>
-							<th width="150">&nbsp;<span class="offscreen">status of your received gift cards</span></th>
-                            <th width="75">&nbsp;<span class="offscreen">remove gift card from your received list</span></th>
+							<td width="85">Certificate #</td>
+							<td width="100">Date Received</td>
+							<td>Sender</td>
+							<td width="80">Gift Amount</td>
+							<td width="80">Balance</td>
+							<td width="150">&nbsp;</td>
+                            <td width="75">&nbsp;</td>
 						</tr>
                         <logic:iterate id="giftcard" collection="<%= giftcards %>" type="com.freshdirect.fdstore.giftcard.FDGiftCardModel">
 						<tr>
@@ -170,11 +171,11 @@ final int W_YA_GIFTCARDS = 970;
                                 <%= giftcard.isRedeemable() ? "Redeemed" : "Cancelled" %>
                                 <%}%>
                             </td>
-                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove<span class="offscreen"> gift card #<%= giftcard.getCertificateNumber() %></span></a></td>
+                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove</a></td>
 						</tr>
                         </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
                         <% if(!showAllReceived && user.getGiftCardList().size() > GetGiftCardReceivedTag.GC_RECEIVED_DISPLAY_LIMIT) { %>
 						<tr>
@@ -188,12 +189,12 @@ final int W_YA_GIFTCARDS = 970;
     </fd:GetGiftCardReceived>
 		<br /><br />
     <fd:GetGiftCardPurchased id="recipients">
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Purchased Gift Cards</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
+					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
 				</td>
 			</tr>
 			<tr>
@@ -201,17 +202,17 @@ final int W_YA_GIFTCARDS = 970;
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
-							<th width="85">Certificate #</th>
-							<th width="100">Date Purchased</th>
-                            <th width="80">Gift Amount</th>
-                            <th width="80">Card Type</th>
-							<th>Recipient</th>
-							<th width="70">Status</th>
-							<th width="60">&nbsp;<span class="offscreen">send/resend your gift card</span></th>
-							<th width="60">&nbsp;<span class="offscreen">view/print your gift card</span></th>
+							<td width="85">Certificate #</td>
+							<td width="100">Date Purchased</td>
+                            <td width="80">Gift Amount</td>
+                            <td width="80">Card Type</td>
+							<td>Recipient</td>
+							<td width="70">Status</td>
+							<td width="60">&nbsp;</td>
+							<td width="60">&nbsp;</td>
 						</tr>
                         <% DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
                         <logic:iterate id="recipient" collection="<%= recipients %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder">
@@ -240,8 +241,8 @@ final int W_YA_GIFTCARDS = 970;
                             %>
 							<td><%= status %></td>
                             <% if(!isPending) { %>
-                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend"  %><span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
-                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print<span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
+                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend" %></a></td>
+                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print</a></td>
                             <% } else { %>    
                                 <td>&nbsp;</a></td>
                                 <td>&nbsp;</td>
@@ -250,7 +251,7 @@ final int W_YA_GIFTCARDS = 970;
 						</tr>
                          </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
                         <% if(!showAllPurchased) { %>
 						<tr>
@@ -265,15 +266,15 @@ final int W_YA_GIFTCARDS = 970;
 		<br /><br /><div style="font-size: 16px; font-weight: bold;"><a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">Click here to purchase Gift Cards today.</a></div><br /><br />
 
 
-		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 
 		
-		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
-				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" align="left">
-				continue shopping<br />from <b>Home Page</b></a><br />
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0" /></td>
+				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
+				<td width="<%= W_YA_GIFTCARDS - 35 %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a><br />from <a href="/index.jsp"><b>Home Page</b></a><br />
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" /></td>
 			</tr>
 		</table>
 </fd:RedemptionCodeController>        

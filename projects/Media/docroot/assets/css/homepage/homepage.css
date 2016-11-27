@@ -34,7 +34,7 @@ html,body {
     height: 1px;
     background-color: #D0D0D0;
     text-align: center;
-    margin: 10px 0 20px 0;
+    margin: 30px 0;
 }
 
 .homepage-categories-header span {
@@ -45,11 +45,11 @@ html,body {
     font-weight: bold;
     color: #FF9933;
 	background-color: white;
-
+   
 }
 
 #most-popular .grid-carousel {
-	overflow:hidden;
+	overflow:hidden;	
 }
 
 #top-items .ymalCarousel .portrait-item,
@@ -149,27 +149,4 @@ html,body {
 }
 #welcome-section-container .clear {
 	clear: both;
-}
-
-/*homepage redesign*/
-
-.oas-homepageredesign,
-.oas-homepageredesign .full {
-  width: 100%;
-}
-
-.oas-homepageredesign .half {
-  margin: 0;
-  width: 50%;
-}
-
-.oas-homepageredesign .oas-container,
-.oas-homepageredesign .oas-container .right-side,
-.oas-homepageredesign .oas-container .right-side .line {
-  display: flex;
-  justify-content: space-between;
-}
-
-.oas-homepageredesign .oas-container .right-side {
-  flex-direction: column;
 }

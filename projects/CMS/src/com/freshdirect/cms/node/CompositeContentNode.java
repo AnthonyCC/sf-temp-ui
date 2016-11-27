@@ -30,7 +30,7 @@ import com.freshdirect.cms.application.DraftContext;
  */
 public class CompositeContentNode implements ContentNodeI {
 	private static final long serialVersionUID = 8136738845448653594L;
-	
+
 	private final ContentServiceI contentService;
 
 	private final ContentKey key;
@@ -42,7 +42,6 @@ public class CompositeContentNode implements ContentNodeI {
 	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
 	/**
-	 * CompositeContentNode
 	 * 
 	 * @param contentService
 	 * @param key content key of the composited node
@@ -59,14 +58,16 @@ public class CompositeContentNode implements ContentNodeI {
 	// compositing
 	//
 
-    private void initializeAttributes() {
-        for (ContentNodeI node : nodes.values()) {
-            for (AttributeI attribute : node.getAttributes().values()) {
-                AttributeI ca = attribute instanceof RelationshipI ? new CompositeRelationship(attribute) : new CompositeAttribute(attribute);
-                attributes.put(ca.getName(), ca);
-            }
-        }
-    }
+	private void initializeAttributes() {
+		for (Iterator<ContentNodeI> i = nodes.values().iterator(); i.hasNext();) {
+			ContentNodeI node = i.next();
+			for (Iterator<AttributeI> j = node.getAttributes().values().iterator(); j.hasNext();) {
+				AttributeI a = j.next();
+				AttributeI ca = a instanceof RelationshipI ? new CompositeRelationship(a) : new CompositeAttribute(a);
+				attributes.put(ca.getName(), ca);
+			}
+		}
+	}
 
 	private class CompositeAttribute implements AttributeI {
 		private static final long serialVersionUID = 1240506000120118825L;
@@ -191,8 +192,7 @@ public class CompositeContentNode implements ContentNodeI {
 	    for (Iterator<String> keyIter = nodes.keySet().iterator();keyIter.hasNext();) {
 	        String key = keyIter.next();
 	        ContentNodeI node = (ContentNodeI) nodes.get(key);
-	        ContentNodeI copiedNode = node.copy();
-	        newNodes.put(key, copiedNode);
+	        newNodes.put(key, node.copy());
 	    }
 	    return new CompositeContentNode(contentService,key, newNodes);
 	}

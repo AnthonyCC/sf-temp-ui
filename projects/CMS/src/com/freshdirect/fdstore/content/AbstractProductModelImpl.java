@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDGroup;
@@ -21,9 +20,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
-    private static final long serialVersionUID = -5952286320303107200L;
-
-    private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
+	private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsList = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsRefs = new ArrayList<ProductModel>();
 	private List<TagModel> tags = new ArrayList<TagModel>();
@@ -55,6 +52,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 ALSO_SOLD_AS
 
 	 */
+
 
 	private Image getImage(String key) {
             return FDAttributeFactory.constructImage(this, key, Image.BLANK_IMAGE);
@@ -193,9 +191,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     public boolean isFullyAvailable() {
         return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
     }
-    /*public double getAvailableQtyForDate(java.util.Date targetDate){
-    	return getAvailabileQtyForDate(targetDate);
-    }*/
 
 	/**
 	 * Better name would be : 'IsAvailable'.
@@ -209,7 +204,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 * @return
 	 */
 	public boolean isTemporaryUnavailable() {
-		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible() && !isOutOfSeason();
+		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
 	}
 
 	/**
@@ -217,7 +212,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 * @return
 	 */
 	public boolean isTemporaryUnavailableOrAvailable() {
-	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued() || isOutOfSeason());
+	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued());
 	}
 
 
@@ -361,6 +356,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    return getPriceCalculator(skuCode).getDealPercentage();
 	}
 
+
     /**
      * use priceCalculator which can be cached for a request. 
      * @return
@@ -421,6 +417,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
     }
 
+
     /**
      * use priceCalculator which can be cached for a request. 
      * @return
@@ -442,6 +439,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     }
 
     /* end of the price calculator calls */
+
 
 	public String getYmalHeader() {
 		final YmalSet activeYmalSet = getActiveYmalSet();
@@ -471,7 +469,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			FDProductInfo productInfo;
 			try {
 				productInfo = sku.getProductInfo();
-				List<String> countries = productInfo.getCountryOfOrigin(ProductInfoUtil.getPickingPlantId(productInfo));
+				List<String> countries = productInfo.getCountryOfOrigin(getPlantID());
 				String text = getCOOLText( countries );
 				if ( !"".equals( text ) )
 					coolInfo.add( text );
@@ -497,7 +495,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 					String domainValue = sku.getVariationMatrix().get( 0 ).getValue();
 					try {
 						productInfo = sku.getProductInfo();
-						countries = productInfo.getCountryOfOrigin(ProductInfoUtil.getPickingPlantId(productInfo));
+						countries = productInfo.getCountryOfOrigin(getPlantID());
 						text = getCOOLText( countries );
 					} catch ( FDSkuNotFoundException ignore ) {
 						text = "";
@@ -614,8 +612,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			if(sku != null){
 				try {
 					FDProductInfo pInfo = sku.getProductInfo();
-//					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo().getSalesOrg(),getPriceCalculator().getPricingContext().getZoneInfo().getDistributionChanel());
-					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo());
+					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo().getSalesOrg(),getPriceCalculator().getPricingContext().getZoneInfo().getDistributionChanel());
 					if (group != null) {
 						break;
 					}
@@ -626,6 +623,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return group;
 	}
+	
 	
 	@Override
 	public boolean isRetainOriginalSkuOrder() {
@@ -650,19 +648,9 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public String getPageTitle(){
 		return getAttribute("PAGE_TITLE", "FreshDirect");
 	}
-
-    @Override
-    public String getFdxPageTitle(){
-        return getAttribute("PAGE_TITLE_FDX", "Foodkick");
-    }
-
+	
 	@Override
 	public String getSEOMetaDescription(){
-		return getAttribute("SEO_META_DESC", "Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.");
-	}
-
-	@Override
-	public String getFdxSEOMetaDescription(){
-	    return getAttribute("SEO_META_DESC_FDX", "FoodKick has just what you need for today and tomorrow. Order now for same-day delivery!");
+		return getAttribute("SEO_META_DESC", "Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area.");
 	}
 }

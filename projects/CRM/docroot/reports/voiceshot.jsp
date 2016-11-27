@@ -36,7 +36,7 @@ if(sampm == null) {
 					<table width="100%" border="0"><tr>
 					<td align="right" style="width:auto;"><font color="red">*</font>Campaign Name:</td> <td align="left"><select name="campaign_id" style="background-color:#E0E0E0;border:1px solid #585858;padding:3px;" onchange="fillSoundFile()" id="campaign_id"><option value="-1">--Select Campaign--</option>
 					<%
-						List<CrmVSCampaignModel> campaigns = null;
+						List<CrmVSCampaignModel> campaigns = CallCenterServices.getVSCampaignList();
 						StringBuffer inputs = new StringBuffer();
 						String sfile = "";
 						String sfiletext = "";
@@ -74,7 +74,19 @@ if(sampm == null) {
 						<option value="PM" <%="PM".equals(sampm)?"selected=\"true\"":""%>>PM</option>
 					</select></td></tr>
 					<tr><td align="right">Reason:<font color="red">*</font></td> <td align="left"><select name="reason" style="background-color:#E0E0E0;border:1px solid #585858;padding:3px;"><option value="-1">--Select Reason--</option>
-					
+					<%
+						List<VSReasonCodes> rCodes = CallCenterServices.getVSReasonCodes();
+						Iterator<VSReasonCodes> iter = rCodes.iterator();
+						while(iter.hasNext()) {
+							VSReasonCodes rCode = (VSReasonCodes) iter.next();
+							String val = rCode.getReasonId();
+							String name = rCode.getReason();							
+							if(val.equals(reason)) {
+					%>
+						<option value="<%= val %>" selected><%=name%></option>
+					<% } else { %>
+						<option value="<%= val %>"><%=name%></option>
+					<% } } %>
 					</select> 
 					&nbsp;&nbsp;
 					<a href="javascript:document.timePick.submit();" style="background-color:green;text-decoration:none;color:white;padding:5px;font-weight:bold;">Start Voiceshot</a>

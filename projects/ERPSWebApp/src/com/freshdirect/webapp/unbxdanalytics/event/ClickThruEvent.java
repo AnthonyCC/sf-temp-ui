@@ -10,8 +10,8 @@ public final class ClickThruEvent extends AbstractAnalyticsEvent {
 
     private String categoryId;
 
-    public ClickThruEvent(Visitor visitor, LocationInfo location, String productId, String categoryId, boolean cosAction) {
-        super(visitor, location, cosAction);
+    public ClickThruEvent(Visitor visitor, LocationInfo location, String productId, String categoryId) {
+        super(visitor, location);
 
         this.productId = productId;
         this.categoryId = categoryId;

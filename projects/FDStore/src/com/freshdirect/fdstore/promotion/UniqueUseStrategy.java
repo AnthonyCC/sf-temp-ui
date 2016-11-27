@@ -7,15 +7,10 @@ import java.util.Set;
  */
 public class UniqueUseStrategy implements PromotionStrategyI {
 
-	private Set<String> usedSaleIds;
+	private final Set<String> usedSaleIds;
 
 	public UniqueUseStrategy(Set<String> usedSaleIds) {
 		this.usedSaleIds = usedSaleIds;
-	}
-
-	public UniqueUseStrategy() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Set<String> getUsedSaleIds() {
@@ -49,9 +44,5 @@ public class UniqueUseStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
-	}
-
-	public void setUsedSaleIds(Set<String> usedSaleIds) {
-		this.usedSaleIds = usedSaleIds;
 	}
 }

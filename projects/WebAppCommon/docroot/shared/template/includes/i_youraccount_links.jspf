@@ -1,8 +1,8 @@
 <%@page import="com.freshdirect.webapp.util.FDFaqUtil"%>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="java.util.LinkedHashMap"%>
@@ -12,18 +12,14 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
-<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- 
 	requires: 
 		Map<String, String> folderMap=new LinkedHashMap<String, String>();
 --%>
-
 <%
 	final Logger LOGGER = LoggerFactory.getInstance("i_youraccount_links.jspf");
 	FDSessionUser user_youract = (FDSessionUser)session.getAttribute(SessionName.USER);
-	boolean isModifyOrder_youract = (user_youract.getShoppingCart() instanceof FDModifyCartModel);
 
 	String dlvInfoLinkActLinks = "";
     if (user_youract.isPickupOnly()) {
@@ -47,12 +43,10 @@
 		*/
 		
 		/* 1-1 */
-			if (!isModifyOrder_youract) {
-				if(user_youract.isEligibleForPreReservation()){
-					folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");
-				} else {
-			        folderMap.put("View Timeslots", "/help/delivery_info_check_slots.jsp"); //default
-				}
+			if(user_youract.isEligibleForPreReservation()){
+				folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");
+			} else {
+		        folderMap.put("View Timeslots", "/help/delivery_info_check_slots.jsp"); //default
 			}
 		/* 1-2 */
 			folderMap.put("Your Top Items", "/quickshop/qs_top_items.jsp");
@@ -65,21 +59,26 @@
 		/* 1-5 */
 			folderMap.put("Shopping Lists","/quickshop/all_lists.jsp");
 		/* 1-6 */
-			if (!isModifyOrder_youract) {
-				try {
-					if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
-					//This is the default microsite url for RAF-- under My Account Refer a Friend Link
-					folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeSubUrl());
-					}
-				} catch (Exception e) {
-					LOGGER.debug("Error in getting RAF link");
-					e.printStackTrace();
+			try {
+			if(!FDStoreProperties.isExtoleRafEnabled() && user_youract !=null && user_youract.isReferralProgramAvailable()) {
+				FDIdentity customerIdentity = null;
+				if (user_youract!=null && user_youract.getLevel() == 2){
+					customerIdentity = user_youract.getIdentity();
 				}
+				ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
+				if(rpModel != null) {
+					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
+				}
+			}else if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
+				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
+				folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeSubUrl());
+			}
+			} catch (Exception e) {
+				LOGGER.debug("Error in getting RAF link");
+				e.printStackTrace();
 			}
 		/* 1-7 */
-			if (!isModifyOrder_youract) {
-				folderMap.put("Delivery Info", dlvInfoLinkActLinks);
-			}
+			folderMap.put("Delivery Info", dlvInfoLinkActLinks);
 		/* 1-8 */
 			folderMap.put("Help", "/help/index.jsp");
 		
@@ -99,7 +98,7 @@
 			folderMap.put("Order History","/your_account/order_history.jsp");
 		/* 2-6 */
 			folderMap.put("Store Credits","/your_account/credits.jsp");
-		/* 2-8 */
+		/* 2-7 */
 			if ( user_youract.isGiftCardsEnabled() ) {
 				 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
 			}

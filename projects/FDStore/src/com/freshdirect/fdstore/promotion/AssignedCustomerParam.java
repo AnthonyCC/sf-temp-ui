@@ -21,11 +21,6 @@ public class AssignedCustomerParam implements Serializable {
 		this.expirationDate = expirationDate;
 	}
 	
-	public AssignedCustomerParam() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public Integer getUsageCount() { return this.usageCount; } 
 	public Date getExpirationDate() { return this.expirationDate; } 
 

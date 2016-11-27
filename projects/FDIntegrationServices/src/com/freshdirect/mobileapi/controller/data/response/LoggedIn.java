@@ -1,12 +1,13 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.mobileapi.controller.data.Message;
 
+/**
+ * @author Rob
+ *
+ */
 public class LoggedIn extends Message {
 
     private String id;
@@ -28,11 +29,8 @@ public class LoggedIn extends Message {
     private String newUser;
 
 	private int orderCount;
-	
-	private double orderminimumamt;
-
-    private int fdxOrderCount;
-
+    
+    //Added during Mobile Coremetrics Implementation
     private String selectedServiceType;
     private String cohort;
     private int totalOrderCount;
@@ -50,29 +48,8 @@ public class LoggedIn extends Message {
     private String plantId;
     private String mobileNumber;
     private List<String> providers;
-    private String zipCode;
 
-    private String erpCustomerPK;
-    
-    private boolean purchaseDlvPassEligible;
-    private boolean showDeliveryPassBanner;
-    private String dpFreeDeliveryPromoWarning1;
-    private String dpFreeDeliveryPromoWarning2;
-    private boolean fdxdpenabled;
-    private List<String> dpskulist;
-    private boolean dpActive;
-    
-    private Map<String, Boolean> displayedCaptchaList;
-
-    /*public boolean isDeliveryPassEligible() {
-		return purchaseDlvPassEligible;
-	}
-
-	public void setPurchaseDeliveryPassEligible(boolean isDeliveryPassEligible) {
-		this.purchaseDlvPassEligible = isDeliveryPassEligible;
-	}*/
-
-	public boolean isTcAcknowledge() {
+    public boolean isTcAcknowledge() {
 		return tcAcknowledge;
 	}
 
@@ -96,15 +73,7 @@ public class LoggedIn extends Message {
 		this.orderCount = orderCount;
 	}
 
-    public int getFdxOrderCount() {
-        return fdxOrderCount;
-    }
-
-    public void setFdxOrderCount(int fdxOrderCount) {
-        this.fdxOrderCount = fdxOrderCount;
-    }
-
-    public String getCustomerServicePhoneNumber() {
+	public String getCustomerServicePhoneNumber() {
         return customerServicePhoneNumber;
     }
 
@@ -277,111 +246,4 @@ public class LoggedIn extends Message {
     public void setProviders(List<String> providers) {
         this.providers = providers;
     }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-    
-    private boolean isreferralEligible;
-
-	public boolean isIsreferralEligible() {
-		return isreferralEligible;
-	}
-
-	public void setIsreferralEligible(boolean isreferralEligible) {
-		this.isreferralEligible = isreferralEligible;
-	}
-
-    public String getErpCustomerPK() {
-        return erpCustomerPK;
-    }
-
-    public void setErpCustomerPK(String erpCustomerPK) {
-        this.erpCustomerPK = erpCustomerPK;
-    }
-
-	public boolean isPurchaseDlvPassEligible() {
-		return purchaseDlvPassEligible;
-	}
-
-	public void setPurchaseDlvPassEligible(boolean purchaseDlvPassEligible) {
-		this.purchaseDlvPassEligible = purchaseDlvPassEligible;
-	}
-
-	public List<String> getDpskulist() {
-		return dpskulist;
-	}
-
-	public void setDpskulist(List<String> dpskulist) {
-		this.dpskulist = dpskulist;
-	}
-
-	public boolean isFdxDpEnabled() {
-		return fdxdpenabled;
-	}
-
-	public void setFdxDpEnabled(boolean fdxdpenabled) {
-		this.fdxdpenabled = fdxdpenabled;
-	}
-
-	public Map<String, Boolean> getDisplayedCaptchaList() {
-		return displayedCaptchaList;
-	}
-
-	public void setDisplayedCaptchaList(Map<String, Boolean> displayedCaptchaList) {
-		this.displayedCaptchaList = displayedCaptchaList;
-	}
-	
-	public void addDisplayedCaptcha(CaptchaType type, boolean display) {
-		if (this.displayedCaptchaList == null)
-			this.displayedCaptchaList = new HashMap<String, Boolean>();
-		
-		this.displayedCaptchaList.put(type.toString(), display);
-		
-		
-	}
-
-	public boolean isDpActive() {
-		return dpActive;
-	}
-
-	public void setDpActive(boolean isDpActive) {
-		this.dpActive = isDpActive;
-	}
-
-	public boolean isShowDeliveryPassBanner() {
-		return showDeliveryPassBanner;
-	}
-
-	public void setShowDeliveryPassBanner(boolean showDeliveryPassBanner) {
-		this.showDeliveryPassBanner = showDeliveryPassBanner;
-	}
-
-	public String getDpFreeDeliveryPromoWarning1() {
-		return dpFreeDeliveryPromoWarning1;
-	}
-
-	public void setDpFreeDeliveryPromoWarning1(String dpFreeDeliveryPromoWarning1) {
-		this.dpFreeDeliveryPromoWarning1 = dpFreeDeliveryPromoWarning1; 
-	}
-	
-	public String getDpFreeDeliveryPromoWarning2() {
-		return dpFreeDeliveryPromoWarning2;
-	}
-
-	public void setDpFreeDeliveryPromoWarning2(String dpFreeDeliveryPromoWarning2) {
-		this.dpFreeDeliveryPromoWarning2 = dpFreeDeliveryPromoWarning2; 
-	}
-
-	public double getOrderminimumamt() {
-		return orderminimumamt;
-	}
-
-	public void setOrderminimumamt(double orderminimumamt) {
-		this.orderminimumamt = orderminimumamt;
-	}
 }

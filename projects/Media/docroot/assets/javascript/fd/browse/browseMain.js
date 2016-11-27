@@ -18,17 +18,6 @@ var FreshDirect = FreshDirect || {};
     };
   }
 
-  // back button for multi-search results
-  function msBack() {
-    var tabcontent = $('.search-input .tabcontent'),
-        msback = tabcontent.find('.msback');
-
-    if (!msback.length && document.referrer.indexOf('multisearch') > -1) {
-      msback = $('<div class="msback"><a href="'+document.referrer+'" class="cssbutton back white icon-arrow-left2-before">Back</a></div>');
-      tabcontent.append(msback);
-    }
-  }
-
   function pauseAllTransactionalPopupsTillContentChange(){
     fd.common.transactionalPopup && fd.common.transactionalPopup.close();
     $('.browseContent').addClass('no-transactional');
@@ -60,11 +49,11 @@ var FreshDirect = FreshDirect || {};
   function scrollToTop() {
     var main = $('section.main').first(), crect;
 
-    if (main && main.length) {
+    if (main && main.size()) {
       crect = main[0].getBoundingClientRect();
 
       if (crect.top < 0) {
-    	$jq('html').animate({scrollTop: crect.top + $('body').scrollTop()}, '500');
+        $.smoothScroll(crect.top + $('body').scrollTop());
       }
     }
   }
@@ -74,6 +63,7 @@ var FreshDirect = FreshDirect || {};
         data = $.extend({},
           (pagerRelated || (pager && pager.activePage === 0)) ? pager : {},
           fd.browse.sorter && fd.browse.sorter.serialize(),
+          fd.components.coremetrics ? fd.components.coremetrics.serialize() : {},
           fd.browse.menu && fd.browse.menu.serialize(),
           fd.browse.searchParams && fd.browse.searchParams.serialize(),
           fd.browse.searchTabs && fd.browse.searchTabs.serialize(),
@@ -88,12 +78,6 @@ var FreshDirect = FreshDirect || {};
     	);
     }
     
-    /* id is necessary for pagination (in browse), if there's no left nav, it won't be defined */
-	if (!data.hasOwnProperty('id') || data.id === undefined) {
-    	data = $.extend(data,
-            {"id": FreshDirect.utils.getQueryParameterByName('id')}
-    	);
-	}
 
     // remove id if searchParams are provided
     if (data.searchParams && data.id) {
@@ -110,7 +94,7 @@ var FreshDirect = FreshDirect || {};
   function setURL(params, title, doPush) {
     title = title || document.title;
 
-    if (lastParams === params || params === null) {
+    if (lastParams === params) {
       return;
     }
 
@@ -128,7 +112,6 @@ var FreshDirect = FreshDirect || {};
   }
 
   function reload(){
-    msBack();
   }
 
   if (window.history && window.history.pushState) {

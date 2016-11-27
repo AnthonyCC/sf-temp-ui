@@ -15,21 +15,17 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.fdstore.EnumEStoreId;
+import oracle.jdbc.OraclePreparedStatement;
+
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.EmailAddress;
-import com.freshdirect.framework.mail.TEmailI;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.EnumTEmailStatus;
 import com.freshdirect.mail.EnumTranEmailType;
-
-import oracle.jdbc.OraclePreparedStatement;
 
 public class TEmailInfoDAO {
 
@@ -42,23 +38,20 @@ public class TEmailInfoDAO {
 		  Connection conn = con;
 		   	
 		   int count=0;
-	       PreparedStatement ps = null; 
-	       ResultSet rs = null;
 		   
 	       try {
-	    	   ps = conn.prepareStatement(TEMPLATE_COUNT_SQL);
+	    	   PreparedStatement ps = conn.prepareStatement(TEMPLATE_COUNT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
-	    	   rs = ps.executeQuery();
+	    	   ResultSet rs = ps.executeQuery();
 	           if (rs.next()) {
 	                count=rs.getInt("COUNT"); 
 	           }
+	           if(rs!=null) rs.close();
+	           if(ps!=null) ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
-	       } finally {
-	            DaoUtil.close(rs,ps);
-	        }
-
+	       }
 	       LOGGER.info("TEmailTemplateInfo tranType "+tranType+" count is :"+count);
 		   return count; 				
 	}
@@ -68,31 +61,18 @@ public class TEmailInfoDAO {
 	
 	//insert into cust.TRANS_EMAIL_TYPES (ID,  PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , FROM_ADDR,  SUBJECT)  values(?,?,?,?,?,?,?,?,?)
 	
-	//private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
+	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
 	
-	
-
-	
-	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X' and ESTORE_ID = ? AND SERVICE_TYPE = NVL(TRIM(?), 'NONE')  ";
-	
-	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,
-				EnumTranEmailType tranType,
-				EnumEmailType emailType, 
-				EnumEStoreId estoreId, EnumServiceType serviceType) throws SQLException{
+	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,EnumTranEmailType tranType,EnumEmailType emailType) throws SQLException{
 		
 		  Connection conn = con;
 		   TEmailTemplateInfo info=null;	
-			PreparedStatement ps = null;
-			ResultSet rs = null;
-			String serviceTypeStr = serviceType!=null? serviceType.getName():EnumServiceType.NONE.getName();
-			//System.out.println(String.format("TEmailTemplateInfo::: bind parameters  tranType: %s  , emailType: %s , estoreId: %s", tranType.getName(),emailType.getName(), estoreId.name() ));
+		   
 	       try {
-	    	   ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
+	    	   PreparedStatement ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
-	    	   ps.setString(3,estoreId.name());
-	    	   ps.setString(4, serviceTypeStr);
-	    	   rs = ps.executeQuery();
+	    	   ResultSet rs = ps.executeQuery();
 	           if (rs.next()) {
 	           	 	info=new TEmailTemplateInfo();
 	           	 	info.setId(rs.getString("ID"));
@@ -107,11 +87,10 @@ public class TEmailInfoDAO {
 	           	    info.setProvider(rs.getString("PROVIDER")==null?EnumTEmailProviderType.CHEETAH:EnumTEmailProviderType.getEnum(rs.getString("PROVIDER")));
 	           	    info.setTransactionType(tranType);
 	           }
+	           if(rs!=null) rs.close();
+	           if(ps!=null) ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
-	       } finally{
-	    	   DaoUtil.close(rs);
-	    	   DaoUtil.close(ps);
 	       }
 	       LOGGER.info("TEmailTemplateInfo is :"+info);
 		   return info; 				
@@ -122,9 +101,6 @@ public class TEmailInfoDAO {
 												   " VALUES(?,?,?,?,?,?,?,?,SYSDATE)"; 
 	
 	public static void storeTransactionEmailInfo(Connection conn,TransEmailInfoModel model) throws SQLException {
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
 		try
 		{
 			
@@ -132,7 +108,7 @@ public class TEmailInfoDAO {
 			
 		   String id = getNextId(conn, "CUST");
 		   model.setId(id);		  
-   	       ps = conn.prepareStatement(INSERT_TRANS_EMAIL_MASTER);
+   	       PreparedStatement ps = conn.prepareStatement(INSERT_TRANS_EMAIL_MASTER);
    	       ps.setString(1, model.getId());
    	       ps.setString(2, model.getTargetProgId());
    	       if(model.getOrderId()!=null && model.getOrderId().trim().length()>0)
@@ -158,9 +134,7 @@ public class TEmailInfoDAO {
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
+	    }
 	    
 		    
 	}
@@ -173,15 +147,11 @@ public class TEmailInfoDAO {
 
 	
 	public static void storeTransactionEmailDetails(Connection conn,TransEmailInfoModel model) throws SQLException {
-		OraclePreparedStatement ps = null; 
-        ResultSet rs = null;
-
-
 		try
 		{
 		   //String id = getNextId(conn, "CUST");
 		   //model.setId(id);		  
-		   ps = (OraclePreparedStatement)conn.prepareStatement(INSERT_TRANS_EMAIL_DETAIL);
+			OraclePreparedStatement ps = (OraclePreparedStatement)conn.prepareStatement(INSERT_TRANS_EMAIL_DETAIL);
    	       ps.setString(1, model.getId());
    	       
    	       ps.setString(2, model.getFromAddress().getAddress());
@@ -205,6 +175,7 @@ public class TEmailInfoDAO {
 	    	   throw new SQLException("could not create TransactionEmailInfo Master ");
 	       }
 	       
+	       ps.close();
 	    
 	     /*  
 	       
@@ -237,9 +208,7 @@ public class TEmailInfoDAO {
 	      	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
+	    }
 	       
 		    
 	}
@@ -258,8 +227,8 @@ public class TEmailInfoDAO {
   
   
   
-  public static List<TEmailI>  getFailedTransactions(Connection conn) throws SQLException{
-	 return getFailedTransactions(conn,100,true);  
+  public static List getFailedTransactions(Connection conn) throws SQLException{
+	 return getFailedTransactions(conn,999,true);  
   }
   
 
@@ -267,27 +236,20 @@ public class TEmailInfoDAO {
 															" D.TRANS_EMAIL_ID ,  D.FROM_ADDR , D.TO_ADDR , D.CC_ADDR,  D.BCC_ADDR,  D.SUBJECT, D.TEMPLATE_CONTENT "+ 
 															" from cust.TRANS_EMAIL_MASTER M,CUST.TRANS_EMAIL_DETAILS D where "+  
 															" M.ID=D.TRANS_EMAIL_ID and "+ 
-															" M.status='FLD' and provider = 'SILVERPOP'  and rownum<? order by M.CROMOD_DATE DESC ";
+															" M.status='FLD' and rownum<? order by M.CROMOD_DATE DESC ";
 	
 	
-	private  static String getContentFromClob(ResultSet rs) throws SQLException{
-		  Clob  myClob = rs.getClob("TEMPLATE_CONTENT");
-		  String templateContent = myClob.getSubString(1,  (int) myClob.length() ).trim();
-		  return templateContent;
+	
+	 public static List getFailedTransactions(Connection conn, int max_count,boolean isEmailContentReqd) throws SQLException{
+		 
 		
-	}
-	
-	 public static List<TEmailI>  getFailedTransactions(Connection conn, int max_count,boolean isEmailContentReqd) throws SQLException{
-			PreparedStatement ps = null;
-			ResultSet rs = null;
-		
-		   List <TEmailI>  failedTransList=new ArrayList<TEmailI> ();	
+		   List failedTransList=new ArrayList();	
 		   if(max_count==0) max_count=999;
 	       try {
-	    	   ps = conn.prepareStatement(GET_ALL_FAILED_TRANS_MAIL_SQL);
+	    	   PreparedStatement ps = conn.prepareStatement(GET_ALL_FAILED_TRANS_MAIL_SQL);
 	    	   
 	    	   ps.setInt(1, max_count);
-	    	   rs = ps.executeQuery();
+	    	   ResultSet rs = ps.executeQuery();
 	           while (rs.next()) {
 	        	   TransEmailInfoModel model=new TransEmailInfoModel();
 	           	 
@@ -304,9 +266,8 @@ public class TEmailInfoDAO {
 	           	    model.setRecipient(rs.getString("TO_ADDR"));
 	           	    model.setSubject(rs.getString("SUBJECT"));
 	    			java.util.Date startDate = new java.util.Date(rs.getTimestamp("CROMOD_DATE").getTime());
-	           	    model.setCroModDate(startDate);	  
-	           	    model.setEmailContent(getContentFromClob(rs));
-	           	   // model.setEmailContent(rs.getString("TEMPLATE_CONTENT"));
+	           	    model.setCroModDate(startDate);	           	   	           	    
+	           	    model.setEmailContent(rs.getString("TEMPLATE_CONTENT"));
 	           	    model.setCCListInStr(rs.getString("CC_ADDR"));
 	           	    model.setBCCListInStr(rs.getString("BCC_ADDR"));
 	           	    
@@ -329,11 +290,9 @@ public class TEmailInfoDAO {
 	           	    failedTransList.add(model);
 	           	    	           	    
 	           }
+	           ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
-	       } finally{
-	    	   DaoUtil.close(rs);
-	    	   DaoUtil.close(ps);
 	       }
 	       LOGGER.info("failedTransList size is :"+failedTransList.size());
 		   return failedTransList; 				
@@ -349,15 +308,13 @@ public class TEmailInfoDAO {
 
 
 	public static Map getFailedTransactionsDetails(Connection conn) throws SQLException{
-			PreparedStatement ps= null;
-			ResultSet rs = null;
-			
-			Map transMap=new HashMap();
-			int totalCount=0;
-			try {
-				ps = conn.prepareStatement(GET_FAILED_TRANS_MAIL_SQL);
+				
+				Map transMap=new HashMap();
+				int totalCount=0;
+				try {
+				PreparedStatement ps = conn.prepareStatement(GET_FAILED_TRANS_MAIL_SQL);
 							
-				rs = ps.executeQuery();
+				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
 				
 				   int count=rs.getInt("count");
@@ -366,14 +323,13 @@ public class TEmailInfoDAO {
 				
 				}
 				transMap.put("total_count",""+totalCount);
-
-			}catch(SQLException e){
-				throw e;
-			} finally{
-				DaoUtil.close(rs);
-				DaoUtil.close(ps);
-			}
-			LOGGER.info("failedTransList size is :"+transMap.size());
+				
+				
+				ps.close();
+				}catch(SQLException e){
+					throw e;
+				}
+				LOGGER.info("failedTransList size is :"+transMap.size());
 			return transMap; 				
 				
 		}

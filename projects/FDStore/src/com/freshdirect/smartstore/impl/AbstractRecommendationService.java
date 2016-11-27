@@ -11,7 +11,11 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -20,9 +24,6 @@ import com.freshdirect.smartstore.sampling.ConfiguredImpressionSampler;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 
 /**
  * Simple abstract implementation of recommendation service It does nothing but
@@ -35,7 +36,7 @@ import com.freshdirect.storeapi.content.ContentNodeModelUtil;
  */
 public abstract class AbstractRecommendationService implements RecommendationService {
 	
-    private static final Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
+	private static Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 
 	protected Variant variant;
 
@@ -48,12 +49,12 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	/**
 	 * ThreadLocal<Map<String:ContentKey.id,String:Recommender.id>>
 	 */
-    public static final ThreadLocal<Map<String, String>> RECOMMENDER_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
+	public static ThreadLocal<Map<String, String>> RECOMMENDER_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
 
 	/**
 	 * ThreadLocal<Map<String:ContentKey.id,String:RecommenderStrategy.id>>
 	 */
-    public static final ThreadLocal<Map<String, String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
+	public static ThreadLocal<Map<String, String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
 
 	protected static List<RankedContent.Single> rankListByOrder(List<? extends ContentNodeModel> nodes) {
 		int size = nodes.size();
@@ -73,13 +74,11 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		this.includeCartItems = includeCartItems;
 	}
 
-	@Override
-    public Variant getVariant() {
+	public Variant getVariant() {
 		return this.variant;
 	}
 
-	@Override
-    final public List<ContentNodeModel> recommendNodes(SessionInput input) {
+	final public List<ContentNodeModel> recommendNodes(SessionInput input) {
 		boolean saveIncludeCartItems = input.isIncludeCartItems();
 		if (!input.isIncludeCartItems()) {
 			input.setIncludeCartItems(includeCartItems);
@@ -157,18 +156,15 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return result;
 	}
 
-	@Override
-    public boolean isIncludeCartItems() {
+	public boolean isIncludeCartItems() {
 		return includeCartItems;
 	}
 
-	@Override
-    public boolean isSmartSavings() {
+	public boolean isSmartSavings() {
 		return false;
 	}
 
-	@Override
-    public boolean isRefreshable() {
+	public boolean isRefreshable() {
 		return !(sampler == null || sampler.isDeterministic());
 	}
 	

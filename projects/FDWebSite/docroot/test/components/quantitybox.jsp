@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <%-- <title>Soy Template Test Page</title> --%>
-   <fd:SEOMetaTag title="Soy Template Test Page"/>
+  <title>Soy Template Test Page</title>
   
   <jwr:script src="/fdlibs.js"/>
   <jwr:script src="/fdcomponents.js"/>

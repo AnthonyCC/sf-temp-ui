@@ -1,5 +1,5 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -15,12 +15,13 @@ final int W_NOT_BOTCATNAV_RIGHT = 191;
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-     <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
@@ -42,6 +43,7 @@ final int W_NOT_BOTCATNAV_RIGHT = 191;
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 <%
 
 	JspMethods.CategoryInfo c = JspMethods.getCategoryInfo(request);
@@ -63,17 +65,17 @@ final int W_NOT_BOTCATNAV_RIGHT = 191;
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_NOT_BOTCATNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<TD WIDTH="<%=W_NOT_BOTCATNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NOT_BOTCATNAV_LEFT%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_NOT_BOTCATNAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NOT_BOTCATNAV_CENTER%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_NOT_BOTCATNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NOT_BOTCATNAV_RIGHT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NOT_BOTCATNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NOT_BOTCATNAV_LEFT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NOT_BOTCATNAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NOT_BOTCATNAV_CENTER%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NOT_BOTCATNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NOT_BOTCATNAV_RIGHT%>" height="1" border="0"></TD>
 </TR>
-	<td width="<%=W_NOT_BOTCATNAV_TOTAL%>" colspan="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_NOT_BOTCATNAV_TOTAL%>" height="1" border="0"></td>
+	<td width="<%=W_NOT_BOTCATNAV_TOTAL%>" colspan="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="<%=W_NOT_BOTCATNAV_TOTAL%>" height="1" border="0"></td>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_NOT_BOTCATNAV_LEFT%>" class="left_nav">
 		<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %><BR>
-		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_NOT_BOTCATNAV_LEFT%>">
+		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_NOT_BOTCATNAV_LEFT%>">
 	</TD>
 	<TD width="<%=W_NOT_BOTCATNAV_CENTER%>" align="center">
                 
@@ -83,7 +85,7 @@ final int W_NOT_BOTCATNAV_RIGHT = 191;
 		<!-- content ends above here-->
   	</TD>
 	<TD WIDTH="<%=W_NOT_BOTCATNAV_RIGHT%>" align="center">
-		<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1" border="0"><br>
+		<img src="/media_stat/images/layout/clear.gif" height="10" width="1" border="0"><br>
 		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
 	</TD>
 </TR>
@@ -93,11 +95,11 @@ final int W_NOT_BOTCATNAV_RIGHT = 191;
     </td>
 </tr>
 <TR VALIGN="BOTTOM">
-	<TD WIDTH="<%=W_NOT_BOTCATNAV_LEFT%>" BGCOLOR="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></TD>
-	<td width="<%=W_NOT_BOTCATNAV_TOTAL - W_NOT_BOTCATNAV_LEFT%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+	<TD WIDTH="<%=W_NOT_BOTCATNAV_LEFT%>" BGCOLOR="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></TD>
+	<td width="<%=W_NOT_BOTCATNAV_TOTAL - W_NOT_BOTCATNAV_LEFT%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 </TR>
 <TR>
-<td width="<%=W_NOT_BOTCATNAV_TOTAL%>" colspan="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_NOT_BOTCATNAV_TOTAL%>" height="1" border="0"></td>
+<td width="<%=W_NOT_BOTCATNAV_TOTAL%>" colspan="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" width="<%=W_NOT_BOTCATNAV_TOTAL%>" height="1" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

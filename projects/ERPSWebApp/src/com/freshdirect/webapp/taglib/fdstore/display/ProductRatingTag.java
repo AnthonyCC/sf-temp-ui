@@ -15,11 +15,11 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWineRating;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspMethods;
@@ -296,57 +296,46 @@ public class ProductRatingTag extends BodyTagSupport {
 			// [B] STANDARD PRODUCE RATING
 			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.EXPERT) {
 				if (user.isProduceRatingEnabled()) {
-                    String rating = JspMethods.getProductRating(product, skuCode);
-                    EnumOrderLineRating test = null;
-                    double ratingVal = 0;
-                    String ratingString="";
-                    try {
-                        test = product.getProductRatingEnum(skuCode);
-                        ratingVal = ((double)test.getValue())/2;
-                        ratingString = (Double.toString(ratingVal)).replaceAll(".0", "");
-                    } catch (FDResourceException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-        
-                    StringBuilder buf = new StringBuilder();
-        
-                    if (rating != null && rating.trim().length() > 0) {
-                        if (action != null) {
-                            buf.append("<a href=\"");
-                            buf.append(action);
-                            buf.append("\">");
-                        }
-        
-                        buf.append("<img src=\"/media_stat/images/ratings/"
-                                + (leftAlign ? "left_" : "") + rating + ".gif\"");
-        
-                        buf.append(" name=\"" + rating + "\"");
-                                                
-                        buf.append(" width=\"59\"");
-        
-                        buf.append(" height=\"11\"");
-                        
-                        buf.append(" alt=\"" + ratingString + " out of 5 stars\"");
-        
-                        buf.append(" border=\"0\"");
-        
-                        buf.append(">");
-        
-                        if (action != null) {
-                            buf.append("</a>");
-                        }
-        
-                        if (!noBr)
-                            buf.append("<br>");
-                    }
+					String rating = JspMethods.getProductRating(product, skuCode);
+		
+					StringBuilder buf = new StringBuilder();
+		
+					if (rating != null && rating.trim().length() > 0) {
+						if (action != null) {
+							buf.append("<a href=\"");
+							buf.append(action);
+							buf.append("\">");
+						}
+		
+						buf.append("<img src=\"/media_stat/images/ratings/"
+								+ (leftAlign ? "left_" : "") + rating + ".gif\"");
+		
+						buf.append(" name=\"" + rating + "\"");
+		
+						buf.append(" width=\"59\"");
+		
+						buf.append(" height=\"11\"");
+		
+						buf.append(" border=\"0\"");
+		
+						buf.append(">");
+		
+						if (action != null) {
+							buf.append("</a>");
+						}
+		
+						if (!noBr)
+							buf.append("<br>");
+					}
 
-                    try {
-                        pageContext.getOut().println(buf.toString());
-                    } catch (IOException e) {
-                        throw new JspException(e);
-                    }
-                }				
+					try {
+						pageContext.getOut().println(buf.toString());
+					} catch (IOException e) {
+						throw new JspException(e);
+					}
+				}else{
+					LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
+				}				
 			}
 		}
 

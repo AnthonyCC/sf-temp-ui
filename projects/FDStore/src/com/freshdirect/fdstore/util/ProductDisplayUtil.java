@@ -6,15 +6,15 @@ import java.util.Set;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ConfiguredProductGroup;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ConfiguredProductGroup;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProxyProduct;
 
 public class ProductDisplayUtil {
 	public static final String URL_PARAM_SEP = "&amp;";

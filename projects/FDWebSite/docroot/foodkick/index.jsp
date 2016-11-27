@@ -1,11 +1,8 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="includes/fk_presenter_vars.jspf" %>
 <%@ page import="java.util.Calendar" %>
+
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="Same-Day Food Delivery NYC | FoodKick"/>
-   </tmpl:put>
-<%-- 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put> --%>
+	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put>
 	<tmpl:put name='content'>
 		<fd:IncludeMedia name="${FK_EDITORIAL_DIR}landing.html" />
 	</tmpl:put>

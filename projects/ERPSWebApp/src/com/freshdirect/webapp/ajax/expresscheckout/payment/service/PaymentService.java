@@ -15,34 +15,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
@@ -55,13 +46,10 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentService {
 
-	private static Category		LOGGER	= LoggerFactory.getInstance( PaymentService.class );
-	
     private static final PaymentService INSTANCE = new PaymentService();
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
@@ -107,27 +95,15 @@ public class PaymentService {
     public List<ValidationError> selectPaymentMethod(String paymentId, String actionName, HttpServletRequest request) throws FDResourceException {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ActionResult result = new ActionResult();
-
-        FormDataRequest paymentRequestData;
-        boolean paymentSaveAsDefault = false;
-		try {
-			paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
-			/* expects string */
-			paymentSaveAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(paymentRequestData, "paymentSetAsDefault"));
-		} catch (HttpErrorResponse e) {
-			// TODO Auto-generated catch block
-			LOGGER.debug("Exception occured in selectPaymentMethod()");
-		}
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"), dlvPassCart);
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
         if (validationErrors.isEmpty()) {
-            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession(), dlvPassCart);
+            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession());
             session.removeAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         }
         return validationErrors;
@@ -239,75 +215,34 @@ public class PaymentService {
         return data;
     }
 
-    public List<PaymentData> loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
+    public List<PaymentData> loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
         List<PaymentData> paymentDatas = new ArrayList<PaymentData>();
-//        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
-        if(null == paymentMethods){
-        	paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
-        }       
+        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
         paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
-        if (user.isECheckRestricted()) {
-			paymentMethods = PaymentMethodManipulator.removeEcheckAccounts(paymentMethods);
-		}
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
         Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         List<ValidationError> selectionError = new ArrayList<ValidationError>();
-        boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
-		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
-
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
-        	}
-        	else if((cart instanceof FDModifyCartModel) && paymentMethods.size() > 0 && null ==request.getAttribute("pageAction")){
-        		selectedPaymentId= paymentMethods.get(0).getPK().getId();
-        	}
-        	else if (cart.getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
-        					&& null ==request.getAttribute("pageAction")) && null== request.getSession().getAttribute("selectedPaymentId")) {
-        		 user.refreshFdCustomer();
-        		 // FIN-78
-        		 if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null){
-        			 FDOrderI orderInfo = FDCustomerManager.getOrder(user.getMasqueradeContext().getParentOrderId());
-        			 if(orderInfo!=null){
-        				 selectedPaymentId= orderInfo.getPaymentMethod()!=null?(orderInfo.getPaymentMethod().getPK()!=null?orderInfo.getPaymentMethod().getPK().getId():null):null;
-        				 LOGGER.debug("ADD-ON order masquerade by "+user.getMasqueradeContext().getAgentId()+
-        						 ", payment ID: " +selectedPaymentId+" is setted from parentOrder: "+orderInfo.getErpSalesId());
-        			 }
-        		 }else{
-					if (!StandingOrderHelper.isSO3StandingOrder(user)) {
-						selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
-						LOGGER.debug("default payment method setted, paymentID: " + selectedPaymentId);
-					}
-        		 }
-        		 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
+        	}else if (user.getShoppingCart().getPaymentMethod() == null) {
+                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+                selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
-                PrimaryKey paymentMethodPrimaryKey = cart.getPaymentMethod().getPK();
+                PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
                 if (paymentMethodPrimaryKey != null) {
                     selectedPaymentId = paymentMethodPrimaryKey.getId();
-                    request.getSession().setAttribute("selectedPaymentId", selectedPaymentId);
                 }
             }
         }
         for (int i = 0; i < paymentMethods.size(); i++) {
-        	ErpPaymentMethodI paymentMethod =paymentMethods.get(i);
-        	if(!(paymentMethod instanceof ErpGiftCardModel)) {//exclude giftcards
-	            PaymentData paymentData = createPaymentData(paymentMethods.get(i));
-	            
-                //set as default
-                if (paymentData.getId().equals(user.getFDCustomer().getDefaultPaymentMethodPK())) {
-                	paymentData.setDefault(true);
-                } else {
-                	paymentData.setDefault(false);
-                }
-                
-	            if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))
-	                    && selectionError.isEmpty()) {
-	                paymentData.setSelected(true);
-	                
-	            }
-	            paymentDatas.add(paymentData);
-        	}
+            PaymentData paymentData = createPaymentData(paymentMethods.get(i));
+            if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))
+                    && selectionError.isEmpty()) {
+                paymentData.setSelected(true);
+            }
+            paymentDatas.add(paymentData);
         }
         // Update Shopping Cart if Wallet Cart is selected and available in session
         updateShoppingCartWithWalletCard(user, request, paymentMethods);
@@ -376,7 +311,6 @@ public class PaymentService {
         if (payment.getCardType() != null) {
             paymentData.setType(payment.getCardType().getDisplayName());
         }
-        paymentData.setDebit(payment.isDebitCard());
         if (!EnumCardType.GCP.equals(payment.getCardType())) {
             paymentData.setNameOnCard(payment.getName());
             String maskedAccountNumber = payment.getMaskedAccountNumber();
@@ -400,10 +334,8 @@ public class PaymentService {
             if (payment.getBankAccountType() != null) {
                 paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
             }
-            if(!EnumPaymentType.MAKE_GOOD.equals(payment.getPaymentType())){
             paymentData.setReferencedOrderId(payment.getReferencedOrder());
             paymentData.setPaymentTypeDescription(payment.getPaymentType().getDescription());
-            }
 			paymentData.seteWalletID(payment.geteWalletID());
         	paymentData.setVendorEWalletID(payment.getVendorEWalletID());
         	paymentData.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
@@ -424,8 +356,6 @@ public class PaymentService {
             } else if (EnumUserInfoName.BIL_ADDRESS_1.getCode().equals(error.getType())) {
                 validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
             } else if (EnumUserInfoName.BIL_APARTMENT.getCode().equals(error.getType())) {
-                validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
-            } else if (EnumUserInfoName.CARD_HOLDER.getCode().equals(error.getType())) {
                 validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
             } else {
                 validationErrors.add(new ValidationError(PaymentMethodName.ACCOUNT_NUMBER, error.getDescription()));

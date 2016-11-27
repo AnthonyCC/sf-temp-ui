@@ -1,8 +1,5 @@
 package com.freshdirect.cms.ui.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -11,7 +8,6 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
-import com.freshdirect.cms.ui.client.publish.PublishProgressListener;
 import com.freshdirect.cms.ui.client.views.AdministrationView;
 import com.freshdirect.cms.ui.client.views.BulkLoaderView;
 import com.freshdirect.cms.ui.client.views.ChangeSetQueryView;
@@ -20,29 +16,20 @@ import com.freshdirect.cms.ui.client.views.FeedPublishView;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.client.views.PublishView;
 import com.freshdirect.cms.ui.model.GwtUser;
-import com.freshdirect.cms.ui.model.publish.GwtPublishData;
-import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 
 public class MainLayout extends Viewport implements ValueChangeHandler<String> {
-
-    private static final int PUBLISH_PROGRESS_CHECK_TIME = 10 * 1000;
 
     private PageHeader header;
 
     private LayoutContainer mainPanel;
 
     private Anchor activeLink;
-
-    private boolean isPublishInProgress;
-    private Timer timer;
-    private List<PublishProgressListener> publishProgressListeners;
 
     protected ClickHandler commandLinkHandler = new ClickHandler() {
 
@@ -79,9 +66,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 
         History.addValueChangeHandler(this);
 
-        publishProgressListeners = new ArrayList<PublishProgressListener>();
-        registerPublishProgressListener(header);
-        createPublishProgressTimer();
     }
 
     protected void activateLink(Anchor link) {
@@ -328,63 +312,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         }
     }
 
-    private void createPublishProgressTimer() {
-        if (timer == null) {
-            timer = new Timer() {
-
-                @Override
-                public void run() {
-                    CmsGwt.getContentService().getLastPublishStatus(new BaseCallback<String>() {
-
-                        @Override
-                        public void onSuccess(String lastPublishStatus) {
-                            if (lastPublishStatus.equalsIgnoreCase(GwtPublishData.PROGRESS)) {
-                                if (isPublishInProgress == false) {
-                                    notifyListenersPublishStarted();
-                                }
-                                isPublishInProgress = true;
-                            } else {
-                                if (isPublishInProgress == true) {
-                                    notifyListenersPublishFinished();
-                                }
-                                isPublishInProgress = false;
-                            }
-                        }
-                    });
-                }
-            };
-        }
-        timer.scheduleRepeating(PUBLISH_PROGRESS_CHECK_TIME);
-    }
-
-    public void registerPublishProgressListener(PublishProgressListener listener) {
-        if (listener != null) {
-            publishProgressListeners.add(listener);
-        }
-    }
-
-    public void removePublishProgressListener(PublishProgressListener listener) {
-        if (listener != null && publishProgressListeners.contains(listener)) {
-            publishProgressListeners.remove(listener);
-        }
-    }
-
-    private void notifyListenersPublishStarted() {
-        if (publishProgressListeners != null) {
-            for (PublishProgressListener publishProgressListener : publishProgressListeners) {
-                publishProgressListener.onPublishStarted();
-            }
-        }
-    }
-
-    private void notifyListenersPublishFinished() {
-        if (publishProgressListeners != null) {
-            for (PublishProgressListener publishProgressListener : publishProgressListeners) {
-                publishProgressListener.onPublishFinished();
-            }
-        }
-    }
-
     @Override
     public El mask(String message) {
         El mask = super.mask(message);
@@ -403,7 +330,4 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         return masked;
     }
 
-    public boolean isPublishInProgress() {
-        return isPublishInProgress;
-    }
 }

@@ -13,17 +13,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Donate Gift Card"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Donate Gift Card</tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>gc_add_donation</tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Donate Gift Card</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
-		<style>
-			.W_ADD_GIFTCARD_TOTAL { width: <%= W_ADD_GIFTCARD_TOTAL %>px; }
-			.W_ADD_GIFTCARD_TOTAL-99 { width: calc( <%= W_ADD_GIFTCARD_TOTAL %>px - 99px ); }
-		</style>
 
 <%
     //used?
@@ -88,9 +80,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				<table width="100%" cellspacing="0" cellpadding="0" border="0">
 				<tr>
 					<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
-					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" alt="" height="1"></td>
-					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
 					<td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 				</tr>
 				<tr>
@@ -99,20 +91,20 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td width="18" bgcolor="#FF9900"><img src="/media_stat/images/template/system_msgs/check_FF9900.gif" width="18" height="22" border="0" alt="check"></td>
-					<td class="success13text" width="100%" bgcolor="#ffffff">
+					<td class="text11orbold" width="100%" bgcolor="#ffffff">
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 								<%=infoMsg%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 					</td>
 					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-					<td bgcolor="#ff9900"><img src="/media_stat/images/layout/ff9900.gif" alt="" width="1" height="1"></td>
+					<td bgcolor="#ff9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
 				</tr>
 				<tr>
-					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
 					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
 				</tr>
 				<tr>
-					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" alt="" width="1" height="1"></td>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
 				</tr>
 				</table>
 				<br />
@@ -120,38 +112,38 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				}
 			%>
 
-			<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
+			<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 				<tr>
-					<td class="text11" class="W_ADD_GIFTCARD_TOTAL-99">
+					<td class="text11" width="<%=W_ADD_GIFTCARD_TOTAL-99%>">
 						<span class="title18">Enter Gift Card Donation Information</span><br />
 					</td>
 					<td width="99">
 						&nbsp;
-							<button class="cssbutton small orange" onClick="return setCheckOut();" name="form_action_name" >CONTINUE</button>
+							<input type="image" onClick="return setCheckOut();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px 0px;">
-						<img style="margin: 2px 0;" class="W_ADD_GIFTCARD_TOTAL" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 					</td>
 				</tr>
 			</table>
 
-			<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="post">
+			<form name="giftcard_donation_form" id="giftcard_donation_form" method="post">
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" id="deleteId" name="deleteId" value="">
                 <input type="hidden" id="checkout" name="checkout" value="">
                 <input type="hidden" id="gcDonId" name="gcDonId" value="<%= gcDonId %>">				
-				<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
+				<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 					<tr>
-						<td colspan="5" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0" /></td>
+						<td colspan="5" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0" /></td>
 					</tr>
 					<tr>
 						<td width="380" valign="top">
 							<%@ include file="/gift_card/purchase/includes/i_donation_giftcard_fields.jspf" %>
 						</td>
 						<td bgcolor="#cccccc" width="1">
-							<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="1" height="1" border="0" />
+							<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" height="1" border="0" />
 						</td>
 						<td valign="top" width="489">
 							<%
@@ -171,7 +163,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 									</td>									
 								</tr>
 								<tr>
-									<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40" border="0" /></td>
+									<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="40" border="0" /></td>
 								</tr>
 								<tr>
 									<td align="center" width="250" valign="top">
@@ -197,16 +189,16 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					</tr>
 				</table>
 	        </form>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-		<img src="/media_stat/images/layout/999966.gif" alt="" class="W_ADD_GIFTCARD_TOTAL" height="1" border="0" /><br />
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 		
-		<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">			
+		<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">			
 			<tr valign="top">
 				<td align="right" colspan="2">
 					&nbsp;
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" />
-					<button class="cssbutton small orange" onClick="return setCheckOut();" name="form_action_name" >CONTINUE</button>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" />
+					<input type="image" onClick="return setCheckOut();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
 				</td>
 			</tr>
 		</table>

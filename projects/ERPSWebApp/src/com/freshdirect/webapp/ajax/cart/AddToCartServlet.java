@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -25,7 +24,11 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
+import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -37,10 +40,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
@@ -53,7 +53,6 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class AddToCartServlet extends BaseJsonServlet {
@@ -130,25 +129,10 @@ public class AddToCartServlet extends BaseJsonServlet {
     protected boolean synchronizeOnUser() {
         return false; // synchronization is done on cart
     }
-    
-    private boolean dlvPassCart; //used for DP Plans landing page
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
-    	boolean isOAuthRequest = isOAuthEnabled() && isOAuthTokenInHeader(request);
-    	if (isOAuthRequest){
-    		try {
-				user = FDCustomerManager.recognize(user.getIdentity(), false, null);
-			} catch (FDAuthenticationException e) {
-				returnHttpError(500);
-	            return;
-			} catch (FDResourceException e) {
-				returnHttpError(500);
-	            return;
-			}
-    	}
         FDCartModel cart = user.getShoppingCart();
         if (cart == null) {
             // user doesn't have a cart, this is a bug, as login or site_access should put it there
@@ -160,12 +144,6 @@ public class AddToCartServlet extends BaseJsonServlet {
         // [APPDEV-5353] Fill in required data
         reqData.setCookies(request.getCookies());
         reqData.setRequestUrl(RequestUtil.getFullRequestUrl(request));
-        
-        boolean dlvPassCart = reqData.isDlvPassCart();
-        if(dlvPassCart){
-        	cart=UserUtil.getCart(user, "", dlvPassCart);
-        	cart.clearOrderLines();
-        }
 
         // Get event source
         EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
@@ -218,10 +196,9 @@ public class AddToCartServlet extends BaseJsonServlet {
         }
 
         try {
-			if (!EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)
-					&& user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId() == null
-					&& !reqData.isNewOrder() && !dlvPassCart) {
-				// user has pending orders, show the popup first
+            if (user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId() == null && !reqData.isNewOrder()
+                    && !EnumEventSource.ExternalPage.equals(evtSrc)) {
+                // user has pending orders, show the popup first
 
                 returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
                 return;
@@ -248,7 +225,7 @@ public class AddToCartServlet extends BaseJsonServlet {
             boolean result = false;
 
             synchronized (cart) {
-                result = CartOperations.addToCart(user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc, isOAuthRequest);
+                result = CartOperations.addToCart(user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc);
             }
 
             if (!result) {
@@ -283,16 +260,31 @@ public class AddToCartServlet extends BaseJsonServlet {
                     }
                 }
 
+                for (ExtSource esrc : extSources) {
+                    // ConversionEventTagModel model = new ConversionEventTagModel();
+
+                    ConversionEventTagModelBuilder builder = new ConversionEventTagModelBuilder();
+                    builder.setEventId(esrc.agency.name());
+                    builder.setFirstPhase(false); // --> it makes action type have set 2
+                    builder.setCategoryId("Recipe");
+
+                    // setup model
+                    ConversionEventTagModel model = builder.buildTagModel();
+                    model.getAttributesMaps().put(5, esrc.externalGroup);
+                    model.getAttributesMaps().put(8, esrc.externalSource);
+
+                    // add to response data
+                    
+    				// [APPDEV-4558]
+    				if (CmContextUtility.isCoremetricsAvailable(user)) {
+                    	responseData.addCoremetrics(model.toStringList());
+                    }
+                }
+
                 if (!reqData.isIgnoreRedirect()) {
                     responseData.setRedirectUrl("/view_cart.jsp");
                 }
-            } else if (
-            		(
-	            		"ps_caraousal".equals(reqData.getEventSource()) || 
-	            		"ps_carousel_view_cart".equals(reqData.getEventSource()) || 
-	            		"view_cart".equals(reqData.getEventSource()) || 
-	            		"TRY".equals(reqData.getEventSource())
-            		)
+            } else if (("ps_caraousal".equals(reqData.getEventSource()) || "view_cart".equals(reqData.getEventSource()) || "TRY".equals(reqData.getEventSource()))
                     && ONLY_OLD_VIEW_CART_PAGES_PATTERN.matcher(referer).matches()) {
                 if (!reqData.isIgnoreRedirect()) {
                     responseData.setRedirectUrl(referer);
@@ -393,17 +385,11 @@ public class AddToCartServlet extends BaseJsonServlet {
         FDOrderAdapter order;
         try {
             order = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), reqData.getOrderId());
-            order.getSale().assertStatusModifySale();
             
             ModifyOrderHelper.handleModificationCutoff(order, sessionUser, request.getSession(), new ActionResult());
     		
             FDModifyCartModel modifycart = new FDModifyCartModel(order);
-            
-            // adding previous session modified cart line item's to 'Modify_cart'
-    		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(modifycart.getOriginalOrder().getSale().getId(), user.getUserContext());
-    		if(user.getMasqueradeContext() == null && (null != modifiedCartlines && modifiedCartlines.size() > 0)){
-    			modifycart.addOrderLines(modifiedCartlines);
-    		}
+
             // this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use
             // dlvpassapplied flag for applying charge
             ModifyOrderHelper.handleDlvPass(modifycart, user);
@@ -436,9 +422,6 @@ public class AddToCartServlet extends BaseJsonServlet {
         } catch (FDException e) {
             LOG.error("Cannot load order data into cart. Exception: " + e);
             returnHttpError(500, "Cannot load order data into cart. Exception: " + e);
-        } catch (ErpTransactionException e) {
-            LOG.error("Current sale status incompatible with requested action", e);
-            returnHttpError(500, "Current sale status incompatible with requested action" + e);
         }
         return cart;
     }
@@ -576,16 +559,4 @@ public class AddToCartServlet extends BaseJsonServlet {
         return responseItem; // validation is OK
     }
     
-    @Override
-	protected boolean isOAuthEnabled() {
-		return true;
-	}
-    
-	public boolean isDlvPassCart() {
-		return dlvPassCart;
-	}
-
-	public void setDlvPassCart(boolean dlvPassCart) {
-		this.dlvPassCart = dlvPassCart;
-	}
 }

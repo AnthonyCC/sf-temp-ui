@@ -4,9 +4,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 
 public class UnbxdSearchResponseProduct {
 
@@ -45,6 +44,6 @@ public class UnbxdSearchResponseProduct {
     }
 
     public ContentKey getContentKey() {
-        return ContentKeyFactory.get(ContentType.Product, productId);
+        return new ContentKey(ContentType.get("Product"), productId);
     }
 }

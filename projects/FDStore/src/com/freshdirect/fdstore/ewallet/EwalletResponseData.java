@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.customer.ErpPaymentMethodDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodI;
 
 /**
@@ -48,7 +46,6 @@ public class EwalletResponseData  implements Serializable{
 	private String redirectUrl;
 	private ValidationResult validationResult;
 	private String transactionId;
-	@JsonDeserialize(using = ErpPaymentMethodDeserializer.class)
 	private ErpPaymentMethodI paymentMethod;
 	private String preferredMPCard;
 	private String preCheckoutTnxId;

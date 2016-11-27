@@ -16,7 +16,7 @@
 	String id = request.getParameter("id");
 	String dmsg = request.getParameter("dmsg");
 	if("sfile".equals(dmsg)) {
-		String message = null;
+		String message = CallCenterServices.getSoundFileMessage(id);
 %>	
 	<table cellspacing="15" cellpadding="0" border="0" align="center" width="600" 
 		style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:9pt;border-width: 1px;border-spacing: 2px;border-style: solid;border-color:#CCCC99 #999966 #CCCC99 #CCCC99 ;border-collapse: separate;background-color: white;">

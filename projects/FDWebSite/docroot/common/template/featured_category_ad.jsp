@@ -1,11 +1,12 @@
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
-ProductModel pm = PopulatorUtil.getProductByName(request.getParameter("catId"), request.getParameter("prodId"));
+ContentFactory cf = ContentFactory.getInstance();
+ProductModel pm = cf.getProductByName(request.getParameter("catId"), request.getParameter("prodId"));
 Image prodImage = (Image)pm.getCategoryImage();
 SkuModel sku = pm.getDefaultSku();
 String prodPrice = null;

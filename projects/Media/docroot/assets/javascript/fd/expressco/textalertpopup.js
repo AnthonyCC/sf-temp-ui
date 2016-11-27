@@ -57,11 +57,8 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
       value: function () {
-        if (this.popup) { this.popup.hide(); 
-        if(fd.expressco && fd.expressco.data && fd.expressco.data.goGreenShow){
-        	gogreenpopup.open(null, fd.expressco.data.goGreenShow);
-         }
-        }
+        if (this.popup) { this.popup.hide(); }
+
         return false;
       }
     },
@@ -84,102 +81,16 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
-  
-  
-  //Go Green 
-  var gogreenpopup = Object.create(POPUPWIDGET,{
-	    headerContent: {
-	      value: ''
-	    },
-	    customClass: {
-	      value: 'gogreenpopup'
-	    },
-	    hideHelp: {
-	      value: true
-	    },
-	    hasClose: {
-	      value: false
-	    },
-	    $trigger: {
-	      value: null // TODO
-	    },
-	    trigger: {
-	      value: '[data-component="gogreen"]'
-	    },
-	    bodySelector:{
-	      value: '.ec-popup-content'
-	    },
-	    signal: {
-	      value: 'verifyage'
-	    },
-	    scrollCheck: {
-	      value: '.ec-popup'
-	    },
-	    template: {
-	      value: expressco.eccenterpopup
-	    },
-	    bodyTemplate: {
-	      value: expressco.gogreenpopup
-	    },
-	    popupId: {
-	      value: 'gogreenpopup'
-	    },
-	    popupConfig: {
-	      value: {
-	        zIndex: 2000,
-	        openonclick: true,
-	        overlayExtraClass: 'centerpopupoverlay',
-	        align: false
-	      }
-	    },
-	    close: {
-	      value: function () {
-	        if (this.popup) { this.popup.hide(); }
 
-	        return false;
-	      }
-	    },
-	    open: {
-	      value: function (e, data) {
-	    	 // debugger
-	        var $t = e && $(e.currentTarget) || $(document.body);
-
-	        this.refreshBody(data);
-	        this.popup.show($t);
-	        this.popup.clicked = true;
-
-	        this.noscroll(true);
-	      }
-	    },
-	    displayContent: {
-	      value: function(e){
-	        var $t = e && $(e.currentTarget);
-	        if(!$t.length){ return; }
-	        $('#' + gogreenpopup.popupId + ' [data-show]').attr('data-show', $t.data('go'));
-	      }
-	    }
-	  });
-  
-  
   function openAfterPageRender(){
-	  var ex = fd.expressco;
-	  if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show && $('.dpn-success-container').length==0){
-		  textalertpopup.open(null, ex.data.textMessageAlertData);
-      }else{
-    	  if(ex && ex.data && ex.data.goGreenShow){
-	    	gogreenpopup.open(null, ex.data.goGreenShow);
-    	  }
-      }
+    var ex = fd.expressco;
+    if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show){
+      textalertpopup.open(null, ex.data.textMessageAlertData);
+    }
   }
-  
-	  
-
 
   textalertpopup.listen();
   textalertpopup.render();
-
-  gogreenpopup.listen();
-  gogreenpopup.render();
 
   var textalertconfirmpopup = Object.create(POPUPWIDGET,{
     headerContent: {
@@ -219,21 +130,13 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
       value: function () {
-        if (this.popup) { this.popup.hide();
-        if(fd.expressco && fd.expressco.data && fd.expressco.data.goGreenShow){
-	    	gogreenpopup.open(null, fd.expressco.data.goGreenShow);
-    	  }
-        
-        }
-        
+        if (this.popup) { this.popup.hide(); }
 
         return false;
       }
     },
     open: {
       value: function (e, data) {
-
-          gogreenpopup.close();
         var $t = e && $(e.currentTarget) || $(document.body),
             phone = $('#' + textalertpopup.popupId + ' input[name="mobile"]').val();
 
@@ -303,13 +206,7 @@ var FreshDirect = FreshDirect || {};
   });
 
   textalertcancelconfirmpopup.render();
-  
 
-  
-  $(document).on('click', gogreenpopup.trigger, gogreenpopup.open.bind(gogreenpopup));
-  $(document).on('click', '#' + gogreenpopup.popupId + ' .close', gogreenpopup.close.bind(gogreenpopup));
-  $(document).on('click', '#' + gogreenpopup.popupId + ' [data-go]', gogreenpopup.displayContent.bind(gogreenpopup));
- 
   $(document).on('click', textalertpopup.trigger, textalertpopup.open.bind(textalertpopup));
   $(document).on('click', '#' + textalertpopup.popupId + ' [fdform-button="cancel"]', textalertpopup.close.bind(textalertpopup));
   $(document).on('click', '#' + textalertpopup.popupId + ' .close', textalertpopup.close.bind(textalertpopup));
@@ -317,7 +214,6 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '#' + textalertconfirmpopup.popupId + ' .close', textalertconfirmpopup.close.bind(textalertconfirmpopup));
   $(document).on('click', '#' + textalertcancelconfirmpopup.popupId + ' .close', textalertcancelconfirmpopup.close.bind(textalertcancelconfirmpopup));
 
-  fd.modules.common.utils.register('expressco', 'gogreenpopup', gogreenpopup, fd);
   fd.modules.common.utils.register('expressco', 'textalertpopup', textalertpopup, fd);
   fd.modules.common.utils.register('expressco', 'textalertconfirmpopup', textalertconfirmpopup, fd);
   fd.modules.common.utils.register('expressco', 'textalertcancelconfirmpopup', textalertcancelconfirmpopup, fd);
@@ -357,22 +253,6 @@ var FreshDirect = FreshDirect || {};
   };
 
   fd.modules.common.forms.register(textalertform);
-  
-  var gogreenform;
-  gogreenform = {
-		    id: "gogreen",
-		    validate: function () {
-		      var errors = [];
-		      errors = errors.concat(fd.modules.common.forms.validateDefault(this));
-		      return errors;
-		    },
-		    success: function () {
-		      gogreenpopup.close();
-		    },
-		  };
-
-fd.modules.common.forms.register(gogreenform);
-  
 
   fd.modules.common.forms.register({
     id: "textalertcancel",

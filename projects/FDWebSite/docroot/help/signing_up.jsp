@@ -45,7 +45,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=tableWidth%>" HEIGHT="1"><BR><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=tableWidth%>" HEIGHT="1"><BR><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
 			<table cellpadding="0" cellspacing="0">
 			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question1">How do I sign up?</A></td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
@@ -86,7 +86,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" alt="" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" alt="" width="6" height="1" border="0">top of page</A>
+			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" width="6" height="1" border="0">top of page</A>
 			<br><br><BR>			
 	   </TD>
 	</TR>

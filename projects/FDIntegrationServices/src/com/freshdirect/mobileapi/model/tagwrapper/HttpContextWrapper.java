@@ -1,4 +1,4 @@
- package com.freshdirect.mobileapi.model.tagwrapper;
+package com.freshdirect.mobileapi.model.tagwrapper;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ public abstract class HttpContextWrapper {
     protected PageContext pageContext = new PageContextWrapper();
 
     public static final String REQUEST = "request";
+
     public static final String SESSION = "session";
-    public static final String GET_RESULT = "getResult";
 
     /**
      * Used to pass session and request object to controller so that any values set in the tag 
@@ -43,22 +43,6 @@ public abstract class HttpContextWrapper {
 
     public void setReferer(String referer) {
         ((HttpRequestWrapper) pageContext.getRequest()).setReferer(referer);
-    }
-    
-    public void setTrueCleintIp(String trueclientip) {
-        ((HttpRequestWrapper) pageContext.getRequest()).setTrueClientIp(trueclientip);
-    }
-    
-    public void setForwardedFrom(String forwardedfrom) {
-        ((HttpRequestWrapper) pageContext.getRequest()).setForwardedFrom(forwardedfrom);
-    }
-    
-    public void setAkamaiEdgescape(String akamaiedgescape) {
-        ((HttpRequestWrapper) pageContext.getRequest()).setAkamaiEdgeScape(akamaiedgescape);
-    }
-    
-    public void setRemoteAddr(String remoteaddr) {
-        ((HttpRequestWrapper) pageContext.getRequest()).setRemoteAddr(remoteaddr);
     }
     
     public void setServerName(String serverName) {

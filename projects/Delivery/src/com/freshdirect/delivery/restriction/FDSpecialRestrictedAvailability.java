@@ -2,7 +2,6 @@ package com.freshdirect.delivery.restriction;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -116,12 +115,6 @@ public class FDSpecialRestrictedAvailability extends AbstractAvailability {
 			+ ", availability = "
 			+ availability
 			+ "]";
-	}
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-
-			return availability.getAvailabileQtyForDate(targetDate);
 	}
 
 }

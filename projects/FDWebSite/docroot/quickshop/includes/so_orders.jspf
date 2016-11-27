@@ -37,7 +37,7 @@
 	</tr>
 
 <% 
-	List<FDOrderInfoI> allOrders = so.getAllUpcomingOrders(user);
+	List<FDOrderInfoI> allOrders = so.getAllUpcomingOrders();
 
 	final DateFormat DATE_FORMATTER =  new SimpleDateFormat("M/d/y EEE");
 	FDStandingOrderList shoppingList = so.getCustomerList();

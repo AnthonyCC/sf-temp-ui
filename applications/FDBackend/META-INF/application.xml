@@ -16,4 +16,7 @@
   <module>
     <ejb>StandingOrdersService.jar</ejb>
   </module>
+  <module>
+    <ejb>CoremetricsService.jar</ejb>
+  </module>
 </application>

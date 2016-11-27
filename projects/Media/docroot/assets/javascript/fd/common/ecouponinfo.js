@@ -19,7 +19,7 @@ var FreshDirect = FreshDirect || {};
         var atcId = message.atcId,
             elements = $('[data-productdata-name="atcItemId"][value="'+atcId+'"]').parents('[data-component="product"]').find('[data-component="ecoupon-status"]');
 
-        if (elements.length === 0) {
+        if (elements.size() === 0) {
           elements = $('[data-ecouponid="'+couponId+'"] [data-component="ecoupon-status"]');
         }
 

@@ -18,9 +18,9 @@ import javax.servlet.jsp.JspException;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.util.RequestUtil;
 

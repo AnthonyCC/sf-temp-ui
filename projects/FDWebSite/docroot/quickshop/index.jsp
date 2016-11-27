@@ -3,7 +3,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
 <%@ page import='java.text.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -26,12 +26,9 @@ final int W_QUICKSHOP_INDEX_TOTAL = 755;
 // Load YUI dependencies for smartstore tabs
 %>
 
-
+<fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:insert template='/common/template/quick_shop.jsp'>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put> --%>
-	  <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Reorder"></fd:SEOMetaTag>
-     </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put>
 	<tmpl:put name="head"><fd:css href="/assets/css/fix.css"/></tmpl:put>
 	<tmpl:put name='content' direct='true'>
 					

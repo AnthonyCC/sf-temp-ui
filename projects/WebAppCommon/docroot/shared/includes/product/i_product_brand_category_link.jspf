@@ -1,8 +1,8 @@
 <%@page import="java.util.List"
 %><%@page import="com.freshdirect.webapp.util.FDURLUtil"
-%><%@page import="com.freshdirect.storeapi.content.BrandModel"
-%><%@page import="com.freshdirect.storeapi.content.CategoryModel"
-%><%@page import="com.freshdirect.storeapi.content.ProducerModel"%><%
+%><%@page import="com.freshdirect.fdstore.content.BrandModel"
+%><%@page import="com.freshdirect.fdstore.content.CategoryModel"
+%><%@page import="com.freshdirect.fdstore.content.ProducerModel"%><%
 {
 	List<BrandModel> _brands = productNode.getBrands();
 	if (!_brands.isEmpty()) {

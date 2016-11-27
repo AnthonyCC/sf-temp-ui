@@ -6,26 +6,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentUtil;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumShowChildrenType;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentUtil;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumShowChildrenType;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class ItemGrabber {
 
 	private static final long	serialVersionUID	= -8310578679108946007L;
 
+	@SuppressWarnings( "unused" )
+	private static Logger LOGGER = LoggerFactory.getInstance( ItemGrabber.class );
+	
 	private boolean ignoreShowChildren = false;
 	private ContentNodeModel rootNode = null;
 	private boolean returnHiddenFolders = false;
@@ -162,7 +168,7 @@ public class ItemGrabber {
 				} else {
 					//Convert to ProductModelPricingAdapter for Zone Pricing
 					if(!isDDPPCat || !product.getDefaultSku().isUnavailable()){
-                        this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product));
+						this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product ,pricingCtx) );
 					}
 				}
 				rtnValue=true;
@@ -195,16 +201,11 @@ public class ItemGrabber {
 			if (!returnSecondaryFolders && subFolder.isSecondaryCategory()) {
 				continue;
 			}
-/*			if (subFolder.getShowSelf() || returnHiddenFolders) {
-				this.workSet.add(subFolder);
-				rtnValue = true;
-			}*/
-
-			if (subFolder.isShowSelf() || returnHiddenFolders) {
+			if (subFolder.getShowSelf() || returnHiddenFolders) {
 				this.workSet.add(subFolder);
 				rtnValue = true;
 			}
-			
+
 			if ( (!subFolder.getTreatAsProduct() && depth>0) && 
 			     ( (EnumShowChildrenType.ALWAYS.equals(subFolder.getShowChildren()) ||
 			        (ignoreShowChildren && !EnumShowChildrenType.NEVER.equals(subFolder.getShowChildren()))		//get prods if show_children, regardless of show folder setting
@@ -217,7 +218,7 @@ public class ItemGrabber {
 				// recurse and process this folder
 				if (desiredDepth >= (currentDepth+1)) {
 					boolean keepLastCategory = this.getProdsAndFolders( subFolder, desiredDepth, currentDepth+1,pricingCtx );
-					if (!keepLastCategory && this.workSet.size()==wrkSetSize1 && wrkSetSize1 !=0 && (subFolder.isShowSelf() || returnHiddenFolders)) {
+					if (!keepLastCategory && this.workSet.size()==wrkSetSize1 && wrkSetSize1 !=0 && (subFolder.getShowSelf() || returnHiddenFolders)) {
 						this.workSet.remove(wrkSetSize1-1);
 				   }
 				}
@@ -231,7 +232,7 @@ public class ItemGrabber {
 
             if ((this.filterDiscontinued || this.filterUnavailable) && this.skuList.size() > 0) {
 		// make sure FDProductInfos are cached
-		FDCachedFactory.getProductInfos( this.skuList.toArray( new String[0] ) );
+		FDCachedFactory.getProductInfos( (String[])this.skuList.toArray( new String[0] ) );
 
                 // remove discontinued products from workSet
                 for (ListIterator<ContentNodeModel> i = this.workSet.listIterator(); i.hasNext();) {

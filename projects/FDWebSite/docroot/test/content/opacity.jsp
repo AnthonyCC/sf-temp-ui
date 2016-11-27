@@ -1,15 +1,15 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel" %>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
 BrowserInfo bi = new BrowserInfo(request);
-%><html lang="en-US" xml:lang="en-US">
+%><html>
 <head>
 	<title>Transparent Box Test</title>
 	<style type="text/css">
@@ -33,13 +33,16 @@ BrowserInfo bi = new BrowserInfo(request);
 	</style>
 	<fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%
-if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
+if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 %>	<fd:css href="/assets/css/mac_ie.css"/><%
 } else {
 %>	<fd:css href="/assets/css/pc_ie.css"/><%
 }
 %>
 	<fd:css href="/assets/css/wine.css"/>
+	<!--[if lte IE 7]>
+	<fd:css href="/assets/css/wine-ie.css"/>
+	<![endif]-->
 </head>
 <body>
 <%
@@ -53,7 +56,17 @@ if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").i
 		<th>Family</th>
 		<th>Browser</th>
 	</tr>
-	
+	<tr>
+		<td class="<%= bi.isInternetExplorer() ? "enabled" : "disabled" %>">Internet Explorer:</td>
+		<% if (bi.isInternetExplorer()) { %>
+		<td>
+			<span class="<%= bi.isIE6() ? "enabled2" : "disabled2" %>">IE6 or older</span>
+			<span class="<%= !bi.isIE6() ? "enabled2" : "disabled2" %>">Newer</span>
+		</td>
+		<% } else { %>
+		<td>&nbsp;</td>
+		<% } %>
+	</tr>
 	<tr>
 		<td class="<%= bi.isFirefox() ? "enabled" : "disabled" %>">Mozilla Firefox:</td>
 		<td><%= bi.isFirefox() ? bi.getVersion() : "&nbsp;" %></td>

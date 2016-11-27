@@ -1,9 +1,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title> Master Test Page List </title>
-
+		
 		<fd:javascript src="/assets/javascript/prototype.js"/>
 
 	</head>
@@ -118,7 +118,7 @@
 					tags.push(tag);
 				}
 				tags.sort();
-
+				
 				if (tags.length > 0) {
 					$('tagsFilter').innerHTML += 'Filter: ' + genTagLink('ALL') + ' ';
 					$A(tags).each(function (tag, i) {
@@ -467,12 +467,6 @@
 		<div class="pageDesc">Generates images used in dynamic graphics pages (see index file for info).</div>
 	</div>
 
-	<div class="tag dynamicImages akami">
-		<div class="pageName"><span>Graphics Testing - Akami Image Converter</span></div>
-		<div class="link"><a href="/test/graphics_testing/akami_imgcon_test.jsp">/test/graphics_testing/akami_imgcon_test.jsp</a></div>
-		<div class="pageDesc">Test dynamic image conversion (Akami side). See page tooltips for specifics.</div>
-	</div>
-
 	<div class="tag grid">
 		<div class="pageName"><span>Grid Prototype - JSP</span></div>
 		<div class="link"><a href="/test/grid_prototype/index.jsp">/test/grid_prototype/index.jsp</a></div>
@@ -547,6 +541,13 @@
 		<div class="link"><a href="/test/monitor/healthcheck.jsp">/test/monitor/healthcheck.jsp</a></div>
 		<div class="pageDesc">Display how long the Health Check takes.</div>
 	</div>
+
+	<div class="tag blog">
+		<div class="pageName"><span>/test/myfd/index.jsp</span></div>
+		<div class="link"><a href="/test/myfd/index.jsp">/test/myfd/index.jsp</a></div>
+		<div class="pageDesc">Display the myfd Blog</div>
+	</div>
+
 	<div class="tag order">
 		<div class="pageName"><span>/test/order/order_maker.jsp</span></div>
 		<div class="link"><a href="/test/order/order_maker.jsp">/test/order/order_maker.jsp</a></div>
@@ -617,11 +618,6 @@
 		<div class="pageName"><span>/test/session/index.jsp</span></div>
 		<div class="link"><a href="/test/session/index.jsp">/test/session/index.jsp</a></div>
 		<div class="pageDesc">Display a Session info dump.</div>
-	</div>
-	<div class="tag session kill">
-		<div class="pageName"><span>/test/session/killme.jsp</span></div>
-		<div class="link"><a href="/test/session/killme.jsp">/test/session/killme.jsp</a></div>
-		<div class="pageDesc">Immediately invalidate the current session.</div>
 	</div>
 
 	<div class="tag session">
@@ -913,6 +909,12 @@
 	</div>
 
 	<div class="tag">
+		<div class="pageName warmup"><span>/test/warmup/wlswarmup.jsp</span></div>
+		<div class="link"><a href="/test/warmup/wlswarmup.jsp">/test/warmup/wlswarmup.jsp</a></div>
+		<div class="pageDesc">Needs Description.</div>
+	</div>
+
+	<div class="tag">
 		<div class="pageName"><span>/test/wine/filtertest.jsp</span></div>
 		<div class="link"><a href="/test/wine/filtertest.jsp">/test/wine/filtertest.jsp</a></div>
 		<div class="pageDesc">Needs Description.</div>
@@ -923,31 +925,37 @@
 		<div class="link"><a href="/test/content/mergePendOrder.jsp">/test/content/mergePendOrder.jsp</a></div>
 		<div class="pageDesc">Test merging in selected items into a cart.</div>
 	</div>
-
+	
 	<div class="tag Gateway">
 		<div class="pageName"><span>Test Gateway Transactions</span></div>
 		<div class="link"><a href="/test/gateway/index.jsp">/test/gateway/index.jsp</a></div>
 		<div class="pageDesc">Helps to test Gateway Transactions .</div>
 	</div>
-
+	
+	<div class="tag oas">
+		<div class="pageName"><span>Test OAS ads</span></div>
+		<div class="link"><a href="/test/content/oas.jsp">/test/content/oas.jsp</a></div>
+		<div class="pageDesc">Test OAS calls using dynamic values.</div>
+	</div>
+	
 	<div class="tag partialRollout partial rollout featureFlipping feature flipping A/B testing">
 	   <div class="pageName"><span>Feature Version Forcing Page</span></div>
 	   <div class="link"><a href="/test/features/index.jsp">/test/features/index.jsp</a></div>
 	   <div class="pageDesc">For Partial Rollout testing it makes easier feature forcing to do A/B testing.</div>
 	</div>
-
+	
 	<div class="tag ineligible_ebt_products">
 	   <div class="pageName"><span>Ineligible EBT products</span></div>
 	   <div class="link"><a href="/test/reports/ebt_products.jsp">/test/reports/ebt_products.jsp</a></div>
 	   <div class="pageDesc">List of ineligible EBT products</div>
 	</div>
-
+		
 	<div class="tag CSS express_checkout product_sampling_carousel">
 	   <div class="pageName"><span>Product Sampling Carousel Desing at XC/View Cart page</span></div>
 	   <div class="link"><a href="/test/express_checkout/product_sample_carousel.jsp">/test/express_checkout/product_sample_carousel.jsp</a></div>
 	   <div class="pageDesc">Product Sampling Carousel Desing at XC/View Cart page</div>
 	</div>
-
+	
     <div class="tag giftcard givexnum">
        <div class="pageName"><span>Gift Card Givex Number encrypt and decrypt page</span></div>
        <div class="link"><a href="/test/giftcards/givex.jsp">/test/giftcards/givex.jsp</a></div>
@@ -971,78 +979,7 @@
 		<div class="link"><a href="/test/smartstore/storeproperties.jsp">/test/smartstore/storeproperties.jsp</a></div>
 		<div class="pageDesc">Lists/filters all FD Store properties set up in your machine. Also it can force a full refresh.</div>
 	</div>
-
-	<div class="tag mobile mobileWeb">
-		<div class="pageName"><span>Testing mobileWeb</span></div>
-		<div class="link"><a href="/test/mobileWeb.jsp">/test/mobileWeb.jsp</a></div>
-		<div class="pageDesc">Show media in the mobileWeb layout for testing.</div>
-	</div>
-
-	<div class="tag mobile mobileWeb layouts">
-		<div class="pageName"><span>Layout Info</span></div>
-		<div class="link"><a href="/test/layoutInfo.jsp">/test/layoutInfo.jsp</a></div>
-		<div class="pageDesc">Show layout setup for every dept and cat.</div>
-	</div>
-
-	<div class="tag credits masscredits">
-		<div class="pageName"><span>Mass Credit Helper</span></div>
-		<div class="link"><a href="/test/credits/credits_helper.jsp">/test/credits/credits_helper.jsp</a></div>
-		<div class="pageDesc">Generate SQL needed for mass credits</div>
-	</div>
-
-	<div class="tag productRequest HTTPS">
-		<div class="pageName"><span>Mass Credit Helper</span></div>
-		<div class="link"><a href="/test/content/product_request_https.jsp">/test/content/product_request_https.jsp</a></div>
-		<div class="pageDesc">Test pop-up vs overlay in HTTP/S<br /><br />Content is in: /media/testing/product_request_https.ftl</div>
-	</div>
-
-	<div class="tag">
-		<div class="pageName"><span>Collect the product for Microwave link</span></div>
-		<div class="link"><a href="/test/microwave.jsp">/test/microwave.jsp</a></div>
-		<div class="pageDesc">In order to modify the content of those products which has microwave link shows every product that has "Microwave-only, BPA-free container" text</div>
-	</div>
-
-    <div class="tag analytics">
-        <div class="pageName"><span>Google analytics</span></div>
-        <div class="link"><a href="/test/google_analytics/index.jsp">/test/google_analytics/index.jsp</a></div>
-        <div class="pageDesc">Helps to test Google Analytics.</div>
-    </div>
-
-    <div class="tag informational ordermodify">
-        <div class="pageName"><span>Informational: Order Modify</span></div>
-        <div class="link"><a href="/test/google_analytics/index.jsp">/test/inform/ordermodify.jsp</a></div>
-        <div class="pageDesc">Informational: Order Modify data and functionality.</div>
-    </div>
-    
-    <div class="tag carousel">
-        <div class="pageName"><span>Carousel</span></div>
-        <div class="link"><a href="/test/carousel/index.jsp">/test/carousel/index.jsp</a></div>
-        <div class="pageDesc">Help to test Carousel</div>
-    </div>
-    
-    <div class="tag coupon">
-        <div class="pageName"><span>Coupon Info</span></div>
-        <div class="link"><a href="/test/ecoupon/index.jsp">/test/ecoupon/index.jsp</a></div>
-        <div class="pageDesc">Show coupon info and refresh cache</div>
-    </div>
-    <div class="tag coupon">
-        <div class="pageName"><span>Coupon Display Tests</span></div>
-        <div class="link"><a href="/test/ecoupon/display_tests.jsp">/test/ecoupon/display_tests.jsp?productId=<span class="reqVar">&lt;productId&gt;</span>&catId=<span class="reqVar">&lt;catId&gt;</span></a></div>
-        <div class="pageDesc">Test coupon display</div>
-    </div>
-
-	<div class="tag javascript">
-		<div class="pageName"><span>JavaScript Dependencies</span></div>
-		<div class="link"><a href="/test/js/dependencies.jsp">/test/js/dependencies.jsp</a></div>
-		<div class="pageDesc">List Javascript Dependencies</div>
-	</div>
-
-	<div class="tag css fonts">
-		<div class="pageName"><span>Custom Font Comparison</span></div>
-		<div class="link"><a href="/test/css/fonts.jsp">/test/css/fonts.jsp</a></div>
-		<div class="pageDesc">Display all webfonts and compare versions</div>
-	</div>
-
+	
 	<hr />
 </div>
 

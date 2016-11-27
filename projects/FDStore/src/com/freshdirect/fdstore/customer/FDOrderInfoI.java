@@ -91,8 +91,6 @@ public interface FDOrderInfoI extends Serializable {
 	
 	public boolean isNewOrder();
 	
-	public boolean isSapSubmitPending();
-	
 	public EnumEStoreId getEStoreId();
 	
 	public String getPlantId();

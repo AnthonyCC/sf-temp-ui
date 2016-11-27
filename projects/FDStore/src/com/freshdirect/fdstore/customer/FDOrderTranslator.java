@@ -30,7 +30,6 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 
 /**
  * Translates an FDOrder into an ErpOrder.
@@ -75,10 +74,7 @@ public class FDOrderTranslator {
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 //		try {
 			order.setTaxationType(cart.getTaxationType());
-			if(null == cart.getEStoreId()){
-				cart.setEStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
-			}
-		    order.seteStoreId(null !=cart.getEStoreId() ? cart.getEStoreId(): ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+		    order.seteStoreId(cart.getEStoreId());
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);
 			order.setSelectedGiftCards(cart.getSelectedGiftCards());
@@ -106,14 +102,6 @@ public class FDOrderTranslator {
 			if(deliveryReservation!=null)
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
 			
-			if(null != cart && null != cart.getOrderLines()){
-				for ( FDCartLineI line : cart.getOrderLines() ) {
-					if(null == line.getPlantId()){
-						LOGGER.warn("PickingPlantId is missing for customer: "+order.getCustomerId()+" and eStore :"+cart.getEStoreId()+", line item:"+line.getOrderLineNumber());
-						line.setPlantId(deliveryInfo.getDeliveryPlantInfo().getPlantId());
-					}
-				}
-			}
 			
 		if (cart.getDeliveryAddress() != null) {
 			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
@@ -132,7 +120,7 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
 				
-				if(EnumEStoreId.FDX.equals(cart.getEStoreId())){
+				if(EnumEStoreId.FDX.name().equals(cart.getEStoreId().name())){
 					LOGGER.warn("Customer : "+order.getCustomerId()+ " and eStore :"+cart.getEStoreId()+" delivery plant :"+deliveryInfo.getDeliveryPlantInfo());
 					deliveryInfo.setOriginalCutoffTime(deliveryReservation.getTimeslot().getOriginalCutoffDateTime()); // this is used by CSR
 					//give minimum time specified in  deliveryReservation.getTimeslot().getMinDurationForModStart() to start order modification
@@ -171,13 +159,7 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
 			}
 			
-			deliveryInfo.setDeliveryType(cart.getDeliveryType());
 			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
-				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
-				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
-			}
-			
-			/*if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
 				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
 				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
 				if (depotAddress.isPickup()) {
@@ -219,7 +201,7 @@ public class FDOrderTranslator {
 					}
 				}
 			}
-		}*/
+		}
 			FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 			if (zoneInfo != null) { //this may be null in express checkout flow
 				deliveryInfo.setDeliveryZone(zoneInfo.getZoneCode());

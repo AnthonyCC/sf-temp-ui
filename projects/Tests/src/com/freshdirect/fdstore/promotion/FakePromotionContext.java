@@ -266,9 +266,8 @@ public class FakePromotionContext implements PromotionContextI {
 		return false;
 	}
 
-	@Override
-    public int getValidOrderCount(EnumDeliveryType deliveryType) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) {
+        return 0;
+    }
 }

@@ -17,14 +17,9 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.LinkedHashMap" %>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
-<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@ page import="org.apache.log4j.Logger"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
-<%@ page import="java.net.URLEncoder" %>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -54,26 +49,40 @@ List<ErpAddressModel> allHomeAddresses = user_locationbar_fdx.getAllHomeAddresse
 List<ErpAddressModel> allCorporateAddresses = user_locationbar_fdx.getAllCorporateAddresses();
 List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 
-int addressesBesidesPickupCount = 0;
-int addressesIncludingPickupCount = 0;
-
-if (allHomeAddresses != null) {
-	addressesBesidesPickupCount += allHomeAddresses.size();
-	addressesIncludingPickupCount += allHomeAddresses.size();
-}
-if (allCorporateAddresses != null) {
-	addressesBesidesPickupCount += allCorporateAddresses.size();
-	addressesIncludingPickupCount += allCorporateAddresses.size();
-}
-if (allPickupDepots != null) {
-	addressesIncludingPickupCount += allPickupDepots.size();
-}
-String standingOrder_uri = request.getRequestURI();
-boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
 %>
 
+<!-- Adding Skip to Navigation : Start-->
+	<a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+<!-- Adding Skip to Navigation : End-->
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
+
+<%-- new login form --%>
+	
+	<tmpl:put name="fdx_login_form">
+    	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
+    		<div class="handler close-handler" id="login_cont_formContent_close"></div>
+    		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" border="0" /></div>
+    		<div class="sign-in">Sign in</div>
+    		<form id="login_cont_formContentForm">
+    			<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>
+    			<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>
+        		<div id="login_cont_formContentForm_signInCont">
+        			<div style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</div>
+        			<button id="login_cont_formContentForm_signIn" name="submit" class="cssbutton fdxgreen">Sign in</button>
+        		</div>
+    		</form>
+			<div class="errorMsg" style="display: none;">
+				<div class="header">Please re-enter your Email and Password.</div> 
+				The information you entered is incorrect. Please try again.
+			</div>
+    		<div id="login_cont_formContent_forgotpass"><a href="/login/forget_password.jsp">Forgot your password?</a></div>
+    	</div>
+    	<%-- this script chunk is necessary to move the login form out of toptoolbar, because of relative z-index issues --%>
+		<script>
+			$jq('body').append($jq('#login_cont_formContent'));
+		</script>
+	</tmpl:put>
 	
 <%-- MASQUERADE bar --%>
 	<% if (masqueradeContext != null) {
@@ -90,6 +99,30 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 			</div>
 		</tmpl:put>
 	<% } %>
+	
+	<tmpl:put name="modify_order">
+		<div class="locabar-section locabar-modify-order-section" style="display: none;">
+			<div id="locabar_modify_order_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
+				<div class="cursor-pointer">
+					<div class="section-modify-order-img" id="locabar-modify-order-open">
+						<div id="locabar-modify-order-count" class="">0</div>
+					</div>
+					<div class="locabar-modify-order-container">
+						<div class="locabar-modify-order-container-message"></div>
+						<div><div class="locabar-modify-order-container-header">Modify Order</div><div class="locabar-down-arrow"></div></div>
+					</div>
+				</div>
+				<div id="locabar_orders" class="posAbs">
+					<div class="ui-arrow-buffer"></div>
+					<div class="ui-arrow ui-top"></div>
+					<div class="section-header">
+						<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</tmpl:put>
+	
 <%-- messages icon --%>
 	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
 			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers" tabindex="0">
@@ -98,55 +131,44 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					<span class="offscreen"> delivery alerts</span>
 				</div>
 			</div>
+			
+			<%-- TEST messages
+			
+				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
+				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
+				<div class="messages invisible" id="test3" data-type="test3">this is a test message</div>
+				<script>
+					$jq(document).ready(function() {
+						$jq('#test1').messages('add','test1');
+						$jq('#test2').messages('add','test2');
+						$jq('#test3').messages('add','test3');
+					});
+				</script>
+				
+			--%>
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
-	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont notselected"><span class="offscreen">Visit Foodkick Store</span><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
+	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
 
-<%-- FOODKICK promo content/container --%>
-	<tmpl:put name="fdx_promo">
-		<%-- this is the fdx promo content container --%>
-		<div id="locationbar_fdx_promo" class="">
-			<div class="visWrapper" style="display: none;"><%-- don't remove this, it keeps the content from showing during page load --%>
-				<fd:IncludeMedia name="/media/layout/nav/globalnav/fdx/promo/main.ftl"></fd:IncludeMedia>
-			</div>
-		</div>
-	</tmpl:put>
-
-
-<%-- FRESHDIRECT HOME tab --%>
-	<%-- change boolean to true to make it linked --%>
-	<tmpl:put name="tab_fd"><a href="/index.jsp?serviceType=HOME" class="locabar-tab locabar-tab-fd-cont <%= (!(user_locationbar_fdx.getShoppingCart() instanceof FDModifyCartModel) && (user_locationbar_fdx.isCorporateUser()) ? "notselected" : "") %>"><span class="offscreen">Visit FD Home Store</span><div class="locabar-tab-fd"></div></a></tmpl:put>
-
-<%-- FRESHDIRECT COS tab --%>
-	<tmpl:put name="tab_cos"><a href="/index.jsp?serviceType=CORPORATE" class="locabar-tab locabar-tab-cos-cont <%= (!(user_locationbar_fdx.getShoppingCart() instanceof FDModifyCartModel) && !(user_locationbar_fdx.isCorporateUser()) ? "notselected" : "") %>"><span class="offscreen">Visit FD Office Store</span><div class="locabar-tab-cos"><span>Office</span></div></a></tmpl:put>
+<%-- COS tab --%>
+	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/cos.jsp" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
 
 <%-- ZIP/ADDRESS area --%>
 	<%
-		String zipAddDisplayString = "Delivery Times";
+		String zipAddDisplayString = "Delivery Information";
 		boolean isEligibleForPreReservation = false;
 		FDReservation userReservervation = null;
 		SimpleDateFormat dateFormatterNoYear = new SimpleDateFormat("EEE MM/dd");
 		String reservationDate = "";
 		String reservationTime = "";
 		boolean foundSelectedAddress = false;
-		FDOrderAdapter modifyingOrder = FDUserUtil.getModifyingOrder(user_locationbar_fdx);
 		String foundSelectedAddressType = "";
-		// set the foundSelectedAddressType to home if the address in the order that is modifying has home service type.
-		if (modifyingOrder != null && modifyingOrder.getDeliveryAddress() != null && modifyingOrder.getDeliveryAddress().getServiceType() == EnumServiceType.HOME) {
-			foundSelectedAddressType = EnumServiceType.HOME.toString();
-		}
 		AddressModel userReservervationAddressModel = null; //matched by id, may still end up null
 		
 	
-		if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST 
-			&& (
-				(allHomeAddresses != null && allHomeAddresses.size()>0) || 
-				(allCorporateAddresses != null && allCorporateAddresses.size() > 0) || 
-				(allPickupDepots!= null && allPickupDepots.size() > 0)
-			)
-		) {
-			zipAddDisplayString = "Delivery Times";
+		if (user_locationbar_fdx!=null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) {
+			zipAddDisplayString = "View Delivery Timeslots";
 			isEligibleForPreReservation = user_locationbar_fdx.isEligibleForPreReservation();
 			
 			
@@ -167,8 +189,8 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 			if( disabled == null || !disabled) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
-						<select id="selectAddressList" aria-label="choose address" name="selectAddressList" style="width: 300px;"><%
-							if(allHomeAddresses != null && allHomeAddresses.size()>0){%>
+						<select id="selectAddressList" name="selectAddressList" style="width: 300px;"><%
+							if(allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
@@ -186,7 +208,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 											ifSelected = " selected=\"selected\"";
 											
 											foundSelectedAddress = true;
-											foundSelectedAddressType = EnumServiceType.HOME.toString();
+											foundSelectedAddressType = "HOME";
 										}else{
 											ifSel_CheckImg = "none";
 											ifSel_cssClass = "";
@@ -194,12 +216,12 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 										}
 										%>
 										<option data-class="<%=addressClass%> <%=ifSel_cssClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
-											<%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%>
+											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%></p>
 										</option>
 									</logic:iterate>
 								</optgroup>
 							<%}
-							if(allCorporateAddresses != null && allCorporateAddresses.size()>0){%>
+							if(allCorporateAddresses.size()>0){%>
 								<optgroup label="Office Delivery">
 									<logic:iterate id="corporateAddress" collection="<%=allCorporateAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
@@ -225,12 +247,12 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 										}
 										%>
 										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=corporateAddress.getPK().getId()%>">
-											<%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%>
+											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%></p>
 										</option>
 									</logic:iterate>
 								</optgroup>
 							<%}
-							if(allPickupDepots != null && allPickupDepots.size()>0){%>
+							if(allPickupDepots.size()>0){%>
 							<optgroup label="Pickup">
 								<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 									<%
@@ -251,9 +273,9 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 									}
 									%>
 									<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="DEPOT_<%= pickupDepot.getId() %>">
-										
+										<p class="<%=ifSel_cssClass%>">
 											<%=LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress())%>
-										
+										</p>
 									</option>
 								</logic:iterate>
 							</optgroup>
@@ -262,8 +284,8 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					</div>
 					<%
 						/* one last zipAddDisplayString change now that we know selected address type */
-						if (isEligibleForPreReservation && userReservervation == null && EnumServiceType.HOME.toString().equals(foundSelectedAddressType)) {
-							zipAddDisplayString = "Delivery Times";
+						if (isEligibleForPreReservation && userReservervation == null && "HOME".equals(foundSelectedAddressType)) {
+							zipAddDisplayString = "Make a Reservation";
 						}
 
 					
@@ -271,22 +293,29 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 							reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
 							reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
 							
-							zipAddDisplayString = (reservationDate).toUpperCase();
+							zipAddDisplayString = (reservationDate+" @ "+reservationTime).toUpperCase();
 						}
 					%>
 				</tmpl:put><%
 			} else { //no addresses
 				//do nothing i guess	
 			}
+			%>
+			<style>
+			/* APPBUG-4173 fix */
+			.globalnav_top .nav .searchform { 
+				width: 420px!important; 
+			}
+			</style>
+			<%
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
 				<div class="locabar_addresses-change-zip-cont">
-					<div class="text"><label for="newziptext">Change zip code.</label></div>
+					<div class="text">Change zip code.</div>
 					<span id="newzip">
-<!-- 						<label for="newziptext"><span class="offscreen">change your zip code</span></label> -->
-						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off"  aria-describedby="zip_error" />						
-						<button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat">Change</button>
-						<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
+						<label for="newziptext"></label>
+						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
+						<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
 					</span>
 				</div>
 			</tmpl:put><%
@@ -306,7 +335,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 								<div><a href="/help/delivery_info.jsp">About Delivery</a></div>
 							</div>
 							<div class="locabar_addresses-anon-deliverable-item-icon-clock">
-								<div><a href="/help/delivery_info_check_slots.jsp"  class="avlTimeFocus">Available Timeslots</a></div>
+								<div><a href="/help/delivery_info_check_slots.jsp">Available Timeslots</a></div>
 							</div>
 						</div>
 					<% } %>
@@ -319,22 +348,15 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-target" style="display:none;">
 							<tmpl:get name="address_change_zip"/>
 						</div>
-						<button type="button" class="cssbutton green locabar_addresses-<%= (user_locationbar_fdx.getLevel() == FDUserI.GUEST) ? "anon" : "user" %>-deliverable-add-address-btn">Add Delivery Address</button>
+						<button type="button" class="cssbutton green locabar_addresses-anon-deliverable-add-address-btn">Add Delivery Address</button>
 					</div>
 				</tmpl:put><%
-			} else { //non-recognized and not in deliverable zip or LOGGED IN USER, NO ADDRESSES AT ALL
+			} else { //non-recognized and not in deliverable zip
 				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
-
-					<% /* LOGGED IN USER, NO ADDRESSES AT ALL */
-					if (addressesIncludingPickupCount <= 0) { %>
-						<div class="locabar_addresses-none"><a class="cssbutton green" href="/your_account/add_delivery_address.jsp">ADD ADDRESS</a></div>
-					<% } %>
-					
 					<div style="display: inline-block;" class="section-warning">
 						<div style="margin: 0 0 1em 10px;">
-							<div>FreshDirect does not<br />deliver to zip code:</div>
 							<div class="text13 bold"><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
-							
+							<div>FreshDirect is not available in<br /> this zip code.</div>
 						</div>
 					</div>
 					<tmpl:get name="address_change_zip"/>
@@ -342,11 +364,9 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					<div class="nodeliver-form">
 						<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 							<form class="n">
-								<div class=""><label for="location-email" class="n">Notify me when service comes to my area.</label></div>
+								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
-									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
-									<div class="clear"></div>
-									<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
+									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 								</div>
 							</form>
 						<% } %>
@@ -357,22 +377,21 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 						<div id="nodeliver-form">
 							<div style="display: inline-block; margin-right: 30px;" class="section-warning">
 								<div style="margin: 0 0 1em 10px; line-height: 14px;" class="text13 bold">
-									<div>FreshDirect does not deliver to zip code:</div>
+									<div>FreshDirect is not available in</div>
 									<div><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
 								</div>
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
-								<div class="text13"><label for="newziptextmsg">Change your Zip Code.</label></div>
-								<span id="newzipmsg"><input type="text" id="newziptextmsg" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgomsg"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
-								<span class="error-msg" id="zip_errormsg" aria-live="assertive">Incomplete zip code</span>
+								<div class="text13">Change your Zip Code.</div>
+								<label for="newzip"></label>
+								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
-										<div style="display: inline-block; max-width: 350px;" class="text13"><label for="location-emailmsg" class="n">Notify me when service comes to my area.</label></div>
+										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Notify me when service comes to my area.</label></div>
 										<div>
-											<input type="text" id="location-emailmsg" class="location-email-text placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submitmsg"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
-											<span class="error-msg" id="email_errormsg" aria-live="assertive">E-mail address is invalid</span>
+											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 										</div>
 									</form>
 								<% } %>
@@ -402,7 +421,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 	%>
 	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
 		<div id="locabar_addresses_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
-				<div class="cursor-pointer">
+				<div class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
 						<div class="locabar-addresses-addzip">
@@ -415,9 +434,9 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 							<% } %>
 						</div>
 
-						<div class="locabar-addresses-addzip-2ndline">
-							<strong><%= zipAddDisplayString %></strong>
-							<div class="locabar-arrow"></div>
+						<div>
+							<%= zipAddDisplayString %>
+							<div class="locabar-down-arrow"></div>
 						</div>
 					</div>
 				</div>
@@ -428,7 +447,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					<% if (user_locationbar_fdx != null &&  user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %>
 						<div class="section-header">
 							DELIVERY ADDRESSES
-							<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit<span class="offscreen">delivery address</span></a><% } %>
+							<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
 						</div>
 					<% } %>
 					<tmpl:get name="address" />
@@ -442,22 +461,22 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 							}
 							//check if user has addresses besides pickup
-							if (addressesBesidesPickupCount <= 0) {
+							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
 								//nope, change url
 								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
 							}
 						%>
 						<div class="section-header">
 							TIMESLOT
-							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"><span class="offscreen">view available timeslots information</span></a>
+							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"></a>
 						</div>
 						<% if (isEligibleForPreReservation) { %>
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals( ((selectedAddress!=null) ? selectedAddress.getId() : null) ) ) { %>
 								<div class="locabar_addresses-reservation-none">
 									<div class="locabar_addresses-reservation-view-cont">
-										<a href="<%=temp_delivery_link %>" style="<%= ((foundSelectedAddress && (foundSelectedAddressType == EnumServiceType.HOME.toString()))) ? " display: none;" : "" %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
+										<a href="<%=temp_delivery_link %>" style="<%= ((foundSelectedAddress && (foundSelectedAddressType == "HOME"))) ? " display: none;" : "" %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
-									<% if (foundSelectedAddress && (foundSelectedAddressType != EnumServiceType.HOME.toString())) { %>
+									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
 										<div class="locabar_addresses-reservation-make-cont" style="display: none;">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make disabled">Make a Reservation</a>
 											<%-- This text is also in locationbar_fdx.js --%>
@@ -492,21 +511,17 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 				</div>
 			</div>
 		</div><script>
-
-				window.FreshDirect = window.FreshDirect || {};
-				FreshDirect.locabar = FreshDirect.locabar || {};
 				FreshDirect.locabar.hasFdServices = <%=hasFdServices %>;
 				FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
 				FreshDirect.locabar.selectedAddress = {
 					type: '<%= foundSelectedAddressType %>',
-					address: decodeURIComponent('<%= URLEncoder.encode(LocationHandlerTag.formatAddressTextWithZip(selectedAddress)) %>')
+					address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
 				};
 				FreshDirect.locabar.reservation = { address: null, time: null };
 				<% if (userReservervationAddressModel != null) { %>
-					FreshDirect.locabar.reservation.address = decodeURIComponent('<%= URLEncoder.encode(LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel)) %>');
+					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel) %>';
 					FreshDirect.locabar.reservation.time = '<%= (reservationDate+" @ "+reservationTime).toUpperCase() %>';
 				<% } %>
-				FreshDirect.locabar.zipcode = '<%= user_locationbar_fdx.getZipCode() %>';
 			</script></tmpl:put>
 	
 <%-- SIGN IN area --%>
@@ -531,10 +546,10 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
-		        <% if (!signedIn) {%>
-					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage-current>
+		        <% if (!signedIn) { %>
+					<a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
 		        <% } %>
-					<div class="cursor-pointer">
+					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
 						<div style="display: inline-block;">
 							<div class="locabar-user-greeting-cont">
@@ -542,7 +557,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 									<%= greetingsString %>
 					            </div>
 					            <div class="locabar-user-action">
-									<strong><%= actionString %></strong><div class="locabar-arrow"></div>
+									<%= actionString %><div class="locabar-down-arrow"></div>
 					            </div>
 							</div>
 						</div>
@@ -554,12 +569,6 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
 				<%@ include file="/shared/template/includes/i_youraccount_links.jspf"%>
-				
-				<%-- USER RECOMMENDERS TEST - also see locationbar_fdx.js
-					<div id="locabar_user_reco_cont" class="user-reco-cont">
-						<div id="locabar_user_reco">test reco</div>
-					</div>
-				--%>
 				<div id="locabar_user" class="locabar_triggers_menu posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
@@ -575,7 +584,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 								}
 								//check if user has addresses besides pickup
-								if (addressesBesidesPickupCount <= 0) {
+								if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
 									//nope, change url
 									temp_delivery_link = "/help/delivery_info_check_slots.jsp";
 								}
@@ -594,11 +603,11 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 									<% } %>
 									<% if ("View Timeslots".equals(str)) { /* this item changes based on user and addresses */ %>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required><%= str %></a></div>
-									<% } else if ("Reserve Delivery".equals(str) && !EnumServiceType.HOME.toString().equals(foundSelectedAddressType) ) { %>
+									<% } else if ("Reserve Delivery".equals(str) && !"HOME".equals(foundSelectedAddressType) ) { %>
 										<%-- If the user has the ability to reserve and non-Home selected, modify Reserve Link --%>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required>View Timeslots</a></div>
 									<% } else if ("DeliveryPass".equals(str) ) { %>
-										<% if (EnumServiceType.HOME.equals(user_locationbar_fdx.getSelectedServiceType())) {%>
+										<% if ("HOME".equals(foundSelectedAddressType) ) { /* only if home is selected */ %>
 											<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>								
 										<% } %>
 									<% } else { %>
@@ -616,29 +625,29 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					</div>
 				</div>
 			</div>
-		
+			<tmpl:get name="fdx_login_form" />
 		</div></tmpl:put>
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
-			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem">
+			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
-          			<a id="popup_cart" href="/view_cart.jsp">
-						<span class="offscreen">ViewCart</span>
+          			<a href="/view_cart.jsp">
+						<span class="offscreen">View Cart</span>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-count-cont">
 								<div class="locabar-cart"></div>
-								<div class="locabar-circle-cont locabar-popupcart-count"> 0<span class="offscreen">items</span></div>
+								<div class="locabar-circle-cont locabar-popupcart-count">0</div>
 							</div>
 						</div>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-total">
 								<!-- <div>&nbsp;</div> -->
-								<div class="locabar-popupcart-total"> $0.00 </div>
+								<div class="locabar-popupcart-total">$0.00</div>
 							</div>
-							<div class="locabar-popupcart-label">
+							<div>
 								Cart
-								<div class="locabar-arrow"></div>
+								<div class="locabar-down-arrow"></div>
 							</div>
 						</div>
 					</a>
@@ -656,24 +665,18 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 							</div>
 						</div>
 						<div id="popupcart">
+						   	<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
 						   	<div class="header"><span class="quantity">Quantity</span><span class="price">Price</span></div>
 						   	<div class="body">
 						       	<table class="content"></table>
 						       	<p class="emptymsg">Your cart is empty.</p>
 						       	<p class="spinner">Loading cart...</p>
 						   	</div>
-						   	<div class="footer">
-								<span class="subtotal">Subtotal: </span>
-								<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span>
-								<span class="save-amount">You've Saved <%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span>
-							</div>
-							<div class="footer-buttons">
+						   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
+						   	<div class="footer-buttons">
 								<span class="close"></span><br />
-								<a class="cart cssbutton cssbutton-flat" aria-label="go to view cart page" href="/view_cart.jsp">View Cart</a>
-								<%
-									FDCartModel locationbarFdxCart = user_locationbar_fdx.getShoppingCart();
-								%>
-								<a class="checkout cssbutton orange cssbutton-flat" aria-label="<%= (locationbarFdxCart instanceof FDModifyCartModel) ? "go to Review Changes page" : "go to Checkout page" %>" href="/checkout/view_cart.jsp" fd-login-required><%= (locationbarFdxCart instanceof FDModifyCartModel) ? "Review Changes" : "Checkout" %></a>
+								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
 							</div>
 			    		</div>
 					</fd:GetCart>
@@ -689,33 +692,20 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 
 <%-- SO ALERTS --%>
 
-	<%	  
-	  if( !isStandingOrders  &&  StandingOrderHelper.isEligibleForSo3_0(user_locationbar_fdx) ) {
+	<%
+	  if(user_locationbar_fdx.isNewSO3Enabled()) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
-		HashMap<String,Object> soData = StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false) ;
-		errorSOAlert.put("soData", soData);
+		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
 	%>
-	
-	<script>
-		window.FreshDirect = window.FreshDirect || {};
-		FreshDirect.standingorder = FreshDirect.standingorder || {};
-		FreshDirect.standingorder.isSoCartOverlayFirstTime = <%= user_locationbar_fdx.isSoCartOverlayFirstTime() %>;
-	</script>
 	<tmpl:put name="error_so_alerts">
 		<div id="errorsoalerts" class="alerts invisible" data-type="errorsoalerts">
 			<soy:render template="standingorder.errorSOAlert" data="<%=errorSOAlert%>"/>
 		</div>
 	</tmpl:put>
 
-	<tmpl:put name="min_so_alerts">
-		<div id="minsoalert" class="alerts invisible" data-type="minsoalert">
-			<soy:render template="standingorder.minSOAlert" data="<%=errorSOAlert%>"/>			
-		</div>
-	</tmpl:put>
-
 	<%
 		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
-		activateSOAlert.put("soData", soData);//StandingOrderHelper.getAllSoData(user_locationbar_fdx, false,false));
+		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
 	%>
 	<tmpl:put name="activate_so_alerts">
 		<div id="activatesoalert" class="alerts invisible" data-type="activatesoalert">
@@ -723,11 +713,18 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 		</div>
 	</tmpl:put>
   <% } %>
+<%-- MODIFY ORDER ALERTS --%>
+
+	<tmpl:put name="modify_order_alerts">
+		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+		</div>
+	</tmpl:put>
 </tmpl:insert>
 
 
 <%
 } catch (Exception e) {
-	LOGGER_LOCATIONBAR_FDX.debug("error in locationbar_fdx.jsp "+e);
+	LOGGER_LOCATIONBAR_FDX.debug("error inlocationbar_fdx.jsp");
 	e.printStackTrace();
 }%>

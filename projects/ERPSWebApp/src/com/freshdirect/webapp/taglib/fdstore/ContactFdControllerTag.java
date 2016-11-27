@@ -22,6 +22,8 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -32,16 +34,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
 import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 
 public class ContactFdControllerTag extends AbstractControllerTag implements SessionName  {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ContactFdControllerTag.class);
 
-	@Override
-    protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
@@ -54,6 +54,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 				
 				if (actionResult.isSuccess()) {
 					this.performContactFd(form, user);
+					CmConversionEventTag.setPendingHelpEmailSubject(session, form.subject);
 				}
 	
 			}else{
@@ -115,17 +116,11 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 		
 		LOGGER.debug(">>>Sent Contact Service Email from: " + customer.getEmailAddress());
 		
-		String successPage = this.getSuccessPage();
-		if (successPage != null) {
-			this.setSuccessPage(successPage + ((successPage).contains("?") ? "&" : "?") + "msg=" + form.confirmMessage);
-		} else {
-			this.setSuccessPage(successPage + "?msg=" + form.confirmMessage);
-		}
+		this.setSuccessPage(this.getSuccessPage() + "?msg=" + form.confirmMessage);
 	}
 	
 	
-	@Override
-    protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		pageContext.setAttribute("savedFaqs", getTopFaqs(actionResult));
 		return true;
 	}
@@ -137,6 +132,9 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			for (Iterator iterator = faqNodeIdList.iterator(); iterator
 					.hasNext();) {
 				String nodeId = (String) iterator.next();
+//				ContentKey key = new ContentKey(FDContentTypes.FAQ, nodeId);
+//				CmsManager          manager     = CmsManager.getInstance();	
+//				ContentNodeI contentNode = manager.getContentNode(key);	
 				ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(nodeId);
 				topFaqNodes.add(contentNode);
 			}
@@ -185,7 +183,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
 			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
-			/*new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),*/
+			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
 			new Selection(CrmCaseSubject.CODE_PROMOTION, "Promotion"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical")
 		};
@@ -197,16 +195,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "Help with my Account"),
 			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
-			new Selection(CrmCaseSubject.CODE_ORDER_LOCATION_HELP, "Where is my order"),
-			new Selection(CrmCaseSubject.CODE_ORDER_PLACEMENT_HELP, "Help with order placement"),
-			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
-		};
-	
-	public final static Selection[] selectionsFdxAnonymous =
-		{
-			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
-			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
-			new Selection(CrmCaseSubject.CODE_ORDER_PLACEMENT_HELP, "Help with order placement"),
+			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
 		};
 
@@ -232,8 +221,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			this.unknownCustomer = unknownCustomer;
 		}
 
-		@Override
-        public void populateForm(HttpServletRequest request) {
+		public void populateForm(HttpServletRequest request) {
 			try {
 				subjectIndex = Integer.parseInt(request.getParameter("subject"));
 			} catch (NumberFormatException Ex) {
@@ -300,8 +288,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			return NVL.apply(request.getParameter(fieldName), "").trim();
 		}
 
-		@Override
-        public void validateForm(ActionResult result) {
+		public void validateForm(ActionResult result) {
 			result.addError(subjectIndex < 0, "subject", SystemMessageList.MSG_REQUIRED);
 			result.addError(subject == null || "".equals(subject), "subject", SystemMessageList.MSG_REQUIRED);
 			result.addError(message.length() < 1, "message", SystemMessageList.MSG_REQUIRED);

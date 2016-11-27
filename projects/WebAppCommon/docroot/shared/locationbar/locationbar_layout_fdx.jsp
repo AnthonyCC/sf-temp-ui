@@ -3,66 +3,39 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.LinkedHashMap" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil"%>
-<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String uri = request.getRequestURI().toLowerCase();
 	boolean mobWeb_locationbar_layout_fdx = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	boolean inMobWebTemplate = (request.getAttribute("inMobWebTemplate") != null) ? (Boolean)request.getAttribute("inMobWebTemplate") : false;
-	FDOrderAdapter modifyingOrder = FDUserUtil.getModifyingOrder(user);
-	boolean isModifyingOrder = user != null &&
-			user.getLevel() >= FDUserI.RECOGNIZED &&
-			modifyingOrder != null &&
-			modifyingOrder.getDeliveryReservation() != null &&
-			modifyingOrder.getDeliveryReservation().getTimeslot() != null;
-			
 %>
 <% if (inMobWebTemplate && mobWeb_locationbar_layout_fdx) { %>
 	<%-- for now, output nothing... except address since it sets the JS for locabar --%>
 	<tmpl:get name="zip_address" />
-<% } else {  %>	
-	
+<% } else {  %>
 	<tmpl:get name="topwarningbar" />
 	
-	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %><%= (isModifyingOrder) ? " modify-order-bar" : "" %>">
-		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
-			<%@ include file="/shared/template/includes/i_modifyorderbar.jspf" %>
-			
-		<% } else { %>
-			<div id="location-tabs">
-				<div class="locabar-spacer"></div>
-				<tmpl:get name="tab_fd" />
-				<tmpl:get name="tab_cos" />
-				<tmpl:get name="tab_fdx" />
-			</div>
-		<%} %>
+	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
+		<div class="locabar-spacer"></div>
+		<tmpl:get name="tab_fdx" />
+		<tmpl:get name="tab_cos" />
+		
 		<%-- fright sections --%>
-		<div class="locabar-right-sections" role="menubar">
-			<tmpl:get name="messages" />
-			<% if (!isModifyingOrder){ %>
-			<tmpl:get name="zip_address" />
-			<% } %>
-			<tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
+		<div class="locabar-right-sections">
+			<tmpl:get name="modify_order" /><tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 		</div>
 	</div>
-	
-	<tmpl:get name="fdx_promo" />
 	
 	<div id="location-alerts" class="">
 		<tmpl:get name="location_out_of_area_alert" />
 		<tmpl:get name="error_so_alerts" />
-		<tmpl:get name="min_so_alerts" />
 		<tmpl:get name="activate_so_alerts" />
-		<tmpl:get name="test_alerts" />	
+		<tmpl:get name="modify_order_alerts" />	
 	</div>
 	<div id="unrecognized" class="invisible" data-type="sitemessage">
 		<div class="unrecognized error-message">
@@ -89,7 +62,8 @@
 		</div>
 	
 	--%>
-    <jwr:style src="/locabarfdx.css" media="all" />
-    <jwr:script src="/locabarcomp.js" useRandomParam="false" />
+	<fd:css href="/assets/css/common/locationbar_fdx.css" />
+	<fd:javascript src="/assets/javascript/locationbar.js" />
+	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
 
 <% } %>

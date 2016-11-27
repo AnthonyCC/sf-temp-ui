@@ -1,11 +1,11 @@
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.util.DisplayObject"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%

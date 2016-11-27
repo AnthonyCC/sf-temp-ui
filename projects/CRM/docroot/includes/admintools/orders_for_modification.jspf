@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>

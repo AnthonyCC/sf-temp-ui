@@ -643,7 +643,6 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			plantMaterialModel.setRating(model.getRating());
 			plantMaterialModel.setSustainabilityRating(model.getSustainabilityRating());
 			plantMaterialModel.setHideOutOfStock(model.isHideOutOfStock());
-			plantMaterialModel.setNumberOfDaysFresh(model.getNumberOfDaysFresh());
 
 		}
 		return plantMaterialModel;

@@ -1,7 +1,6 @@
 <%@ page import="java.util.*"%>
 <%@ page import='org.apache.log4j.Category' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
@@ -13,7 +12,7 @@
 <fd:CheckLoginStatus guestAllowed="true" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>DDPP Test Page (Display)</title>
 
@@ -93,11 +92,12 @@
 			
 				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 					<%
-						if (!(contentNode instanceof CategoryModel)) {
-
+						if (contentNode instanceof CategoryModel) {
+							continue;
+						} else {
 							
 							ProductModel pm = (ProductModel) contentNode;
-							if (!(pm.isUnavailable())) { 
+							if (pm.isUnavailable()) { continue; }
 							String trkCode = "";
 							String actionURI = FDURLUtil.getProductURI( pm, trkCode );
 							Set hideBursts = new HashSet();
@@ -105,7 +105,6 @@
 							hideBursts.add(EnumBurstType.YOUR_FAVE);
 							hideBursts.add(EnumBurstType.NEW);
 							hideBursts.add(EnumBurstType.BACK_IN_STOCK);
-							hideBursts.add(EnumBurstType.GOING_OUT_OF_STOCK);
 													
 							pi = cUtil.configure((ProductModel) pm, confContext);
 							impressions.add(pi);
@@ -194,7 +193,7 @@
 								perRowIdx = 0;
 							}
 							perRowIdx++;
-						} }
+						}
 						totalProds = idx;
 					%>
 				</logic:iterate>

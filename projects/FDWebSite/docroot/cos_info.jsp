@@ -2,10 +2,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 	<tmpl:insert template='/common/template/small_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - At The Office"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - At The Office</tmpl:put> --%>
+		<tmpl:put name='title' direct='true'>FreshDirect - At The Office</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		<div align="left">
 		<table cellpadding="0" cellspacing="0" border="0">

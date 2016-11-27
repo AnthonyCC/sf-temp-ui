@@ -75,7 +75,6 @@
 .rating-10 { width:90px; }
 
 .smallrating { width: 65px; }
-.smallrating.rating-0:before  { width:0; }
 .smallrating.rating-1:before  { width:7px; }
 .smallrating.rating-2:before  { width:13px; }
 .smallrating.rating-3:before  { width:20px; }

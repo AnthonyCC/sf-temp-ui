@@ -38,11 +38,8 @@
 #quickshop .qs-tabs li .count {
 	font-weight: normal;
 }
-/*Bug fix for firefox */
 .no-touch #quickshop > .tabs li:hover strong,
-#quickshop > .tabs li:hover strong,
-.no-touch #quickshop > .tabs li:focus strong,
-#quickshop > .tabs li:focus strong {
+.no-touch #quickshop > .tabs li:focus strong {
 	text-decoration: underline;
 }
 #quickshop .qs-tabs li:hover,
@@ -104,3 +101,4 @@
 #quickshop .tabbed-carousel [data-component="carousel"] .portrait-item {
 	width:159px;
 }
+

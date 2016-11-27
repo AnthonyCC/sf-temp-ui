@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.referral;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -23,7 +24,6 @@ public class ReferralProgramManager {
 	private ExpiringReference refPrgHolder = new ExpiringReference(10 * 60 * 1000) {
 		protected Object load() {
 			try {
-				LOGGER.info("load all referral programs");
 				return loadAllReferralPrograms();
 			} catch (FDResourceException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);				
@@ -43,7 +43,7 @@ public class ReferralProgramManager {
 		return instance;		
 	}
 	
-	private Map loadAllReferralPrograms() throws FDResourceException{		
+	public Map loadAllReferralPrograms() throws FDResourceException{		
 		Map refPrgMap=new Hashtable(); 	
 		List list=FDReferralManager.loadAllReferralPrograms();
 		if(list!=null){
@@ -110,7 +110,7 @@ public class ReferralProgramManager {
 	
 	
 	
-	private boolean isValidReferralProgram(String programId)
+	public boolean isValidReferralProgram(String programId)
 	{
 		Map refPrgMap = (Map) this.refPrgHolder.get();
 	    if(refPrgMap.get(programId)!=null){
@@ -120,6 +120,12 @@ public class ReferralProgramManager {
 	    return false;
 	
 	}
+	
+	public Collection getAllReferralPrograms(){
+		  Map refPrgMap = (Map) this.refPrgHolder.get();	
+	      return refPrgMap.values();	
+	}
+	
 	
 	public ReferralProgram getReferralProgram(String refPrgId) throws FDResourceException
 	{	

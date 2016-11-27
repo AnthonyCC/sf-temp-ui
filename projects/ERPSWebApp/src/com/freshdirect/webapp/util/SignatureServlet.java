@@ -36,7 +36,7 @@ public class SignatureServlet extends HttpServlet {
 				
 				strBuf.append("</table>");
 				strBuf.append("<table><tr><td><img src=\"");				
-				strBuf.append(request.getRequestURI()).append("?orderId=").append(order).append("&estoreId=").append(estoreId).append("&type=I").append("\" />");
+				strBuf.append(request.getRequestURI()).append("?orderId=").append(order).append("&type=I").append("\" />");
 				strBuf.append("</td></tr></table>");
 				out.println(strBuf.toString());
 			} else {

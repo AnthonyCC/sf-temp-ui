@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ page import='java.net.URLEncoder'%>
@@ -14,7 +14,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final String W_TRANSAC_MULTI_PAIRED_ITEMS_CAT = "100%";
@@ -142,7 +142,7 @@ catIndex++;
 <table>
 <form name="wine_perfect_form_<%=catIndex%>" id="wine_perfect_form_<%=catIndex%>" method="POST" action="/includes/layouts/intermediate_atc_page.jsp?catId=<%=request.getParameter("catId")%>">
 </table>
-<% { String _form_id = "wine_perfect_form_" + catIndex; %><fd:AddToCartPending id="<%= _form_id %>"/><% } %>
+<% { String _form_id = "wine_perfect_form_" + catIndex; %><fd:AddToCartPending id="<%= _form_id %>"/><fd:CmFieldDecorator/><% } %>
 
 <%
 //**************************************************
@@ -175,7 +175,7 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
                     but I suspect that creative will want to display unavailable items...hope I'm wrong. (RG)  */
       }
       prodsAvailable++;
-      sortedList.add(ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)currItem)));
+      sortedList.add(ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)currItem) ,user.getPricingContext()));
     }
 }  
 int itemsToDisplay = sortedList.size();
@@ -204,7 +204,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
     
 <table width="<%=maxWidth%>" cellspacing="0" cellpadding="0" border="0">
 	<% if (!firstProduct) {%>
-		<tr><td colspan="2" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"></td></tr>
+		<tr><td colspan="2" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>
 	<% } %>
 	<tr valign="top">
 		<td width="95%" style="padding-right:8px;">
@@ -219,7 +219,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="<%=currentCat.getFullName()%>" />
         </td>
    	 </tr>
-	 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
+	 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
     <input type="hidden" name="enableWineSubmit_<%=catIndex%>" value="false">
     <%
 	firstProduct = false;
@@ -315,9 +315,9 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
             prices.add(new Double(displayProduct.getQuantityMinimum()));
     %>
         <div class="qtyinput qtyinput_fixedwidth">
-          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2" aria-label="quantity" CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
+          <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
         </div>
     <%  }   %>
 
@@ -415,7 +415,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 			<td style="padding-bottom:10px;"><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart_small.gif" width="76" height="17" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
 			<fd:CCLCheck>
 				<td style="padding-bottom:10px;">              
-                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" alt="save to lists" width="12" height="14" border="0" hspace="5"/></a>   		     		         
+                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0" hspace="5"/></a>   		     		         
             	</td>
 			</fd:CCLCheck> 
 		</tr>
@@ -446,7 +446,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 <%-- else { // end of If !oneNotAvailable
 % >
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0">
-    <tr><td><br><font class="text12" color="#333">
+    <tr><td><br><font class="text12" color="#999999">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
         <br>
         We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.

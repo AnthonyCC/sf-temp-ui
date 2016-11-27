@@ -241,12 +241,12 @@
 	<logic:iterate id="contentNode" collection="<%= fruColl %>" type="java.lang.Object" indexId="idx">
 		<%
 			// skip if more than we want for fruit, is a category or already used on page
-			if (!(tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString()))) { 
+			if (tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
-			if (!(pm.isDiscontinued() || pm.isUnavailable())) { 
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
 			//if dealsOnly is true, skip if not a deal
-			if (!( dealsOnly && pm.getHighestDealPercentage() < 1 )) { 
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
 
 			//add to global collection for dupe check
 			globalColl.add(contentNode);
@@ -265,7 +265,6 @@
 				}
 
 			tempCounter++;
-			}}}
 		%>
 	</logic:iterate>
 
@@ -274,12 +273,12 @@
 	<logic:iterate id="contentNode" collection="<%= vegColl %>" type="java.lang.Object" indexId="idx">
 		<%
 			// skip if more than we want for fruit, is a category or already used on page
-			if (!(tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString()))) { 
+			if (tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
-			if (!(pm.isDiscontinued() || pm.isUnavailable())) { 
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
 			//if dealsOnly is true, skip if not a deal
-			if (!( dealsOnly && pm.getHighestDealPercentage() < 1 )) { 
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
 
 			//add to global collection for dupe check
 			globalColl.add(contentNode);
@@ -298,7 +297,6 @@
 				}
 
 			tempCounter++;
-			}}}
 		%>
 	</logic:iterate>
 
@@ -325,6 +323,7 @@
 		<% if (isTransactionalRow) { %>
 			<form id="<%= TX_FORM_NAME %>" class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 			<fd:AddToCartPending id="<%= TX_FORM_NAME %>"/>
+			<fd:CmFieldDecorator/>
 			<input name="catId" type="hidden" value="<%=catId%>" />
 		<% } %>
 			<table border="0" width="100%">

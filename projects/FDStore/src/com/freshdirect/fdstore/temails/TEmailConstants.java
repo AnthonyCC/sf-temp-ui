@@ -19,7 +19,6 @@ public final class TEmailConstants {
 	public static final String ORDER_IS_DELIVERY_PASS="order_is_delivery_pass";
 	public static final String ORDER_TYPE="order_type";
 	public static final String GC_DLV_INFO="giftcard_delivery_info";
-	public static final String SERVICE_TYPE="SERVICE_TYPE";
 	
 	public static final String CUSTOMER_COMPLAINTS="cust_complaints";
 	public static final String RECIPE="recipe";
@@ -30,14 +29,5 @@ public final class TEmailConstants {
 	public static final String SMART_EMAIL_INFO ="smart_email_info";
 	public static final String PASSWD_EXP_DATE = "PasswdExpDateTime";
 	public static final String PASSWD_LINK = "passwdlink";
-	/*this isnt really a TEmails constant per se, however its being passed around and its
-	better that its defined here.
-	*/
-	public static final String OAS_QUERY = "oasQuery";
-	
-	public static final String ESTORE_ID= "EstoreID";
-	public static final String COHORT_ID= "CohortID";
-	public static final String CUSTOMER_ID= "CustomerID";
-	
 	
 }

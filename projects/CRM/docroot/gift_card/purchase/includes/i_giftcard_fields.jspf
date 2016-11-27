@@ -137,13 +137,13 @@ if (request.getParameter("fldMessage") !=null) {
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				*&nbsp;Your&nbsp;Name 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0" /></td>
         <td colspan="2">
 			<input type="text" maxlength="55" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  value="<%=fldYourName %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>' id='errorMsg'>
@@ -151,7 +151,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</fd:ErrorHandler>
 		</td>
         <td rowspan="10" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
@@ -237,7 +237,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 <!--
 <table border="0" cellspacing="0" cellpadding="2" width="675">
     <tr valign="top">
@@ -251,11 +251,11 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" alt="" width="675" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 -->
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="2" width="675">
 	<tr valign="top">

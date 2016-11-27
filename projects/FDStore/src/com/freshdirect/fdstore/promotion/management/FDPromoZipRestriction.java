@@ -7,14 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-
 public class FDPromoZipRestriction implements java.io.Serializable {
 
-	
-	private static final long serialVersionUID = -157663967820348875L;
 	private Date startDate;
-	private List<String> zipCodes;
+	private List zipCodes;
 	private String type;
 	public String getType() {
 		return type;
@@ -25,23 +21,21 @@ public class FDPromoZipRestriction implements java.io.Serializable {
 	public String getZipCodes() {
 		String str = "";
 		if (this.zipCodes != null && this.zipCodes.size() > 0) {
-			Iterator<String> iter = this.zipCodes.iterator();
+			Iterator iter = this.zipCodes.iterator();
 			while (iter.hasNext()) {
 				if (!"".equals(str)) {
 					str += ",";
 				}
-				str += (iter.next()).trim();
+				str += ((String)iter.next()).trim();
 			}
 		}
 		return str; //(!"".equals(str)) ? str : null;
 	}
-	public List<String> getZipCodeList(){
+	public List getZipCodeList(){
 		return this.zipCodes;
 	}
-	
-	@JsonSetter
 	public void setZipCodes(String zipCodes) {
-		this.zipCodes = new ArrayList<String>();
+		this.zipCodes = new ArrayList();
 		StringTokenizer st = new StringTokenizer(zipCodes, ",");
 		int count = st.countTokens(); 
 		for (int i = 0; i < count; i++) {
@@ -49,7 +43,7 @@ public class FDPromoZipRestriction implements java.io.Serializable {
 			this.zipCodes.add(token);
 		}
 	}
-	public void setZipCodes(List<String> zipCodes){
+	public void setZipCodes(List zipCodes){
 		this.zipCodes = zipCodes;
 	}
 	public Date getStartDate() {

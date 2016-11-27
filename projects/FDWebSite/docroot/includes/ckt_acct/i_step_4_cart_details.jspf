@@ -1,6 +1,6 @@
 <%@page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
-<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
@@ -127,7 +127,7 @@ double taxValue  = cart.getTaxValue();
 			%>
 			<tr>
 				<td colspan="3"></td>
-				<td colspan="8" class="success13text fd-red-text"><br>New Items in Cart</td>
+				<td colspan="8" class="text11orbold fd-red-text"><br>New Items in Cart</td>
 			</tr>
 			<%
 		} else if (!newItems && (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc()))) {
@@ -139,14 +139,14 @@ double taxValue  = cart.getTaxValue();
 						%>
 						<tr>
 							<td colspan="3"></td>
-							<td colspan="8" class="success13text"><br>Recipes</td>
+							<td colspan="8" class="text11orbold"><br>Recipes</td>
 						</tr>
 						<%
 					}
 					%>
 					<tr>
 						<td colspan="3"></td>
-						<td colspan="8" class="text11bold"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"8\"><br>":""%><%= lastDept.substring("Recipe: ".length()) %></td>
+						<td colspan="8" class="text11bold"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"8\"><br>":""%><%= lastDept.substring("Recipe: ".length()) %></td>
 					</tr>
 					<%
 					firstRecipe = false;
@@ -154,7 +154,7 @@ double taxValue  = cart.getTaxValue();
 					%>
 					<tr>
 						<td colspan="3"></td>
-						<td colspan="8" class="success13text"><br><%= lastDept %></td>
+						<td colspan="8" class="text11orbold"><br><%= lastDept %></td>
 					</tr>
 					<%
 					}

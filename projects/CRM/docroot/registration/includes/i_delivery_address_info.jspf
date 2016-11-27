@@ -162,10 +162,7 @@
 						<option value="NJ" <%="NJ".equalsIgnoreCase(fldState) ? "selected" : "" %>>NJ</option>
 						<option value="CT" <%="CT".equalsIgnoreCase(fldState) ? "selected" : "" %>>CT</option>
 						<option value="PA" <%="PA".equalsIgnoreCase(fldState) ? "selected" : "" %>>PA</option>
-						<option value="DC" <%="DC".equalsIgnoreCase(fldState) ? "selected" : "" %>>DC</option>
-						<option value="DE" <%="DE".equalsIgnoreCase(fldState) ? "selected" : "" %>>DE</option>						
-						<option value="MD" <%="MD".equalsIgnoreCase(fldState) ? "selected" : "" %>>MD</option>
-						<option value="VA" <%="VA".equalsIgnoreCase(fldState) ? "selected" : "" %>>VA</option>
+						<option value="DE" <%="DE".equalsIgnoreCase(fldState) ? "selected" : "" %>>DE</option>
 					</select>
 					&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="5" name="<%= AddressName.DLV_ZIPCODE %>" value="<%= fldZipCode %>"><br /><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 					<%}%>

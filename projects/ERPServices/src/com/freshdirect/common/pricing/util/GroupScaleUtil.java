@@ -21,8 +21,7 @@ public class GroupScaleUtil {
 		try{
 			GroupScalePricing grpPricing = FDCachedFactory.getGrpInfo(group);
 			if(grpPricing != null && grpPricing.isActive()){
-//				GrpZonePriceModel grpPriceModel = grpPricing.getGrpZonePrice(pricingZone.hasParentZone()?new ZoneInfo(pricingZone.getPricingZoneId(), pricingZone.getSalesOrg(), pricingZone.getDistributionChanel()):pricingZone);
-				GrpZonePriceModel grpPriceModel = grpPricing.getGrpZonePrice(pricingZone);
+				GrpZonePriceModel grpPriceModel = grpPricing.getGrpZonePrice(pricingZone.hasParentZone()?new ZoneInfo(pricingZone.getPricingZoneId(), pricingZone.getSalesOrg(), pricingZone.getDistributionChanel()):pricingZone);
 				if(grpPriceModel != null){
 					MaterialPrice[] matPrices =grpPriceModel.getMaterialPrices();
 					if(matPrices != null && matPrices.length > 0) {

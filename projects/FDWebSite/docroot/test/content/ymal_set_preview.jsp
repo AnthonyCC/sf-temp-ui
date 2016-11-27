@@ -5,9 +5,9 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
@@ -62,11 +62,7 @@ if (request.getParameter("ymalSetId") == null) {
 	
 %>
 <tmpl:insert template='/common/template/blank.jsp'>
-<%--     <tmpl:put name='title' direct='true'>YMAL set preview for <%= activeYmalSetId %></tmpl:put> --%>
-    <tmpl:put name="seoMetaTag" direct="true">
-    <%  activeYmalSetId = "YMAL set preview for" + activeYmalSetId; %>
-    <fd:SEOMetaTag title="<%= activeYmalSetId %>" ></fd:SEOMetaTag>
-    </tmpl:put>
+    <tmpl:put name='title' direct='true'>YMAL set preview for <%= activeYmalSetId %></tmpl:put>
     <tmpl:put name='content' direct='true'>
    		<form method="get" class="text13" style="text-align: center; font-weight: bold;">
    			<input type="hidden" name="ymalSetId" value="<%= request.getParameter("ymalSetId") %>"/>

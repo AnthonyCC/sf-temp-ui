@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,12 +11,13 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 /**
  * Encapsulates common interface for DepartmentModel and CategoryModel
+ * 
+ * @author zsombor
+ * 
  */
 public abstract class ProductContainer extends ContentNodeModelImpl implements HasRedirectUrl, HasTemplateType, YmalSetSource {
 
-    private static final long serialVersionUID = 227049481546107864L;
-
-    public final static Comparator<ProductContainer> NAME_COMPARATOR = new Comparator<ProductContainer>() {
+	public final static Comparator<ProductContainer> NAME_COMPARATOR = new Comparator<ProductContainer>() {
 		@Override
 		public int compare(ProductContainer p1, ProductContainer p2) {
 
@@ -34,18 +34,20 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		}
 	};
 
-    private final List<Domain> rating = new ArrayList<Domain>();
+	
+	
+	private List<Domain> rating = new ArrayList<Domain>();
 
-    private final Map<String, List<Domain>> ratingDomains = new HashMap<String, List<Domain>>();
+	private Map<String, List<Domain>> ratingDomains = new HashMap<String, List<Domain>>();
 
     private final List<ContentNodeModel> productFilterGroups = new ArrayList<ContentNodeModel>(); //can include ProductFilterGroupModels and ProductFilterMultiGroupModels
 
     private final List<SortOptionModel> sortOptions =  new ArrayList<SortOptionModel>();
 
     private final List<TagModel> productTags = new ArrayList<TagModel>();
-
-    private final List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
-
+    
+    protected final List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+    
     public abstract List<ProductModel> getFeaturedProducts();
 
 	public abstract List<CategoryModel> getSubcategories();
@@ -90,8 +92,7 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return new ArrayList<Domain>(rating);
 	}
 
-	@Override
-    public String getHideUrl() {
+	public String getHideUrl() {
 		return (String) getCmsAttributeValue("HIDE_URL");
 	}
 
@@ -131,8 +132,7 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return FDAttributeFactory.constructHtml(this, "DEPT_MGR_BIO");
 	}
 
-	@Override
-    public String getRedirectUrl() {
+	public String getRedirectUrl() {
 		return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
@@ -156,12 +156,15 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return getAttribute("SHOW_RATING_RELATED_IMAGE", false);
 	}
 
-	@Override
-    public int getTemplateType(int defaultValue) {
+	public int getTemplateType(int defaultValue) {
 		Integer i = getTemplateType();
 		return i != null ? i.intValue() : defaultValue;
 	}
 
+	/**
+	 * 
+	 * @return CAT_PHOTO image
+	 */
 	public final Image getCategoryPhoto() {
 		return FDAttributeFactory.constructImage(this, "CAT_PHOTO");
 	}
@@ -173,6 +176,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	/**
 	 * Return the CAT_PHOTO image, if the attribute is null, then it returns an
 	 * empty image object.
+	 * 
+	 * @return
 	 */
 	public final Image getCategoryPhotoNotNull() {
 		Image img = getCategoryPhoto();
@@ -182,6 +187,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return new Image();
 	}
 
+	/**
+	 * 
+	 * @return RATING_GROUP_NAMES
+	 */
 	public String getRatingGroupNames() {
 		Object value = getCmsAttributeValue("RATING_GROUP_NAMES");
 		return value instanceof String ? (String) value : null;
@@ -249,6 +258,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 
 	/**
 	 * Inheritable attribute, defined in Category
+	 * 
+	 * @return
 	 */
 	public EnumShowChildrenType getSideNavShowChildren() {
 		return EnumShowChildrenType.getShowChildrenType(getAttribute("SIDENAV_SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS.getId()));
@@ -263,6 +274,7 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	}
 
 	/**
+	 * 
 	 * @return LIST_AS attributum, 'full' if not specified.
 	 */
 	public final String getListAs() {
@@ -368,34 +380,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	}
 	
 	public String getSEOMetaDescription() {
-		return getAttribute("SEO_META_DESC", "FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!");
+		return getAttribute("SEO_META_DESC", "");
 	}
-
-    public String getFdxSEOMetaDescription() {
-        return getAttribute("SEO_META_DESC_FDX", "");
-    }
-
+	
 	public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", MessageFormat.format("FreshDirect - {0}", getFullName()));
+		return getAttribute("PAGE_TITLE", "");
 	}
-
-    public String getFdxPageTitle() {
-        return getAttribute("PAGE_TITLE_FDX", "");
-    }
-
-    public String getFeaturedRecommenderTitle() {
-        return getAttribute("featuredRecommenderTitle", "");
-    }
-
-    public boolean isFeaturedRecommenderRandomizeProducts() {
-        return getAttribute("featuredRecommenderRandomizeProducts", false);
-    }
-
-    public String getFeaturedRecommenderSiteFeature() {
-        return getAttribute("featuredRecommenderSiteFeature", "");
-    }
-
-    public CategoryModel getFeaturedRecommenderSourceCategory() {
-        return getSingleRelationshipNode("featuredRecommenderSourceCategory");
-    }
 }

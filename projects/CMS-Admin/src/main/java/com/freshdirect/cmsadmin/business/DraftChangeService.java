@@ -21,7 +21,7 @@ public class DraftChangeService {
     }
 
     public List<DraftChange> loadAllChangesByDraft(Draft draft) {
-        return repository.findByDraftId(draft.getId());
+        return repository.findByDraft(draft);
     }
 
     @Transactional

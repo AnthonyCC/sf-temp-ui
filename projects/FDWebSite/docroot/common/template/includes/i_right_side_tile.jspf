@@ -43,11 +43,9 @@ final int W_RIGHT_SIDE_TILE_TOTAL = 191;
        <tr>
             <td align="center">
                 <% if (FDStoreProperties.isAdServerEnabled()) { %>
-                  <div id='oas_LittleRandy'>
                     <script type="text/javascript">
                     OAS_AD("LittleRandy");
-                    </script>
-                  </div>
+                    </script>                    
                 <%}%>
             </td>
         </tr>

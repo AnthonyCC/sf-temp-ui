@@ -28,13 +28,11 @@
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
 %>
-<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<%-- 	<title>FreshDirect Delivery Check</title><% /* if this title changes, you need to change the media JS as well */ %> --%>
-    <fd:SEOMetaTag title="FreshDirect Delivery Check"/>
+	<title>FreshDirect Delivery Check</title><% /* if this title changes, you need to change the media JS as well */ %>
 	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
@@ -43,15 +41,17 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
+	<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 		<%-- put error msgs in to a string first, so it's easier to read --%>
 		<%
 			String errMsgs = "";
 			if ( result.hasError("technicalDifficulty") ) { 
-				errMsgs += "<span class=\"errortext\">" + result.getError("technicalDifficulty").getDescription() + "</span>";
+				errMsgs += "<span class=\"text11rbold\">" + result.getError("technicalDifficulty").getDescription() + "</span>";
 			}
 			if ( result.hasError("email") ) { 
-				errMsgs += "<span class=\"errortext\">" + result.getError("email").getDescription() + "</span>";
+				errMsgs += "<span class=\"text11rbold\">" + result.getError("email").getDescription() + "</span>";
 			}
 		%>
 		<%--
@@ -76,7 +76,9 @@
 			});
 		</script>
 		<fd:IncludeMedia name="/media/editorial/site_access/zipfail/delivery.html" />
+	</fd:SiteAccessController>
 
 </body>
 </html>
-</fd:SiteAccessController>
+
+

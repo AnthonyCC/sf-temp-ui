@@ -22,10 +22,7 @@ response.setDateHeader ("Expires", 0);
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="true" /> 
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Order Feedback Survey"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Order Feedback Survey</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>Order Feedback Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%
@@ -74,7 +71,7 @@ List severityAnswers = ((FDSurveyQuestion)questions.get(3)).getAnswers();
 		<td colspan="3" class="text12"><br><span class="title18">Order Feedback Survey (Page 1 of 2)</span><br><span class="space4pix"><br></span>
 		<input type="hidden" name="<%=((FDSurveyQuestion)questions.get(0)).getName()%>" value="PROBLEM">
 		We're sorry that you were not completely satisfied with your order. Your feedback will be used to help us improve our service. If you have a minute, please answer a few quick questions.
-<br><img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_SURVEY_POST_ORDER_1_TOTAL%>" height="1" vspace="8"><br><span class="space8pix"><br></span>
+<br><img src="/media_stat/images/layout/ff9933.gif" width="<%=W_SURVEY_POST_ORDER_1_TOTAL%>" height="1" vspace="8"><br><span class="space8pix"><br></span>
 		</td>
 	</tr>
 	<logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -101,23 +98,22 @@ List severityAnswers = ((FDSurveyQuestion)questions.get(3)).getAnswers();
 					<tr><td colspan="2"><img src="/media_stat/images/layout/ffffff.gif" width="400" height="1" vspace="2"><br><span class="space8pix"><br><br></span></td></tr>
 			<% } else if (!"q_post_order_response".equalsIgnoreCase(question.getName())) { %>
 				<tr>
-					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
 					<td colspan="2" class="<%=surveyQuestion%>"><b><%=question.getDescription()%></b></td>
 				</tr>
-	            <tr><td colspan="2"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_POST_ORDER_1_TOTAL-80%>" height="1" vspace="2"></td></tr>
+	            <tr><td colspan="2"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_POST_ORDER_1_TOTAL-80%>" height="1" vspace="2"></td></tr>
 	             <logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
-	                 <% if (!("q_problem_severity".equalsIgnoreCase(question.getName()) && i.intValue() == (question.getAnswers()).size()-1 )) { %>
+	                 <% if ("q_problem_severity".equalsIgnoreCase(question.getName()) && i.intValue() == (question.getAnswers()).size()-1 ) { continue; } %>
 					 <tr>
-						<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+						<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
 						<td align="center"><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getDescription()%>" <% if ("q_problem_severity".equalsIgnoreCase(question.getName())) { %><%=prevAnswers.contains(answer.getName()) ? "CHECKED" : "" %><% } else { %><%=prevAnswers.contains(answer.getDescription()) ? "CHECKED" : "" %><% } %>></td>
 						<td width="<%=W_SURVEY_POST_ORDER_1_TOTAL-270%>" class="text13"><%=answer.getDescription()%></td>
 					</tr>
 					<tr><td colspan="2"><img src="/media_stat/images/layout/ffffff.gif" width="400" height="1" vspace="2"></td></tr>
-					<%} %>
 	             </logic:iterate>
 			<% } %>
         </logic:iterate>
-	<tr><td colspan="3" align="center"><img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_SURVEY_POST_ORDER_1_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_continue.gif" width="91" height="21" onClick="post_order_1.submit()" alt="CONTINUE"><br><br><br></td></tr>
+	<tr><td colspan="3" align="center"><img src="/media_stat/images/layout/ff9933.gif" width="<%=W_SURVEY_POST_ORDER_1_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_continue.gif" width="91" height="21" onClick="post_order_1.submit()" alt="CONTINUE"><br><br><br></td></tr>
 <% } else { %>
 	<tr><td colspan="3" class="text12"><br>
 	<% if (isGood) { %>
@@ -167,7 +163,7 @@ List severityAnswers = ((FDSurveyQuestion)questions.get(3)).getAnswers();
 	<% } %>
 	</script>
 <% if (!isProblem || unknown) { %>
-<tr><td colspan="3" align="center"><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<tr><td colspan="3" align="center"><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } %>
 </table>
 </fd:ReceiptSurvey>

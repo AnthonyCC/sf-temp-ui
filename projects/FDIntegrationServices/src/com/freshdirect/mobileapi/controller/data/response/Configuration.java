@@ -15,9 +15,6 @@ public class Configuration implements Serializable {
 	private boolean socialLoginEnabled;
 	private boolean masterPassEnabled;
 	private boolean payPalEnabled;
-	private boolean DCSEnabled;
-	private boolean liveChatEnabled;
-    private boolean selfCreditEnabled;
 	
 
 	public boolean isAkamaiImageConvertorEnabled() {
@@ -85,27 +82,7 @@ public class Configuration implements Serializable {
 	}
 	public void setPayPalEnabled(boolean payPalEnabled) {
 		this.payPalEnabled = payPalEnabled;
-	}
-	public boolean isDCSEnabled() {
-		return DCSEnabled;
-	}
-	public void setDCSEnabled(boolean DCSEnabled) {
-		this.DCSEnabled = DCSEnabled;
-	}
-	public boolean isLiveChatEnabled() {
-		return liveChatEnabled;
-	}
-	public void setLiveChatEnabled(boolean liveChatEnabled) {
-		this.liveChatEnabled = liveChatEnabled;
-	}
-
-    public boolean isSelfCreditEnabled() {
-        return selfCreditEnabled;
-    }
-
-    public void setSelfCreditEnabled(boolean selfCreditEnabled) {
-        this.selfCreditEnabled = selfCreditEnabled;
-    }
+	}	
 	
 	
 }

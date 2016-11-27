@@ -7,10 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -26,7 +28,8 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
-import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
@@ -34,7 +37,6 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -54,8 +56,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.webapp.ajax.cart.CartOperations;
+import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -64,25 +65,19 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
-import com.freshdirect.webapp.util.StandingOrderHelper;
 
 /** keep in sync with LocationHandlerTag*/
 public class DeliveryAddressManipulator extends CheckoutManipulator {
-
-    private static final Category LOGGER = LoggerFactory.getInstance(DeliveryAddressManipulator.class);
-
+	private static Category		LOGGER	= LoggerFactory.getInstance( DeliveryAddressManipulator.class );
 	private boolean locationHandlerMode;
 
-    public DeliveryAddressManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
-        super(request, response, result, actionName);
+	public DeliveryAddressManipulator(PageContext context, ActionResult result, String actionName) {
+		super(context, result, actionName);
 	}
 
 	public static void performSetDeliveryAddress(HttpSession session, FDUserI user, String addressId, String contactNumber, String corpDlvInstructions, String actionName, boolean locationHandlerMode,
 			ActionResult result, String noContactPhonePage, String specialInstructions, String altDelivery, String unattendedDeliveryNoticeSeen, String unattendedDeliveryOpt,
 			String unattendedDeliveryInstr) throws FDResourceException, JspException, RedirectToPage {
-        if (addressId.startsWith("DEPOT_")) {
-            addressId = addressId.substring("DEPOT_".length());
-        }
 		FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepotByLocationId(addressId);
 		if (depot != null) {
 			setDepotDeliveryLocation(session, user, addressId, contactNumber, corpDlvInstructions, actionName);
@@ -93,7 +88,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			LOGGER.debug("setRegularDeliveryAddress :" + addressId);
 		}
 		FDCartModel cart = user.getShoppingCart();
-		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !(cart.isDlvPromotionApplied())) {
+		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0) && !(cart.isDlvPromotionApplied())) {
 			cart.setDlvPassApplied(true);
 		}
 
@@ -113,7 +108,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
-
+		
 		if ( addressOrLocation.startsWith( "DEPOT_" ) ) {
 			String locationId = addressOrLocation.substring( "DEPOT_".length() );
 			this.setDepotDeliveryLocation( locationId, request, result );
@@ -124,21 +119,21 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = user.getShoppingCart();
-		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !( cart.isDlvPromotionApplied() ) ) {
+		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.getDeliveryPassCount() > 0 ) && !( cart.isDlvPromotionApplied() ) ) {
 			cart.setDlvPassApplied( true );
 		}
 
 		user.updateUserState();
 		//if(!locationHandlerMode)
 			//user.resetUserContext();
-
-
+        
+		
 		session.setAttribute( SessionName.USER, user );
 	}
 
 	public void performSetOrderMobileNumber() throws FDResourceException, JspException, RedirectToPage {
 		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
-		PhoneNumber phoneNumber=new PhoneNumber(PhoneNumber.format(request.getParameter( "orderMobileNumber" )));
+		PhoneNumber phoneNumber=new PhoneNumber(PhoneNumber.format(request.getParameter( "orderMobileNumber" ))); 
 		FDCartModel cart = user.getShoppingCart();
 		cart.setOrderMobileNumber(phoneNumber);
 	}
@@ -150,23 +145,23 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
-
+		
 		if (actionName.equals("addDeliveryAddressEx"))
 			addressForm.validateFormEx(result);
 		else
 			addressForm.validateForm(result);
-
+		
 		if (!result.isSuccess()){
 			return null;
 		}
-
+		
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
 		AddressModel deliveryAddressModel = addressForm.getDeliveryAddress();
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
-
+		
 		return performAddDeliveryAddress(user, session, result, cart, actionName, erpAddress, deliveryAddressModel);
 	}
-
+	
 	public static ErpAddressModel performAddDeliveryAddress(FDSessionUser user, HttpSession session, ActionResult result,FDCartModel cart,String actionName,ErpAddressModel erpAddressModel, AddressModel deliveryAddressModel) throws FDResourceException {
 		// call common delivery address check
 		ErpAddressModel erpAddress = checkDeliveryAddressInForm(user, result, session, cart, actionName, erpAddressModel,deliveryAddressModel);
@@ -175,7 +170,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		try {
-			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session, user), !user.isDepotUser(), erpAddress);
+			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
 			if (foundFraud) {
 //				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 //					SystemMessageList.MSG_NOT_UNIQUE_INFO,
@@ -193,7 +188,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		return erpAddress;
 	}
-
+	
 	public void performAddAndSetDeliveryAddress() throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
 		FDCartModel cart =  user.getShoppingCart();
@@ -201,23 +196,23 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
-
+		
 		if (actionName.equals("addDeliveryAddressEx"))
 			addressForm.validateFormEx(result);
 		else
 			addressForm.validateForm(result);
-
+		
 		if (!result.isSuccess()){
 			return;
 		}
-
+		
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
 		AddressModel deliveryAddressModel = addressForm.getDeliveryAddress();
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
-
+		
 		performAddAndSetDeliveryAddress(user, result, session, cart,actionName, erpAddress, deliveryAddressModel);
 	}
-
+	
 	public static void performAddAndSetDeliveryAddress(FDSessionUser user, ActionResult result, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddressModel, AddressModel deliveryAddressModel) throws FDResourceException {
 
 		// call common delivery address check
@@ -225,20 +220,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (erpAddress == null) {
 			return;
 		}
-
+		
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
-
+		
 		FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo( user, erpAddress, result, date.getTime(), user.getHistoricOrderSize(), null);
-		//APPDEV 6442 FDC Transition - We will validate the zone information again when address change happens
-		try {
-			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(erpAddress, zoneInfo);
-			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
-				zoneInfo = deliveryZoneInfo;
-			}
-		} catch (FDInvalidAddressException e) {
-			e.printStackTrace();
-		}
 
 		try {
 			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
@@ -246,7 +232,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				// session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 				// SystemMessageList.MSG_NOT_UNIQUE_INFO,
 				// new Object[] {user.getCustomerServiceContact()}));
-
+				
 				applyFraudChange(user, session);
 			}
 			if ( !result.isSuccess() )
@@ -261,17 +247,17 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 						thisAddress = addr;
 						break;
 					}
-
+						
 				}
 				//thisAddress =  (ErpAddressModel)dlvAddresses.get( dlvAddresses.size()-1 ) ;
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					String zoneId = zoneInfo.getZoneCode();
 					if ( zoneId != null && zoneId.length() > 0 ) {
 						LOGGER.debug( "success! adding address to cart & setting defaultShipToAddress." );
-
+			
 						setDeliveryAddress(user, session, actionName, thisAddress,  zoneInfo, null, true);
 					}
-
+			
 					if ( foundFraud ) {
 						user.invalidateCache();
 					}
@@ -287,7 +273,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					// Set delivery address PK
 					setSODeliveryAddress(user, session, thisAddress, zoneInfo, thisAddress.getPK().getId());
 				}
-
+				
 				user.invalidateAllAddressesCaches();
 			}
 		} catch (ErpDuplicateAddressException ex) {
@@ -329,67 +315,45 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
-
+		
 		if (actionName.equals("addDeliveryAddressEx"))
 			addressForm.validateFormEx(result);
 		else
 			addressForm.validateForm(result);
 		if (!result.isSuccess())
 			return;
-
+		
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
-
+		
 		AddressModel deliveryAddressModel = addressForm.getDeliveryAddress();
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 		
-		AddressModel originalAddress = new ErpAddressModel();
-		boolean isCorpAddress = false;
-		if (EnumServiceType.CORPORATE.getName().equalsIgnoreCase(deliveryAddressModel.getServiceType().getName())) {				/* APPDEV-7472 */
-			originalAddress = FDCustomerManager.getAddress(user.getIdentity(), shipToAddressId);
-			isCorpAddress = true;
-		}
 		performEditDeliveryAddress(event, user, result, session, cart, actionName, erpAddress, deliveryAddressModel,shipToAddressId);
-		
-		if (StandingOrderHelper.isEligibleForSo3_0(user) && isCorpAddress) {
-			boolean  removeTimeslotsOnTemplate = true;
-			try {
-				FDDeliveryZoneInfo oldAddressZone = FDDeliveryManager.getInstance().getZoneInfo(originalAddress, new Date(),
-						null, null, user.getUserId());
-				FDDeliveryZoneInfo updatedAddressZone = FDDeliveryManager.getInstance().getZoneInfo(erpAddress,
-						new Date(), null, null, user.getUserId());
-				if (null != oldAddressZone && oldAddressZone.getZoneCode().equalsIgnoreCase(updatedAddressZone.getZoneCode()))
-					removeTimeslotsOnTemplate = false;
-			} catch (FDInvalidAddressException e) {
-				LOGGER.warn("something went wrong when making call to logistics address from editAddress Page Nav: ", e);
-			}
-			if(removeTimeslotsOnTemplate) StandingOrderHelper.evaluteEditSoAddressID(session, user, shipToAddressId);
 		}
-
-	}
-
+		
 	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
 		ErpAddressModel erpAddressModel = checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress, deliveryAddressModel);
 		if (erpAddressModel == null) {
 			return;
 		}
-		/*boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
-
+		
+		boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
+		
 		//[APPDEV-5568]- Reset the usercontext, as the address is updated.
 		user.resetUserContext();
 		cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 		if (!cart.isEmpty()) {
 			for (FDCartLineI cartLine : cart.getOrderLines()) {
 				cartLine.setUserContext(user.getUserContext());
-
+				
 			}
 		}
 		try {
 			cart.refreshAll(true);
 		} catch (FDInvalidConfigurationException e) {
 			LOGGER.warn(e);
-		}*/
-		boolean foundFraud = updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
-
+		}
+		
 		if(foundFraud){
 			/*
 			 * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]
@@ -410,7 +374,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				session.setAttribute(SessionName.REMOVED_RESERVATION, Boolean.TRUE);
 			}
 		}
-
+		
 		user.invalidateAllAddressesCaches();
 	}
 
@@ -421,7 +385,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
-
+		
 		if (actionName.equals("addDeliveryAddressEx"))
 			addressForm.validateFormEx(actionResult);
 		else
@@ -430,13 +394,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			return null;
 
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
-
+		
 		AddressModel deliveryAddressModel = addressForm.getDeliveryAddress();
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
-
+		
 		return checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress,deliveryAddressModel);
 	}
-
+	
 	public static ErpAddressModel checkDeliveryAddressInForm(FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel) throws FDResourceException {
 		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddressModel);
 		validator.setServiceType(deliveryAddressModel.getServiceType());
@@ -448,12 +412,12 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (!validator.validateAddressWithoutGeoCode(actionResult)) {
 			return  null;
 		}
-
+		
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
-
+		
 		if (validator.isAddressDeliverable()) {
-
+			
 			checkAndSetEbtAccepted(scrubbedAddress.getZipCode(), user, cart);
 			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
@@ -469,7 +433,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			}else {
 				//Already is a home or a corporate customer.
 				if(user.getOrderHistory().getValidOrderCount()==0) {
-					//check if customer has no order history.
+					//check if customer has no order history.					
 					user.setSelectedServiceType(scrubbedAddress.getServiceType());
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(scrubbedAddress.getServiceType());
@@ -480,11 +444,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				}
 			}
 		}
-
+		
 		erpAddress.setFrom(scrubbedAddress);
 		erpAddress.setCity(scrubbedAddress.getCity());
 		erpAddress.setScrubbedStreet(scrubbedAddress.getScrubbedStreet());
-		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());
+		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
 
 		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
 
@@ -497,9 +461,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		return erpAddress;
 	}
 
-
+	
 	/**
-	 * Order is EBT accepted => zipcode for cart's deliveryAddress is ebt accepted
+	 * Order is EBT accepted => zipcode for cart's deliveryAddress is ebt accepted 
 	 * 					AND => user does not have any kind of EBT alerts
 	 * 					AND => user does not have any unsettled EBT order from before
 	 * @param zipCode
@@ -514,13 +478,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if(null !=cart.getDeliveryAddress()){
 				cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
 			}
-			if(isEBTAccepted){
+			if(isEBTAccepted){				
 				isEBTAccepted = isOrderEbtAccepted(user);
 			}
 			user.setEbtAccepted(isEBTAccepted);
 		}
 	}
-
+	
 	public static boolean checkEbtAccepted(FDUserI user, String zipCode) throws FDResourceException {
 		boolean isEBTAccepted = false;
 		if (null != zipCode) {
@@ -531,16 +495,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		return isEBTAccepted;
 	}
-
+	
 	private static boolean isZipCodeEbtAccepted(String zipCode) throws FDResourceException {
 		boolean isEBTAccepted = false;
 		if (zipCode != null) {
-			FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
+			FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);		
 			isEBTAccepted = null != serviceResult ? serviceResult.isEbtAccepted() : false;
 		}
 		return isEBTAccepted;
 	}
-
+	
 	private static boolean isOrderEbtAccepted(FDUserI user) throws FDResourceException {
 		boolean isEBTAccepted = false;
 		FDCartModel cart = user.getShoppingCart();
@@ -555,12 +519,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 	/**
 	 * Only regular addresses
-	 *
+	 * 
 	 * @throws FDResourceException
 	 */
 	public void performEditAndSetDeliveryAddress() throws FDResourceException {
 
-		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
 		String addressId = request.getParameter( "updateShipToAddressId" );
 
 		AddressForm addressForm = new AddressForm();
@@ -579,16 +542,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
 		FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime(), this.getUser().getHistoricOrderSize(), this.getUser().getRegionSvcType(addressId) );
-		//APPDEV 6442 FDC Transition - We will validate the zone information again when address switch happens
-		try {
-			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(new ErpAddressModel(dlvAddress), zoneInfo);
-			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
-				zoneInfo = deliveryZoneInfo;
-			}
-		} catch (FDInvalidAddressException e) {
-			e.printStackTrace();
-		}
-
 		if ( !result.isSuccess() )
 			return;
 
@@ -600,27 +553,26 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		 * FDDeliveryManager.getInstance().getCounty( dlvAddress ) ) && erpAddress.getAltContactPhone() == null ) { result.addError( true,
 		 * EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED ); return; }
 		*/
-
-		//final boolean foundFraud = AddressUtil.updateShipToAddress( request.getSession(), result, this.getUser(), addressId, erpAddress );
-		final boolean foundFraud = updateShipToAddress( request.getSession(), result, this.getUser(), addressId, erpAddress );
+		
+		final boolean foundFraud = AddressUtil.updateShipToAddress( request, result, this.getUser(), addressId, erpAddress );
 
 		if ( !result.isSuccess() )
 			return;
 
 		ErpAddressModel thisAddress = FDCustomerManager.getAddress( getIdentity(), addressId );
 
-		FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(thisAddress.getZipCode());
-
+		FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(thisAddress.getZipCode());		
+		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)&&!user.hasEBTAlert();
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 			String zoneId = zoneInfo.getZoneCode();
 			if ( zoneId != null && zoneId.length() > 0 ) {
 				LOGGER.debug( "success! adding address to cart & setting defaultShipToAddress." );
-
+	
 				setDeliveryAddress(thisAddress, zoneInfo, null, true);
 			}
-
+	
 			if ( foundFraud ) {
 				user.invalidateCache();
 			}
@@ -638,7 +590,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					//Already is a home or a corporate customer.
 					if(user.getOrderHistory().getValidOrderCount()==0) {
 						//check if customer has no order history and if zipcode has changed. If yes then update the
-						//service type to most recent service type.
+						//service type to most recent service type.					
 						//Added the following line for zone pricing to keep user service type up-to-date.
 						user.setZPServiceType(dlvAddress.getServiceType());
 						user.setZipCode(dlvAddress.getZipCode());
@@ -659,7 +611,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			// Set delivery address PK
 			setSODeliveryAddress(thisAddress, zoneInfo, addressId);
 		}
-
+		
 		user.invalidateAllAddressesCaches();
 	}
 
@@ -689,16 +641,12 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		// Suppress the Address Validation if the address is already scrubbed.
 		AddressModel address = new AddressModel();
-		address = mapToAddressModel(shippingAddress);
-		String geocodeResult ="";
-			try {
-				FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(shippingAddress);
-				AddressUtil.verifyAddress(shippingAddress, true, result, response);
-
-
-
-
-
+		if(isAddressScrubbed(shippingAddress)){
+			address = mapToAddressModel(shippingAddress);
+		}else{
+			address = AddressUtil.scrubAddress( shippingAddress, result );
+		}
+		
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
 		/*
 		 * boolean isEBTAccepted = null !=serviceResult ? (serviceResult.isEbtAccepted() && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)):false;
@@ -713,30 +661,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		 * "&missingContactPhone=true" ); throw new RedirectToPage( noContactPhonePage + "?addressId=" + addressPK + "&missingContactPhone=true"); }
 		*/
         checkAddressRestriction(locationHandlerMode, result, address);
-
-
+        
+     
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
 			return;
 		}
-
-			geocodeResult =  response.getGeocodeResult();
-
-			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
-				// since geocoding is not happening silently ignore it
-				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS :" + address );
-			} else {
-				LOGGER.debug( "setRegularDeliveryAddress : geocodeResponse.getAddress() :" + response.getAddress() );
-				address = response.getAddress();
-			}
-
-		} catch ( FDInvalidAddressException iae ) {
-			LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + address + "EXCEPTION :" + iae );
-		}
-
-
-
-
+		if(address.getLongitude() == 0.0 
+				|| address.getLatitude() == 0.0)
+		getAddressGeoCode(address);
+		
 		int validCount = user.getOrderHistory().getValidOrderCount();
 		if ( validCount < 1 ) {
 
@@ -750,25 +684,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
-
+		
 		LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:START] :"+date.getTime());
-
+		
 		Date startDateTime = date.getTime();
 		FDCartModel cart =  user.getShoppingCart();
 		if(cart!=null && cart.getDeliveryReservation()!=null && cart.getDeliveryReservation().getStartTime()!=null){
 			startDateTime = cart.getDeliveryReservation().getStartTime();
 		}
-
+		
 		FDDeliveryZoneInfo dlvResponse = AddressUtil.getZoneInfo( user, address, result, startDateTime, user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
-		//APPDEV 6442 FDC Transition - We will validate the zone information again when address change happens
-		try {
-			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(shippingAddress, dlvResponse);
-			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
-				dlvResponse = deliveryZoneInfo;
-			}
-		} catch (FDInvalidAddressException e) {
-			e.printStackTrace();
-		}
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;
@@ -813,14 +738,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					shippingAddress.setUnattendedDeliveryFlag( EnumUnattendedDeliveryFlag.OPT_IN );
 					shippingAddress.setUnattendedDeliveryInstructions( EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode() );
 					if ("".equals(unattendedDeliveryInstr))
-						unattendedDeliveryInstr = "OK";
+						unattendedDeliveryInstr = null;
 					shippingAddress.setUnattendedDeliveryInstructions(unattendedDeliveryInstr);
 				} else {
 					shippingAddress.setUnattendedDeliveryFlag( EnumUnattendedDeliveryFlag.OPT_OUT );
 					shippingAddress.setUnattendedDeliveryInstructions( null );
 				}
-//				AddressUtil.updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
-				updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
+				AddressUtil.updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
 
 			}
 
@@ -833,7 +757,23 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 
-
+	/**
+	 * @param address
+	 * @return
+	 */
+	private static boolean isAddressScrubbed(ErpAddressModel address){
+		if(address != null){
+			if(address.getId() != null && !StringUtils.isEmpty(address.getId())){
+				AddressInfo addressInfo = address.getAddressInfo();
+				if( addressInfo !=null && addressInfo.getScrubbedStreet() != null && !StringUtils.isEmpty(addressInfo.getScrubbedStreet())){
+					return true;
+				}else if(address.getScrubbedStreet() !=null && !StringUtils.isEmpty(address.getScrubbedStreet()) ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	/**
 	 * @param addressModel
 	 * @return
@@ -870,14 +810,34 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
     }
 
+    /**
+     * @param address
+     * @throws FDResourceException
+     */
+    private static void getAddressGeoCode(AddressModel address) throws FDResourceException{
+		try {
+			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( address );
+			String geocodeResult = geocodeResponse.getResult();
 
+			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
+				// since geocoding is not happening silently ignore it
+				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS :" + address );
+			} else {
+				LOGGER.debug( "setRegularDeliveryAddress : geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
+				address = geocodeResponse.getAddress();
+			}
 
+		} catch ( FDInvalidAddressException iae ) {
+			LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + address + "EXCEPTION :" + iae );
+		}
+    }
+    
 	private static void setDepotDeliveryLocation(HttpSession session, FDUserI user, String locationId, String contactNumber, String corpDlvInstructions, String actionName) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 
 		LOGGER.debug( "Setting depot delivery location " );
 		FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepotByLocationId( locationId );
-
+		
 		FDDeliveryDepotLocationModel location = depot.getLocation(locationId);
 
 		if ( location == null ) {
@@ -949,7 +909,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			//a last order as pick up. Now onwards selected service type  will only define customer's type
 			// from a delivery standpoint. PICKUP only or HOME or CORPORATE.
 			//Use delivery info table to track last order type.
-            user.setSelectedServiceType(address.isPickup() ? EnumServiceType.PICKUP : EnumServiceType.DEPOT);
+			//user.setSelectedServiceType(address.isPickup() ? EnumServiceType.PICKUP: EnumServiceType.DEPOT);
 			setDeliveryAddress(user, session, actionName, address, zoneInfo, locationId, false);
 		}
 	}
@@ -969,9 +929,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	}
 
 	public static void performDeleteDeliveryAddress(FDUserI user, HttpSession session, String shipToAddressId, ActionResult result, TimeslotEvent event) throws FDResourceException {
-		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			StandingOrderHelper.evaluteSoAddressId(session, user, shipToAddressId);
-		}
 		AddressUtil.deleteShipToAddress(user.getIdentity(), shipToAddressId, result, session);
 		//check that if this address had any outstanding reservations.
 		FDReservation reservation = user.getReservation();
@@ -992,7 +949,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 	/**
 	 * Stores delivery address in cart
-	 *
+	 * 
 	 * @param address
 	 *            Delivery address to store
 	 * @param zoneInfo
@@ -1003,40 +960,40 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	 */
 	private static void setDeliveryAddress(FDUserI user, HttpSession session, String actionName, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, String locationId, boolean setServiceType)
 			throws FDResourceException {
-		FDCartModel cart = getCart(user, actionName, false);
+		FDCartModel cart = getCart(user, actionName);
 		setDeliveryAddressInternal(user, session, cart, address, zoneInfo, setServiceType);
 
-		if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
-			FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
+
+		if (address instanceof ErpDepotAddressModel) {
+			FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), locationId );
+			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), null );
+		} else {
+			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
+				FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
+				FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), null );
+			}
 		}
 		
-
-		// currently, dark store switch is expected only in FoodKick store
-		if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
-		    CartOperations.removeUnavailableCartLines(cart, user);
-		}
 	}
 
 	private static void setDeliveryAddressInternal(FDUserI user, HttpSession session, final FDCartModel cart, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, boolean setServiceType)
 			throws FDResourceException {
-
+		
 		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
 		boolean isAddressNotMatched = (address!=null && !address.equals(cart.getDeliveryAddress()));
 		boolean isZoneInfoNotMatched = ((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null));
-		if((isAddressNotMatched || isZoneInfoNotMatched) || (null == cart.getDeliveryAddress() && address!=null)){
+		if((isAddressNotMatched && isZoneInfoNotMatched) || (null == cart.getDeliveryAddress() && address!=null)){
 //		if(address!=null && !address.equals(cart.getDeliveryAddress()) &&
 //				((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null)) ) {
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
 			user.setAddress(address);
-			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
 			user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
-					cartLine.setFDGroup(null);//clear the group
-
+					
 				}
 			}
 			try {
@@ -1060,32 +1017,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			String customerId =cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
 			LOGGER.warn("DeliveryPlantInfo is not matching for customer: "+customerId +" and eStore :"+cart.getEStoreId());
 			LOGGER.warn("In FDUser:"+dpInfoModel);
-			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());
-			user.setAddress(address);
-			user.resetUserContext();
-			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-			if (!cart.isEmpty()) {
-				for (FDCartLineI cartLine : cart.getOrderLines()) {
-					cartLine.setUserContext(user.getUserContext());
-					cartLine.setFDGroup(null);//clear the group
-
-				}
-			}
-			try {
-				cart.refreshAll(true);
-			} catch (FDInvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());			
 		}
 
-		if(null != address){
-			checkAndSetEbtAccepted(address.getZipCode(), user,cart);
+		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 
-			// store service type except for depot locations
-			if (setServiceType)
-				user.setSelectedServiceType( address.getServiceType() );
-		}
+		// store service type except for depot locations
+		if (setServiceType)
+			user.setSelectedServiceType( address.getServiceType() );
 		user.setShoppingCart( cart );
 		//cart.doCleanup();
 		session.setAttribute( SessionName.USER, user );
@@ -1098,7 +1037,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		LOGGER.debug("SO["+so.getId()+"] ADDRESS := " + pk);
 		so.setAddressId(pk);
 	}
-
+	
 	private void setSODeliveryAddress(ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, String pk) throws FDResourceException {
 		setSODeliveryAddress(getUser(), session, address, zoneInfo, pk);
 	}
@@ -1122,29 +1061,28 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	public void setLocationHandlerMode(boolean locationHandlerMode) {
 		this.locationHandlerMode = locationHandlerMode;
 	}
+	
+	//Method used to check update delivery address
+	public boolean checkEditDeliveryAddress(TimeslotEvent event) throws FDResourceException {
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
-
-	public static boolean updateShipToAddress(HttpSession session, ActionResult result, FDUserI user, String shipToAddressId, ErpAddressModel address) throws FDResourceException {
-		boolean foundFraud = AddressUtil.updateShipToAddress(session, result, user, shipToAddressId, address);
-		FDCartModel cart =user.getShoppingCart();
-		if(null !=cart){
-			//[APPDEV-5568]- Reset the usercontext, as the address is updated.
-			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
-			user.resetUserContext();
-			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-			if (!cart.isEmpty()) {
-				for (FDCartLineI cartLine : cart.getOrderLines()) {
-					cartLine.setUserContext(user.getUserContext());
-					cartLine.setFDGroup(null);//clear the group
-
-				}
-			}
-			try {
-				cart.refreshAll(true);
-			} catch (FDInvalidConfigurationException e) {
-				LOGGER.warn(e);
-			}
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
+		if (erpAddress == null) {
+			LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> Error Address");
+			return false;
 		}
+		
+		String shipToAddressId = request.getParameter("updateShipToAddressId");
+		boolean foundFraud = AddressUtil.updateShipToAddress(request, result, user, shipToAddressId, erpAddress);
+		LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> foundFraud"+foundFraud);
 		return foundFraud;
+		
+	}
+	
+	private static boolean isFulfillmentContextChanged(ErpAddressModel address,	FDDeliveryZoneInfo zoneInfo) {
+		boolean isChanged=false;
+		return isChanged;
+		
 	}
 }

@@ -19,7 +19,31 @@ final int W_CHECKOUTNAV_TOTAL = 970;
      ErpAddressModel dlvAddress = cart.getDeliveryAddress();
 
      if (dlvAddress != null) {
-		if (EnumUnattendedDeliveryFlag.DISCARD_OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+%>
+        <fd:UnattendedDelivery id='zone' address='<%= dlvAddress %>'>
+<%
+	   // TURN UNATTENDED DELIVERY ON FOR THE ORDER ! TODO VERIFY SEMANTICS
+	   dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+%>
+        <fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/checkout_availibility_note.html">
+        <div class="text11">
+        <center>
+	<font color="orange">
+	    <b>Unattended Delivery Now Available in Your Area!</b>
+	</font>
+	<br/>
+	If you need to run out during your delivery timeslot, we will leave your order at your home.
+	<br/>
+	Your order is guaranteed fresh outside for up to 30 minutes, and certain restrictions apply.
+	<br/>
+	<a href="javascript:popup('/help/unattended_delivery.jsp','large')"><b>Click here to learn more about Unattended Delivery</b></a>
+	</center>
+	</div>
+	</fd:IncludeMedia>
+        </fd:UnattendedDelivery>
+<%
+        } else if (EnumUnattendedDeliveryFlag.DISCARD_OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
 %>
         <fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/checkout_unavailability_note.html">
         <div class="text11">

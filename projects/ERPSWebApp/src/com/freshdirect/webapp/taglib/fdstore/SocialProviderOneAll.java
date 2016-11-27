@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Category;
-import org.apache.oltu.oauth2.common.OAuth.HttpMethod;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,38 +24,39 @@ public class SocialProviderOneAll implements SocialProvider {
 	private final static Category LOGGER = LoggerFactory.getInstance(SocialProviderOneAll.class);
 	
 	//Settings
-    private String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
-    private String site_public_key = FDStoreProperties.getSocialOneAllPublicKey();
-    private String site_private_key = FDStoreProperties.getSocialOneAllPrivateKey();
-    private String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
+	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+	String site_public_key = FDStoreProperties.getSocialOneAllPublicKey();
+	String site_private_key = FDStoreProperties.getSocialOneAllPrivateKey();
+	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 
 	// API Access Domain
-    private String site_domain = site_subdomain + site_post_url;
+	String site_domain = site_subdomain + site_post_url;
 
 	// Connection Resource
 	// http://docs.oneall.com/api/resources/connections/read-connection-details/
 	//String resource_uri = "http://" + site_domain + "/connections/";
 	
-    private String site_authentication = "";
-    private String encoded_site_authentication = "";
+	String site_authentication ="";
+	
+	String encoded_site_authentication ="";
 	
 	public SocialProviderOneAll()
 	{
+				
 		// Forge authentication string username:password
 		site_authentication = site_public_key + ":" + site_private_key;
 		
 		encoded_site_authentication = new String(Base64.encodeBase64(site_authentication.getBytes())).replaceAll("[\n\r]", "");
 	}
 	
-	@Override
-    public HashMap<String,String> getSocialUserProfile(String connectionToken)
+	public HashMap<String,String> getSocialUserProfile(String connectionToken)
 	{
 		if(connectionToken == null || connectionToken.length() ==0)
 			throw new IllegalArgumentException("Invalid Connection Token");
 
 		String resource_uri = "http://" + site_domain + "/connections/" + connectionToken + ".json"; 
 
-        String resultJson = apiCall(resource_uri, HttpMethod.GET);
+		String resultJson = apiCall(resource_uri);
 		
 		if(resultJson != null  && resultJson.length() > 0)
 			
@@ -65,8 +65,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		return null;
 	}
 
-	@Override
-    public HashMap<String,String> getSocialUserProfileByUserToken(String userToken,String providerName)
+	public HashMap<String,String> getSocialUserProfileByUserToken(String userToken,String providerName)
 	{
 		if(userToken == null || userToken.length() ==0)
 			throw new IllegalArgumentException("Invalid User Token");
@@ -76,7 +75,7 @@ public class SocialProviderOneAll implements SocialProvider {
 
 		String resource_uri = "http://" + site_domain + "/users/" + userToken + ".json"; 
 
-        String resultJson = apiCall(resource_uri, HttpMethod.GET);
+		String resultJson = apiCall(resource_uri);
 		
 		if(resultJson != null  && resultJson.length() > 0)
 			
@@ -85,14 +84,16 @@ public class SocialProviderOneAll implements SocialProvider {
 		return null;
 	}
 
-    private String apiCall(String resourceUri, String method) {
+	
+	
+	
+	private String apiCall(String resourceUri) {
 			if(resourceUri == null || resourceUri.length()==0)
 				throw new IllegalArgumentException("Invalid Resource URI");
 		
 		    // Result Container
 			String result_json = "";
 			
-			BufferedReader rd = null;
 			try
 			{
 			  
@@ -101,7 +102,7 @@ public class SocialProviderOneAll implements SocialProvider {
 			  HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			   
 			  // Connect using basic auth
-            connection.setRequestMethod(method);
+			  connection.setRequestMethod("GET");   
 			  connection.setRequestProperty("Authorization", "Basic " +  encoded_site_authentication);
 			  connection.setDoOutput(true);
 			  connection.setReadTimeout(10000);
@@ -112,7 +113,7 @@ public class SocialProviderOneAll implements SocialProvider {
 			  String line = null;
 			 
 			  // Read result
-			  rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			  BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			  while ((line = rd.readLine()) != null) {
 			    sb.append(line);
 			  }
@@ -123,14 +124,6 @@ public class SocialProviderOneAll implements SocialProvider {
 			catch (Exception e)
 			{
 				LOGGER.error(e.getMessage());
-			} finally {
-				if (rd != null) {
-					try {
-						rd.close();
-					} catch (IOException ioe) {
-						// intentionally do nothing here
-					}
-				}
 			}
 
 			return result_json;
@@ -169,8 +162,8 @@ public class SocialProviderOneAll implements SocialProvider {
 			
 			if(userNode != null)
 			{
-				userToken = userNode.path("user_token").asText();
-				identityNode = userNode.path("identity");
+				userToken = (String) userNode.path("user_token").asText();
+				identityNode = (JsonNode) userNode.path("identity");
 				
 				if(identityNode != null)
 				{
@@ -276,8 +269,8 @@ public class SocialProviderOneAll implements SocialProvider {
 			
 			if(userNode != null)
 			{
-				userToken = userNode.path("user_token").asText();
-				identitiesNode = userNode.path("identities");
+				userToken = (String) userNode.path("user_token").asText();
+				identitiesNode = (JsonNode) userNode.path("identities");
 				
 				
 				if(identitiesNode != null)
@@ -345,8 +338,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		return socialUser;
 	}
 	
-	@Override
-    public HashMap<String, String> getSocialUserProfileByAccessToken(
+	public HashMap<String, String> getSocialUserProfileByAccessToken(
 			String accessToken, String providerName) {
 
 		if(accessToken == null || accessToken.length() ==0)
@@ -366,42 +358,6 @@ public class SocialProviderOneAll implements SocialProvider {
 		return null;
 	
 	}
-
-    @Override
-    public boolean deleteSocialIdentity(String identityToken) {
-        if (identityToken == null || identityToken.length() == 0) {
-            throw new IllegalArgumentException("Invalid Identity Token");
-        }
-
-        String resource_uri = "http://" + site_domain + "/identities/" + identityToken + ".json?confirm_deletion=true";
-
-        String resultJson = apiCall(resource_uri, HttpMethod.DELETE);
-
-        return isCallSuccess(resultJson);
-    }
-
-    private boolean isCallSuccess(String resultJson) {
-        boolean success = false;
-        if (resultJson != null && resultJson.length() != 0) {
-            byte[] jsonData = resultJson.getBytes();
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode, responseNode, requestNode, statusNode;
-            try {
-                rootNode = objectMapper.readTree(jsonData);
-                responseNode = rootNode.isNull() ? null : (JsonNode) rootNode.path("response");
-                requestNode = responseNode.isNull() ? null : (JsonNode) responseNode.path("request");
-                statusNode = requestNode.isNull() ? null : (JsonNode) requestNode.get("status");
-                success = "success".equals(statusNode.path("flag").asText());
-            } catch (JsonProcessingException e) {
-                LOGGER.error(e.getMessage());
-                success = false;
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-                success = false;
-            }
-        }
-        return success;
-    }
 
 	private HashMap<String, String> getSocialUserPropertiesForAccessToken(
 			String resultJson, String providerName) {
@@ -436,8 +392,8 @@ public class SocialProviderOneAll implements SocialProvider {
 					.get("user");
 
 			if (userNode != null) {
-				userToken = userNode.path("user_token").asText();
-				identityNode = userNode.path("identity");
+				userToken = (String) userNode.path("user_token").asText();
+				identityNode = (JsonNode) userNode.path("identity");
 
 				if (identityNode != null) {
 					provider = identityNode.path("provider").asText();
@@ -493,7 +449,6 @@ public class SocialProviderOneAll implements SocialProvider {
 		String line = null;
 		String result_json = "";
 
-		BufferedReader rd = null;
 		try {
 			URL url = new URL(resource_uri);
 			String payload = "{\"request\":{\"user\":{\"action\":\"import_from_access_token\",\"identity\":{\"source\":{\"key\":\""
@@ -522,7 +477,7 @@ public class SocialProviderOneAll implements SocialProvider {
 			osw.flush();
 			osw.close();
 
-			rd = new BufferedReader(new InputStreamReader(
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			while ((line = rd.readLine()) != null) {
 				sb.append(line);
@@ -530,14 +485,6 @@ public class SocialProviderOneAll implements SocialProvider {
 			result_json = sb.toString();
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage());
-		} finally {
-			if (rd != null) {
-				try {
-					rd.close();
-				} catch (IOException ioe) {
-					// intentionally do nothing here
-				}
-			}
 		}
 		return result_json;
 	}

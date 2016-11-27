@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="tests"/>
-	<classpathentry kind="src" path="resources"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.8.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-excluding-deps-2012-12-21.jar" sourcepath="/SOY_SRC"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-latest.jar" sourcepath="/SOY_SRC"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gson-1.7.1.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/mockito-all-1.10.19.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/closure-compiler-v20131014.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-3.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-15.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/icu4j-4_8_1_1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/javax.inject.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-assistedinject-3.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-multibindings-3.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/FDStore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

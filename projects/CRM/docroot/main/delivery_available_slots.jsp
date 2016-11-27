@@ -17,6 +17,7 @@
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
+<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 
@@ -85,7 +86,7 @@ final boolean abstractTimeslots = false;
 			</tr>
 			<tr>
 				<td colspan="3" class="text12" align="left" style="padding-bottom: 5px;">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
-						<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0">
+						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
 				</td>
 			</tr>
 		</table>

@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>Our Thanksgiving Favorites!</title>
@@ -59,54 +59,54 @@
 	</tr>	
 	
 	<tr valign="top">
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="38"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="38"/></td>
 		<td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/talking_turkey.gif" width="295" height="23" alt="We're Talking Turkey"/></td>
 		<td rowspan="5"></td>
-		<td rowspan="5" bgcolor="#000000"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1"/></td>
+		<td rowspan="5" bgcolor="#000000"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1"/></td>
 		<td rowspan="5"></td>
 		<td colspan="5" rowspan="2"><a href="http://www.freshdirect.com/product.jsp?productId=cake_pmpkn_cheese&amp;catId=bak_cake_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/cheesecake.gif" width="178" height="50" border="0" alt="Pumpkin Cheesecake with Cranberry Chutney - $9.99/each"/></a></td>
 		<td rowspan="5"></td>
 	</tr>
 	
 	<tr valign="top">
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12"/></td>
 		<td colspan="4" rowspan="2" class="promoProduct">
 		<a href="http://www.freshdirect.com/product.jsp?productId=trk_fresh&amp;catId=mt_trky&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/fresh_turkey.gif" width="149" height="25" border="0" alt="Fresh Grade A All Natural Turkey - $1.19/lb"/><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0"/><br/>
 		<font color="#336600"><u><b>Click here to buy!</b></u></font></a><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="13" border="0"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="13" border="0"/><br/>
 		<a href="http://www.freshdirect.com/product.jsp?productId=ptrk_whl&amp;catId=mt_trky&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/frozen_turkey.gif" width="150" height="24" border="0" alt="Frozen Grade A All Natural Turkey - $0.99/lb"/><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0"/><br/>
 		<font color="#336600"><u><b>Click here to buy!</b></u></font></a><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="13" border="0"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="13" border="0"/><br/>
 		<a href="http://www.freshdirect.com/product.jsp?productId=kos_turk_whole&amp;catId=kosher_meat_poultry&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/kosher_turkey.gif" width="157" height="26" border="0" alt="Aaron's Glatt Kosher Fresh Turkey - $1.99/lb"/><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0"/><br/>
 		<font color="#336600"><u><b>Click here to buy!</b></u></font></a><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0"/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6" border="0"/>
 		</td>
 		<td colspan="2" rowspan="2" align="right"><a href="http://www.freshdirect.com/category.jsp?catId=mt_trky&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/raw_turkey.jpg" width="140" height="113" border="0" alt="Fresh Turkey"/></a></td>
 	</tr>
 	
 	<tr valign="top">
 		<td rowspan="3"></td>
-		<td colspan="3" class="promoProduct_s"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>Rich and creamy New York cheesecake takes an autumnal turn when it meets pumpkin and cranberries. The tangy flavor of fresh cranberry chutney is a perfect counterpoint to the warm, delicate flavors of pumpkin and spice.
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=cake_pmpkn_cheese&amp;catId=bak_cake_fd&amp;trk=epicks06a" class="promoProduct_s"><font color="#336600"><u><b>Click here to buy!</b></u></font></a></td>
+		<td colspan="3" class="promoProduct_s"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>Rich and creamy New York cheesecake takes an autumnal turn when it meets pumpkin and cranberries. The tangy flavor of fresh cranberry chutney is a perfect counterpoint to the warm, delicate flavors of pumpkin and spice.
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=cake_pmpkn_cheese&amp;catId=bak_cake_fd&amp;trk=epicks06a" class="promoProduct_s"><font color="#336600"><u><b>Click here to buy!</b></u></font></a></td>
 		<td colspan="2" align="right"><a href="http://www.freshdirect.com/product.jsp?productId=cake_pmpkn_cheese&amp;catId=bak_cake_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/cheesecake.jpg" width="125" height="105" border="0" alt="Pumpkin Cheesecake with Cranberry Chutney"/></a></td>
 	</tr>
 	
 	<tr valign="top">
 		<td colspan="6" rowspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/000000.gif" width="297" height="1" vspace="14"/><br/><a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/turkey_dinner.gif" width="278" height="33" border="0" alt="Don't Feel Like Cooking? Try Our Chef's Complete Turkey Dinners."/></a><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
-		<a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/turkey_dinner.jpg" width="100" height="72" border="0" align="left" alt="Turkey Dinner"/></a><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="2" height="102" align="left"/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
+		<a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/turkey_dinner.jpg" width="100" height="72" border="0" align="left" alt="Turkey Dinner"/></a><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="2" height="102" align="left"/>
 		Our chefs will be preparing every dish using top quality ingredients, family recipes and professional know-how. <b>All you'll have to do is heat and serve</b>.<br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/><a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=epicks06a" class="promoProduct"><font color="#336600"><u><b>Click here to learn more!</b></u></font></a>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/><a href="http://www.freshdirect.com/category.jsp?catId=hmr_thanks&amp;trk=epicks06a" class="promoProduct"><font color="#336600"><u><b>Click here to learn more!</b></u></font></a>
 		</td>
 		<td colspan="5" valign="bottom"><a href="http://www.freshdirect.com/product.jsp?productId=cake_hween_ckie&amp;catId=bak_cookies_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/cookies.gif" width="199" height="34" border="0" vspace="3" alt="Autumn Sugar Cookies - $3.99/6pk"/></a></td>
 	</tr>
 	
 	<tr valign="top">
 		<td colspan="3" class="promoProduct_s">Crispy and sweet, you will mistake these buttery-tasting cookies for homemade. The edges are baked until crunchy, but the centers are still soft. Dunk into a glass of milk, serve alongside a dish of vanilla ice cream or pack into a lunch box.<br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>
 		<a href="http://www.freshdirect.com/product.jsp?productId=cake_hween_ckie&amp;catId=bak_cookies_fd&amp;trk=epicks06a" class="promoProduct_s"><font color="#336600"><u><b>Click here to buy!</b></u></font></a></td>
 		<td colspan="2" align="right"><a href="http://www.freshdirect.com/product.jsp?productId=cake_hween_ckie&amp;catId=bak_cookies_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/cookies.jpg" width="100" height="79" border="0" alt="Autumn Sugar Cookies"/></a></td>
 	</tr>
@@ -115,11 +115,11 @@
 
 	<tr align="center" valign="top" class="promoProduct"> 
 		<td colspan="2" rowspan="7" align="left"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/native_alvin.gif" width="50" height="125" alt="Alvin"/></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pot_yukon&amp;catId=pot_pot&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/potatoes/pot_yukon_c.jpg" width="70" height="70" border="0" alt="Yukon Gold Potato"/><br/><font color="#336600"><u>Yukon Gold Potato</u></font></a><br/><b>$0.99/lb</b></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=roll_soft&amp;catId=bak_rolls&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/bakery/rolls/roll_soft_c.jpg" width="70" height="70" border="0" alt="Soft Dinner Rolls"/><br/><font color="#336600"><u>Soft Dinner Rolls</u></font></a><br/><b>$2.79/8pk</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pot_yukon&amp;catId=pot_pot&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/potatoes/pot_yukon_c.jpg" width="70" height="70" border="0" alt="Yukon Gold Potato"/><br/><font color="#336600"><u>Yukon Gold Potato</u></font></a><br/><b>$0.99/lb</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=roll_soft&amp;catId=bak_rolls&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/bakery/rolls/roll_soft_c.jpg" width="70" height="70" border="0" alt="Soft Dinner Rolls"/><br/><font color="#336600"><u>Soft Dinner Rolls</u></font></a><br/><b>$2.79/8pk</b></td>
 		<td colspan="5" class="promoProduct"><a href="http://www.freshdirect.com/product.jsp?productId=pietrt_pump&amp;catId=bak_pie_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/pastry/pies_tarts/pietrt_pump_c.jpg" width="80" height="80" border="0" alt="FreshDirect Pumpkin Pie"/><br/><font color="#336600"><u>Pumpkin Pie</u></font></a><br/><b>$9.99/ea</b></td>
-		<td class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=del_marcel_dmouss&amp;catId=pate&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/deli/pate/del_marcel_dmouss_c.jpg" width="70" height="70" border="0" alt="Marcel &amp; Henri Duck Mousse with Truffles"/><br/><font color="#336600"><u><b>Marcel &amp; Henri</b> Duck Mousse with Truffles</u></font></a><br/><b>$9.99/lb</b></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bns_green&amp;catId=pea&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/beans/bns_green_c.jpg" width="70" height="70" border="0" alt="Green Beans"/><br/><font color="#336600"><u>Green Beans</u></font></a><br/><b>$1.99/lb</b></td>
+		<td class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=del_marcel_dmouss&amp;catId=pate&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/deli/pate/del_marcel_dmouss_c.jpg" width="70" height="70" border="0" alt="Marcel &amp; Henri Duck Mousse with Truffles"/><br/><font color="#336600"><u><b>Marcel &amp; Henri</b> Duck Mousse with Truffles</u></font></a><br/><b>$9.99/lb</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bns_green&amp;catId=pea&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/beans/bns_green_c.jpg" width="70" height="70" border="0" alt="Green Beans"/><br/><font color="#336600"><u>Green Beans</u></font></a><br/><b>$1.99/lb</b></td>
 		<td colspan="2" rowspan="4" align="right"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/pilgrim_marc.gif" width="57" height="106" vspace="40" alt="Marc"/></td>
 	</tr>
 	
@@ -128,19 +128,19 @@
 	<tr align="center" valign="top">
 		<td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=gro_canne_fruit&amp;prodCatId=gro_canne_fruit&amp;productId=gro_ocean_regular_01&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/grocery/gro_ocean_regular_01_c.jpg" width="80" height="80" border="0" alt="Ocean Spray Jellied Cranberry Sauce"/><br/><font color="#336600"><u><b>Ocean Spray</b> Jellied Cranberry Sauce</u></font></a><br/><b>$1.49/ea</b></td>
 		<td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=gro_baker_stuff&amp;prodCatId=gro_baker_stuff&amp;productId=gro_pfarm_hrbstuf&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/grocery_three/gro_pfarm_hrbstuf_c.jpg" width="80" height="80" border="0" alt="Pepperidge Farm Herb Stuffing"/><br/><font color="#336600"><u><b>Pepperidge Farm</b> Herb Stuffing</u></font></a><br/><b>$2.79/ea</b></td>
-		<td colspan="5" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bl_french&amp;catId=cof_by_rst_fr_reg&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/coffee/blends/bl_french_c.jpg" width="70" height="70" border="0" alt="FreshDirect French Roast"/><br/><font color="#336600"><u><b>FreshDirect</b> French Roast</u></font></a><br/><b>$3.99/lb</b></td>
+		<td colspan="5" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bl_french&amp;catId=cof_by_rst_fr_reg&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/coffee/blends/bl_french_c.jpg" width="70" height="70" border="0" alt="FreshDirect French Roast"/><br/><font color="#336600"><u><b>FreshDirect</b> French Roast</u></font></a><br/><b>$3.99/lb</b></td>
 		<td class="promoProduct"><a href="http://www.freshdirect.com/product.jsp?productId=cake_hween_cpcke&amp;catId=bak_cake_fd&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/pastry/cakes_cupcakes/cake_hween_cpcke_c.jpg" width="80" height="80" border="0" alt="Autumn Cupcakes"/><br/><font color="#336600"><u>Autumn Cupcakes</u></font></a><br/><b>$4.99/4pk</b></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pot_yam&amp;catId=pot_sweet&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/potatoes/pot_yam_c.jpg" width="70" height="70" border="0" alt="Jewel Yam"/><br/><font color="#336600"><u>Jewel Yam</u></font></a><br/><b>$0.99/lb</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pot_yam&amp;catId=pot_sweet&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/vegetables/potatoes/pot_yam_c.jpg" width="70" height="70" border="0" alt="Jewel Yam"/><br/><font color="#336600"><u>Jewel Yam</u></font></a><br/><b>$0.99/lb</b></td>
 	</tr>
 	
 	<tr><td colspan="12"><br/></td></tr>
 	
 	<tr align="center" valign="top">
 		<td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=gro_bever&amp;groceryVirtual=gro_bever&amp;brandValue=bd_fizzy_lizzy&amp;prodCatId=gro_bever_juice_spark&amp;productId=spe_fizliz_cran&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/grocery_two/spe_fizliz_cran_c.jpg" width="80" height="80" border="0" alt="Fizzy Lizzy Cranberry Sparkling Juice"/><br/><font color="#336600"><u><b>Fizzy Lizzy</b> Cranberry Sparkling Juice</u></font></a><br/><b>$4.49/4pk</b></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=net_gda_raw_02&amp;catId=gouda&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/cheese/netherlands_sweden/net_gda_raw_02_c.jpg" width="70" height="70" border="0" alt="4 Year Gouda"/><br/><font color="#336600"><u>4 Year Gouda</u></font></a><br/><b>$9.99/lb</b></td>
-		<td colspan="5" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=nut_chestnut&amp;catId=cfnnutshlon&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/fruit/nuts/nut_chestnut_c.jpg" width="70" height="70" border="0" alt="Chestnuts"/><br/><font color="#336600"><u>Chestnuts</u></font></a><br/><b>$3.99/lb</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=net_gda_raw_02&amp;catId=gouda&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/cheese/netherlands_sweden/net_gda_raw_02_c.jpg" width="70" height="70" border="0" alt="4 Year Gouda"/><br/><font color="#336600"><u>4 Year Gouda</u></font></a><br/><b>$9.99/lb</b></td>
+		<td colspan="5" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=nut_chestnut&amp;catId=cfnnutshlon&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/fruit/nuts/nut_chestnut_c.jpg" width="70" height="70" border="0" alt="Chestnuts"/><br/><font color="#336600"><u>Chestnuts</u></font></a><br/><b>$3.99/lb</b></td>
 		<td class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=dai_butte_regu&amp;prodCatId=dai_butte_regu&amp;productId=dai_kellers_trkybtr&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/dairy/dai_kellers_trkybtr_c.jpg" width="80" height="80" border="0" alt="Keller's Turkey Shaped Butter Sculpture"/><br/><font color="#336600"><u><b>Keller's</b> Turkey Shaped Butter Sculpture</u></font></a><br/><b>$3.19/ea</b></td>
-		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="9"/><br/><a href="http://www.freshdirect.com/product.jsp?catId=hmr_stock&amp;productId=hmrstck_chkn&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/meals/stock_ingredients/hmrstck_chkn_c.jpg" width="90" height="71" border="0" alt="FreshDirect Chicken Stock"/><br/><font color="#336600"><u><b>FreshDirect</b> Chicken Stock</u></font></a><br/><b>$2.99/ea</b></td>
+		<td colspan="2" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="9"/><br/><a href="http://www.freshdirect.com/product.jsp?catId=hmr_stock&amp;productId=hmrstck_chkn&amp;trk=epicks06a"><img src="http://www.freshdirect.com/media/images/product/meals/stock_ingredients/hmrstck_chkn_c.jpg" width="90" height="71" border="0" alt="FreshDirect Chicken Stock"/><br/><font color="#336600"><u><b>FreshDirect</b> Chicken Stock</u></font></a><br/><b>$2.99/ea</b></td>
 		<td colspan="2" rowspan="3" align="right" valign="middle"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/pilgrim_melissa.gif" width="46" height="88" vspace="12" alt="Melissa"/></td>
 	</tr>
 	
@@ -177,22 +177,22 @@
 	<tr><td colspan="16" align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/thanksgiving/leaf_line.gif" width="616" height="13"/></td></tr>
 	
 	<tr bgcolor=""> 
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="38" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="66" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="42" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="11" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="97" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="43" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="10" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="11" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="43" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="108" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="21" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="87" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="38" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="38" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="66" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="42" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="11" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="97" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="43" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="10" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="11" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="43" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="108" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="21" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="87" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="38" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="10"/></td>
 	</tr>
 	
 	<tr>
@@ -200,7 +200,7 @@
 	    <a href="http://www.freshdirect.com?trk=epicks06a"><img src="http://www.freshdirect.com/media_stat/images/template/email/logo_url.gif" width="264" height="35" vspace="6" border="0" alt="www.FreshDirect.com"/></a><br/>
 	    Price and availability subject to change. Please see Web site for current 
 	    prices and availability.<br/>
-	    <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/>
+	    <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/>
 		</td>
 	</tr>
 	<tr><td></td><td colspan="14"><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/><br/><br/></td><td></td></tr>

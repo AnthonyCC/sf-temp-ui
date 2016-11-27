@@ -22,10 +22,10 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
@@ -265,12 +265,10 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		List<MaterialPrice> matPriceList=  new ArrayList<MaterialPrice>();
 		String salesOrg=customer.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
 		String distributionChannel=customer.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-		FDGroup group = productInfo.getGroup(customer.getUserContext().getPricingContext().getZoneInfo());
-//		if(productInfo.isGroupExists(salesOrg,distributionChannel)) {
-		if(null != group) {
+		if(productInfo.isGroupExists(salesOrg,distributionChannel)) {
 			//Has a Group Scale associated with it. Check if there is GS price defined for
 			//current pricing zone.
-//			FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
+			FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
 			MaterialPrice[] grpPrices = null;
 			try {
 				grpPrices = GroupScaleUtil.getGroupScalePrices(group, customer.getUserContext().getPricingContext().getZoneInfo());

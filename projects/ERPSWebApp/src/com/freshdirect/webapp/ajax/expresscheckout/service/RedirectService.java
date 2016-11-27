@@ -18,11 +18,4 @@ public class RedirectService {
         }
         return redirectUrl.toString();
     }
-
-    public String replacedRedirectUrl(String redirectUrl) {
-        if (redirectUrl != null && redirectUrl.contains("/expressco/view_cart.jsp")) {
-            return "/expressco/checkout.jsp";
-        }
-        return redirectUrl;
-    }
 }

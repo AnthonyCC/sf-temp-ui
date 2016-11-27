@@ -19,9 +19,6 @@ public class ErpGiftCardDlvConfirmModel extends ErpGiftCardTransModel {
 		this.dlvInfoTranactionList = dlvInfoTranactionList;
 	}
 
-	public ErpGiftCardDlvConfirmModel() {
-		this(EnumTransactionType.GIFTCARD_DLV_CONFIRM);
-	}
 	public ErpGiftCardDlvConfirmModel( EnumTransactionType type ) {
 		super( type );
 	}

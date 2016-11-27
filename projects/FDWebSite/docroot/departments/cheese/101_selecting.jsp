@@ -1,5 +1,5 @@
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>FreshDirect - Cheese 101</title>
 
@@ -9,7 +9,8 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()">
-<!--   <a name="top"></a> -->
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+<a name="top"></a>
 <center>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 	<!-- APPDEV 4284 <tr valign="TOP">
@@ -33,19 +34,19 @@
 		<img src="/media/images/navigation/department/cheese/che_manager_noname.jpg" border="0"><br>
 		</td>
 		<td width="10" rowspan="2">
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" hspace="0" vspace="0">
+			<img src="/media_stat/images/layout/clear.gif" width="10" height="1" hspace="0" vspace="0">
 		</td>
 		<td width="1" bgcolor="#999966" rowspan="2">
-			<img src="/media_stat/images/layout/999966.gif" alt="" width="1" height="300" hspace="0" vspace="0">
+			<img src="/media_stat/images/layout/999966.gif" width="1" height="300" hspace="0" vspace="0">
 		</td>
 		<td width="10" rowspan="2">
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" hspace="0" vspace="0">
+			<img src="/media_stat/images/layout/clear.gif" width="10" height="1" hspace="0" vspace="0">
 		</td>
 		<td valign="TOP" width="379">
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" hspace="0" vspace="0"><br><font class="title16">Selecting</font><br><font class="bodyCopySmall">We offer a bewildering array of fine cheeses. Don't be bewildered. Use this simple guide to mix and match. Try something new. Do you like Brie? Try one of its friends. Love mild blues? Try moving up the "bite" scale.
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="3" hspace="0" vspace="0"><br><font class="title16">Selecting</font><br><font class="bodyCopySmall">We offer a bewildering array of fine cheeses. Don't be bewildered. Use this simple guide to mix and match. Try something new. Do you like Brie? Try one of its friends. Love mild blues? Try moving up the "bite" scale.
 		<p>Choose contrasting flavors and textures. Mix it up. Hard and soft, mild and strong. Set spicy Roquefort against creamy, milky Brie. There are no rules. Pick and choose from our many categories, and use our flavor and texture ratings as your guide.
 		<p>Mix up the milks. Cow's-milk, sheep's-milk, and goat's-milk cheeses each have unique, distinctive flavors and aromas. Try the burnt-sugar sweetness of sheep's-milk cheeses with the farmy tanginess of ch&egrave;vre. Compare and contrast.
-		<p>Consider the season. In the warmth of spring and the heat of summer, choose simple, lighter cheeses like fresh ch&egrave;vres and simple Bries. In the cool fall and icy winter, choose hardier, heavier, more strongly flavored cheeses, like Cheddar and Gruy&egrave;re.<br></font><img src="/media_stat/images/layout/clear.gif" alt="" width="379" height="10" hspace="0" vspace="0">
+		<p>Consider the season. In the warmth of spring and the heat of summer, choose simple, lighter cheeses like fresh ch&egrave;vres and simple Bries. In the cool fall and icy winter, choose hardier, heavier, more strongly flavored cheeses, like Cheddar and Gruy&egrave;re.<br></font><img src="/media_stat/images/layout/clear.gif" width="379" height="10" hspace="0" vspace="0">
 		</td>
 	</tr>
 	<!--APPDEV 4284 <tr valign="TOP">

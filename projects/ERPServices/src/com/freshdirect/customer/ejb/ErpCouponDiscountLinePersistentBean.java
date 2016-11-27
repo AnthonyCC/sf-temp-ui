@@ -13,7 +13,6 @@ import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 
 
 public class ErpCouponDiscountLinePersistentBean extends ErpReadOnlyPersistentBean {
@@ -80,24 +79,17 @@ public class ErpCouponDiscountLinePersistentBean extends ErpReadOnlyPersistentBe
 	 * @throws SQLException if any problems occur talking to the database
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;	
 		List lst = new LinkedList();
-		
-		try {
-			ps = conn.prepareStatement("SELECT ID, ORDERLINE_ID, COUPON_ID, VERSION, DISC_AMT, DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ORDERLINE_ID=? ORDER BY ID");
-			ps.setString(1, parentPK.getId());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				ErpCouponDiscountLinePersistentBean bean = new ErpCouponDiscountLinePersistentBean(new PrimaryKey(rs.getString("ID")), rs);
-				bean.setParentPK(parentPK);
-				lst.add(bean);
-			}
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_ID, COUPON_ID, VERSION, DISC_AMT, DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ORDERLINE_ID=? ORDER BY ID");
+		ps.setString(1, parentPK.getId());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ErpCouponDiscountLinePersistentBean bean = new ErpCouponDiscountLinePersistentBean( new PrimaryKey(rs.getString("ID")), rs );
+			bean.setParentPK(parentPK);
+			lst.add(bean);
 		}
-		
+		rs.close();
+		ps.close();
 		return lst;
 	}
 	
@@ -133,38 +125,16 @@ public class ErpCouponDiscountLinePersistentBean extends ErpReadOnlyPersistentBe
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement("SELECT COUPON_ID, ORDERLINE_ID, VERSION, DISC_AMT,DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ID=?");
-			ps.setString(1, this.getPK().getId());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				this.loadFromResultSet(rs);
-			} else {
-				throw new SQLException("No such ErpCouponLine PK: " + this.getPK()); 
-			}
-//			rs.close();
-//			ps.close();
-		} catch (Exception e) {
-			
-		} finally {
-			if(null != rs){
-				try {
-					rs.close();
-				} catch (Exception e) {
-					
-				}
-			}
-			
-			if(null != ps){
-				try {
-					ps.close ();
-				} catch (Exception e) {
-					
-				}
-			}
+		PreparedStatement ps = conn.prepareStatement("SELECT COUPON_ID, ORDERLINE_ID, VERSION, DISC_AMT,DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ID=?");
+		ps.setString(1, this.getPK().getId());
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			this.loadFromResultSet(rs);
+		} else {
+			throw new SQLException("No such ErpCouponLine PK: " + this.getPK()); 
 		}
+		rs.close();
+		ps.close();
 	}
 
 	private void loadFromResultSet(ResultSet rs) throws SQLException {

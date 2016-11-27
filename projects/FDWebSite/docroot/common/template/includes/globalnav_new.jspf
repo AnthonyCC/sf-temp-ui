@@ -323,7 +323,7 @@ padding-left:8px;
 	</div>
 	<div class="bottom-nav">
 		<ul class="bottom-nav-items">
-			<li class="bottom-item pres-picks"><a href="#">Fresh Deals</a></li>
+			<li class="bottom-item pres-picks"><a href="#">President's Picks</a></li>
 			<li class="bottom-item top-products"><a href="#">Top Rated Produce</a></li>
 			<li class="bottom-item top-seafood"><a href="#">Top Rated Seafood</a></li>
 			<li class="bottom-item meat-deals"><a href="#">Meat Deals</a></li>

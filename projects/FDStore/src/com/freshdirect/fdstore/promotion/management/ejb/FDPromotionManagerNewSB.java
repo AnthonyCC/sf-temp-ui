@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -129,7 +128,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate) throws FDResourceException, RemoteException;
 	
-	public List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException, RemoteException;
+	public List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException, RemoteException;
 	
 	public boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException,RemoteException;
 	

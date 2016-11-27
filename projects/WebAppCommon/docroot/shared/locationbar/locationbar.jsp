@@ -52,7 +52,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 		
 		if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
-			%><tmpl:put name="address"><select id="selectAddressList" aria-label="choose address" name="selectAddressList"><%
+			%><tmpl:put name="address"><select id="selectAddressList" name="selectAddressList"><%
 				if(allHomeAddresses.size()>0){%>
 					<optgroup label="Home Delivery">
 						<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
@@ -81,7 +81,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 	} else { //non-recognized user
 		String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span><span id="newzip"><label for="newziptext"><span class="offscreen">change your zip code:</span></label><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
+		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span><span id="newzip"><label for="newziptext"></label><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
 	}
 %>
 <tmpl:put name="zipdisplay"><tmpl:get name="zipcode" /> <tmpl:get name="address" /></tmpl:put>
@@ -90,7 +90,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 	if(user!=null && user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { 
 		%><a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0" border="0" style="margin: 3px 0 -3px 0;" /></a><% 
 	} else if (user!=null && user.isDlvPassActive()) {
-		%><a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS ABOUT UNLIMITED DELIVERYPASS MEMBER"  vspace="0" border="0" style="margin: 3px 0 -3px 0;" /></a><% 
+		%><a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0" style="margin: 3px 0 -3px 0;" /></a><% 
 	} %> 
 </tmpl:put>
 
@@ -145,9 +145,9 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 	if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 		if(user.isCorporateUser()){
-			%><tmpl:put name="hoicon"><a class="home green" href="/index.jsp?serviceType=HOME">Home delivery?</a></tmpl:put><%
+			%><tmpl:put name="hoicon"><a class="home green" href="/index.jsp">Home delivery?</a></tmpl:put><%			
 		}else {
-			%><tmpl:put name="hoicon"><a class="office green" href="/index.jsp?serviceType=CORPORATE">Office delivery?</a></tmpl:put><%	
+			%><tmpl:put name="hoicon"><a class="office green" href="/department.jsp?deptId=COS">Office delivery?</a></tmpl:put><%			
 		}
 	}
 %>

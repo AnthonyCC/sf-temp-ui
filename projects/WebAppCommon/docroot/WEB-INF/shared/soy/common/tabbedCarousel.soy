@@ -4,9 +4,8 @@
  * @param? hasYourFavoritesRecommendation
  * @param? productList
  * @param? selected
- * @param? eventSource
+ * @param? cmEventSource
  * @param? showCustRated
- * @param? isNewProductsCarouselLoaded
  */
 {template .tabbedCarousel}
 {let $siteFeature}
@@ -16,76 +15,59 @@
     {case 'fdfav'}FAVORITES_QS
     {case 'expert'}EXPRATED_QS
     {case 'custrating'}CUSTRATED_QS
-    {case 'newproducts'}NEW_PRODUCTS
   {/switch}
 {/let}
-<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-eventsource="{if $eventSource }{$eventSource}{else}qs_tabbedRecommender{/if}" data-apiendpoint="/api/qs/ymal">
-  <ul class="tabs clearfix" role="tablist">
-    {if $isNewProductsCarouselLoaded}
-    	<li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='newproducts'}class="selected" aria-selected="true"{/if} data-tabname="newproducts" data-sitefeature="NEW_PRODUCTS">new products</li>
-    {/if}
-    {if $hasYourFavoritesRecommendation}
-      <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='yourfav'}class="selected" aria-selected="true"{/if} data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
-    {/if}
-    <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='deals'}class="selected" aria-selected="true"{/if} data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
-    <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='fdfav'}class="selected" aria-selected="true"{/if} data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
-    <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='expert'}class="selected" aria-selected="true"{/if} data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
-    {if $showCustRated}
-      <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='custrating'}class="selected" aria-selected="true"{/if} data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
-    {/if}
-  </ul>
-  <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-siteFeature="{$siteFeature}">
+<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}qs_tabbedRecommender{/if}" data-apiendpoint="/api/qs/ymal">
+    <ul class="tabs clearfix" role="tablist">
+    	{if $hasYourFavoritesRecommendation}
+        <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='yourfav'}class="selected" aria-selected="true"{/if} data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
+        {/if}
+        <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='deals'}class="selected" aria-selected="true"{/if} data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
+        <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='fdfav'}class="selected" aria-selected="true"{/if} data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
+        <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='expert'}class="selected" aria-selected="true"{/if} data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
+        {if $showCustRated}
+			<li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='custrating'}class="selected" aria-selected="true"{/if} data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+		{/if}
+    </ul>
+
+    <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$siteFeature}">
     {if $productList }
-      {call common.simpleCarousel}
-        {param items:$productList /}
-        {param itemType:'grid' /}
-      {/call}
+    	{call common.simpleCarousel}
+    		{param items:$productList /}
+    		{param itemType:'grid' /}
+    	{/call}
     {/if}
-  </div>
+    </div>
 </div>
 {/template}
 
 /**
  * @param? recommendationTabs
+ * @param? cmEventSource
  * @param? apiEndPoint
  * @param? fullSize
  */
 {template .generalTabbedCarousel}
 {if $recommendationTabs and length($recommendationTabs)}
-<div class="tabbed-carousel {if $fullSize}fullsize{/if}" data-component="tabbedRecommender" {if $apiEndPoint}data-apiendpoint="{$apiEndPoint}"{/if}>
-  <ul class="tabs" role="tablist">
+<div class="tabbed-carousel {if $fullSize}fullsize{/if}" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}tabbedRecommender{/if}" {if $apiEndPoint}data-apiendpoint="{$apiEndPoint}"{/if}>
+    <ul class="tabs" role="tablist">
     {foreach $tab in $recommendationTabs}
-      <li role="tab" tabindex="0" aria-selected="{if $tab.selected}true{else}false{/if}" data-component="tabitem" class="{if $tab.selected}selected{/if}" data-tabname="{$tab.title}" data-sitefeature="{$tab.siteFeature}" data-impressionid="{$tab.impressionId}" data-parentimpressionid="{$tab.parentImpressionId}" data-parentvariantid="{$tab.parentVariantId}">{$tab.title}</li>
+      <li role="tab" tabindex="0" aria-selected="{if isFirst($tab)}true{else}false{/if}" data-component="tabitem" class="{if isFirst($tab)}selected{/if}" data-tabname="{$tab.title}" data-sitefeature="{$tab.siteFeature}" data-impressionid="{$tab.impressionId}" data-parentimpressionid="{$tab.parentImpressionId}" data-parentvariantid="{$tab.parentVariantId}">{$tab.title}</li>
     {/foreach}
-  </ul>
-  {foreach $tab in $recommendationTabs}
-    {if $tab.selected}
-      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-siteFeature="{$tab.siteFeature}" data-eventsource="{if $tab.carouselData and $tab.carouselData.eventSource}{$tab.carouselData.eventSource}{else}tabbedRecommender{/if}">
-        {if $tab.carouselData and $tab.carouselData.products}
-          {call common.simpleCarousel}
-            {param items:$tab.carouselData.products /}
-            {param itemType:$tab.itemType /}
-            {param eventSource:$tab.carouselData.eventSource /}
-            {param title:$tab.description /}
-          {/call}
-        {/if}
-      </div>
+    </ul>
+
+    <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$recommendationTabs[0].siteFeature}">
+    {if $recommendationTabs[0].carouselData and $recommendationTabs[0].carouselData.products}
+    	{call common.simpleCarousel}
+    		{param items:$recommendationTabs[0].carouselData.products /}
+    		{param itemType:'grid' /}
+    	{/call}
     {/if}
-  {/foreach}
+    </div>
 </div>
 {/if}
 {/template}
 
-/**
- * @param? recommendationTabs
- */
-{template .checkoutTabbedCarousel}
-{call common.generalTabbedCarousel}
-  {param recommendationTabs:$recommendationTabs /}
-  {param apiEndPoint:'/api/viewcart/recommendation' /}
-  {param fullSize:true /}
-{/call}
-{/template}
 
 /**
  * @param? recommendationTabs
@@ -93,10 +75,12 @@
 {template .viewCartTabbedCarousel}
 {call common.generalTabbedCarousel}
   {param recommendationTabs:$recommendationTabs /}
+  {param cmEventSource:'view_cart' /}
   {param apiEndPoint:'/api/viewcart/recommendation' /}
   {param fullSize:true /}
 {/call}
 {/template}
+
 
 /**
  * @param? recommendationTabs
@@ -104,6 +88,7 @@
 {template .qsBottomTabbedCarousel}
 {call common.generalTabbedCarousel}
   {param recommendationTabs:$recommendationTabs /}
+  {param cmEventSource:'qs_bottom' /}
   {param apiEndPoint:'/api/reorder/recommendation' /}
   {param fullSize:true /}
 {/call}

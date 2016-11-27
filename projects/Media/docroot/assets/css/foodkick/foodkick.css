@@ -1,44 +1,16 @@
 /*FONTS */
 @font-face {
   font-family: "GraphikApp-Regular";
-  src: local("GraphikApp-Regular"), 
-  	url("/assets/css/fonts/GraphikApp-Regular.otf"), 
-  	url("/assets/css/fonts/GraphikApp-Regular.ttf"), 
-  	url("/assets/css/fonts/GraphikApp-Regular.eot"), 
-  	url("/assets/css/fonts/GraphikApp-Regular.svg"), 
-  	url("/assets/css/fonts/GraphikApp-Regular.woff2") format('woff2'), 
-  	url("/assets/css/fonts/GraphikApp-Regular.woff");
-}
+  src: local("GraphikApp-Regular"), url("/assets/css/fonts/GraphikApp-Regular.otf"), url("/assets/css/fonts/GraphikApp-Regular.ttf"), url("/assets/css/fonts/GraphikApp-Regular.eot"), url("/assets/css/fonts/GraphikApp-Regular.svg"), url("/assets/css/fonts/GraphikApp-Regular.woff"); }
 @font-face {
   font-family: "GraphikApp-Semibold";
-  src: local("GraphikApp-Semibold"), 
-  	url("/assets/css/fonts/GraphikApp-Semibold.otf"), 
-  	url("/assets/css/fonts/GraphikApp-Semibold.ttf"), 
-  	url("/assets/css/fonts/GraphikApp-Semibold.eot"), 
-  	url("/assets/css/fonts/GraphikApp-Semibold.svg"),  
-  	url("/assets/css/fonts/GraphikApp-Semibold.woff2") format('woff2'),
-  	url("/assets/css/fonts/GraphikApp-Semibold.woff");
-}
+  src: local("GraphikApp-Semibold"), url("/assets/css/fonts/GraphikApp-Semibold.otf"), url("/assets/css/fonts/GraphikApp-Semibold.ttf"), url("/assets/css/fonts/GraphikApp-Semibold.eot"), url("/assets/css/fonts/GraphikApp-Semibold.svg"), url("/assets/css/fonts/GraphikApp-Semibold.woff"); }
 @font-face {
   font-family: "tiempo_regular";
-  src: local("tiempo_regular"), 
-  	url("/assets/css/fonts/tiempo_regular.otf"), 
-  	url("/assets/css/fonts/tiempo_regular.ttf"), 
-  	url("/assets/css/fonts/tiempo_regular.eot"), 
-  	url("/assets/css/fonts/tiempo_regular.svg"), 
-  	url("/assets/css/fonts/tiempo_regular.woff2") format('woff2'), 
-  	url("/assets/css/fonts/tiempo_regular.woff"); 
-}
+  src: local("tiempo_regular"), url("/assets/css/fonts/tiempo_regular.otf"), url("/assets/css/fonts/tiempo_regular.ttf"), url("/assets/css/fonts/tiempo_regular.eot"), url("/assets/css/fonts/tiempo_regular.svg"), url("/assets/css/fonts/tiempo_regular.woff"); }
 @font-face {
   font-family: "TiemposHeadlineApp-Bold";
-  src: local("TiemposHeadlineApp-Bold"), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.otf"), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.ttf"), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.eot"), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.svg"), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.woff2") format('woff2'), 
-  	url("/assets/css/fonts/TiemposHeadlineApp-Bold.woff"); 
-}
+  src: local("TiemposHeadlineApp-Bold"), url("/assets/css/fonts/TiemposHeadlineApp-Bold.otf"), url("/assets/css/fonts/TiemposHeadlineApp-Bold.ttf"), url("/assets/css/fonts/TiemposHeadlineApp-Bold.eot"), url("/assets/css/fonts/TiemposHeadlineApp-Bold.svg"), url("/assets/css/fonts/TiemposHeadlineApp-Bold.woff"); }
 /*CORE TAGS*/
 body {
   padding: 0px;

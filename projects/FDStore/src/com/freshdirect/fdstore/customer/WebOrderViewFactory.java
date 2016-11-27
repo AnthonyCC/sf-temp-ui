@@ -241,7 +241,7 @@ public class WebOrderViewFactory {
 			for (Iterator<FDCartLineI> i = lines.iterator(); i.hasNext();) {
 				FDCartLineI line = i.next();
 
-				FDInvoiceLineI invoiceLine = line.getInvoiceLine();
+				ErpInvoiceLineI invoiceLine = line.getInvoiceLine();
 				tax += invoiceLine.getTaxValue();
 				depositValue += invoiceLine.getDepositValue();
 				subtotal += invoiceLine.getPrice();

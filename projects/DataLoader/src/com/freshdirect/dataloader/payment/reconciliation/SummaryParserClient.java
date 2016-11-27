@@ -14,9 +14,6 @@ import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackResponse;
 import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
@@ -247,11 +244,8 @@ class SummaryParserClient extends SettlementParserClient {
 		this.adjustmentModel.setReferenceNumber(trans.getReferenceNumber());
 		this.adjustmentModel.setSequenceNumber(trans.getSequenceNumber());
 		this.adjustmentModel.setNetSalesAmount(trans.getNetSalesAmount());
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-			ReconciliationService.getInstance().addAdjustment(this.adjustmentModel);
-		}else{
-			this.reconciliationSB.addAdjustment(this.adjustmentModel);
-		}
+
+		this.reconciliationSB.addAdjustment(this.adjustmentModel);
 	}
 
 	public void process(FileHeader trans) {
@@ -267,10 +261,7 @@ class SummaryParserClient extends SettlementParserClient {
 		this.settlementSummary.setInvoices(this.invoices);
 
 		this.builder.addHeader(this.batchDate, this.batchNumber, netDeposit);
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-			ReconciliationService.getInstance().addSettlementSummary(this.settlementSummary);
-		}else{
+
 		this.reconciliationSB.addSettlementSummary(this.settlementSummary);
-		}
 	}
 }

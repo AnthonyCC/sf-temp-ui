@@ -1,40 +1,36 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes' %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@ page import="com.freshdirect.storeapi.content.StoreModel"%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
+<%@ page import="com.freshdirect.fdstore.content.StoreModel"%>
 <%@ page import="org.apache.commons.lang.StringUtils"%>
-<%@ page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@ page import="com.freshdirect.cms.application.CmsManager"%>
+<%@ page import="com.freshdirect.cms.ContentType"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import='java.text.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@ page import="com.freshdirect.webapp.util.RequestUtil"%>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<%@ taglib uri="fd-data-potatoes" prefix="potato" %><%
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %><% 
 
 //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -44,84 +40,67 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 // no YUI required for index.jsp
 request.setAttribute("noyui", true);
 
-%><fd:CheckLoginStatus pixelNames="TheSearchAgency" id="user" />
+%><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
 <%-- fd:WelcomeExperience / --%><%
 
-  if (request.getParameter("serviceType") == null) {
-	String serviceType = "HOME";
-	if (user.isCorporateUser()){
-      serviceType = "CORPORATE";
-    }
-	//The below redirect is not required, and causing performance issues due to additional redirect.
-	//response.sendRedirect("/index.jsp?serviceType=" + serviceType);
-  }
-
-  boolean isCorpotateUser = user.isCorporateUser();
-  boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-  boolean mobWebOptimizedIndex = ( ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobwebindexopt, user) || "true".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) && !"false".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) ? true : false;
-
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+	String custFirstName = user.getFirstName();
+	int validOrderCount = user.getAdjustedValidOrderCount();
+	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));        
+	
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
-
+        
 	String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
 	if (mobWeb) {
-		if ( mobWebOptimizedIndex ) { //allow opt for live testing
-			pageTemplate = "/common/template/mobileWeb_index_optimized.jsp"; //mobWeb template (20170913 batchley - only index should use optimized for now)
-		} else {
-			pageTemplate = "/common/template/mobileWeb.jsp"; //default
-		}
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
 	}
-
-	String seoMetaTag_pageId = (isCorpotateUser) ? "cos_homepage" : "index";
 %>
 <tmpl:insert template="<%=pageTemplate %>">
 
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="<%= seoMetaTag_pageId %>" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name="customCss">
-		<%-- mark HP webfont preload hints --%>
-		<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Medium.woff2" as="font">
-		<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Regular.woff2" as="font">
-		
-		<jwr:style src="/homepage.css" media="all" />
+		<fd:css href="/assets/css/homepage/homepage.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraCss"><%-- MOBILE --%>
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
-
+		
 	</tmpl:put>
 	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
 	</tmpl:put>
 	
-	<tmpl:put name='containerExtraClass' direct='true'>homepage</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<%!
 
 		//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
-		public static boolean hasProduct_hprd(CategoryModel categoryModel){
+		public static boolean hasProduct(CategoryModel categoryModel){
 			boolean hasProduct = false;
-
+			
 			if(!categoryModel.getSubcategories().isEmpty())
 			{
 				List<CategoryModel> subCategories = categoryModel.getSubcategories();
 				for (CategoryModel m1 : subCategories) {
-					boolean result = hasProduct_hprd(m1);
+					boolean result = hasProduct(m1);
 					if(result){
-						return result;
+						return result; 
 					}
 				}
 			}
 			if(categoryModel.getProducts().size()>0)
 			{
-				return isProductAvailable_hprd(categoryModel.getProducts());
+				return isProductAvailable(categoryModel.getProducts());
 			}else
 				return false;
 		}
-
-		public static boolean isProductAvailable_hprd(List<ProductModel> prodList){
+		
+		public static boolean isProductAvailable(List<ProductModel> prodList){
 			boolean result = false;
-
+			
 			for(ProductModel model:prodList){
 				if(!(model.isUnavailable() || model.isDiscontinued())){
 					result = true;
@@ -136,100 +115,85 @@ request.setAttribute("noyui", true);
 			<div id="mobilehomeMainDiv">
 			<%
 				//OAS setup
-			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03,HPMob04");
+			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02");
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
-
+			   	
 			   	if (FDStoreProperties.isAdServerEnabled()) {
-					%><div id="oas_HPMob01" class="oas-cnt home-page-banner">
+					%><div id="OAS_HPMob01" class="home-page-banner">
 			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
-			  		</div><%
-					%><div id="oas_HPMob02" class="oas-cnt home-page-banner">
+			  		</div><% 
+					%><div id="OAS_HPMob02" class="home-page-banner">
 		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
-		  			</div><%
+		  			</div><% 
 			  	}
-
+						   	
 				List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
-				int bannerIndex = 0;
-
+				
 				for (CategoryModel curCat: catModels) {
-					String curCatLink = "/browse.jsp?id="+curCat;
+					//skip if cat has no prod(s)
+					if (!hasProduct(curCat)) {
+						continue;
+					}
 					
-					//hard-code skip FK if in modify mode
-					if ((user.getShoppingCart() instanceof FDModifyCartModel) && "wgd_dwnld".equalsIgnoreCase(curCat.getContentKey().getId())) {
-						continue;
-					}
-					//skip if cat has no prod(s) and is not redirecting
-					if ("".equals(curCat.getRedirectURL()) && !hasProduct_hprd(curCat)) {
-						continue;
-					}
-					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
-						curCatLink = "https://www.foodkick.com";
-					}
-					String bannerText = curCat.getPrimaryText();
-					if ("".equals(bannerText)) {
-						bannerText = curCat.getFullName();
-					}
-
 					 %>
-
-					<a href="<%= curCatLink %>" data-catid="<%= curCat.getContentKey().getId() %>">
-					    <div class="home-page-banner">
-						    <img data-src="<%= (curCat.getTabletThumbnailImage() != null) ? curCat.getTabletThumbnailImage().getPathWithPublishId() : "" %>" alt="" />
-							<div class="home-page-banner-subtext-cont">
-								<div class="home-page-banner-subtext"><%= bannerText %></div>
-							</div>
-						</div>
-				    </a>
-				    <% bannerIndex++; %>
-
-				    <% if (bannerIndex == 5) { %>
-						<%
-						   	if (FDStoreProperties.isAdServerEnabled()) {
-								%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
-						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
-						  		</div><%
-						  	}
+					 
+					<a href="/browse.jsp?id=<%= curCat %>">
+				    <div class="home-page-banner">
+					    <%
+					    	boolean bannerFound = false;
+					        Set<ContentKey> banners = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
+					        for (ContentKey key : banners) {
+					            BannerModel curBanner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);
+	
+				            	if (curBanner != null && curBanner.getLink() != null && curBanner.getImage() != null && StringUtils.equals(curBanner.getLink().getContentName(), curCat.getContentName())) {
+					      			%><img src="<%= curBanner.getImage().getPathWithPublishId() %>" alt=""><%
+					      			bannerFound = true;
+					      			break;
+				            	}
+	
+					        }
+					        if (!bannerFound) {
+					        	%><img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt=""><%
+					        }
 						%>
-				    <% } %>
+				        <%-- one of these two are correct, but until we have the business rule(s)... 
+							<span class="span-left"><%= curCat.getFullName() %></span>
+							<span class="span-right"><%= curCat.getPrimaryText() %></span>
+						--%>
+						<% 
+							String bannerText = curCat.getPrimaryText();
+							if ("".equals(bannerText)) {
+								bannerText = curCat.getFullName();
+							}
+						%>
+						<div class="home-page-banner-subtext-cont">
+							<div class="home-page-banner-subtext"><%= bannerText %></div>
+						</div>
+					</div>
+				    </a>
 				<% } %>
-				<% if (bannerIndex < 5) { /* display if there's not enough banners */ %>
-					<%
-					   	if (FDStoreProperties.isAdServerEnabled()) {
-							%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
-					  			<script type="text/javascript">OAS_AD('HPMob03');</script>
-					  		</div><%
-					  	}
-					%>
-			    <% } %>
-				<%
-				   	if (FDStoreProperties.isAdServerEnabled()) {
-						%><div id="oas_HPMob04" class="oas-cnt home-page-banner">
-				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
-				  		</div><%
-				  	}
-				%>
 			</div>
 		<% } else { %>
-
+			
 			<fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
-
+			
 			<%
 				boolean location2Media = false;
 				if(null != segmentMessage && segmentMessage.isLocation2()) {
 			        	location2Media = true;
 			    }
-			   	request.setAttribute("listPos", "SystemMessage,HPFull,HPMain,HPLeft01,HPLeft02,HPLeft03,HPRight01,HPRight02,HPRight03,HPFullTopBar,HPMainTopBar");
+			   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
 			%>
-
-			<%
+			
+			<% 
 			boolean showAltHome = false;
-			if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() ||
-				(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1)))
+			if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
+				(request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
 					showAltHome = true;
-
+			
 				//Coupons disabled warning msg
-				if (!user.isCouponsSystemAvailable() && !user.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
-			        user.setCouponWarningAcknowledged(true);
+				if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+			        sessionUser.setCouponWarningAcknowledged(true);
 			%>
 			        <div style="display: none;" id="fdCoupon_indexAlert">
 			                <div style="text-align: center;"><img src="/media/images/ecoupon/logo-purpler_old.png" alt="fdCoupon" height="85" width="222" /></div>
@@ -247,66 +211,78 @@ request.setAttribute("noyui", true);
 			%>
 			 	<div class="holder">
 					<%-- MAIN CONTENT--%>
-						<div class="content">
-
-			<% if (showAltHome && !location2Media) {
+						<div class="content"> 
+			<% if (showAltHome && !location2Media) { 
 				%><comp:homePageLetter user="<%= user %>" />
-			<%} else if (!showAltHome && location2Media) {
-				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=isCorpotateUser%>"/>
-			<%
-			} else if (!showAltHome && !location2Media) {
-				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=isCorpotateUser%>"/>
+			<%} else if (!showAltHome && location2Media) { 
+				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+			<% 
+			} else if (!showAltHome && !location2Media) { 
+				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+				  <comp:deliverySlotReserved user="<%= user %>" />
 			<%
 			}
+				   	
+			if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
 			%>
-
-			<%
-			if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
-			%>
-					<comp:OAShomepageredesign
-            			full="HPFull"
-            			main="HPMain"
-						left1="HPLeft01"
-						left2="HPLeft02"
-						left3="HPLeft03"
-						right1="HPRight01"
-						right2="HPRight02"
-						right3="HPRight03"
-            			fullTopBar="HPFullTopBar"
-            			mainTopBar="HPMainTopBar"
+					<comp:OASFeature 
+						top="HPFeatureTop"
+						left="HPFeature"
+						tab1="HPTab1"
+						tab2="HPTab2"
+						tab3="HPTab3"
+						tab4="HPTab4"
+						bottom="HPFeatureBottom"
+						hpBottomLeft="HPLeftBottom"
+						hpBottomMiddle="HPMiddleBottom"
+						hpBottomRight="HPRightBottom"
 					/>
-
-            <potato:modulehandling name="welcomepagePotato" />
-            <soy:render template="common.contentModules" data="${welcomepagePotato}" />
-
+			<%
+				   		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
+				   		if (store != null) {
+				   			ConfigurationContext confContext = new ConfigurationContext();
+				   			confContext.setFDUser(user);
+				   			ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
+				   			String trkCode = "favorites";
+				   			request.setAttribute("trk",trkCode);
+				   			if (validOrderCount<=3){
+			%>
+					   			<div id="most-popular">
+					   				<h2 class="homepage-categories-header">
+					   					<span>most popular products</span>
+					   				</h2>
+					   				<potato:recommender siteFeature="FAVORITES" name="deals" maxItems="24" cmEventSource="BROWSE"  sendVariant="true" />
+					   				<soy:render template="common.ymalCarousel" data="${deals}" />
+					   			</div>
+			<%
+			          } else {
+			          %>
+			            <div id="top-items" class="">
+			                <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+			                <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
+			            </div>
+			          <%
+			          }  
+				   			Html edtMed = store.getEditorial();
+							if ( edtMed != null ) { %>
+								<fd:IncludeHtml html="<%= edtMed %>"/>
+							<% } else {
+								String categoryLinks = FDStoreProperties.getHPCategoryLinksFallback();
+								if ( categoryLinks != null ) {
+									%><fd:IncludeMedia name="<%= categoryLinks %>"></fd:IncludeMedia><%
+								}
+							}
+						}
+			%>
+						<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
-				<%-- END MAIN CONTENT--%>
-
+				<%-- END MAIN CONTENT--%> 
+						
 			</div>
 			</fd:GetSegmentMessage>
 		<% } %>
 
-    <script>
-      var FreshDirect = window.FreshDirect || {};
-      FreshDirect.homepage = window.FreshDirect.homepage || {};
-      FreshDirect.homepage.data = window.FreshDirect.homepage.data || {};
-      FreshDirect.homepage.data.isHomepage = true;
-
-      var homepageType = <%=isCorpotateUser%> ? 'corporate' : 'residental';
-
-      var dataLayer = window.dataLayer || [];
-
-      dataLayer.push({
-        'is-new-homepage': 'true',
-        'homepage-type': homepageType,
-        'module-container-id': '${moduleContainerId}'
-      });      
-    </script>
-    <% /* allow data to be output for debugging */
-    if ( !mobWeb && "true".equalsIgnoreCase(RequestUtil.getValueFromCookie(request, "developer")) ) {
-    	%><script>FreshDirect.homepage.data = $jq.extend(FreshDirect.homepage.data,<fd:ToJSON object="${welcomepagePotato}" noHeaders="true"/>);</script><%
-    } %>
 </tmpl:put>
 </tmpl:insert>

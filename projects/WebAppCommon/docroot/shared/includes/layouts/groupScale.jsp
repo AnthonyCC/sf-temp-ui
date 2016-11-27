@@ -5,9 +5,8 @@
 <%@ page import='com.freshdirect.content.nutrition.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.framework.util.*' %>
@@ -25,6 +24,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 <% //expanded page dimensions
 final int W_GROUPSCALE_TOTAL = 601;
 %>
@@ -146,7 +146,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 	String deptId = request.getAttribute("deptId").toString();
 		if ("".equals(deptId)) { deptId = null; }
 	boolean isDepartment = false;
-
+	
 	String grpId=NVL.apply(request.getParameter("grpId"), "");
 	String version=NVL.apply(request.getParameter("version"), "");
 	String trkCode= NVL.apply(request.getParameter("trk"), "trkCode");
@@ -157,7 +157,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 	if (deptId != null) {
 		currentFolder=ContentFactory.getInstance().getContentNode(deptId);
-
+		
 		isDepartment = true;
 	} else if (catId != null) {
 		currentFolder=ContentFactory.getInstance().getContentNode(catId);
@@ -237,7 +237,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 	LOGGER.debug("totalItems "+totalItems);
 
 	int itemsToDisplay = 99999;
-
+	
 	int pageNumber = 1;
 	try {
 		pageNumber = Integer.valueOf(request.getParameter("pageNumber")).intValue();
@@ -251,7 +251,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 	//*** if we got this far..then we need to remove the sucess page attribute from the request.
 	request.removeAttribute("successPage");
 
-
+	
 
 	int syncProdIdx = -1;
 	double syncProdQty=0.0;
@@ -360,10 +360,10 @@ final int W_GROUPSCALE_TOTAL = 601;
 				while (!(node.getParentNode() instanceof DepartmentModel)) {
 					node = node.getParentNode();
 				}
-				groceryCategory=(CategoryModel)node;
+				groceryCategory=(CategoryModel)node;				
 			}
 	}
-
+	
 
 	//if we change the display of items per page to a higher number on a page other than one, we could stay on that page with no products shown on it
 	if(((pageNumber -1) * itemsToDisplay) > skuCount) {
@@ -371,7 +371,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 			pageNumber = 1;
 	}
 	%>
-
+	
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <fd:PendingOrderChecker/>
 <fd:ProductGroup id='productNode' categoryId='<%= prodCatId %>' productId='<%= productCode %>'>
@@ -440,7 +440,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 				minSku = productNode.getSku(reqSkuCode);
 			}
 			FDProduct product = null;
-			boolean skuAvailable=false;
+			boolean skuAvailable=false; 
 		%>
 		<fd:FDProductInfo id="productInfo" skuCode="<%= minSku.getSkuCode() %>">
 			<%
@@ -465,7 +465,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 					if (deal > 0) {
 						dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
 					}
-
+					
 					priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 					String salesUnitDesc = "N/A";
 					firstSalesUnit = "N/A";
@@ -481,6 +481,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 			%>
 			<form name="<%= TX_FORM_NAME %>" id='groupScale_form' method="POST">
 			<fd:AddToCartPending id="groupScale_form"/>
+			<fd:CmFieldDecorator/>
 			<input type="hidden" name="skuCode_big" value="<%=minSku.getSkuCode()%>" />
 			<input type="hidden" name="salesUnit_big" value="<%=firstSalesUnit%>" />
 			<input type="hidden" name="catId_big" value="<%=prodCatId%>" />
@@ -500,22 +501,20 @@ final int W_GROUPSCALE_TOTAL = 601;
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<tr>
 						<td colspan="5">
-              <div id='oas_ProductNote'>
-  							<SCRIPT LANGUAGE=JavaScript>
-  							<!--
-  							OAS_AD('ProductNote');
-  							//-->
-  							</SCRIPT>
-              </div>
+							<SCRIPT LANGUAGE=JavaScript>
+							<!--
+							OAS_AD('ProductNote');
+							//-->
+							</SCRIPT>
 						</td>
 					</tr>
-				<% }
+				<% }  
 				//if (skuAvailable) { %>
-
+				
 				<tr>
 					<td colspan="5">
 						<div style="line-height: 16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana,Arial,sans-serif;">Buy More &amp; Save!</div><div class="title14">Any Combination of <%=request.getAttribute("grpShortDesc")%> Listed Below</div><div style="line-height: 16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana,Arial,sans-serif;"><%=request.getAttribute("grpQty")%> for <%=request.getAttribute("grpTotalPrice")%></div>
-						<table cellspacing="0" cellpadding="0" border="0" align="left">
+						<table cellspacing="0" cellpadding="0" border="0" align="left"> 
 						<tr>
 							<td colspan="3"><img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /></td>
 						</tr>
@@ -530,7 +529,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 						</tr>
 						</table>
 					</td>
-				</tr>
+				</tr>				
 				<tr>
 					<td colspan="5"><img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /></td>
 				</tr>
@@ -549,7 +548,13 @@ final int W_GROUPSCALE_TOTAL = 601;
 								<td align="left">
 									<%String appl = (String)session.getAttribute(SessionName.APPLICATION);
 									if(!"CALLCENTER".equals(appl)){ %>
+									<% if ( FDStoreProperties.useOscache() ) { %> 
+										<oscache:cache time="300">
 											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+										</oscache:cache>
+									<% } else { %>
+											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+									<% } %>
 									<% } %>
 									<% if(qualifies && !productNode.isUnavailable()) { %>
 										<table>
@@ -661,9 +666,9 @@ final int W_GROUPSCALE_TOTAL = 601;
 						%>
 							<br />
 							<%-- Product Pricing START --%>
-								<%
+								<% 
 								ProductSkuImpression imp = new ProductSkuImpression(productNode, syncProdSkuCode);
-								if (hasWas) {
+								if (hasWas) { 
 								%>
 									<div>
 										<table cellpadding="0" border="0">
@@ -698,7 +703,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 									</div>
 								<% } %>
 								<%@include file="/includes/product/i_price_taxdeposit.jspf"%>
-
+								
 								<%
 									FDCustomerCoupon curCoupon = null;
 									ProductImpression coupPi = new ProductImpression(productNode);
@@ -709,7 +714,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_groupBig"></display:FDCoupon>
 							<%-- Product Pricing END --%>
 							<br />
-
+							
 							<font class="text12bold">ABOUT:</font>
 							<% if (hasNutrition || hasIngredients) { %>
 							<br /><a href="javascript:pop('/shared/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Nutrition | Ingredients</a>
@@ -725,14 +730,14 @@ final int W_GROUPSCALE_TOTAL = 601;
 									<br /><%=coolText%>
 								</logic:iterate>
 								<br />
-							<%
+							<% 
 							}
 
 							if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) { %>
 							<br /><a href="javascript:pop('/shared/heating_instructions.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)" class="title12">Heating Instructions</a>
 							<% } %>
 						<% } %>
-
+						
 						<%@ include file="/shared/includes/product/organic_claims.jspf" %>
 
 						<%@ include file="/includes/product/claims.jspf" %>
@@ -742,26 +747,26 @@ final int W_GROUPSCALE_TOTAL = 601;
 						<% if (!hasNutrition && !hasIngredients) { %>
 							<br />Please check product label for nutrition, ingredients, and allergens.
 						<% } %>
-
+						
 						<br />
 						<%-- freshness guarantee --%>
 						<%
-						// ******** START -- Freshness Guarantee graphic ******************
+						// ******** START -- Freshness Guarantee graphic ******************	
 						String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
 						if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 
 							<table width="0" border="0" cellspacing="0" cellpadding="0"><%-- Freshness Guaranteed --%>
 								<tr>
-									<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt=""  width="140" height="9"></td>
+									<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="140" height="9"></td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6"></td>
-									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="160" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 								</tr>
 
 
-								<tr>
+								<tr> 
 									<td colspan="3" align="center" valign="top">
 
 									<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -770,12 +775,12 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 
 												<tr valign="top">
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" alt="" width="27" height="27" border="0"></td>
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="guaranteed fresh" width="129" height="10"><br />
+													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
 													<span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br /> from delivery</span></td>
-													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>								    
 												</tr>
 											</table>
 										</td></tr>
@@ -783,23 +788,23 @@ final int W_GROUPSCALE_TOTAL = 601;
 									</td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6"></td>
-									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 								</tr>
-
+								
 							</table>
 							<table width="188">
 								<tr>
 									<td align="left">
-									<img src="/media_stat/images/layout/clear.gif" alt="" width="100%" height="6">
+									<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
 									<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 									</td>
 								</tr>
 							</table>
 
 						<% }
-						// ******** END -- Freshness Guarantee graphic ******************
+						// ******** END -- Freshness Guarantee graphic ******************	
 						%>
 					</td>
 				</tr>
@@ -816,7 +821,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								bigProdIndex = 0;
 								ProductModel pmTemp = null;
 								ProductImpression piTemp = null;
-
+								
 								List impressions = (request.getAttribute("impressions")!=null)?(List)request.getAttribute("impressions"):new ArrayList();
 
 								for (int i = 0; i<impressions.size(); i++) {
@@ -841,8 +846,8 @@ final int W_GROUPSCALE_TOTAL = 601;
 											bigProdIndex--;
 										}
 									}
-
-
+									
+									
 										if (impressions.get(i) instanceof TransactionalProductImpression) {
 											temp++;
 										}
@@ -852,7 +857,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								}
 								if (temp > -1 && bigProdIndex > temp) { bigProdIndex = temp; } //avoid index oob
 								//bigProdIndex should now be namespace.pricing[bigProdIndex]
-
+								
 								if (impressions.size() > 0) {
 									//int displayIdx = (bigProdIndex > temp) ? temp : bigProdIndex;
 									int displayIdx = bigProdIndex;
@@ -918,7 +923,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 										</td>
 									</tr>
 								<% } %>
-
+							
 						<%-- Product Qty Controls END --%>
 		<% } %>
 		</fd:FDProductInfo>
@@ -941,7 +946,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 			int currPage = 1;
 			for (int j=0;j<allSkuModels.size();j++) {
 				SkuModel skuModel = (SkuModel)allSkuModels.get(j);
-
+				
 				if(j%itemsToDisplay==0 && j !=0 ) currPage++;
 				if ((reqSkuCode!=null && skuModel.getSkuCode().equals(reqSkuCode) ) || reqSkuCode==null && ((ProductModel)skuModel.getParentNode()).getContentName().equals(productCode)) {
 					pageNumber = currPage;
@@ -960,10 +965,10 @@ final int W_GROUPSCALE_TOTAL = 601;
 		String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
 		LOGGER.debug("loopEnd "+loopEnd);
 		Set<String> displaySet =  new HashSet<String>();
-		List impressions = (request.getAttribute("impressions")!=null)?(List)request.getAttribute("impressions"):new ArrayList();
+		List impressions = (request.getAttribute("impressions")!=null)?(List)request.getAttribute("impressions"):new ArrayList();			
 		for(int jj = 0; jj < loopEnd;  jj++) {
 			SkuModel sku = (SkuModel)allSkuModels.get(jj);
-
+			
 			LOGGER.debug("sku "+jj+" "+sku.getSkuCode());
 			/*
 			 *  material already displayed. skip it.
@@ -980,14 +985,14 @@ final int W_GROUPSCALE_TOTAL = 601;
 				txCount++; //actual, transactional List count
 				continue; //skip shown item
 			}
-			ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(sku.getProductModel());
+			ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(sku.getProductModel(), user.getPricingContext());
 			imgLinkUrl = response.encodeURL("/group.jsp?catId="+currentFolder
 				+ "&prodCatId="+displayProduct.getParentNode()
 				+ "&productId="+displayProduct.getContentName())+"&trk=trans";
 			skus.add(sku);
 			//Add the material number to the displaySet.
 			displaySet.add(matId);
-
+			
 			%><%@include file="/shared/includes/layouts/i_groupScale_product_separator.jspf"%>
 			<fd:ProductGroup id='productNode' categoryId='<%= displayProduct.getParentNode().toString() %>' productId='<%= displayProduct.toString() %>'><%@include file="/shared/includes/layouts/i_groupScale_product_line.jspf"%></fd:ProductGroup>
 			<%
@@ -995,7 +1000,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 				tpCount++;
 			txCount++; //actual, transactional List count
 			itemShownIndex++; //display count
-		}
+		}	
 	%>
 	<% if(isAnyProdAvailable) { %>
 		<tr>
@@ -1009,7 +1014,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 		</tr>
 		<tr>
 			<td align="left" colspan="5">
-				<table cellspacing="0" cellpadding="0" border="0" align="left">
+				<table cellspacing="0" cellpadding="0" border="0" align="left"> 
 				<tr>
 					<td align="right" style="padding-top: 5px;" class="text11">
 						<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart" id="add_to_cart_2">
@@ -1039,8 +1044,9 @@ final int W_GROUPSCALE_TOTAL = 601;
 		<input type="hidden" name="itemCount" value="<%= Math.min(itemsToDisplay, itemShownIndex) %>">
 		<input type="hidden" name="totalQty" id="totalQty" value="0" />
 
-		<%-- the controller tag must also know if an item is added to the list from the side bar (i.e. that particular item) or the actual selected ones
+		<%-- the controller tag must also know if an item is added to the list from the side bar (i.e. that particular item) or the actual selected ones 
 			 the values are "actual_selection" or "side_bar" + _ + item number
 		<input type="hidden" name="source" value="cart_selection" />
 		  --%>
 	</form>
+

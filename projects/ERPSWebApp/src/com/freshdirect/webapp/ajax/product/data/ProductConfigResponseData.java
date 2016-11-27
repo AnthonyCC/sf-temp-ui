@@ -411,7 +411,6 @@ public class ProductConfigResponseData extends BasicProductData {
 		private boolean isLabelValue;
 		private boolean selected;
 		private String cvp;
-	    private String imagePath;
 		
 		public String getName() {
 			return name;
@@ -442,14 +441,6 @@ public class ProductConfigResponseData extends BasicProductData {
 		}
 		public void setLabelValue(boolean isLabelValue) {
 			this.isLabelValue = isLabelValue;
-		}
-
-		public String getImagePath() {
-		    return imagePath;
-		}
-		
-		public void setImagePath(String imagePath) {
-		    this.imagePath = imagePath;
 		}
 	}
 }

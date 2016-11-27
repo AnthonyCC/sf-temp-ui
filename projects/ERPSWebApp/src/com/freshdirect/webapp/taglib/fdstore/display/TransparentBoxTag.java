@@ -134,14 +134,24 @@ public class TransparentBoxTag extends BodyTagSupport {
 		if (bi == null)
 			return "opacity: "+opacity+";";
 
-		if (bi.isFirefox()) {
-			obStyle = "-moz-opacity: "+opacity+";";
-		} else if (bi.isWebKit()) {
-			obStyle = "-khtml-opacity: "+opacity+";";
+
+		if (bi.isInternetExplorer()) {
+			int i_op = (int) Math.round(opacity*100);
+			
+			if (bi.getVersionNumber() >= 8.0) {
+				obStyle = "-ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity="+i_op+")';";
+			} else {
+				obStyle = "display: inline-block; filter: progid:DXImageTransform.Microsoft.Alpha(opacity="+i_op+") ! important;";
+			}
 		} else {
-			obStyle = "opacity: "+opacity+";";
+			if (bi.isFirefox()) {
+				obStyle = "-moz-opacity: "+opacity+";";
+			} else if (bi.isWebKit()) {
+				obStyle = "-khtml-opacity: "+opacity+";";
+			} else {
+				obStyle = "opacity: "+opacity+";";
+			}
 		}
-		
 		return obStyle;
 	}
 

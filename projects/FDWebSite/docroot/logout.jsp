@@ -44,18 +44,20 @@ if(request.getParameter("logoutPage")!= null){
 
 
 if (toSiteAccess) {
+	//response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
 	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
 }
 
-String serviceType = (null !=user && user.isCorporateUser()) ? "CORPORATE" : "HOME";
-response.sendRedirect("/index.jsp?serviceType=" + serviceType);
+//else just go on to welcome, nothing here down is used.
+//copied blog iframe to welcome.jsp so it gets called still
+//response.sendRedirect("/welcome.jsp");
+/* APPBUG-4674 */
+response.sendRedirect("/index.jsp");
 %>
 
+
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Logged Out"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 			<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="400">
@@ -63,13 +65,13 @@ response.sendRedirect("/index.jsp?serviceType=" + serviceType);
 	            <TD WIDTH="400" COLSPAN="3">
 					<img src="/media_stat/images/template/site_access/thank_you_for_visting.gif" alt="" border="0">
 					<BR>
-	           		<IMG src="/media_stat/images/layout/999966.gif" ALT="" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR>
+	           		<IMG src="/media_stat/images/layout/999966.gif" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR>
 				</TD>
 			</TR>
 	        <TR VALIGN="TOP">
 	            
 		    <% if (!"".equals(lockout)) {   %>
-		    <td class="errortext" width="100%" bgcolor="#FFFFFF">
+		    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
 			<div style="padding: 3px 1px 3px 1px"><%= lockout %></div>
 			
 		    

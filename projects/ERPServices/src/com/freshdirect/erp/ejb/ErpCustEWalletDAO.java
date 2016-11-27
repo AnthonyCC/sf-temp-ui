@@ -16,13 +16,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author Aniwesh Vatsal
  *
  */
-
-/**
- *@deprecated Please use the ErpCustEWalletDAOI  in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */ 
 public class ErpCustEWalletDAO {
 	
 	/** logger for messages
@@ -46,8 +39,6 @@ public class ErpCustEWalletDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	
-	@Deprecated
 	public static ErpCustEWalletModel getLongAccessTokenByCustID(Connection conn,String custID, String eWalletType)
 			throws SQLException {
 		
@@ -85,8 +76,6 @@ public class ErpCustEWalletDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	
-	@Deprecated
 	public static int deleteLongAccessTokenByCustIDAndEWalletID(Connection conn,String custID, String eWalletID)
 			throws SQLException {
 		
@@ -107,7 +96,6 @@ public class ErpCustEWalletDAO {
 			return rows;
 	    }
 	
-	@Deprecated
 	public static int updateLongAccessToken(Connection conn,String custId, String longAccessToken,
 			String eWalletType) throws RemoteException, SQLException {
 		
@@ -129,7 +117,7 @@ public class ErpCustEWalletDAO {
 		    }
 			return rows;
 	}
-	@Deprecated
+
 	public static int insertCustomerLongAccessToken(Connection conn,ErpCustEWalletModel custEWallet) throws RemoteException, SQLException {
 		String id = SequenceGenerator.getNextId(conn, "CUST");
 		PreparedStatement ps = null;

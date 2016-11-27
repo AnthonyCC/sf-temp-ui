@@ -3,7 +3,7 @@
 	based on globalnav_optimized.jspf
 	
 --%><%@ page import='java.util.*'
-%><%@ page import='com.freshdirect.storeapi.content.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
 %><%@ page import='com.freshdirect.fdstore.customer.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
 %><%@ page import='com.freshdirect.webapp.util.*'
@@ -12,7 +12,7 @@
 %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
@@ -40,7 +40,8 @@
 				}
 				return dept;
 		}
-	%><%
+	
+		%><oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'><%
 			try {
 			
 			String deptId = request.getParameter("deptId");
@@ -102,6 +103,7 @@
 					globalUri.indexOf("/department.jsp")> -1 ||
 					globalUri.indexOf("/whatsgood.jsp")> -1 ||
 					globalUri.indexOf("view_cart")> -1 ||
+					globalUri.indexOf("myfd")> -1 ||
 					globalUri.indexOf("health_warning")> -1 ||
 					globalUri.indexOf("product_modify")> -1	) {
 					isAtHome = false;
@@ -128,7 +130,7 @@
 				<table><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 			<% } catch (Exception ex) {
 					ex.printStackTrace();
-			%>
-			<% } %>
+			%><oscache:usecached />
+			<% } %></oscache:cache>
 	</div>
 <% } %>

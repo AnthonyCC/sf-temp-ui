@@ -1,6 +1,5 @@
 <%@ page import='com.freshdirect.framework.util.StringUtil'%>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 
 <fd:ProduceRatingCheck>
 	<%
@@ -38,10 +37,10 @@
 	}
 
 	if ( matchFound ) {
-		if ( productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo)) != null ) { 
+		if ( productInfo.getRating(plantID) != null ) { 
 				
 			String rating="";
-			EnumOrderLineRating enumRating = productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo));
+			EnumOrderLineRating enumRating = productInfo.getRating(plantID);
 				
 			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 				rating = enumRating.getStatusCodeInDisplayFormat();
@@ -102,11 +101,11 @@
 	*/
 
 	/* if ( matchFound ) { */
-		if ( productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo)) != null ) { 
+		if ( productInfo.getSustainabilityRating(plantID) != null ) { 
 				
 			String rating="";
 			boolean skipDisplay = true;
-			EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+			EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
 			
 			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 				if (enumRating.getId() == 0) {
@@ -140,7 +139,7 @@
 <%
 
 List freshList = (List)session.getAttribute("freshList");
-String freshDays = productInfo.getFreshness(ProductInfoUtil.getPickingPlantId(productInfo));
+String freshDays = productInfo.getFreshness(plantID);
 if(freshDays != null && freshDays.length() > 0) {
 	
 	if(freshList != null && !freshList.isEmpty()) {

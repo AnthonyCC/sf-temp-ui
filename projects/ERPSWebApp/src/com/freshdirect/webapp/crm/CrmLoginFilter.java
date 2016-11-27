@@ -22,9 +22,9 @@ import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.crm.CrmSessionStatus;
@@ -46,18 +46,6 @@ public class CrmLoginFilter implements Filter {
 		CrmAgentRole agentRole = CrmAgentRole.getEnumByLDAPRole(ldapRole);
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-		
-		try {
-			if(agent!=null && CrmManager.getInstance().isCRMRestrictionEnabled() && CrmManager.getInstance().isCRMRestrictedForAgent(agent.getLdapId()) && !request.getRequestURI().contains("restricted.jsp")) {
-				String _redirectUrl = "/restricted.jsp";
-				response.sendRedirect(_redirectUrl);
-				return;
-			}
-		} catch (FDResourceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
 		if(user !=null){
 			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
 		}
@@ -86,17 +74,8 @@ public class CrmLoginFilter implements Filter {
 				status = new CrmStatus(agent.getPK());
 			}
 			CrmSessionStatus sessStatus = new CrmSessionStatus(status, request.getSession());
-			CrmSession.setSessionStatus(request.getSession(), sessStatus);	
+			CrmSession.setSessionStatus(request.getSession(), sessStatus);			
 			String redirectUrl = sessStatus.getRedirectUrl();
-			try {
-				if(CrmManager.getInstance().isCRMRestrictionEnabled() && CrmManager.getInstance().isCRMRestrictedForAgent(agent.getLdapId())) {
-					redirectUrl = "/restricted.jsp";
-					response.sendRedirect(redirectUrl);
-					return;
-				}
-			} catch (FDResourceException e) {
-				throw new ServletException(e.getMessage());
-			}
 			request.getSession().setAttribute(SessionName.APPLICATION, "CALLCENTER");
 			if(null ==redirectUrl){
 				redirectUrl="/main/main_index.jsp";
@@ -118,7 +97,7 @@ public class CrmLoginFilter implements Filter {
 			LOGGER.info("**** No matching role found for the user:"+request.getRemoteUser()+ " to access:"+request.getRequestURI());			
 		}		
 		String rootUri =  request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/")+1, request.getRequestURI().length());
-		if(!rootUri.equals("restricted.jsp")&&!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
+		if(!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
 			LOGGER.info("**** Role:"+ldapRole+" Access Denied Resource:"+request.getRequestURI());
 			response.sendRedirect(noAuthPage);
 			return;

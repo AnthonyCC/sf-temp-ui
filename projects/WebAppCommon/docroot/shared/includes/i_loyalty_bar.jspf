@@ -8,7 +8,7 @@
 		});
 	});	
 </script>
-<div id="timeslotloyalityHeader" >
+<div id="timeslotloyalityHeader" <%= (user.isChefsTable() == true ? "class='black'":"") %>>
 	<%if(user.isChefsTable()) { %>
 			<div class="inline bold small-text text-left">
 				<%= user.getFirstName() %> <%= user.getLastName() %>
@@ -24,7 +24,7 @@
 					 just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a></span>
 				<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
 					<span class="csPhoneNumber bold small-text" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span>
-					<a href="/help/index.jsp" class="cssbutton green small">need help?</a>
+					<button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton large">need help?</button>
 				<%}%>
 			</div>
 	<%}else{%>
@@ -35,9 +35,8 @@
 			<%if(!user.getCheckoutMode().isStandingOrderMode()){ %>
 				<div class="inline fl-right">
 					<span class="csPhoneNumber bold small-text" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span>
-					<a href="/help/index.jsp" class="cssbutton green small">need help?</a>
+					<button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton large">need help?</button>
 				</div>
 			<%} %>
 	<%}%>
-	<br class="clear" />
 </div>

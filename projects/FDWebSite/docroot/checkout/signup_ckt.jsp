@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -32,6 +33,8 @@ final int W_CHECKOUT_SIGNUP_TOTAL = 970;
 	}
 	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 	
+	CmRegistrationTag.setRegistrationLocation(session,"checkout");
+	
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, usery) && JspMethods.isMobile(request.getHeader("User-Agent"));
 %>
 <%
@@ -49,10 +52,7 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 %>
 <fd:FDShoppingCart id='cart' result="sc_result">
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Sign Up</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'>
@@ -102,7 +102,7 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 					Sign up now to continue checkout and start getting better food at a better price. 
 				<% } %>
 			<% } else { %>
-				Sign up now to continue checkout and start getting better food at a better price. Please note that your area is not within our <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">current delivery zones</a>, so you will only be able to place an order for pickup.
+				Sign up now to continue checkout and start getting better food at a better price. Please note that your area is not within our <a href="javascript:popup('/help/delivery_zones.jsp','large')">current delivery zones</a>, so you will only be able to place an order for pickup.
 			<% } %>
 			<br><br>
 			<b>Already have a password?</b><br>
@@ -126,13 +126,13 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 </TR>
 </TABLE>
 <%@ include file="/includes/registration/i_signup.jspf" %><BR><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_CHECKOUT_SIGNUP_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_CHECKOUT_SIGNUP_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_SIGNUP_TOTAL%>">
     <TR VALIGN="TOP">
     <TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
-	<TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 	<TD WIDTH="<%=W_CHECKOUT_SIGNUP_TOTAL-410%>" ALIGN="RIGHT"><input type="image" name="next_step"  src="/media_stat/images/buttons/continue_checkout.gif" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setPaymentMethod')"><BR>I agree to the Customer Agreement.<br>Sign me up and go to Step 1: Delivery Address<BR></TD>
 	<TD WIDTH="35" ALIGN="RIGHT"><input type="image" name="next_step" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setPaymentMethod')"></TD>
 	</TR>

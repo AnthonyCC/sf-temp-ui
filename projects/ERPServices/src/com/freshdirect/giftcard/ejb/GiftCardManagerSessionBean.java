@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPSessionBeanSupport;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -36,7 +35,6 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -70,17 +68,12 @@ import com.freshdirect.mail.GiftCardOrderInfo;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GivexException;
 import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
 import com.freshdirect.payment.ejb.GivexServerNewGateway;
-import com.freshdirect.payment.service.FDECommerceService;
-/**
- *@deprecated Please use the GiftCardController and GiftCardManagerServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */ 
+
 public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
 	private final static Logger LOGGER = LoggerFactory.getInstance(GiftCardManagerSessionBean.class);
@@ -422,15 +415,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 
 		public List loadRecipentsForOrder(String saleId){
 			List recList=null;
-			Connection conn = null;
 			try{
-				conn = this.getConnection();
-				recList=GiftCardPersistanceDAO.loadGiftCardRecipentsBySaleId(conn, saleId);
+				recList=GiftCardPersistanceDAO.loadGiftCardRecipentsBySaleId(getConnection(), saleId);
 			}catch (Exception e) {
 				LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
 				throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
-			} finally{
-				close(conn);
 			}
 			return recList;
 		}
@@ -685,8 +674,6 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				//Validation is sucessful. Set the card status as active.
 				giftcard.setStatus(EnumGiftCardStatus.ACTIVE);
 			}catch(GivexException ge) {
-				LOGGER.warn("giftCardException occured while making call to givex, making GC as INACTIVE -> Certificate Num: "+giftcard.getCertificateNumber()+" ,for User: "+giftcard.getCustomerId() );
-				giftcard.setStatus(EnumGiftCardStatus.INACTIVE);
 				if(ge.getErrorCode() < 0) {
 					//Probably a system exception. Connectivity to Givex failed or transaction timed out. Log the error and proceed.
 					LOGGER.error("System error occurred while verifying status of Gift certificate. Certificate Number : "
@@ -699,13 +686,14 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 						LOGGER.error("This Gift Certificate has an issue. "+ge.getMessage()+" Certificate Number : "
 																	+giftcard.getCertificateNumber());
 					}
+					giftcard.setStatus(EnumGiftCardStatus.INACTIVE);
 				}
 			}catch(IOException ie) {
 				//Log the error and proceed.
 				LOGGER.error("IO error occurred while verifying status of Gift certificate. Certificate Number : "
 														+giftcard.getCertificateNumber(), ie);
 			}
-			if(giftcard.isRedeemable() && reloadBalance && response!=null) {
+			if(giftcard.isRedeemable() && reloadBalance) {
 				//Set the actual balance from Givex
 				if(giftcard.getStatus().equals(EnumGiftCardStatus.ACTIVE)) {
 					giftcard.setBalance(response.getCertBalance());	
@@ -888,12 +876,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			}			
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
-			ErpSaleModel sale = (ErpSaleModel)saleEB.getModel();
 			long currentTime = System.currentTimeMillis();
 			long difference = order.getDeliveryInfo().getDeliveryStartTime().getTime() - currentTime;
 			difference = difference / (1000 * 60 * 60);
 
-			if (!EnumSaleType.SUBSCRIPTION.equals(sale.getType()) && difference > AUTH_HOURS) {
+			if (difference > AUTH_HOURS) {
 				return errorList;
 			}			
 			//ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(saleEB.getCustomerPk()));

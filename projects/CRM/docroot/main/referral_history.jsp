@@ -20,11 +20,10 @@ FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 FDIdentity identity = user.getIdentity();
 List referralRptList = new ArrayList();
 
-//referralRptList = FDReferralManager.getManageInvitesForCRM(identity.getErpCustomerPK());
+referralRptList = FDReferralManager.getManageInvitesForCRM(identity.getErpCustomerPK());
 org.json.JSONObject jobj = new org.json.JSONObject();
 jobj.put("totalRecords", referralRptList.size());
 org.json.JSONArray jsonItems = new org.json.JSONArray();
-/**
 for(int i=0; i< referralRptList.size(); i++) {
 	ManageInvitesModel mim = (ManageInvitesModel) referralRptList.get(i);
 	String scredit = "";
@@ -38,7 +37,7 @@ for(int i=0; i< referralRptList.size(); i++) {
 	obj.put("rcredit", mim.getCreditIssuedDate() != null?DATE_FORMATTER.format(mim.getCreditIssuedDate()):"");
 	jsonItems.put(obj);
 }
-*/
+
 jobj.put("records", jsonItems);
 					
 String jsonString = jobj.toString();
@@ -156,11 +155,11 @@ String jsonString = jobj.toString();
 			<div id="legend" style="float:left;">
 			<span class="t11px bolded">Legend</span>
 			<ul>
-				<li>No response â€“ no reply to the email you sent</li>
-				<li>Signed up â€“ responded and eligibility was pre-approved</li>
+				<li>No response – no reply to the email you sent</li>
+				<li>Signed up – responded and eligibility was pre-approved</li>
 				<li>Offer redeemed --approved as as first time residential customer and received their first order.</li>
-				<li>Offer not redeemed â€“ entered another discount code </li>
-				<li>Inelgible â€“ recipient was already a customer or was previously referred by another customer</li>
+				<li>Offer not redeemed – entered another discount code </li>
+				<li>Inelgible – recipient was already a customer or was previously referred by another customer</li>
 			</ul>
 			</div>
 		</td>

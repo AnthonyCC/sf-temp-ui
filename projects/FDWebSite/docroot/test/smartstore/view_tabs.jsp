@@ -15,7 +15,7 @@
 <fd:CheckLoginStatus noRedirect="true" />
 <%
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>CART TAB STRATEGY CONFIGURATIONS PAGE</title>

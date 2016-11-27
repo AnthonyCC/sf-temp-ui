@@ -1,10 +1,11 @@
-<%@page import="com.freshdirect.cms.ui.editor.permission.service.PersonaService"%>
-<%@page import="com.freshdirect.cms.ui.serviceimpl.EditorServiceLocator"%><%
+<%@page import="com.freshdirect.cms.application.permission.service.PersonaService"%>
+<%@page import="com.freshdirect.fdstore.cache.EhCacheUtil"%>
+<%@page import="java.util.Random"%><%
     if (request.getSession(false)!=null) {
         if (request.getUserPrincipal() != null) {
-            EditorServiceLocator.personaService().invalidatePersona(request.getUserPrincipal().getName());
+            PersonaService.defaultService().invalidatePersona(request.getUserPrincipal().getName());
             request.getSession(false).invalidate();
         }
     }
-    response.sendRedirect("index.jsp");
+    response.sendRedirect("Login.html");
 %>

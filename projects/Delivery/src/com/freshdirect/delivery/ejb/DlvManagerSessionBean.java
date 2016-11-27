@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
@@ -39,7 +41,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
@@ -49,7 +50,6 @@ import com.freshdirect.delivery.announcement.EnumPlacement;
 import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
 import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
-import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.IAirclicService;
@@ -60,7 +60,6 @@ import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -78,14 +77,8 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
-import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
-/**
- *@deprecated Please use the DlvManagerController and DlvManagerServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 
@@ -557,19 +550,6 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	//OPT-44 start
-	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws FDResourceException{
-
-		try {
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			ZipCodeAttributes sc = logisticsService.lookupZipCodeAttributes(zipcode);
-			return sc;
-		}catch (FDLogisticsServiceException ex) {
-			throw new FDResourceException(ex);
-		}
-	}
-	//OPT-44 end
-	
 	public Map<String, DeliveryException> getCartonScanInfo()
 			throws FDResourceException {
 
@@ -618,7 +598,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					command.getReservationId(), command.getFirstName(),
 					command.getLastName(), command.getDeliveryInstructions(),
 					command.getServiceType(), command.getUnattendedInstr(),
-					command.getOrderMobileNumber(), command.getErpOrderId(),command.isAlcohol());
+					command.getOrderMobileNumber(), command.getErpOrderId());
 			updateStatusOfOrder(command);
 		}
 	}
@@ -648,13 +628,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 
 			for (String orderId : list) {
-				ErpSaleModel order = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-		    		order =  OrderServiceApiClient.getInstance().getOrder(orderId);
-		    	}else{
-		    		order =  sb.getOrder(new PrimaryKey(orderId));	
-		    	}
-				
+				ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
 
 				CreateOrderRequest c = new CreateOrderRequest(
 						orderId,
@@ -687,7 +661,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 								.getOrderMobileNumber() != null ? order
 								.getRecentOrderTransaction().getDeliveryInfo()
 								.getOrderMobileNumber().getPhone() : null,
-						order.getSapOrderNumber(),order.getCurrentOrder().containsAlcohol());
+						order.getSapOrderNumber());
 				ordersList.add(c);
 			}
 		} catch (SQLException e) {

@@ -86,7 +86,7 @@ public class DraftChangeLookupMap {
         int numberOfLists = 0;
         
         for (final DraftChange change : draftChanges) {
-            final LookupKey key = new LookupKey(ContentKey.getContentKey(change.getContentKey()), change.getAttributeName());
+            final LookupKey key = new LookupKey(ContentKey.decode(change.getContentKey()), change.getAttributeName());
             
             List<DraftChange> list = lookupMap.get(key);
             if (list == null) {

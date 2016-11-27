@@ -54,24 +54,24 @@ boolean mobWeb_dayofweek_notice = FeatureRolloutArbiter.isFeatureRolledOut(EnumR
 		%>
 		<table width="<%= (mobWeb_dayofweek_notice) ? "100%" : W_DAY_OF_WEEK_NOTICE_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 			</tr>
 			<tr>
-				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>
-				<td align="center"  class="success13text">
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
-					<span>SPECIALLY PREPARED ITEM - LIMITED AVAILABILITY</span><br>
+				<td align="center">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+					<span class="text11orbold">SPECIALLY PREPARED ITEM - LIMITED AVAILABILITY</span><br>
 					This item is <b><%=isInverted?"only" : "not"%></b> available for delivery on <b><%= daysStringBuffer.toString() %></b>.<br>
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
 			</tr>
 		</table>
 		<%

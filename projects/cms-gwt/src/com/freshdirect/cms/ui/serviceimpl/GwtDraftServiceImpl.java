@@ -1,49 +1,44 @@
 package com.freshdirect.cms.ui.serviceimpl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.draft.domain.Draft;
-import com.freshdirect.cms.draft.domain.DraftChange;
-import com.freshdirect.cms.draft.domain.DraftContext;
-import com.freshdirect.cms.draft.merge.service.DraftMergeService;
-import com.freshdirect.cms.draft.service.DraftContextHolder;
-import com.freshdirect.cms.draft.service.DraftService;
-import com.freshdirect.cms.draft.validation.service.DraftValidatorService;
-import com.freshdirect.cms.ui.editor.converter.DraftChangeToGwtDraftChangeConverter;
-import com.freshdirect.cms.ui.editor.permission.service.PersonaService;
-import com.freshdirect.cms.ui.editor.service.IndexingService;
-import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.application.CmsRequest;
+import com.freshdirect.cms.application.CmsRequestI;
+import com.freshdirect.cms.application.CmsRequestI.RunMode;
+import com.freshdirect.cms.application.CmsRequestI.Source;
+import com.freshdirect.cms.application.CmsUser;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.application.draft.service.DraftService;
+import com.freshdirect.cms.application.permission.service.PersonaService;
+import com.freshdirect.cms.merge.MergeResult;
+import com.freshdirect.cms.merge.ValidationResult;
+import com.freshdirect.cms.search.IBackgroundProcessor;
 import com.freshdirect.cms.ui.model.draft.GwtDraftChange;
 import com.freshdirect.cms.ui.service.GwtDraftService;
 import com.freshdirect.cms.ui.service.GwtSecurityException;
 import com.freshdirect.cms.ui.service.ServerException;
-import com.freshdirect.cms.validation.ValidationResult;
-import com.freshdirect.cms.validation.ValidationResultLevel;
-import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.ui.translator.TranslatorToGwt;
+import com.freshdirect.cmsadmin.domain.Draft;
+import com.freshdirect.cmsadmin.domain.DraftChange;
+import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftService {
 
     private static final long serialVersionUID = -2141795710378150875L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GwtDraftServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getInstance(GwtDraftServiceImpl.class);
 
-    private DraftService draftService = CmsServiceLocator.draftService();
-    private DraftChangeToGwtDraftChangeConverter draftChangeToGwtDraftChangeConverter = DraftChangeToGwtDraftChangeConverter.getInstance();
-    private DraftContextHolder draftContextHolder = CmsServiceLocator.getDraftContextHolder();
-    private DraftValidatorService draftValidatorService = CmsServiceLocator.getDraftValidatorService();
-    private DraftMergeService draftMergeService = CmsServiceLocator.getDraftMergeService();
-    private PersonaService personaService = EditorServiceLocator.personaService();
-    private IndexingService indexingService = EditorServiceLocator.indexingService();
+    private IBackgroundProcessor backgroundProcessor;
+    private DraftService draftService;
 
     public GwtDraftServiceImpl() {
         super();
@@ -52,18 +47,19 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
     @Override
     public void init() throws ServletException {
         super.init();
+
+        this.draftService = DraftService.defaultService();
+        this.backgroundProcessor = (IBackgroundProcessor) FDRegistry.getInstance().getService("com.freshdirect.cms.backgroundProcessor", IBackgroundProcessor.class);
     }
 
     @Override
     public List<GwtDraftChange> loadDraftChanges() throws ServerException {
-        List<DraftChange> draftChanges = draftService.getDraftChanges(getDraftContext().getDraftId());
-        List<GwtDraftChange> gwtDraftChanges = draftChangeToGwtDraftChangeConverter.convert(draftChanges);
-        return gwtDraftChanges;
+        return fetchAllDraftChanges(getDraftContext());
     }
 
     @Override
     public List<GwtDraftChange> validateDraft() throws ServerException {
-        final GwtUser user = getUser();
+        final CmsUser user = getCmsUser();
 
         if (!user.isHasAccessToDraftBranches()) {
             throw new GwtSecurityException("User " + user.getName() + " is not allowed to validate branch!");
@@ -71,17 +67,45 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
 
         validateUserActionForDraft(user);
 
-        draftContextHolder.setDraftContext(getDraftContext());
-        Map<DraftChange, ValidationResults> validationResultsByDraftChange = draftValidatorService.validate();
+        List<GwtDraftChange> draftChanges = loadDraftChanges();
 
-        List<GwtDraftChange> gwtDraftChanges = processValidationResults(validationResultsByDraftChange);
+        // setup validation task
+        CmsRequestI cmsRequest = new CmsRequest(user, Source.MERGE, user.getDraftContext(), RunMode.DRY);
+        ValidationResult context = new ValidationResult(cmsRequest);
+        Future<ValidationResult> promise = backgroundProcessor.validateDraft(context);
 
-        return gwtDraftChanges;
+        while (!promise.isDone()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new ServerException(e);
+            }
+        }
+
+        // process validation result
+        try {
+            // update context
+            context = promise.get();
+        } catch (InterruptedException e) {
+            throw new ServerException(e);
+        } catch (ExecutionException e) {
+            throw new ServerException(e);
+        }
+
+        final List<GwtDraftChange> payload;
+        if (!context.isSuccess()) {
+            payload = processMergeResult(draftChanges, context);
+        } else {
+            payload = draftChanges;
+        }
+
+        return payload;
     }
 
     @Override
     public List<GwtDraftChange> mergeDraft() throws ServerException {
-        GwtUser user = getUser();
+        final HttpServletRequest request = getThreadLocalRequest();
+        final CmsUser user = getCmsUserFromRequest(request);
 
         if (!user.isHasAccessToDraftBranches()) {
             throw new GwtSecurityException("User " + user.getName() + " is not allowed to validate branch!");
@@ -89,82 +113,88 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
 
         validateUserActionForDraft(user);
 
-        draftContextHolder.setDraftContext(getDraftContext());
-        Map<DraftChange, ValidationResults> validationResultsByDraftChange = draftMergeService.mergeDraftToMain(getUser().getName());
+        List<GwtDraftChange> draftChanges = loadDraftChanges();
 
-        boolean success = isValidationSuccess(validationResultsByDraftChange);
-        List<GwtDraftChange> gwtDraftChanges = processValidationResults(validationResultsByDraftChange);
+        // setup validation task
+        CmsRequestI cmsRequest = new CmsRequest(user, Source.MERGE, user.getDraftContext());
+        MergeResult context = new MergeResult(cmsRequest);
+        Future<MergeResult> promise = backgroundProcessor.mergeDraft(context);
 
-        if (success) {
-            // start a search re-index asynchronously
-            new Thread(new AsyncSearchIndex()).start();
-            personaService.invalidatePersona(getThreadLocalRequest().getUserPrincipal().getName());
+        while (!promise.isDone()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new ServerException(e);
+            }
         }
 
-        return gwtDraftChanges;
-    }
-    
-    private class AsyncSearchIndex implements Runnable {
-        @Override
-        public void run() {
-            indexingService.indexAll();
+        try {
+            // update context
+            context = promise.get();
+        } catch (InterruptedException e) {
+            throw new ServerException(e);
+        } catch (ExecutionException e) {
+            throw new ServerException(e);
         }
+
+        // process merge result
+        final List<GwtDraftChange> payload;
+        if (!context.isSuccess()) {
+            payload = processMergeResult(draftChanges, context);
+        } else {
+            payload = draftChanges;
+
+            // success - drop session before returning ...
+            PersonaService.defaultService().invalidatePersona(request.getUserPrincipal().getName());
+        }
+
+        return payload;
     }
 
-    private void validateUserActionForDraft(GwtUser user) {
+    private void validateUserActionForDraft(CmsUser user) {
         List<Draft> notDroppedOrMergedDrafts = draftService.getDrafts();
-        DraftContext draftContext = getDraftContext();
         boolean isDraftNotDroppedOrMerged = false;
         for (Draft draft : notDroppedOrMergedDrafts) {
-            if (draft.getId() == draftContext.getDraftId()) {
+            if (draft.getId() == user.getDraftContext().getDraftId()) {
                 isDraftNotDroppedOrMerged = true;
                 break;
             }
         }
         if (!isDraftNotDroppedOrMerged) {
-            throw new GwtSecurityException("Draft " + draftContext.getDraftName() + " is already merged or deleted!");
+            throw new GwtSecurityException("Draft " + user.getDraftContext().getDraftName() + " is already merged or deleted!");
         }
     }
 
-    private List<GwtDraftChange> processValidationResults(Map<DraftChange, ValidationResults> validationResultsByDraftChange) {
-        ValidationResults validationResults = null;
-        List<GwtDraftChange> gwtDraftChanges = new ArrayList<GwtDraftChange>();
-        for (DraftChange draftChange : validationResultsByDraftChange.keySet()) {
-            validationResults = validationResultsByDraftChange.get(draftChange);
-            GwtDraftChange gwtDraftChange = draftChangeToGwtDraftChangeConverter.convert(draftChange);
-            if (validationResults.hasError()) {
-                StringBuilder errorBuilder = new StringBuilder();
-                List<ValidationResult> errorResults = validationResults.getValidationResultsForLevel(ValidationResultLevel.ERROR);
-                for (ValidationResult error : errorResults) {
-                    errorBuilder.append(error.getMessage());
-                    if (!errorResults.get(errorResults.size() - 1).equals(error)) {
-                        errorBuilder.append("| ");
-                    }
+    protected List<GwtDraftChange> processMergeResult(List<GwtDraftChange> draftChanges, MergeResult mergeResult) {
+        List<GwtDraftChange> result = new ArrayList<GwtDraftChange>(draftChanges);
+        for (final DraftChange dc : mergeResult.getInvalidChanges()) {
+            final Long id = dc.getId();
+            boolean processed = false;
+            // try to match validation error to one of existing draft changes
+            for (GwtDraftChange gdc : draftChanges) {
+                if (gdc.getDraftId() != null && gdc.getDraftId().equals(id)) {
+                    gdc.setValidationError(mergeResult.getErrorMessage(dc));
+                    processed = true;
                 }
-                gwtDraftChange.setValidationError(errorBuilder.toString());
             }
-            gwtDraftChanges.add(gwtDraftChange);
+            // special case - validator task generated an additional (virtual) draft change
+            if (!processed) {
+                GwtDraftChange virtualChange = TranslatorToGwt.convertDraftChangeToGwtDraftChange(dc);
+                virtualChange.setValidationError(mergeResult.getErrorMessage(dc));
+                result.add(virtualChange);
+            }
         }
-
-        Collections.sort(gwtDraftChanges, new Comparator<GwtDraftChange>() {
-
-            @Override
-            public int compare(GwtDraftChange o1, GwtDraftChange o2) {
-                return o2.getCreatedAt().compareTo(o1.getCreatedAt());
-            }
-        });
-
-        return gwtDraftChanges;
+        return result;
     }
 
-    private boolean isValidationSuccess(Map<DraftChange, ValidationResults> validationResultsByDraftChange) {
-        boolean success = true;
-        for (ValidationResults validationResults : validationResultsByDraftChange.values()) {
-            if (validationResults.hasError()) {
-                success = false;
-                break;
-            }
+    private List<GwtDraftChange> fetchAllDraftChanges(final DraftContext draftContext) throws ServerException {
+        List<GwtDraftChange> draftChanges;
+        if (draftContext != DraftContext.MAIN) {
+            draftChanges = TranslatorToGwt.convertDraftChangesToGwtDraftChanges(draftService.getDraftChanges(draftContext.getDraftId()));
+        } else {
+            LOGGER.error("Attempted to fetch draft changes in MAIN draft context");
+            throw TranslatorToGwt.wrap(new ServerException("Draft Changes cannot be obtained in MAIN draft context"));
         }
-        return success;
+        return draftChanges;
     }
 }

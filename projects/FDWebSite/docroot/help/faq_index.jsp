@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 	String faqPage = FDFaqUtil.getFaqHomeId();
@@ -154,14 +154,10 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 	intro = true;
 	title = "Introduction";
 }
-title = "FreshDirect - FAQ - " + title;
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%=title%>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - FAQ - <%=title%></tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		<table width="520" cellpadding="0" cellspacing="0" border="0">
 			<tr valign="top">
@@ -183,7 +179,7 @@ title = "FreshDirect - FAQ - " + title;
 				<% }} %>				<br><br>
 				</td>
 				<td></td>
-				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 				<td>
 					<% if(!isDefaultFtl){ %>
 						<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
@@ -193,10 +189,10 @@ title = "FreshDirect - FAQ - " + title;
 				</td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="125" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="6" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="388" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="125" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="6" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="388" height="1"></td>
 			</tr>
 		</table>
 

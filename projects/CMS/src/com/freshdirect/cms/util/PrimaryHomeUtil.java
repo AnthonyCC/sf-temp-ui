@@ -13,7 +13,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.ContentNodeSource;
+import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
@@ -28,36 +28,35 @@ public class PrimaryHomeUtil {
 	 * Setup a map of store key -> parent cats for a product
 	 * 
 	 * @param prdKey
-	 * @param source
+	 * @param svc
 	 * @return
 	 */
-	public static Map<ContentKey, Set<ContentKey>> collectParentsMap(ContentKey prdKey, ContentNodeSource source, DraftContext draftContext) {
+	public static Map<ContentKey, Set<ContentKey>> collectParentsMap(ContentKey prdKey, ContentServiceI svc, DraftContext draftContext) {
 		if (prdKey == null || !FDContentTypes.PRODUCT.equals(prdKey.getType())) {
 			return Collections.emptyMap();
 		}
 
+		Set<ContentKey> _parents = svc.getParentKeys(prdKey, draftContext);
 
 		// the result map
-		Map<ContentKey, Set<ContentKey>> homesByStore = new HashMap<ContentKey, Set<ContentKey>>();
-
-		Set<ContentKey> homeCategories = source.getParentKeys(prdKey, draftContext);
-		for (ContentKey homeKey : homeCategories) {
-			Set<ContentKey> reachableStoreKeys = new HashSet<ContentKey>();
-			collectStoreKeys(reachableStoreKeys, homeKey, source, draftContext);
-			if (reachableStoreKeys.size() > 0) {
+		Map<ContentKey, Set<ContentKey>> result = new HashMap<ContentKey, Set<ContentKey>>();
+		for (ContentKey pKey : _parents) {
+			Set<ContentKey> aSet = new HashSet<ContentKey>();
+			collectStoreKeys(aSet, pKey, svc, draftContext);
+			if (aSet.size() > 0) {
 				// pick store key
-				ContentKey storeKey = reachableStoreKeys.iterator().next();
-				Set<ContentKey> homes = homesByStore.get(storeKey);
-				if (homes == null) {
-					homes = new HashSet<ContentKey>();
-					homesByStore.put(storeKey, homes);
+				ContentKey storeKey = aSet.iterator().next();
+				Set<ContentKey> parCats = result.get(storeKey);
+				if (parCats == null) {
+					parCats = new HashSet<ContentKey>();
+					result.put(storeKey, parCats);
 				}
 				// store parent cat in store bucket
-				homes.add(homeKey);
+				parCats.add(pKey);
 			}
 		}
 		
-		return homesByStore;
+		return result;
 	}
 	
 	
@@ -65,10 +64,10 @@ public class PrimaryHomeUtil {
 	 * Collect all available store keys for the given content node
 	 * 
 	 * @param aKey content key of node
-	 * @param source
+	 * @param svc
 	 * @return
 	 */
-    public static Set<ContentKey> getStoreKeys(final ContentKey aKey, final ContentNodeSource source, DraftContext draftContext) {
+    public static Set<ContentKey> getStoreKeys(final ContentKey aKey, final ContentServiceI svc, DraftContext draftContext) {
         Set<ContentKey> result = new HashSet<ContentKey>();
 
         if (aKey != null) {
@@ -76,7 +75,7 @@ public class PrimaryHomeUtil {
             if (FDContentTypes.STORE.equals(aKey.getType())) {
                 result.add(aKey);
             } else {
-                collectStoreKeys(result, aKey, source, draftContext);
+                collectStoreKeys(result, aKey, svc, draftContext);
             }
         }
 
@@ -84,19 +83,19 @@ public class PrimaryHomeUtil {
     }
 
 
-	protected static void collectStoreKeys(final Set<ContentKey> result, final ContentKey aKey, final ContentNodeSource source, DraftContext draftContext) {
+	protected static void collectStoreKeys(final Set<ContentKey> result, final ContentKey aKey, final ContentServiceI svc, DraftContext draftContext) {
 		if (aKey == null) {
 			return;
 		}
 		
-		for (ContentKey k : source.getParentKeys(aKey, draftContext)) {
+		for (ContentKey k : svc.getParentKeys(aKey, draftContext)) {
 			if (FDContentTypes.STORE.equals(k.getType())) {
 				if (result != null) {
 					result.add(k);
 				}
 				break;
 			} else {
-				collectStoreKeys(result, k, source, draftContext);
+				collectStoreKeys(result, k, svc, draftContext);
 			}
 		}
 	}
@@ -107,15 +106,15 @@ public class PrimaryHomeUtil {
 	 * 
 	 * @param node product content node
 	 * @param theStoreKey optional
-	 * @param source content service
+	 * @param service content service
 	 * @return
 	 */
-	public static Set<ContentKey> fixPrimaryHomes(ContentNodeI node, ContentNodeSource source, DraftContext draftContext, ContentKey theStoreKey) {
+	public static Set<ContentKey> fixPrimaryHomes(ContentNodeI node, ContentServiceI service, DraftContext draftContext, ContentKey theStoreKey) {
 		final ContentKey prdKey = node.getKey();
 		
 		// map of store key -> parent categories
 		// Note: it can be partial as not all products are shared among all stores
-		final Map<ContentKey, Set<ContentKey>> _s2p_map = PrimaryHomeUtil.collectParentsMap(prdKey, source, draftContext);
+		final Map<ContentKey, Set<ContentKey>> _s2p_map = PrimaryHomeUtil.collectParentsMap(prdKey, service, draftContext);
 
 		// current set of primary homes
 		@SuppressWarnings("unchecked")
@@ -159,7 +158,7 @@ public class PrimaryHomeUtil {
 				// no primary home found for the given store
 				// FIX IT!
 
-				ContentKey newHome = assignPrimaryHome(node, storeKey, _catKeys, source, draftContext );
+				ContentKey newHome = assignPrimaryHome(node, storeKey, _catKeys, service, draftContext );
 
 				if (newHome != null) {
 					LOGGER.debug("fixPrimaryHomes(" + prdKey.getId() + ", " + storeKey.getId() + ") ~> " + newHome.getId());
@@ -190,14 +189,14 @@ public class PrimaryHomeUtil {
 	 * @param node a product node
 	 * @param storeKey actual store root
 	 * @param parentKeys parent keys of product
-	 * @param source
+	 * @param service
 	 * @return
 	 */
-	private static ContentKey assignPrimaryHome(ContentNodeI node, ContentKey storeKey, Set<ContentKey> parentKeys, ContentNodeSource source, DraftContext draftContext) {
-	    final ContentNodeI storeNode = source.getContentNode(storeKey, draftContext);
+	private static ContentKey assignPrimaryHome(ContentNodeI node, ContentKey storeKey, Set<ContentKey> parentKeys, ContentServiceI service, DraftContext draftContext) {
+	    final ContentNodeI storeNode = service.getContentNode(storeKey, draftContext);
         List<ContentKey> deptKeys = new ArrayList<ContentKey>( storeNode.getChildKeys() );
 		
-		final ContextService ctxService = new ContextService(source);
+		final ContextService ctxService = new ContextService(service);
 
 		/*
 		 * Get all possible paths going from this node to the root.
@@ -230,36 +229,36 @@ public class PrimaryHomeUtil {
 	 *  
 	 * @param key product key
 	 * @param storeKey store key
-	 * @param source content node source
+	 * @param svc content service
 	 * @return
 	 */
-	public static ContentKey pickPrimaryHomeForStore(ContentKey key, ContentKey storeKey, ContentNodeSource source, DraftContext draftContext) {
-		if (key == null || storeKey == null || source == null) {
+	public static ContentKey pickPrimaryHomeForStore(ContentKey key, ContentKey storeKey, ContentServiceI svc, DraftContext draftContext) {
+		if (key == null || storeKey == null || svc == null) {
 			return null;
 		}
 
-		ContentNodeI prd = source.getContentNode(key, draftContext);
+		ContentNodeI prd = svc.getContentNode(key, draftContext);
 		if (prd == null) {
 			return null;
 		}
 
 		@SuppressWarnings("unchecked")
-		List<ContentKey> primaryHomes = (List<ContentKey>) prd.getAttributeValue("PRIMARY_HOME");
+		List<ContentKey> _priHomes = (List<ContentKey>) prd.getAttributeValue("PRIMARY_HOME");
 
-		if (primaryHomes != null && !primaryHomes.isEmpty()) {
+		if (_priHomes != null && !_priHomes.isEmpty()) {
 			// store to parent category keys mapping
-			Map<ContentKey, Set<ContentKey>> homesPerStore = PrimaryHomeUtil.collectParentsMap(key, source, draftContext);
+			Map<ContentKey, Set<ContentKey>> _s2p = PrimaryHomeUtil.collectParentsMap(key, svc, draftContext);
 
-			if (homesPerStore.get(storeKey) != null) {
-				Set<ContentKey> candidates = new HashSet<ContentKey>(homesPerStore.get(storeKey));
-				candidates.retainAll(primaryHomes);
+			if (_s2p.get(storeKey) != null) {
+				Set<ContentKey> candidates = new HashSet<ContentKey>(_s2p.get(storeKey));
+				candidates.retainAll(_priHomes);
 
                 Iterator<ContentKey> candidateIterator = candidates.iterator();
-                ContentKey selectedPrimaryHome = null;
+                ContentKey priHome = null;
                 if (candidateIterator.hasNext()) {
-                    selectedPrimaryHome = candidateIterator.next();
+                    priHome = candidateIterator.next();
                 }
-				return selectedPrimaryHome;
+				return priHome;
 			}
 		}
 

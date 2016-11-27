@@ -1,33 +1,35 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.List;
+
+import org.apache.log4j.Category;
+
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
-import com.freshdirect.storeapi.content.ProductReferenceImpl;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductSampleApplicator implements PromotionApplicatorI {
 	
-    private static final long serialVersionUID = -4228761928725008569L;
-
-	private ProductReference sampleProduct;
-	private String categoryId;
-	private String productId;
-	private double minSubtotal;
+	private final static Category LOGGER = LoggerFactory.getInstance(ProductSampleApplicator.class);
+	
+	private final ProductReference sampleProduct;
+	private final double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
+
 	private CartStrategy cartStrategy;
 	
 	public ProductSampleApplicator(ProductReference sampleProduct, double minSubtotal){
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
-		this.categoryId = null !=sampleProduct?sampleProduct.getCategoryId():null;
-		this.productId = null !=sampleProduct?sampleProduct.getProductId():null;
-	}
-
-	public ProductSampleApplicator() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -46,16 +48,52 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				return isApplied;
 			}else{
 				FDCartModel cart= context.getShoppingCart();
-                isApplied = cart.updateProductSampleDiscount(getProductReference().getContentKey(), promotionCode);
+				List<FDCartLineI> orderLines=cart.getOrderLines();
+				if(null !=orderLines && !orderLines.isEmpty()){
+					int eligibleQuantity = 1;//FDStoreProperties.getProductSamplesMaxQuantityLimit();
+					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
+					if(!isMaxSampleReached(orderLines, eligibleProducts)){
+                        int quantity = 0;
+						for (FDCartLineI orderLine : orderLines) {
+                            if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) && quantity < eligibleQuantity
+                                    && orderLine.getQuantity() <= eligibleQuantity && ((EnumEventSource.ps_caraousal.equals(orderLine.getErpOrderLineSource()) || EnumEventSource.ps_caraousal.equals(orderLine.getSource())))) {
+                            	orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
+                                orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
+								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
+                                quantity += orderLine.getQuantity();
+                                isApplied = true;
+								try {
+									orderLine.refreshConfiguration();
+								} catch (FDInvalidConfigurationException ex) {
+									throw new FDResourceException(ex);
+								}
+							}
+						}
+					}
+				}
 			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
 		return isApplied;
+				
 	}
 
+	
+	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleProducts) {
+		int numberOfFreeSampleProducts = 0;
+		for(FDCartLineI orderLine: orderLines){
+			if(null !=orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
+				numberOfFreeSampleProducts++;
+			}
+		}
+		if(numberOfFreeSampleProducts >= eligibleProducts){
+			return true;
+		}
+		return false;
+	}
 	@Override
-	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		
 	}
 
@@ -65,16 +103,10 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 	
 	public ProductModel getSampleProduct() {
-		if(null ==sampleProduct){
-			sampleProduct = new ProductReferenceImpl(categoryId,productId);
-		}
 		return this.sampleProduct.lookupProductModel();
 	}
 	
 	public ProductReference getProductReference() {
-		if(null ==sampleProduct){
-			sampleProduct = new ProductReferenceImpl(categoryId,productId);
-		}
 	    return this.sampleProduct;
 	}
 
@@ -87,33 +119,6 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
 	}
-
-	public double getMinSubtotal() {
-		return minSubtotal;
-	}
-
-	public void setMinSubtotal(double minSubtotal) {
-		this.minSubtotal = minSubtotal;
-	}
-
-	public DlvZoneStrategy getZoneStrategy() {
-		return zoneStrategy;
-	}
 	
-	public String getCategoryId() {
-		return categoryId;
-	}
 
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-	
 }

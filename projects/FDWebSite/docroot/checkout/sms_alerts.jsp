@@ -14,10 +14,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - SMS Settings"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - SMS Settings</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - SMS Settings</tmpl:put>
 <tmpl:put name="extraHead">
 	<style>
 		.trpad {
@@ -197,7 +194,7 @@
 									<input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:20px;font-size:13px" />
 								</td>
 							</tr>
-							<tr><td class="errortext" style="text-align: left; padding-left: 15px;"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><div class="smsErrorMsgCont"><%=errorMsg%></div></fd:ErrorHandler></div></td></tr>
+							<tr><td class="text11rbold" style="text-align: left; padding-left: 15px;"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><div class="smsErrorMsgCont"><%=errorMsg%></div></fd:ErrorHandler></div></td></tr>
 							<tr><td><fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_medium.html" /></td></tr>
 							<tr><td>&nbsp;</td></tr>
 							<tr>

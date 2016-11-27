@@ -193,10 +193,6 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 		return this.getOrderStatus().isNewOrder();
 	}
 
-	public boolean isSapSubmitPending() {
-		return this.getOrderStatus().isSapSubmitPending();
-	}
-	
 	@Override
 	public EnumEStoreId getEStoreId() {
 		// TODO Auto-generated method stub

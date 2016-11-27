@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 
 /**

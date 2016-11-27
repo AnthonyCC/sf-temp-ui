@@ -4,24 +4,19 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
-import com.freshdirect.webapp.search.unbxd.UnbxdSearchProperties;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -36,42 +31,38 @@ public class AutoCompleteFacade implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static Category LOGGER = LoggerFactory.getInstance(AutoCompleteFacade.class);
 
+    private List<String> terms;
+
     public AutoCompleteFacade() {
+        terms = new ArrayList<String>();
+        terms.add("milk");
+        terms.add("banana");
+        terms.add("apple");
+        terms.add("pie");
+        terms.add("foo");
+        terms.add("bar");
+
+        Collections.sort(terms);
     }
 
     public List<String> getTerms(String prefix, HttpServletRequest request) {
         LOGGER.info("autocomplete for " + prefix);
-        List<String> results= new ArrayList();
-        List<UnbxdAutosuggestResults> resultsRaw = null;
-        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-        Cookie[] cookies = request.getCookies();
-
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
+        List<String> results;
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(),
+                (FDUserI) request.getSession().getAttribute(SessionName.USER))) {
             try {
-                UnbxdSearchProperties searchProperties = new UnbxdSearchProperties();
-                boolean corporateSearch = CosFeatureUtil.isUnbxdCosAction(user, cookies);
-                searchProperties.setCorporateSearch(corporateSearch);
-
-                resultsRaw = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix, searchProperties);
-				if (!resultsRaw.isEmpty()) {
-					if(user!= null) {
-						user.setUnbxdAustoSuggestions(resultsRaw);
-					}
-					for (UnbxdAutosuggestResults it : resultsRaw) {
-						results.add(it.getAutosuggest());
-					}
-				}
+                results = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix);
             } catch (IOException e) {
                 if (FDStoreProperties.getUnbxdFallbackOnError()) {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback to internal autocomplete");
-                    results = StoreServiceLocator.contentSearch().getAutocompletions(prefix);
+                    results = ContentSearch.getInstance().getAutocompletions(prefix);
                 } else {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback on error is false");
                     throw new UnbxdServiceUnavailableException("UNBXD autosuggest service is unavailable");
                 }
             }
         } else {
-            results = StoreServiceLocator.contentSearch().getAutocompletions(prefix);
+            results = ContentSearch.getInstance().getAutocompletions(prefix);
         }
         return results;
     }

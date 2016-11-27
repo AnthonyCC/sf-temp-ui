@@ -15,8 +15,10 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.WSPromoControllerTag"%>
 <%@ page import="com.freshdirect.delivery.EnumPromoFDXTierType" %>
 <%
+	//fetch profiles
+	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
 	//sort them
-	List<String> profileAttributeNamesSorted = new ArrayList<String>();
+	List<String> profileAttributeNamesSorted = new ArrayList<String>(profileAttributeNames.keySet());
 	Collections.sort(profileAttributeNamesSorted);
 %>
 <tmpl:insert template='/template/top_nav.jsp'>

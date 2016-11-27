@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" /> 
 		<title>FreshDirect Brooklyn rollout update.</title>
@@ -65,7 +65,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 
 <table width="90%" cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="100%">
 		<tr>
@@ -86,7 +86,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 
 			<p><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/></p>
 </td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

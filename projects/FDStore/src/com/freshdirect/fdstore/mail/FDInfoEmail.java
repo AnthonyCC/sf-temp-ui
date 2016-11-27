@@ -4,33 +4,23 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.framework.mail.EmailSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 
 public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 	private static final long serialVersionUID = -4523407316264096202L;
-	private final static Logger LOGGER = LoggerFactory.getInstance(FDInfoEmail.class);
 
 	private final FDCustomerInfo customer;
 
-	@JsonProperty("htmlXsl")
 	private String htmlXsl;
-	
-	@JsonProperty("textXsl")
 	private String textXsl;
-	
 	
 	private boolean htmlEmail = true;
 	private String fromEmail;
 	
-	public FDInfoEmail(@JsonProperty("customer") FDCustomerInfo customer) {
+	public FDInfoEmail(FDCustomerInfo customer) {
 		super();
 		this.customer = customer;
 
@@ -81,9 +71,9 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 		FDXMLSerializer s = new FDXMLSerializer();
 		Map map = new HashMap();
 		this.decorateMap(map);
-		String xmlString = s.serialize("fdemail", map);
-		LOGGER.debug("email data:" + xmlString);
-		return xmlString;
+		//String xmlString = s.serialize("fdemail", map); 
+		//System.out.print(xmlString);
+		return s.serialize("fdemail", map);
 	}
 
 	protected void decorateMap(Map map) {

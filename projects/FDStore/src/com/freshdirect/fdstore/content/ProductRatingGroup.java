@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.fdstore.content.util.EnumWinePageSize;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class ProductRatingGroup implements Comparable<ProductRatingGroup> {
 	private EnumWineRating rating;

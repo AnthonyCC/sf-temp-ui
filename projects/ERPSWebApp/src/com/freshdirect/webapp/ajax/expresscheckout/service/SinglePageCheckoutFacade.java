@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +13,10 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -33,9 +27,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
@@ -43,7 +35,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
 import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
@@ -53,12 +44,12 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
+import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.SinglePageCheckoutHeaderService;
 import com.freshdirect.webapp.ajax.expresscheckout.drawer.service.DrawerService;
-import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
@@ -80,7 +71,6 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.CheckOrderStatusTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutFacade {
@@ -97,9 +87,6 @@ public class SinglePageCheckoutFacade {
     private static final String CART_DATA_JSON_KEY = "cartData";
     private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
     private static final String FORM_META_DATA_JSON_KEY = "formMetaData";
-    private static final String DELIVERY_CHARGE_ID = "deliverycharge";
-    private static final String DELIVERY_CHARGE_NAME = "Delivery Charge";
-    private static final String ORDER_FREE_TRIAL_MSG = "ORDER_FREE_TRIAL_MSG";
     // private static final String MASTERPASS_EWALLET_TYPE = "MP";
     // private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
     // private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
@@ -131,30 +118,18 @@ public class SinglePageCheckoutFacade {
         deliveryAddressService = DeliveryAddressService.defaultService();
     }
 
-    public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request)
-            throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
-    	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
-    	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
-        FDCartI cart = populateCartDataFromParentOrder(user, dlvPassCart);
+    public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
+        FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setStandingOrderResponseData(StandingOrderHelper.populateResponseData(user.getCurrentStandingOrder(), false));
         }
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user, dlvPassCart));
-        FormPaymentData paymentData = loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
-        // remove the xxxx in account number
-    	if (paymentData.getPayments() != null) {
-    		for(PaymentData payment: paymentData.getPayments()) {
-    			if (payment.getAccountNumber() != null) {
-    				payment.setAccountNumber(payment.getAccountNumber().replace("XXXX", ""));
-    			}
-    		}
-    	}
-        result.setPayment(paymentData);
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
+        result.setPayment(loadUserPaymentMethods(user, request));
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setAddress(loadAddress(user, request.getSession(), cart, FDCustomerManager.getShipToAddresses(user.getIdentity())));
+        result.setAddress(loadAddress(user, request.getSession(), cart));
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null
@@ -162,24 +137,21 @@ public class SinglePageCheckoutFacade {
                 result.setAtpFailure(atpFailureData);
             }
         }
+
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getSoTemplateCart()));
         } else {
-        	if(!(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly())){
-        		result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getShoppingCart()));
-        	}
+            result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getShoppingCart()));
         }
+
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
-            result.setRedirectUrl(populateRedirectUrl(user));
+            result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                    availabilityService.selectWarningType(user)));
         }
         return result;
     }
 
-    public String populateRedirectUrl(FDUserI user) throws FDResourceException {
-    	return RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                availabilityService.selectWarningType(user));
-    }
     public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult) throws FDResourceException,
             IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -194,7 +166,7 @@ public class SinglePageCheckoutFacade {
             LOGGER.debug("Skipped restriction check for fraud address");
         }
 
-        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user, false);
+        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user);
 
         HttpSession session = request.getSession();
         switch (pageAction) {
@@ -215,12 +187,11 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
-                	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session, cart));
                     result.put(TIMESLOT_JSON_KEY, timeslotService.loadCartTimeslot(user, cart));
                     Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
-                        result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits()));
+                        result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                     }
                     if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                         result.put(
@@ -301,9 +272,6 @@ public class SinglePageCheckoutFacade {
             case APPLY_GIFT_CARD:
                 //$FALL-THROUGH$
             case REMOVE_GIFT_CARD: {
-                CartData cartData = CartDataService.defaultService().loadCartData(request, user);
-                result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(cartData));
-                
                 result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
@@ -334,38 +302,21 @@ public class SinglePageCheckoutFacade {
         }
         return result;
     }
-    
-	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
-			throws FDResourceException, JspException, RedirectToPage {
-		
-		return loadAddress(user, session, populateCartDataFromParentOrder(user, false), null);
-	}
 
-    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
-    	return loadAddress(user,session,cart,null);
-    }
-    
-    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
-        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses);
+    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {
+        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session);
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
 
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
-        	FDStandingOrder currentSO = user.getCurrentStandingOrder();
-    		formLocation.setSelected(null);	
-    		//checks valid corporate address
-        	List<LocationData> validCoAddress = formLocation.getAddresses();
-        	for( LocationData address: validCoAddress){
-        		if(address.getId().equals(currentSO.getAddressId())){
-        			formLocation.setSelected(currentSO.getAddressId());
-        			break;
-        		}
-        	}if(null == formLocation.getSelected() && null != currentSO.getAddressId()){												//APPBUG-5367
-        		LOGGER.debug("addressID: "+currentSO.getAddressId()+" is no more in system, updating now at template level");
-        		StandingOrderHelper.evaluteSoAddressId(session, user, currentSO.getAddressId());
-        	}
+            if (null != user.getCurrentStandingOrder().getAddressId()) {
+                formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
+            } else {
+                user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
+            }
         }
+        formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
     }
 
@@ -399,24 +350,17 @@ public class SinglePageCheckoutFacade {
         
         FDOrderI order = isSO3Activate?new FDStandingOrderAdapter(user.getSoTemplateCart(),user.getCurrentStandingOrder()):loadOrder(orderId, user);
        
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user, false));
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
         result.setAddress(loadCartAddress(order, user));
         result.setPayment(loadCartPayment(order, user));
         result.setTimeslot(timeslotService.loadCartTimeslot(user, order));
         result.setSuccessPageData(loadSuccessPageData(order, requestURI, user));
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
-       
-        if (user.getIdentity() != null) {
-            result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)) ? true : false);
-        } else {
-            result.setGoGreenShow(false);
-        }
-
         return result;
     }
 
-    private FDCartI populateCartDataFromParentOrder(final FDUserI user, boolean dlvPassCart) throws FDResourceException {
+    private FDCartI populateCartDataFromParentOrder(final FDUserI user) throws FDResourceException {
         FDCartI cart = null;
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             cart = user.getSoTemplateCart();
@@ -430,8 +374,7 @@ public class SinglePageCheckoutFacade {
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
-            //cart = user.getShoppingCart();
-        	cart = UserUtil.getCart(user, "", dlvPassCart);
+            cart = user.getShoppingCart();
         }
         return cart;
     }
@@ -458,7 +401,8 @@ public class SinglePageCheckoutFacade {
         return selectedPaymentId;
     }
 
-    public List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
+    private List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
+
         FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
 
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
@@ -488,13 +432,9 @@ public class SinglePageCheckoutFacade {
                 }
                 String billingReference = cart.getPaymentMethod().getBillingRef();
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
-                String paymentId = cart.getPaymentMethod().getPK().getId();
-                ErpPaymentMethodI paymentMethod = PaymentMethodUtil.getPaymentMethod(paymentId, user.getPaymentMethods());
-                if (paymentMethod != null) {
-                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName, "N", false);
-                } else {
-                    session.setAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED, Boolean.TRUE);
-                }
+                String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+                if (paymentId != null)
+                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
                 for (ActionError error : actionResult.getErrors()) {
                     validationErrors.add(new ValidationError(error));
                 }
@@ -509,60 +449,42 @@ public class SinglePageCheckoutFacade {
     }
 
     /** based on step_3_choose.jsp */
-    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits, boolean dlvPassCart) {
-       
-    	if (user.getGiftCardList() != null) {
+    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData) {
+        if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
-            user.getDlvPassCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
         try {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
             // timeslot, no giftcard magic
             final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals(user.getCheckoutMode());
-            FDCartModel cart;
-            if(dlvPassCart) {													/* APPDEV-7671 */
-            	cart = user.getDlvPassCart();
-            }else {
-            	 cart = user.getShoppingCart();
-            }
+            FDCartModel cart = user.getShoppingCart();
+
             /*
              * Apply Customer credit -- This is done here for knowing the final order amount before displaying the payment selection If Gift card is used on the order Also
              * calculate the 25% perishable buffer amount to decide if another mode of payment is needed.
              */
             if (!isSOTMPL) {
-                FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity(), customerCredits);
+                FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
             }
 
             double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
             double gcBufferAmount = 0;
             double ccBufferAmount = 0;
-            double perishableBufferAmount;
-			double outStandingBalance;
+            double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount(cart);
+            double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
 
-			if (isSOTMPL) {
-				perishableBufferAmount = 0;
-				outStandingBalance = 0;
-			} else {
-				GiftCardApplicationStrategy strategy = FDCustomerManager.getGiftCardApplicationStrategy(cart);
-				perishableBufferAmount = strategy.getPerishableBufferAmount();
-				outStandingBalance = strategy.getRemainingBalance();
-
-			}
-
-			if (!isSOTMPL && perishableBufferAmount > 0) {
-
-				if (cart.getTotalAppliedGCAmount() > 0) {
-					if (outStandingBalance > 0) {
-						gcBufferAmount = gcSelectedBalance;
-						ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
-					} else {
-						gcBufferAmount = perishableBufferAmount;
-					}
-				} else {
-					ccBufferAmount = perishableBufferAmount;
-				}
-
-			}
+            if (!isSOTMPL && perishableBufferAmount > 0) {
+                if (cart.getTotalAppliedGCAmount() > 0) {
+                    if (outStandingBalance > 0) {
+                        gcBufferAmount = gcSelectedBalance;
+                        ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
+                    } else {
+                        gcBufferAmount = perishableBufferAmount;
+                    }
+                } else {
+                    ccBufferAmount = perishableBufferAmount;
+                }
+            }
 
             /* No additional payment type is needed, covered by Giftcards */
             if (!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && outStandingBalance <= 0.0) {
@@ -621,8 +543,6 @@ public class SinglePageCheckoutFacade {
     }
 
     private SuccessPageData loadSuccessPageData(final FDOrderI order, final String requestURI, final FDUserI user) throws FDResourceException {
-    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaivedByDlvPass(EnumChargeType.DELIVERY) && null ==order.getDeliveryPassId();
-    	
         SuccessPageData successPageData = new SuccessPageData();
         successPageData.setHeader(contentFactoryService.getExpressCheckoutReceiptHeader(user));
         successPageData.setRightBlock(contentFactoryService.getExpressCheckoutReceiptEditorial(user));
@@ -630,26 +550,8 @@ public class SinglePageCheckoutFacade {
         successPageData.setSoName(order.getStandingOrderName());
         successPageData.setSoOrderDate(order.getSODeliveryDate());
         successPageData.setOrderModifiable(CheckOrderStatusTag.isOrderModifiable(order));
-        try {
-			successPageData.setHasSettledOrder(user.getOrderHistory().getSettledOrderCount()>0);
-		} catch (FDResourceException e) {
-			e.printStackTrace();
-		}
-        successPageData.setDeliveryType(order.getDeliveryType().getCode());
         if(StandingOrderHelper.isSO3StandingOrder(user)){
         	populateSOActivationSuccess(successPageData,user);
-        }
-        //For Free Trial to show the message
-
-        if (order.isDlvPassApplied() || freeTrialOptinBasedDPApplied) {
-        	successPageData.setId(DELIVERY_CHARGE_ID);
-        	successPageData.setText(DELIVERY_CHARGE_NAME);
-            String deliveryPassAppliedMessage = DeliveryPassUtil.getDlvPassAppliedMessage(user);
-            successPageData.setValue(deliveryPassAppliedMessage);
-            
-            if(freeTrialOptinBasedDPApplied) {
-            	successPageData.setDeliveryPassTrialActivated(freeTrialOptinBasedDPApplied);
-            }
         }
         successPageData.setReceipt(receiptService.populateReceiptData(order, requestURI, user));
         return successPageData;
@@ -679,108 +581,41 @@ public class SinglePageCheckoutFacade {
         return textMessageAlertData;
     }
 
-	private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
-		return loadUserPaymentMethods(user,request,null, null);
-	}
-    public FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods,List customerCredits) throws FDResourceException {
+    private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
-        boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
-            processGiftCards(user, formPaymentData, customerCredits,dlvPassCart);
+            processGiftCards(user, formPaymentData);
         }
         // boolean isMPCard = false;
 
         if (formPaymentData.isCoveredByGiftCard() && !StandingOrderHelper.isSO3StandingOrder(user)) {
             paymentService.setNoPaymentMethod(user, request);
         } else {
-        	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-        	
-        	 FDCartModel cart=UserUtil.getCart(user, "", dlvPassCart);
-        	//APPDEV-6765
-             FDCartModel mCart = cart;
-             if (mCart instanceof FDModifyCartModel && !StandingOrderHelper.isSO3StandingOrder(user)) {
-                 FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
-                 String orderId = modifyCart.getOriginalOrder().getErpSalesId();
-                 try {
-//                      FDOrderI order = FDCustomerManager.getOrder(orderId);
-                     if(null !=modifyCart.getPaymentMethod() && null !=modifyCart.getPaymentMethod().getPK()){
-                    	 String cartPaymentMethodPK= modifyCart.getPaymentMethod().getPK().getId();
-                          for(PaymentData PM : userPaymentMethods){
-                              if(PM.getId().equalsIgnoreCase(cartPaymentMethodPK) ){
-                            	  formPaymentData.setSelected(cartPaymentMethodPK);
-                                  PM.setSelected(true);
-                              }else{
-                                  PM.setSelected(false);
-                              }
-                           }
-                          
-                     }else{
-                         FDOrderI order = FDCustomerManager.getOrder(orderId);
-                         formPaymentData.setSelected(modifyCart.getOriginalOrder().getPaymentMethod().getPK().getId());
-                     }
-                 } catch (FDResourceException e) {
-                     LOGGER.error("Error while retreiving order details order id" + orderId);
-                 }
-             } else {
-				boolean readyToBreak = false;
-				for (PaymentData data : userPaymentMethods) {
-					if (data.isSelected()) {
-						formPaymentData.setSelected(data.getId());
-						if (readyToBreak) {
-							break;
-						} else {
-							readyToBreak = true;
-						}
-					}
-					if (data.isDefault()) {
-						formPaymentData.setDefault(data.isDefault());
-						if (readyToBreak) {
-							break;
-						} else {
-							readyToBreak = true;
-						}
-					}
-				}
-			}
-        	 formPaymentData.setPayments(userPaymentMethods);
+            List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
+            formPaymentData.setPayments(userPaymentMethods);
+            for (PaymentData data : userPaymentMethods) {
+                if (data.isSelected()) {
+                    formPaymentData.setSelected(data.getId());
+                    break;
+                }
+            }
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 userPaymentMethods = removeEWalletPaymentMethod(userPaymentMethods);
-                
-                FDStandingOrder currentSO = user.getCurrentStandingOrder();
-                formPaymentData.setSelected(null);	
-        		//checks valid payments												//COS17-45
-                List<PaymentData> userPayments = formPaymentData.getPayments();
-            	for( PaymentData payment: userPayments){
-            		if(payment.getId().equals(currentSO.getPaymentMethodId())){
-            			formPaymentData.setSelected(currentSO.getPaymentMethodId());
-            			payment.setSelected(true);
-            		}else{
-            			payment.setSelected(false);
-            		}
-            	}if(null == formPaymentData.getSelected() && null != currentSO.getPaymentMethodId()){
-            		LOGGER.debug("paymentID: "+currentSO.getPaymentMethodId()+" is no more in system, updating now at template level");
-            		StandingOrderHelper.evaluteSOPaymentId(request.getSession(), user, currentSO.getPaymentMethodId());
-            	}
-            	
                 formPaymentData.setPayments(userPaymentMethods);
-               // user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
+                user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
                 formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for Standing Orders
                 formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
 
             } else {
-            	if (null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
-            		formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for FDX customers
-                    formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for FDX customers
-            	} else {
-            		formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
-                    formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
-            	}
+                formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
+                formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
             }
             FDCardCount(userPaymentMethods);
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
 
-            if (!getEwalletStatus(EnumEwalletType.PP.getName()) || null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)) {
+            if (!getEwalletStatus(EnumEwalletType.PP.getName())) {
                 userPaymentMethods = removePPWallet(userPaymentMethods);
                 formPaymentData.setPayments(userPaymentMethods);
             }
@@ -793,6 +628,8 @@ public class SinglePageCheckoutFacade {
              * formPaymentData.setMpCardPaired("Yes"); } } }
              */
         }
+
+        formPaymentData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("payment"));
 
         return formPaymentData;
     }

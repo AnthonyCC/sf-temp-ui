@@ -3,54 +3,40 @@ package com.freshdirect.fdstore;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.core.ServiceLocatorI;
-import com.freshdirect.framework.util.JMXUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class FDAbstractCache<K,V> {
 	private static Category LOGGER = LoggerFactory.getInstance(FDAbstractCache.class);
-	protected ServiceLocatorI serviceLocator;
+	protected final ServiceLocator serviceLocator;
 	
 	private final long refreshDelay;
 	private final Thread refresher;
 	
 	private Map<K,V> cache = new ConcurrentHashMap<K,V>();
-	protected Date lastMaxModifiedDate;
-
+	private Date lastMaxModifiedDate;
+	
 	public FDAbstractCache(long refreshDelay) {
-		if(FDStoreProperties.isLocalDeployment()) {
-			this.lastMaxModifiedDate = new Date();			
-			refreshDelay = FDStoreProperties.TEN_DAYS_IN_MILLIS; //ten days
-		} else {
-			this.lastMaxModifiedDate = new Date(0);
-		}
 		this.refreshDelay = refreshDelay;
-		
+		this.lastMaxModifiedDate = new Date(0);
 		refresher = new RefreshThread(this.getClass().getName());
 		refresher.start();
-		
 		try{
-			try{
-				this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			}catch (Exception e) {
-				if("2".equals(JMXUtil.getStorefrontVersion())) {
-					LOGGER.info("SKIP EJB SERVICELOCATER");
-				}else{
-					throw new FDRuntimeException(e);
-				}
-			}
+			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 			this.refresh();
-		} catch (Exception e) {
+		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
-		}		
+		}
 	}
 	
-	protected synchronized void refresh() {
+	private synchronized void refresh() {
 		
 		Map<K,V> m = loadData(lastMaxModifiedDate);
 		if (!m.isEmpty()) {
@@ -79,7 +65,6 @@ public abstract class FDAbstractCache<K,V> {
 	private final class RefreshThread extends Thread {
 	        public RefreshThread(String name) {
     	            super(name);
-    	            this.setDaemon(true);
                 }
 	        
 		@Override

@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class HowToCookItUtil {
 	private final static DomainNameComparator DOMAIN_NAME_COMPARATOR = new DomainNameComparator();
@@ -68,12 +68,10 @@ public class HowToCookItUtil {
 	public static String getProductDomainValue(List<DomainValue> domainValues,
 			String domainId, String defaultDomainValue) {
 		for (DomainValue dmv : domainValues) {
-            if (dmv.getParentNode() != null) {
-    			ContentKey dom = dmv.getDomainContentKey();
-    			if (domainId.equals(dom.getId())) {
-    				return dmv.getValue();
-    			}
-		    }
+			ContentKey dom = dmv.getDomainContentKey();
+			if (domainId.equals(dom.getId())) {
+				return dmv.getValue();
+			}
 		}
 		return defaultDomainValue;
 	}

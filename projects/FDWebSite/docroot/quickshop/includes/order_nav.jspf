@@ -62,7 +62,7 @@
 							if (!hasSelected) {
 								orderNav.append(" colspan=\"2\"");
 							}
-							orderNav.append("><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"2\" border=\"0\"></td></tr>");
+							orderNav.append("><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"2\" border=\"0\"></td></tr>");
 							if ( hasSelected && selectedOrder.equals(orderInfo.getErpSalesId())) {
 								currentOrder = nav_dateFormatter.format(orderInfo.getRequestedDate());
 							}

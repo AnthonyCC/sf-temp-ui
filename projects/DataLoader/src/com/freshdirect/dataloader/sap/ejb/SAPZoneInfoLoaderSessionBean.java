@@ -20,7 +20,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.erp.EnumApprovalStatus;
@@ -34,13 +33,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *
  * @version $Revision$
  * @author $Author$
- */
-
-/**
- *@deprecated Please use the ErpZoneInfoController and ErpZoneInfoLoaderI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
  */
 public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport
 {
@@ -251,7 +243,7 @@ public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport
 		}
     }
     
-    public static final String DEFAULT_ZONE_ID= ErpServicesProperties.getMasterDefaultZoneId();
+    public static final String DEFAULT_ZONE_ID="0000100000";
     public static  Map<String, String>  zoneLevelMap=null;
     static{
     	zoneLevelMap=new HashMap<String, String>();

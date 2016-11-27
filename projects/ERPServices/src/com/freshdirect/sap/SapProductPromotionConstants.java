@@ -1,7 +1,5 @@
 package com.freshdirect.sap;
 
-import com.freshdirect.ErpServicesProperties;
-
 public interface SapProductPromotionConstants {
 
 	public static final String TABLE_ZDDPP_PROMO_DTL = "ZDDPP_PROMO_DTL";
@@ -9,7 +7,7 @@ public interface SapProductPromotionConstants {
 	public static final String TABLE_ZDDPP_PROMO_PRICE = "ZDDPP_PROMO_PRICE";
 	public static final String TABLE_ZDDPA_PROMO_DTL = "ZDDPA_PROMO_DTL";
 	public static final String TABLE_ZDDPA_PROMO_HDR = "ZDDPA_PROMO_HDR";
-	public static final String MASTER_DEFAULT_ZONE=ErpServicesProperties.getMasterDefaultZoneId();
+	public static final String MASTER_DEFAULT_ZONE="100000";
 	
 	public static final String FIELD_FEATRH = "FEATRN";
 	public static final String FIELD_FEATR = "FEATR";

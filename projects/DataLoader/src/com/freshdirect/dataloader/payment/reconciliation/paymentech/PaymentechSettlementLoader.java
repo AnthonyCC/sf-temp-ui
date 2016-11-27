@@ -26,10 +26,7 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
@@ -90,7 +87,6 @@ public class PaymentechSettlementLoader {
 		File tmpFileTwo = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_tmp_2_" + timestamp + ".dfr"); 
 		
 		
-
 		if(getFileFromProcessor) {
 			this.downloadFile(finFile, pdeFile, tmpFileOne, tmpFileTwo);
 		}
@@ -217,7 +213,6 @@ public class PaymentechSettlementLoader {
 		builder.setBuildOldSapFileFormat(buildOldSapFileFormat);
 		String fileName = DataLoaderProperties.getSapFileNamePrefix() + "_Paymentech_" + SF.format(new Date()) + ".txt";
 		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
-		
 		InputStream isFin = null;
 		InputStream isPde = null;
 		try{
@@ -251,7 +246,6 @@ public class PaymentechSettlementLoader {
 			if(isFin != null) isFin.close();
 			if(isPde != null) isPde.close();
 			builder.writeTo(f);
-			
 		}
 		return fileName;
 	}

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 
 <head>
   <title>viewcart popup test page</title>
@@ -35,7 +35,7 @@
           <div class="itemlist-item-header">    
             <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Local Wild Flounder Fillet</a> 
             <b class="expertrating smallrating rating-8">8</b>
-            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
+            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
             <br>
             <i class="itemlist-item-header-configuration">7-9 OZ</i>
             
@@ -50,12 +50,12 @@
             <div class="itemlist-item-controls-subtotal">
               <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
               <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-                <div class="offscreen">Decrease quantity</div>
+                <div style:"display:none;">Decrease quantity</div>
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
-                <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+                <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
-                <div class="offscreen">Increase quantity</div>
+                <div style:"display:none;">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
               </div>
             </div>
@@ -80,7 +80,7 @@
         <div class="itemlist-item-header">    
           <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Cheez-It Reduced Fat Crackers</a> 
           <b class="expertrating smallrating rating-8">8</b>
-          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
+          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
           <br>
           <i class="itemlist-item-header-configuration">7-9 OZ</i>
           
@@ -123,12 +123,12 @@
           <div class="itemlist-item-controls-subtotal">
             <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
             <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-              <div class="offscreen">Decrease quantity</div>
+              <div style:"display:none;">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
-              <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+              <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
-              <div class="offscreen">Increase quantity</div>
+              <div style:"display:none;">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>
             </div>
             <!--  div class="subtotal hasPrice" data-component="subtotal">subtotal: <b>$8.00</b></div -->
@@ -168,7 +168,7 @@
           <div class="itemlist-item-header">    
             <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Local Wild Flounder Fillet</a> 
             <b class="expertrating smallrating rating-8">8</b>
-            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
+            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
             <br>
             <i class="itemlist-item-header-configuration">7-9 OZ</i>
             
@@ -183,12 +183,12 @@
             <div class="itemlist-item-controls-subtotal">
               <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
               <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-              <div class="offscreen">Decrease quantity</div>	
+              <div style:"display:none;">Decrease quantity</div>	
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
-                <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+                <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
-                <div class="offscreen">Increase quantity</div>
+                <div style:"display:none;">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
               </div>
             </div>
@@ -213,7 +213,7 @@
         <div class="itemlist-item-header">    
           <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Cheez-It Reduced Fat Crackers</a> 
           <b class="expertrating smallrating rating-8">8</b>
-          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
+          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
           <br>
           <i class="itemlist-item-header-configuration">7-9 OZ</i>
           
@@ -256,12 +256,12 @@
           <div class="itemlist-item-controls-subtotal">
             <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
             <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-            <div class="offscreen">Decrease quantity</div>
+            <div style:"display:none;">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
-              <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+              <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
-              <div class="offscreen">Increase quantity</div>
+              <div style:"display:none;">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>
             </div>
             <!--  div class="subtotal hasPrice" data-component="subtotal">subtotal: <b>$8.00</b></div -->

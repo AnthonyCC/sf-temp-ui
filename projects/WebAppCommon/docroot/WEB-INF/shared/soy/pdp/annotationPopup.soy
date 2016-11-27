@@ -5,14 +5,14 @@
  * @param? erpsyLink
  */
 {template .annotationPopup}
-	{let $erpsyMaterialLink: $erpsyLink + 'index.html#/material/sap/' + $data.material /}
-	{let $erpsySkuLink: $erpsyLink + 'index.html#/product/' + $data.skuCode /}
-	{let $erpsySkuSearchLink: $erpsyLink + 'index.html#/material/search/' + $data.skuCode + '/WEBID' /}
+	{let $erpsyMaterialLink: $erpsyLink + '/attribute/material/material_view.jsp?sapId=' + $data.material /}
+	{let $erpsySkuLink: $erpsyLink + '/product/product_view.jsp?skuCode=' + $data.skuCode /}
+	{let $erpsySkuSearchLink: $erpsyLink + '/attribute/material/material_search.jsp?searchterm=' + $data.skuCode + '&searchtype=WEBID' /}
 	{let $cmsLink: 'http://cms.freshdirect.com/cms-gwt/cmsgwt.html#Category:' + $data.categoryId + '$Product:' + $data.productId /}
 
   <ul>
     <li>Availability: {$data.availability}</li>
-	<li>Material: {call .newTabLinkedText}{param url:$erpsyMaterialLink /}{param target:'_erpsy' /}{param text:$data.material /}{/call}</li>
+	<li>Material: {call .newTabLinkedText}{param url:$data.materialLink /}{param target:'_erpsy' /}{param text:$data.material /}{/call}</li>
     <li>Sku: {call .newTabLinkedText}{param url:$erpsySkuLink /}{param target:'_erpsy' /}{param text:$data.skuCode /}{/call}</li>
     <li>{call .newTabLinkedText}{param url:$erpsySkuSearchLink /}{param target:'_erpsy' /}{param text:'Erpsy' /}{/call}</li>
 	<li>{call .newTabLinkedText}{param url:$cmsLink /}{param target:'_cms' /}{param text:'CMS' /}{/call}</li>

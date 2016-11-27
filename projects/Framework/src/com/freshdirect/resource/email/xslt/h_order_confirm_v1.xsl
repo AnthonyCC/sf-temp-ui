@@ -8,9 +8,9 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-	<title>Your receipt from FreshDirect-Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
+	<title>Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
 </head>
 <body bgcolor="#FFFFFF">
@@ -49,7 +49,7 @@
 									</xsl:if>
 									</p>
 
-									<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
 
 									<xsl:choose>
 										<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">
@@ -93,7 +93,7 @@
 									</p>
 
 
-									<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
                                                                         
                                     <xsl:choose>
                                         <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>
@@ -163,15 +163,6 @@
 							<br/>
 							FreshDirect<br/>
 							<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
-							
-							<xsl:comment>fdcOrderCount is CURRENT (so confirm is called DURING place, so it's 0 during first order)</xsl:comment>
-							<xsl:if test="customer/fdcOrderCount = 0 and order/deliveryInfo/deliveryPlantInfo/salesOrg = '1400'">
-								<div style="margin: 20px 0; padding: 10px;"><a href="https://www.freshdirect.com/recycle" style="text-decoration: none; border: 0;"><img src="https://www.freshdirect.com/media/images/email/boxes_to_bags/banner.jpg" alt="We're switching from boxes to bags. A fresh new look! Learn more" style="border: 0;" /></a></div>
-							</xsl:if>
-							
-							<xsl:if test="order/deliveryType = 'H' and customer/numberOfOrders &gt; 1">
-									<p><a target="_blank" href="https://refer.freshdirect.com/orderconfirmemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
-							</xsl:if>
 
 							<p><xsl:call-template name="h_order_info_v1"/></p>
 							

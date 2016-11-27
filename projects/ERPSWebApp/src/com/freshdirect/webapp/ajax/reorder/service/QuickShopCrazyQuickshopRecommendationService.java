@@ -3,6 +3,7 @@ package com.freshdirect.webapp.ajax.reorder.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,9 +14,19 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.ProductModelPromotionAdapter;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -24,27 +35,16 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.CarouselItemType;
 import com.freshdirect.smartstore.fdstore.FactorUtil;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
-import com.freshdirect.storeapi.ProductModelPromotionAdapter;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentKeyFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.RecommenderServlet;
+import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
-import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -53,8 +53,6 @@ public class QuickShopCrazyQuickshopRecommendationService {
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopCrazyQuickshopRecommendationService.class);
 
 	private static final QuickShopCrazyQuickshopRecommendationService INSTANCE = new QuickShopCrazyQuickshopRecommendationService();
-
-    public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
 
 	public static final String DEPT_FRUIT = "fru";
 
@@ -119,7 +117,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 					sku = product.getDefaultSku();
 				} else if (skuObj instanceof String) {
 					// We got a String, most probably a skuCode
-					sku = (SkuModel) ContentFactory.getInstance().getContentNode(ContentType.Sku, (String) skuObj);
+					sku = (SkuModel) ContentFactory.getInstance().getContentNode(ContentType.get("Sku"), (String) skuObj);
 					product = sku.getProductModel();
 				} else {
 					// No more ideas, just skip this item
@@ -180,7 +178,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 		if (deptId != null && !deptId.trim().isEmpty()) {
 
 			try {
-				DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode(ContentType.Department, deptId);
+				DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode(ContentType.get("Department"), deptId);
 				if (department != null) {
 
 					if (DEPT_FRUIT.equals(deptId) || DEPT_VEG.equals(deptId) || DEPT_SEAFOOD.equals(deptId)) {
@@ -239,10 +237,10 @@ public class QuickShopCrazyQuickshopRecommendationService {
 						// also called as "This week's best deals on meat" in
 						// "what's good" department
 
-						CategoryModel meatDeals = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.Category, "wgd_butchers");
+						CategoryModel meatDeals = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.get("Category"), "wgd_butchers");
 						if (meatDeals != null) {
 
-							return convertToQuickshopItems(user, maxItems, meatDeals.getAllChildFromTwoLevelProductsAsList());
+							return convertToQuickshopItems(user, maxItems, meatDeals.getAllChildProductsAsList());
 						}
 					}
 
@@ -255,11 +253,16 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			}
 		}
 
-		CategoryModel rootNode = null;
-
-		rootNode = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.getPresidentsPicksCategoryKey() );
-		if(rootNode==null)
+		CategoryModel rootNode = null; 
+		
+		try {
+			rootNode = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.getIntance().getPresidentsPicksCategoryKey() );
+			if(rootNode==null)
+				return Collections.EMPTY_LIST;
+		} catch (InvalidContentKeyException e) {
+			LOG.error("Missing root node picks_love", e);
 			return Collections.EMPTY_LIST;
+		}
 
 		@SuppressWarnings({ "rawtypes" })
 		List<ContentNodeModel> prespicks = (List) rootNode.getProducts(); // DDPP
@@ -330,7 +333,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			}
 		}
 
-        Map<String, Object> result = null;
+		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			int maxItems = requestData.getNumberOfItems(); // TODO: scripted
 			// recommender
@@ -352,11 +355,15 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			items = doTheCrazyQuickshopRecommendations(user, session, deptId, maxItems, listContent);
 			title = getTheCrazyQuickshopTitle(deptId);
 
-            if (items.isEmpty()) {
-                result = RecommenderServlet.createRecommendationResult(Collections.<String, Object> emptyMap());
-            } else {
-                result = RecommenderServlet.createRecommenderResult(siteFeature, CarouselItemType.GRID.getType(), title, items, EnumEventSource.REORDER.getName());
-            }
+			if (!items.isEmpty()) {
+				Map<String, Object> recommenderResult = new HashMap<String, Object>();
+				recommenderResult.put("items", items);
+				recommenderResult.put("siteFeature", siteFeature);
+				if (title != null) {
+					recommenderResult.put("title", title);
+				}
+				result.put("recommenderResult", recommenderResult);
+			}
 		} catch (FDResourceException e) {
 			BaseJsonServlet.returnHttpError(500, "Cannot collect recommendations. e: " + e);
 		}

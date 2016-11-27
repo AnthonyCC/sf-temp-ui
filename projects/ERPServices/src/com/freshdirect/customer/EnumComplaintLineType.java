@@ -6,9 +6,6 @@
 
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  *
  * @author  jmccarter
@@ -16,11 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class EnumComplaintLineType implements java.io.Serializable {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 7178044712465471285L;
-	public final static EnumComplaintLineType ORDER_LINE		= new EnumComplaintLineType(0, "ORLN", "Order Line");
+    public final static EnumComplaintLineType ORDER_LINE		= new EnumComplaintLineType(0, "ORLN", "Order Line");
     public final static EnumComplaintLineType DEPARTMENT		= new EnumComplaintLineType(1, "DEPT", "Department");
     public final static EnumComplaintLineType MISCELLANEOUS		= new EnumComplaintLineType(2, "MISC", "Miscellaneous");
     public final static EnumComplaintLineType FULL_REFUND		= new EnumComplaintLineType(3, "FULL", "Full Refund");
@@ -49,8 +42,7 @@ public class EnumComplaintLineType implements java.io.Serializable {
     private String statusCode;
     private String name;
 
-    @JsonCreator
-    public static EnumComplaintLineType getComplaintLineType(@JsonProperty("statusCode") String code) {
+    public static EnumComplaintLineType getComplaintLineType(String code) {
     	//System.out.println("Checking code: " + code);
 		if ( "ORLN".equalsIgnoreCase(code) ) {
 			return ORDER_LINE;

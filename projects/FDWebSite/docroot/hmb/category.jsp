@@ -6,7 +6,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
@@ -43,7 +43,7 @@ if (mobWeb) {
   
   <tmpl:put name='containerExtraClass' direct='true'>hmb</tmpl:put>
 
-<%--   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put> --%>
+  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
   
   <tmpl:put name="seoMetaTag" direct="true">
     <fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"/>

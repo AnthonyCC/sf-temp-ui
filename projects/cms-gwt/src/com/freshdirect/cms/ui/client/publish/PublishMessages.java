@@ -27,11 +27,14 @@ import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
+import com.freshdirect.cms.ui.model.publish.GwtPublishMessage.Level;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PublishMessages extends LayoutContainer {
 
+	private BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader;
+	
 	public PublishMessages(ChangeSetQuery query) {
 		super();
 		setLayout(new BorderLayout());
@@ -51,68 +54,68 @@ public class PublishMessages extends LayoutContainer {
 	public void init(ChangeSetQueryResponse changeHistory) {
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-		final BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>(
+		loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>(
                 new PublishMessageLoader(changeHistory));
         loader.setRemoteSort(true);
 
         ListStore<GwtPublishMessage> store = new ListStore<GwtPublishMessage>(loader);
 		
 		// ============ SEVERITY ============
-		ColumnConfig severityColumn = new ColumnConfig("severity", "Severity", 80);
-		severityColumn.setRenderer(new GridCellRenderer<GwtPublishMessage>() {
+		{
+			ColumnConfig c = new ColumnConfig("severity", "Severity", 80);
+			c.setRenderer(new GridCellRenderer<GwtPublishMessage>() {
 
 				@Override
-				public Object render(GwtPublishMessage model, String property, ColumnData config, int rowIndex, int colIndex, 
-						ListStore<GwtPublishMessage> store,	Grid<GwtPublishMessage> grid) {
+				public Object render(GwtPublishMessage model, String property,
+						ColumnData config, int rowIndex, int colIndex,
+						ListStore<GwtPublishMessage> store,
+						Grid<GwtPublishMessage> grid) {
 
-					final String severity = model.getSeverity();
+					final Level severity = model.getSeverity();
 
-					Text severityLabel = new Text(severity);
+					Text severityLabel = new Text(model.getSeverity().name());
 					severityLabel.setTagName("span");
 
-					if ("FAILURE".equals(severity)){
+					switch (severity) {
+					case FAILURE:
 						severityLabel.addStyleName("publish-failure");
-					} else if ("ERROR".equals(severity)){
+						break;
+					case ERROR:
 						severityLabel.addStyleName("publish-error");
-					} else if ("WARNING".equals(severity)){
+						break;
+					case WARNING:
 						severityLabel.addStyleName("publish-warning");
-					} else if ("INFO".equals(severity)){
+						break;
+					case INFO:
 						severityLabel.addStyleName("publish-info");
-					} else if ("DEBUG".equals(severity)){
+						break;
+					case DEBUG:
 						severityLabel.addStyleName("publish-debug");
-					} else {
-						severityLabel.addStyleName("publish-info");
+						break;
 					}
 
 					return severityLabel;
 				}
 			});
-		columns.add(severityColumn);
+			columns.add(c);
+		}
 
 		// ============ TIMESTAMP ============
-		ColumnConfig timeStampColumn = new ColumnConfig("timestamp", "Timestamp", 120);
-		timeStampColumn.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
-		columns.add(timeStampColumn);
+		{
+			ColumnConfig cc = new ColumnConfig("timestamp", "Timestamp", 120);
+			cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+			columns.add(cc);
+		}
 
 		// ============ CONTENTNODE ============
-		ColumnConfig contentKeyColumn = new ColumnConfig("key", "Content Node", 150);
-		contentKeyColumn.setRenderer(Renderers.GRID_LINK_RENDERER);
-		columns.add(contentKeyColumn);
+		ColumnConfig cc = new ColumnConfig("key", "Content Node", 150);
+		cc.setRenderer(Renderers.GRID_LINK_RENDERER);
+		columns.add(cc);
 
 		// ============ MESSAGE ============
-		ColumnConfig messageColumn = new ColumnConfig("message", "Message", 150);
-		messageColumn.setId("message");
-		columns.add(messageColumn);
-		
-		// ============ STORE ID ============
-		ColumnConfig storeIdColumnConfig = new ColumnConfig("storeId", "Store", 150);
-		storeIdColumnConfig.setId("storeId");
-		columns.add(storeIdColumnConfig);
-		
-		// ============ TASK ===============
-		ColumnConfig taskColumnConfig = new ColumnConfig("task", "Task", 150);
-		taskColumnConfig.setId("task");
-		columns.add(taskColumnConfig);
+		ColumnConfig c = new ColumnConfig("message", "Message", 150);
+		c.setId("message");
+		columns.add(c);
 
 		final PagingToolBar toolBar = new PagingToolBar(20);
 		toolBar.bind(loader);		

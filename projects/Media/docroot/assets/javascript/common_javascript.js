@@ -34,7 +34,7 @@ window.reallyClose = function (ev) {
 window.close = window.reallyClose;
 
 try {
-  $jq(function () {
+  document.addEventListener("DOMContentLoaded", function () {
     if (window.top &&
         window.top.FreshDirect &&
         window.top.FreshDirect.components &&
@@ -52,12 +52,12 @@ function close_window_new_account(){
 	 * go through with this only if it is called from within the new account iframe,
 	 * AFTER the account has been made or if this is the grey upper right x visually nearby
 	*/
-	
-
-	if (!$jq('#signup-success').hasClass('hidden') && $jq('#signup-success').data('signup-success')) {
-		$jq('.social-login-spinner').show();
-
-		window.location= FreshDirect.successPage || decodeURIComponent(FreshDirect.utils.getParameterByName('successPage')) || '/login/index.jsp';
+	if(
+	($jq("#social-login-green-button_begin-shopping").length > 0) ||
+	($jq("#iframepopup-body_id").contents().find("#social-login-green-button_begin-shopping").length > 0)
+	){
+		window.top.location='/login/index.jsp';
+		window.top['FreshDirect'].components.ifrPopup.close();
 	}
 }
 
@@ -466,10 +466,6 @@ function updateYourCartPanel() {}
 		var asInt = asIntVar || false;
 		var caseSensitive = caseSensitiveVar || false;
 		var resetSelIndex = resetSelIndexVar = typeof resetSelIndexVar !== 'undefined' ?  resetSelIndexVar : 0;
-		
-		if (!document.getElementById(specId) || document.getElementById(specId).tagName !== 'SELECT') {
-			return;
-		}
 			
 		//alphabetize
 		var selectArr = [];
@@ -1219,7 +1215,7 @@ function doOverlayWindow(olURL, titleVar) {
 						}
                 });		
 	}
-
+	
 	function doOverlayWindowFormSubmit(olURL, formname) {		
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
@@ -1264,7 +1260,34 @@ function doOverlayWindow(olURL, titleVar) {
 			}
 			return rv;
 		}
+	
+	
+	var fdCoremetrics = (function(){
+		
+		var iFrame = null;
+		
+		var createIFrame = function(){
+			iFrame = document.createElement("iframe");
+			iFrame.className = "coremetrics-iframe";
+			document.body.appendChild(iFrame);
+		}; 
 
+		var initIFrame = function(){
+			if(iFrame === null){
+				createIFrame();
+			};  
+		}; 
+		
+		var trackAddToCartEvent = function(){
+			initIFrame();
+			iFrame.src = "/coremetrics/shop5.jsp";
+		}; 
+
+		return {
+			trackAddToCartEvent: trackAddToCartEvent
+		}
+
+	})();
 	
 	/* setup dialog
 	 * returns reference to dialog
@@ -1293,14 +1316,10 @@ function doOverlayWindow(olURL, titleVar) {
 			resizable: false,
 			draggable: false,
 			open: function() {
-				$jq('body').css({ 'overflow': 'hidden' });
-				if(FreshDirect.mobWeb){
-					overlayDialog.dialog('option', 'maxClientHeight', 1);
-					overlayDialog.dialog('option', 'maxClientWidth', 1);
-				} else {
-					overlayDialog.dialog('option', 'maxClientHeight', 0.85);
-					overlayDialog.dialog('option', 'maxClientWidth', 0.95);
-				}
+				$jq('html').css({ 'overflow': 'hidden' });
+				
+				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
+				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
 				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
 
@@ -1331,7 +1350,7 @@ function doOverlayWindow(olURL, titleVar) {
 
 			},
 			close: function () {
-				$jq('body').css({ 'overflow': 'visible' });
+				$jq('html').css({ 'overflow': 'auto' });
 			}
 		});	
 	
@@ -1350,16 +1369,6 @@ function doOverlayWindow(olURL, titleVar) {
 		}
 
 		return overlayDialog;
-	}
-	
-	function doOverlayDialogNew(olURL) {
-		$jq('#uimodal-output').off('dialogclose');
-		$jq('#uimodal-output').dialog('close');
-		var overlayDialog = setupOverlayDialog();
-		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); setTimeout(function(){ dialogWindowRealignFunc(); }, 1); });
-		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
-		$jq('.ui-widget-overlay').css('z-index','1000');
-		if(FreshDirect.mobWeb){ $jq('.ui-dialog').addClass('mm-page-overlay'); }
 	}
 	
 	/* use dialog by css selector */
@@ -1381,17 +1390,6 @@ function doOverlayWindow(olURL, titleVar) {
 
 		return overlayDialog;
 	}
-	
-	function doOverlayDialogByHtmlNew(olHtml) {
-		$jq('#uimodal-output').off('dialogclose');
-		$jq('#uimodal-output').dialog('close');
-		var overlayDialog = setupOverlayDialog();
-		overlayDialog.html(olHtml);
-		overlayDialog.dialog('open');
-		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
-		$jq('.ui-widget-overlay').css('z-index','1000');
-		if(FreshDirect.mobWeb){ $jq('.ui-dialog').addClass('mm-page-overlay') }
-	}
 
 	/* use dialog by url */
 	function doOverlayDialogWithSpinner(olURL, olData) {
@@ -1407,10 +1405,6 @@ function doOverlayWindow(olURL, titleVar) {
 		return overlayDialog;
 	}
 
-	function dialogWindowRealignFunc() {
-		var overlayDialog = $jq('#uimodal-output');
-		overlayDialog.dialog('option', 'position', overlayDialog.dialog('option', 'position'));
-	}
 	
 	function dialogWindowResizeFunc() {
 		var overlayDialog = $jq('#uimodal-output');
@@ -1448,9 +1442,9 @@ function doOverlayWindow(olURL, titleVar) {
 
 	var dialogWindowResizeTimer;
 	var dialogDocReady = false;
-	if (window['$jq'] && $jq.ui) { //make sure jQuery is available, and ui (for dialog)
-		$jq(function () { dialogDocReady = true });
-		$jq(window).on('resize', function() {
+	if (window['$jq']) { //make sure jQuery is available
+		$jq(document).ready(function () { dialogDocReady = true });
+		$jq(window).resize(function() {
 			clearTimeout(dialogWindowResizeTimer);
 			if (dialogDocReady) { dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100); }
 		});
@@ -1517,7 +1511,7 @@ function checkBatch() {
 	}
 
 /* add coupon tooltips */
-if ($jq && $jq.ui) { /* requires jquery ui */
+if ($jq) {
 	$jq(function() {
 		var currentlyPositionning;
 		$jq.ui.position.ttFlipCustom = {
@@ -1698,7 +1692,7 @@ if ($jq) {
 			{
 				var p=a[i].split('=');
 				if (p.length != 2) continue;
-				b[p[0]] = decodeURIComponent(encodeURIComponent(p[1]).replace(/\+/g, " "));
+				b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
 			}
 			return b;
 		})(window.location.search.substr(1).split('&'))
@@ -1730,28 +1724,4 @@ function changeUriParam(paramKey, paramVal) {
 	}
 	
 	return false;
-}
-
-/* throttle events helper */
-function throttle(fn, threshold, scope) {
-	threshold || (threshold = 250);
-	var last, deferTimer;
-
-	return function () {
-		var context = scope || this;
-
-		var now = +new Date,
-		args = arguments;
-		if (last && now < last + threshold) {
-			// hold on to it
-			clearTimeout(deferTimer);
-			deferTimer = setTimeout(function () {
-			last = now;
-			fn.apply(context, args);
-			}, threshold);
-		} else {
-			last = now;
-			fn.apply(context, args);
-		}
-	};
 }

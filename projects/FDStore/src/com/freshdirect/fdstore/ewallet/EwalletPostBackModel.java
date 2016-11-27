@@ -172,6 +172,7 @@ public class EwalletPostBackModel implements Serializable {
 		this.postBackSuccess = postBackSuccess;
 	}
 
+	private Object extension = null; //Do not use
 	/**
 	 * @return the transactionId
 	 */
@@ -238,18 +239,24 @@ public class EwalletPostBackModel implements Serializable {
 	public String getTransactionStatus() {
 		return transactionStatus[status];
 	}
-	
-
 	/**
 	 * @param transactionStatus the transactionStatus to set
 	 */
-	public void setTransactionStatusValue(int status) {
-		if (status != 0 && status != 1) {
+	public void setTransactionStatus(int status) {
+		if (status != 0 || status != 1) {
 			throw new AssertionError("Postback request cannot have transaction status other than Success or Failure");
 		}
 		this.status = status;
 	}
-	
+	/**
+	 * @param transactionStatus the transactionStatus to set
+	 */
+	public void setTransactionStatus(boolean status) {
+		if (status)
+			this.status = 1;
+		else
+			this.status = 0;
+	}
 	/**
 	 * @return the approvalCode
 	 */
@@ -286,21 +293,17 @@ public class EwalletPostBackModel implements Serializable {
 	public void setExpressCheckoutIndicator(boolean expressCheckoutIndicator) {
 		this.expressCheckoutIndicator = expressCheckoutIndicator;
 	}
-	
-	//Introduced for Storefront 2.0
-	public void setAllowedTransactionStatus(String[] transactionStatus) {
-		this.transactionStatus = transactionStatus;
+	/**
+	 * @return the extension
+	 */
+	public Object getExtension() {
+		return extension;
 	}
-
-	public void setTransactionStatus(String status) {
-		if (this.transactionStatus != null ) {
-			for (int i = 0; i < this.transactionStatus.length; i ++) {
-				if (this.transactionStatus[i].equals(status)) {
-					this.status = i;
-					return;
-				}
-			}
-		}
+	/**
+	 * @param extension the extension to set
+	 */
+	public void setExtension(Object extension) {
+		this.extension = extension;
 	}
 	
 	@Override
@@ -315,6 +318,7 @@ public class EwalletPostBackModel implements Serializable {
 				"Trxn status : " + getTransactionStatus() + ", " +
 				"approval or auth code : " + getApprovalCode() + ", " +
 				"precheckout trxn id " + getPreCheckoutTransactionId() + ", " +
-				"Express Checkout Indicator : " + isExpressCheckoutIndicator();
+				"Express Checkout Indicator : " + isExpressCheckoutIndicator() + ", " +
+				" Extension : " + getExtension();
 	}
 }

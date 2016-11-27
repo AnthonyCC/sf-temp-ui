@@ -83,7 +83,7 @@ public class MasterPassApplicationHelper {
 				return xml;
 				
 			} catch (JAXBException e) {
-				throw new MasterpassRuntimeException(e);
+				throw new MasterPassServiceRuntimeException(e);
 			}
 	}
 	

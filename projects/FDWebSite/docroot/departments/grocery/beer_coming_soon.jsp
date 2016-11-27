@@ -1,11 +1,11 @@
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <% 
 
@@ -14,10 +14,7 @@ String catId = request.getParameter("catId");
 
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Beer"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Beer</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Beer</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <table border="0" cellpadding="0" cellspacing="0" width="470">

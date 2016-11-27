@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -31,10 +30,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      * @link aggregationByValue
      */
     private List<ErpOrderLineModel> orderLines;
-    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private Date requestedDate;
     private Discount discount;
-    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private Date pricingDate;
     private ErpPaymentMethodI paymentMethod;
 	private double subTotal;
@@ -234,13 +231,9 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	public void setAppliedCredits(List<ErpAppliedCreditModel> appliedCredits){ this.appliedCredits = appliedCredits; }
 
-	public ErpDeliveryInfoModel getDeliveryInfo() {
-		return deliveryInfo;
-	}
+    public ErpDeliveryInfoModel getDeliveryInfo() { return deliveryInfo; }
 
-	public void setDeliveryInfo(ErpDeliveryInfoModel deliveryInfo) {
-		this.deliveryInfo = deliveryInfo;
-	}
+    public void setDeliveryInfo(ErpDeliveryInfoModel deliveryInfo) { this.deliveryInfo = deliveryInfo; }
 
 	public void setSubTotal(double subTotal) { this.subTotal = subTotal; }
 
@@ -565,20 +558,5 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	public double getTip() {
 		ErpChargeLineModel charge = getCharge(EnumChargeType.TIP);
 		return charge==null ? 0.0 : charge.getTotalAmount();
-	}
-	
-	public boolean containsAlcohol() {
-		for ( ErpOrderLineModel line : getOrderLines() ) {
-			if (line.isAlcohol()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public void setId(String id) {
-		if (id != null)
-			super.setId(id);
 	}
 }

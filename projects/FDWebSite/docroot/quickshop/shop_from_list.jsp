@@ -4,7 +4,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.util.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -56,10 +56,7 @@
 		%>
 
 		<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-<%-- 			<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put> --%>
-			  <tmpl:put name="seoMetaTag" direct="true">
-              <fd:SEOMetaTag title="FreshDirect - Reorder - Shop from This Order"></fd:SEOMetaTag>
-              </tmpl:put>
+			<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put>
 			<tmpl:put name='side_nav' direct='true'>
 				<font class="space4pix"><br />
 				</font>
@@ -121,14 +118,14 @@
 					</tr>
 					<tr>
 						<td colspan="9" bgcolor="#996699"><img
-							src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+							src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 						<!-- 					<td bgcolor="#996699" height="1" colspan="2"><img
 						src="/media_stat/images/layout/996699.gif" width="1" height="1"
 						border="0"></td>  -->
 					</tr>
 					<tr>
 						<td colspan="9"><img
-							src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"
+							src="/media_stat/images/layout/clear.gif" width="1" height="5"
 							border="0"></td>
 					</tr>
 					<tr>
@@ -166,7 +163,7 @@
 					<tbody>
 						<tr>
 							<td colspan="1" bgcolor="#996699"><img width="1" height="1"
-								border="0" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+								border="0" src="/media_stat/images/layout/clear.gif" /></td>
 						</tr>
 						<tr>
 							<td valign="center" align="center" height="120"><font
@@ -175,7 +172,7 @@
 						</tr>
 						<tr>
 							<td colspan="1" bgcolor="#996699"><img width="1" height="1"
-								border="0" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+								border="0" src="/media_stat/images/layout/clear.gif" /></td>
 						</tr>
 						<tr>
 							<td height="60" />

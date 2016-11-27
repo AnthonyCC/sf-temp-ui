@@ -6,9 +6,6 @@
 
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  *
  * @author  jmccarter
@@ -16,9 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class EnumComplaintLineMethod implements java.io.Serializable {
 
-    
-	private static final long serialVersionUID = -1753503997775340011L;
-	public final static EnumComplaintLineMethod STORE_CREDIT	= new EnumComplaintLineMethod(0, "FDC", "Store Credit");
+    public final static EnumComplaintLineMethod STORE_CREDIT	= new EnumComplaintLineMethod(0, "FDC", "Store Credit");
     public final static EnumComplaintLineMethod CASH_BACK		= new EnumComplaintLineMethod(1, "CSH", "Cash Back");
 
     private EnumComplaintLineMethod(int id, String statusCode, String name) {
@@ -38,8 +33,8 @@ public class EnumComplaintLineMethod implements java.io.Serializable {
     public String getName() {
         return this.name;
     }
-    @JsonCreator
-	public static EnumComplaintLineMethod getComplaintLineMethod(@JsonProperty("statusCode") String code) {
+
+	public static EnumComplaintLineMethod getComplaintLineMethod(String code) {
 		if ( "FDC".equalsIgnoreCase(code) ) {
 			return STORE_CREDIT;
 		} else if ( "CSH".equalsIgnoreCase(code) ) {

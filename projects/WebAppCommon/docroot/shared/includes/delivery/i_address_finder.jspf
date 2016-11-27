@@ -5,13 +5,12 @@
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
-<%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 
 <% //expanded page dimensions
 final int W_ADDRESS_FINDER_TOTAL = 970;
@@ -20,7 +19,7 @@ boolean mobWeb_address_finder = FeatureRolloutArbiter.isFeatureRolledOut(EnumRol
 %>
 
 <fd:LocationHandler/>
-<%
+<% 
 	/* this needs to be AFTER <fd:LocationHandler/> */
 	List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 
@@ -31,10 +30,9 @@ boolean mobWeb_address_finder = FeatureRolloutArbiter.isFeatureRolledOut(EnumRol
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
 int page_type = TimeslotLogic.PAGE_NORMAL;
-if( !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && user.getIdentity() != null ) {
+if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	shipToAddresses = AddressFinder.getShipToAddresses(user);
-}
-address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request);
+	address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request);
 %>
 
 <%
@@ -49,150 +47,148 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 		actionPage = "/main/delivery_available_slots.jsp";
 %>
 
+<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
+<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
 
-<div class="NOMOBWEB">
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" />
-	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br />
-</div>
+<%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br/>
 
 <table style="width: <%= (mobWeb_address_finder) ? "100%": W_ADDRESS_FINDER_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0" class="address_finder">
-	<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){ %>
-		<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
-			<tr>
-				<td colspan="3" class="title16">
-					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-						<div id='oas_CategoryNote' ad-fixed-size="true">
-							<script>
-								OAS_AD('CategoryNote');
-							</script>
-						</div>
-					<% } %>
-					<table>
-						<tr>
-							<td class="title16">Available Delivery TimeSlots</td>
-							<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
-								<td>
-									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
-								</td>
-							<%}%>
-						</tr>
-					</table>
-					<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="3">
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td>
-			</tr>
-		<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){ %>
-			<tr>
-				<td colspan="3" class="title16">
-					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-						<div id='oas_CategoryNote' ad-fixed-size="true">
-							<script>
-								OAS_AD('CategoryNote');
-							</script>
-						</div>
-					<% } %>
-					<table>
-						<tr>
-							<td class="title16" style="padding-left: 10px;">
-								<%=(user != null && user.getReservation() != null) ? "Your Delivery Timeslot Is Reserved for:" : "Reserve a Delivery Time for:"%>
-							</td>
-							<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
-								<td>
-									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
-								</td>
-							<%}%>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3" class="text12 NOMOBWEB"><%= (user != null && user.getReservation() != null) ? " Displayed below is your current delivery reservation for" : " Displayed below are the timeslots currently available to be reserved for"%>:</td>
-			</tr>
-		<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){ %>
-			<tr>
-				<td colspan="3" class="text12">Displayed below are the timeslots currently available to be reserved for:</td>
-			</tr>
-		<%}%>
-	<%}%>
-	<tr>
-		<td class="NOMOBWEB">&nbsp;</td>
-			<%
-			if (( (shipToAddresses.size() + allPickupDepots.size() >= 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() >= 1) && !isCheckAddress)) {
-			%>
-				<td class="text12">
-					<script>
-						$jq(document).on('change','#addressId',function(e){
-							var key = $jq('#addressId').val();
+<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){ %>
 
-							$jq.ajax({
-								url:'/api/locationhandler.jsp',
-								data:{
-									action:'selectAddress',
-									selectAddressList:key
-								},
-								success: function(data){
-									window.location.href=window.location.href;
-								}
-							});
-						});
-					</script>
-					<FORM name="addressForm" id="addressForm" method="POST" action="<%= actionPage %>" >
-						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="14"><br/>
-						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
-						<SELECT name="addressId" id="addressId" aria-label="choose delivery address" CLASS="text12 customsimpleselect">
-							<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
-								<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
-									<option value="<%= homeAddress.getPK().getId() %>" <%= ( (homeAddress.getPK().getId()).equals(pageAddrId) ) ? "selected=\"selected\"" : "" %>>
-										<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
-									</option>
-								</logic:iterate>
-							<% } else { %>
-								<%
-								String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
-
-
-								for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
-									ErpAddressModel addr = (ErpAddressModel)saItr.next();
-									String id = "";
-									id = addr.getPK().getId();
-								%>
-									<OPTION value="<%= id %>" <%= id.equals(pageAddrId) ? "SELECTED" : "" %>>
-										<%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%>
-									</OPTION>
-								<% } %>
-								<%-- PICKUP addresses --%>
-								<logic:iterate id="pickupAddress" collection="<%= allPickupDepots %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
-									<% if (pickupAddress != null) { %>
-										<%
-											String pickupId = pickupAddress.getId();
-											if ((pickupId).equals(selectedPickupId)) {
-												address= new ErpAddressModel(pickupAddress.getAddress());
-												address.setServiceType(EnumServiceType.PICKUP);
-												address.setId(pickupAddress.getId());
-												pageAddrId = "DEPOT_"+selectedPickupId;
-											}
-										%>
-										<option value="DEPOT_<%= pickupAddress.getId() %>" <%= ((pickupAddress.getId()).equals(selectedPickupId)) ? "selected=\"selected\"" : "" %>>
-											<%=LocationHandlerTag.formatAddressTextWithZip(pickupAddress.getAddress())%>
-										</option>
-									<% } %>
-								</logic:iterate>
+			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
+				<tr>
+					<td colspan="3" class="title16">
+							<% if (FDStoreProperties.isAdServerEnabled()) { %>
+								<SCRIPT LANGUAGE="JavaScript">
+								<!--
+									OAS_AD('CategoryNote');
+									//-->
+								</SCRIPT>
 							<% } %>
-						</SELECT><br /><br />
-
-					</FORM>
-				</td>
-				<%if (!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
-					<td class="text12 NOMOBWEB">
-						<b>Please note that you may only have a delivery timeslot reservation for one address at a time.</b>
+						<table>
+							<tr>
+								<td class="title16">Available Delivery TimeSlots</td>
+								<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
+								<td>
+									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
+								</td>
+								<%}%>
+							</tr>
+						</table>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="3">
 					</td>
-				<%}%>
+				</tr>
+				<tr>
+					<td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td>
+				</tr>
+			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){ %>
+				<tr>
+					<td colspan="3" class="title16">
+						<table>
+							<tr>
+								<td class="title16">
+									<%=(user != null && user.getReservation() != null) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%>
+								</td>
+								<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
+								<td>
+									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
+								</td>
+								<%}%>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" class="text12"><%= (user != null && user.getReservation() != null) ? " Displayed below is your current delivery reservation for" : " Displayed below are the timeslots currently available to be reserved for"%>:</td>
+				</tr>
+				
+			<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){ %>
+				<tr>
+					<td colspan="3" class="text12">Displayed below are the timeslots currently available to be reserved for:</td>
+				</tr>
+			<%}%>
+<%}%>
+				<tr>
+					<td>&nbsp;</td>
+				
+			<%
+			if (( (shipToAddresses.size() + allPickupDepots.size() >= 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() >= 1) && !isCheckAddress)) { 
+			%>
+					<td class="text12">
+						<script>
+
+							$jq(document).on('change','#addressId',function(e){
+								var key = $jq('#addressId').val();
+								
+								$jq.ajax({
+									url:'/api/locationhandler.jsp',
+									data:{
+										action:'selectAddress',
+										selectAddressList:key				
+									},
+									success: function(data){
+										window.location.reload();
+									}
+								});
+							});
+						</script>
+						<FORM name="addressForm" id="addressForm" method="POST" action="<%= actionPage %>" >
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
+						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
+						<SELECT name="addressId" id="addressId" CLASS="text12" style="width: 250px;">
+								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
+									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
+										<option value="<%= homeAddress.getPK().getId() %>" <%= ( (homeAddress.getPK().getId()).equals(pageAddrId) ) ? "selected=\"selected\"" : "" %>>
+											<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
+										</option>
+									</logic:iterate>
+								<% } else { %>
+									<% 
+									String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
+									
+									
+									for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
+										ErpAddressModel addr = (ErpAddressModel)saItr.next();
+										String id = "";
+										id = addr.getPK().getId();
+									%>
+										<OPTION value="<%= id %>" <%= id.equals(pageAddrId) ? "SELECTED" : "" %>>
+											<%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%>
+										</OPTION>
+									<% } %>
+									<%-- PICKUP addresses --%>
+									<logic:iterate id="pickupAddress" collection="<%= allPickupDepots %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
+										<% if (pickupAddress != null) { %>
+											<%
+												String pickupId = pickupAddress.getId();
+												if ((pickupId).equals(selectedPickupId)) {
+													address= new ErpAddressModel(pickupAddress.getAddress());
+													address.setServiceType(EnumServiceType.PICKUP);
+													address.setId(pickupAddress.getId());
+													pageAddrId = "DEPOT_"+selectedPickupId;
+												}
+											%>										
+											<option value="DEPOT_<%= pickupAddress.getId() %>" <%= ((pickupAddress.getId()).equals(selectedPickupId)) ? "selected=\"selected\"" : "" %>>
+												<%=LocationHandlerTag.formatAddressTextWithZip(pickupAddress.getAddress())%>
+											</option>
+										<% } %>
+									</logic:iterate>
+								<% } %>
+						</SELECT><br /><br />
+						
+						</FORM>
+					</td>
+					<%if (!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
+						<td class="text12">
+							<b>Please note that you may only have a delivery timeslot reservation for one address at a time.</b>
+						</td>
+					<%}%>
+				
+
 			<% } else {
 				if(address!=null){ %>
 					<td class="text12" colspan="2">
-						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="14"><br/>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
 						<b><%=address.getAddress1()%><br/><%=address.getCity()%> <%=address.getState()%> <%=address.getZipCode()%></b><br/>
 						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
 							<a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a>
@@ -204,24 +200,26 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 					</td>
 				<% } %>
 			<% } %>
-	</tr>
-	<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
-		<tr class="NOMOBWEB">
-			<td colspan="3"><img src="/media_stat/images/layout/clear.gif"  alt="" style="width: 430px; height: 15px"></td>
-		</tr>
-		<tr>
-			<td colspan="3"><img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="4"></td>
-		</tr>
-	<% } %>
+				</tr>
+
+			<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
+				<tr>
+					<td  colspan="3"><img src="/media_stat/images/layout/clear.gif" width="430" height="15"></td>
+				</tr>
+				<tr>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+				</tr>
+			<% } %>
 </table>
+
 
 <%
 	if (
-			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) &&
-			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS) &&
-			!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) &&
-			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) &&
-			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) &&
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS) && 
+			!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) && 
 			user.isEligibleForPreReservation()
 	){
 %>
@@ -230,9 +228,9 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 
 	<tr>
 		<td colspan="7">
-			<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="2"><br/>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation()) { %>
-
+			
 		<table width="100%" style="padding-left: 5px; padding-right: 5px;">
 			<tr>
 				<td  align="left">
@@ -248,27 +246,23 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 			<% if (FDStoreProperties.isAdServerEnabled()) { %>
 				<%--
 				<tr>
-        <div id='oas_TimeslotBottom'>
 					<SCRIPT LANGUAGE=JavaScript>
 						OAS_AD('TimeslotBottom');
 					</SCRIPT><br/>
-        </div>
 				</tr>
 				--%>
 			<% } %>
 		</table>
-
+			
 	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) { %>
 			<%--
 			<table width="100%">
 				<tr>
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<tr>
-          <div id='oas_TimeslotBottom'>
 						<SCRIPT LANGUAGE=JavaScript>
 							OAS_AD('TimeslotBottom');
 						</SCRIPT><br/>
-          </div>
 					</tr>
 				<% } %>
 				 </tr>
@@ -278,6 +272,9 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 		</td>
 	</tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="12"><br/>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br/>
 
 <%}%>
+
+
+

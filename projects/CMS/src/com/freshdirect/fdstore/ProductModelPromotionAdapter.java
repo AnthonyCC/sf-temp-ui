@@ -12,10 +12,10 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumLayoutType;
@@ -26,7 +26,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.PrioritizedI;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductPromoPreviewPriceCalculator;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -38,8 +38,10 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		Cloneable, PrioritizedI {
 	
+    /**
+     * 
+     */
 	private static final long serialVersionUID = 8599871079838576468L;
-
 	private ProductModel productModel;
 	private boolean isFeatured;
 	private String featuredHeader;
@@ -49,6 +51,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	private FDProduct fdProduct;
 	private String erpCategory;
 	private int erpCatPosition;
+
 	
 	public ProductModel getProductModel() {
 		return productModel;
@@ -518,7 +521,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 
 	@Override
 	public UserContext getUserContext() {	
-		return productModel.getUserContext();
+		
+			return productModel.getUserContext();
 	}
 
 	@Override
@@ -1147,6 +1151,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.getEarliestAvailability();
 	}
 
+	
+
 	@Override
 	public boolean isAvailableWithin(int days) {		 
 		return getDefaultSku().isAvailableWithin(days);
@@ -1370,11 +1376,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.getAllTags();
 	}
 
+	
 	@Override
 	public Set<DomainValue> getAllDomainValues() {
 		return productModel.getAllDomainValues();
 	}
-
 	/**
 	 * @see {@link ProductModel#getUpSellProducts()}
 	 */
@@ -1458,20 +1464,10 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}
-	
-    @Override
-    public String getFdxPageTitle() {
-        return productModel.getFdxPageTitle();
-    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
-	}
-	
-	@Override
-	public String getFdxSEOMetaDescription() {
-	    return productModel.getFdxSEOMetaDescription();
 	}
 
 	@Override
@@ -1492,18 +1488,5 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
     @Override
     public void setParentNode(ContentNodeModel parentNode) {
         productModel.setParentNode(parentNode);
-    }
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-		return getProductModel().getAvailabileQtyForDate(targetDate);
-		
-	}
-	
-	//appdev 6709, fkw-1344
-	@Override
-    public String getEarliestAvailabilityMessage() {
-		return productModel.getEarliestAvailabilityMessage();
-       
     }
 }

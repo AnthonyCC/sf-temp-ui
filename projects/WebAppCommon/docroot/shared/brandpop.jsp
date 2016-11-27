@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -120,7 +120,7 @@ if (brandId!=null) {
             featProdStringBuffer.append("<td width=\"8\">");
             featProdStringBuffer.append("<img src=\"");
             featProdStringBuffer.append("/media_stat/images/layout/clear.gif");
-            featProdStringBuffer.append("\" width=\"8\" alt=\"\" height=\"1\"></td>");
+            featProdStringBuffer.append("\" width=\"8\" height=\"1\"></td>");
             }
 			
             if (itemCount == 5 || itemCount == favItemCount) { //last prod
@@ -134,15 +134,15 @@ if (brandId!=null) {
     }
 }
 %>
-<%-- <title>FreshDirect - about <%= brandName %></title> --%>
-     <% brandName = "FreshDirect - about " + brandName;  %>
-      <fd:SEOMetaTag title="<%= brandName %>"/>
+<title>FreshDirect - about <%= brandName %></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus();" topmargin="10" marginheight="10">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <center>
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
@@ -158,8 +158,8 @@ if (brandId!=null) {
     if (featProdStringBuffer.length()>0) {
 %>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
-	<tr><td colspan="2"><img src="/media_stat/images/template/about/brand_featured_items.gif" width="113" height="14" alt="Featured Items"><br><img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="3"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
-	<tr><td colspan="2" align="center"><%=featProdStringBuffer.toString()%><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/template/about/brand_featured_items.gif" width="113" height="14" alt="Featured Items"><br><img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="3"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+	<tr><td colspan="2" align="center"><%=featProdStringBuffer.toString()%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
 </table>
 <%
     }
@@ -168,11 +168,10 @@ if (brandId!=null) {
 <table border="0" cellpadding="0" cellspacing="0" width="520">
  
 <tr>
-	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="20"><br><a href="#top">Back to top</a></td>
-	<td align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="#top">Back to top</a></td>
+	<td align="right"><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
 </tr>
 </table>-->
 </center>
-<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </body>
 </html>

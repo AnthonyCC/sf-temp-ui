@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -27,7 +28,8 @@
 	boolean isCorporate = "CORPORATE".equalsIgnoreCase(serviceType);
 	
     String failurePage = "/registration/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
-
+    
+    CmRegistrationTag.setRegistrationLocation(session,"signup lite");
 %>	
 
 <fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>
@@ -43,10 +45,9 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-	<%--  <title>FreshDirect</title>  --%>
-	 <fd:SEOMetaTag title="FreshDirect"/>
+	<title>FreshDirect</title>
 	<style>
 		.star {
 			color: #F99E40;
@@ -79,20 +80,25 @@
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
 	<!--  Added for Password Strength Display -->
   
+  <!--[if IE]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/footer.ie.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+  <!--[if lte IE 6]>
+  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.ie6.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
+  <![endif]-->
+
+  
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %> 
  
     <!--  Referred  jquery-1.7.2.min.js from FD code base-->
 	<!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script> -->
 	<!--<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
 	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
 	
-	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
-	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 	<script type="text/javascript">
@@ -102,6 +108,8 @@
     
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+
 
 	<center>
   <div style="text-align: left; width: 450px; margin-bottom: 12px;" class="text12">
@@ -121,7 +129,7 @@
 			//phew finally complete
 			//System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
 				//alert('in signup_lite.jsp');
 				  //  if (top === window) {
@@ -159,11 +167,11 @@
 				<table border="0" cellpadding="0" cellspacing="0">
 					<tr><td class="bodyCopySUL"><span><label for="first_name">First Name </label><span class="star">*</span> </span> </td></tr>
 					<tr><td><input type="text" class="text11ref inputUser" maxlength="25" size="31" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" id="first_name"></td></tr>
-					<% if (result.hasError(EnumUserInfoName.DLV_FIRST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.DLV_FIRST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					<tr><td class="bodyCopySUL"><span><label for="last_name">Last Name </label><span class="star">*</span></span></td></tr>
 					<tr><td><input type="text"  maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" id="last_name"></td></tr>
-					<% if (result.hasError(EnumUserInfoName.DLV_LAST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.DLV_LAST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					<tr><td class="bodyCopySUL"><span><label for="zipcode">Delivery Zip Code </label><span class="star">*</span></span></td></tr>
 					<tr><td>
@@ -178,8 +186,8 @@
 						<tr><td class="errMsg">
 							<table>
 								<tr>
-									<td valign="top"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td>
-									<td valign="top"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
+									<td valign="top"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td>
+									<td valign="top"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr>
 							</table>
 							
 						</td></tr>
@@ -188,11 +196,11 @@
 					<tr><td class="bodyCopySUL"><span><label for="email">Email Address </label><span class="star">*</span> </span></td></tr>			
 					<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email">
 					<br/><span class="text9 bodyCopySULNote">This will be your User Name. You will use this to access the site. </span></td></tr>
-					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					<tr><td class="bodyCopySUL"><span><label for="confirm_email">Confirm Email Address </label><span class="star">*</span> </span></td></tr>
 					<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" id="confirm_email"></td></tr>
-					<% if (result.hasError(EnumUserInfoName.REPEAT_EMAIL.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.REPEAT_EMAIL.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					
 					
@@ -237,20 +245,20 @@
 						<br/><span class="text9 bodyCopySULNote">Must be at least 6 characters. Passwords are case sensitive. </span></td>
 					</tr>
 					-->
-					<% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					
 					
 					<tr><td class="bodyCopySUL"><span><label for="password2">Confirm Password </label><span class="star">*</span> </span> </td></tr>
 					<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" id="password2"></td></tr>
-					<% if (result.hasError(EnumUserInfoName.REPEAT_PASSWORD.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.REPEAT_PASSWORD.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					<tr><td class="bodyCopySUL"><span><label for="secret_answer">Security Question </label><span class="star"></span></span></td></tr>
 					<tr><td><span class="text9 bodyCopySULNote">What is your town of birth or mother's maiden name?</span></td>
 					</tr>
 					
 					<tr><td class="bodyCopySUL"><input type="text" maxlength="25" class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" id="secret_answer"></td></tr>
-					<% if (result.hasError(EnumUserInfoName.PASSWORD_HINT.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.PASSWORD_HINT.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
 					<tr><td style="padding-top: 4px;"><!-- --></td></tr>
 					<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>

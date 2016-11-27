@@ -23,7 +23,7 @@ var FreshDirect = FreshDirect || {};
 			value: quickshop.ordersQS22
 		},
 		placeholder:{
-			value:'#orders .orders-list-cont'
+			value:'#orders .orders-list'
 		},
 		serialize:{
 			value:function(element){
@@ -43,13 +43,13 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var orderList = $('#orders input:checked');
 
-        if (orderList.length >= ORDERLIMIT) {
+        if (orderList.size() >= ORDERLIMIT) {
           $(".orders,.orderlist").addClass("maxorder");
         } else {
           $(".orders,.orderlist").removeClass("maxorder");
         }
 
-        return orderList.length;
+        return orderList.size();
       }
     },
 		handleClick:{

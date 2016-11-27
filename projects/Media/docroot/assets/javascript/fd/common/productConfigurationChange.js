@@ -29,7 +29,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('productConfigurationChange', function (e) {
     var $product = $('[data-productdata-name="atcItemId"][value="'+e.productId+'"]').parents('[data-product-id], [data-productid]');
 
-    if ($product.length < 1) {
+    if ($product.size() < 1) {
       $product = $('[data-productid="'+e.productId+'"], [data-product-id="'+e.productId+'"]');
     }
 

@@ -1,21 +1,21 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
-<%@ page import='com.freshdirect.storeapi.content.ProductModel' %>
-<%@ page import='com.freshdirect.storeapi.content.Domain' %>
-<%@ page import='com.freshdirect.storeapi.content.Html' %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.DepartmentModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
+<%@ page import='com.freshdirect.fdstore.content.Domain' %>
+<%@ page import='com.freshdirect.fdstore.content.Html' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.DepartmentModel' %>
 
 <%@ page import='java.util.List' %>
 <%@ page import='java.text.*' %>
@@ -25,14 +25,11 @@
 
 <HTML>
 <HEAD>
-   <%--  <TITLE>WINE ATTRIBUTES</TITLE> --%>
-    <fd:SEOMetaTag title="WINE ATTRIBUTES"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+<TITLE>WINE ATTRIBUTES</TITLE>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY>
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
     String contentId=request.getParameter("contentNodeId");
 %>

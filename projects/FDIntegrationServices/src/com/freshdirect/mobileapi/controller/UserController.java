@@ -7,8 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
@@ -16,15 +14,11 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.request.EmailCapture;
 import com.freshdirect.mobileapi.controller.data.request.UserAccountUpdateRequest;
 import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse;
@@ -33,7 +27,6 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.model.tagwrapper.LocationHandlerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -43,10 +36,10 @@ import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 
 public class UserController extends BaseController {
 
-    private static final Category LOGGER = LoggerFactory.getInstance(UserController.class);
+
+    private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
 	private static final String ACTION_UPDATE_USER = "updateUser";
-	private static final String ACTION_UPDATE_USER_EX = "updateUserEx";
 	private static final String ACTION_UPDATE_USER_ACCOUNT = "updateUserAccount"; //FDIP-1062  modified to updateUserAccount from updateUser
 	private static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
 	private static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
@@ -55,43 +48,41 @@ public class UserController extends BaseController {
 	private static final String ACTION_USER_SET_NAME = "setUserName";
 	private static final String USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE = "UserId and Password both empty nothing is to change";
 
-	@Override
-    protected boolean validateUser() {
+	protected boolean validateUser() {
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see	 org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see
+	 * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
+	 * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
-			SessionUser user) throws FDException, ServiceException, NoSessionException, JsonException, FDResourceException {
+	protected ModelAndView processRequest(HttpServletRequest request,
+			HttpServletResponse response, ModelAndView model, String action,
+			SessionUser user) throws FDException, ServiceException,
+			NoSessionException, JsonException, FDResourceException {
 		
 		LOGGER.debug("Action to use: " + action);
 		
 		if (ACTION_UPDATE_USER.equals(action)) {
-			if( user.isFutureZoneNotificationEmailSentForCurrentAddress() )
+//			RegisterMessage requestMessage = parseRequestObject(request,
+//					response, RegisterMessage.class);
+//			model = register(model, requestMessage, request, response,user);
+			
+//			LoggedIn userDataToUpdate = parseRequestObject( request, response, LoggedIn.class );
+			if( /*userDataToUpdate.isOnMailingList()*/ user.isFutureZoneNotificationEmailSentForCurrentAddress() )
 			{
 				performUserUpdate( user, request );
 			}
-		} else if (ACTION_UPDATE_USER_EX.equals(action)){
-		    EmailCapture requestMessage = parseRequestObject(request, response, EmailCapture.class);
-		    LocationHandlerTagWrapper tagWrapper = new LocationHandlerTagWrapper(user);
-	        ActionResult result = tagWrapper.setFutureZoneNotificationFdx(requestMessage);
-	        Message responseMessage = null;
-	        if (result.isSuccess()){
-	            responseMessage = Message.createSuccessMessage("User signs up successfully for future zone notification.");
-	        } else {
-	            responseMessage = getErrorMessage(result, request);
-	        }
-	        setResponseMessage(model, responseMessage, user);
+			
 		}
 		//JIRA FD-iPad FDIP-1062
         else if (ACTION_UPDATE_USER_ACCOUNT.equals(action)) {
             UserAccountUpdateRequest uau = parseRequestObject(request, response, UserAccountUpdateRequest.class);
-            if (isExtraResponseRequested(request)) {
+            if (isCheckLoginStatusEnable(request)) {
                 MessageResponse messageResponse = new MessageResponse();
                 if ((uau.getNewPassword() == null || uau.getNewPassword().isEmpty()) && (uau.getNewUserName() == null || uau.getNewUserName().isEmpty())) {
                     messageResponse.setFailureMessage(USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE);
@@ -204,7 +195,6 @@ public class UserController extends BaseController {
 		return model;
 	}
 
-	@Deprecated // Use LocationHandlerTagWrapper class instead
     private void performUserUpdate( SessionUser user, HttpServletRequest request )
     {
     	UserUpdater updater = new UserUpdater();
@@ -252,11 +242,6 @@ public class UserController extends BaseController {
 				throw new FDActionNotAllowedException("This account is not enabled to change username.");
 			}
 			FDCustomerManager.updateUserId(aInfo, newUserID);
-            FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
-            ErpCustomerInfoModel cim = FDCustomerFactory.getErpCustomerInfo(identity);
-            cim.setEmail(newUserID);
-            FDCustomerManager.updateCustomerInfo(aInfo, cim);
-            FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createUserIdChangeEmail(customerInfo, oldUserID, newUserID, CmsManager.getInstance().getEStoreEnum()));
 		} else {
 			LOGGER.info("UserId not being Changed ");
 		}

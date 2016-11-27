@@ -53,8 +53,7 @@ public class Publish implements Serializable, Cloneable {
 	 * @return a new Publish object, with the same properties.
 	 */
 
-	@Override
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public Object clone() {
 		Publish clone = new Publish();
 		clone.id = id;

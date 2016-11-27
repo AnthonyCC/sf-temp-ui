@@ -9,12 +9,15 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
-import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
 public class OrderInfo {
 
     private FDOrderInfoI target;
 
+    /**
+     * @param info
+     * @return
+     */
     public static OrderInfo wrap(FDOrderInfoI info) {
         OrderInfo newInstance = new OrderInfo();
         newInstance.target = info;
@@ -37,7 +40,7 @@ public class OrderInfo {
         return target.getRequestedDate();
     }
 
-    public String getOrderStatusName() {
+    public String getOrderStatus() {
 
         String status = "";
         if (target.getSaleType().equals(EnumSaleType.GIFTCARD) || target.getSaleType().equals(EnumSaleType.DONATION)) {
@@ -48,20 +51,8 @@ public class OrderInfo {
         return status;
     }
 
-    public EnumSaleStatus getOrderStatus() {
-        return target.getOrderStatus();
-    }
-
     public double getTotal() throws PricingException {
         return target.getTotal();
-    }
-    
-    public double getPendingCreditAmount() throws PricingException {
-        return target.getPendingCreditAmount();
-    }
-
-    public double getApprovedCreditAmount() throws PricingException {
-        return target.getApprovedCreditAmount();
     }
 
     public Date getDeliveryCutoffTime() {
@@ -113,8 +104,20 @@ public class OrderInfo {
         return isPendingDeliveryOrder;
     }
 
+    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
+    	
+    	if(isMakeGood) return false;
+        Date now = new Date(); // now
+        boolean beforeCutoffTime = now.before(deliveryCutoffTime);
+
+        return (EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION
+                .equals(orderStatus))
+                && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
+    }
+
     public boolean isModifiable() {
-        return OrderUtil.isModifiable(target.getErpSalesId(), target.getDeliveryCutoffTime());
+    	if(target.isMakeGood()) return false;
+        return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType(), target.isMakeGood()) ;
     }
 
     public boolean isShoppable() {
@@ -131,16 +134,12 @@ public class OrderInfo {
     }
 
 	public String getDisplayStatus() {
-		String status = getOrderStatusName();
+		String status = getOrderStatus();
 		if("Cancelled".equals(status) || "Processing".equals(status)){
 			return status;
 		}else if("Submitted".equals(status)){
 			return "Pending";
 		}
 		return "";
-	}
-	
-	public EnumDeliveryType getDeliveryType(){
-	    return target.getDeliveryType();
 	}
 }

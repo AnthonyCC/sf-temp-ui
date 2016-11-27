@@ -3,15 +3,14 @@
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -20,8 +19,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_NEW_WINE_PRODUCT_TOTAL = 601;

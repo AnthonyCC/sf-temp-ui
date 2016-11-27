@@ -63,7 +63,6 @@ public class ContentDecoratorService extends ProxyContentService {
 
     @Override
     public CmsResponseI handle(CmsRequestI request) {
-
         // FIXME node wrapping is a bit of a hack
         // it's to fulfill the contract "you handle what you produced"
         CmsRequest r = new CmsRequest(request.getUser(), request.getSource(), request.getDraftContext(), request.getRunMode());
@@ -84,10 +83,7 @@ public class ContentDecoratorService extends ProxyContentService {
                 r.addNode(node);
             }
         }
-
-        CmsResponseI response = super.handle(r);
-
-        return response;
+        return super.handle(r);
     }
 
     private ContentNodeI decorate(ContentNodeI node, DraftContext draftContext) {

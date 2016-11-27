@@ -3,10 +3,11 @@ package com.freshdirect.webapp.ajax.checkout.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.product.data.CartLineData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
-public class UnavailabilityData {
+public class UnavailabilityData extends AbstractCoremetricsResponse {
 	
 	public static class Line {
 		private String availableQuantity;

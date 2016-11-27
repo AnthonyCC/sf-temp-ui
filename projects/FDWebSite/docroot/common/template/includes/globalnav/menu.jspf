@@ -6,7 +6,7 @@
       <li><a class="quicklist loginrequired" href="<c:url value="/quickshop/index.jsp"/>"><span>Quicklist</span></a></li>
       <li><a class="recipes" href="<c:url value="/department.jsp"><c:param name="deptId" value="rec"/><c:param name="trk" value="gnav"/></c:url>"><span>Recipes</span></a></li>
       <li><a class="whatsgood" href="<c:url value="/department.jsp"><c:param name="deptId" value="wgd"/><c:param name="trk" value="gnav"/></c:url>"><span>What's good</span></a></li>
-      <li><a class="presidentspick" href="<c:url value="/newsletter.jsp"><c:param name="catId" value="picks_love"/><c:param name="trk" value="wgd"/></c:url>"><span>Fresh Deals</span></a></li>
+      <li><a class="presidentspick" href="<c:url value="/newsletter.jsp"><c:param name="catId" value="picks_love"/><c:param name="trk" value="wgd"/></c:url>"><span>President's picks</span></a></li>
     </ul>
   </div>
 </div>

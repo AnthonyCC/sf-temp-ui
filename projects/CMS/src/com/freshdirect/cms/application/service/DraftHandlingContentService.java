@@ -241,7 +241,7 @@ public class DraftHandlingContentService implements ContentServiceI {
 
         // map Collection<DraftChange> -> Set<ContentKey>
         for (final DraftChange change : draftChanges) {
-            draftKeys.add(ContentKey.getContentKey(change.getContentKey()));
+            draftKeys.add(ContentKey.decode(change.getContentKey()));
         }
 
         return draftKeys;

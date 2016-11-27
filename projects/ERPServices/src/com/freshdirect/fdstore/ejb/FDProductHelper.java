@@ -7,10 +7,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -31,12 +33,17 @@ import com.freshdirect.content.attributes.GetRootNodesErpVisitor;
 import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
-import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoSB;
+import com.freshdirect.erp.ejb.ErpProductFamilyHome;
+import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -55,7 +62,6 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDMaterialSalesArea;
@@ -76,7 +82,6 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDProductHelper {
 
@@ -84,6 +89,9 @@ public class FDProductHelper {
 	private final static boolean DEBUG = false;
 
 	private transient ErpCharacteristicValuePriceHome charValueHome = null;
+	private transient ErpNutritionHome nutritionHome = null;
+	private transient ErpGrpInfoHome grpHome = null;
+	private transient ErpProductFamilyHome erpProductFamilyHome = null;
 
 	public FDProduct getFDProduct(ErpMaterialModel material) throws FDResourceException {
 		// debug
@@ -205,7 +213,118 @@ public class FDProductHelper {
 		}
 		return materialSalesAreaMap;
 	}
+	/*
+	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {
+		
+		String s = erpProductInfo.getUnavailabilityStatus();
+		EnumAvailabilityStatus status = null;
+		if ("TEST".equals(s)){
+			status = EnumAvailabilityStatus.DISCONTINUED;
+		} 
+		else {
+			status = NVL.apply(EnumAvailabilityStatus.getEnumByStatusCode(erpProductInfo.getUnavailabilityStatus()), EnumAvailabilityStatus.AVAILABLE);
+			if(EnumAvailabilityStatus.OUT_OF_SEASON.equals(status)) {
+				status = EnumAvailabilityStatus.DISCONTINUED;
+			}
+		}
+		
+
+		List<ErpMaterialPrice> matPrices = Arrays.asList(erpProductInfo.getMaterialPrices());
+		Collections.sort(matPrices, PricingFactory.ERP_MAT_PRICE_COMPARATOR);
+
+		ZonePriceInfoListing zonePriceInfoList = new ZonePriceInfoListing();
+		if(erpProductInfo.getUnavailabilityStatus() == null || !erpProductInfo.getUnavailabilityStatus().equals(EnumAvailabilityStatus.DISCONTINUED)){
+			//Form zone price listing only if product is not discontinued.
+			String sapZoneId = "";
+			List<ErpMaterialPrice> subList = new ArrayList<ErpMaterialPrice>();
+			for(Iterator<ErpMaterialPrice> it = matPrices.iterator() ; it.hasNext();){
+				ErpMaterialPrice matPrice = it.next();
+				
+				if(sapZoneId.length() == 0 || sapZoneId.equals(matPrice.getSapZoneId())){
+					subList.add(matPrice);
+				}
+				else if(!sapZoneId.equals(matPrice.getSapZoneId())) {
+					ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, sapZoneId);
+					zonePriceInfoList.addZonePriceInfo(sapZoneId, zpInfoModel);
+					subList.clear();
+					subList.add(matPrice);
+				}
+				sapZoneId = matPrice.getSapZoneId();
+			}
+			//Do the same for the last zone in the list.
+			ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, sapZoneId);
+			zonePriceInfoList.addZonePriceInfo(sapZoneId, zpInfoModel);
+			subList.clear();
+		}		
+		//Get Group Identify if applicable.
+		FDGroup group = null;
+		if(FDStoreProperties.isGroupScaleEnabled()) {//otherwise group will not be associated with the product.
+			ErpGrpInfoSB remote;
+			try {
+				if (this.grpHome ==null) {
+					this.lookupGroupPriceHome();
+				}
+				remote = this.grpHome.create();
+				group = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} catch (CreateException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			}					
+		}
+		
+		String familyId = null;
+		if(FDStoreProperties.isProductFamilyEnabled()) {//otherwise family will not be associated with the product. 
+			ErpProductFamilySB remote;
+			try {
+				if (this.erpProductFamilyHome ==null) {
+					this.lookupFamilyHome();
+				}
+				remote = this.erpProductFamilyHome.create();
+				familyId = remote.getFamilyIdForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} catch (CreateException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			}					
+		}
+		
+		 Date[] availDates = new Date[0];
+		 if(FDStoreProperties.isLimitedAvailabilityEnabled()) {//otherwise group will not be associated with the product.
+			ErpInfoSB remote;
+			try{
+				remote = getErpInfoSB();
+				List<Date> deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0], FDStoreProperties.getAvailDaysInPastToLookup());
+				if(deliveryDates != null && !deliveryDates.isEmpty())
+					availDates = (Date[])deliveryDates.toArray(new Date[deliveryDates.size()]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} 	
+		}
+
+		
+		 return new FDProductInfo(
+					erpProductInfo.getSkuCode(),
+					erpProductInfo.getVersion(),
+					erpProductInfo.getMaterialSapIds(),
+					erpProductInfo.getATPRule(),
+					status,
+					erpProductInfo.getUnavailabilityDate(),
+					null,
+					EnumOrderLineRating.getEnumByStatusCode(erpProductInfo.getRating()),
+					erpProductInfo.getFreshness(),
+					zonePriceInfoList,
+					group,
+					EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating()),
+					erpProductInfo.getUpc(), availDates,familyId);
 	
+	}
+	*/
 	public FDProductInfo getFDProductInfoNew(ErpProductInfoModel erpProductInfo) throws FDResourceException {
 		
 		List<ErpMaterialPrice> matPrices = Arrays.asList(erpProductInfo.getMaterialPrices());
@@ -229,7 +348,7 @@ public class FDProductHelper {
 			List<ErpMaterialPrice> subList = new ArrayList<ErpMaterialPrice>();
 			for(Iterator<ErpMaterialPrice> it = matPrices.iterator() ; it.hasNext();){
 				ErpMaterialPrice matPrice = it.next();
-				mpPricingZone=new ZoneInfo(matPrice.getSapZoneId(),"1000".equals(matPrice.getSalesOrg())?FDStoreProperties.getDefaultFdSalesOrg():matPrice.getSalesOrg(), "1000".equals(matPrice.getDistChannel())?FDStoreProperties.getDefaultFdDistributionChannel():matPrice.getDistChannel());
+				mpPricingZone=new ZoneInfo(matPrice.getSapZoneId(),"1000".equals(matPrice.getSalesOrg())?"0001":matPrice.getSalesOrg(), "1000".equals(matPrice.getDistChannel())?"01":matPrice.getDistChannel());
 				if(pricingZone==null ||pricingZone.equals(mpPricingZone)) {
 					subList.add(matPrice);
 				}
@@ -250,13 +369,21 @@ public class FDProductHelper {
 			 Map<String,FDGroup> groups = null;
 		if(FDStoreProperties.isGroupScaleEnabled()) {//otherwise group will not be associated with the product.
 			if(!FDStoreProperties.isGroupScalePerfImproveEnabled()){
+				ErpGrpInfoSB remote;
 				try {
-					groups = FDECommerceService.getInstance().getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+					if (this.grpHome ==null) {
+						this.lookupGroupPriceHome();
+					}
+					remote = this.grpHome.create();
+					groups = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
 					System.out.println("**************Group Scale Query: "+erpProductInfo.getMaterialSapIds()[0]);
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 					throw new FDResourceException( e1 );
-				} 
+				} catch (CreateException e1) {
+					e1.printStackTrace();
+					throw new FDResourceException( e1 );
+				}	
 			}else{
 				groups = FDCachedFactory.getGroupsByMaterial(erpProductInfo.getMaterialSapIds()[0]);
 			}
@@ -266,16 +393,16 @@ public class FDProductHelper {
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
 			erpProductInfo.getMaterialSapIds(),
+			null,
 			groups,
 			erpProductInfo.getUpc(),
 			fdPlantMaterials,
 			zonePriceInfoList,
-			materialSalesAreaMap,erpProductInfo.getAlcoholicType());
+			materialSalesAreaMap,erpProductInfo.isAlcohol());
 	
 	}
 	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {
-	        @Override
-            public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
+	        public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
 	            if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
 	            else if (price1.getScaleQuantity() < price2.getScaleQuantity()) return -1;
 	            else return 1;
@@ -343,7 +470,8 @@ public class FDProductHelper {
 		
 		boolean isShowBurstImage = DealsHelper.isShowBurstImage(defaultPrice,promoPrice);;
 		
-        int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPriceList);
+		ErpMaterialPrice[] matPrices = matPriceList.toArray(new ErpMaterialPrice[0]);
+		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
 		//LOGGER.debug("Tiered deal for sku: " + skuCode + " is:" + tieredDeal);
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
 			//LOGGER.debug("tiered deal is out of bounds for SKU " + skuCode);
@@ -399,21 +527,24 @@ public class FDProductHelper {
 		}
 	}
 	protected ErpNutritionModel getNutrition(ErpProductModel product) throws FDResourceException {
-		
+		if (this.nutritionHome==null) {
+			this.lookupNutritionHome();
+		}
 		try {
-			ErpNutritionModel nutr;
-			nutr=ErpNutritionService.getInstance().getNutrition(product.getSkuCode());
-        	
-			
+			ErpNutritionSB sb = this.nutritionHome.create();
+			ErpNutritionModel nutr = sb.getNutrition(product.getSkuCode());
 			return nutr;
+		} catch (CreateException ce) {
+			this.nutritionHome=null;
+			throw new FDResourceException(ce, "Error creating ErpNutrition session bean");
 		} catch (RemoteException re) {
+			this.nutritionHome=null;
 			throw new FDResourceException(re, "Error talking to ErpNutrition session bean");
 		}
 	}
 
 	private static class SalesUnitComparator implements Comparator<ErpSalesUnitModel> {
-		@Override
-        public int compare(ErpSalesUnitModel su1, ErpSalesUnitModel su2) {
+		public int compare(ErpSalesUnitModel su1, ErpSalesUnitModel su2) {
 			double ratio1 = ((double)su1.getNumerator()) / ((double)su1.getDenominator());
 			double ratio2 = ((double)su2.getNumerator()) / ((double)su2.getDenominator());
 			if (ratio1 < ratio2)
@@ -460,8 +591,7 @@ public class FDProductHelper {
 	}
 
 	private static class VariationOptionComparator extends AttributeComparator.Priority<ErpCharacteristicValueModel> {
-		@Override
-        public int compare(ErpCharacteristicValueModel o1, ErpCharacteristicValueModel o2) {
+		public int compare(ErpCharacteristicValueModel o1, ErpCharacteristicValueModel o2) {
 			int prio = super.compare(o1, o2);
 			if (prio!=0) {
 				return prio;
@@ -491,36 +621,19 @@ public class FDProductHelper {
 	}
 
 	protected Pricing getPricing(ErpMaterialModel material) throws FDResourceException {
-	
+		if (this.charValueHome==null) {
+			this.lookupCharValueHome();
+		}
 		
 		try {
-			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs;
-			ErpCharacteristicValuePriceModel[] cvPrices ;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
-				VersionedPrimaryKey verMatIds = (VersionedPrimaryKey)material.getPK();
-				Collection<ErpCharacteristicValuePriceModel> charList = FDECommerceService.getInstance().findByMaterialId(verMatIds.getId(),verMatIds.getVersion());
-				cvPrices = new ErpCharacteristicValuePriceModel[charList.size()];
-				int count=0;
-				for(Iterator<ErpCharacteristicValuePriceModel> i=charList.iterator(); i.hasNext(); count++){
-					cvPrices[count]=(ErpCharacteristicValuePriceModel) i.next();
-							}
-			}else{
-				if (this.charValueHome==null) {
-					this.lookupCharValueHome();
-				}
-				
-				cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
-				 cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
-				// create model array
-				int count=0;
-				for (Iterator<ErpCharacteristicValuePriceEB> i=cvPriceEBs.iterator(); i.hasNext(); count++) {
-					cvPrices[count]= (ErpCharacteristicValuePriceModel) i.next().getModel();
-				}
+			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
+			ErpCharacteristicValuePriceModel[] cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
+			
+			// create model array
+			int count=0;
+			for (Iterator<ErpCharacteristicValuePriceEB> i=cvPriceEBs.iterator(); i.hasNext(); count++) {
+				cvPrices[count]= (ErpCharacteristicValuePriceModel) i.next().getModel();
 			}
-			
-			
-			
-			
 			
 						
 			return PricingFactory.getPricing( material, cvPrices );
@@ -539,6 +652,49 @@ public class FDProductHelper {
 		try {
 			ctx = new InitialContext();
 			this.charValueHome = (ErpCharacteristicValuePriceHome) ctx.lookup("java:comp/env/ejb/ErpCharacteristicValuePrice");
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+	
+	private void lookupNutritionHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.nutritionHome = (ErpNutritionHome) ctx.lookup("java:comp/env/ejb/ErpNutrition");
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+
+
+	private void lookupGroupPriceHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.grpHome = (ErpGrpInfoHome) ctx.lookup("java:comp/env/ejb/GrpPriceInfo");
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+	
+	private void lookupFamilyHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.erpProductFamilyHome = (ErpProductFamilyHome) ctx.lookup("java:comp/env/ejb/ErpProductFamily");
 		} catch (NamingException ex) {
 			throw new FDResourceException(ex);
 		} finally {

@@ -19,7 +19,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.referral.ManageInvitesModel;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -364,16 +363,15 @@ public class FDReferAFriendDAO {
 	private static final String GET_CREDIT_LIST = 
 							"select cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " + 
 							    "decode(CC.DEPARTMENT, 'RAF', 'Referral Credit', 'Store Credit') type, " + 
-                                "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount, decode(s.e_store, 'FDX', 'FDX','FreshDirect') estore " +
+                                "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount " +
                                 "from CUST.CUSTOMERCREDIT cc, " +
-                                "CUST.COMPLAINT c, CUST.SALE s " +
+                                "CUST.COMPLAINT c " +
                                 "where CC.COMPLAINT_ID = C.ID " +   
                                 "and     cc.CUSTOMER_ID = ? " +
-                                " and C.SALE_ID=s.id "+
                             "UNION ALL " +
                             "select SA.ACTION_DATE, to_char(SA.ACTION_DATE, 'MM/DD/YYYY') as formatted_create_date, " +
                                 "'Redemption' as type, " +
-                                "s.id as SALE_ID, AC.AMOUNT as Amount, decode(s.e_store, 'FDX', 'FDX','FreshDirect') estore from " + 
+                                "s.id as SALE_ID, AC.AMOUNT as Amount from " + 
                                 "cust.customercredit cc, " +
                                 "CUST.APPLIEDCREDIT ac, " +
                                 "CUST.SALESACTION sa, " +
@@ -404,7 +402,6 @@ public class FDReferAFriendDAO {
 				cm.setDepartment(rs.getString("TYPE"));
 				cm.setAmount(rs.getDouble("AMOUNT"));
 				cm.setSaleId(rs.getString("SALE_ID"));
-				cm.seteStore(rs.getString("ESTORE"));
 				cmList.add(cm);
 			}
 		} finally {
@@ -766,8 +763,7 @@ public class FDReferAFriendDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-//			ps = conn.prepareStatement("select sale_id from cust.salesaction where action_type = 'STL' and customer_id = ? order by action_Date desc");
-			ps = conn.prepareStatement("select sale_id from cust.salesaction sa,cust.sale s where sa.action_type = 'STL' and s.status='STL' and s.id=sa.sale_id and s.customer_id = ? order by sa.action_Date desc");
+			ps = conn.prepareStatement("select sale_id from cust.salesaction where action_type = 'STL' and customer_id = ? order by action_Date desc");
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			if(rs.next()) {
@@ -936,8 +932,6 @@ public class FDReferAFriendDAO {
 			if(rset.next())
 				return false;
 		} finally {
-			if (rset != null)
-				rset.close();
 			if (ps != null)
 				ps.close();
 		}
@@ -965,7 +959,7 @@ public class FDReferAFriendDAO {
 		return null;	
 	}
 	
-	public static boolean isReferreSignUpComplete(Connection conn, String email, EnumEStoreId storeid) throws SQLException {
+	public static boolean isReferreSignUpComplete(Connection conn, String email) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		try {
@@ -977,16 +971,12 @@ public class FDReferAFriendDAO {
 										"and FC.REFERER_CUSTOMER_ID is not null");
 */		ps = conn.prepareStatement( "select count(*) from " + 
 		"cust.customer c, " +
-		"cust.fdcustomer fc,  " +
-		"cust.fdcustomer_estore fce  " +
+		"cust.fdcustomer fc " +
 		"where upper(c.user_id) = upper(?) " +
 		"and c.id = fc.erp_customer_id " +
-		"and fc.id = fce.fdcustomer_id (+) " +
-		"and Fce.e_store (+) = ? " +
-		"and FCE.RAF_CLICK_ID is not null");
+		"and FC.RAF_CLICK_ID is not null");
 			
 			ps.setString(1, email);
-			ps.setString(2, null != storeid ? storeid.getContentId() : EnumEStoreId.FD.getContentId());
 			rset = ps.executeQuery();
 			while(rset.next()) {
 				int cnt = rset.getInt(1);

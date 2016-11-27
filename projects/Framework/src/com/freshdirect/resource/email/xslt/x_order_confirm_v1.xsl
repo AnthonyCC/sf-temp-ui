@@ -24,7 +24,7 @@ To welcome you to FreshDirect, we've taken $<xsl:value-of select='format-number(
 <xsl:if test="order/paymentMethod/paymentType = 'M'">
 Please note that you are not being charged for this order. The amount displayed below, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours. 
 </xsl:if>
-<xsl:if test="//unattendedDeliveryFlag != 'OPT_IN'">Remember, if you're not at home, your order will be left for you in your designated location!</xsl:if>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
+<xsl:if test="//unattendedDeliveryFlag != 'OPT_IN'">Remember, if you're not at home, your order will be left for you in your designated location!</xsl:if>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
 
 <xsl:choose>
 <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>
@@ -59,7 +59,7 @@ We've taken $<xsl:value-of select='format-number(order/totalDiscountValue, "###,
 Please note that you are not being charged for this order. The amount displayed below, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours.
 </xsl:if>
 
-As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
+As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
 
 <xsl:choose>
 <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>
@@ -91,7 +91,7 @@ Please note that you are not being charged for this order. The amount displayed 
 </xsl:if>
 
 <xsl:if test="number(order/totalDiscountValue) &gt; 0">
-We've taken $<xsl:value-of select='format-number(order/totalDiscountValue, "###,##0.00", "USD")'/> off the cost of your perishables.<xsl:text></xsl:text></xsl:if>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
+We've taken $<xsl:value-of select='format-number(order/totalDiscountValue, "###,##0.00", "USD")'/> off the cost of your perishables.<xsl:text></xsl:text></xsl:if>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if>
 
 <xsl:choose>
 <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>

@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumGiftCardType extends Enum {
 
 	public static final EnumGiftCardType REGULAR_GIFTCARD = new EnumGiftCardType("RGC", "Regular GiftCard");
@@ -26,8 +23,7 @@ public class EnumGiftCardType extends Enum {
 		return this.description;
 	}
 
-	@JsonCreator
-	public static EnumGiftCardType getEnum(@JsonProperty("name") String name) {
+	public static EnumGiftCardType getEnum(String name) {
 		return (EnumGiftCardType) getEnum(EnumGiftCardType.class, name);
 	}
 

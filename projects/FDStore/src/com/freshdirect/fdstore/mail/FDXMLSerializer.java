@@ -2,7 +2,7 @@ package com.freshdirect.fdstore.mail;
 
 import java.util.Collection;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.EnumDiscountType;

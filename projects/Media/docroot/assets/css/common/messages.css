@@ -46,7 +46,7 @@
 
 #messages .handler {
 	display:none;
-	/*background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;*/
+	background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;
 	width:150px;
 	height:25px;
 	position:absolute;
@@ -128,7 +128,7 @@
 }
 
 /* hide OAS_SystemMessage from the old position */
-#oas_SystemMessage {
+#OAS_SystemMessage {
   display: none;
 }
 
@@ -170,7 +170,7 @@
 
 #messages .error-message-text {
 	color:#c00;
-	font-weight:bold;
+	font-weight:bold;	
 }
 
 #messages .warning-message {
@@ -180,6 +180,4 @@
 #messages .maint-message {
 	background: url(/media_stat/images/locationbar/alert_icon_maint.png) 10px center no-repeat;
 }
-#messages.visHidden{
-	visibility:hidden;
-}
+

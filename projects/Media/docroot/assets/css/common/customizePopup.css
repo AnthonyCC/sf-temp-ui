@@ -1,10 +1,10 @@
 .customizePopup {
 	position:absolute;
 	border:1px solid #dbcfdf;
-  	/* border-radius: 10px; */
+  border-radius: 10px;
 	box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.4);
 	background:white;
-	/* padding:10px 10px 20px; */
+	padding:10px 10px 20px;
 	z-index: 2000;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -13,24 +13,22 @@
 .customizePopup:after {
 	content:"";
 	display:block;
-	/* height:9px; */ 
+	height:9px;
 }
 
 .customizePopup .close-icon {
 	position:absolute;
 	border:none;
 	cursor:pointer;
-	width: 20px;
-	height: 21px;
-	top: -24px;
-	right: -24px;
-	font-size: 0;
+	right:10px;
+	width:18px;
+	height:18px;
+	top:10px;
 	text-indent: 18px;
 	overflow:hidden;
 	margin:0;
 	padding:0;
-	/* background:url(/media_stat/images/quickshop/button-close.png) no-repeat; */
-	background: url(/media_stat/images/buttons/close_x.png) no-repeat;
+	background:url(/media_stat/images/quickshop/button-close.png) no-repeat;
 }
 
 .clear{clear:both}
@@ -52,7 +50,6 @@
 	margin-left:16px;
 	white-space:normal;
 	width:190px;
-	padding-right: 10px;
 }
 
 .customizePopup .rightColumn a {
@@ -81,7 +78,6 @@
 	text-align:right;
 	white-space:normal;
 	width:300px;
-	padding-left: 10px;
 }
 
 .customizePopup h1 {
@@ -93,6 +89,7 @@
 }
 
 .customizePopup .buttons .cssbutton {
+  float: right;
   clear: both;
 }
 
@@ -115,14 +112,7 @@
 	font-size:10px;
 	font-weight:normal;
 }
-.customizePopup .leftright-bottom{
-	background-color: #f7f7f7;
-	padding-bottom: 20px;
-}
-.customizePopup .skucontrol-salesunit,
-.customizePopup .skucontrol-variations{
-	padding: 0 10px;
-}
+
 .productDisplay-skulist {
 	list-style-type:none;
 	padding:0;
@@ -216,54 +206,10 @@
 .customizePopup .invalidQty input.qty {
   outline: 2px solid red;
 }
-.customizePopup .skucontrol-quantity .qtyinput{
-    width: auto;
-}
-.customizePopup .skucontrol-quantity .quantity_plus,
-.customizePopup .skucontrol-quantity .quantity_minus{
-    width: 36px;
-    color: #ffffff;
-    background-color: #4fa157;
-    border: 1px solid #4fa157;
-    height: 34px;
-    line-height: 32px;
-    font-size: 24px;
-	font-family: Verdana;
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    background-image: none;
-    text-decoration: none;
-    text-indent: 0;
-    padding: 0;
-    border-radius: 3px;
-    transition: background-color 0.12s ease-in-out 0s;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.customizePopup .skucontrol-quantity .quantity_plus:hover,
-.customizePopup .skucontrol-quantity .quantity_minus:hover{
-    background-color: #458d4e;
-    border: 1px solid #458d4e;
-}
-.customizePopup .skucontrol-quantity .qtyinput input.qty {
-    width: 58px;
-    height: 36px;
-    font-size: 18px;
-    font-weight: bold;
-    margin: -1px 3px 0;
-    border: 2px #c2c2c2 solid;
-}
-.customizePopup .skucontrol-quantity input.qty:hover{
-    border-color: #68aa6d;
-}
+
 .customizePopup hr {
 	height:1px;
-	background: #dddddd;
+	background:black;
 	border:none;
 	margin:1em 0;
 	clear: right;
@@ -286,28 +232,3 @@
   visibility: visible;
 }
 
-.popupcontentoverlay.customize-overlay{
-	opacity: 0.5;
-}
-/* accessibility change for add to list button */
-#customizePopup .buttons .cssbutton.addtolist:focus{
-   text-decoration: underline;
-    color: #5fb069;
-    box-shadow:none;
-}
-
-/*
-#customizePopup input[type="checkbox"]{
-	background-color:#fefefe;
-    box-shadow: 0 0 0 1px #d4d4d4; 
-}
-#customizePopup input[type="checkbox"]:focus{
-	background-color: #fefefe;
-	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
-	border:none;
-}
-#customizePopup input[type="checkbox"]:hover{
-	border:none;
-	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
-}
-*/

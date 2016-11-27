@@ -1,6 +1,5 @@
 package com.freshdirect.delivery.restriction;
 
-import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -43,12 +42,6 @@ public class FDRestrictedAvailability extends AbstractAvailability {
 	
 	public String toString() {
 		return "FDRestrictedAvailability[restrictions = " + restrictions + ", availability = " + availability + "]";
-	}
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-		// TODO Auto-generated method stub
-		return availability.getAvailabileQtyForDate(targetDate);
 	}
 
 }

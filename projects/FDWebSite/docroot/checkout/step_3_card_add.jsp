@@ -9,33 +9,28 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import='java.util.List' %>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
-<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_3_CARD_ADD_TOTAL = 970;
 %>
 
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Add Credit Card"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Checkout - Add Credit Card</tmpl:put> --%>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Add Credit Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%	
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
-boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-
 double cartTotal = user.getShoppingCart().getTotal();
 	boolean proceedThruCheckout = false;
 	if ( "true".equals( request.getParameter("proceed") ) )
@@ -56,14 +51,14 @@ double cartTotal = user.getShoppingCart().getTotal();
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 
-<form method="post" fdform><%-- intentionally using JUST the fdform attribute, since css is tied to that --%>
+<form method="post">
 
 <%	if (proceedThruCheckout) { %>
 <TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
-		    <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="395" HEIGHT="1" BORDER="0">
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 		<TD WIDTH=<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL-421%> ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" style="color:#666666;font-weight:bold;">
 				  <FONT CLASS="space2pix"><BR></FONT>
@@ -133,16 +128,16 @@ double cartTotal = user.getShoppingCart().getTotal();
 	<TR>
 		<TD CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" VALIGN="bottom">
 				<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
-			    <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="395" HEIGHT="1" BORDER="0">
+			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 	</TR>
 </TABLE>	
 <%	} %>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0"><br/>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br/>
 <!-- PROFILE HEADER -->
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 <TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD class="text11" WIDTH="395">
@@ -150,10 +145,10 @@ double cartTotal = user.getShoppingCart().getTotal();
 			Please enter new credit card information.<BR>
 		</TD>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
-			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="265" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="265" HEIGHT="1" BORDER="0"><BR>
 		</TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
-			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="35" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="35" HEIGHT="1" BORDER="0"><BR>
 		</TD>
 	</TR>
 </TABLE>
@@ -173,11 +168,11 @@ double cartTotal = user.getShoppingCart().getTotal();
                     </div><BR>
                 <% } %>
 
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%	if (proceedThruCheckout) { %>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>">
 	<TR VALIGN="TOP">
@@ -189,7 +184,7 @@ double cartTotal = user.getShoppingCart().getTotal();
 				<a href="<%=response.encodeURL("/checkout/checkout/step_2_select.jsp  ")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Time<br/>
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0">
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
 			<td width="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL-410%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
@@ -211,9 +206,9 @@ double cartTotal = user.getShoppingCart().getTotal();
 		</TR>
 	</TABLE>
         
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>">
 	<TR VALIGN="TOP">
@@ -225,7 +220,7 @@ double cartTotal = user.getShoppingCart().getTotal();
 				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Time<br/>
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0">
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
 	</TR>
 	</TABLE>
@@ -234,9 +229,9 @@ double cartTotal = user.getShoppingCart().getTotal();
         
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" height="1" border="0"><br/>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" height="1" border="0"><br/>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

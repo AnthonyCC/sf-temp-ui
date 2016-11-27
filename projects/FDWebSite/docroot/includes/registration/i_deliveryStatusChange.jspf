@@ -22,7 +22,7 @@ Unfortunately we do not currently deliver to your home address. Although your ad
 				This means that  you can enjoy the freshest foods delivered right to your door. Of course, you can still opt to <a href="javascript:popup('/delivery_popup.jsp','large')">pick up</a> your order from FreshDirect.
 
         <%  }else{   %>
-				We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href="/your_account/add_delivery_address.jsp">here</a>. To see where we deliver, <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">click here</a>.
+				We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href="/your_account/add_delivery_address.jsp">here</a>. To see where we deliver, <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>.
 				<br><br>
 				Of course, you can still opt to receive an order at our <a href="javascript:popup('/delivery_popup.jsp','large')">pickup location</a>.
     <%  }%>

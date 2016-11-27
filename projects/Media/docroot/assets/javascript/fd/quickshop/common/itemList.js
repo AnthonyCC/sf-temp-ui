@@ -32,14 +32,14 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var mainEl = $('.qs-content').first(), crect;
 
-        if (mainEl && mainEl.length) {
+        if (mainEl && mainEl.size()) {
           if (mainEl.hasClass('noscroll')) {
             mainEl.removeClass('noscroll');
           } else {
             crect = mainEl[0].getBoundingClientRect();
 
             if (crect.top < 0) {
-            	$jq('html').animate({scrollTop: crect.top + $('body').scrollTop()}, '500');
+              $.smoothScroll(crect.top + $('body').scrollTop());
             }
           }
         }

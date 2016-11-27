@@ -16,28 +16,32 @@
 %>
 <features:isActive name="isQS20" featureName="quickshop2_0" />
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-
+       
 	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
-		<tmpl:get name="seoMetaTag"/>
+		<tmpl:get name="seoMetaTag"/> 
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-        <jwr:script src="/qsstandingorder.js" useRandomParam="false" />
-        <%@ include file="/shared/template/includes/style_sheet_detect.jspf"%>
+        <jwr:script src="/qsstandingorder.js" />
+	  	<jwr:style src="/grid.css" media="all" />
+		<jwr:style src="/global.css" media="all" />
+        <jwr:style src="/oldglobal.css" media="all" />
+        <jwr:style src="/quickshop.css" media="all" />
         <tmpl:get name="extraCss"/>
         <tmpl:get name="extraJs"/>
         <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-
+        
         <script type="text/javascript">
-        	function showStandardAds(){
-        		$jq('#as_QSTop').show();
+        	function showStandardAds(){		
+        		$jq('#QSTop').show();
         	}
-
+        	
         </script>
-
+        
     </head>
     <body data-ec-page="<tmpl:get name="ecpage" />" data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"  >
+    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>
 
     <div id="content">
@@ -52,23 +56,23 @@
                     <li><a href="/quickshop/qs_shop_from_list.jsp">Your Lists</a></li>
                     <li><a href="/quickshop/qs_fd_lists.jsp">Recommended Lists</a></li>
                     <% if (user.isEligibleForStandingOrders()) { %>
-                        <li><a href="/quickshop/qs_standing_orders.jsp">Recurring Orders</a></li></li>
+                        <li><a href="/quickshop/qs_standing_orders.jsp">Recurring Orders</a></li></li>                     
                     <%} %>
                 </ul>
                 </div>
-               <!-- <div  class="oas-cnt" id="oas_QSTop"><script type="text/javascript">OAS_AD('QSTop');</script></div>-->
+               <!-- <div  class="oas-cnt" id="QSTop"><script type="text/javascript">OAS_AD('QSTop');</script></div>-->
               </c:when>
               <c:otherwise>
                 <div class="header">
-                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
+                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
                 </div>
-              </c:otherwise>
+              </c:otherwise>       
             </c:choose>
-
+            
              <!--  Standing orders Ad - AAPDEV-4294-->
-
-             <div class="oas-cnt" id="oas_QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div>
-
+            
+             <div style="display:none"  class="oas-cnt" id="QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div> 
+            
             <ul class="tabs qs-tabs clearfix">
                 <c:if test="${!isQS20}">
                 <li><a href="/quickshop/qs_top_items.jsp" class="<tmpl:get name='tiSelected'/>" ><strong>Your Top Items</strong> <span class="count" data-component="tabMeta" data-tabMeta="topitems"></span></a></li>
@@ -95,10 +99,10 @@
                         <tmpl:get name="gridlistchange" />
                       </c:otherwise>
                     </c:choose>
-                </div>
-
+                </div>	
+				
             </div>
-
+			
           <!-- content ends above here-->
         </div>
     </div>

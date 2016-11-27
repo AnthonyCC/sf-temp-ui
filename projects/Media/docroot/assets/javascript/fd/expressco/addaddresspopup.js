@@ -67,8 +67,6 @@ var FreshDirect = FreshDirect || {};
 
         data = data || {};
         data.metadata = data.metadata || fd.expressco.data.formMetaData;
-        data.service_type = data.service_type || (fd.expressco.checkoutCartHeader.headerData.userCorporate ? "corporate" : "home");
-
         if(typeof FreshDirect.standingorder !== "undefined" && typeof FreshDirect.standingorder.isStandingOrderContext !== "undefined"){
         	data.service_type = 'corporate';
         	data.standing_order = true;
@@ -79,14 +77,10 @@ var FreshDirect = FreshDirect || {};
         }
 
         this.refreshBody(data);
-        this.noscroll(true);
-        $('#'+this.popupId).attr('data-tabindex', 'manual');
-        if ($(window).scrollTop() < 200) {
-        	this.popup.$el.css('top', $(window).scrollTop() + 40);
-        }
+        this.popup.show($t);
         this.popup.clicked = true;
 
-        this.popup.show($t);
+        this.noscroll(true);
 
         $('#'+this.popupId+' [fdform]').each(function (i, form) {
           fd.modules.common.forms.decorateFields(form);
@@ -143,13 +137,13 @@ var FreshDirect = FreshDirect || {};
     $form.attr('data-showaltphone', null);
   });
 
-  // backup delivery radio buttons focus state for accessibility
-  $(document).on('change focus', '#' + addaddresspopup.popupId + ' .backup_delivery input[name="bd_auth"]', function (e) {
+  // backup delivery
+  $(document).on('change', '#' + addaddresspopup.popupId + ' .backup_delivery input[name="bd_auth"]', function (e) {
     var $el = $(e.currentTarget),
         val = $el.val(),
         $parent = $el.closest('.backup_delivery');
 
-    $parent.attr('bd-selected', (val==='none')?'':val);
+    $parent.attr('bd-selected', val);
   });
 
   fd.modules.common.utils.register("expressco", "addaddresspopup", addaddresspopup, fd);

@@ -45,15 +45,13 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		this.processor = processor;
 	}
 
-	@Override
-    public List<Publish> getPublishHistory() {
+	public List<Publish> getPublishHistory() {
 		// return publishDao.getAllPublishesOrdered("timestamp desc");
 		// use lightweight fetch instead of hibernate
 		return publishDao.fetchPublishes(null, "timestamp desc");
 	}
-
-	@Override
-    public List<Publish> getPublishHistoryByType(String type) {
+	
+	public List<Publish> getPublishHistoryByType(String type) {
 		if(type == null){
 			return getPublishHistory();
 		} else {
@@ -65,25 +63,23 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		publishDao.savePublish(publish);
 	}
 
-	@Override
-    public Publish getPublish(String id, Class clazz) {
+	public Publish getPublish(String id, Class clazz) {
 		return publishDao.getPublish(id, clazz);
 	}
-
+	
 	public void updatePublish(final Publish publish) {
 		publishDao.savePublish(publish);
 	}
 
 	/**
 	 * Return the most recent Publish object, with state COMPLETE.
-	 *
+	 * 
 	 * @return the most recent Publish object.
 	 */
-	@Override
-    public Publish getMostRecentPublish() {
+	public Publish getMostRecentPublish() {
 		return publishDao.getMostRecentPublish();
 	}
-
+	
 	@Override
 	public PublishX getMostRecentPublishX() {
 		return publishDao.getMostRecentPublishX();
@@ -91,33 +87,25 @@ public class DbPublishService extends DbService implements PublishServiceI {
 
 	/**
 	 * Return the most recent Publish object.
-	 *
+	 * 
 	 * @return the most recent Publish object.
 	 */
-	@Override
-    public Publish getMostRecentNotCompletedPublish() {
+	public Publish getMostRecentNotCompletedPublish() {
 		return publishDao.getMostRecentNotCompletedPublish();
 	}
 
-	@Override
-    public Publish getPreviousPublish(Publish publish) {
+	public Publish getPreviousPublish(Publish publish) {
 		return publishDao.getPreviousPublish(publish);
 	}
 
-    @Override
-    public Publish getPreviousFeedPublish(Publish publish) {
-        return publishDao.getPreviousFeedPublish(publish);  
-    }
-	
-	@Override
-    public String doPublish(Publish publish) throws ConcurrentPublishException {
+	public String doPublish(Publish publish) throws ConcurrentPublishException {
 
 		// TODO: put the below store inside a unit of work
 		publishDao.beginTransaction();
 
 		storePublish(publish);
 
-		// one has to commit the transaction for the storePublish() call above,
+		// one has to commit the transation for the storePublish() call above,
 		// as transactions are thread-specific
 		// and the Publisher will run in a different thread
 		publishDao.commitTransaction();
@@ -126,27 +114,8 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		processor.executePublish(publish);
 		return publish.getId();
 	}
-
-	@Override
-	public String doFeedPublish(Publish publish) throws ConcurrentPublishException {
-
-        // TODO: put the below store inside a unit of work
-        publishDao.beginTransaction();
-
-        storePublish(publish);
-
-        // one has to commit the transaction for the storePublish() call above,
-        // as transactions are thread-specific
-        // and the Publisher will run in a different thread
-        publishDao.commitTransaction();
-        publish.setBasePath(basePath + "/" + publish.getId() );
-
-        processor.executeFeedPublish(publish);
-        return publish.getId();
-	}
-
-	@Override
-    public PublishX getMostRecentNotCompletedPublishX() {
+	
+	public PublishX getMostRecentNotCompletedPublishX() {
 		return publishDao.getMostRecentNotCompletedPublishX();
 	}
 }

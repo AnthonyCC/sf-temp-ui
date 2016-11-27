@@ -38,36 +38,27 @@ var FreshDirect = FreshDirect || {};
     init: function (el, state) {
       var $el = $(el),
           htmlContent = $el.html(),
-          shorthtmlContent = this.truncate($el.html(), $el.text(), $el.attr(this.TRUNCATE));
+          textContent = this.truncate($el.text(), $el.attr(this.TRUNCATE));
 
-      if($el.text().length > 200){
-    	  var closeHTML = document.createElement('div');
-    	  closeHTML.innerHTML=shorthtmlContent;
-    	  shorthtmlContent = closeHTML.innerHTML;
-    	  $el.html('<div fd-readmore-truncated>'+shorthtmlContent+'<span ' + this.TRIGGER + '>read more</span></div><div fd-readmore-html>'+htmlContent+'<span '+this.TRIGGER+'>show less</span></div>');
-          $el.attr(readMore.STATE, state || 'closed');
-      } else {
-    	  $el.html('<div fd-readmore-html>'+htmlContent+'</div>');
-    	  $el.attr(readMore.STATE, state || 'open');
-      }
-      
+      $el.html('<div fd-readmore-truncated>'+textContent+'<span '+this.TRIGGER+'>read more</span></div><div fd-readmore-html>'+htmlContent+'<span '+this.TRIGGER+'>show less</span></div>');
+
+      $el.attr(readMore.STATE, state || 'closed');
     },
-    truncate: function (html, text, length) {
-
+    truncate: function (text, length) {
       var result;
+
       length = +length || 200;
       result = text;
-      length = length + (html.length - text.length);
 
-      if (html.length > length) {
-    	html = html.substring(0, length+1);
+      if (text.length > length) {
+        text = text.substring(0, length+1);
         result = text;
 
-        html = html.replace(/\s[\S]*$/, '');
-        if (html.length > length/2) {
-          result = html;
+        text = text.replace(/\s[\S]*$/, '');
+        if (text.length > length/2) {
+          result = text;
         }
-        
+
         result += '&hellip;';
       }
 

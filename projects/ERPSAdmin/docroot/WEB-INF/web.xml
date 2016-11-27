@@ -5,6 +5,12 @@
 
   <display-name>ERPServices Administration Application</display-name>
   <description>Provides utilities for administering all elements of ERPServices from a web interface</description>
+
+  <servlet>
+    <servlet-name>ExcelCreator</servlet-name>
+    <servlet-class>com.freshdirect.webapp.util.ExcelReportServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>ExcelCreator</servlet-name>
     <url-pattern>/nutrition_report.xls</url-pattern>

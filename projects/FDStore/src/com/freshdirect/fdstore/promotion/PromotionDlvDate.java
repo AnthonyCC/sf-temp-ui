@@ -7,10 +7,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class PromotionDlvDate extends ModelSupport{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8904166992937432121L;
 	private Date dlvDateStart;
 	private Date dlvDateEnd;
 	
@@ -18,11 +14,6 @@ public class PromotionDlvDate extends ModelSupport{
 		this.setPK(pk);
 		this.dlvDateStart = dlvDateStart;
 		this.dlvDateEnd = dlvDateEnd;
-	}
-
-	public PromotionDlvDate() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Date getDlvDateStart() {

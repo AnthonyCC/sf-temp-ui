@@ -13,7 +13,6 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -21,17 +20,13 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class RobotUtil {
 	
-    private static final Category LOGGER = LoggerFactory.getInstance(RobotUtil.class);
-
-    private static final String ROBOT_USER_NAME = "robot";
+	private static Category LOGGER = LoggerFactory.getInstance(RobotUtil.class);
 
 	public static FDSessionUser createRobotUser(HttpSession session){
-        FDUser robotUser = new FDUser(new PrimaryKey(ROBOT_USER_NAME));
-        robotUser.setRobot(true);
+        FDUser robotUser = FDUser.createRobotUser();
         
         Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
         availableServices.add(EnumServiceType.HOME);
-        availableServices.add(EnumServiceType.CORPORATE);
         
         robotUser.setSelectedServiceType(EnumServiceType.HOME);
         robotUser.setAvailableServices(availableServices);

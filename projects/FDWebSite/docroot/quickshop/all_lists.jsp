@@ -11,13 +11,13 @@
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='com.freshdirect.framework.util.StringUtil' %>
-<%@ page import='com.freshdirect.storeapi.content.StarterList' %>
+<%@ page import='com.freshdirect.fdstore.content.StarterList' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -50,14 +50,11 @@
         <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     </tmpl:put>
 
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put> --%>
-	  <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Reorder" ></fd:SEOMetaTag>
-  </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font>
 	<%--
 	   <tmpl:put name='banner' direct='true'>
-	      <a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>
+	      <a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
 	   </tmpl:put>
 	--%>
 	    
@@ -198,7 +195,7 @@
 	   <TABLE id="Starter_lists" style="margin-top: 4px;" cellpadding="0" cellspacing="3" border="0" width="100%">
 	      <TBODY>
 	      <TR height="1px" style="padding: 0px; margin: 0px" >
-	      <TD style="padding: 0px; margin: 0px"><img src="/media_stat/images/layout/clear.gif" alt="" width="175px" height="1px"></TD>
+	      <TD style="padding: 0px; margin: 0px"><img src="/media_stat/images/layout/clear.gif" width="175px" height="1px"></TD>
 	      	<TD>
 	      	</TD>
 	      </TR>

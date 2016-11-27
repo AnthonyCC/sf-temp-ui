@@ -12,7 +12,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>Order <xsl:value-of select="orderNumber"/>: Officially Canceled</title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -27,9 +27,9 @@
 			<div style="margin: 15px 0; font-size: 16px;">
 				<span style="font-weight: bold;">You're canceling?</span> &#128532; It's OK &mdash; stuff comes up. We'll get you next time.
 				<br /><br />
-				For now, we've stopped your recent order for <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> and you won't be charged.
+				For now, we've stopped your recent order for <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> -  <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> and you won't be charged.
 				<br /><br />
-				Your FoodKick SideKicks
+				Your FoodKick Sidekicks
 			</div>
 			<!-- <div style="text-align: center; padding: 3px; height: 30px; margin: 10px 0;"><a style="height: 100%; width: 100%; display: inline-block; padding: 0; margin: 0; font-size: 14px; color: #732484; font-weight: bold; line-height: 28px; text-decoration: none;" href="#">ADD MORE STUFF</a></div> -->
 		</div>

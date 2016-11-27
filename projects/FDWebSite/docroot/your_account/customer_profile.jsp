@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
@@ -12,7 +12,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-
+<jwr:style src="/your_account.css" media="all"/>
 
 <%
 String successPage = "/your_account/customer_profile_summary.jsp";
@@ -33,12 +33,11 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
 
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-<%-- <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Your Profile" pageId="customer_profile"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="customer_profile"></fd:SEOMetaTag>
 	</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<jwr:style src="/your_account.css" media="all"/>
   <script type="text/javascript">
     function clearCustomerProfileForm(p) {
         var x = p;

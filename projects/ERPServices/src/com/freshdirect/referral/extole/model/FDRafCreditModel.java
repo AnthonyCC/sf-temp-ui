@@ -62,26 +62,6 @@ public class FDRafCreditModel implements Serializable{
 	private String rewardDateString;
 	
 	private String rewardValueString;
-	
-	private String campaignId;
-	
-	public String getCampaignId() {
-		return campaignId;
-	}
-
-	public void setCampaignId(String campaignId) {
-		this.campaignId = campaignId;
-	}
-
-	private String campaignName;
-	
-	public String getCampaignName() {
-		return campaignName;
-	}
-
-	public void setCampaignName(String campaignName) {
-		this.campaignName = campaignName;
-	}
 
 	/**
 	 * @return the id

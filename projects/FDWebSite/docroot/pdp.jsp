@@ -1,17 +1,15 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
+<%@page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='java.io.*'%>
 <%@ page import="java.util.*"%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.pricing.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
@@ -25,37 +23,38 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="unbxd" prefix="unbxd" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
-<fd:RequiredParameterValidator parameters="productId"/>
-<fd:OptionalParameterValidator parameter="version" parameterType="<%=Integer.class.getSimpleName()%>"/>
-
 <fd:CheckLoginStatus id="user"/>
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>" />
 
-<potato:product name="productPotato" extraName="productExtraPotato" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>' variantId='<%=request.getParameter("variantId")%>' grpId='<%=request.getParameter("grpId")%>' version='<%=request.getParameter("version")%>' />
-<potato:browse name="browsePotato" pdp="true" nodeId='<%=request.getParameter("catId")%>'/>
-
-	
-<fd:ProductGroup id='productNode' categoryId='<%=request.getParameter("catId")%>' productId='<%=request.getParameter("productId")%>' >
-
 <%
-boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
+ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
+
+// Handle no-product case
+if (productNode==null) {
+    throw new JspException("Product not found in Content Management System");
+} else if (productNode.isDiscontinued() && !FDStoreProperties.getPreviewMode()) {
+    throw new JspException("Product Discontinued :"+request.getParameter("productId"));
+}
+
 String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
-title = title.replaceAll("<[^>]*>", "");
-%>
+String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
+title = title.replaceAll("<[^>]*>", ""); 
 
-<%-- OAS page variables --%>
-<c:set var="sitePage" scope="request" value="<%= productNode.getPath() %>" />
-<c:set var="listPos" scope="request" value="SystemMessage,ProductNote" />
-<c:set var="breadCrumbs" scope="request" value="${browsePotato.breadCrumbs}" />
+boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 
-<%
+//--------OAS Page Variables-----------------------
+request.setAttribute("sitePage", productNode.getPath());
+request.setAttribute("listPos", "SystemMessage,ProductNote");
+
+
 //REDIRECT to the redirect-url IF there is any
 String redirectURL = productNode.getRedirectUrl();
 
@@ -87,7 +86,7 @@ boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mob
 String pageTemplate = "/common/template/pdp_template.jsp";
 if (mobWeb) {
 	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
-	String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
+	String oasSitePage = request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
 		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
 	}
@@ -105,17 +104,26 @@ if (mobWeb) {
 	}%>
 </fd:IsAlcoholic>
 
+<%
+EnumProductLayout prodLayout = productNode.getProductLayout();
+
+// should we show the new leftnav
+boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
+%>
+
+<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
+
+<% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
+	<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+<%}%>
+
 <tmpl:insert template="<%= pageTemplate %>">
 
   <tmpl:put name="seoMetaTag">
-    <fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title="<%= title %>"/>
+  	<fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title='<%=title%>'/>
   </tmpl:put>
 
-  <tmpl:put name="seoCanonicalTag">
-    <link rel="canonical" href="${productPotato.productPagePrimaryHomeUrl}" />
-  </tmpl:put>
-
-  <tmpl:put name='eventsource' direct='true'>pdp_main</tmpl:put>
+  <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
@@ -129,9 +137,15 @@ if (mobWeb) {
     <jwr:style src="/pdp.css" media="all" />
   </tmpl:put>
   
-	<tmpl:put name='deptnav' direct='true'>
-		<soy:render template="browse.titleBarWrapper" data="${browsePotato.descriptiveContent}" />
-	</tmpl:put>
+<% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
+
+  
+    
+  <tmpl:put name='deptnav' direct='true'>
+    <div class="browse-titlebar">
+      <soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />
+    </div>
+  </tmpl:put>
 
   <tmpl:put name='leftnav' direct='true'>
     <div id="leftnav">
@@ -151,8 +165,43 @@ if (mobWeb) {
         <% } %>
     </tmpl:put>
     
+<% } else { //old leftnav %>
+
+ <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
+    
+    <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
+	    <tmpl:put name='leftnav' direct='true'>	    	
+	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
+			<!-- start : leftnav -->
+			<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+			<!-- end : leftnav -->			
+			</td>
+	    </tmpl:put>
+    	<tmpl:put name="extraJs">
+    	</tmpl:put>
+	    <tmpl:put name='deptnav' direct='true'>
+		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+			<hr class="deptnav-separator">
+	    </tmpl:put>
+    <% } else { %>
+    	<tmpl:put name="extraJs">
+			<fd:javascript src="/assets/javascript/wine.js"/>
+			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
+    	</tmpl:put>
+    	<tmpl:put name="deptnav" direct="true">	
+    	</tmpl:put>
+    	<tmpl:put name="leftnav">
+    		<% String wineAssId = JspMethods.getWineAssociateId().toLowerCase(); %>
+			<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;" width="150"><div align="center"><a href="/department.jsp?deptId=<%= wineAssId %>&trk=snav"><img src="/media/editorial/win_<%= wineAssId %>/<%= wineAssId %>_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
+			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+			</td>    	
+		</tmpl:put>
+    <% } %>
+
+<% } %>
+    
 	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="<%= title %>"/>
+		<meta property="og:title" content="FreshDirect - <%= productFullName %>"/>
 		<meta property="og:site_name" content="FreshDirect"/>
 		<% 
 			Image detailImage = productNode.getDetailImage();
@@ -167,7 +216,7 @@ if (mobWeb) {
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
 <%
-    EnumProductLayout prodLayout = productNode.getProductLayout();
+
 	String layoutPath = prodLayout.getLayoutPath();
 	/* leaving this, in case we need to go to this solution
 	if (mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL)) {
@@ -188,18 +237,26 @@ if (mobWeb) {
 %>
 	<c:set value="${productPotato}" scope="request" var="productPotato" />
 	<c:set value="${productExtraPotato}" scope="request" var="productExtraPotato" />
-	<c:set value="${productPotato.productPagePrimaryHomeUrl}" scope="request" var="seoCanonicalUri" />
-
 <% if (productNode.getSpecialLayout()==null || forceProductLayout) { %>
 	
 	<tmpl:put name='content' direct='true'>
+		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	
 		<% if(!mobWeb) {  // mobWeb doesn't show breadcrumbs %>
-	    	<div class="browse-breadcrumbs">
-	      	<soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
-	    	</div>
+			<% if(shouldBeOnNew) {  // TODO: remove this after full rollout%>
+		    	<div class="browse-breadcrumbs">
+		      	<soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
+		    	</div>
+			<% } %>
 		<% } %>
-		<%@ include file="/includes/product/productDetail.jspf" %>
+		<jsp:include page="/includes/product/productDetail.jsp" >
+			<jsp:param name="catId" value="${ param.catId }"/>
+			<jsp:param name="productId" value="${ param.productId }"/>
+			<jsp:param name="variantId" value="${ param.variantId }"/>
+			<jsp:param name="grpId" value="${ param.grpId }"/>
+			<jsp:param name="version" value="${ param.version }"/>
+		</jsp:include>
 	    <script>
 			window.FreshDirect = window.FreshDirect || {};
 			window.FreshDirect.browse = window.FreshDirect.browse || {};
@@ -247,6 +304,8 @@ if (mobWeb) {
 	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 %>
 	<tmpl:put name='content' direct='true'>
+		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 		<jsp:include page="<%= layoutPath %>" flush="false"/>
 		
 		<script>
@@ -303,4 +362,3 @@ if (mobWeb) {
 	</tmpl:put>
 </tmpl:insert>
 <unbxd:clickThruEvent product="<%= productNode %>"/>
-</fd:ProductGroup>

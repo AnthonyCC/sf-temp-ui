@@ -163,30 +163,30 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 %>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
-		<br><span class="errortext"><%= errorMsg %></span><br><br>
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>"><img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 	</TR></TABLE>
 <br>
 
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Name on Card&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Name on Card&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="105"><BR></TD>
 	<TD WIDTH="565" CLASS="text12">Please enter name exactly as it appears on card.<BR><FONT CLASS="space4pix"><BR></FONT></TD>
 </TR>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Card Type&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Type&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
 		<SELECT class="text11" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
 		<OPTION value="">Choose a credit card</OPTION>
@@ -198,11 +198,11 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 		%>
 		<OPTION <%=ccType.getFdName().equals(ccCardType)?"selected":""%> value="<%=ccType.getFdName()%>"><%=ccType.getDisplayName()%></OPTION>
 		<%}%>
-		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
 		<input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>"> 
 	</TD>
@@ -211,13 +211,13 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 <TR VALIGN="TOP">
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="565" CLASS="text12">
-		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
 
 <tr>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="errortext"></fd:ErrorHandler>*&nbsp;Expires&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Expires&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
 	<%
 	String tCcExpireMonth="";
@@ -241,12 +241,12 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 	   for (int yr = startYear;yr < endYear; yr++) { %>
 	<OPTION <%= (yr+"").equals(ccExpireYear)?"selected":""%> VALUE="<%=yr %>"><%=yr %></OPTION>
 	<% } %>
-	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
 <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="errortext"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
 		<input class="text11" maxlength="4" SIZE="4" type="text" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
 	</TD>
@@ -257,7 +257,7 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 <TR VALIGN="TOP">
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="565" CLASS="text12">
-		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
@@ -268,7 +268,7 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3">
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3">
 		<font class="text12">Please enter billing address as it appears on your credit card statement.</font><br>
 		<img src="/media_stat/images/layout/clear.gif" alt="" border="0" width="1" height="4"><br>
 	</TD>
@@ -283,7 +283,7 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 			<TR VALIGN="MIDDLE">
 				<TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"><fd:ErrorHandler
 					result='<%=result%>' name='technical_difficulty' id='errorMsg'>
-					<span class="errortext"><%=errorMsg%></span>
+					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler></TD>
 			</TR>
 
@@ -291,7 +291,7 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 				<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler
 					result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>">
-					<span class="errortext">
+					<span class="text11rbold">
 				</fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>">
 					</span>
@@ -301,10 +301,10 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 					required="true" value="<%=ccAddress1%>"> <fd:ErrorHandler
 					result='<%=result%>'
 					name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'>
-					<span class="errortext"><%=errorMsg%></span>
+					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler> &nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>">
-					<span class="errortext">
+					<span class="text11rbold">
 				</fd:ErrorHandler><%= EnumServiceType.HOME.equals(serviceTypeRH) ? "Apt. #" : "Floor/Suite&nbsp;#" %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>">
 					</span>
@@ -320,14 +320,14 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 					value="<%=ccAddress2%>">&nbsp;<fd:ErrorHandler
 					result='<%=result%>'
 					name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'>
-					<span class="errortext"><%=errorMsg%></span>
+					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler></TD>
 			</TR>
 			<TR VALIGN="MIDDLE">
 				<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler
 					result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_CITY.getCode()%>">
-					<span class="errortext">
+					<span class="text11rbold">
 				</fd:ErrorHandler>*City&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_CITY.getCode()%>">
 					</span>
@@ -336,11 +336,11 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 					name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true"
 					value="<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>'
 					name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'>
-					<span class="errortext"><%=errorMsg%></span>
+					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler></TD>
 			</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="errortext"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
 		<TD WIDTH="565">
  	    		  
 					<select class="pulldown" name="<%=AddressName.BIL_STATE%>"  id="<%=AddressName.BIL_STATE%>"  required="true">
@@ -361,14 +361,14 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 					       <%}%>
 					</select>
 					
- 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+ 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="errortext"></fd:ErrorHandler>*Zip/Postal Code&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
-	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Zip/Postal Code&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="errortext"></fd:ErrorHandler>*Country&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Country&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
  	    		 
 					<select class="pulldown" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
@@ -387,7 +387,7 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 			<TR VALIGN="MIDDLE">
 				<TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"><fd:ErrorHandler
 					result='<%=result%>' name='address' id='errorMsg'>
-					<span class="errortext"><%=errorMsg%></span>
+					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler></TD>
 			</TR>
 		</TABLE>

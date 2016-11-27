@@ -6,7 +6,6 @@ This include expects the following:
     - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
 
 --%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
 <%@ page import='java.net.*'%>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
@@ -121,11 +120,9 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         }
 
     }
-    FDProductInfo defaultProductInfo = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
-    FDProduct defaultProduct = FDCachedFactory.getProduct(defaultProductInfo);
-    
 
-    
+    FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(defaultSku.getSkuCode()) );
+
     if (!hasTemplate) {
 
         String reqQuantity = request.getParameter("quantity");
@@ -151,6 +148,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	<form method='post' name="productForm" id="productForm" action="<%= formAction %>">
 	<fd:PendingOrderChecker/>
 	<fd:AddToCartPending id="productForm"/>
+	<fd:CmFieldDecorator/>
 
         <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
@@ -169,7 +167,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(defaultProductInfo)).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
@@ -308,7 +306,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 <%  } %>    
     <BR>
     <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
-        <span class="errortext"><%=errorMsg%></span><br>
+        <span class="text11rbold"><%=errorMsg%></span><br>
     </fd:ErrorHandler>
     <table CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="187">
         <%
@@ -368,14 +366,14 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         if (referer==null) referer = request.getHeader("Referer");
         if (referer==null) referer = "/view_cart.jsp";
         %>
-        <button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
+        <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
        	<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/><br/>
         <input type="hidden" name="referer" value="<%= referer %>">
-        <a href="<%=referer%>" class="cssbutton green transparent">Back to Cart</a><BR>
+        <a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><BR>
         <%
     } else {
         %>
-       <button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
+       <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/><br/>
         <%
     }
 
@@ -407,7 +405,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
     if (_defaultSku!=null) {
 	FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
-	if (fdprd.getKosherInfo(ProductInfoUtil.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction()) { %>
+	if (fdprd.getKosherInfo(plantID).isKosherProduction()) { %>
 	    <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
 	    <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 	    <%
@@ -424,7 +422,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	}
     }
     if (isWineLayout) {     %>
-    <img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" border="0" VSPACE="10"><BR>
+    <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
 <%  } else  {   %>
     <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
 <%  }  %>
@@ -467,7 +465,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
     }
     %>
     <br>
-    <div align="right"><font class="text12" color="#333">
+    <div align="right"><font class="text12" color="#999999">
     <%
     if (productNode.isTempUnavailable()) {
         %>

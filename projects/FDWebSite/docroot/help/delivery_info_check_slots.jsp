@@ -9,8 +9,6 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
@@ -70,23 +68,21 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
   
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-<%-- 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put> --%>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_info_check_slots"></fd:SEOMetaTag>
+	</tmpl:put>
+	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 	 <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="Delivery Information" pageId="delivery_info_check"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>
 	</tmpl:put>
 	
 		<tmpl:put name='content' direct='true'>
-		
-		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
-			<%@ include file="/help/delivery_info_nav.jspf" %>
-		</div>
-		
-<table role="presentation" cellpadding="0" cellspacing="0" border="0">
-<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
+<table cellpadding="0" cellspacing="0" border="0">
+<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
 <tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
-<tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
-<tr><td bgcolor="#CCCCCC" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"></td></tr>
+<tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td bgcolor="#CCCCCC" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
 
 <fd:CheckAvailableTimeslots result="result" successPage="/help/delivery_info_avail_slots.jsp" actionName="makeAddress">
 <form name="address" method="POST">
@@ -94,56 +90,55 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <tr>
 	<td width="120" align="right" class="text12">
 		<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>">
-			<span class="errortext"></fd:ErrorHandler>
+			<span class="text11rbold"></fd:ErrorHandler>
 		<label>&nbsp;Service Type&nbsp;&nbsp;</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td class="text12">
-	<fieldset><legend class="offscreen">service type:</legend>
-		<table role="presentation">
+		<table>
 			<tr>
 				<td>
-					<input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" id="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_field1" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>">
+					<input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>">
 				</td>
-				<td><b><label for="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_field1">Residential</label></b></td>
-				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" id="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_field2" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>">
+				<td><b>Residential</b></td>
+				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>">
 				</td>
-				<td><a href="javascript:popup('/cos_info.jsp','small')"><b><label for="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_field2">Business or School</label></b></a></td>
+				<td><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a></td>
 			</tr>
-		</table></fieldset>
-		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		</table>
+		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 
-<tr valign="top"><td class="text12" align="right"><label for="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>_field">* Street Address&nbsp;&nbsp;</label></td>
-<td><input type="text" class="text11" maxlength="50" size="21" id="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>_field" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"> 
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+<tr valign="top"><td class="text12" align="right"><label>* Street Address&nbsp;&nbsp;</label></td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"> 
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr>
-<td class="text12" align="right" ><label for="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>_field">Apt./Ste.#</label></td>
-<td><input type="text" class="text11" maxlength="10" size="8" id="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+<td class="text12" align="right" ><label>Apt./Ste.#</label></td>
+<td><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 </td>
 </tr>
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
-<tr valign="top"><td class="text12" align="right"><label for="<%=EnumUserInfoName.DLV_CITY.getCode()%>_field">* City&nbsp;&nbsp;</label></td>
-<td><input type="text" class="text11" maxlength="50" size="21" id="<%=EnumUserInfoName.DLV_CITY.getCode()%>_field" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+<tr valign="top"><td class="text12" align="right"><label>* City&nbsp;&nbsp;</label></td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 
-<tr valign="top"><td class="text12" align="right"><label for="<%=EnumUserInfoName.DLV_STATE.getCode()%>_field">* State&nbsp;&nbsp;</label></td>
-<td><input type="text" class="text11" maxlength="2" size="2" id="<%=EnumUserInfoName.DLV_STATE.getCode()%>_field" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+<tr valign="top"><td class="text12" align="right"><label>* State&nbsp;&nbsp;</label></td>
+<td><input type="text" class="text11" maxlength="2" size="2" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br><label for="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field">* Zip Code&nbsp;&nbsp;</label></td>
-<td><input type="text"  maxlength="5" class="text11" size="6" id="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><label>* Zip Code&nbsp;&nbsp;</label></td>
+<td><input type="text"  maxlength="5" class="text11" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" name="address_check" vspace="8" value="Check My Address" alt="Check My Address" border="0">
-<br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-<fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+<br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 </form>
 <%
@@ -153,7 +148,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	}
 %>
 </fd:CheckAvailableTimeslots>
-<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="120" height="24"></td>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="120" height="24"></td>
 <td></td>
 </tr>
 </table>

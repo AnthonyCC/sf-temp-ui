@@ -18,10 +18,7 @@
 	final int W_YA_MODIFY_ORDER = 970;
 
 	String orderId = request.getParameter("orderId");
-	if (orderId == null || "".equals(orderId)) {
-		//redirect instead of blowing up
-		response.sendRedirect("/your_account/order_history.jsp");
-	}
+	
 
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 	java.text.SimpleDateFormat modDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE MMMM d, yyyy");
@@ -43,22 +40,24 @@
 			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
 		}
 	}
-	/* pass this param to bypass the success redirect (i.e. for initializing a modify via ajax) where you don't need the success page to load */
-	String successPage = (request.getParameter("noSuccess") != null) ? "noSuccess" : "/view_cart.jsp?fail";
-	if (request.getParameter("successPage") != null) {
-		successPage = request.getParameter("successPage");
-	}
 %>
+<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='/view_cart.jsp'>
 <tmpl:insert template='<%= pageTemplate %>'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Modify Order"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Modify Order</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Modify Order</tmpl:put>
     <tmpl:put name='content' direct='true'>
-	<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= successPage %>'>
 		<table style="width: <%= (mobWeb) ? "100%" : W_YA_MODIFY_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0">
 		<%
 			if (allowModifyOrder.booleanValue() && cartOrOrder != null) {
+			
+		        StringBuffer custName = new StringBuffer(50);
+		        custName.append(customerModel.getFirstName());
+		        if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
+		            custName.append(" ");
+		            custName.append(customerModel.getMiddleName());
+		            custName.append(" ");
+		        }
+		        custName.append(customerModel.getLastName());
+				
 				//
 				// get delivery info
 				//
@@ -87,14 +86,14 @@
 		<!-- error message handling here -->
 			<tr><td class="title18" colspan="3">Change Order # <%= orderId %> ?</td>
 			</tr>
-		  	<tr class="NOMOBWEB"><td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_MODIFY_ORDER - 210 %>" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="200" height="6"></td></tr>
+		  	<tr class="NOMOBWEB"><td><img src="/media_stat/images/layout/clear.gif" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_MODIFY_ORDER - 210 %>" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="200" height="6"></td></tr>
 			<tr bgcolor="#FF9933">
 				<td class="text10w" colspan="2" height="16" valign="middle">&nbsp;&nbsp;<img src="/media_stat/images/template/youraccount/currently_scheduled.gif" width="124" height="8" border="0" alt="CURRENTLY SCHEDULED" vspace="2" align="absbottom">&nbsp;&nbsp;<%=fmtDlvDateTime%>@<%=sStartHour%>-<%=sEndHour%></td>
 				<td align="right" class="text11wbold" valign="middle">Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>&nbsp;&nbsp;</td>
 			</tr>
 			<tr>
 				<td style="width: 10px;">&nbsp;</td>
-				<td colspan="2" class="text13"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>
+				<td colspan="2" class="text13"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
 				You are about to change this order. Please note that the price and availability of some items may change. Changing the order date may cause date-restricted promotional items to be removed.<br><br>
 		<%
 					FDUserI currentUser = (FDUserI) session.getAttribute(SessionName.USER);
@@ -105,23 +104,23 @@
 				<%if(originalCart.numberOfOrderLines() > 0){%>			
 					We won't forget the items that are in your cart now - you'll see them again as soon as you're done making changes.<br><br> 
 				<%}%>
-				<b>You must complete checkout by <%= modDateFormat.format(reservation.getCutoffTime()) %>, or this order <%if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cartOrOrder.getOrderStatus())) {%> <b>will be cancelled</b>.<%} else {%><b>will be delivered as is</b>.<%}%></b><br><br>For full details of our order change policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here</a>.<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><div align="center">			
+				<b>You must complete checkout by <%= modDateFormat.format(reservation.getCutoffTime()) %>, or this order <%if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cartOrOrder.getOrderStatus())) {%> <b>will be cancelled</b>.<%} else {%><b>will be delivered as is</b>.<%}%></b><br><br>For full details of our order change policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here</a>.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><div align="center">			
 				<form name="modify_order" method="POST" action="/your_account/modify_order.jsp">
 					<input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
 					<input type="hidden" name="action" value="modify">
 					<input type="image" src="/media_stat/images/buttons/change_this_order_now.gif" width="145" height="16" border="0" alt="MAKE CHANGES TO ORDER">
-				</form></div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
-			<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_MODIFY_ORDER %>" height="1" border="0"></td></tr>
-			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">
-					<tr><td rowspan="2"><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/cross.gif" alt="do not change order" border="0"></a></td>
+				</form></div><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+			<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_MODIFY_ORDER %>" height="1" border="0"></td></tr>
+			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">
+					<tr><td rowspan="2"><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/cross.gif" border="0"></a></td>
 					    <td><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/do_not_change_order.gif" width="122" height="8" border="0" alt="DO NOT CHANGE ORDER"></a></td>
 					</tr>
 					<tr><td>and deliver as originally specified</td></tr>
 					</table></td></tr>
 		<% } %>
-			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br><b>Having Problems?</b><br><%@ include file="/includes/i_footer_account.jspf" %></td></tr>
+			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="20"><br><b>Having Problems?</b><br><%@ include file="/includes/i_footer_account.jspf" %></td></tr>
 		
 		</table>
-	</fd:ModifyOrderController>
 	</tmpl:put>
 </tmpl:insert>
+</fd:ModifyOrderController>

@@ -6,28 +6,6 @@
 	width: 970px;
 	margin: auto;
 }
-.standing-orders-3-cont{
-	width: 100%;
-	border-top: 1px solid #e1e1e1;
-	position: relative;
-}
-.standing-orders-3-cont:before{
-	content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 48px;
-    background: -moz-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(237,237,237,0.01) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(100%,rgba(237,237,237,0.01)));
-    background: -webkit-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%);
-    background: -o-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%);
-    background: -ms-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%);
-    background: linear-gradient(to bottom, rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#03ededed',GradientType=0);
-    z-index: 1;
-}
 .standing-orders-3-settings-header{
 	display: none;
 }
@@ -217,7 +195,7 @@
 }
 
 .standing-orders-3-create-header {
-    font-size: 30px;
+    font-size: 22px;
     font-weight: bold;
     color: #333;
     padding: 40px 0px;
@@ -296,31 +274,13 @@
     background: #e9e9e9;
     margin: 12px 0 0;
 }
-.standing-orders-3-set-form-header{
-	font-size: 20px;
-	font-weight: bold;
-	color: #000000;
-	margin: 0 0 5px;
-}
 .standing-orders-3-set-form {
     display: inline-block;
     width: 100%;
 }
-.standing-orders-3-create-header .standing-orders-3-new-cancel-button {
+.standing-orders-3-set-form .standing-orders-3-new-cancel-button {
     float: right;
-    margin: 5px 10px 0 0;
-}
-.standing-orders-3-create-header button.standing-orders-3-new-start-shop{
-	float: right;
-	margin: 5px 0 0;
-}
-.standing-orders-3-create-header button.standing-orders-3-new-start-shop[disabled],
-.standing-orders-3-create-header button.standing-orders-3-new-start-shop[disabled]:hover{
-	color: #858585;
-    background-color: #e8e8ea;
-    border-color: #e8e8ea;
-    cursor: not-allowed;
-    box-shadow: none;
+    margin-top: 8px;
 }
 #newsoErroMessage{
 	position: absolute;
@@ -339,6 +299,7 @@
 	padding-bottom: 50px;
 }
 
+.standing-orders-3 .standing-orders-3-newso-drawer-container #ec-drawer,
 .standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container{
 	display: none;
 }
@@ -354,7 +315,6 @@
 }
 .standing-orders-3-select-freq{
 	display: inline-block;
-	margin-left:30px;
 }
 .standing-orders-3-pick-freq p {
     margin: 0;
@@ -378,7 +338,6 @@
     font-weight: bold;
     color: #333;
     padding: 10px 0 20px;
-    margin-left:30px;
 }
 .standing-orders-3-upcoming-deliveries {
     padding-top: 40px;
@@ -571,18 +530,6 @@
 .standing-orders-3-so-settings-item-name-header{
 	float: left;
 }
-.standing-orders-3 a.standing-orders-3-so-settings-help{
-	float: left;
-	padding: 0 15px 0 0;
-	font-size: 13px;
-	color: #FFFFFF;
-}
-.accessibileStdgodr{
-	float:right;
-}
-.standing-orders-3 a.standing-orders-3-so-settings-help:hover{
-	color: #FFFFFF;
-}
 .standing-orders-3-so-settings-item-name-change{
 	/*display: none;*/
 	font-size: 13px;
@@ -647,18 +594,8 @@
 	padding: 30px 30px 0;
     clear: both;
 }
-.standing-orders-3-so-settings-item-details-header{
-	font-weight: bold;
-	padding: 25px 0 10px;
-}
-.standing-orders-3-so-settings-item-details-header:first-of-type{
-	padding: 5px 0 10px;
-}
 .standing-orders-3-so-settings-item-details-container{
 	
-}
-.standing-orders-3-so-settings-item-details-container-red{
-	color: #FF0000;
 }
 .standing-orders-3-so-settings-item-details-left{
 	float: left;
@@ -694,21 +631,8 @@
     font-size: 16px;
     text-align: center;
 }
-.standing-orders-3-so-settings-buttons .so-delete-popup.open,
-.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message-custom{
+.standing-orders-3-so-settings-buttons .so-delete-popup.open{
 	display: block;
-}
-.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .select-wrapper{
-	display: inline;
-}
-.standing-orders-3-so-settings-buttons .so-delete-popup.open .so-delete-popup-message-custom,
-.standing-orders-3-so-settings-buttons .so-delete-popup.open .select-wrapper,
-.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-header,
-.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message{
-	display: none;
-}
-.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-select{
-	margin: 5px auto 20px;
 }
 .standing-orders-3-so-settings-buttons .so-delete-popup:after {
     content: "";
@@ -735,9 +659,6 @@
 .standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-name{
 	font-weight: bold;
 	word-wrap: break-word;
-}
-.standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-message{
-	color: #c94747;
 }
 .standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-buttons{
 	padding-top: 17px;
@@ -1001,7 +922,6 @@
 .standing-orders-3 #cartcontent .cartsection.eTippingEnabled .cartsection__totalwrapper{
 	width: auto;
 	padding-top: 20px;
-	padding-right: 0;
 }
 .standing-orders-3 #cartcontent .cartsection__cartline .cartline-title{
 	width: 500px;
@@ -1016,7 +936,6 @@
 
 .standing-orders-3 #cartcontent .total{
 	margin: 0 28px 20px 28px;
-	padding: 20px 0 20px 20px;
 }
 
 .standing-orders-3 #cartcontent .total .total-left{
@@ -1025,68 +944,8 @@
 
 .standing-orders-3 #cartcontent .total .total-right{
 	width: 400px;
-	padding-right: 28px;
 }
-.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2{
-	float: none;
-}
-.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__row{
-	text-align: right;
-	padding-right: 0;
-}
-.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__rowcell-left{
-	display: inline;
-	margin: 0 20px 0 0;
-}
-.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__rowcell-left .ssOrderTotal{
-	font-size: 27px;
-	vertical-align: inherit;
-}
-.standing-orders-3 #cartcontent .cartetip .cartsection__tax form{
-	float: none;
-}
-.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left{
-	display: block;
-	width: auto;
-	text-align: initial;	
-}
-.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text{
-	float: none;
-	font-size: 22px;
-}
-.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text:after{
-	content: "";
-}
-.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .accessibleToolTip{
-	vertical-align: super;
-}
-.standing-orders-3 #cartcontent .cartetip .cartetip-container{
-	width: 200px;
-	padding: 20px 0 20px 45px;
-	border-top: 1px solid #e0e3d0;
-	border-bottom: 1px solid #e0e3d0;
-	text-align: left;
-	background: #FFFFFF;
-}
-.standing-orders-3 #cartcontent .cartetip .cartetip-container label{
-	display: inline-block;
-}
-.standing-orders-3 #cartcontent .cartetip .cartetip-container button{
-	width: 153px;
-	margin: 5px 0 0;
-}
-.standing-orders-3 #cartcontent .cartetip-container .tipTextBox{
-	width: 153px;
-}
-.standing-orders-3 #cartcontent .cartetip .cartetip-container .tipAppliedTick{
-	padding: 0 0 0 5px;
-}
-.standing-orders-3 #cartcontent .cartetip .tipDropdown {
-	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
-	border-radius: 0px;
-	-webkit-border-radius: 0px;
-	-moz-border-radius: 0px;
-}
+
 .standing-orders-3 .standing-orders-3-so-settings-activate{
 	display: none;
 	padding: 0 0 25px;
@@ -1287,13 +1146,17 @@
 
 .standing-orders-3 #ec-drawer .drawer__item__title,
 .standing-orders-3 #ec-drawer .drawer__item__section .section__title,
+.standing-orders-3 #ec-drawer .standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text,
 .standing-orders-3 #ec-drawer .successtimeslot .successtimeslot_time,
 .standing-orders-3 #ec-drawer .drawer__previewitem__title,
-.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__title,
-.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__body p{
+.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__title{
 	text-align: left;
 	font-size: 14px;
+    font-weight: normal;
     color: #666;
+}
+#ec-drawer .standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
+	padding-top: 20px;
 }
 .standing-orders-3 #ec-drawer .successtimeslot{
 	margin-top: 5px;
@@ -1312,6 +1175,10 @@
 .standing-orders-3 #ec-drawer .drawer-content{
 	background: #fff;
 }
+.standing-orders-3 #ec-drawer [data-drawer-default-content="address"] .drawer__itemright{
+	margin-left: 10px;
+	max-width: 210px;
+}
 .standing-orders-3-so-settings-container{
 	background: #f7f7f7;
     width: 1000px;
@@ -1326,7 +1193,7 @@
 	width: 22px;
 	height: 22px;
     background: #FFFFFF;
-    float: left;
+    float: right;
 }
 .standing-orders-3-so-settings-square-line-1{
     background: #996699;
@@ -1353,44 +1220,20 @@
 .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-delete{
 	float: left;
 }
-.standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-modify-next-delivery{
-	line-height: 15px;
-	padding: 8px 10px;
-	margin-left: 20px;
-}
 .standing-orders-3-so-settings-buttons-container .standing-orders-3-so-settings-view-details{
 	float: right;
 	font-size: 14px;
 	font-weight: bold;
-	line-height: 15px;
-	padding: 8px 10px;
-	margin-right: 20px;
+	line-height: 30px;
+	margin-right: 30px;
 }
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-view-details,
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-activate-message{
 	display: none;
 }
-.standing-orders-3-so-settings-top{
-	width: 970px;
-	margin: auto;
-}
-.standing-orders-3-so-setting-tutorial{
-	float: right;
-	font-size: 17px;
-}
-.standing-orders-3-so-setting-tutorial a{
-	float: right;
-	cursor: pointer;
-}
-.standing-orders-3-so-setting-tutorial a.standing-orders-3-so-setting-tutorial-pdf{
-	margin: 8px 0 0 10px;
-}
-.standing-orders-3-so-setting-tutorial-text{
-	padding: 18px 0;
-}
 .so3-create-new-so {
-	display: inline-block;
     width: 450px;
+    margin: auto;
 	padding: 12px;
     background: #f7f7f7;
 	border: 1px solid #c1b5c1;
@@ -1405,250 +1248,4 @@
 .standing-orders-3 .so3-create-new-so a.so3-create-new-so-link{
 	float: right;
 	width: 120px;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date{
-	text-align: right;
-	padding: 0 0 10px;
-}
-.standing-orders-3 #cartcontent .standing-orders-3-cart-details-header .so-cartline-delivery-date{
-	display: none;
-	padding: 10px 0 0;
-}
-.standing-orders-3 .standing-orders-3-so-settings-container.cartline-deleted #cartcontent .standing-orders-3-cart-details-header .so-cartline-delivery-date{
-	display: block;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-info{
-	display: inline-block;
-	padding: 0 12px 0 0;
-	color: #996699;
-	font-size: 14px;
-	font-weight: bold;
-	vertical-align: bottom;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-begins{
-	display: inline-block;
-	background: #996699;
-	border: 1px solid #7a4b70;
-	padding: 2px 10px;
-	margin: 0 10px 0 0;
-    font-size: 12px;
-    line-height: 14px;
-	color: #FFFFFF;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip{
-	position: relative;
-	display: inline-block;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip-i{
-	font-size: 13px;
-	font-weight: bold;
-	border: 1px #333333 solid;
-	border-radius: 10px;
-	padding: 0 8px;
-	vertical-align: bottom;
-	cursor: pointer;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip-cont{
-	position: absolute;
-    width: 115px;
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    bottom: 0px;
-    left: -102px;
-	padding: 17px;
-    margin-bottom: 35px;
-    color: #000;
-    background: #f9f8f7;
-    border: solid 1px #aaa;
-	text-align: center;
-    -moz-user-select: text;
-    -khtml-user-select: text;
-    -webkit-user-select: text;
-    -o-user-select: text;
-    user-select: text;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip-cont:before{
-	content: "";
-	position: absolute;
-	bottom: -15px;
-	right: 25px;
-	border-width: 14px 14px 0;
-	border-style: solid;
-	border-color: #aaa transparent;
-	display: block;
-	width: 0;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip-cont:after {
-	content: "";
-	position: absolute;
-	bottom: -13px;
-	right: 25px;
-	border-width: 14px 14px 0;
-	border-style: solid;
-	border-color: #f9f8f7 transparent;
-	display: block;
-	width: 0;
-}
-.standing-orders-3 #cartcontent .so-cartline-delivery-date-tip:hover .so-cartline-delivery-date-tip-cont{
-	visibility: visible;
-	opacity: 1;
-}
-#create-so-page-loading{
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	text-align: center;
-	padding: 235px 0 0 0;
-	font-size: 30px;
-	font-weight: bold;
-	background: rgba(255, 255, 255, 0.5);
-}
-.standing-orders-3-so-settings-container .standing-orders-3-so-settings-square-line-1 .standing-orders-3-so-settings-square-line-1-label{
-	display:block;
-}
-.standing-orders-3-so-settings-container .standing-orders-3-so-settings-square-line-2 .standing-orders-3-so-settings-square-line-2-label{
-	display:none;
-}
-.standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-square-line-1 .standing-orders-3-so-settings-square-line-1-label{
-	display:none;
-}
-.standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-square-line-2 .standing-orders-3-so-settings-square-line-2-label{
-	display:block;
-}
-.so-drawer-success,
-.so-feature-tutorial,
-.so-ready-to-activate-reminder{
-	width: 500px;
-	font-family: Verdana;
-	font-size: 16px;
-}
-.so-ready-to-activate-reminder{
-	width: 510px;
-}
-.so-drawer-success .so-drawer-success-header,
-.so-feature-tutorial .so-feature-tutorial-top,
-.so-ready-to-activate-reminder .so-ready-to-activate-reminder-header{
-	padding: 30px;
-	font-size: 20px;
-    font-weight: bold;
-}
-.so-drawer-success .so-drawer-success-alert-img,
-.so-feature-tutorial .so-feature-tutorial-alert-img{
-	float: left;
-	margin: 2px 10px 0 0;
-	height: 32px;
-	width: 32px;
-    background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning-small.png');
-    background-repeat: no-repeat;
-}
-.so-feature-tutorial .so-feature-tutorial-middle{
-	padding: 0 72px;
-	font-size: 16px;
-}
-.so-feature-tutorial .so-feature-tutorial-main-header{
-	font-weight: bold;
-}
-.so-feature-tutorial ul{
-	padding: 0 0 0 30px;
-}
-.so-feature-tutorial ul li{
-	padding: 20px 0 0;
-	color: #666666;
-}
-.so-feature-tutorial .so-feature-tutorial-pdf{
-	display: block;
-    float: left;
-}
-.so-feature-tutorial .so-feature-tutorial-pdf-text{
-	display: block;
-	float: left;
-	padding: 10px 0 0 12px;
-}
-.so-drawer-success .so-drawer-success-text{
-	font-size: 16px;
-	padding: 5px 60px 30px 72px;
-}
-.so-ready-to-activate-reminder .so-ready-to-activate-reminder-text{
-	font-size: 18px;
-	padding: 0 20px 20px;
-}
-.so-ready-to-activate-reminder .so-ready-to-activate-reminder-buttons{
-	margin: 30px auto 20px;
-	text-align: center;
-}
-.so-drawer-success .so-drawer-success-hr{
-	height: 0;
-	width: 360px;
-	margin: 0 auto;
-	border-top: 1px solid #e0e3d0;
-}
-.so-drawer-success .so-drawer-success-info{
-	font-size: 16px;
-	padding: 27px 72px 30px;
-	line-height: 30px;
-}
-.so-drawer-success .so-drawer-success-date{
-	font-weight: bold;
-}
-.so-drawer-success .so-drawer-success-date img{
-	max-width: 30px;
-    display: inline-block;
-    vertical-align: bottom;
-    margin: 0 0 0 60px;
-}
-.so-drawer-success .so-drawer-success-ok,
-.so-feature-tutorial .so-feature-tutorial-ok{
-	float: right;
-	min-width: 210px;
-	margin: 10px 40px 30px;
-}
-.so-feature-tutorial .so-feature-tutorial-ok{
-	margin: 30px 40px 30px;
-}
-.so-feature-tutorial .so-feature-tutorial-bottom{
-	padding: 18px 0 20px 20px;
-	font-size: 16px;
-	background-color: #f7f7f7;
-	text-align: left;
-}
-.so-feature-tutorial #so-feature-tutorial-checkbox{
-	vertical-align: text-top;
-	margin: 0 15px 0 0;
-	border: 2px solid #c2c2c2;
-	background: #fefefe;
-	border-radius: 0;
-	box-sizing: border-box;
-	color: #444;
-	font-size: 16px;
-	font-weight: normal;
-	font-family: Verdana, arial, sans-serif;
-	box-shadow: none;
-	height: auto;
-	line-height: 22px;
-	outline: none;
-	padding: 8px;
-	cursor: pointer;
-	-webkit-font-smoothing: antialiased;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-}
-.so-feature-tutorial #so-feature-tutorial-checkbox:checked{
-	background-color: #68aa6d;
-}
-.so-feature-tutorial #so-feature-tutorial-checkbox:disabled{
-	opacity: 0.7;
-	cursor: default;
-}
-.eTippingEnabled .tipDropdown {
-	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
-	border-radius: 0px;
-	-webkit-border-radius: 0px;
-	-moz-border-radius: 0px;
-}
-a.standing-orders-3-so-settings-square-settings{
-	display:inline-block;
 }

@@ -5,7 +5,9 @@
 <%@page import="com.freshdirect.fdstore.mail.FDStandingOrderEmail"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerInfo"%>
 <%@page import="javax.naming.NamingException"%>
+<%@page import="javax.naming.Context"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@page import="com.freshdirect.mail.ejb.MailerGatewayHome"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
 <%@page import="com.freshdirect.mail.ejb.MailerGatewaySB"%>
@@ -22,16 +24,32 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
-<%@page import="com.freshdirect.fdstore.FDEcommProperties"%>
-<%@page import="com.freshdirect.payment.service.FDECommerceService"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <fd:CheckLoginStatus id="fduser" guestAllowed='false' recognizedAllowed='false'  />
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>Confirmation Email Send Test page</title>
 </head>
 <%
+	MailerGatewayHome		mailerHome			= null;
+	Context ctx = null;
+	try {
+		ctx = FDStoreProperties.getInitialContext();
+		mailerHome = (MailerGatewayHome) ctx.lookup( "freshdirect.mail.MailerGateway" );
+	} catch ( NamingException ne ) {
+		System.err.println("BANG1");
+		ne.printStackTrace();
+	} finally {
+		try {
+			if ( ctx != null ) {
+				ctx.close();
+			}
+		} catch ( NamingException ne ) {
+			System.err.println("BANG2");
+			ne.printStackTrace();
+		}
+	}
 
 	FDStandingOrder myso = null;
 	String soId = request.getParameter("soId");
@@ -72,7 +90,8 @@
 				mail.setHtmlEmail( false );
 			}
 
-			FDECommerceService.getInstance().enqueueEmail(mail);
+			MailerGatewaySB mailer = mailerHome.create();
+			mailer.enqueueEmail( mail );
 			
 			emailSent = true;
 		}
@@ -109,7 +128,7 @@
 	
 	<%
 	
-		final FDOrderInfoI order = myso.getLastOrder(fduser);
+		final FDOrderInfoI order = myso.getLastOrder();
 		final FDCustomerInfo ci = myso.getUserInfo();
 		
 		if (order != null) {

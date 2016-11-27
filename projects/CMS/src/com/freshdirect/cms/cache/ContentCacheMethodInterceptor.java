@@ -7,13 +7,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
-import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.cache.CacheI;
 import com.freshdirect.framework.cache.ManagedCache;
 import com.freshdirect.framework.cache.SimpleCache;
@@ -26,7 +24,7 @@ import com.freshdirect.framework.cache.SimpleCache;
  * <p>
  * Also records non-existent nodes with a null-value in the cache.
  */
-public class ContentCacheMethodInterceptor implements MethodInterceptor {
+public class ContentCacheMethodInterceptor implements ContentCache {
 
 	/** Null-object to represent nodes that were not found. */
 	final static Object NULL = new Serializable() {};
@@ -40,8 +38,7 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 		this.cache = new ManagedCache<ContentKey,Object>("CMS", cache, ContentCacheMethodInterceptor.NULL);
 	}
 
-	@Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+	public Object invoke(MethodInvocation invocation) throws Throwable {
 		String method = invocation.getMethod().getName();
 		if ("getContentNode".equals(method)
 				&& invocation.getMethod().getParameterTypes()[0] == ContentKey.class) {
@@ -73,12 +70,12 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 
 	private ContentNodeI getContentNode(MethodInvocation invocation) throws Throwable {
 		ContentKey key = (ContentKey) invocation.getArguments()[0];
-		Object obj=null;
+		Object obj=null;        
         obj = getCache().get(key);
 		if (obj == null) {
 				obj = invocation.proceed();
 				getCache().put(key, obj == null ? NULL : obj);
-		}
+		}		    			        		        		
 		return obj == NULL ? null : (ContentNodeI) obj;
 	}
 
@@ -89,8 +86,8 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 		Set missingKeys = new HashSet(keys.size());
 		for (Iterator i = keys.iterator(); i.hasNext();) {
 			ContentKey key = (ContentKey) i.next();
-			Object obj = null;
-		    obj = getCache().get(key);
+			Object obj = null;						 
+		    obj = getCache().get(key);					    			        						     						
 			if (obj == null) {
 				missingKeys.add(key);
 			} else if (obj != NULL) {
@@ -98,41 +95,33 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 			}
 		}
 		if (!missingKeys.isEmpty()) {
-
+			
 			invocation.getArguments()[0] = missingKeys;
 			Map missingNodes = (Map) invocation.proceed();
 			for (Iterator i = missingKeys.iterator(); i.hasNext();) {
 			  ContentKey key=null;
   			  key = (ContentKey) i.next();
-			  Object obj = missingNodes.get(key);
-			  this.getCache().put(key, obj == null ? NULL : obj);
+			  Object obj = missingNodes.get(key);				
+			  getCache().put(key, obj == null ? NULL : obj);
 			}
-			nodes.putAll(missingNodes);
+			nodes.putAll(missingNodes);						
 		}
 		return nodes;
 	}
 
-    private Object handle(MethodInvocation invocation) throws Throwable {
-        CmsRequestI request = (CmsRequestI) invocation.getArguments()[0];
-        Object response = invocation.proceed();
-        for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-            ContentNodeI node = (ContentNodeI) i.next();
-            getCache().remove(node.getKey());
-            // invalidate dependents also
-            // FIXME this is suboptimal, but fixes implicit node-creation issues
-            for (Iterator j = ContentNodeUtil.getAllRelatedContentKeys(node).iterator(); j.hasNext();) {
-                ContentKey k = (ContentKey) j.next();
-                this.getCache().remove(k);
-            }
-        }
-        // TODO optimize dependency cache invalidation
-        children.clear();
-        return response;
+	private Object handle(MethodInvocation invocation) throws Throwable {
+		CmsRequestI request = (CmsRequestI) invocation.getArguments()[0];
+		Object response = invocation.proceed();
+		ContentCacheService.defaultService().invalidateContentNode(request.getNodes());
+		return response;
+	}
 
-    }
-
-    private CacheI<ContentKey, Object> getCache() {
-        return cache;
-    }
+	public CacheI<ContentKey,Object> getCache() {
+		return cache;
+	}
+	
+	public void clearChildrenCache() {
+		children.clear();
+	}
 
 }

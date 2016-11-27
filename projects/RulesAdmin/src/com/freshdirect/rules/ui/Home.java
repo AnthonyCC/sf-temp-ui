@@ -6,23 +6,25 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.tacos.ajax.components.tree.ITreeManager;
+import net.sf.tacos.ajax.components.tree.TreeManager;
+import net.sf.tacos.model.IKeyProvider;
+import net.sf.tacos.model.ITreeContentProvider;
+
+import org.apache.commons.lang.SerializationUtils;
+import org.apache.hivemind.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tapestry.valid.IValidationDelegate;
 
+import com.freshdirect.rules.ClassDescriptor;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.Rule;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.rules.ClassDescriptor;
-import com.freshdirect.storeapi.rules.RulesConfig;
-import com.freshdirect.storeapi.rules.RulesEngineI;
-
-import net.sf.tacos.ajax.components.tree.ITreeManager;
-import net.sf.tacos.ajax.components.tree.TreeManager;
-import net.sf.tacos.model.IKeyProvider;
-import net.sf.tacos.model.ITreeContentProvider;
+import com.freshdirect.rules.RulesConfig;
+import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.rules.RulesRegistry;
 
 public abstract class Home extends AppPage implements PageDetachListener {
 
@@ -30,7 +32,7 @@ public abstract class Home extends AppPage implements PageDetachListener {
 	private Class outcomeType;
 
 	public ITreeContentProvider getContentProvider() {
-		return new RuleContentProvider(StoreServiceLocator.rulesRegistry().getRulesEngine(this.getSelectedSubsystem()));
+		return new RuleContentProvider(RulesRegistry.getRulesEngine(this.getSelectedSubsystem()));
 	}
 
 	public String getRuleIcon() {
@@ -44,16 +46,16 @@ public abstract class Home extends AppPage implements PageDetachListener {
 	}
 
 	public IPropertySelectionModel getOutcomeSelectionModel() {
-		RulesConfig config = StoreServiceLocator.rulesRegistry().getRulesConfig(this.getSelectedSubsystem());
+		RulesConfig config = RulesRegistry.getRulesConfig(this.getSelectedSubsystem());
 		if(config == null){
-            throw new RuntimeException("No configuration found for subsystem: " + this.getSelectedSubsystem());
+			throw new ApplicationRuntimeException("No configuration found for subsyste: "+this.getSelectedSubsystem());
 		}
 		Map types = new HashMap();
 		for(Iterator i = config.getOutcomeTypes().iterator(); i.hasNext(); ){
 			ClassDescriptor cd = (ClassDescriptor) i.next();
 			types.put(cd.getLabel(), cd.getTargetClass());
 		}
-
+		
 		return new LabelPropertySelectionModel(types, true);
 	}
 
@@ -74,8 +76,7 @@ public abstract class Home extends AppPage implements PageDetachListener {
 		outcomeType = klazz;
 	}
 
-	@Override
-    public void pageDetached(PageEvent event) {
+	public void pageDetached(PageEvent event) {
 		updateOutcomeType = false;
 		outcomeType = null;
 	}
@@ -92,22 +93,22 @@ public abstract class Home extends AppPage implements PageDetachListener {
 	}
 
 	public IPropertySelectionModel getConditionTypeModel() {
-		RulesConfig config = StoreServiceLocator.rulesRegistry().getRulesConfig(this.getSelectedSubsystem());
+		RulesConfig config = RulesRegistry.getRulesConfig(this.getSelectedSubsystem());
 		if(config == null){
-            throw new RuntimeException("could not find configuration for subsystem: " + this.getSelectedSubsystem());
+			throw new ApplicationRuntimeException("could not find configuration for subsystem: "+this.getSelectedSubsystem());
 		}
 		Map conditions = new HashMap();
 		for(Iterator i = config.getConditionTypes().iterator(); i.hasNext(); ){
 			ClassDescriptor cd = (ClassDescriptor) i.next();
 			conditions.put(cd.getLabel(), cd.getTargetClass());
-
+			
 		}
 		return new LabelPropertySelectionModel(conditions, true);
 	}
 
 	public void deleteRule(IRequestCycle cycle) {
 		Rule r = this.getSelectedRule();
-		RulesEngineI engine = StoreServiceLocator.rulesRegistry().getRulesEngine(this.getSelectedSubsystem());
+		RulesEngineI engine = RulesRegistry.getRulesEngine(this.getSelectedSubsystem());
 		Collection c = engine.getDependentRules(r.getId());
 		if (!c.isEmpty()) {
 			StringBuffer error = new StringBuffer("Cannot Delete Rule ").append(r.getName());
@@ -127,10 +128,10 @@ public abstract class Home extends AppPage implements PageDetachListener {
 		if (id == null || "".equals(id)) {
 			throw new IllegalArgumentException("No id of the selected Rule provided");
 		}
-		Rule r = StoreServiceLocator.rulesRegistry().getRulesEngine(this.getSelectedSubsystem()).getRule(id);
-
+		Rule r = RulesRegistry.getRulesEngine(this.getSelectedSubsystem()).getRule(id);
+		
 		r = r.deepCopy();
-
+		
 		setSelectedRule(r);
 	}
 
@@ -147,9 +148,9 @@ public abstract class Home extends AppPage implements PageDetachListener {
 		try {
 			return klazz.newInstance();
 		} catch (InstantiationException e) {
-            throw new RuntimeException(e);
+			throw new ApplicationRuntimeException(e);
 		} catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+			throw new ApplicationRuntimeException(e);
 		}
 	}
 
@@ -172,7 +173,7 @@ public abstract class Home extends AppPage implements PageDetachListener {
 			this.getDelegate().record(error.toString(), null);
 			return;
 		}
-		StoreServiceLocator.rulesRegistry().getRulesEngine(this.getSelectedSubsystem()).storeRule(r);
+		RulesRegistry.getRulesEngine(this.getSelectedSubsystem()).storeRule(r);
 		setSelectedRule(null);
 	}
 

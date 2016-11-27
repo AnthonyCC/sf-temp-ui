@@ -12,8 +12,9 @@ import com.freshdirect.fdstore.EnumEStoreId;
 public class CmsPermissionUtility {
     private CmsPermissionUtility() {}
 
-    private static final ContentKey FD_STORE_KEY = ContentKey.getContentKey(FDContentTypes.STORE, EnumEStoreId.FD.getContentId());
-    private static final ContentKey FOODKICK_STORE_KEY = ContentKey.getContentKey(FDContentTypes.STORE, EnumEStoreId.FDX.getContentId());
+
+    private static final ContentKey FD_STORE_KEY = new ContentKey(FDContentTypes.STORE, EnumEStoreId.FD.getContentId());
+    private static final ContentKey FOODKICK_STORE_KEY = new ContentKey(FDContentTypes.STORE, EnumEStoreId.FDX.getContentId());
 
     public static boolean isAllowedInAnyStoreContext(final CmsPermissionI permissionHolder) {
         return permissionHolder.isCanChangeFDStore() || permissionHolder.isCanChangeFDXStore();

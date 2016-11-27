@@ -7,26 +7,26 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.FDFolder;
-import com.freshdirect.storeapi.content.GlobalMenuItemModel;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.FDFolder;
+import com.freshdirect.fdstore.content.GlobalMenuItemModel;
 
 /**
 * @author tgelesz
-*
+* 
 **/
 public class GlobalMenuTag extends SimpleTagSupport {
 
 	private String attrName;
-
+	
 	@Override
 	public void doTag() throws JspException, IOException {
 
 		ContentNodeModel model = ContentFactory.getInstance()
-				.getContentNodeByKey(ContentKeyFactory
-						.get(GlobalMenuItemModel.DEFAULT_MENU_FOLDER));
+				.getContentNodeByKey(ContentKey
+						.decode(GlobalMenuItemModel.DEFAULT_MENU_FOLDER));
 
 		if (model instanceof FDFolder) {
 			FDFolder folder = (FDFolder) model;
@@ -37,9 +37,9 @@ public class GlobalMenuTag extends SimpleTagSupport {
 					globalMenuItemModels.add((GlobalMenuItemModel) cm);
 				}
 			}
-
+			
 			getJspContext().setAttribute(attrName, globalMenuItemModels);
-
+		
 			getJspBody().invoke(null);
 		}
 	}
@@ -51,6 +51,6 @@ public class GlobalMenuTag extends SimpleTagSupport {
 	public void setAttrName(String attrName) {
 		this.attrName = attrName;
 	}
-
-
+	
+	
 }

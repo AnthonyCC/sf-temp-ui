@@ -191,7 +191,7 @@
 				if(manifestResult.lastAirclicMsg != null){
 					result += "<tr><td colspan=\"2\">"+manifestResult.lastAirclicMsg+"</td></tr>";
 				}
-				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" alt=\"\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
+				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 				
 				result += "<tr><td width=\"210\">Stop</td><td>"+ manifestResult.stopNo +"</td></tr>";
 				if(manifestResult.deliveryETAWindowTime != null) {
@@ -210,7 +210,7 @@
 				}
 				result += "</td></tr>";
 
-				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" alt=\"\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
+				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 									
 				result += "<tr><td>Building Type</td><td>";
 				if(manifestResult.crossStreet != null){
@@ -228,7 +228,7 @@
 				}
 				result += "</td></tr>";
 				
-				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" alt=\"\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
+				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 
 				result += "<tr><td colspan=\"2\"><b>Delivery Instructions:</b><br/>";
 				if(manifestResult.deliveryInstructions != null){
@@ -240,7 +240,7 @@
 					result += manifestResult.uattendedDeliveryInstructions;
 				}
 				result += "</td></tr>";
-				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" alt=\"\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
+				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 									
 				result += "<tr><td colspan=\"2\"><b>SIGNATURE</b><br/>By signing I am acknowledging<br/>only that I have received <br/>as listed below.<br/><br/></td></tr>";
 				result += "<tr><td colspan=\"2\"><b>Customer Signature</b><br/>&nbsp;</td></tr>";

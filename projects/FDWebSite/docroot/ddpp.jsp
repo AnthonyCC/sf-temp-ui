@@ -1,16 +1,17 @@
 <%@ page import='com.freshdirect.FDCouponProperties'
-%><%@ page import='com.freshdirect.storeapi.*'
-%><%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes'
+%><%@ page import='com.freshdirect.cms.*'
+%><%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'
 %><%@ page import='com.freshdirect.fdstore.*'
-%><%@ page import='com.freshdirect.storeapi.content.*'
-%><%@ page import='com.freshdirect.storeapi.content.DomainValue'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.content.DomainValue'
 %><%@ page import='com.freshdirect.fdstore.content.util.QueryParameterCollection'
-%><%@ page import='com.freshdirect.fdstore.customer.EnumQuickbuyStatus'
+%><%@ page import='com.freshdirect.fdstore.customer.EnumQuickbuyStatus' 
 %><%@ page import='com.freshdirect.fdstore.util.FilteringNavigator'
 %><%@ page import='com.freshdirect.fdstore.util.URLGenerator'
 %><%@ page import='com.freshdirect.framework.util.NVL'
 %><%@ page import='com.freshdirect.framework.util.log.LoggerFactory'
 %><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil'
 %><%@ page import='com.freshdirect.webapp.util.ConfigurationContext'
 %><%@ page import='com.freshdirect.webapp.util.ConfigurationStrategy'
@@ -19,28 +20,29 @@
 %><%@ page import='java.text.DecimalFormat'
 %><%@ page import='java.text.SimpleDateFormat'
 %><%@ page import='org.apache.commons.lang.StringEscapeUtils'
-%><%@ page import='com.freshdirect.storeapi.util.*'
-%><%@ page import='com.freshdirect.storeapi.attributes.*'
+%><%@ page import='com.freshdirect.cms.util.*' 
+%><%@ page import='com.freshdirect.content.attributes.*' 
 %><%@ page import='com.freshdirect.content.attributes.*'
-%><%@ page import='com.freshdirect.fdstore.*'
-%><%@ page import='com.freshdirect.fdstore.content.*'
-%><%@ page import='com.freshdirect.storeapi.attributes.*'
-%><%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*'
-%><%@ page import='com.freshdirect.fdstore.customer.*'
-%><%@ page import='com.freshdirect.framework.util.*'
+%><%@ page import='com.freshdirect.fdstore.*' 
+%><%@ page import='com.freshdirect.fdstore.attributes.*' 
+%><%@ page import='com.freshdirect.fdstore.attributes.*'
+%><%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' 
+%><%@ page import='com.freshdirect.fdstore.customer.*' 
+%><%@ page import='com.freshdirect.framework.util.*' 
 %><%@ page import='com.freshdirect.framework.webapp.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
 %><%@ page import='com.freshdirect.customer.EnumATCContext'
 %><%@ page import='java.io.UnsupportedEncodingException'
-%><%@ page import='java.net.*'
+%><%@ page import='java.net.*' 
 %><%@ page import='java.net.URLEncoder'
 %><%@ page import='java.util.*'
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='bean' prefix='bean'
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'
 %><% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -50,13 +52,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 boolean disableLinks = false;
 if (null !=request.getParameter("ppPreviewId")) {
 	/* from category.jsp, for being forwarded here */
-
+	
 	//disable linking
 	disableLinks = true;
 	if ( request.getParameter("redirected")==null ) {
 		 StringBuffer redirBuf = new StringBuffer();
          //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
-
+         
          redirBuf.append("/about/index.jsp?siteAccessPage=aboutus&successPage=" +
              request.getRequestURI());
 
@@ -66,7 +68,7 @@ if (null !=request.getParameter("ppPreviewId")) {
                  (requestQryString.trim().length() > 0)) {
              redirBuf.append(URLEncoder.encode("?" +
                      request.getQueryString()));
-         }
+         }             
         redirBuf.append("&redirected=true");
 		response.sendRedirect( redirBuf.toString());
 		return;
@@ -75,8 +77,8 @@ if (null !=request.getParameter("ppPreviewId")) {
 
 String catId = request.getParameter("catId");
 String deptId = null;
-// it should be CategoryModel ...
-ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);
+// it should be CategoryModel ... 
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
 final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 if (categoryModel != null) {
@@ -86,7 +88,7 @@ if (categoryModel != null) {
 
 /*
 	// copied from the search.jsp:
-
+	
 	final String categoryId = FDCouponProperties.getCouponCMSCategory(); // tracking code
 
 
@@ -94,10 +96,10 @@ if (categoryModel != null) {
 	FilteringNavigator nav = new FilteringNavigator(request,16);
 
   	request.setAttribute("filternav", nav);
-
+	
 	final int hideAfter = 8;
 	boolean otherFilters=false;
-
+	
 	// default page size
 	final int defaultPageSize = nav.getDefaultPageSize();
 	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
@@ -109,7 +111,7 @@ if (categoryModel != null) {
 <%
 
 	//things needed for ddpp
-
+	
     //needed for transactional
 	List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	ProductImpression pi = null;
@@ -118,12 +120,12 @@ if (categoryModel != null) {
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
 	ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
-
+	
 	String successPage = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
-
+	
 	//String catId = NVL.apply(request.getParameter("catId"), ""); //category id
 	String ppId = request.getParameter("pp_id");
-
+	
 	String TX_FORM_NAME        = catId+"_form"; // impression form name
 	String TX_JS_NAMESPACE     = catId+"_JSnamespace"; // impression javascript namespace
 
@@ -132,7 +134,7 @@ if (categoryModel != null) {
 
 	DecimalFormat df = new DecimalFormat("0");
 	QueryStringBuilder queryString = new QueryStringBuilder();
-
+	
 	String view = NVL.apply(request.getParameter("view"), "grid"); //switch view param, if not "list", then use default ("grid")
 		if ("".equals(view)) { view = "grid"; }
 	String sort = NVL.apply(request.getParameter("sort"), "ourFaves"); //switch sort param, if not "price", "priceDesc" or "dept", then use default ("ourFaves")
@@ -141,12 +143,12 @@ if (categoryModel != null) {
 		if ("".equals(order)) { order = "asc"; }
 	String trkCode =  NVL.apply(request.getParameter("trkCode"), "ddpp");
 		if ("".equals(trkCode)) { trkCode = "ddpp"; }
-
+		
 	boolean isFeatProd = true;
 	int tempCounter = 0;
 	int seqDDPP = 0;
 	String trk = "ddpp";
-
+	
 	Set hideBursts = new HashSet();
 		hideBursts.add(EnumBurstType.DEAL);
 		hideBursts.add(EnumBurstType.YOUR_FAVE);
@@ -155,10 +157,10 @@ if (categoryModel != null) {
 
 	String checkHtml = "<img src=\"/media/images/buttons/checkmark_green_15x10.png\" alt=\"\" />"; //escape single quotes in here
 	List<ProductModel> globalUniqueProducts = new ArrayList<ProductModel>();
-
+	
 	String sp = request.getQueryString();
 	String pairs[] = sp.replace("?", "&").split("&");
-
+	
 	for (String pair : pairs) {
 		 String name = null;
 		 String value = null;
@@ -186,37 +188,37 @@ if (categoryModel != null) {
 
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
-
+	
 	CategoryModel categoryNode = (CategoryModel)currentFolder;
-
+	
 	String ppPreviewId = request.getParameter("ppPreviewId");
 	boolean isPpPreview = (null ==(categoryNode).getProductPromotionType()|| null==ppPreviewId)?false:true;
-
+	
 	if(!isPpPreview){
 		promotionProducts = categoryNode.getProducts();
 	}else{
 		promotionProducts = categoryNode.getPromotionPageProductsForPreview(ppPreviewId);
 	}
-
+	
 	List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
 	List<ProductModel> nonfeatProds = new ArrayList<ProductModel>();
-
+	
 	//get sorted list by sort type
 	if (SearchSortType.BY_PRICE.getLabel().equalsIgnoreCase(sort)) {
 		if("asc".equalsIgnoreCase(order)) {
-			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW,isPpPreview);
+			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW,isPpPreview);			
 		} else {
-			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE,isPpPreview);
+			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE,isPpPreview);			
 		}
 	} else if (SearchSortType.BY_DEPARTMENT.getLabel().equalsIgnoreCase(sort)) {
 		nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_DEPT_VIEW,isPpPreview);
 	}else{
 		nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,isPpPreview);
 	}
-
+	
 
 	//things "search" needs
-
+	
 	//turn non-feat items into a search results obj
 	List<FilteringSortingItem<ProductModel>> searchProductResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 	if(null !=nonfeatProds){
@@ -227,7 +229,7 @@ if (categoryModel != null) {
 		}
 	}
 	SearchResults search = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
-
+	
 
 	// storing the view settings in the session
 	FilteringNavigator nav = new FilteringNavigator(request,16);
@@ -235,14 +237,13 @@ if (categoryModel != null) {
 	nav.saveState();
 
   	request.setAttribute("filternav", nav);
-
+  	
 	// default page size
 	final int defaultPageSize = nav.getDefaultPageSize();
 	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 	if ( qc.getParameter("pageSize") == null ) {
 		nav.setPageSize(defaultPageSize);
 	}
-	String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <bean:define id="activeTabVal" value='<%= (!search.getProducts().isEmpty() && request.getParameter("recipes")==null) || (search.getProducts().isEmpty() && search.getRecipes().isEmpty()) ? "products" : "recipes" %>' />
 
@@ -264,10 +265,10 @@ if (categoryModel != null) {
 				return function() {
 					var elementId= prdId+'_'+FD_QuickBuy._randomId(16), oStyle;
 					var ctPanel = new YAHOO.widget.Panel(elementId, {
-						fixedcenter: true,
-						constraintoviewport: true,
-						underlay: "matte",
-						close: true,
+						fixedcenter: true, 
+						constraintoviewport: true, 
+						underlay: "matte", 
+						close: true, 
 						visible: false,
 						modal: true,
 						monitorresize: true,
@@ -275,16 +276,16 @@ if (categoryModel != null) {
 						zIndex: '10'
 					});
 					var isWineDept = ("<%= JspMethods.getWineAssociateId().toLowerCase() %>" == deptId);
-
+					
 					if(isWineDept) {
 						oStyle={
 							closeButton:'container-close_wine',
 							header:'hd_bg_wine'
 						};
 					} else {
-						oStyle=FD_QuickBuy.style;
+						oStyle=FD_QuickBuy.style;			
 					}
-
+					
 					ctPanel.setHeader( "&nbsp;" );
 
 					var winTitle = document.title.substring(14);
@@ -300,12 +301,12 @@ if (categoryModel != null) {
 					// include various codes for tracking purposes
 					uri = FD_QuickBuy._includeTrackingCodes(uri, tracking);
 					uri += '&amp;trkd=qb';
-
+					
 					// store master page URL and title for back-reference
 					uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
 
 					var content = "";
-
+					
 					if (iatcNamespace)
 						uri += '&amp;iatcNamespace='+escape(iatcNamespace);
 					content += '<div id="'+elementId+'_ctnt">\n';
@@ -313,29 +314,29 @@ if (categoryModel != null) {
 					content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
 					content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
 					content += '  </div>\n';
-					content += '<div class="quickbuy-loading">Loading product...</div>\n';
+					content += '<div class="quickbuy-loading">Loading product...</div>\n';		
 					content += '<iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe" style="height:1px"></iframe>';
 					content += '</div>\n';
-
+					
 					ctPanel.setBody( content );
-
+					
 					ctPanel.render(document.body);
-
+					
 					// override .yui-panel hidden setting
 					YAHOO.util.Dom.get(elementId).style.overflow = "visible";
 
 					YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
-
+					
 					YAHOO.util.Dom.addClass( ctPanel.header, oStyle.header );
 					YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
-
-
+					
+					
 					ctPanel.hideEvent.subscribe(function(e){
 						YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
 
 						setTimeout(function() {
 							ctPanel.destroy();
-							if (document.quickbuyPanel) { document.quickbuyPanel = {}; }
+							if (document.quickbuyPanel) { document.quickbuyPanel = {}; } 
 						}, 0);
 						/* on panel close, it's either ATC or a simple close */
 						var statusElem = $jq('#'+iatcNamespace);
@@ -388,7 +389,7 @@ if (categoryModel != null) {
 							}
 						}
 					});
-
+					
 					document.quickbuyPanel = ctPanel;
 
 					// show panel
@@ -459,31 +460,29 @@ if (categoryModel != null) {
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>
 
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>
 	<tmpl:put name="productsOnly">products-only</tmpl:put>
+	<tmpl:put name="cmPageViewTag"><fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/></tmpl:put>
 	<tmpl:put name="oas-header-1">
-		<div class="PPHeader" id='oas_PPHeader' ad-fixed-size="true" ad-size-height="100" ad-size-width="970">
+		<div class="PPHeader">
 			<script type="text/javascript">
 					OAS_AD('PPHeader');
 			</script>
 		</div>
 	</tmpl:put>
 	<tmpl:put name="oas-header-2">
-		<div class="PPHeader2" id='oas_PPHeader2'>
+		<div class="PPHeader2">
 			<script type="text/javascript">
 					OAS_AD('PPHeader2');
 			</script>
 		</div>
 	</tmpl:put>
-
+	
 	<tmpl:put name="deal-carousel-grofrodai">
-
+			
 		<fd:Department id='tempDepartment' departmentId='gro'/>
 		<%
 			DepartmentModel featExtDept = (DepartmentModel) tempDepartment;
@@ -497,15 +496,15 @@ if (categoryModel != null) {
 			boolean featExtDisableLinks = disableLinks; //this is the same across all rows
 		%>
 		<%@ include file="/includes/layouts/i_featured_products_external.jspf" %>
-
+		
 		<fd:Department id='tempDepartment' departmentId='fro'/>
-		<%
+		<%	
 			featExtDept = (DepartmentModel) tempDepartment;
 			featExtIdPrefix = "ddpp_BND"+tempDepartment;
 			featExtTrackCode = "ddpp_BND"+tempDepartment;
 		%>
 		<%@ include file="/includes/layouts/i_featured_products_external.jspf" %>
-
+		
 		<fd:Department id='tempDepartment' departmentId='dai'/>
 		<%
 			featExtDept = (DepartmentModel) tempDepartment;
@@ -514,8 +513,8 @@ if (categoryModel != null) {
 		%>
 		<%@ include file="/includes/layouts/i_featured_products_external.jspf" %>
 	</tmpl:put>
-
-
+	
+	
 	<tmpl:put name="bottom-ads">
 		<table class="ddppBotAds">
 			<tr>
@@ -526,7 +525,7 @@ if (categoryModel != null) {
 			</tr>
 			<tr>
 				<td align="center">
-					<div class="PPLeftBottom" id='oas_PPLeftBottom'>
+					<div class="PPLeftBottom">
 						<script type="text/javascript">
 								OAS_AD('PPLeftBottom');
 						</script>
@@ -536,7 +535,7 @@ if (categoryModel != null) {
 					<!-- sep -->
 				</td>
 				<td align="center">
-					<div class="PPMidBottom" id='oas_PPMidBottom'>
+					<div class="PPMidBottom">
 						<script type="text/javascript">
 								OAS_AD('PPMidBottom');
 						</script>
@@ -546,7 +545,7 @@ if (categoryModel != null) {
 					<!-- sep -->
 				</td>
 				<td align="center">
-					<div class="PPRightBottom" id='oas_PPRightBottom'>
+					<div class="PPRightBottom">
 						<script type="text/javascript">
 								OAS_AD('PPRightBottom');
 						</script>
@@ -555,12 +554,12 @@ if (categoryModel != null) {
 			</tr>
 		</table>
 	</tmpl:put>
-
+	
 	<tmpl:put name="bottom-media">
 		<%
 			if (categoryNode.getBottomMedia() != null) {
 				String deptBotItm = null;
-
+				
 				for(Iterator<Html> deptBotItr = categoryNode.getBottomMedia().iterator(); deptBotItr.hasNext();) {
 					Html piece = deptBotItr.next();
 					if (piece != null) {
@@ -574,18 +573,18 @@ if (categoryModel != null) {
 		%>
 	</tmpl:put>
 
-
+	
 <fd:ProductsFilter results="<%= search %>" nav="<%= nav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
 	<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= nav %>">
 		<tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
-
+		
 		<tmpl:put name="content-header">
-
+			
 			<div class="ddpp clearfix">
-
+				
 				<tmpl:get name="oas-header-1"/>
 				<tmpl:get name="oas-header-2"/>
-
+				
 				<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' source='<%= request.getParameter("fdsc.source")%>'>
 					<% //START error messaging %>
 					<fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
@@ -595,7 +594,7 @@ if (categoryModel != null) {
 					<% //END error messaging %>
 					<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
 						<div class="ddpp_feat_prod_cont grid-view" id="ddpp_feat_prod_cont">
-
+					
 						<%
 							int curLeftPos = 0;
 							isFeatProd = true;
@@ -604,43 +603,43 @@ if (categoryModel != null) {
 							<logic:iterate id="contentNode" collection="<%= featProds %>" type="java.lang.Object" indexId="idx">
 								<%
 									seqDDPP = idx; //use a seperate var for include
-
+									
 									if ( request.getParameter("featurebox") != null && request.getParameter("featurebox").equals("old") ) {
-
+									
 										ProductModelPromotionAdapter pm = (ProductModelPromotionAdapter) contentNode;
 										String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-
+																	
 										pi = confStrat.configure((ProductModel) pm, confContext);
 										impressions.add(pi);
-
+				
 										prodContStyle = "left: "+curLeftPos+"px;";
-
+									
 								%>
-
+								
 								<%@ include file="/includes/product/i_product_box_ddpp.jspf" %>
-								<%
+								<% 
 									}
 									else {
-
+									
 										ProductModelPromotionAdapter productModelAdapter = (ProductModelPromotionAdapter) contentNode;
 										String actionURI = FDURLUtil.getProductURI( productModelAdapter, trkCode );
-
+																	
 										pi = confStrat.configure((ProductModel) productModelAdapter, confContext);
 										impressions.add(pi);
-
+				
 										%>
 										<div class="grid-item-container featurebox">
 										<%@ include file="/includes/product/i_product_box_featured.jspf" %>
 										</div>
-										<%
-
+										<% 
+										
 									}
 									/* break out if we have more than three products in the featured setup */
 									if (seqDDPP == 3) { break; }
 									curLeftPos = curLeftPos + 255; /* take from css, cont width + 14 (gutter) */
 								%>
 							</logic:iterate>
-							<div class="PPSuperBuy" ad-fixed-size="true" ad-size-height="228" ad-size-width="275">
+							<div class="PPSuperBuy">
 								<script type="text/javascript">
 										OAS_AD('PPSuperBuy');
 								</script>
@@ -651,14 +650,14 @@ if (categoryModel != null) {
 			</div>
 			<br style="clear:both" />
 		</tmpl:put>
-
+		
 		<logic:equal name="activeTabVal" value="products">
 			<% ArrayList selection = new ArrayList();  %>
 			<tmpl:put name="activeTab">products</tmpl:put>
 			<tmpl:put name="search-header">
 				<% int productCount = search.getProducts().size(); %>
 			</tmpl:put>
-
+		
 			<tmpl:put name="toolbar">
 				<div id="sorter" class="span-18">
 					<span class="label">Sort:</span>
@@ -667,10 +666,10 @@ if (categoryModel != null) {
 					</display:SortBar>
 				</div>
 			</tmpl:put>
-
+		
 			<tmpl:put name="viewAll">
 				<% 	if( itemCount > defaultPageSize) {
-						if(nav.getPageSize() == 0) {
+						if(nav.getPageSize() == 0) { 
 							nav.resetState();
 							nav.setPageSize(defaultPageSize);
 				%>
@@ -680,16 +679,16 @@ if (categoryModel != null) {
 							nav.setPageSize(0);
 				%>
 						<a href="<%= nav.getLink() %>" class="button middle white bold view-all">Show all</a>
-				<%	}
-
+				<%	} 
+				
 						nav.resetState();
 				}	%>
 			</tmpl:put>
-
+			
 			<tmpl:put name="pagerTop">
 				<div class="results">
 					<span>Results: </span>
-					<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ?
+					<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ? 
 								itemCount : Math.min((nav.getPageNumber()+1)*nav.getPageSize(),itemCount)  %></span>
 					<span>of</span>
 					<span class="results-all"><%= itemCount %></span>
@@ -701,7 +700,7 @@ if (categoryModel != null) {
 					<tmpl:get name="viewAll" />
 				</div>
 			</tmpl:put>
-
+		
 			<tmpl:put name="pagerBottom">
 				<div class="pager-content">
 				<% if ( nav.getPageSize() > 0 && itemCount > nav.getPageSize()) { %>
@@ -711,18 +710,18 @@ if (categoryModel != null) {
 				</div>
 				<div class="back-to-top"><a href="#content_top">back to top</a></div>
 			</tmpl:put>
-
+			
 			<tmpl:put name="recommendations-content" direct="true">
 				<%-- removed content --%>
-			</tmpl:put>
+			</tmpl:put>	
 			<%
 			// RECOMMENDER for "view 20"
 			if ( nav.getPageSize() != 0) { %>
 			<tmpl:put name="recommendations" direct="true">
 				<%-- removed content --%>
-			</tmpl:put>
+			</tmpl:put>	
 			<% } %>
-
+			
 			<tmpl:put name="content" direct="true">
 				<%
 				pageContext.setAttribute("ISONSEARCHPAGE",null);
@@ -731,44 +730,44 @@ if (categoryModel != null) {
 					pi = confStrat.configure(it.next().getModel(), confContext);
 					%><div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div><%
 					}
-
-				}
+							
+				} 
 				%>
-
+				
 			</tmpl:put>
-
-
-
+			
+			
+		
 		  <tmpl:put name='filterNavigator'>
 		    <% request.setAttribute("filtermenus", menus); %>
 		    <tmpl:insert template='/common/template/filter_navigator.jsp'>
 		    </tmpl:insert>
 		  </tmpl:put>
-
+		
 			<tmpl:put name="selection-header" direct="true">
 			</tmpl:put>
-
+		
 			<tmpl:put name="selection-list" direct="true">
 			</tmpl:put>
-
+			
 			<tmpl:put name="pagerTop">
 				<% nav.resetState(); %>
 				<div class="results">
 					<span>Results: </span>
-					<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ?
+					<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ? 
 								itemCount : Math.min((nav.getPageNumber()+1)*nav.getPageSize(),itemCount)  %></span>
 					<span>of</span>
 					<span class="results-all"><%= itemCount %></span>
 				</div>
 				<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>"/><tmpl:get name="viewAll" /></div>
 			</tmpl:put>
-
+		
 			<tmpl:put name="pagerBottom">
 				<% nav.resetState(); %>
 				<div class="pager-content"><display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>"/><tmpl:get name="viewAll" /></div>
 				<div class="back-to-top"><a href="#content_top">back to top</a></div>
 			</tmpl:put>
-
+		
 		</logic:equal>
 	</fd:ProductsGroupingAndPaging>
 </fd:ProductsFilter>
@@ -778,3 +777,4 @@ if (categoryModel != null) {
 <% nav.resetState(); %>
 
 </tmpl:insert>
+

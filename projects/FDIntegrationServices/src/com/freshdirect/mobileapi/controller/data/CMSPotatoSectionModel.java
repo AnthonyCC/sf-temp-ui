@@ -2,7 +2,7 @@ package com.freshdirect.mobileapi.controller.data;
 
 import java.util.List;
 
-import com.freshdirect.storeapi.content.CMSSectionModel;
+import com.freshdirect.fdstore.content.CMSSectionModel;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 
 
@@ -32,16 +32,14 @@ public class CMSPotatoSectionModel extends CMSSectionModel {
         model.setDrawer(section.getDrawer());
         model.setImageBanner(section.getImageBanner());
         model.setProductList(section.getProductList());
-        model.setMustHaveProdList(section.getMustHaveProdList());
         model.setCategoryList(section.getCategoryList());
-        model.setMinimumProductLimit(section.getMinimumProductLimit());
-        model.setMaximumProductLimit(section.getMaximumProductLimit());
         
         return model;
     }
 
 
     private List<ProductPotatoData> products;
+
 
     public List<ProductPotatoData> getProducts() {
         return products;

@@ -13,7 +13,7 @@ TestSupport s = TestSupport.getInstance();
 
 s.ping();
 %>
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>TestSupport - Ping Page</title>

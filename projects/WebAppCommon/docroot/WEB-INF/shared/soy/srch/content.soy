@@ -8,11 +8,10 @@
  * @param? limit
  * @param? abFeatures
  * @param? mobWeb
- * @param? ifSingleUL
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
-{let $l: $l == 25 ? ($mobWeb ? 30 : $l) : $l /}
+{let $l: $mobWeb ? 30 : $l /}
 	{call browse.content}
 		{param sections:$sections /}
 		{param sectionMaxLevel:$sectionMaxLevel /}
@@ -21,7 +20,7 @@
 		{param filterLabels:$filterLabels /}
 		{param numProducts:$l /}
 		{param abFeatures:$abFeatures /}
-		{param ifSingleUL: ($ifSingleUL) ? $ifSingleUL : false /}
+		{param ifSingleUL:false /}
 		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}
@@ -56,28 +55,19 @@
 /**
  * @param cats - cats we're treating as "sections"
  * @param? limit
- * @param? filterLabels
  * @param? mobWeb
  */
 {template .staffPicksContent autoescape="false"}
 	{let $l: $limit or $limit == 0 ? $limit : 25 /}
-	<div class="browseContent srch">
-	<div class="browse-filtertags">
-					{if $filterLabels}
-						{call browse.filterTags}
-							{param filterLabels:$filterLabels.filterLabels /}
-						{/call}
-					{/if}
-				</div>			
+	
+	<div class="browseContent">
 		{foreach $cat in keys($cats)}
 			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">
-			
-	 {if $cat == ''}         
-        {else}
-    {if $cat != '%%STAFFPICKS%%'}  <h2 class="staffpicks-cat-header last">{$cat}</h2>{/if}
-    {/if}
-				<div class="sectionContent staffpicks-cat-content">
+				<h2 class="staffpicks-cat-header last">{$cat}</h2>
+				
+				<div class="staffpicks-cat-content">
 					{call common.productList}
+						{param numProducts:$l /}
 						{param productList:$cats[$cat] /}
 						{param mobWeb:$mobWeb /}
 					{/call}
@@ -85,4 +75,5 @@
 			</section>
 		{/foreach}
 	</div>
+	
 {/template}

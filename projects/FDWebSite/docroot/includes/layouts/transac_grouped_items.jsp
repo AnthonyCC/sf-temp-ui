@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ page import='java.net.URLEncoder'%>
@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_TRANSAC_GROUPED_ITEMS_CAT = 601;
@@ -130,13 +130,14 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
 if (prodsAvailable>0) {
     %>
 	<table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td></tr>
+        <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>
 <fd:PendingOrderChecker/>    
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
     <table><form name="transac_grouped_items" id="transac_grouped_items" method="POST"></table>
     <fd:AddToCartPending id="transac_grouped_items"/>
+    <fd:CmFieldDecorator/>
     <%
 
     //*** if we got this far..then we need to remove the sucess page attribute from the request.
@@ -224,9 +225,9 @@ if (prodsAvailable>0) {
             prices.add(new Double(displayProduct.getQuantityMinimum()));
     %>
         <div class="qtyinput qtyinput_fixedwidth">
-          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2" aria-label="quantity"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
+          <a href="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
         </div>
     <%  }   %>
 
@@ -322,11 +323,11 @@ if (prodsAvailable>0) {
     
     <input type="hidden" name="itemCount" value="<%= Math.min(itemsToDisplay, idx) %>">
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td>
+        <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td>
         </tr>
         <tr>
             <td width="98" style="padding-right:4px;"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
-			<td width="12"><fd:CCLCheck><a href="/unsupported.jsp" onclick="return CCL.save_items('transac_grouped_items',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" alt="save to lists" width="12" height="14" border="0"/></a></fd:CCLCheck></td>
+			<td width="12"><fd:CCLCheck><a href="/unsupported.jsp" onclick="return CCL.save_items('transac_grouped_items',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0"/></a></fd:CCLCheck></td>
             <td align="right">&nbsp;&nbsp;<b>Total Price:</b>&nbsp;&nbsp;&nbsp;
             <input type="text" name="total" size="8" maxlength="8" class="text11" value="" onFocus="blur()"></td>
             <td><img src="media_stat/images/layout/clear.gif"  height="1" width="10"></td>
@@ -353,7 +354,7 @@ if (prodsAvailable>0) {
 } else {// end of If !oneNotAvailable
 %>
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0">
-    <tr><td><br><font class="text12" color="#333">
+    <tr><td><br><font class="text12" color="#999999">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
         <br>
         We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.

@@ -4,12 +4,12 @@ import com.freshdirect.payment.gateway.BankAccountType;
 import com.freshdirect.payment.gateway.ECheck;
 import com.freshdirect.payment.gateway.PaymentMethodType;
 
-public class ECheckImpl extends PaymentMethodImpl implements ECheck {
+class ECheckImpl extends PaymentMethodImpl implements ECheck {
 
 	private String  routingNumber;
 	private BankAccountType bankAccountType;
 	
-	public ECheckImpl(){
+	ECheckImpl(){
 		super(PaymentMethodType.ECHECK);
 	}
 	

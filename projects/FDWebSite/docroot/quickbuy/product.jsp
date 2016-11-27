@@ -4,10 +4,10 @@
 <%@ page import="java.net.URL"%>
 <%@page import="java.net.MalformedURLException"%>
 <%@page import="java.net.URLEncoder"%>
-<%@page import="com.freshdirect.storeapi.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -21,6 +21,9 @@
 	final String srcTitle = request.getParameter("refTitle"); // mandatory parameter
 	final String uid = request.getParameter("uid");
 	final String iatcNamespace = request.getParameter("iatcNamespace");
+	final String coremetricsPageId = request.getParameter("coremetrics.pageid");
+	final String coremetricsPageContentHierarchy = request.getParameter("coremetrics.pagecontenthierarchy");
+	final String coremetricsVirtualCategory = request.getParameter("coremetrics.virtualcategory");
 	
 	String protocol;
 	String host;
@@ -78,7 +81,7 @@
 	// tell i_product.jspf it's quickbuy
 	request.setAttribute("i_product_inner", Boolean.TRUE);
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 
@@ -98,6 +101,11 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body class="qbBody">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+<script type="text/javascript">
+FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=coremetricsPageContentHierarchy%>', '<%=coremetricsVirtualCategory%>');
+</script>
+<fd:CmProductView quickbuy="true" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 <div id="qbContainer">
 	<% if (FDStoreProperties.isAnnotationMode()) { %>
 		<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 10000;"></div>

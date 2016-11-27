@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -13,7 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_HOLIDAY_MENU_TOTAL = 601;
@@ -65,7 +65,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	ContentNodeModel owningFolder = currentFolder;
 
     boolean showPrices = true;
-     String clearImage = "/media_stat/images/layout/clear.gif"; 
+     String clearImage = "/media_stat/images/layout/clear.gif";
     String unAvailableImg="/media_stat/images/template/not_available.gif";
     ContentNodeModel parentNode = currentFolder.getParentNode();
     while (parentNode!=null && !(parentNode instanceof DepartmentModel)) {
@@ -85,7 +85,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
     StringBuffer appendColumnPrices = new StringBuffer(200);
     boolean headingShown = false;
 %>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
       if (displayCategory==null) {
             if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
@@ -122,7 +122,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 }
             } else if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)){
                 product = (ProductModel)contentNode;
-                if(!(product.isUnavailable())) {
+                if(product.isUnavailable()) continue;
 
                 owningFolder = (CategoryModel) product.getParentNode();
                 if (theOnlyProduct!=null) {
@@ -204,14 +204,14 @@ if (sortedColl==null) sortedColl = new ArrayList();
             if (!headingShown) {   %>
                 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>">
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="12" border="0"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" border="0"></TD>
                 </TR>
                 <TR VALIGN="MIDDLE">
-                	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font class="orange"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
+                	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font color="#FF9933"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
                 </TR>
                 <TR VALIGN="MIDDLE"><TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD></TR>
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
                 </TR>
                 </TABLE>
 
@@ -226,7 +226,6 @@ if (sortedColl==null) sortedColl = new ArrayList();
              </tr>
 <%
     }// end of Product instance check
-        }
 %>
  </logic:iterate>
 <%

@@ -3,10 +3,10 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" /> 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title>FreshDirect - Account problem</title> --%>
-    <fd:SEOMetaTag title="FreshDirect - Account problem"/>
+    <title>FreshDirect - Account problem</title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -15,6 +15,8 @@
 <% session.removeAttribute(SessionName.USER); %>
 
 <BODY BGCOLOR="White" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10" leftmargin=0 topmargin=0>
+
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <CENTER>
 <table width="525" border="0" cellspacing="0" cellpadding="0">

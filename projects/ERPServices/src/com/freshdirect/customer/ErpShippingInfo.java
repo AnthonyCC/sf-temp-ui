@@ -2,9 +2,6 @@ package com.freshdirect.customer;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ErpShippingInfo implements Serializable {
 
 	// JNG: 1/21/05 WAVE DETAIL INFO FROM SAP
@@ -29,14 +26,13 @@ public class ErpShippingInfo implements Serializable {
 		this.waveNumber = null;
 	}
 
-	@JsonCreator
 	public ErpShippingInfo(
-		@JsonProperty("waveNumber") String waveNumber,
-		@JsonProperty("truckNumber") String truckNumber,
-		@JsonProperty("stopSequence")String stopSequence,
-		@JsonProperty("regularCartons")int regularCartons,
-		@JsonProperty("freezerCartons")int freezerCartons,
-		@JsonProperty("alcoholCartons")int alcoholCartons) {
+		String waveNumber,
+		String truckNumber,
+		String stopSequence,
+		int regularCartons,
+		int freezerCartons,
+		int alcoholCartons) {
 		this.truckNumber = truckNumber;
 		this.stopSequence = stopSequence;
 		this.regularCartons = regularCartons;

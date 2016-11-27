@@ -7,15 +7,15 @@
 	<xsl:output method="html"/>
 	<xsl:template name="h_invoice_info_v1">
 <br/>
-<table cellpadding="0" cellspacing="0" width="100%" border="0">
+<table cellpadding="0" cellspacing="0" width="100%">
      <tr>
-		<td colspan="5"><b><font color="#FF9933">ORDER INFORMATION</font> for ORDER NUMBER <xsl:value-of select="order/erpSalesId"/></b><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /></td>
+		<td colspan="5"><b><font color="#FF9933">ORDER INFORMATION</font> for ORDER NUMBER <xsl:value-of select="order/erpSalesId"/></b><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" /></td>
 	</tr>
 	<tr>
 		<td colspan="5" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt="" /></td>
 	</tr>
      <tr>
-		<td colspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
+		<td colspan="5"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
 	</tr>
 	<tr>
 		<td width="33%" valign="top"><font face="verdana, arial, sans-serif" size="1" color="black">
@@ -99,16 +99,14 @@
 		<td width="2%">&nbsp;</td>
 		<td width="30%" valign="top">&nbsp;</td>
 	</tr>
-     <tr><td colspan="5" class="bodyCopy"><br/><b>FRESHDIRECT TIPPING POLICY<br/></b></td></tr>
-     <tr><td colspan="5" bgcolor="#cccccc"><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" border="0" /></td></tr>
-     <tr><td colspan="5" class="bodyCopy"><b>You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to any such employee as a gratuity.</b><br/><br/><br/></td></tr>
+     <tr><td colspan="5" class="bodyCopy"><br/><b>FRESHDIRECT TIPPING POLICY<br/><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" vspace="4"/><br/>You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to any such employee as a gratuity.</b><br/><br/><br/></td></tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
      <tr>
-	<td colspan="9" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
+	<td colspan="9" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
 	</tr>
      <tr>
-	<td colspan="9"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
+	<td colspan="9"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
 	</tr>
 	<xsl:for-each select="order/invoicedOrderViews/invoicedOrderViews">
 		<xsl:call-template name="orderlinesView">
@@ -286,10 +284,6 @@
 	</tr>	
 	<xsl:for-each select="$view/orderLines/orderLines">
 		<xsl:variable name="prevPos" select="position()-1"/>
-		
-		<xsl:variable name="priceFormatted" select="concat('$',basePrice,'/',salesUnit)"/>
-		<xsl:variable name="priceFormattedInvoiced" select="concat('$',invoiceLine/basePrice,'/',invoiceLine/salesUnit)"/>
-		
 		<xsl:if test="($view/displayDepartment = 'true') and ($prevPos = 0 or ../orderLines[$prevPos]/departmentDesc != departmentDesc)">
 			<xsl:choose>
 				<xsl:when test="starts-with(departmentDesc, 'Recipe: ')">
@@ -321,238 +315,74 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>		
-		
-		<xsl:choose><!--  Due to XSL restrictions, the whole TR has to be in the if/else -->
-			<!-- This is when there's a substitute -->
-			<xsl:when test="(invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0) or (substituteProductName != '' and substitutedQuantity > 0)">
-				<tr valign="top" style="color: #999999;">
-					<td align="center">
-						<xsl:choose>
-							<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0"><xsl:value-of select="orderedQuantity"/>/0</xsl:when>
-							<xsl:when test="substituteProductName != '' and substitutedQuantity > 0"><xsl:value-of select="orderedQuantity"/>/0</xsl:when>
-							<xsl:otherwise><xsl:value-of select="displayQuantity"/> <xsl:if test="salesUnit = 'LB' and pricedByLb = 'true'">&nbsp;lb&nbsp;</xsl:if></xsl:otherwise>
-						</xsl:choose>
-						
-					</td>
-					
-					<td>
-						<b><xsl:value-of select="description"/></b> 
-						<xsl:if test="configurationDesc!=''">
-							&nbsp;-&nbsp;(<xsl:value-of select="configurationDesc"/>)
-						</xsl:if>
-					</td>
-			           
-					<td align="center">
-					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-						<xsl:if test="pricedByLb='true'">
-							<xsl:value-of select='concat(format-number(invoiceLine/weight, "###,##0.00"), " lb")' />
-						</xsl:if> 
-					</xsl:if>
-					</td>
-			           
-					<td align="center">
-					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-						<xsl:if test="unitPrice!=''">
-							(<xsl:value-of select="unitPrice"/>)
-						</xsl:if>
-					</xsl:if>
-					</td>
-			           
-					<td align="center">
-					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-						<xsl:if test="invoice/customizationPrice > 0">
-							$<xsl:value-of select='format-number(invoice/customizationPrice, "###,##0.00", "USD")' />
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="starts-with(departmentDesc, 'FREE')">
-						<xsl:if test="invoice/customizationPrice > 0">
-							$<xsl:text>  </xsl:text> />
-						</xsl:if>
-					</xsl:if>
-					</td>
-					
-					<td align="right"><!-- price -->
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<b>$<xsl:value-of select='format-number(0, "###,##0.00", "USD")'/></b>
-						</xsl:if>
-						<xsl:if test="starts-with(departmentDesc, 'FREE')">
-							<b>$<xsl:text> FREE </xsl:text></b>
-						</xsl:if>
-					</td>
-			           
-					<td>
-						<xsl:if test="invoiceLine/taxValue > 0">
-							<b>&nbsp;T</b>
-						</xsl:if>
-					</td>
-			           
-					<td>
-						<xsl:if test="scaledPricing = 'true'">
-							<b>&nbsp;S</b>
-						</xsl:if>
-					</td>
-			           
-					<td>
-						<xsl:if test="invoiceLine/depositValue > 0">
-							<b>&nbsp;D</b>
-						</xsl:if>
-					</td>
-				</tr>
-				<!-- second, substitution tr -->
-				<tr>
-					<td align="center" valign="top"><!-- qty -->
-						&nbsp;&nbsp;
-						<xsl:choose>
-							<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0"><xsl:value-of select="invoiceLine/substitutedQuantity"/></xsl:when>
-							<xsl:when test="substituteProductName != '' and substitutedQuantity > 0"><xsl:value-of select="substitutedQuantity"/></xsl:when>
-							<xsl:otherwise></xsl:otherwise>
-						</xsl:choose>
-					</td>
-					
-					<td valign="top"><!-- description -->
-						<div style="color: #333333;">
-							<img src="https://www.freshdirect.com/media_stat/images/common/sublevel_arrow_green.svg" alt="" style="height: 1em; width: 1em;" />&nbsp;<span class="text10bold">Substitution:</span>&nbsp;
-							<xsl:choose>
-								<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0"><xsl:value-of select="invoiceLine/substituteProductName"/></xsl:when>
-								<xsl:when test="substituteProductName != '' and substitutedQuantity > 0"><xsl:value-of select="substituteProductName"/></xsl:when>
-								<xsl:otherwise></xsl:otherwise>
-							</xsl:choose>
-						</div>
-					</td>
-					
-					<td align="center" valign="top"> <!-- final weight -->
-						&nbsp;
-					</td>
-					
-					<td align="center" valign="top"><!-- unit price -->
-						<xsl:choose>
-							<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0 and $priceFormattedInvoiced != invoiceLine/substituteProductDefaultPrice">
-								<span style="text-decoration: line-through;"><xsl:value-of select="invoiceLine/substituteProductDefaultPrice"/></span><br />
-								<xsl:value-of select='unitPrice'/>
-							</xsl:when>
-							<xsl:when test="substituteProductName != '' and substitutedQuantity > 0 and $priceFormatted != substituteProductDefaultPrice">
-								<span style="text-decoration: line-through;"><xsl:value-of select="substituteProductDefaultPrice"/></span><br />
-								<xsl:value-of select='unitPrice'/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select='unitPrice'/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</td>
-					
-					<td align="center" valign="top"><!-- options price -->
-						&nbsp;
-					</td>
-					
-					<td align="right" valign="top"><!-- sub price -->
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<xsl:choose>
-								<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0 and $priceFormattedInvoiced != invoiceLine/substituteProductDefaultPrice">
-									&nbsp;<br />
-									<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
-								</xsl:when>
-								<xsl:when test="substituteProductName != '' and substitutedQuantity > 0 and $priceFormatted != substituteProductDefaultPrice">
-									&nbsp;<br />
-									<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
-								</xsl:when>
-								<xsl:otherwise>
-									<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
-								</xsl:otherwise>
-							</xsl:choose>
-							
-						</xsl:if>
-						<xsl:if test="starts-with(departmentDesc, 'FREE')">
-							<b>$<xsl:text> FREE </xsl:text></b>
-						</xsl:if>
-					</td>
-					
-					<td valign="top"><!-- taxed -->
-						&nbsp;
-					</td>
-					
-					<td valign="top"><!-- scaled price -->
-						&nbsp;
-					</td>
-					
-					<td valign="top"><!-- deposit -->
-						&nbsp;
-					</td>
-				</tr>
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- This is when there's NOT a substitute -->
-				<tr valign="top">
-					<td align="center">
-						<xsl:value-of select="displayQuantity"/> <xsl:if test="salesUnit = 'LB' and pricedByLb = 'true'">&nbsp;lb&nbsp;</xsl:if>						
-					</td>
-					
-					<td>
-						<b><xsl:value-of select="description"/></b> 
-						<xsl:if test="configurationDesc!=''">
-							&nbsp;-&nbsp;(<xsl:value-of select="configurationDesc"/>)
-						</xsl:if>
-					</td>
-					
-					<td align="center">
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<xsl:if test="pricedByLb='true'">
-								<xsl:value-of select='concat(format-number(invoiceLine/weight, "###,##0.00"), " lb")' />
-							</xsl:if> 
-						</xsl:if>
-					</td>
-					
-					<td align="center">
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<xsl:if test="unitPrice!=''">
-								(<xsl:value-of select="unitPrice"/>)
-							</xsl:if>
-						</xsl:if>
-					</td>
-					
-					<td align="center">
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<xsl:if test="invoice/customizationPrice > 0">
-								$<xsl:value-of select='format-number(invoice/customizationPrice, "###,##0.00", "USD")' />
-							</xsl:if>
-						</xsl:if>
-						<xsl:if test="starts-with(departmentDesc, 'FREE')">
-							<xsl:if test="invoice/customizationPrice > 0">
-								$<xsl:text>  </xsl:text> />
-							</xsl:if>
-						</xsl:if>
-					</td>
-					
-					
-					<td align="right">
-						<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-							<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
-						</xsl:if>
-						<xsl:if test="starts-with(departmentDesc, 'FREE')">
-							<b>$<xsl:text> FREE </xsl:text></b>
-						</xsl:if>
-					</td>
-					
-					<td>
-						<xsl:if test="invoiceLine/taxValue > 0">
-							<b>&nbsp;T</b>
-						</xsl:if>
-					</td>
-					
-					<td>
-						<xsl:if test="scaledPricing = 'true'">
-							<b>&nbsp;S</b>
-						</xsl:if>
-					</td>
-					
-					<td>
-						<xsl:if test="invoiceLine/depositValue > 0">
-							<b>&nbsp;D</b>
-						</xsl:if>
-					</td>
-				</tr>
-			</xsl:otherwise>
-		</xsl:choose>
-		
+
+		<tr valign="top">
+			<td align="center"><xsl:value-of select="displayQuantity"/> <xsl:if test="salesUnit = 'LB' and pricedByLb = 'true'">&nbsp;lb&nbsp;</xsl:if></td>
+				
+			<td>
+				<b><xsl:value-of select="description"/></b> 
+				<xsl:if test="configurationDesc!=''">
+					&nbsp;-&nbsp;(<xsl:value-of select="configurationDesc"/>)
+				</xsl:if>
+			</td>
+               
+			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
+				<xsl:if test="pricedByLb='true'">
+					<xsl:value-of select='concat(format-number(invoiceLine/weight, "###,##0.00"), " lb")' />
+				</xsl:if> 
+			</xsl:if>
+			</td>
+               
+			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
+				<xsl:if test="unitPrice!=''">
+					(<xsl:value-of select="unitPrice"/>)
+				</xsl:if>
+			</xsl:if>
+			</td>
+               
+			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
+				<xsl:if test="invoice/customizationPrice > 0">
+					$<xsl:value-of select='format-number(invoice/customizationPrice, "###,##0.00", "USD")' />
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="starts-with(departmentDesc, 'FREE')">
+			<xsl:if test="invoice/customizationPrice > 0">
+					$<xsl:text>  </xsl:text> />
+				</xsl:if>
+			</xsl:if>
+			</td>
+               
+               
+			<td align="right">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
+				<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
+			</xsl:if>
+			<xsl:if test="starts-with(departmentDesc, 'FREE')">
+			<b>$<xsl:text> FREE </xsl:text></b>
+			</xsl:if>
+			</td>
+               
+			<td>
+				<xsl:if test="invoiceLine/taxValue > 0">
+					<b>&nbsp;T</b>
+				</xsl:if>
+			</td>
+               
+			<td>
+				<xsl:if test="scaledPricing = 'true'">
+					<b>&nbsp;S</b>
+				</xsl:if>
+			</td>
+               
+			<td>
+				<xsl:if test="invoiceLine/depositValue > 0">
+					<b>&nbsp;D</b>
+				</xsl:if>
+			</td>
+		</tr>
 		<xsl:if test="number(invoiceLine/couponDiscountAmount) &gt; 0">
 		<tr>
 			<td align="center">&nbsp;</td>

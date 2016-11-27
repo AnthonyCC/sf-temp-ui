@@ -8,15 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.ecomm.gateway.FDSurveyService;
-import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.LazyTimedCache;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDSurveyFactory {
@@ -77,7 +74,7 @@ public class FDSurveyFactory {
         return getSurvey(key);
     }
 
-    public FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
+    public synchronized FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
         // just for testing ...
         FDSurvey survey = builtinSurveys.getOverrideSurvey(key);
         if (survey != null) {
@@ -85,20 +82,13 @@ public class FDSurveyFactory {
         }
         survey = surveyDefCache.get(key);
         if (survey == null) {
-        	synchronized(surveyDefCache) {
-        		//check from cache again
-        		survey = surveyDefCache.get(key);
-        		if (survey != null) {
-        			return survey;
-        		}
-        		survey = getSurveyFromDatabase(key);
-	            if (survey == null) {
-	                survey = builtinSurveys.getDefaultSurvey(key);
-	            }
-	            if (survey != null) {
-	                surveyDefCache.put(key, survey);
-	            }
-        	}
+            survey = getSurveyFromDatabase(key);
+            if (survey == null) {
+                survey = builtinSurveys.getDefaultSurvey(key);
+            }
+            if (survey != null) {
+                surveyDefCache.put(key, survey);
+            }
             return survey;
         }
         return survey;
@@ -148,12 +138,12 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-        	return FDSurveyService.getInstance().getSurvey(key);
-        	
+            return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }
+
 
     /**
      * User can't be null !
@@ -179,32 +169,18 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-			FDSurveyResponseData surveyResponseData = FDSurveyService.getInstance().getCustomerProfile(identity,
-					serviceType);
-			FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
-			return fdSurveyResponse;
-
+            return FDServiceLocator.getInstance().getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
-    }  
-    
-    private static FDSurveyResponse buildFdSurveyResponse(FDSurveyResponseData responseData) {
-    	if(responseData != null && responseData.getIdentity() != null){
-		FDIdentity fdIdentity = new FDIdentity(responseData.getIdentity().getErpCustomerPK(), responseData.getIdentity().getFdCustomerPK());
-		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(responseData.getKey().getSurveyType()), EnumServiceType.getEnum(responseData.getKey().getUserType()));
-		FDSurveyResponse fdSurveyResponse = null;
-		if(!StringUtil.isEmpty(responseData.getSalePk())){
-			 PrimaryKey saleId = new PrimaryKey(responseData.getSalePk());
-			 fdSurveyResponse = new FDSurveyResponse(fdIdentity, surveykey,saleId);
-		}
-		else{
-			 fdSurveyResponse = new FDSurveyResponse(fdIdentity, surveykey);
-		}
-		fdSurveyResponse.setAnswers(responseData.getAnswers());
-		return fdSurveyResponse;
-    	}
-    	return null;
-	}
+    }       
+
+    public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
+        try {
+            return FDServiceLocator.getInstance().getSurveySessionBean().getSurveyResponse(identity, survey);
+        } catch (RemoteException re) {
+            throw new FDResourceException(re, "Error talking to session bean");
+        }
+    }
 
 }

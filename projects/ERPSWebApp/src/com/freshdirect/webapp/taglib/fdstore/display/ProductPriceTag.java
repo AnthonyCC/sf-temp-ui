@@ -8,12 +8,14 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductPromoPreviewPriceCalculator;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductPromoPreviewPriceCalculator;
+
 import com.freshdirect.webapp.util.ConfigurationUtil;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
@@ -241,9 +243,9 @@ public class ProductPriceTag extends BodyTagSupport {
             String skuCode = productInfo.getSkuCode();
             String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
             String scaleString = null;
-//          String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
-//    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
-            FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo());
+            String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
+    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
+            FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
 
             if (group == null) {
                 //Try getting the group from Product Impression which loops through all skus
@@ -359,12 +361,12 @@ public class ProductPriceTag extends BodyTagSupport {
                             buf1.append("</span><br />");
 
                             if (useTarget) {
-                                buf1.append("<a href=\"/pdp.jsp?grpId=" +
+                                buf1.append("<a href=\"/group.jsp?grpId=" +
                                     group.getGroupId() + "&version=" +
                                     group.getVersion() + buffer.toString() +
                                     "\" target=\"_top\">");
                             } else {
-                                buf1.append("<a href=\"/pdp.jsp?grpId=" +
+                                buf1.append("<a href=\"/group.jsp?grpId=" +
                                     group.getGroupId() + "&version=" +
                                     group.getVersion() + buffer.toString() +
                                     "\">");
@@ -495,14 +497,14 @@ public class ProductPriceTag extends BodyTagSupport {
 
                                     if (useTarget) {
                                         buf1.append(
-                                            "<a href=\"/pdp.jsp?grpId=" +
+                                            "<a href=\"/group.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
                                             "\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">");
                                     } else {
                                         buf1.append(
-                                            "<a href=\"/pdp.jsp?grpId=" +
+                                            "<a href=\"/group.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
@@ -528,14 +530,14 @@ public class ProductPriceTag extends BodyTagSupport {
                                 } else {
                                     if (useTarget) {
                                         buf1.append(
-                                            "<a href=\"/pdp.jsp?grpId=" +
+                                            "<a href=\"/group.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
                                             "\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">Any ");
                                     } else {
                                         buf1.append(
-                                            "<a href=\"/pdp.jsp?grpId=" +
+                                            "<a href=\"/group.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +

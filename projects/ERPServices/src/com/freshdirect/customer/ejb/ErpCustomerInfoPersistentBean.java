@@ -35,7 +35,6 @@ import java.util.Map;
  */
 public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSupport {
 
-	private static final long serialVersionUID = 7384815695922255411L;
 	private String title;
 	private String firstName;
 
@@ -115,10 +114,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
 	
 	private String companyNameSignup;
-	
-	private String soCartOverlayFirstTime;
-	
-	private String soFeatureOverlay;
 
 	/**
 	 * Default constructor.
@@ -190,10 +185,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.socialLoginInfo = null;
 		
 		this.companyNameSignup = null;
-		
-		this.soCartOverlayFirstTime = null;
-		
-		this.soFeatureOverlay = null;
 	}
 
 	/**
@@ -301,10 +292,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		model.setCompanyNameSignup(this.companyNameSignup);
 		
-		model.setSoCartOverlayFirstTime(this.soCartOverlayFirstTime);
-		
-		model.setSoFeatureOverlay(this.soFeatureOverlay);
-		
 		return model;
 	}
 
@@ -383,11 +370,33 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		this.companyNameSignup = m.getCompanyNameSignup();
 		
-		this.soCartOverlayFirstTime = m.getSoCartOverlayFirstTime();
-		
-		this.soFeatureOverlay = m.getSoFeatureOverlay();
-		
 		this.setModified();
+	}
+
+	/**
+	 * Find ErpCustomerInfoPersistentBean objects for a given parent.
+	 *
+	 * @param conn the database connection to operate on
+	 * @param parentPK primary key of parent
+	 *
+	 * @return a List of ErpCustomerInfoPersistentBean objects (empty if found none).
+	 *
+	 * @throws SQLException if any problems occur talking to the database
+	 */
+	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
+		java.util.List lst = new java.util.LinkedList();
+		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID=?");
+		ps.setString(1, parentPK.getId());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ErpCustomerInfoPersistentBean bean = new ErpCustomerInfoPersistentBean(new PrimaryKey(rs.getString(1)), conn);
+			bean.setParentPK(parentPK);
+		}
+		rs.close();
+		rs = null;
+		ps.close();
+		ps = null;
+		return lst;
 	}
 
 	private final String convertPhone(PhoneNumber phoneNumber) {
@@ -411,8 +420,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
 				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
 				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, "
-				+ " DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS,FD_TC_AGREE,FD_TC_AGREE_DATE, COMPANY_NAME_SIGNUP, GO_GREEN, SO_FEATURE_OVERLAY ) "
-					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'Y','N')");
+				+ " DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS,FD_TC_AGREE,FD_TC_AGREE_DATE, COMPANY_NAME_SIGNUP) "
+					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
@@ -549,7 +558,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
 					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION,SMS_PREFERENCE_FLAG, go_green, display_name, "
-					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE,FD_TC_AGREE,FD_TC_AGREE_DATE,COMPANY_NAME_SIGNUP, SO_CART_OVERLAY_FIRSTTIME, SO_FEATURE_OVERLAY "
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE,FD_TC_AGREE,FD_TC_AGREE_DATE,COMPANY_NAME_SIGNUP"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -646,7 +655,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.smsNoThanksflag=rs.getString("SMS_PREFERENCE_FLAG");
 			this.smsOptinDate=rs.getTimestamp("SMS_OPTIN_DATE");
 			
-			this.goGreen = ("Y".equals(rs.getString("go_green"))|| "I".equals(rs.getString("go_green"))) ?true:false;
+			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
 			this.displayName = rs.getString("display_name");
 			
 			/* APPDEV-2475 DP T&C */
@@ -664,10 +673,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.socialLoginInfo = loadSocialUserInfo(conn, this.email, this.getParentPK());
 
 			this.companyNameSignup = rs.getString("COMPANY_NAME_SIGNUP");
-			
-			this.soCartOverlayFirstTime = rs.getString("SO_CART_OVERLAY_FIRSTTIME");
-			
-			this.soFeatureOverlay = rs.getString("SO_FEATURE_OVERLAY");
 			
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());
@@ -885,7 +890,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		ps.setString(45, this.partnerMessages.value());
 		ps.setString(46, this.smsNoThanksflag);
 		
-		ps.setString(47, "Y");
+		ps.setString(47, this.goGreen?"Y":"N");
 		
 		ps.setString(48, this.displayName);
 		
@@ -944,9 +949,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.unsetModified();
 	}	
 	
-	public void setPK(PrimaryKey pk) {
-		this.setParentPK(pk);
-	}
 	
 	public PrimaryKey getPK() {
 		return this.getParentPK();

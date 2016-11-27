@@ -2,10 +2,10 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 

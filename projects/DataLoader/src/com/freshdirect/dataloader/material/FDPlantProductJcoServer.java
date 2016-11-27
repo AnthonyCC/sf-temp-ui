@@ -6,11 +6,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -35,10 +33,7 @@ import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpPlantMaterialModel;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -117,7 +112,6 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 3, "Industry Standard Description"));
 		tableMetaDataList.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
 		tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
-		tableMetaDataList.add(new TableMetaData("WESCH", JCoMetaData.TYPE_CHAR, 3, "Number of Days Fresh"));
 
 		createTableRecord(metaPlantMaterialList, tableMetaDataList);
 		metaPlantMaterialList.lock();
@@ -228,7 +222,6 @@ public class FDPlantProductJcoServer extends FdSapServer {
 					materialPlantTable.nextRow();
 				}
 
-				Set<String> errMaterials = new HashSet<String>();
 				// populate salesarea info
 				for (int i = 0; i < materialSalesAreaTable.getNumRows(); i++) {
 					materialSalesAreaTable.setRow(i);
@@ -239,25 +232,9 @@ public class FDPlantProductJcoServer extends FdSapServer {
 						materialSalesAreasMap.put(materialNo, salesAreas);
 					}
 					ErpMaterialSalesAreaModel param = populateMaterialSalesAreaModel(materialSalesAreaTable);
-					if(FDStoreProperties.isPickPlantIdReqForMatSalesOrgExport() && (null == param.getPickingPlantId() || param.getPickingPlantId().isEmpty())){
-						populateErrorResponse(result, materialErrorTable, materialNo, "Picking plant id is missing for sales org:"+param.getSalesOrg());
-						LOG.info("Picking plant id is missing for sales org:"+param.getSalesOrg()+" and material:"+materialNo);
-						errMaterials.add(materialNo);
-					}
-					
 					salesAreas.add(param);
-					
 
 					materialSalesAreaTable.nextRow();
-				}
-				
-				//Don't persist any info of the material with errors.
-				if(FDStoreProperties.isPickPlantIdReqForMatSalesOrgExport() && !errMaterials.isEmpty()){
-					for (Iterator iterator = errMaterials.iterator(); iterator.hasNext();) {
-						String materialNo = (String) iterator.next();
-						materialSalesAreasMap.remove(materialNo);
-						materialPlantsMap.remove(materialNo);
-					}
 				}
 
 				// save plant and salesarea info
@@ -312,14 +289,13 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		param.setRating(FDSapHelperUtils.getString(materialPlantTable.getString("RATING")));
 		param.setSustainabilityRating(FDSapHelperUtils.getString(materialPlantTable.getString("SEARK")));
 		param.setHideOutOfStock("X".equalsIgnoreCase(materialPlantTable.getString("ZZHOO")));
-		param.setNumberOfDaysFresh(materialPlantTable.getString("WESCH"));
-		
+
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Got material plant record for Plant:" + param.getPlantId() + "\t Material No:" + materialNum
 					+ "\t MaterialGroup:" + param.getAtpRule() + "\t LeadTime:" + param.getLeadTime() + "\t Blocked:"
 					+ param.getBlockedDays() + "\t DaysInhouse:" + param.getDays_in_house() + "\t ExpertRating:"
 					+ param.getRating() + "\t SustainabilityRating:" + param.getSustainabilityRating()
-					+ "\t Hide Out of Stock:" + param.isHideOutOfStock()+"\t Number of Days Fresh:"+param.getNumberOfDaysFresh());
+					+ "\t Hide Out of Stock:" + param.isHideOutOfStock());
 		}
 		return param;
 	}
@@ -335,9 +311,6 @@ public class FDPlantProductJcoServer extends FdSapServer {
     	}
     	if("ZF".equals(token)) {
     		return EnumATPRule.MULTILEVEL_MATERIAL;
-    	}
-    	if("ZN".equals(token)) {
-    		return EnumATPRule.SINGLELEVEL_MATERIAL;
     	}
     	return EnumATPRule.MATERIAL;
     }
@@ -411,32 +384,20 @@ public class FDPlantProductJcoServer extends FdSapServer {
 			SAPLoaderHome home = (SAPLoaderHome) ctx.lookup("freshdirect.dataloader.SAPLoader");
 			SAPLoaderSB sapLoader = home.create();
 			// create a new batch
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-				batchNumber = FDECommerceService.getInstance().createBatch();
-			}else{
-				batchNumber = sapLoader.createBatch();
-			}
+			batchNumber = sapLoader.createBatch();
 			for (Iterator<String> iterator = materialPlantsMap.keySet().iterator(); iterator.hasNext();) {
 				String materialNo = iterator.next();
 				List<ErpPlantMaterialModel> plantModels = materialPlantsMap.get(materialNo);
 				List<ErpMaterialSalesAreaModel> salesAreas = materialSalesAreaMap.get(materialNo);
 
 				try {
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-						FDECommerceService.getInstance().loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
-					}else{
-						sapLoader.loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
-					}
+					sapLoader.loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
 				} catch (Exception e) {
 					LOG.error("Saving Plant Records for material# " + materialNo + " failed. Exception is ", e);
 					populateErrorResponse(result, materialErrorTable, materialNo, e.toString());
 				}
 				// mark the batch status
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
-					FDECommerceService.getInstance().updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
-				}else{
 				sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
-				}
 
 			}
 		} catch (NamingException e) {

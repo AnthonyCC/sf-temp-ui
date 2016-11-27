@@ -20,66 +20,66 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
 import com.freshdirect.webapp.ajax.cart.data.CartRequestData;
 import com.freshdirect.webapp.util.JspMethods;
 
+
 public class CartDataServlet extends BaseJsonServlet {
 
-    private static final long serialVersionUID = -3650318272577031376L;
+	private static final long	serialVersionUID	= -3650318272577031376L;
 
-    private static final Logger LOG = LoggerFactory.getInstance(CartDataServlet.class);
-
-    @Override
-    protected boolean synchronizeOnUser() {
-        return false; // synchronization is done on cart
-    }
-
-    @Override
-    protected int getRequiredUserLevel() {
-        return FDUserI.GUEST;
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-        process(request, response, user);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-        process(request, response, user);
-    }
-
-    // TODO: correctly separate GET and POST calls - until then it stays combined in one method as refactored from CartDataTag.doStartTag()
-    private static void process(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-
-        // Fetch server name
-        String serverName = request.getServerName();
+	private static final Logger LOG = LoggerFactory.getInstance( CartDataServlet.class );
+	
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //synchronization is done on cart
+	}
+	
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
+	
+	@Override
+	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		process( request, response, user );
+	}
+	
+	@Override
+	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		process( request, response, user );
+	}
+	
+	//TODO: correctly separate GET and POST calls - until then it stays combined in one method as refactored from CartDataTag.doStartTag()
+	private static void process( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		
+    	// Fetch server name
+    	String serverName = request.getServerName();    	
 
         String userId = user.getUserId();
-        if (userId == null || userId.trim().equals("")) {
-            userId = "[UNIDENTIFIED-USER]";
+        if ( userId == null || userId.trim().equals( "" ) ) {
+        	userId = "[UNIDENTIFIED-USER]";
         }
-
-        FDCartModel cart = user.getShoppingCart();
-        if (cart == null) {
+        
+        FDCartModel cart = user.getShoppingCart();        
+        if ( cart == null ) {
             // user doesn't have a cart, this is a bug, as login or site_access should put it there
-            LOG.error("No cart found for user " + userId);
-            returnHttpError(500, "No cart found for user " + userId); // 500 Internal Server Error
+        	LOG.error( "No cart found for user " + userId );
+        	returnHttpError( 500, "No cart found for user " + userId );	// 500 Internal Server Error
         }
-
-        synchronized (cart) {
-            // line items added to the list will be passed towards CM Shop5 tag
-            List<FDCartLineI> clines2report = new ArrayList<FDCartLineI>();
+        
+        synchronized ( cart ) {
+        	// line items added to the list will be passed towards CM Shop5 tag
+        	List<FDCartLineI> clines2report = new ArrayList<FDCartLineI>();
 
 	    	// Create response data object
 	    	CartData cartData = new CartData();		
@@ -123,8 +123,6 @@ public class CartDataServlet extends BaseJsonServlet {
 	    				Integer id = cartLine.getRandomId();    				
 	    				CartRequestData.Change change = changes.get( id );
 	    				
-	    				double oldQuantity = cartLine.getQuantity();
-	    				
 	    				// No change for this item
 	    				if ( change == null )
 	    					continue;
@@ -136,8 +134,6 @@ public class CartDataServlet extends BaseJsonServlet {
 	    					CartOperations.changeQuantity( user, cart, cartLine, qu, serverName );
 	    					
 	    					clines2report.add( cartLine ); // <-- it will be reported!
-                            cartData.setGoogleAnalyticsData(
-                                    GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, Double.toString(cartLine.getQuantity() - oldQuantity)));
 	    				} else if ( CartRequestData.Change.CHANGE_SALESUNIT.equals( chType ) ) {
 	    					String su = (String)change.getData();
 	    					CartOperations.changeSalesUnit( user, cart, cartLine, su, serverName );
@@ -145,9 +141,12 @@ public class CartDataServlet extends BaseJsonServlet {
 	    					clines2report.add( cartLine ); // <-- it will be reported!
 	    				} else if ( CartRequestData.Change.REMOVE.equals( chType ) ) {
 	    					CartOperations.removeCartLine( user, cart, cartLine, serverName );
-                            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCartLineChangeGAData(cartLine, "-" + Double.toString(oldQuantity)));
-	    				}
+	    					
+	    				}	    				
 	    			}
+	    			
+	    			// populate coremetrics data
+	    			CartOperations.populateCoremetricsShopTag( cartData, clines2report, cart );
 	    			
 	        	} catch (Exception e) {
 	        		LOG.error("Error while modifying cart for user " + userId, e);
@@ -313,8 +312,6 @@ public class CartDataServlet extends BaseJsonServlet {
 				
 				cartData.setItemCount( itemCount );
 				cartData.setSubTotal( JspMethods.formatPrice(cart.getSubTotal()) );
-				double saveAmount = cart.getSaveAmount(false);
-				cartData.setSaveAmount( saveAmount> 0? JspMethods.formatPrice(saveAmount) : null );
 				cartData.setModifyOrder( cart instanceof FDModifyCartModel );
 				
 				cartData.setErrorMessage( null );
@@ -328,4 +325,5 @@ public class CartDataServlet extends BaseJsonServlet {
 		}
 	}
 
+	
 }

@@ -1,9 +1,9 @@
 package com.freshdirect.cms.fdstore;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -14,13 +14,8 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
-import com.freshdirect.cms.validation.ConfiguredProductValidator;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidationMessage;
-
-import junit.framework.TestCase;
 
 /**
  * Test case for the RecipeChildNodeValidator class.
@@ -33,8 +28,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 
 	ContentValidationDelegate delegate;
 
-	@Override
-    public void setUp() {
+	public void setUp() {
 
 		List<XmlTypeService> list = new ArrayList<XmlTypeService>();
 		list.add(new XmlTypeService(
@@ -46,11 +40,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/cms/fdstore/ConfiguredProducts.xml");
 
-		try {
-            CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		CmsManager.setInstance(new CmsManager(service, null));
 
 		validator = new ConfiguredProductValidator();
 
@@ -92,13 +82,14 @@ public class ConfiguredProductValidatorTest extends TestCase {
 	}
 
 	private void assertValidationMessage(int index, String message) {
-		ContentValidationMessage msg = delegate
+		ContentValidationMessage msg = (ContentValidationMessage) delegate
 				.getValidationMessages().get(index);
 		assertEquals(message, msg.getMessage());
 	}
 
 	private ContentNodeI findProduct(String id) {
-		return service.getContentNode(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, id), DraftContext.MAIN);
+		return service.getContentNode(new ContentKey(
+				FDContentTypes.CONFIGURED_PRODUCT, id), DraftContext.MAIN);
 	}
 
 }

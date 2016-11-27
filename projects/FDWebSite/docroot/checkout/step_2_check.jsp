@@ -13,8 +13,8 @@ response.setDateHeader ("Expires", 0);
 %>
 <HTML>
 <HEAD>
-<%-- <TITLE>FreshDirect - Checkout - Checking Inventory</TITLE> --%>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Checking Inventory"/>
+<TITLE>FreshDirect - Checkout - Checking Inventory</TITLE>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -64,7 +64,7 @@ function clearGrid() {
 	k=0;
 	for (j=0; j<6; j++) {
 		for (k=0; k<10; k++) {
-		document.images["p" + j + "_" + k].src = "/media_stat/images/layout/clear.gif"; 
+		document.images["p" + j + "_" + k].src = "/media_stat/images/layout/clear.gif";
 		}
 	}
 	
@@ -92,6 +92,7 @@ function paintItem() {
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" <%--onLoad="go();"--%>>
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <CENTER>
 
 <!-- DON'T REMOVE THIS COMMENT: IE does not render the page until sufficient data is received.. this is *that* data, ya know... -->
@@ -173,7 +174,7 @@ function paintItem() {
 <TD><IMG SRC="/media_stat/images/layout/clear.gif" NAME="p5_8" ALT="" WIDTH="50" HEIGHT="55"></TD>
 <TD><IMG SRC="/media_stat/images/layout/clear.gif" NAME="p5_9" ALT="" WIDTH="50" HEIGHT="55"></TD>
 </TR>
-<tr><td colspan="10"><img src="/media_stat/images/layout/999966.gif" alt="" width="599" height="1" border="0"></td></tr>
+<tr><td colspan="10"><img src="/media_stat/images/layout/999966.gif" width="599" height="1" border="0"></td></tr>
 
 </TABLE>
 <script>
@@ -189,7 +190,7 @@ try {
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	
 
-	FDCartModel cart = FDCustomerManager.checkAvailability( user.getIdentity(), user.getShoppingCart(), 30000,"checkout" );
+	FDCartModel cart = FDCustomerManager.checkAvailability( user.getIdentity(), user.getShoppingCart(), 30000 );
 	// recalculate promotions
 	user.updateUserState();
 

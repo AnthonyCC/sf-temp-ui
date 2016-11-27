@@ -1,11 +1,11 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
@@ -14,7 +14,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
 
@@ -30,6 +30,8 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 	user = (FDUserI)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
 	int validOrderCount = user.getAdjustedValidOrderCount();
+	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
+
 
 	/*
 	if we're on the email.jsp, set the product base urls to PROD
@@ -45,10 +47,7 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 }
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Fresh Deals"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Fresh Deals</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - President's Picks</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 	<% mediaPathTemp=mediaPathTempBase+"pres_picks.ftl"; %>
@@ -102,6 +101,7 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 
 		
 		%>
+		<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(catId)%>"/>
 		<tr><td colspan="4" align="center">
 		<%@ include file="/includes/i_dynamicRows_logic.jspf"%>
 		</td></tr>

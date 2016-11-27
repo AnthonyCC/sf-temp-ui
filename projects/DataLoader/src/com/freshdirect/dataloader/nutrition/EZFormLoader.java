@@ -7,13 +7,20 @@
 package com.freshdirect.dataloader.nutrition;
 
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.CreateException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.LoaderException;
-import com.freshdirect.ecomm.gateway.ErpNutritionService;
 
 /**
  * loads nutrition info from an EZForm export into ERPS
@@ -112,26 +119,56 @@ public class EZFormLoader {
             }
         }
         
-           
-            ErpNutritionModel oldEnm;
+        Context ctx = null;
+        try {
+            ctx = getInitialContext();
+            ErpNutritionHome home = (ErpNutritionHome) ctx.lookup("freshdirect.content.Nutrition");
+            
+            ErpNutritionSB sb = home.create();
             for (String skuCode : nutrition.keySet()) {
                 System.out.println("Loading nutrition for " + skuCode);
                 ErpNutritionModel enm = nutrition.get(skuCode);
-            		oldEnm=ErpNutritionService.getInstance().getNutrition(enm.getSkuCode());
-            	
+				ErpNutritionModel oldEnm = sb.getNutrition(enm.getSkuCode());
+				
 				if(enm.getHeatingInstructions().equals(""))
 					enm.setHeatingInstructions(oldEnm.getHeatingInstructions());
 				
 				if(enm.getIngredients().equals(""))
 					enm.setIngredients(oldEnm.getIngredients());
-				 	 ErpNutritionService.getInstance().updateNutrition(enm, "dataloader");
-	               
+
+                sb.updateNutrition(enm, "dataloader");
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");
             
-        
+        } catch (CreateException ce) {
+            ce.printStackTrace();
+        } catch (NamingException ne) {
+            ne.printStackTrace();
+        } finally {
+            try {
+                if (ctx != null)
+                    ctx.close();
+            } catch (NamingException ne) {
+                ne.printStackTrace();
+            }
+        }
         
     }
+    
+    /** helper method to find the naming context for locating objects on a server
+     * @throws NamingException any problems encountered locating the remote server
+     * @return the naming context to use to locate remote components on the server
+     */
+    protected Context getInitialContext() throws NamingException {
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        env.put(Context.PROVIDER_URL, serverUrl);
+        env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
+        return new InitialContext(env);
+        
+    }
+    
+    
     
 }

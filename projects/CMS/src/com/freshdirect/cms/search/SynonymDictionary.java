@@ -26,10 +26,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
-import com.freshdirect.cms.application.StoreContentSource;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.term.IdentityConvFactory;
@@ -44,12 +42,15 @@ import com.freshdirect.framework.conf.ResourceUtil;
  * @author csongor
  */
 public class SynonymDictionary {
+	public static final String SYNONYM_LIST_KEY = "FDFolder:synonymList";
+
+	public static final String SPELLING_SYNONYM_LIST_KEY = "FDFolder:spellingSynonymList";
 
 	private static String[] NUMBER_TEXT = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" };
 
 	private final Map<String, List<Synonym>> wordMap;
 
-	public SynonymDictionary() {
+	protected SynonymDictionary() {
 		wordMap = new HashMap<String, List<Synonym>>();
 	}
 
@@ -217,89 +218,67 @@ public class SynonymDictionary {
 	}
 
 	public static SynonymDictionary createFromCms(TermCoderFactory factory) {
-		return createSynonymsFromCms(factory, SynonymDictionaryListKey.SYNONYM, FDContentTypes.SYNONYM);
+		SynonymDictionary dict = new SynonymDictionary();
+		CmsManager instance = CmsManager.getInstance();
+		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SYNONYM_LIST_KEY));
+		if (synRootNode == null)
+			return dict;
+		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SYNONYM, instance, DraftContext.MAIN);
+		Map<ContentKey, ContentNodeI> synonymNodes = instance.getContentNodes(synonymKeys);
+		for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
+			ContentNodeI node = contentNodeIterator.next();
+			String[] from = getSynonymFromValues(node);
+			String[] to = getSynonymToValues(node);
+			if (from != null && to != null && to.length > 0) {
+				boolean bidirectional = Boolean.TRUE.equals(node.getAttributeValue("bidirectional"));
+				if (bidirectional) {
+					Set<String> synonyms = new HashSet<String>(to.length + 1);
+					for (String word : from) {
+						synonyms.add(word);
+					}
+					for (String word : to) {
+						synonyms.add(word);
+					}
+					dict.addSynonyms(synonyms, factory);
+				} else {
+					dict.addSynonyms(from, to, factory);
+				}
+			}
+		}
+		return dict;
 	}
 
 	public static SynonymDictionary createSpellingFromCms(TermCoderFactory factory) {
-		return createSynonymsFromCms(factory, SynonymDictionaryListKey.SPELLING_SYNONYM, FDContentTypes.SPELLING_SYNONYM);
+		SynonymDictionary dict = new SynonymDictionary();
+		CmsManager instance = CmsManager.getInstance();
+
+		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SPELLING_SYNONYM_LIST_KEY));
+		if (synRootNode == null)
+			return dict;
+		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SPELLING_SYNONYM, instance, DraftContext.MAIN);
+		Map<ContentKey, ContentNodeI> synonymNodes = instance.getContentNodes(synonymKeys);
+		for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
+			ContentNodeI node = contentNodeIterator.next();
+			String[] from = getSynonymFromValues(node);
+			String[] to = getSynonymToValues(node);
+			if (from != null && to != null && to.length > 0) {
+				boolean bidirectional = Boolean.TRUE.equals(node.getAttributeValue("bidirectional"));
+				if (bidirectional) {
+					Set<String> synonyms = new HashSet<String>(to.length + 1);
+					for (String word : from) {
+						synonyms.add(word);
+					}
+					for (String word : to) {
+						synonyms.add(word);
+					}
+					dict.addSynonyms(synonyms, factory);
+				} else {
+					dict.addSynonyms(from, to, factory);
+				}
+			}
+		}
+		return dict;
 	}
-
-	public static SynonymDictionary createSynonymsFromCms(TermCoderFactory factory, SynonymDictionaryListKey synonymContentKey, ContentType synonymContentType) {
-        SynonymDictionary dict = new SynonymDictionary();
-        CmsManager instance = CmsManager.getInstance();
-
-        ContentNodeI synRootNode = instance.getContentNode(ContentKey.getContentKey(synonymContentKey.getContentKey()), DraftContext.MAIN);
-        if (synRootNode == null)
-            return dict;
-        Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, synonymContentType, instance, DraftContext.MAIN);
-        Map<ContentKey, ContentNodeI> synonymNodes = instance.getContentNodes(synonymKeys, DraftContext.MAIN);
-        for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
-            ContentNodeI node = contentNodeIterator.next();
-            String[] from = getSynonymFromValues(node);
-            String[] to = getSynonymToValues(node);
-            if (from != null && to != null && to.length > 0) {
-                boolean bidirectional = Boolean.TRUE.equals(node.getAttributeValue("bidirectional"));
-                if (bidirectional) {
-                    Set<String> synonyms = new HashSet<String>(to.length + 1);
-                    for (String word : from) {
-                        synonyms.add(word);
-                    }
-                    for (String word : to) {
-                        synonyms.add(word);
-                    }
-                    dict.addSynonyms(synonyms, factory);
-                } else {
-                    dict.addSynonyms(from, to, factory);
-                }
-            }
-        }
-        return dict;
-    }
-
-	public static SynonymDictionary createSynonymsFromSource(TermCoderFactory factory, SynonymDictionaryListKey synonymContentKey, ContentType synonymContentType, StoreContentSource source) {
-	        SynonymDictionary dict = new SynonymDictionary();
-
-	        ContentNodeI synRootNode = source.getContentNode(ContentKey.getContentKey(synonymContentKey.getContentKey()), DraftContext.MAIN);
-	        if (synRootNode == null)
-	            return dict;
-	        Set<ContentKey> synonymKeys = new HashSet<ContentKey>();
-	        collectReachableKeys(synonymKeys, synonymContentType, synRootNode, source, DraftContext.MAIN);
-	        Map<ContentKey, ContentNodeI> synonymNodes = source.getContentNodes(synonymKeys, DraftContext.MAIN);
-	        for (Iterator<ContentNodeI> contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator.hasNext();) {
-	            ContentNodeI node = contentNodeIterator.next();
-	            String[] from = getSynonymFromValues(node);
-	            String[] to = getSynonymToValues(node);
-	            if (from != null && to != null && to.length > 0) {
-	                boolean bidirectional = Boolean.TRUE.equals(node.getAttributeValue("bidirectional"));
-	                if (bidirectional) {
-	                    Set<String> synonyms = new HashSet<String>(to.length + 1);
-	                    for (String word : from) {
-	                        synonyms.add(word);
-	                    }
-	                    for (String word : to) {
-	                        synonyms.add(word);
-	                    }
-	                    dict.addSynonyms(synonyms, factory);
-	                } else {
-	                    dict.addSynonyms(from, to, factory);
-	                }
-	            }
-	        }
-	        return dict;
-	    }
-
-	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI rootNode, StoreContentSource storeContentSource, DraftContext draftContext){
-	    if (rootNode == null)
-            return;
-        Set<ContentKey> children = rootNode.getChildKeys();       
-        for ( ContentKey k : children ) {
-            if (targetType == null || targetType.equals(k.getType())) {
-                collectedKeys.add(k);
-                collectReachableKeys(collectedKeys, targetType, storeContentSource.getContentNode(k, draftContext), storeContentSource, draftContext);
-            }
-        }
-	}
-	
 
     /**
      * @param node

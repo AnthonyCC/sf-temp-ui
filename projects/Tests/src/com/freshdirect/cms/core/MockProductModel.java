@@ -26,10 +26,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumLayoutType;
@@ -39,7 +39,7 @@ import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.TagModel;
@@ -47,14 +47,19 @@ import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
+/**
+ * @author zsombor
+ * 
+ */
 public class MockProductModel extends MockContentNodeModel implements
 		ProductModel, Cloneable {
 
-    private static final long serialVersionUID = 8059062882580615207L;
-
-    private List<SkuModel> skuModels;
+	private List<SkuModel> skuModels;
 	private List<BrandModel> brands = new ArrayList<BrandModel>();
 
+	/**
+     * 
+     */
 	public MockProductModel() {
 	}
 
@@ -66,8 +71,8 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	public MockProductModel(String catId, String productId) {
-		super(ContentKey.getContentKey(FDContentTypes.PRODUCT, productId));
-		setParentKeys(Collections.singleton(ContentKey.getContentKey(FDContentTypes.CATEGORY,
+		super(new ContentKey(FDContentTypes.PRODUCT, productId));
+		setParentKeys(Collections.singleton(new ContentKey(FDContentTypes.CATEGORY,
 				catId)));
 	}
 
@@ -84,7 +89,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#enforceQuantityMax()
+	 * @see com.freshdirect.fdstore.content.ProductModel#enforceQuantityMax()
 	 */
 	@Override
 	public boolean enforceQuantityMax() {
@@ -95,7 +100,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getAboutPriceFormatted(double)
+	 * com.freshdirect.fdstore.content.ProductModel#getAboutPriceFormatted(double)
 	 */
 	@Override
 	public String getAboutPriceFormatted(double savingsPercentage) {
@@ -105,7 +110,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getActiveYmalSet()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getActiveYmalSet()
 	 */
 	@Override
 	public YmalSet getActiveYmalSet() {
@@ -115,7 +120,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAka()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAka()
 	 */
 	@Override
 	public String getAka() {
@@ -125,7 +130,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAlsoSoldAs(int)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAlsoSoldAs(int)
 	 */
 	@Override
 	public ProductModel getAlsoSoldAs(int idx) {
@@ -135,7 +140,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAlsoSoldAs()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAlsoSoldAs()
 	 */
 	@Override
 	public List<ProductModel> getAlsoSoldAs() {
@@ -145,7 +150,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAlsoSoldAsName()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAlsoSoldAsName()
 	 */
 	@Override
 	public String getAlsoSoldAsName() {
@@ -155,7 +160,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAlsoSoldAsRefs()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAlsoSoldAsRefs()
 	 */
 	@Override
 	public List getAlsoSoldAsRefs() {
@@ -165,7 +170,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAlternateImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAlternateImage()
 	 */
 	@Override
 	public Image getAlternateImage() {
@@ -175,7 +180,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getAutoconfiguration()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getAutoconfiguration()
 	 */
 	@Override
 	public FDConfigurableI getAutoconfiguration() {
@@ -185,7 +190,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getBlockedDays()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBlockedDays()
 	 */
 	@Override
 	public DayOfWeekSet getBlockedDays() {
@@ -195,7 +200,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getBrands()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBrands()
 	 */
 	@Override
 	public List<BrandModel> getBrands() {
@@ -205,7 +210,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getCategoryImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getCategoryImage()
 	 */
 	@Override
 	public Image getCategoryImage() {
@@ -216,7 +221,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getCommonNutritionInfo(com
+	 * com.freshdirect.fdstore.content.ProductModel#getCommonNutritionInfo(com
 	 * .freshdirect.content.nutrition.ErpNutritionInfoType)
 	 */
 	@Override
@@ -228,7 +233,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getComponentGroups()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getComponentGroups()
 	 */
 	@Override
 	public List<ComponentGroupModel> getComponentGroups() {
@@ -238,7 +243,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getConfirmImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getConfirmImage()
 	 */
 	@Override
 	public Image getConfirmImage() {
@@ -249,7 +254,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getContainerWeightHalfPint()
+	 * com.freshdirect.fdstore.content.ProductModel#getContainerWeightHalfPint()
 	 */
 	@Override
 	public Double getContainerWeightHalfPint() {
@@ -259,7 +264,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getContainerWeightPint()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getContainerWeightPint()
 	 */
 	@Override
 	public Double getContainerWeightPint() {
@@ -269,7 +274,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getContainerWeightQuart()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getContainerWeightQuart()
 	 */
 	@Override
 	public Double getContainerWeightQuart() {
@@ -279,7 +284,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getCountryOfOrigin()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getCountryOfOrigin()
 	 */
 	@Override
 	public List<String> getCountryOfOrigin() throws FDResourceException {
@@ -289,7 +294,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDealPercentage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDealPercentage()
 	 */
 	@Override
 	public int getDealPercentage() {
@@ -300,7 +305,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getDealPercentage(java.lang
+	 * com.freshdirect.fdstore.content.ProductModel#getDealPercentage(java.lang
 	 * .String)
 	 */
 	@Override
@@ -311,7 +316,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDefaultPrice()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDefaultPrice()
 	 */
 	@Override
 	public String getDefaultPrice() {
@@ -321,7 +326,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDefaultSku()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDefaultSku()
 	 */
 	@Override
 	public SkuModel getDefaultSku() {
@@ -331,7 +336,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDepartment()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDepartment()
 	 */
 	@Override
 	public DepartmentModel getDepartment() {
@@ -341,7 +346,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDescriptiveImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDescriptiveImage()
 	 */
 	@Override
 	public Image getDescriptiveImage() {
@@ -351,7 +356,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDetailImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDetailImage()
 	 */
 	@Override
 	public Image getDetailImage() {
@@ -361,7 +366,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDisplayableBrands()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDisplayableBrands()
 	 */
 	@Override
 	public List<BrandModel> getDisplayableBrands() {
@@ -371,7 +376,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDisplayableBrands(int)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDisplayableBrands(int)
 	 */
 	@Override
 	public List<BrandModel> getDisplayableBrands(int numberOfBrands) {
@@ -381,7 +386,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getDonenessGuide()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getDonenessGuide()
 	 */
 	@Override
 	public List<Html> getDonenessGuide() {
@@ -391,7 +396,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getExpertWeight()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getExpertWeight()
 	 */
 	@Override
 	public int getExpertWeight() {
@@ -401,7 +406,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getFddefFrenching()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getFddefFrenching()
 	 */
 	@Override
 	public Html getFddefFrenching() {
@@ -411,7 +416,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getFddefGrade()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getFddefGrade()
 	 */
 	@Override
 	public Html getFddefGrade() {
@@ -421,7 +426,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getFddefRipeness()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getFddefRipeness()
 	 */
 	@Override
 	public Html getFddefRipeness() {
@@ -431,7 +436,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getFeatureImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getFeatureImage()
 	 */
 	@Override
 	public Image getFeatureImage() {
@@ -441,7 +446,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getFreshTips()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getFreshTips()
 	 */
 	@Override
 	public Html getFreshTips() {
@@ -452,7 +457,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getHighestDealPercentage()
+	 * com.freshdirect.fdstore.content.ProductModel#getHighestDealPercentage()
 	 */
 	@Override
 	public int getHighestDealPercentage() {
@@ -463,7 +468,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getHighestDealPercentage(java
+	 * com.freshdirect.fdstore.content.ProductModel#getHighestDealPercentage(java
 	 * .lang.String)
 	 */
 	@Override
@@ -474,7 +479,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getHowtoCookitFolders()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getHowtoCookitFolders()
 	 */
 	@Override
 	public List<CategoryModel> getHowtoCookitFolders() {
@@ -484,7 +489,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getLayout()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getLayout()
 	 */
 	@Override
 	public EnumLayoutType getLayout() {
@@ -494,7 +499,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getNewWineRegion()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewWineRegion()
 	 */
 	@Override
 	public List<DomainValue> getNewWineRegion() {
@@ -504,7 +509,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getNewWineType()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewWineType()
 	 */
 	@Override
 	public List<DomainValue> getNewWineType() {
@@ -514,7 +519,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPackageDescription()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPackageDescription()
 	 */
 	@Override
 	public String getPackageDescription() {
@@ -524,7 +529,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPartallyFrozen()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPartallyFrozen()
 	 */
 	@Override
 	public Html getPartallyFrozen() {
@@ -534,7 +539,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPerfectPair()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPerfectPair()
 	 */
 	@Override
 	public CategoryModel getPerfectPair() {
@@ -544,7 +549,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPreferredSku()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPreferredSku()
 	 */
 	@Override
 	public SkuModel getPreferredSku() {
@@ -554,7 +559,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPrice(double)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPrice(double)
 	 */
 	@Override
 	public double getPrice(double savingsPercentage) {
@@ -564,7 +569,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPriceFormatted(double,
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPriceFormatted(double,
 	 * String)
 	 */
 	@Override
@@ -575,7 +580,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPrimaryBrandName()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPrimaryBrandName()
 	 */
 	@Override
 	public String getPrimaryBrandName() {
@@ -586,7 +591,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getPrimaryBrandName(java.lang
+	 * com.freshdirect.fdstore.content.ProductModel#getPrimaryBrandName(java.lang
 	 * .String)
 	 */
 	@Override
@@ -597,7 +602,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getPrimaryHome()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getPrimaryHome()
 	 */
 	@Override
 	public CategoryModel getPrimaryHome() {
@@ -607,7 +612,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProdImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProdImage()
 	 */
 	@Override
 	public Image getProdImage() {
@@ -617,7 +622,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProdPageRatings()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProdPageRatings()
 	 */
 	@Override
 	public String getProdPageRatings() {
@@ -627,7 +632,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProdPageTextRatings()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProdPageTextRatings()
 	 */
 	@Override
 	public String getProdPageTextRatings() {
@@ -637,7 +642,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductAbout()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductAbout()
 	 */
 	@Override
 	public Html getProductAbout() {
@@ -647,7 +652,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductBottomMedia()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductBottomMedia()
 	 */
 	@Override
 	public Html getProductBottomMedia() {
@@ -657,7 +662,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductBundle()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductBundle()
 	 */
 	@Override
 	public List<ProductModel> getProductBundle() {
@@ -667,7 +672,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductDescription()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductDescription()
 	 */
 	@Override
 	public Html getProductDescription() {
@@ -678,7 +683,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getProductDescriptionNote()
+	 * com.freshdirect.fdstore.content.ProductModel#getProductDescriptionNote()
 	 */
 	@Override
 	public Html getProductDescriptionNote() {
@@ -688,7 +693,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductLayout()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductLayout()
 	 */
 	@Override
 	public EnumProductLayout getProductLayout() {
@@ -703,7 +708,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductQualityNote()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductQualityNote()
 	 */
 	@Override
 	public Html getProductQualityNote() {
@@ -713,7 +718,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductRating()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductRating()
 	 */
 	@Override
 	public String getProductRating() throws FDResourceException {
@@ -728,7 +733,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductTerms()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductTerms()
 	 */
 	@Override
 	public Html getProductTerms() {
@@ -738,7 +743,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getProductTermsMedia()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getProductTermsMedia()
 	 */
 	@Override
 	public Html getProductTermsMedia() {
@@ -748,7 +753,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getQuantityIncrement()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getQuantityIncrement()
 	 */
 	@Override
 	public float getQuantityIncrement() {
@@ -758,7 +763,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getQuantityMaximum()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getQuantityMaximum()
 	 */
 	@Override
 	public float getQuantityMaximum() {
@@ -768,7 +773,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getQuantityMinimum()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getQuantityMinimum()
 	 */
 	@Override
 	public float getQuantityMinimum() {
@@ -778,7 +783,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getQuantityText()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getQuantityText()
 	 */
 	@Override
 	public String getQuantityText() {
@@ -789,7 +794,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getQuantityTextSecondary()
+	 * com.freshdirect.fdstore.content.ProductModel#getQuantityTextSecondary()
 	 */
 	@Override
 	public String getQuantityTextSecondary() {
@@ -799,7 +804,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRating()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRating()
 	 */
 	@Override
 	public List<DomainValue> getRating() {
@@ -809,7 +814,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRatingProdName()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRatingProdName()
 	 */
 	@Override
 	public String getRatingProdName() {
@@ -819,7 +824,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRatingRelatedImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRatingRelatedImage()
 	 */
 	@Override
 	public Image getRatingRelatedImage() {
@@ -829,7 +834,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRecommendTable()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRecommendTable()
 	 */
 	@Override
 	public Html getRecommendTable() {
@@ -840,7 +845,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getRecommendedAlternatives()
+	 * com.freshdirect.fdstore.content.ProductModel#getRecommendedAlternatives()
 	 */
 	@Override
 	public List<ContentNodeModel> getRecommendedAlternatives() {
@@ -850,7 +855,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRedirectUrl()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRedirectUrl()
 	 */
 	@Override
 	public String getRedirectUrl() {
@@ -860,7 +865,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRelatedRecipes()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRelatedRecipes()
 	 */
 	@Override
 	public List<Recipe> getRelatedRecipes() {
@@ -870,7 +875,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getRolloverImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getRolloverImage()
 	 */
 	@Override
 	public Image getRolloverImage() {
@@ -880,7 +885,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSalesUnitDescription()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSalesUnitDescription()
 	 */
 	@Override
 	public Html getSalesUnitDescription() {
@@ -890,7 +895,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSalesUnitLabel()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSalesUnitLabel()
 	 */
 	@Override
 	public String getSalesUnitLabel() {
@@ -900,7 +905,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSeafoodOrigin()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSeafoodOrigin()
 	 */
 	@Override
 	public String getSeafoodOrigin() {
@@ -910,7 +915,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSeasonText()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSeasonText()
 	 */
 	@Override
 	public String getSeasonText() {
@@ -920,7 +925,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSellBySalesunit()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSellBySalesunit()
 	 */
 	@Override
 	public String getSellBySalesunit() {
@@ -930,7 +935,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getServingSuggestion()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getServingSuggestion()
 	 */
 	@Override
 	public String getServingSuggestion() {
@@ -940,7 +945,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSku(int)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSku(int)
 	 */
 	@Override
 	public SkuModel getSku(int idx) {
@@ -950,7 +955,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSku(java.lang.String)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSku(java.lang.String)
 	 */
 	@Override
 	public SkuModel getSku(String skuCode) {
@@ -965,7 +970,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSkuCodes()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSkuCodes()
 	 */
 	@Override
 	public List<String> getSkuCodes() {
@@ -979,7 +984,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSkus()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSkus()
 	 */
 	@Override
 	public List<SkuModel> getSkus() {
@@ -989,7 +994,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSourceProduct()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSourceProduct()
 	 */
 	@Override
 	public ProductModel getSourceProduct() {
@@ -999,7 +1004,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getSubtitle()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getSubtitle()
 	 */
 	@Override
 	public String getSubtitle() {
@@ -1009,7 +1014,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getTemplateType()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getTemplateType()
 	 */
 	@Override
 	public EnumTemplateType getTemplateType() {
@@ -1019,7 +1024,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getThumbnailImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getThumbnailImage()
 	 */
 	@Override
 	public Image getThumbnailImage() {
@@ -1029,7 +1034,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getTieredDealPercentage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getTieredDealPercentage()
 	 */
 	@Override
 	public int getTieredDealPercentage() {
@@ -1040,7 +1045,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getTieredDealPercentage(java
+	 * com.freshdirect.fdstore.content.ProductModel#getTieredDealPercentage(java
 	 * .lang.String)
 	 */
 	@Override
@@ -1051,7 +1056,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getTieredPrice(double)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getTieredPrice(double)
 	 */
 	@Override
 	public String getTieredPrice(double savingsPercentage) {
@@ -1061,7 +1066,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getUnitOfMeasure()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getUnitOfMeasure()
 	 */
 	@Override
 	public DomainValue getUnitOfMeasure() {
@@ -1071,7 +1076,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getUsageList()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getUsageList()
 	 */
 	@Override
 	public List<Domain> getUsageList() {
@@ -1081,7 +1086,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getVariationMatrix()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getVariationMatrix()
 	 */
 	@Override
 	public List<Domain> getVariationMatrix() {
@@ -1091,7 +1096,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getVariationOptions()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getVariationOptions()
 	 */
 	@Override
 	public List<Domain> getVariationOptions() {
@@ -1102,7 +1107,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getWasPriceFormatted(double)
+	 * com.freshdirect.fdstore.content.ProductModel#getWasPriceFormatted(double)
 	 */
 	@Override
 	public String getWasPriceFormatted(double savingsPercentage) {
@@ -1112,7 +1117,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWeRecommendImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWeRecommendImage()
 	 */
 	@Override
 	public List<ProductModel> getWeRecommendImage() {
@@ -1122,7 +1127,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWeRecommendText()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWeRecommendText()
 	 */
 	@Override
 	public List<ProductModel> getWeRecommendText() {
@@ -1132,7 +1137,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineAging()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineAging()
 	 */
 	@Override
 	public String getWineAging() {
@@ -1142,7 +1147,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineAlchoholContent()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineAlchoholContent()
 	 */
 	@Override
 	public String getWineAlchoholContent() {
@@ -1152,7 +1157,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineCity()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineCity()
 	 */
 	@Override
 	public String getWineCity() {
@@ -1162,7 +1167,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineClassification()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineClassification()
 	 */
 	@Override
 	public String getWineClassification() {
@@ -1172,7 +1177,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineClassifications()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineClassifications()
 	 */
 	@Override
 	public List<DomainValue> getWineClassifications() {
@@ -1182,7 +1187,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineCountry()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineCountry()
 	 */
 	@Override
 	public DomainValue getWineCountry() {
@@ -1192,7 +1197,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineFyi()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineFyi()
 	 */
 	@Override
 	public String getWineFyi() {
@@ -1202,7 +1207,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineImporter()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineImporter()
 	 */
 	@Override
 	public String getWineImporter() {
@@ -1212,7 +1217,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineRating1()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineRating1()
 	 */
 	@Override
 	public List<DomainValue> getWineRating1() {
@@ -1222,7 +1227,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineRating2()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineRating2()
 	 */
 	@Override
 	public List<DomainValue> getWineRating2() {
@@ -1232,7 +1237,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineRating3()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineRating3()
 	 */
 	@Override
 	public List<DomainValue> getWineRating3() {
@@ -1262,7 +1267,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineRegion()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineRegion()
 	 */
 	@Override
 	public String getWineRegion() {
@@ -1272,7 +1277,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineReview1()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineReview1()
 	 */
 	@Override
 	public Html getWineReview1() {
@@ -1282,7 +1287,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineReview2()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineReview2()
 	 */
 	@Override
 	public Html getWineReview2() {
@@ -1292,7 +1297,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineReview3()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineReview3()
 	 */
 	@Override
 	public Html getWineReview3() {
@@ -1302,7 +1307,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineType()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineType()
 	 */
 	@Override
 	public String getWineType() {
@@ -1312,7 +1317,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineVarietal()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineVarietal()
 	 */
 	@Override
 	public List<DomainValue> getWineVarietal() {
@@ -1322,7 +1327,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getWineVintage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getWineVintage()
 	 */
 	@Override
 	public List<DomainValue> getWineVintage() {
@@ -1332,7 +1337,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getYmalCategories()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalCategories()
 	 */
 	@Override
 	public List<CategoryModel> getYmalCategories() {
@@ -1342,7 +1347,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getYmalProducts()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalProducts()
 	 */
 	@Override
 	public List<ProductModel> getYmalProducts() {
@@ -1353,7 +1358,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#getYmalProducts(java.util.Set)
+	 * com.freshdirect.fdstore.content.ProductModel#getYmalProducts(java.util.Set)
 	 */
 	@Override
 	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
@@ -1363,7 +1368,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getYmalRecipes()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalRecipes()
 	 */
 	@Override
 	public List<Recipe> getYmalRecipes() {
@@ -1373,7 +1378,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getYmals()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getYmals()
 	 */
 	@Override
 	public List<ContentNodeModel> getYmals() {
@@ -1383,7 +1388,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getZoomImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getZoomImage()
 	 */
 	@Override
 	public Image getZoomImage() {
@@ -1393,7 +1398,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#hasComponentGroups()
+	 * @see com.freshdirect.fdstore.content.ProductModel#hasComponentGroups()
 	 */
 	@Override
 	public boolean hasComponentGroups() {
@@ -1403,7 +1408,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#hasTerms()
+	 * @see com.freshdirect.fdstore.content.ProductModel#hasTerms()
 	 */
 	@Override
 	public boolean hasTerms() {
@@ -1413,7 +1418,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isAutoconfigurable()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isAutoconfigurable()
 	 */
 	@Override
 	public boolean isAutoconfigurable() {
@@ -1423,7 +1428,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @seecom.freshdirect.storeapi.content.ProductModel#
+	 * @seecom.freshdirect.fdstore.content.ProductModel#
 	 * isCharacteristicsComponentsAvailable
 	 * (com.freshdirect.fdstore.FDConfigurableI)
 	 */
@@ -1435,7 +1440,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isDisplayableBasedOnCms()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isDisplayableBasedOnCms()
 	 */
 	@Override
 	public boolean isDisplayableBasedOnCms() {
@@ -1446,7 +1451,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#isExcludedRecommendation()
+	 * com.freshdirect.fdstore.content.ProductModel#isExcludedRecommendation()
 	 */
 	@Override
 	public boolean isExcludedRecommendation() {
@@ -1456,7 +1461,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isFrozen()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isFrozen()
 	 */
 	@Override
 	public boolean isFrozen() {
@@ -1466,7 +1471,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isGrocery()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isGrocery()
 	 */
 	@Override
 	public boolean isGrocery() {
@@ -1476,7 +1481,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isIncrementMaxEnforce()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isIncrementMaxEnforce()
 	 */
 	@Override
 	public boolean isIncrementMaxEnforce() {
@@ -1486,7 +1491,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isInvisible()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isInvisible()
 	 */
 	@Override
 	public boolean isInvisible() {
@@ -1496,7 +1501,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isNew()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isNew()
 	 */
 	@Override
 	public boolean isNew() {
@@ -1506,7 +1511,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getBackInStockAge()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBackInStockAge()
 	 */
 	@Override
 	public double getBackInStockAge() {
@@ -1516,7 +1521,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getBackInStockDate()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBackInStockDate()
 	 */
 	@Override
 	public Date getBackInStockDate() {
@@ -1526,7 +1531,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getNewAge()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewAge()
 	 */
 	@Override
 	public double getNewAge() {
@@ -1541,7 +1546,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#getNewDate()
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewDate()
 	 */
 	@Override
 	public Date getNewDate() {
@@ -1551,7 +1556,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isBackInStock()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isBackInStock()
 	 */
 	@Override
 	public boolean isBackInStock() {
@@ -1561,7 +1566,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isNotSearchable()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isNotSearchable()
 	 */
 	@Override
 	public boolean isNotSearchable() {
@@ -1571,7 +1576,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isNutritionMultiple()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isNutritionMultiple()
 	 */
 	@Override
 	public boolean isNutritionMultiple() {
@@ -1581,7 +1586,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isPerishable()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isPerishable()
 	 */
 	@Override
 	public boolean isPerishable() {
@@ -1591,7 +1596,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isPlatter()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isPlatter()
 	 */
 	@Override
 	public boolean isPlatter() {
@@ -1601,7 +1606,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isPreconfigured()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isPreconfigured()
 	 */
 	@Override
 	public boolean isPreconfigured() {
@@ -1612,7 +1617,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.freshdirect.storeapi.content.ProductModel#isQualifiedForPromotions()
+	 * com.freshdirect.fdstore.content.ProductModel#isQualifiedForPromotions()
 	 */
 	@Override
 	public boolean isQualifiedForPromotions() throws FDResourceException {
@@ -1622,7 +1627,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isShowSalesUnitImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isShowSalesUnitImage()
 	 */
 	@Override
 	public boolean isShowSalesUnitImage() {
@@ -1632,7 +1637,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isShowTopTenImage()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isShowTopTenImage()
 	 */
 	@Override
 	public boolean isShowTopTenImage() {
@@ -1642,7 +1647,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.ProductModel#isSoldBySalesUnits()
+	 * @see com.freshdirect.fdstore.content.ProductModel#isSoldBySalesUnits()
 	 */
 	@Override
 	public boolean isSoldBySalesUnits() {
@@ -1713,7 +1718,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.YmalSource#getRelatedProducts()
+	 * @see com.freshdirect.fdstore.content.YmalSource#getRelatedProducts()
 	 */
 	@Override
 	public List<ProductModel> getRelatedProducts() {
@@ -1723,7 +1728,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.YmalSource#getYmalHeader()
+	 * @see com.freshdirect.fdstore.content.YmalSource#getYmalHeader()
 	 */
 	@Override
 	public String getYmalHeader() {
@@ -1733,7 +1738,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.storeapi.content.YmalSource#resetActiveYmalSetSession()
+	 * @see com.freshdirect.fdstore.content.YmalSource#resetActiveYmalSetSession()
 	 */
 	@Override
 	public void resetActiveYmalSetSession() {
@@ -2095,27 +2100,16 @@ public class MockProductModel extends MockContentNodeModel implements
 
 	@Override
 	public UserContext getUserContext() {
-		return UserContext.createUserContext(EnumEStoreId.FD);
+		return UserContext.createDefault(EnumEStoreId.FD);
 	}
-
 	@Override
 	public String getPageTitle() {
 		return null;
 	}
-	
-    @Override
-    public String getFdxPageTitle() {
-        return null;
-    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return null;
-	}
-	
-	@Override
-	public String getFdxSEOMetaDescription() {
-	    return null;
 	}
 
 	@Override

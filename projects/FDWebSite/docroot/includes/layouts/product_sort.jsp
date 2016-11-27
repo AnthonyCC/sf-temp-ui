@@ -1,9 +1,10 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -17,7 +18,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 
@@ -110,14 +111,14 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		
 			<tr valign="top">
 	    		<td CLASS="text12bold" width="<%= W_PRODUCT_SORT_TOTAL %>" colspan="<%= W_PRODUCT_SORT_TOTAL %>">
-	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="3">
+	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3">
 	    		</td>
 			</tr>
 		</table>
 		<font class="space4pix"><BR></font>
 		<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>">
 			<TR VALIGN="TOP" ALIGN="CENTER">
-				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.storeapi.content.ProductModel"><%
+				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 						
 						ProductModel productNode = contentNode;
 						ProductImpression pi = new ProductImpression(productNode);
@@ -148,7 +149,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 					
 			<%if (ord < recommendations.getProducts().size()) {%>		
 				<td width="10">
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
+					<img src="/media_stat/images/layout/clear.gif" width="8" height="1">
 			   </td>
 			<%} %>
 			<%++ord;%>
@@ -163,10 +164,10 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_PRODUCT_SORT_TOTAL%>">
 	<TR VALIGN="TOP">
-		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" HEIGHT="5"></TD></TR>
+		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" HEIGHT="5"></TD></TR>
 		<TR VALIGN="TOP"><TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" CLASS="text9"><FONT CLASS="text10bold">Compare <%= currentFolder.getFullName() %> by: Taste &amp; Price</FONT></TD></TR>
-		<TR VALIGN="TOP"><TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="3"></TD></TR> <TR VALIGN="TOP">
-		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="10" HEIGHT="1"></TD>
+		<TR VALIGN="TOP"><TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3"></TD></TR> <TR VALIGN="TOP">
+		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="10" HEIGHT="1"></TD>
 	</TR>
 </TABLE>
 
@@ -183,7 +184,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
                         nameColWidth = W_PRODUCT_SORT_NAME;
 //                         remainColWidth = (W_PRODUCT_SORT_TOTAL-(nameColWidth+W_PRODUCT_SORT_PRICE))/(atrDisplayCount-2);
                 }
-%>		<TD colspan="2" bgcolor="#eeeeee" <%--WIDTH="<%= nameColWidth+W_PRODUCT_SORT_IMG %>" --%> CLASS="text10bold"><img border="0" src="/media_stat/images/layout/clear.gif" alt="" width="3">
+%>		<TD colspan="2" bgcolor="#eeeeee" <%--WIDTH="<%= nameColWidth+W_PRODUCT_SORT_IMG %>" --%> CLASS="text10bold"><img border="0" src="/media_stat/images/layout/clear.gif" width="3">
 <%
         if(orderBy.equalsIgnoreCase("variety")){
 %>
@@ -287,7 +288,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
          shownFolderLabel=true;
          lastFolder = workFolder;
 %>
-	<TR VALIGN="MIDDLE"><TD colspan="5" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" CLASS="text10bold" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" alt="" width="3" border="0"><%=workFolder.getFullName()%>:</td>
+	<TR VALIGN="MIDDLE"><TD colspan="5" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" CLASS="text10bold" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="3" border="0"><%=workFolder.getFullName()%>:</td>
 	</tr>
 <%
     }

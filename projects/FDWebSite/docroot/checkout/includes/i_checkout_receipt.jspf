@@ -87,11 +87,11 @@ if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckout
 <%-- END INCLUDE SURVEY --%>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>">
-<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-<tr><td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 <a name="receiptDetails"></a><span class="title14">COMPLETE DETAILS FOR ORDER #<span class="titleor14"><%=orderNumber%></span></span>
-<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
-<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr><td><br><br></td></tr>
 <tr>
 	<td align="center">
@@ -102,7 +102,7 @@ if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckout
 <TR VALIGN="TOP">
 	<TD>
 	<img src="/media_stat/images/navigation/cart_details.gif" WIDTH="96" HEIGHT="15" border="0" alt="CART DETAILS"><br>
-	<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="4">
+	<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="4">
 	</TD>
 </TR>
 <tr>

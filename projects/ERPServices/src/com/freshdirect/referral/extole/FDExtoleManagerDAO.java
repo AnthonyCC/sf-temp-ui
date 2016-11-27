@@ -3,9 +3,11 @@ package com.freshdirect.referral.extole;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
@@ -16,8 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
+import org.apache.openjpa.lib.log.Log;
 
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -38,13 +40,13 @@ public class FDExtoleManagerDAO implements Serializable {
 	private static final String UPDATE_RAF_TRANS = "UPDATE CUST.RAF_TRANS SET TRANS_STATUS=?,ERROR_MSG=?, EXTOLE_EVENT_ID=?,TRANS_TIME=? WHERE ID=?";
 
 	// verify the action types and query
-	private static final String SELECT_EXTOLE_CREATE_CONVERSION_TRANSACTION = " SELECT RFT.ID AS TRANS_ID, RFT.TRANS_TYPE AS EVENT_TYPE , "
-			+ "SA.CUSTOMER_ID AS PARTNER_USER_ID , S.ID AS PARTNER_CONVERSION_ID , "
+	private static final String SELECT_EXTOLE_CREATE_CONVERSION_TRANSACTION = " SELECT RFT.ID AS TRANS_ID, RFT.TRANS_TYPE AS EVENT_TYPE ,"
+			+ " SA.CUSTOMER_ID AS PARTNER_USER_ID , S.ID AS PARTNER_CONVERSION_ID , "
 			+ "CIF.EMAIL AS EMAIL , CIF.FIRST_NAME AS FIRST_NAME , CIF.LAST_NAME AS LAST_NAME, "
-			+ "FDE.RAF_CLICK_ID AS CLICK_ID, FDE.RAF_PROMO_CODE AS RAF_PROMO_CODE "
-			+ "FROM  CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT, CUST.CUSTOMERINFO CIF, CUST.FDCUSTOMER FDC, CUST.FDCUSTOMER_ESTORE FDE "
-			+ "WHERE S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') "
-			+ "AND SA.CUSTOMER_ID = S.CUSTOMER_ID AND SA.SALE_ID=S.ID AND FDC.ID=FDE.FDCUSTOMER_ID AND S.E_STORE=FDE.E_STORE "
+			+ " FDC.RAF_CLICK_ID AS CLICK_ID, FDC.RAF_PROMO_CODE AS RAF_PROMO_CODE "
+			+ "FROM  CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT, CUST.CUSTOMERINFO CIF, CUST.FDCUSTOMER FDC "
+			+ " WHERE S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') "
+			+ "AND SA.CUSTOMER_ID = S.CUSTOMER_ID AND SA.SALE_ID=S.ID "
 			+ "AND SA.ID = RFT.SALESACTION_ID  AND  SA.CUSTOMER_ID=CIF.CUSTOMER_ID "
 			+ "AND SA.CUSTOMER_ID=FDC.ERP_CUSTOMER_ID "
 			+ "AND RFT.TRANS_STATUS IN('P','F') AND RFT.TRANS_TYPE ='purchase' "
@@ -80,7 +82,10 @@ public class FDExtoleManagerDAO implements Serializable {
 			}
 
 		} finally {
-			DaoUtil.close(rs, ps);
+			if (ps != null)
+				ps.close();
+			if (rs != null)
+				rs.close();
 		}
 		return list;
 	}
@@ -126,9 +131,9 @@ public class FDExtoleManagerDAO implements Serializable {
 	// modified the query to include clickid as we need that to send to extole
 
 	private static final String SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION ="SELECT RFT.ID AS TRANS_ID , RFT.EXTOLE_EVENT_ID AS EVENT_ID , " +
-"RFT.TRANS_TYPE AS EVENT_TYPE , S.CUSTOMER_ID AS PARTNER_USER_ID , FDE.RAF_CLICK_ID AS CLICK_ID " + 
-"FROM CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT,  CUST.FDCUSTOMER FDC, CUST.FDCUSTOMER_ESTORE FDE " + 
-"WHERE  S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') AND   SA.CUSTOMER_ID = S.CUSTOMER_ID AND FDC.ID=FDE.FDCUSTOMER_ID AND S.E_STORE=FDE.E_STORE " +
+"RFT.TRANS_TYPE AS EVENT_TYPE , S.CUSTOMER_ID AS PARTNER_USER_ID , FDC.RAF_CLICK_ID AS CLICK_ID " + 
+"FROM CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT,  CUST.FDCUSTOMER FDC " + 
+"WHERE  S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') AND   SA.CUSTOMER_ID = S.CUSTOMER_ID " +
 "AND  SA.SALE_ID=S.ID AND   SA.ID = RFT.SALESACTION_ID AND S.CUSTOMER_ID=FDC.ERP_CUSTOMER_ID " +
 "AND RFT.TRANS_STATUS IN('P','F') AND  RFT.TRANS_TYPE='approve' AND SA.ACTION_TYPE ='STL' " +
 "AND   RFT.TRANS_TIME > SYSDATE-30";
@@ -140,12 +145,10 @@ public class FDExtoleManagerDAO implements Serializable {
 	public static List<ExtoleConversionRequest> getExtoleApproveConversionTransactions(
 			Connection conn) throws SQLException {
 		List<ExtoleConversionRequest> list = new ArrayList<ExtoleConversionRequest>();
-		ResultSet rs = null;
-		PreparedStatement ps = null;
+		PreparedStatement ps = conn
+				.prepareStatement(SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION);
 		try {
-			ps = conn
-					.prepareStatement(SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION);
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				ExtoleConversionRequest requestModel = new ExtoleConversionRequest();
 				requestModel.setRafTransId(rs.getString("TRANS_ID"));
@@ -157,25 +160,28 @@ public class FDExtoleManagerDAO implements Serializable {
 
 				list.add(requestModel);
 			}
+			ps.close();
+
 		} finally {
-			DaoUtil.close(rs,ps);
+			if (ps != null)
+				ps.close();
 		}
 		return list;
 	}
 
 	public static void saveExtoleRewards(Connection conn,
-		List<FDRafCreditModel> rewards) throws SQLException {
-		PreparedStatement ps = null;
+			List<FDRafCreditModel> rewards) throws SQLException {
 
 		try {
+			PreparedStatement ps = null;
 			
 			ps = conn
 					.prepareStatement("INSERT INTO CUST.RAF_CREDIT "
 							+ "(ID,ADVOCATE_CUSTOMER_ID,STATUS,CREATION_TIME,MODIFIED_TIME,"
 							+ "   ADVOCATE_FIRST_NAME,ADVOCATE_LAST_NAME,ADVOCATE_EMAIL,ADVOCATE_PARTNER_UID,"
 							+ "   FRIEND_FIRST_NAME,FRIEND_LAST_NAME,FRIEND_EMAIL,FRIEND_PARTNER_UID,"
-							+ "   REWARD_TYPE,REWARD_DATE,REWARD_SET_NAME,REWARD_SET_ID,REWARD_VALUE,REWARD_DETAIL,CAMPAIGN_ID,CAMPAIGN_NAME) "
-							+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+							+ "   REWARD_TYPE,REWARD_DATE,REWARD_SET_NAME,REWARD_SET_ID,REWARD_VALUE,REWARD_DETAIL) "
+							+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			
 			FDRafCreditModel earnedReward = null;
 			for (Iterator<FDRafCreditModel> iterator = rewards.iterator(); iterator	.hasNext();) {
@@ -206,8 +212,7 @@ public class FDExtoleManagerDAO implements Serializable {
 					ps.setString(i++, earnedReward.getRewardSetId());
 					ps.setDouble(i++, earnedReward.getRewardValue());
 					ps.setString(i++, earnedReward.getRewardDetail());
-					ps.setString(i++, earnedReward.getCampaignId());
-					ps.setString(i++, earnedReward.getCampaignName());
+	
 					try {
 						int rowsaffected = ps.executeUpdate();
 						if (rowsaffected != 1) {			
@@ -218,21 +223,18 @@ public class FDExtoleManagerDAO implements Serializable {
 					}
 				}
 			}
+			ps.close();
 		} catch (SQLException e) {
 			throw e;
-		} finally {
-			DaoUtil.close(ps);
 		}
 	}
 
 	public static int getNextId(Connection conn) throws SQLException {
 		int batchNumber = -1;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
-			ps = conn
+			PreparedStatement ps = conn
 					.prepareStatement("SELECT CUST.RAF_SEQ.nextval FROM DUAL");
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				batchNumber = rs.getInt(1);
 			} else {
@@ -240,12 +242,12 @@ public class FDExtoleManagerDAO implements Serializable {
 				throw new SQLException(
 						"Unable to get next id from RAF Credit Table.");
 			}
+			rs.close();
+			ps.close();
 			return batchNumber;
 			// return tempSeq++;
 		} catch (SQLException e) {
 			throw e;
-		} finally {
-			DaoUtil.close(rs,ps);
 		}
 	}
 

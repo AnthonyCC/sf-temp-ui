@@ -30,22 +30,16 @@ public class ReservationTimeslots extends Message {
     public ReservationTimeslots(DeliveryAddresses deliveryAddresses, DeliveryTimeslots deliveryTimeslots, SessionUser user) {
 
         //Pass down notices messages
-    	if(deliveryAddresses!=null)
-    		addNoticeMessages(deliveryAddresses.getNotice());
-    	if(deliveryTimeslots!=null)
-    		addNoticeMessages(deliveryTimeslots.getNotice());
+        addNoticeMessages(deliveryAddresses.getNotice());
+        addNoticeMessages(deliveryTimeslots.getNotice());
 
         //Pass down warning messages
-        if(deliveryAddresses!=null)
-        	addWarningMessages(deliveryAddresses.getWarnings());
-        if(deliveryTimeslots!=null)
-        	addWarningMessages(deliveryTimeslots.getWarnings());
+        addWarningMessages(deliveryAddresses.getWarnings());
+        addWarningMessages(deliveryTimeslots.getWarnings());
 
         //Pass down error messages
-        if(deliveryAddresses!=null)
-        	addErrorMessages(deliveryAddresses.getErrors());
-        if(deliveryTimeslots!=null)
-        	addErrorMessages(deliveryTimeslots.getErrors());
+        addErrorMessages(deliveryAddresses.getErrors());
+        addErrorMessages(deliveryTimeslots.getErrors());
 
         setDeliveryAddresses(deliveryAddresses);
         setDeliveryTimeslots(deliveryTimeslots);
@@ -58,11 +52,9 @@ public class ReservationTimeslots extends Message {
     }
 
     public void setDeliveryAddresses(DeliveryAddresses deliveryAddresses) {
-    	if(deliveryAddresses!=null){
-    		this.deliveryAddresses = deliveryAddresses;
-    		this.deliveryAddresses.disableMessageMetaData();
-    		this.deliveryAddresses.setCheckoutHeader(null);
-    	}
+        this.deliveryAddresses = deliveryAddresses;
+        this.deliveryAddresses.disableMessageMetaData();
+        this.deliveryAddresses.setCheckoutHeader(null);
     }
 
     public DeliveryTimeslots getDeliveryTimeslots() {

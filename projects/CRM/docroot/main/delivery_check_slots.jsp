@@ -57,7 +57,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 		<div class="content_fixed">
 <table width="90%" cellpadding="0" cellspacing="0" border="0">
 <tr><td class="text12" colspan="2">Enter a street address and ZIP code to view available timeslots <span class="text11">(* Required Information)</span></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
 <fd:CheckAvailableTimeslots result="result" successPage="/main/delivery_available_slots.jsp?show=1address" actionName="makeAddress">
 <form name="address" method="POST">
 
@@ -90,7 +90,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <tr valign="top"><td class="text12" align="right"> Apartment&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <tr valign="top"><td class="text12" align="right">* City&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
@@ -98,7 +98,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <tr valign="top"><td class="text12" align="right">* State&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
-<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
+<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
 <td><input type="text"  maxlength="5" class="text11" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" name="address_check" vspace="8" value="Check My Address" border="0">
@@ -114,8 +114,8 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	}
 %>
 </fd:CheckAvailableTimeslots>
-<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="120" height="24"></td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="573" height="24"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="120" height="24"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="573" height="24"></td></tr>
 </table>
 </div>
 </tmpl:put>

@@ -37,7 +37,6 @@ public class Orders extends Message{
 		orderDetail.setReservationDateTime(order.getReservationDateTime());
 		orderDetail.setReservationTimeRange(order.getReservationTimeRange());
 		orderDetail.setStatus(order.getStatus());
-		orderDetail.setModifycount(order.getModifycount());
 		
 		//Add the orderDetail Object to the list
 		this.orders.add(orderDetail);

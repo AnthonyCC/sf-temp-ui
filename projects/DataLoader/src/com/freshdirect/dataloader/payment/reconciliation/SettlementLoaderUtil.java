@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +29,13 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.DataLoaderProperties;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationHome;
+import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
 public class SettlementLoaderUtil {
@@ -184,16 +182,7 @@ public class SettlementLoaderUtil {
 	public static void callSettlementBapi(String fileName) throws SapException, RemoteException, CreateException {
 		
 		ReconciliationSB reconciliationSB = lookupReconciliationHome().create();
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
-				try {
-					ReconciliationService.getInstance().sendSettlementReconToSap(new FileInputStream(f),fileName, DataLoaderProperties.getWorkingDir());
-				} catch (FileNotFoundException e) {
-					throw new RemoteException(e.getMessage());
-				}
-			}else{
 		reconciliationSB.sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
-			}
 	}
 
 	public static ReconciliationHome lookupReconciliationHome() throws EJBException {
@@ -201,6 +190,23 @@ public class SettlementLoaderUtil {
 		try {
 			ctx = getInitialContext();
 			return (ReconciliationHome) ctx.lookup("freshdirect.payment.Reconciliation");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null)
+					ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.debug(ne);
+			}
+		}
+	}
+
+	public static PayPalReconciliationHome lookupPPReconciliationHome() throws EJBException {
+		Context ctx = null;
+		try {
+			ctx = getInitialContext();
+			return (PayPalReconciliationHome) ctx.lookup("freshdirect.payment.PayPalReconciliation");
 		} catch (NamingException ex) {
 			throw new EJBException(ex);
 		} finally {
@@ -409,26 +415,5 @@ public class SettlementLoaderUtil {
 		return false;
 	}
 
-	public static void sendEmailNotification(String subject, String message, Exception e) {
-		
-		StringWriter sw = new StringWriter();
-		
-		sw.write("---------------------------------------------\n");
-		sw.write(message);
-		sw.write("---------------------------------------------\n");
-		
-		if(null!=e){
-			sw.write(e.getMessage() + "\n");
-			e.printStackTrace(new PrintWriter(sw));
-		}
-		
-		ErpMailSender mailer = new ErpMailSender();
-		
-		try {
-			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), subject, sw.getBuffer().toString());
-		} catch (MessagingException me) {
-			LOGGER.fatal("Could not send a email notifiation ", me);
-		}
-		
-	}
+	
 }

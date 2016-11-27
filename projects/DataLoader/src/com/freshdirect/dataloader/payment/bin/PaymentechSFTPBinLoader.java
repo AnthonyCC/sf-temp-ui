@@ -2,18 +2,26 @@ package com.freshdirect.dataloader.payment.bin;
 //com.freshdirect.dataloader.payment.bin.PaymentechSFTPBinLoader
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -35,7 +43,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
-import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.ejb.BINInfoManagerHome;
+import com.freshdirect.payment.ejb.BINInfoManagerSB;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
@@ -66,19 +75,18 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 	
 	private static void loadBINs(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException, FDResourceException {
 		String timestamp = SF.format(new Date());
-
+		//String timestamp ="2013_05_30_10_24";
 		//make the dfr file
 		System.out.println("DataLoaderProperties.getWorkingDir() :"+DataLoaderProperties.getWorkingDir());
-		File binFileA = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_BIN_A_" + timestamp + ".dfr");
-		File binFileB = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_BIN_B_" + timestamp + ".dfr"); 
-
+		File visaBinFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_VISA_" + timestamp + ".dfr");
+		File mcBinFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_MC_" + timestamp + ".dfr");
 		
 		boolean getFileFromProcessor=ctx.downloadFiles();
 		
 		if(getFileFromProcessor) {
-			downloadFile(ctx,binFileA, binFileB);
+			downloadFile(ctx,visaBinFile, mcBinFile);
 		}
-		loadBinFiles(binFileA, binFileB);
+		loadBinFiles(visaBinFile, mcBinFile);
 	}
 	
 	public static void parseFile(InputStream fileStream, BINContext context) {
@@ -88,7 +96,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		List<BINInfo> binInfos=new ArrayList<BINInfo>(5000);
 		int recordCount=0;
 		int counter=0;
-		EnumCardType cardType=null;
+		
 		String seq="";
 		String lowRange="";
 		String highRange="";
@@ -110,11 +118,6 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 				}
 				if(isHeaderRecord(line)) {
 					processedHeader=true;
-					if(isVISA(line))
-						cardType=EnumCardType.VISA;
-					else 
-						cardType=EnumCardType.MC;
-					
 				} else if (isTrailerRecord(line)){
 					if(!processedHeader) {
 						String msg="Error at line " + lineNumber + ": Invalid data (Trailer record without Header record.)"; 
@@ -134,7 +137,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 					seq=line.substring(0,8);
 					lowRange=line.substring(8,17);
 					highRange=line.substring(17,26);
-					binInfos.add(new BINInfo(Long.parseLong(lowRange),Long.parseLong(highRange),Long.parseLong(seq),cardType));
+					binInfos.add(new BINInfo(Long.parseLong(lowRange),Long.parseLong(highRange),Long.parseLong(seq),context.getCardType()));
 					counter++;
 				}
 				
@@ -159,16 +162,9 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 	}
 	
 	private static boolean isHeaderRecord(String line) {
-		return (isVISA(line) || isMC(line))?true:false;
+		return (line.startsWith("00000000VIUSDBTBIN") || line.startsWith("00000000MCUSDBTBIN"))?true:false;
 	}
 	
-	private static boolean isVISA(String header) {
-		return header.startsWith("00000000VIUSDBTBIN");
-	}
-	
-	private static boolean isMC(String header) {
-		return header.startsWith("00000000MCUSDBTBIN");
-	}
 	
 	private static void processHeader(String header, EnumCardType cardType) throws BadDataException {
 		if(EnumCardType.VISA.equals(cardType)|| EnumCardType.MC.equals(cardType)) {
@@ -213,8 +209,8 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		binInfos.add(mcBINInfo);
 		
 		
-		FDECommerceService.getInstance().saveBINInfo(binInfos);
-		
+		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
+		binInfoManagerSB.saveBINInfo(binInfos);
 	}
 	
 	private static FileContext getFileContext(String[] args) {
@@ -277,7 +273,24 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 			_tmpFileTwo.renameTo(mcBinFile);
 	}
 	
-
+	
+	
+	public static BINInfoManagerHome lookupBINInfoManagerHome() throws EJBException {
+		Context ctx = null;
+		try {
+			ctx = getInitialContext();
+			return (BINInfoManagerHome) ctx.lookup("freshdirect.payment.BINInfoManager");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null)
+					ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.debug(ne);
+			}
+		}
+	}
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");

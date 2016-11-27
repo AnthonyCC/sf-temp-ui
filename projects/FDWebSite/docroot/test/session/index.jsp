@@ -24,7 +24,7 @@
 %>
 <%@page import="java.io.OutputStreamWriter"%>
 <%@page import="java.io.PrintWriter"%>
-<%@page import="java.io.StringWriter"%><html lang="en-US" xml:lang="en-US">
+<%@page import="java.io.StringWriter"%><html>
 <head>
  <title>Session Dump</title>
 </head>

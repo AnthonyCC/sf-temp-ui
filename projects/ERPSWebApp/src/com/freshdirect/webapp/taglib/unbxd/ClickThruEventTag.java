@@ -8,11 +8,10 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
@@ -23,23 +22,25 @@ import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.RequestUtil;
 
-public class ClickThruEventTag extends SimpleTagSupport {
 
+public class ClickThruEventTag extends SimpleTagSupport {
+    
     private static final Logger LOGGER = LoggerFactory.getInstance(ClickThruEventTag.class);
 
     private ProductModel product = null;
-
+    
     public void setProduct(ProductModel product) {
         this.product = product;
     }
 
     @Override
     public void doTag() {
+        
         final PageContext pageContext = (PageContext) getJspContext();
+
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
         if (user != null) {
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 doSendEvent(user, req, product);
@@ -48,21 +49,18 @@ public class ClickThruEventTag extends SimpleTagSupport {
             }
         }
     }
-
+    
     public static void doSendEvent(FDUserI user, HttpServletRequest request, ProductModel model) {
-        final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
-        doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model, cosAction);
+        doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model);
     }
+    
+    public static void doSendEvent(FDUserI user, String requestedUrl, String referer, ProductModel model){
+        final Visitor visitor = Visitor.withUser(user);
+        final LocationInfo loc = LocationInfo.withUrlAndReferer(requestedUrl, referer);
 
-    public static void doSendEvent(FDUserI user, String requestedUrl, String referer, ProductModel model, boolean cosAction) {
-        if (!user.isRobot()) {
-            final Visitor visitor = Visitor.withUser(user);
-            final LocationInfo loc = LocationInfo.withUrlAndReferer(requestedUrl, referer);
+        AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null);
 
-            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null, cosAction,null);
-
-            // log event
-            EventLoggerService.getInstance().log(event);
-        }
+        // log event
+        EventLoggerService.getInstance().log(event);
     }
 }

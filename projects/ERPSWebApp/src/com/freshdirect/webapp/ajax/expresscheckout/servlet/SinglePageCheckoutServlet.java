@@ -2,46 +2,30 @@ package com.freshdirect.webapp.ajax.expresscheckout.servlet;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
-import com.freshdirect.webapp.ajax.expresscheckout.data.DrawerData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
-import com.freshdirect.webapp.ajax.expresscheckout.drawer.service.DrawerService;
-import com.freshdirect.webapp.ajax.expresscheckout.service.FormMetaDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
-import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
-import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = 3291565289153034570L;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
-			throws HttpErrorResponse {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		try {
-			if (request.getParameter("action") != null) {
-				doGetAction(request, response, user, request.getParameter("action"));
-				return;
-			}
-			
 			final SinglePageCheckoutData data = SinglePageCheckoutFacade.defaultFacade().load(user, request);
 			writeResponseData(response, data);
 		} catch (FDResourceException e) {
@@ -74,43 +58,6 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 		}
 	}
 
-	private void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action)
-			throws HttpErrorResponse, FDResourceException, JspException, RedirectToPage, IOException,
-			TemplateException {
-		if (action.equals("resetContext")) {
-			StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"),
-					request.getParameter("standingOrder"));
-
-			SinglePageCheckoutFacade.defaultFacade().handleModifyCartPreSelections(user, request);
-			if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart()
-					&& null != user.getShoppingCart().getDeliveryAddress()) {
-				CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
-			}
-			writeResponseData(response, null);
-		} else if (action.equals("getDrawer")) {
-			boolean dlvPassCart=(null!=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")))?true:false;
-			Map<String, List<DrawerData>> data = DrawerService.defaultService().loadDrawer(user, dlvPassCart);
-			writeResponseData(response, data);
-		} else if (action.equals("getTimeSlot")) {
-			FormTimeslotData data;
-			if (StandingOrderHelper.isSO3StandingOrder(user)) {
-				data = TimeslotService.defaultService().loadCartTimeslot(user, user.getSoTemplateCart());
-			} else {
-				data = TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart());
-			}
-			writeResponseData(response, data);
-		} else if (action.equals("getRedirectUrl")) {
-			if (!StandingOrderHelper.isSO3StandingOrder(user)) {
-				String redirectUri = SinglePageCheckoutFacade.defaultFacade().populateRedirectUrl(user);
-				writeResponseData(response, redirectUri);
-			}
-		} else if (action.equals("getFormMetaData")) {
-			FormMetaData data = FormMetaDataService.defaultService().populateFormMetaData(user);
-			writeResponseData(response, data);
-
-		}
-	}
-	
 	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.SIGNED_IN;

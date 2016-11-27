@@ -15,15 +15,10 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 	private final static Category LOGGER = LoggerFactory.getInstance(SignupDiscountApplicator.class);
 
 	/** List of SignupDiscountRule */
-	private List<SignupDiscountRule> discountRules;
+	private final List<SignupDiscountRule> discountRules;
 
 	public SignupDiscountApplicator(SignupDiscountRule[] discountRules) {
 		this.discountRules = Arrays.asList(discountRules);
-	}
-
-	public SignupDiscountApplicator() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -68,7 +63,7 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 		return "SignupDiscountApplicator[" + this.discountRules + "]";
 	}
 
-	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		//default implementatio since this applicator is obsolete.
 	}
 	
@@ -87,9 +82,5 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 	public CartStrategy getCartStrategy() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public void setDiscountRules(List<SignupDiscountRule> discountRules) {
-		this.discountRules = discountRules;
 	}
 }

@@ -9,9 +9,9 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public class BvHelperTag extends SimpleTagSupport{
 	

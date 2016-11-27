@@ -9,7 +9,7 @@
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelector"%>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta charset="utf-8">
 	<title>Nil Site Feature test page</title>

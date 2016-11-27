@@ -7,10 +7,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%-- 	<title>FreshDirect</title> --%>
-    <fd:SEOMetaTag title="FreshDirect"/>
+	<title>FreshDirect</title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -34,6 +33,7 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 <%
@@ -122,7 +122,7 @@
 							<input type="text" size="28" maxlength="45" class="text9" name="busphone" value="<%=phone%>" style="width:175px; padding:1px; height:30px;font-size:13px" /> &nbsp;&nbsp;Ext.<input type="text" size="5" maxlength="5" class="text9" name="busphoneext" value="<%=phoneExt%>" style="width:75px; padding:1px; height:30px;font-size:13px" />
 						</td>
 					</tr>
-					<tr><td colspan="2" class="errortext trpad" style="width:600px;text-align: left;height:25px;"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler>&nbsp;</td></tr>
+					<tr><td colspan="2" class="text11rbold trpad" style="width:600px;text-align: left;height:25px;"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler>&nbsp;</td></tr>
 				</table>
 			</td>
 		</tr>
@@ -132,7 +132,7 @@
 				<table width="100%" border="0">
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
-					<tr><td colspan="2" class="errortext trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
+					<tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%> /></td>
 						<td class="text12" style="padding-right: 10px;">Yes please notify me via text message with important information about my delivery.</td>
@@ -154,7 +154,7 @@
 							</table>
 						</td>
 					</tr>
-					<tr><td colspan="2" class="errortext trpad" style="width:500px; text-align: left;padding-left: 15px;height:25px;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
+					<tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left;padding-left: 15px;height:25px;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 				</table>
 			</td>
 		</tr> --%>

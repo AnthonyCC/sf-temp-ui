@@ -14,10 +14,10 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class CartLineItem {
 
@@ -64,7 +64,7 @@ public class CartLineItem {
         ProductModel prodNode = null;
         try {
             prodNode = ContentFactory.getInstance().getProduct(skuCode);
-        } catch (Exception e) {
+        } catch (FDSkuNotFoundException e) {
             LOGGER.warn("SKU not found", e);
             //TODO: Revisit exception handling strategy
             throw new RuntimeException("SKU not found", e);

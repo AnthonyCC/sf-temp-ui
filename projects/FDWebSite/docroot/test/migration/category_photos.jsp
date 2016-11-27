@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
-<%@ page import="com.freshdirect.storeapi.content.TagModel"%>
+<%@ page import="com.freshdirect.fdstore.content.TagModel"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="com.freshdirect.test.TestSupport" %>
 <%@ page import="java.lang.reflect.Method" %>
-<%@ page import="com.freshdirect.storeapi.content.Html" %>
+<%@ page import="com.freshdirect.fdstore.content.Html" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="display" uri="/WEB-INF/shared/tld/fd-display.tld" %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta charset="utf-8"/>
 	<title>Category media slots</title>

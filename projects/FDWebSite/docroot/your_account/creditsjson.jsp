@@ -1,6 +1,6 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
 <%@ page import='com.freshdirect.fdstore.referral.FDReferralManager'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -23,47 +23,45 @@ request.setAttribute("listPos", "HPLeftTop");
 %>
 
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
-
 <% 
-     DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
-     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-     FDIdentity customerIdentity = null;
-     if (user!=null && user.getLevel() == 2){
-         customerIdentity = user.getIdentity();
-     }
+    DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
+    FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+    FDIdentity customerIdentity = null;
+    if (user!=null && user.getLevel() == 2){
+        customerIdentity = user.getIdentity();
+    }
 
- 	response.setHeader("Pragma", "no-cache");
- 	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
 	
- 	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());	
+	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());	
 	
- 	String startIdx = request.getParameter("startIndex");	
+	String startIdx = request.getParameter("startIndex");	
 	if(startIdx == null)
-	startIdx = "0";
+		startIdx = "0";
 
- 	int index = Integer.parseInt(startIdx);
- 	int endIdx = index + 15;
- 	if(endIdx > mimList.size()) {
+	int index = Integer.parseInt(startIdx);
+	int endIdx = index + 15;
+	if(endIdx > mimList.size()) {
 		endIdx = mimList.size();
- 	}
+	}
 	
- 	org.json.JSONObject jobj = new org.json.JSONObject();
- 	jobj.put("totalRecords", mimList.size());
- 	jobj.put("startIndex", index);
- 	jobj.put("sort", "date");
- 	jobj.put("dir", "asc");
- 	jobj.put("recordsReturned", 15);
- 	jobj.put("pageSize", 15);
- 	if (user!=null && user.getIdentity() !=null) {
-%> 
+	org.json.JSONObject jobj = new org.json.JSONObject();
+	jobj.put("totalRecords", mimList.size());
+	jobj.put("startIndex", index);
+	jobj.put("sort", "date");
+	jobj.put("dir", "asc");
+	jobj.put("recordsReturned", 15);
+	jobj.put("pageSize", 15);
+	if (user!=null && user.getIdentity() !=null) {
+	%>
 		<fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
 			<%
 				jobj.put("totalAmount", JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()));
- 			%> 
+			%>
 		</fd:CustomerCreditHistoryGetterTag>
 	<%
 	}
- 	
 	org.json.JSONArray jsonItems = new org.json.JSONArray();
 	
 	for(int i=index;i < endIdx; i++) {
@@ -78,4 +76,5 @@ request.setAttribute("listPos", "HPLeftTop");
 	jobj.put("records", jsonItems);
 	
     response.getWriter().write(jobj.toString());
-%> 
+	
+%>

@@ -5,7 +5,7 @@
 	margin-bottom:20px;
 }
 
-.pdp .availability-dialog .header {
+.pdp .availability-dialog h1 {
 	font-family:Verdana,sans-serif;
 	font-weight:bold;
 	color:#f93;
@@ -14,7 +14,7 @@
 }
 
 /*
-.pdp .availability-dialog .header:before {
+.pdp .availability-dialog h1:before {
 	content:"!";
 	background:#f93;
 	border-radius:50%;
@@ -25,6 +25,14 @@
 	color:white;
 	text-align:center;
 }*/
+
+.pdp .availability-dialog h2 {
+	font-family:Verdana,sans-serif;
+	font-weight:bold;
+	color:#666;
+	font-size:14px;
+	margin-bottom:0;
+}
 
 .pdp .availability-dialog p {
 	font-family:Verdana,sans-serif;
@@ -39,11 +47,4 @@
 	border:0;
 	padding:0;
 	margin:0;
-}
-.pdp .availability-dialog div {
-   font-family: Verdana,sans-serif;
-    font-weight: bold;
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 0;
 }

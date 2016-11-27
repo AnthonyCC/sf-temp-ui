@@ -72,6 +72,4 @@ public interface ContentService extends RemoteService {
     ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException;
 
     NavigableRelationInfo getNavigableRelations(String contentType)  throws ServerException;
-
-    String getLastPublishStatus() throws ServerException;
 }

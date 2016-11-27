@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>Valentine's Day Ideas from FreshDirect!</title>
@@ -77,71 +77,71 @@
 				<tr>
 					<td colspan="4" class="vdayHeader">
 					<a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;trk=vday_04d" class="vdayHeader"><font color="#CC0000"><b>HUDSON VALLEY CUPID'S<br/>CHOICE CAMEMBERT - 4oz - $5.99</b></font></a>
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/>
 					</td>
 				</tr>
 				<tr valign="top">
 					<td class="promoProduct_s">
 					A sweet and buttery blend of sheep's milk, cow's milk, and fresh cream. Very rich and mild, with a white rind that blooms naturally as the cheese ripens. Available for a limited time.
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 					<a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;trk=vday_04d" class="promoProduct"><font color="#336600"><u><b>Click here to learn more!</b></u></font></a>
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18"/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18"/>
 					</td>
-					<td colspan="3"><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/hv_cupidcam.jpg" width="95" height="95" border="0" alt="Hudson Valley Cupid's Choice Camembert" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18"/></td>
+					<td colspan="3"><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/hv_cupidcam.jpg" width="95" height="95" border="0" alt="Hudson Valley Cupid's Choice Camembert" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18"/></td>
 				</tr>
 				<tr bgcolor="#CCCCCC">
-					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="182" height="1"/></td>
-					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="15" height="1"/></td>
-					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="15" height="1"/></td>
-					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="70" height="1"/></td>
+					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="182" height="1"/></td>
+					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="15" height="1"/></td>
+					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="15" height="1"/></td>
+					<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="70" height="1"/></td>
 				</tr>
 				
 				<tr>
-					<td colspan="4" class="vdayHeader"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14"/><br/>
+					<td colspan="4" class="vdayHeader"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14"/><br/>
 					<a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_veuvecliquot_1&amp;catId=win_fizzy&amp;trk=vday_04d" class="vdayHeader"><font color="#CC0000"><b>VEUVE CLICQUOT PONSARDIN VINTAGE<br/>RESERVE 1996 - $49.00/ea</b></font></a>
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/>
 					</td>
 				</tr>
 				
 				<tr valign="top">
 					<td colspan="3" class="promoProduct_s">
 					Crafted from a blend of Premier and Grand Cru vineyards, VC's Pinot Noir-led Vintage Reserve presses all the right buttons. On the palate, citrus and stone fruits mingle with toasted nuts and fresh-baked brioche. What's not to like?
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 					<a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_veuvecliquot_1&amp;catId=win_fizzy&amp;trk=vday_04d" class="promoProduct"><font color="#336600"><u><b>Click here to learn more</b></u></font></a> 
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12"/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12"/>
 					</td>
-					<td><a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_veuvecliquot_1&amp;catId=win_fizzy&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/bc_veuvecliquot.jpg" width="64" height="150" border="0" alt="Veuve Clicquot Ponsardin Vintage Reserve 1996" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14"/></td>
+					<td><a href="http://www.freshdirect.com/product.jsp?productId=wine_bc_veuvecliquot_1&amp;catId=win_fizzy&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/bc_veuvecliquot.jpg" width="64" height="150" border="0" alt="Veuve Clicquot Ponsardin Vintage Reserve 1996" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14"/></td>
 				</tr>
 				
 				<tr>
-					<td colspan="4" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1"/></td>
+					<td colspan="4" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1"/></td>
 				</tr>
 				
 				<tr>
-					<td colspan="4" class="vdayHeader"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14"/><br/>
+					<td colspan="4" class="vdayHeader"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14"/><br/>
 					<a href="http://www.freshdirect.com/product.jsp?productId=cake_val_cpcke&amp;catId=bak_cake_fd&amp;trk=vday_04d" class="vdayHeader"><font color="#CC0000"><b>VALENTINE'S DAY CUPCAKES - 4PK - $4.99</b></font></a>
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/>
 					</td>
 				</tr>
 				
 				<tr valign="top">
 					<td colspan="2" class="promoProduct_s">
 					Our moist vanilla and chocolate cupcakes get all ready for Valentine's Day with thick vanilla frosting and romantically colored candy hearts.
-					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+					<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 					<a href="http://www.freshdirect.com/product.jsp?productId=cake_val_cpcke&amp;catId=bak_cake_fd&amp;trk=vday_04d" class="promoProduct"><font color="#336600"><u><b>Click here to learn more</b></u></font></a>
 					</td>
-					<td colspan="2"><a href="http://www.freshdirect.com/product.jsp?productId=cake_val_cpcke&amp;catId=bak_cake_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/vday_cupcake.jpg" width="80" height="80" border="0" alt="Valentine's Day Cupcakes" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/></td>
+					<td colspan="2"><a href="http://www.freshdirect.com/product.jsp?productId=cake_val_cpcke&amp;catId=bak_cake_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/vday_cupcake.jpg" width="80" height="80" border="0" alt="Valentine's Day Cupcakes" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/></td>
 				
 				</tr>
 			</table>
 		</td>
 	</tr>
 	
-	<tr><td colspan="3"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td></tr>
+	<tr><td colspan="3"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td></tr>
 	
 	<tr valign="top">
 		<td><a href="http://www.freshdirect.com/category.jsp?catId=hmr_val&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue_strawberry.jpg" width="97" height="116" border="0" alt="Chocolate Fondue with Strawberries" /></a></td>
-		<td colspan="2" class="promoProduct_s">Forget about last-minute reservations, over-priced restaurants, or preparing dinner for Valentine's Day. This year stay at home and let our chef prepare a romantic fondue dinner for you and your Valentine. We'll bring everything to your door (even the next morning's breakfast). All you have to do is heat, dip and enjoy.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12"/>
+		<td colspan="2" class="promoProduct_s">Forget about last-minute reservations, over-priced restaurants, or preparing dinner for Valentine's Day. This year stay at home and let our chef prepare a romantic fondue dinner for you and your Valentine. We'll bring everything to your door (even the next morning's breakfast). All you have to do is heat, dip and enjoy.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12"/>
 </td>
 	</tr>
 	
@@ -163,7 +163,7 @@
 		<a href="http://www.freshdirect.com/product.jsp?productId=hmr_fonbox_surf&amp;catId=hmr_fondue_surf&amp;trk=vday_04d" class="promoProduct"><font color="#336600"><u><b>Surf n' Turf Fondue for Two</b></u></font></a><br/>
 		<b>$129.99 w/fondue pot</b><br/>
 		$99.99 food only<br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14"/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14"/>
 		</td>
 		<td><br/><a href="http://www.freshdirect.com/category.jsp?catId=hmr_val&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue_04.jpg" width="133" height="105" border="0" vspace="10" alt="FreshDirect's Valentine's Day Fondue"/></a></td>
 	</tr>
@@ -171,11 +171,11 @@
 	<tr>
 		<td colspan="3" class="promoProduct_s">
 		<span class="vdayHeader">ALL OUR FONDUE DINNERS ALSO INCLUDE:</span>
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="2"/><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="2"/><br/>
 		Fondue pot, Caesar salad, chocolate fondue dessert, and even breakfast for the next morning (fresh orange juice, croissants, coffee, and fresh fruit). 
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/><br/>
 		<a href="http://www.freshdirect.com/category.jsp?catId=hmr_val&amp;trk=vday_04d" class="promoProduct"><font color="#336600"><u><b>Click here for more details about our Fondue Dinners!</b></u></font></a>
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12"/><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12"/><br/>
 		<a href="http://www.freshdirect.com/category.jsp?catId=hmr_val&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue_seafood.jpg" width="300" height="54" border="0" alt="FreshDirect's Valentine's Day Fondue"/></a>
 		</td>
 	</tr>
@@ -187,20 +187,20 @@
 	
 		<table width="100%" celpadding="0" cellspacing="0" border="0">
 			<tr valign="top" align="center">
-				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bstk_flet_dfat&amp;catId=bgril&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/meat/beef/steaks/bstk_flet_dfat_c.jpg" width="70" height="70" border="0" alt="Filet Mignon"/><br/><font color="#336600"><u>Filet Mignon</u></font></a><br/><b>$17.99/lb</b></td>
+				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=bstk_flet_dfat&amp;catId=bgril&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/meat/beef/steaks/bstk_flet_dfat_c.jpg" width="70" height="70" border="0" alt="Filet Mignon"/><br/><font color="#336600"><u>Filet Mignon</u></font></a><br/><b>$17.99/lb</b></td>
 				
-				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="20"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=slbsr_lbstr_live&amp;catId=slbsr&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/seafood/lobster/slbsr_lbstr_live_c.jpg" width="80" height="60" border="0" alt="Live Lobsters"/><br/><font color="#336600"><u>Live<br/>Lobsters</u></font></a><br/><b>$9.99/lb</b></td>
+				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="20"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=slbsr_lbstr_live&amp;catId=slbsr&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/seafood/lobster/slbsr_lbstr_live_c.jpg" width="80" height="60" border="0" alt="Live Lobsters"/><br/><font color="#336600"><u>Live<br/>Lobsters</u></font></a><br/><b>$9.99/lb</b></td>
 				
-				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=chclt_strwbrry&amp;catId=bak_cookies_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/pastry/chocolates/chclt_strwbrry_c.jpg" width="70" height="70" border="0" alt="FreshDirect Dark Chocolate-Dipped Strawberries"/><br/><font color="#336600"><u><b>FreshDirect</b><br/>Dark<br/>Chocolate-Dipped Strawberries</u></font></a><br/><b>$7.49/6pk</b></td>
+				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=chclt_strwbrry&amp;catId=bak_cookies_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/pastry/chocolates/chclt_strwbrry_c.jpg" width="70" height="70" border="0" alt="FreshDirect Dark Chocolate-Dipped Strawberries"/><br/><font color="#336600"><u><b>FreshDirect</b><br/>Dark<br/>Chocolate-Dipped Strawberries</u></font></a><br/><b>$7.49/6pk</b></td>
 				
 				<td width="105" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=fro_icecr_ice_candy&amp;prodCatId=fro_icecr_ice_candy&amp;productId=fro_godiva_pecan_ca_01&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/frozen/fro_godiva_pecan_ca_01_c.jpg" width="80" height="80" border="0" alt="Godiva Vanilla with Chocolate Caramel Hearts Ice Cream"/><br/><font color="#336600"><u><b>Godiva</b><br/>Vanilla with Chocolate Caramel Hearts Ice Cream</u></font></a><br/><b>$2.59/ea</b></td>
 				
-				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=ckibni_val&amp;catId=bak_cookies_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/pastry/cookies_brownies/ckibni_val_c.jpg" width="70" height="70" border="0" alt="Valentine's Day Cookies"/><br/><font color="#336600"><u>Valentine's Day Cookies</u></font></a><br/><b>$3.99/6pk</b></td>
+				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=ckibni_val&amp;catId=bak_cookies_fd&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/pastry/cookies_brownies/ckibni_val_c.jpg" width="70" height="70" border="0" alt="Valentine's Day Cookies"/><br/><font color="#336600"><u>Valentine's Day Cookies</u></font></a><br/><b>$3.99/6pk</b></td>
 				
-				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pate_dar_msetrf&amp;catId=pate&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/deli/pate/pate_dar_msetrf_c.jpg" width="70" height="70" border="0" alt="D'Artagnan Mousse Truffee"/><br/><font color="#336600"><u><b>D'Artagnan</b><br/>Mousse Truffee</u></font></a><br/><b>$6.99/ea</b></td>
+				<td width="105" class="promoProduct"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/><a href="http://www.freshdirect.com/product.jsp?productId=pate_dar_msetrf&amp;catId=pate&amp;trk=vday_04d"><img src="http://www.freshdirect.com/media/images/product/deli/pate/pate_dar_msetrf_c.jpg" width="70" height="70" border="0" alt="D'Artagnan Mousse Truffee"/><br/><font color="#336600"><u><b>D'Artagnan</b><br/>Mousse Truffee</u></font></a><br/><b>$6.99/ea</b></td>
 			</tr>
 			
-			<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td></tr>
+			<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td></tr>
 
 			<tr valign="top" align="center">
 				<td class="promoProduct"></td>
@@ -223,13 +223,13 @@
 	<tr><td colspan="7" align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/heart_line.gif" width="628" height="7"/></td></tr>
 	
 	<tr> 
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="108" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="92" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="133" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="6" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="8" height="10"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="282" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="108" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="92" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="133" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="6" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="8" height="10"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="282" height="10"/></td>
 	</tr>
 	
 	<tr>
@@ -237,7 +237,7 @@
 		Price and availability subject to change. Please see Web site for current 
 	    prices and availability.<br/>
 	    <a href="http://www.freshdirect.com?trk=vday_04d"><img src="http://www.freshdirect.com/media_stat/images/template/email/logo_url.gif" width="264" height="35" vspace="6" border="0" alt="www.FreshDirect.com"/></a><br/>
-	    <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/>
+	    <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/>
 		</td>
 	</tr>
 	<tr><td colspan="7"><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/><br/><br/></td></tr>

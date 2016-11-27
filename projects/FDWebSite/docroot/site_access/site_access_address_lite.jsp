@@ -6,13 +6,12 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-	<%--  <title>FreshDirect</title>  --%>
-	 <fd:SEOMetaTag title="FreshDirect"/>
+	<title>FreshDirect</title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 	<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
@@ -24,14 +23,15 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="overflow: hidden">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
-
+<fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
 	<%
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 			//phew finally complete
 			System.out.println("Did not come here  on site_access_address_lite.jsp?====================================================================================");
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">				
 				//	alert('in site_access_address_lite.jsp');
 				  //  if (top === window) {
@@ -109,7 +109,7 @@
 								Please enter your street address so that we can make sure your building is in our zone. 
 							<% } %>
 							<br /><br />
-							<fd:ErrorHandler result='<%=result%>' name='cantGeocode' id='errorMsg'><span class="errortext"><%=errorMsg%></span><br /><br /></fd:ErrorHandler>
+							<fd:ErrorHandler result='<%=result%>' name='cantGeocode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br /><br /></fd:ErrorHandler>
 							<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()%>' id='errorMsg'><%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %></fd:ErrorHandler>
 
 							<table border="0" cellspacing="1" cellpadding="0" width="100%">
@@ -119,36 +119,36 @@
 								%>
 									<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* Company Name</td>
-									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=fldCompanyName%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>' id='errorMsg'><br /><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=fldCompanyName%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 								</tr>
 								
 									<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* Contact Phone #</td>
-									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>' id='errorMsg'><br /><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 								</tr>
 									
 									
 								<% } %>
 								<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* Street Address</td>
-									<td  ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><br /><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+									<td  ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 									<td align="right" class="bodyCopy">&nbsp;&nbsp;Floor/Suite #</td>
-									<td ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br /><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+									<td ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 								</tr>
 								<tr><td colspan="4"><!--  --></td></tr>
 								<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* City </td>
-									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="50" class="text9" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="50" class="text9" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</td>
 								</tr>
 								<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* State </td>
-									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="2" class="text9" size="2" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="2" class="text9" size="2" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</td>
 								</tr>
 								<tr valign="top">
 									<td width="130" ALIGN="RIGHT" class="bodyCopy">* Zip/Postal Code</td>
-									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="5" class="text9" size="6" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+									<td colspan="3" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text"  maxlength="5" class="text9" size="6" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</td>
 									</tr>
 								<tr valign="MIDDLE">
@@ -187,7 +187,7 @@
 							<% } %>
 						</td>
 						<% if (!isCorporate) { %>
-							<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>			
+							<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>			
 							<td width="160"><img src="/media_stat/images/template/homepages/home_grapes.jpg" width="170" height="141" border="0" alt="Grapes" /></td>
 						<% } %>
 					</tr>
@@ -196,7 +196,7 @@
 		</div>
 	</center>
 	<% } } %>
-
+</fd:SiteAccessController>
 <script>
 
 	function resizeFrame() {
@@ -221,4 +221,3 @@
 </script>
 </body>
 </html>
-</fd:SiteAccessController>

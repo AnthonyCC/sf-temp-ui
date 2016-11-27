@@ -10,6 +10,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -22,7 +23,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
-import com.freshdirect.storeapi.application.CmsManager;
 
 /**
  *
@@ -55,8 +55,8 @@ public class AddressForm implements WebFormI { // , AddressName
     private String altDlvExt = "";
     private String altDlvApartment = "";
 
-    private EnumUnattendedDeliveryFlag unattendedDeliveryFLag = EnumUnattendedDeliveryFlag.OPT_IN;
-    private String unattendedDeliveryInstructions = "OK";
+    private EnumUnattendedDeliveryFlag unattendedDeliveryFLag = EnumUnattendedDeliveryFlag.NOT_SEEN;
+    private String unattendedDeliveryInstructions = "";
 
     protected String getParam(HttpServletRequest request, String fieldName) {
         return NVL.apply(request.getParameter(fieldName), "").trim();
@@ -217,7 +217,6 @@ public class AddressForm implements WebFormI { // , AddressName
         // Restored this phone number check for FD store in APPDEV-5072 with the permission of Siva. It was removed in https://door3nyc.atlassian.net/browse/FDX-965
         if (CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FD)) {
             result.addError(homePhone == null || PhoneNumber.normalize(homePhone).length() != 10, EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
-            result.addError(altContactPhone == null || !(PhoneNumber.normalize(altContactPhone).length() == 10 || PhoneNumber.normalize(altContactPhone).length() == 0), EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
         }
 
         result.addError(homePhone != null && PhoneNumber.normalize(homePhone).startsWith("0"), EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
@@ -258,10 +257,7 @@ public class AddressForm implements WebFormI { // , AddressName
             result.addError(altDlvPhone == null || altDlvPhone.length() < 1, EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
             result.addError(altDlvPhone != "" && PhoneNumber.normalize(altDlvPhone).startsWith("0"), EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
             result.addError(altDlvPhone != "" && PhoneNumber.normalize(altDlvPhone).length() != 10, EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
-        }
-        if (EnumUnattendedDeliveryFlag.OPT_IN.equals(unattendedDeliveryFLag)) {
-            result.addError(null == unattendedDeliveryInstructions || unattendedDeliveryInstructions.isEmpty(), EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
-                    SystemMessageList.MSG_REQUIRED);
+
         }
     }
 }

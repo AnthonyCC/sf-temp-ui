@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.DataSourceLocator;
 import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -36,7 +35,6 @@ public class CustomerRatingsDAO {
 			connection = getConnection();
 			ps = connection.prepareStatement(reviewSql);
 			ps.execute();
-			ps.close();
 			ps = connection.prepareStatement(productSql);
 			ps.execute();
 			
@@ -248,7 +246,15 @@ public class CustomerRatingsDAO {
         	throw new FDResourceException("getCustomerRatings", e);
 		} finally {
 			try {
-				DaoUtil.closePreserveException(rs, ps, connection);
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (connection != null) {
+					connection.close();		
+				}
 			} catch (SQLException e) {
 				LOGGER.error("Getting rated products failed!!",e);
 	        	throw new FDResourceException("getCustomerRatings", e);
@@ -280,7 +286,15 @@ public class CustomerRatingsDAO {
         	throw new FDResourceException("getTimeStamp", e);
 		} finally {
 			try {
-				DaoUtil.closePreserveException(rs, ps, connection);
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (connection != null) {
+					connection.close();		
+				}
 			} catch (SQLException e) {
 				LOGGER.error("Getting ratings timestamp failed!",e);
 	        	throw new FDResourceException("getTimeStamp", e);

@@ -15,13 +15,6 @@ import com.freshdirect.dataloader.LoaderException;
  * @version $Revision$
  * @author $Author$
  */
-
-/**
- *@deprecated Please use the ErpZoneInfoController and ErpZoneInfoLoaderI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
 public interface SAPZoneInfoLoaderSB extends EJBObject {
 
 	/**
@@ -29,7 +22,6 @@ public interface SAPZoneInfoLoaderSB extends EJBObject {
 	 * @throws RemoteException
 	 * @throws LoaderException
 	 */
-	@Deprecated
 	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException;
 
 }

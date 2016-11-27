@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -154,9 +154,9 @@ Collection myErrs=((ActionResult)result).getErrors();
 %>
 <TR VALIGN="top">
     <TD WIDTH="15" height="18" VALIGN="top">
-            <img src="/media_stat/images/layout/error.gif" alt="" border="0">
+            <img src="/media_stat/images/layout/error.gif" border="0">
             </td><td width="335">
-      <FONT class="errortext"><%=errDesc%></FONT>
+      <FONT class="text11rbold"><%=errDesc%></FONT>
     </TD></tr>
  <%   
     }
@@ -221,7 +221,7 @@ if (brandLogo !=null) {
    if ((packageDesc != null) && !"".equals(packageDesc)) { %>
 <br><%= packageDesc %><BR>
 <% } %>
-</TD><TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="5" HEIGHT="1" BORDER="0"><BR></TD>
+</TD><TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0"><BR></TD>
 <TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_RIGHT%>">
 <% if(qualifies && firstProduct!=null && !firstProduct.isUnavailable()){%>
 
@@ -241,7 +241,7 @@ if (brandLogo !=null) {
 <%
 if (firstProduct==null) { 
 %>
-    <tr><td align="left" colspan="3"><p align="left"><font class="text12" color="#333">
+    <tr><td align="left" colspan="3"><p align="left"><font class="text12" color="#999999">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
         <br>
         We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.
@@ -269,13 +269,14 @@ Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_m
 </TD></TR></TABLE>
 <form  name="bulk_meat_product" id="bulk_meat_product" method="post">
 <fd:AddToCartPending id="bulk_meat_product"/>
+<fd:CmFieldDecorator/>
 <TABLE CELLSPACING="2" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 <TR VALIGN="TOP">
 <TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" COLSPAN="3">&nbsp;<br>
 <font class="text10bold"><%=fullName%> cut into: </font> <br>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="3"><BR>
-<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" HEIGHT="1"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="7">
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3"><BR>
+<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" HEIGHT="1"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="7">
 </TD>
 </TR>
 <input type="hidden" value="<%=catId%>" name="catId">
@@ -283,15 +284,15 @@ Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_m
 <input type="hidden" value="<%=request.getParameter("salesUnit")%>" name="salesUnit">
 <%--<input type="hidden" value="<%=request.getParameter("quantity")%>" name="quantity"> --%>
 <input type="hidden" value="<%=request.getParameter("skuCode")%>" name="skuCode">
-<logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+<logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 Image bulkImage = null;
 Image optionImage = null;
 String prodDescPath = null;
-    if ((contentNode instanceof ProductModel)) {
+    if (!(contentNode instanceof ProductModel)) continue;
     ProductModel bulkProduct = (ProductModel) contentNode;
 
-    if (!(bulkProduct.isUnavailable())) {
+    if (bulkProduct.isUnavailable()) continue;
 // get the images and Content for this product
     prodSkus = bulkProduct.getSkus();
     if (prodSkus.size()>1) {
@@ -304,7 +305,9 @@ String prodDescPath = null;
     }
 
     skuSize = prodSkus.size();
-    if (!(skuSize==0)) {
+    if (skuSize==0) {
+        continue;
+    }
     skus.addAll(prodSkus); //load these skus into the list of skus needed by the pricing javascript include
     String price = "";
     SkuModel sku = null; 
@@ -330,7 +333,7 @@ String prodDescPath = null;
 <TD WIDTH="<%=W_BULK_MEAT_PRODUCT_RIGHT%>">
 <% if(optionImage!=null) { %>
 <img src="<%= optionImage.getPath() %>" <%= JspMethods.getImageDimensions(optionImage) %> border="0" alt="<%= bulkProduct.getFullName() %>"><br>
-<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_BULK_MEAT_PRODUCT_RIGHT%>" height="1" border="0"><br>
+<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_BULK_MEAT_PRODUCT_RIGHT%>" height="1" border="0"><br>
 <% }else {%>&nbsp;<%}%>
 <% if (prodDescPath!=null) {%> <fd:IncludeMedia name="<%= prodDescPath%>" /> <BR><%}%>
 <input type="hidden" value="<%=currentFolder.getContentName()%>" name="catId_<%=prodsShown%>"><input type="hidden" value="<%=bulkProduct.getContentName()%>"   name="productId_<%=prodsShown%>"><input type="hidden" value="" name="salesUnit_<%=prodsShown%>">
@@ -339,7 +342,7 @@ String prodDescPath = null;
     FDProduct blkFDProd=null;
     for(Iterator<SkuModel> skuItr = prodSkus.iterator();skuItr.hasNext();){
         sku = skuItr.next();
-        if (!(sku.isUnavailable())) {
+        if (sku.isUnavailable()) continue;
         String skuPrice = "";
         String skuSalesUnit="";
         String gradePath="";
@@ -397,12 +400,11 @@ String prodDescPath = null;
                 <div style="margin-left: 24px; text-indent: -24px;"><input type="radio"  value="<%=sku.getSkuCode()%>" <%=selectedRB%> name="blkSkuCode" onClick="<%=onClickHandler%>">&nbsp;<font CLASS="text11bold"><%= skuPrice%></FONT></div> 
 <%
             }
-    } }
+    }
     prodsShown++;
 %>  </TD></TR>
     <TR VALIGN="TOP"><TD COLSPAN="3" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><BR></TD>
     </TR>
-    <%} } }%>
 </logic:iterate>
 <input type="hidden" name="itemCount" value="<%=prodsShown%>">
 </TABLE>
@@ -410,7 +412,7 @@ String prodDescPath = null;
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 
 <TR VALIGN="TOP">
-<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
+<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
 <TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><IMG SRC="<%= IMAGE_CLEAR %>" WIDTH="1" HEIGHT="4"></TD>
@@ -419,9 +421,9 @@ String prodDescPath = null;
   <TD colspan="2" ALIGN="RIGHT">
     <div class="qtyinput" style="float: right;">
       <span class="qtymessage"><%= quantityText %></span>
-      <a href="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-      <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"/>
-      <a href="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+      <a href="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+      <input class="qty" type="text" size="4" name="quantity" maxlength="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"/>
+      <a href="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
     </div>
   </TD>
 <TD colspan="2" ALIGN="RIGHT"><FONT CLASS="text10bold"><%
@@ -498,7 +500,7 @@ if (cvprice > 0.0) { %>
 </logic:iterate>
 </TD></tr>
 <TR VALIGN="TOP">
-<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
+<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <tr><TD colspan="4" ALIGN="center"><br>
 <input type="image" name="addToCart" src="/media/images/buttons/add_to_cart.gif"  ALT="ADD ITEMS TO YOUR CART" height="20" width="93" HSPACE="2" VSPACE="0" BORDER="0"><br>

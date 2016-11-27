@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" /> 
 		<title>Just a reminder.</title>
@@ -28,7 +28,7 @@
 
 <table width="90%" cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="100%">
 		<tr>
@@ -59,15 +59,15 @@
 			<br/>
 			It's all about the food.</p>
 		</td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
-		<td width="1" bgcolor="#FF9900"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0" /></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+		<td width="1" bgcolor="#FF9900"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" /></td>
 		<td valign="top" width="210"><br/><br/>
 		<img src="/media_stat/images/template/email/reminder/food.jpg" width="210" height="233" border="0"/></td>
 	</tr>
 	<tr><td colspan="4"><br/><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/></td></tr>
 </table>
 </td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

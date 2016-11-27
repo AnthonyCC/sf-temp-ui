@@ -10,7 +10,7 @@ var FreshDirect = FreshDirect || {};
    * Opening handled by CSS
    */
   function openAccordion(accordionCb){
-    $(accordionCb).trigger('click');
+    $(accordionCb).attr('checked', 'checked');
   }
   
   /**

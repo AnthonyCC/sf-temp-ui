@@ -12,10 +12,7 @@ import java.util.Set;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.AccountNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.Constraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.CreditCardConstraint;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.DeliveryInstructionsConstraint;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.NameConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneConstraint;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneExtensionConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PredefinedTextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.RoutingNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.StateConstraint;
@@ -58,17 +55,17 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.ZIP, new ZipCodeConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE, new PhoneConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new PhoneExtensionConstraint(true));
+            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE, new PhoneConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_EXTENSION, new PhoneExtensionConstraint(true));
-            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
+            put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_EXTENSION, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_AUTHORIZATION, new PredefinedTextConstraint(true, BACKUP_DELIVERY_TYPE));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_FIRST_NAME, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_LAST_NAME, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_ADDRESS, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_PHONE, new PhoneConstraint(true));
-            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
+            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new TextConstraint(true));
         }
     };
 
@@ -85,17 +82,17 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.ZIP, new ZipCodeConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE, new PhoneConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new PhoneExtensionConstraint(true));
+            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE, new PhoneConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
+            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new TextConstraint(true));
         }
     };
 
     private static final Map<String, Constraint<String>> CREDIT_CARD_PAYMENT_CONSTRAINTS = new HashMap<String, Constraint<String>>() {
 
         {
-        	put(PaymentMethodName.ACCOUNT_HOLDER, new NameConstraint(false));
+            put(PaymentMethodName.ACCOUNT_HOLDER, new TextConstraint(false));
             put(PaymentMethodName.CARD_BRAND, new TextConstraint(false));
             put(PaymentMethodName.ACCOUNT_NUMBER, new CreditCardConstraint(false));
             put(PaymentMethodName.CARD_EXP_MONTH, new TextConstraint(false));
@@ -132,7 +129,7 @@ public class ConstraintProviderService {
     private static final Map<String, Constraint<String>> EBT_PAYMENT_CONSTRAINTS = new HashMap<String, Constraint<String>>() {
 
         {
-            put(PaymentMethodName.ACCOUNT_HOLDER, new NameConstraint(false));
+            put(PaymentMethodName.ACCOUNT_HOLDER, new TextConstraint(false));
             put(PaymentMethodName.ACCOUNT_NUMBER, new CreditCardConstraint(false));
             put(EnumUserInfoName.BIL_COUNTRY.getCode(), new TextConstraint(false));
             put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new StreetTextConstraint(false));

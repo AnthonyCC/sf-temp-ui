@@ -11,7 +11,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;

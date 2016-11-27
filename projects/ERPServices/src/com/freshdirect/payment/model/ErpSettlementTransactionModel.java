@@ -14,8 +14,6 @@ package com.freshdirect.payment.model;
  
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.framework.core.*;
 
 public class ErpSettlementTransactionModel extends ModelSupport {
@@ -31,9 +29,7 @@ public class ErpSettlementTransactionModel extends ModelSupport {
 	private String paypalReferenceId = null;
 	private String paypalReferenceIdType = null;
 	private String transactionEventCode = null;
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date transactionInitiationDate = null;
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date transactionCompletionDate = null;
 	private String transactionDebitOrCredit = null;
 	private long grossTransactionAmount = 0;

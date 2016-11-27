@@ -34,34 +34,41 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.DlvProperties;
-import com.freshdirect.ecomm.gateway.PaymentsService;
-import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ejb.GCGatewayHome;
 import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.payment.command.Capture;
+import com.freshdirect.payment.command.PaymentCommandI;
+import com.freshdirect.payment.ejb.PaymentGatewayHome;
+import com.freshdirect.payment.ejb.PaymentGatewaySB;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.sap.SapEBTOrderSettlementInfo;
 import com.freshdirect.sap.SapOrderSettlementInfo;
 import com.freshdirect.sap.SapProperties;
+import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.command.SapSendEBTSettlementCommand;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -128,9 +135,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
 			"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'CPG'  "
 			+ " and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC'  "
-			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=0.5)  " 
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4)  " 
 			+ "or(sa.action_type='GCD' "
-			+ " and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=0.5)) "
+			+ " and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
 			+ " and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
 			+ " and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT'  )";
 	
@@ -152,9 +159,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'POG' "
             +"and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' " 
-            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=0.5) "  
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) "  
             +"or(sa.action_type='GCD'  "
-            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=0.5)) "
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
             +"and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
             +"and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT')";
 	
@@ -234,21 +241,18 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	
 	private List<String> getSaleIds(Connection con, String query) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			List<String> saleIds = new ArrayList<String>(10);
-			ps = con.prepareStatement(query);
-			rs = ps.executeQuery();
+		
+		List<String> saleIds=new ArrayList<String>(10);
+		PreparedStatement ps = con.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
 
-			while (rs.next()) {
-				saleIds.add(rs.getString(1));
-			}
-			return saleIds;
-		} finally {
-			close(rs);
-			close(ps);
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
 		}
+
+		rs.close();
+		ps.close();	
+		return saleIds;
 	}
 	/**
 	 * This method runs a AUTH_QUERY against the erpcustomer and get all the sales, that need payment authorization
@@ -353,8 +357,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 			
 		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
@@ -362,14 +364,18 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			ps = con.prepareStatement(QUERY_PRE_AUTH_NEEDED);
-			rs = ps.executeQuery();
+			PreparedStatement ps = con.prepareStatement(QUERY_PRE_AUTH_NEEDED);
+			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 			}
 
+			rs.close();
+			ps.close();
+
 			utx.commit();
+
 		} catch (Exception e) {
 			LOGGER.warn(e);
 			try {
@@ -379,9 +385,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			close(rs);
-			close(ps);
-			close(con);
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
 		}
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		if (saleIds.size() > 0) {
@@ -425,8 +436,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		
 		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
@@ -434,12 +443,16 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			ps = con.prepareStatement(QUERY_REVERSE_AUTH_NEEDED);
-			rs = ps.executeQuery();
+			PreparedStatement ps = con.prepareStatement(QUERY_REVERSE_AUTH_NEEDED);
+			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 			}
+
+			rs.close();
+			ps.close();
+
 			utx.commit();
 
 		} catch (Exception e) {
@@ -451,9 +464,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			close(rs);
-			close(ps);
-			close(con);
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
 		}
 		GiftCardManagerSB sb = this.getGiftCardManagerSB();
 		if (saleIds.size() > 0) {
@@ -489,8 +507,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	public void authorizeSubscriptions(long timeout) {
 		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 		List<String> customerIds=new ArrayList<String>();
 
@@ -499,15 +515,19 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			ps = con.prepareStatement(QUERY_AUTH_NEEDED_SUBSCRIPTIONS);
-			rs = ps.executeQuery();
+			PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED_SUBSCRIPTIONS);
+			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 				customerIds.add(rs.getString(2));
 			}
+
+			rs.close();
+			ps.close();
+
 			utx.commit();
-			
+
 		} catch (Exception e) {
 			LOGGER.warn(e);
 			try {
@@ -517,9 +537,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			close(rs);
-			close(ps);
-			close(con);
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
 		}
 
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
@@ -560,117 +585,84 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 
 	private void lockAuthFaileSales(Connection conn, EnumSaleStatus from, EnumSaleStatus to) throws SQLException {
-		PreparedStatement ps = null;
-		try {
-			ps = conn.prepareStatement(LOCK_AUF_SALES);
-			ps.setString(1, to.getStatusCode());
-			ps.setString(2, from.getStatusCode());
-			ps.setInt(3, ErpServicesProperties.getCancelOrdersB4Cutoff());
-			ps.executeUpdate();
-		} finally {
-			if(ps != null) ps.close();
-		}
+		PreparedStatement ps = conn.prepareStatement(LOCK_AUF_SALES);
+		ps.setString(1, to.getStatusCode());
+		ps.setString(2, from.getStatusCode());
+		ps.setInt(3, ErpServicesProperties.getCancelOrdersB4Cutoff());
+		ps.executeUpdate();
+		ps.close();
 	}
 
 	private int updateToProcessStatus(Connection conn) throws SQLException {
-		PreparedStatement ps = null;
-		try {
-			ps = conn.prepareStatement(UPDATE_TO_PROCESS_STATUS);
-			int affected = ps.executeUpdate();
-			return affected;
-		} finally {
-			if(ps != null) ps.close();
-		}
+		PreparedStatement ps = conn.prepareStatement(UPDATE_TO_PROCESS_STATUS);
+		int affected = ps.executeUpdate();
+		ps.close();
+		return affected;
 	}
 
 	private List<String> querySalesInStatusCPG(Connection conn, EnumSaleStatus status) throws SQLException {
 		List<String> saleIds = new ArrayList<String>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
-			ps.setString(1, status.getStatusCode());
-			ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
-			ps.setInt(3, ErpServicesProperties.getWaitingTimeAfterConfirm());
-			//LOGGER.info("waiting time after confirm:"+ErpServicesProperties.getWaitingTimeAfterConfirm());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				saleIds.add(rs.getString(1));
-			}
-			return saleIds;
-		} finally {
-			DaoUtil.closePreserveException(rs, ps, null);
+		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
+		ps.setString(1, status.getStatusCode());
+		ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
+		ps.setInt(3, ErpServicesProperties.getWaitingTimeAfterConfirm());
+		//LOGGER.info("waiting time after confirm:"+ErpServicesProperties.getWaitingTimeAfterConfirm());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
 		}
+		rs.close();
+		ps.close();
+		return saleIds;
 	}
 	private List<String> querySalesInStatusCPG(Connection conn, String query) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			List<String> saleIds = new ArrayList<String>();
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				saleIds.add(rs.getString(1));
-			}
-			return saleIds;
-		} finally {
-			DaoUtil.closePreserveException(rs, ps, null);
+		List<String> saleIds = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
 		}
+		rs.close();
+		ps.close();
+		return saleIds;
 	}
 	
 	private List<String> queryForSales(Connection conn, String query) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			List<String> saleIds = new ArrayList<String>();
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				saleIds.add(rs.getString(1));
-			}
-			return saleIds;
-		} finally {
-			DaoUtil.closePreserveException(rs, ps, null);
+		List<String> saleIds = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
 		}
+		rs.close();
+		ps.close();
+		return saleIds;
 	}
 
 
 	private Map<String, Double> querySalesInStatusRPG(Connection conn) throws SQLException {
 		//saleId -> FDIdentity
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			Map<String, Double> sales = new HashMap<String, Double>();
-			ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				sales.put(rs.getString("ID"), new Double(rs.getDouble("SUB_TOTAL")));
-			}
-			return sales;
-		} finally {
-			close(rs);
-			close(ps);
+		Map<String, Double> sales = new HashMap<String, Double>();
+		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			sales.put(rs.getString("ID"), new Double(rs.getDouble("SUB_TOTAL")));
 		}
+		return sales;
 	}
 	
 	private Map<String, FDIdentity> querySaleAndIdentityByStatus(Connection conn, EnumSaleStatus status) throws SQLException {
 		//saleId -> FDIdentity
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			Map<String, FDIdentity> sales = new HashMap<String, FDIdentity>();
-			ps = conn.prepareStatement(QUERY_SALE_AND_IDENTITY_BY_STATUS);
-			ps.setString(1, status.getStatusCode());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				sales.put(rs.getString("SALE_ID"),new FDIdentity(rs.getString("ERPCUSTOMER_ID"), rs.getString("FDCUSTOMER_ID")));
-			}
-			return sales;
-		} finally {
-			close(rs);
-			close(ps);
+		Map<String, FDIdentity> sales = new HashMap<String, FDIdentity>();
+		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_AND_IDENTITY_BY_STATUS);
+		ps.setString(1, status.getStatusCode());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			sales.put(rs.getString("SALE_ID"), new FDIdentity(rs.getString("ERPCUSTOMER_ID"), rs.getString("FDCUSTOMER_ID")));
 		}
+		return sales;
 	}
+
 	/**
 	 * It also make sure that if the system. was unable to obtain an authorization for this sale,
 	 * then it cancels the order both in ERPS and SAP. it also locks the sale from further modifications until
@@ -758,7 +750,16 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		finally
 		{
-			DaoUtil.close(rs, ps, conn);
+			try {
+			if(rs!=null)
+				rs.close();
+			if(ps!=null)
+				ps.close();
+			if (conn != null) 
+				conn.close();
+			}catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
 		}
 		return dates;
 	}
@@ -838,10 +839,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		long startTime = System.currentTimeMillis();
 
+		PaymentGatewaySB sb = null;
 		PaymentSB psb = null;
-		
-		psb = this.getPaymentSB();
-		
+		PaymentCommandI command = null;
+		boolean useQueue = ErpServicesProperties.isUseQueue();
+		if(useQueue){
+			sb = this.getPaymentGatewaySB();
+		}else{
+			psb = this.getPaymentSB();
+		}
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
 		for (int i = 0, size = saleIds.size(); i < size; i++) {
 
@@ -854,10 +860,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			try {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
-				
-				psb.captureAuthorization(saleIds.get(i));
-				LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
-				
+				if(useQueue){
+					command = new Capture(saleIds.get(i));
+					sb.updateSaleDlvStatus(command);
+					LOGGER.info("*******sending message to capture Queue for order:"+saleIds.get(i));
+				}else{
+					psb.captureAuthorization(saleIds.get(i));
+					LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
+				}
+
 				utx.commit();
 			} catch (Exception e) {
 				LOGGER.warn("Exception occured during capture", e);
@@ -986,10 +997,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		long startTime = System.currentTimeMillis();
 
+		GCGatewaySB gsb = null;
 		GiftCardManagerSB gmb = null;
-		
-		gmb = this.getGiftCardManagerSB();
-		
+		PaymentCommandI command = null;
+		boolean useQueue = ErpServicesProperties.isUseRegisterQueue();
+		if(useQueue){
+			gsb = this.getGCGatewaySB();
+		}else{
+			gmb = this.getGiftCardManagerSB();
+		}
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
 		for (Iterator<String> i = saleIds.keySet().iterator(); i.hasNext();) {
 
@@ -1004,10 +1020,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				utx.begin();
 				String saleId = i.next();
 				Double subTotal = saleIds.get(saleId);
-				
-				gmb.registerGiftCard(saleId, subTotal.doubleValue());
-				LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
-				
+				if(useQueue){
+					gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
+					LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));
+				}else{
+					gmb.registerGiftCard(saleId, subTotal.doubleValue());
+					LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
+				}
 
 				utx.commit();
 			} catch (Exception e) {
@@ -1057,6 +1076,19 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	private PaymentGatewaySB getPaymentGatewaySB() {
+		try {
+			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome());
+			return home.create();
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}catch (CreateException e){
+			throw new EJBException(e);
+		}catch(RemoteException e){
+			throw new EJBException(e);
+		}
+	}
+	
 	private GCGatewaySB getGCGatewaySB() {
 		try {
 			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
@@ -1229,10 +1261,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		try {
 			PaymentSB psb = this.getPaymentSB();
 			utx = this.getSessionContext().getUserTransaction();
-			utx.begin();
-			
+			utx.begin();				
 			psb.captureAuthEBTSale(saleId);
-			
 			LOGGER.info("*******do capture transaction for order:"+saleId);
 			utx.commit();
 		} catch (Exception e) {

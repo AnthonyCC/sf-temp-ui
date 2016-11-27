@@ -7,10 +7,8 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.storeapi.application.CmsManager;
 
 public class Timeslot {
 
@@ -20,10 +18,10 @@ public class Timeslot {
 
     private boolean chefsTable = false;
         
-    public static List<Timeslot> wrap(List<FDTimeslot> slots, boolean chefTableUser, SessionUser user) {
+    public static List<Timeslot> wrap(List<FDTimeslot> slots, boolean chefTableUser) {
         List<Timeslot> result = new ArrayList<Timeslot>();
         for (FDTimeslot slot : slots) {
-            result.add(wrap(slot, chefTableUser, user));
+            result.add(wrap(slot, chefTableUser));
         }
         return result;
     }
@@ -33,12 +31,9 @@ public class Timeslot {
      * @param chefTableUser
      * @return
      */
-    public static Timeslot wrap(FDTimeslot slot, boolean chefTableUser, SessionUser user) {
+    public static Timeslot wrap(FDTimeslot slot, boolean chefTableUser) {
         Timeslot newInstance = new Timeslot();
         newInstance.slot = slot;
-        if(CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX) && user.getFDSessionUser().isDlvPassActive()){
-        	newInstance.setPromoDeliveryFee(0);
-        }
         newInstance.chefTableUser = chefTableUser;
         newInstance.chefsTable = (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity());   
         return newInstance;
@@ -92,10 +87,6 @@ public class Timeslot {
 		return slot.isPremiumSlot();
 	}
 	
-	public boolean isSameDaySlot() {
-		return slot.isSameDaySlot();
-	}
-	
 	public boolean isUnavailable() {
 		return slot.isUnavailable();
 	}
@@ -141,18 +132,6 @@ public class Timeslot {
 
 	public double getPromoDeliveryFee() {
 		return slot.getPromoDeliveryFee();
-	}
-	
-	public boolean getMidWeekPassApplicable() {
-		return slot.isMidWeekDlvPassApplicable();
-	}
-	
-	public void setDeliveryFee(double dlvfee) {
-		slot.setDeliveryFee(dlvfee);
-	}
-
-	public void setPromoDeliveryFee(double promoDlvFee) {
-		slot.setPromoDeliveryFee(promoDlvFee);
 	}
 	
 }

@@ -6,21 +6,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
-import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -31,13 +24,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentEditData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
-import com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.service.PaymentValidationDataService;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
-import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -56,107 +44,43 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 //    private static final String MASTERPASS_REQ_ATTR_MPPREFERREDCARD="mpEwalletPreferredCard";
 //    private boolean preCheckoutCallRequired = true;
 //    private List<PaymentData> walletCards ; 
-	
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
-			throws HttpErrorResponse {
-		try {
-			ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
-			FormPaymentData paymentData = SinglePageCheckoutFacade.defaultFacade().loadUserPaymentMethods(user, request,
-					customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
-			// remove the xxxx in account number
-			if (paymentData != null) {
-				if (paymentData.getPayments() != null) {
-					for (PaymentData payment : paymentData.getPayments()) {
-						if (payment.getAccountNumber() != null) {
-							payment.setAccountNumber(payment.getAccountNumber().replace("XXXX", ""));
-						}
-					}
-				}
-				SinglePageCheckoutPotatoTag.checkEWalletCard(paymentData, request);
-				SinglePageCheckoutPotatoTag.removeOlderEwalletPaymentMethod(paymentData, request);
-			}
 
-			writeResponseData(response, paymentData);
-		} catch (FDResourceException e) {
-			returnHttpError(500, "Failed to load delivery address.", e);
-		}
-	}
-	
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         try {
             final FormDataRequest paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
             PageAction pageAction = FormDataService.defaultService().getPageAction(paymentRequestData);
             ValidationResult validationResult = new ValidationResult();
-            request.setAttribute("pageAction", pageAction);
             boolean changed = false;
             final FormDataResponse paymentSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(paymentRequestData, validationResult);
-            HttpSession session = request.getSession();
             if (pageAction != null) {
                 switch (pageAction) {
-				case ADD_PAYMENT_METHOD: {
-					if (paymentRequestData != null
-							&& PaymentValidationDataService.ADD_PAYMENT_CREDIT_CARD
-									.equals(paymentRequestData.getFormId())
-							&& !checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult,
-									paymentSubmitResponse, response)) {
-						return;
-					}
-					List<ValidationError> validationErrors = PaymentService.defaultService()
-							.addPaymentMethod(paymentRequestData, request, user);
-					validationResult.getErrors().addAll(validationErrors);
+                    case ADD_PAYMENT_METHOD: {
+                        List<ValidationError> validationErrors = PaymentService.defaultService().addPaymentMethod(paymentRequestData, request, user);
+                        validationResult.getErrors().addAll(validationErrors);
                         if (validationErrors.isEmpty()) {
                             List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
-                            String paymentId = "";
                             if (!paymentMethods.isEmpty()) {
-                            	if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
                                 PaymentService.defaultService().sortPaymentMethodsByIdReserved(paymentMethods);
-                                paymentId = paymentMethods.get(0).getPK().getId();
-                            	}else{
-                            		paymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
-                            	}
+                                String paymentId = paymentMethods.get(0).getPK().getId();
                                 validationErrors = PaymentService.defaultService().selectPaymentMethod(paymentId, pageAction.actionName, request);
                                 validationResult.getErrors().addAll(validationErrors);
                             }
                         }
-                        checkPaymentAttempt(validationResult, session);
                         changed = true;
                         break;
                     }
-				case EDIT_PAYMENT_METHOD: {
-					if (paymentRequestData != null
-							&& PaymentValidationDataService.ADD_PAYMENT_CREDIT_CARD
-									.equals(paymentRequestData.getFormId())
-							&& !checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult,
-									paymentSubmitResponse, response)) {
-						return;
-					}
-					List<ValidationError> validationErrors = PaymentService.defaultService()
-							.editPaymentMethod(paymentRequestData, request, user);
-					validationResult.getErrors().addAll(validationErrors);
-
-                        checkPaymentAttempt(validationResult, session);
+                    case EDIT_PAYMENT_METHOD: {
+                        List<ValidationError> validationErrors = PaymentService.defaultService().editPaymentMethod(paymentRequestData, request, user);
+                        validationResult.getErrors().addAll(validationErrors);
                         changed = true;
                         break;
                     }
                     case DELETE_PAYMENT_METHOD: {
-                    	if (StandingOrderHelper.isSO3StandingOrder(user)) {
-                    		
-                    			String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
-                    			StandingOrderHelper.evaluteSOPaymentId(request.getSession(), user, paymentId);
-                    			if(paymentId.equalsIgnoreCase(user.getCurrentStandingOrder().getPaymentMethodId())){
-                    				user.getCurrentStandingOrder().setPaymentMethodId(null);
-                    				user.getCurrentStandingOrder().setLastError(ErrorCode.PAYMENT_DEL.name(), ErrorCode.PAYMENT_DEL.getErrorHeader(), ErrorCode.PAYMENT_DEL.getErrorDetail(null));
-                    			}
-                    		}
-                    	PaymentService.defaultService().deletePaymentMethod(paymentRequestData, request);
+                        PaymentService.defaultService().deletePaymentMethod(paymentRequestData, request);
                         changed = true;
-                        if(!StandingOrderHelper.isSO3StandingOrder(user)){
-                        String defaultPayment = user.getFDCustomer().getDefaultPaymentMethodPK();
-                        if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && null !=defaultPayment && !"".equals(defaultPayment)){
-                        	PaymentService.defaultService().selectPaymentMethod(defaultPayment, pageAction.actionName, request);
-                        }
+                        if(StandingOrderHelper.isSO3StandingOrder(user)){
+                        	user.getCurrentStandingOrder().setPaymentMethodId(null);	
                         }
                         break;
                     }
@@ -164,7 +88,6 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
     					if(StandingOrderHelper.isSO3StandingOrder(user)){
     						user.getCurrentStandingOrder().setPaymentMethodId(paymentId);
-    						StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT_DEL"});
     					}
                         
                         // EWallet Express Checkout
@@ -236,9 +159,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
                         PaymentEditData userPaymentMethod = PaymentService.defaultService().loadUserPaymentMethod(user, paymentId);
                         paymentSubmitResponse.getSubmitForm().getResult().put("paymentEditValue", userPaymentMethod);
-						paymentSubmitResponse.getSubmitForm().getResult().put("showCaptcha", CaptchaUtil.isExcessiveAttempt(
-								FDStoreProperties.getMaxInvalidPaymentAttempt(), session, SessionName.PAYMENT_ATTEMPT));
-						break;
+                        break;
                     }
 /*                    case MASTERPASS_PICK_MP_PAYMENTMETHOD: {
                     	String selectedWalletCardId ="";
@@ -358,11 +279,8 @@ public class PaymentMethodServlet extends BaseJsonServlet {
    				try {
    					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT","PAYMENT_ADDRESS"});
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
-                    user.setRefreshSO3(true);
-                    if(user.getCurrentStandingOrder()!=null && user.getCurrentStandingOrder().getCustomerListId()!=null) {
-                    	user.getCurrentStandingOrder().setDeleteDate(null);
-                    	StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
-                    }
+                    user.setRefreshValidSO3(true);
+ 					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
    				} catch (FDResourceException e) {
    					BaseJsonServlet.returnHttpError(500, "Error while submit payment for user " + user.getUserId(), e);  				}
    			}
@@ -531,33 +449,5 @@ public class PaymentMethodServlet extends BaseJsonServlet {
     @Override
     protected boolean synchronizeOnUser() {
         return false;
-    }
-    
-	private boolean checkCaptcha(FormDataRequest request, String ip, HttpSession session, ValidationResult result, FormDataResponse paymentSubmitResponse, HttpServletResponse response) throws HttpErrorResponse {
-		String captchaToken = request.getFormData().get("g-recaptcha-response") != null
-				? request.getFormData().get("g-recaptcha-response").toString()
-				: null;
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken, ip, CaptchaType.PAYMENT, session,
-				SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
-		if (!isCaptchaSuccess) {
-			result.addError(new ValidationError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
-    		paymentSubmitResponse.getSubmitForm().setSuccess(false);
-    		writeResponseData(response, paymentSubmitResponse);
-			return false;
-		}
-		
-		return true;
-	}
-    
-    private void checkPaymentAttempt(ValidationResult result, HttpSession session) {
-    	if (result.getErrors().isEmpty()) {
-    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, 0);
-    	} else {
-    		int currentAttempt = session.getAttribute(SessionName.PAYMENT_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.PAYMENT_ATTEMPT) : Integer.valueOf(0);
-    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, ++currentAttempt);
-    		if (currentAttempt >= FDStoreProperties.getMaxInvalidPaymentAttempt()) {
-    			result.addError(new ValidationError("excessiveAttempt",""));
-    		}
-    	}
     }
 }

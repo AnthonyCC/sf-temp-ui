@@ -1,3 +1,11 @@
+/*
+ * $Workfile$
+ *
+ * $Date$
+ *
+ * Copyright (c) 2001-2002 FreshDirect, Inc.
+ *
+ */
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +30,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -30,6 +39,7 @@ import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.NVL;
@@ -39,24 +49,29 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
-public class RegistrationControllerTag extends AbstractControllerTag implements SessionName {
+/**
+ *
+ *
+ * @version $Revision$
+ * @author $Author$
+ */
+public class RegistrationControllerTag extends AbstractControllerTag implements SessionName { // AddressName,
 
-    private static final long serialVersionUID = 5392732906600873935L;
-
-    private static final Category LOGGER = LoggerFactory.getInstance(RegistrationControllerTag.class);
+    private static Category LOGGER = LoggerFactory.getInstance(RegistrationControllerTag.class);
 
     private String fraudPage;
     private String statusChangePage;
     private boolean signupFromCheckout;
     private int registrationType;
     private String source;
+
     private ErpAddressModel lastSavedAddressModel;
 
     public void setFraudPage(String s) {
@@ -79,13 +94,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         return lastSavedAddressModel;
     }
 
-    @Override
     protected boolean performAction(HttpServletRequest request, ActionResult actionResult) {
-        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         String actionName = this.getActionName();
         try {
             String source = (request.getParameter("source") == null) ? "" : (String) request.getParameter("source");
-            HttpSession session = pageContext.getSession();
+            HttpSession session = (HttpSession) pageContext.getSession();
             FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
             FDCartModel cart = null;
             if (user != null)
@@ -112,6 +125,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 ra.setSuccessPage(this.getSuccessPage());
 
                 ra.execute();
+                CmRegistrationTag.setPendingRegistrationEvent(session);
                 this.setSuccessPage(ra.getSuccessPage()); // reset if changed.
 
             } else if ("registerEx".equalsIgnoreCase(actionName)) {
@@ -127,11 +141,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                     /* } */
                 }
             } else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, actionResult, actionName);
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
                 lastSavedAddressModel = m.performAddDeliveryAddress();
 
             } else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, actionResult, actionName);
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
                 lastSavedAddressModel = m.performAddDeliveryAddress();
                 FDIdentity identity = getIdentity();
                 FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
@@ -146,7 +160,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
             } else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
                 // this.performEditDeliveryAddress(request, actionResult, event);
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, actionResult, actionName);
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
                 m.performEditDeliveryAddress(event);
                 // Security Enhancements
                 FDIdentity identity = getIdentity();
@@ -163,17 +177,18 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 // APPDEV-4177 - Code changes to avoid sending multiple mails : Start
             } else if ("editDeliveryAddressForUnattendZone".equalsIgnoreCase(actionName)) {
                 // this.performEditDeliveryAddress(request, actionResult, event);
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, actionResult, actionName);
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
                 m.performEditDeliveryAddress(event);
                 // APPDEV-4177 - Code changes to avoid sending multiple mails : End
 
             } else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
                 // this.performDeleteDeliveryAddress(request, actionResult, event);
-                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, actionResult, actionName);
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
                 m.performDeleteDeliveryAddress(event);
 
             } else if ("changeUserID".equalsIgnoreCase(actionName)) {
                 this.performChangeUserID(request, actionResult);
+                CmRegistrationTag.setPendingRegistrationEvent(session);
 
             } else if ("changePassword".equalsIgnoreCase(actionName)) {
                 this.performChangePassword(request, actionResult);
@@ -197,6 +212,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
             } else if ("otherpreferences".equals(actionName)) {
                 // Save mobile preferences
                 this.changeOtherPreferences(request, actionResult);
+            } else if ("ordermobilepref".equals(actionName)) {
+                // coming from order receipt screen. store all of them together.
+                this.storeMobilePreferences(request, actionResult);
             } else if ("changeDisplayName".equals(actionName)) {
                 // coming from order receipt screen. store all of them together.
                 this.performChangeDisplayName(request, actionResult);
@@ -215,7 +233,69 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         return true;
     }
 
-    
+    private void storeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {
+        HttpSession session = (HttpSession) pageContext.getSession();
+        String orderNumber = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+        session.removeAttribute("SMSSubmission" + orderNumber);
+        String submitbutton = request.getParameter("submitbutton");
+        if ("update".equals(submitbutton)) {
+            String text_offers = request.getParameter("text_offers");
+            String text_delivery = request.getParameter("text_delivery");
+            String mobile_number = request.getParameter("mobile_number");
+            String go_green = request.getParameter("go_green");
+
+            if ("Y".equals(text_offers) || "Y".equals(text_delivery)) {
+                if (mobile_number == null || mobile_number.length() == 0) {
+                    actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
+                    return;
+                }
+                PhoneNumber phone = new PhoneNumber(mobile_number);
+                if (!phone.isValid()) {
+                    actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+                    return;
+                }
+            } else if (mobile_number != null && mobile_number.length() != 0) {
+                if (!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
+                    actionResult.addError(true, "text_option", "Please select your text messaging preferences below.");
+                    return;
+                }
+            }
+
+            // check for the other phone
+            String busphone = request.getParameter("busphone");
+            String ext = request.getParameter("busphoneext");
+            if (busphone == null || busphone.length() == 0) {
+                actionResult.addError(true, "busphone", SystemMessageList.MSG_REQUIRED);
+                return;
+            }
+            PhoneNumber bphone = new PhoneNumber(busphone, ext);
+            if (!bphone.isValid()) {
+                actionResult.addError(true, "busphone", SystemMessageList.MSG_PHONE_FORMAT);
+                return;
+            }
+
+            // save it to DB
+            FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+            try {
+                FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), user.getIdentity().getFDCustomerPK(), mobile_number, text_offers, text_delivery,
+                        go_green, busphone, ext, user.isCorporateUser(), user.getUserContext().getStoreContext().getEStoreId());
+            } catch (FDResourceException e) {
+                LOGGER.error("Error from mobile preferences", e);
+            }
+            session.setAttribute("SMSSubmission" + orderNumber, "done");
+        } else if ("remind".equals(submitbutton)) {
+            // ignore
+        } else {
+            // no thanks
+            FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+            try {
+                FDCustomerManager.storeMobilePreferencesNoThanks(user.getIdentity().getErpCustomerPK());
+            } catch (FDResourceException e) {
+                LOGGER.error("Error from mobile preferences", e);
+            }
+            session.setAttribute("SMSSubmission" + orderNumber, "done");
+        }
+    }
 
     private void changeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {
         String text_offers = request.getParameter("text_offers");
@@ -234,7 +314,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         boolean orderExceptionOptin = false;
         boolean offersOptin = false;
         boolean partnerMessagesOptin = false;
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         FDIdentity identity = user.getIdentity();
         boolean optOut = false;
@@ -268,9 +348,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 return;
             }
         } else if (mobile_number != null && mobile_number.length() != 0) {
-            if (!phone.isValid()) {
+            if ("Y".equalsIgnoreCase(order_notices) || "Y".equalsIgnoreCase(order_exceptions) || "Y".equalsIgnoreCase(offers) || "Y".equalsIgnoreCase(partner_messages)) {
+
+                if (!phone.isValid()) {
                     actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
                     return;
+                }
             }
             // commenting this logic as per ponnu based on the FDX mobile save requirements without checking notification preferences
             /*
@@ -345,7 +428,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 
                 FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery, order_notices,
-                        order_exceptions, offers, partner_messages, user.getUserContext().getStoreContext().getEStoreId());
+                        order_exceptions, offers, partner_messages, fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
 
                 if (user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FD.name())) {
                     if (subscribedNow) {
@@ -370,7 +453,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
     private void changeOtherPreferences(HttpServletRequest request, ActionResult actionResult) {
         String go_green = request.getParameter("go_green");
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         try {
             FDCustomerManager.storeGoGreenPreferences(user.getIdentity().getErpCustomerPK(), go_green);
@@ -383,7 +466,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         String shipToAddressId = request.getParameter("deleteShipToAddressId");
         AddressUtil.deleteShipToAddress(getIdentity(), shipToAddressId, actionResult, request);
         // check that if this address had any outstanding reservations.
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         FDReservation reservation = user.getReservation();
         if (reservation != null) {
@@ -461,8 +544,41 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         return erpAddress;
     }
 
+    protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEvent event) throws FDResourceException {
+        HttpSession session = (HttpSession) pageContext.getSession();
+        FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+
+        // call common delivery address check
+        ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, actionResult, session);
+        if (erpAddress == null) {
+            return;
+        }
+
+        String shipToAddressId = request.getParameter("updateShipToAddressId");
+        boolean foundFraud = AddressUtil.updateShipToAddress(request, actionResult, user, shipToAddressId, erpAddress);
+        if (foundFraud) {
+            /*
+             * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] {user.getCustomerServiceContact()}));
+             */
+            this.applyFraudChange(user);
+        }
+        /*
+         * if(user.getOrderHistory().getValidOrderCount()==0) { user.setZipCode(erpAddress.getZipCode()); user.setSelectedServiceType(erpAddress.getServiceType());
+         * //user.resetPricingContext(); }
+         */
+        FDReservation reservation = user.getReservation();
+        if (reservation != null) {
+            reservation = FDCustomerManager.validateReservation(user, reservation, event);
+            user.setReservation(reservation);
+            session.setAttribute(USER, user);
+            if (reservation == null) {
+                session.setAttribute(REMOVED_RESERVATION, Boolean.TRUE);
+            }
+        }
+    }
+
     protected void performAddDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 
         // call common delivery address check
@@ -563,7 +679,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         String firstName = request.getParameter("first_name");
 
         FDIdentity identity = getIdentity();
-        ErpCustomerInfoModel cim = FDCustomerFactory.getErpCustomerInfo(identity);
+        ErpCustomerInfoModel cim = null;
+        cim = FDCustomerFactory.getErpCustomerInfo(identity);
         cim.setFirstName(firstName);
         cim.setLastName(lastName);
 
@@ -676,7 +793,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
     protected void performChangeEmailPreference(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         boolean receiveNews = "yes".equalsIgnoreCase(request.getParameter("receive_mail"));
         boolean plainTextEmail = request.getParameter("isSendPlainTextEmail") != null;
@@ -732,34 +849,28 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
     }
 
     protected void performDisconnectSocialAccount(HttpServletRequest request, ActionResult result) throws FDResourceException {
-        HttpSession session = pageContext.getSession();
+
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         String customerId = user.getUser().getIdentity().getErpCustomerPK();
 
         String socialEmail = request.getParameter("socialEmail");
         String userToken = request.getParameter("userToken");
-        String identityToken = request.getParameter("identityToken");
         String socialNetworkProvider = request.getParameter("socialNetworkProvider");
 
-        result.addError(StringUtils.isEmpty(socialEmail), "disconnectSocialEmail", "Social email is empty");
-        result.addError(StringUtils.isEmpty(userToken), "disconnectUserToken", "User token is empty");
-        result.addError(StringUtils.isEmpty(identityToken), "disconnectIndentityToken", "Identity token is empty");
-        result.addError(StringUtils.isEmpty(socialNetworkProvider), "disconnectSocialNetworkProvider", "Social network provider is empty");
+        if ((socialEmail == null || "".equals(socialEmail)) || (userToken == null || "".equals(userToken))) {
 
-        if (result.isSuccess()) {
-            SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
-            if (socialProvider != null) {
-                boolean isSuccess = socialProvider.deleteSocialIdentity(identityToken);
-                result.addError(!isSuccess, "unlinkIdentity", "Error in unlinking identity token:" + identityToken + " from user token:" + userToken);
-            }
-        }
+            return;
 
-        if (result.isSuccess()) {
+        } else {
+
             try {
+                // FDSocialManager.unlinkSocialAccountWithUser( socialEmail, userToken);
+                // ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
                 ExternalAccountManager.unlinkExternalAccountWithUser(customerId, socialNetworkProvider);
                 request.setAttribute("NewlyDisconnectedSocialNetworkProvider", socialNetworkProvider);
-            } catch (FDResourceException e) {
-                LOGGER.error("Error in disconnecting social account:" + e.getMessage());
+            } catch (FDResourceException e1) {
+                LOGGER.error("Error in disconnecting social account:" + e1.getMessage());
                 result.addError(new ActionError("Error in disconnecting social account:" + socialEmail));
             }
         }
@@ -768,10 +879,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
     protected void changeEmailPreferenceLevel(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
         // get value
-    	HttpSession session = pageContext.getSession();
-    	FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-        String receive_emailLevel = NVL.apply(request.getParameter("receive_emailLevel"), " ");
-        
+        String receive_emailLevel = NVL.apply(request.getParameter("receive_emailLevel"), "0");
 
         if (!result.isSuccess()) {
             return;
@@ -781,11 +889,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         ErpCustomerInfoModel cim = null;
         cim = FDCustomerFactory.getErpCustomerInfo(identity);
 
+        ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(getIdentity());
+        FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(getIdentity());
+        FDCustomerEStoreModel customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
+
         cim.setEmailPreferenceLevel(receive_emailLevel);
 
         LOGGER.debug("Updating customer email level preference");
         FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
-        FDCustomerManager.storeEmailPreferenceFlag(identity.getFDCustomerPK(), receive_emailLevel.equals("2") ? "X":"", user.getUserContext().getStoreContext().getEStoreId());
         LOGGER.debug("Customer email preference level updated");
     }
 
@@ -815,7 +926,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
     protected void addAllSmsAlerts(HttpServletRequest request, ActionResult actionResult) {
         String mobile_number = request.getParameter("mobile_number");
 
-        HttpSession session = pageContext.getSession();
+        HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         FDIdentity identity = user.getIdentity();
         String orderNumber = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
@@ -847,7 +958,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                     ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
                     FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
                     FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, "N", "N", "Y", "Y", "Y", "Y",
-                            user.getUserContext().getStoreContext().getEStoreId());
+                            fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
                     FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
                     session.setAttribute("SMSAlert" + orderNumber, "done");
                 } catch (FDResourceException e) {

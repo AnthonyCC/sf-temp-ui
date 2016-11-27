@@ -8,13 +8,14 @@
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-<%--   <title><tmpl:get name='title'/></title> --%>
-  <tmpl:get name="seoMetaTag"/>
+  <title><tmpl:get name='title'/></title>
+    
   <%@ include file="/common/template/includes/metatags.jspf" %>
-  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %> 
   <%@ include file="/shared/template/includes/ccl.jspf" %>  
   <%@ include file="/shared/template/includes/i_head_end.jspf" %>
@@ -23,7 +24,8 @@
 </head>
 
 <body>
-
+      
+  <%@ include file="/shared/template/includes/i_body_start.jspf" %>       
   <%@ include file="/common/template/includes/globalnav.jspf" %>
      
   <div id="main" class="container staticpage">

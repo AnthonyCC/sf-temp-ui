@@ -9,12 +9,12 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.YmalSet"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.YmalSet"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -100,7 +100,7 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-%><html lang="en-US" xml:lang="en-US">
+%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>YMAL PERFORMANCE TEST PAGE</title>
@@ -225,7 +225,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     	pageContext.getOut().flush();
     
     	Map sets = new HashMap();
-    	Set keys = CmsManager.getInstance().getContentKeysByType(ContentType.Product);
+    	Set keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Product"));
 		//System.err.println("found " + keys.size() + " products");
     	Iterator it = keys.iterator();
     	while (it.hasNext()) {
@@ -239,7 +239,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     			sets.put(set, p);
     	}
 
-    	Set orphans = CmsManager.getInstance().getContentKeysByType(ContentType.YmalSet);
+    	Set orphans = CmsManager.getInstance().getContentKeysByType(ContentType.get("YmalSet"));
 		//System.err.println("found " + orphans.size() + " YMAL sets");
     	it = orphans.iterator();
     	while (it.hasNext()) {

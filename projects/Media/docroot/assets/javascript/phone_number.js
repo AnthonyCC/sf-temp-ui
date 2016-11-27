@@ -5,6 +5,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 (function() {
 	var PhoneValidator = {};
+	var trim = YAHOO.lang.trim;
 
 	isDigit = function (c)
 	{
@@ -32,18 +33,18 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	function FieldValidator(search) {
 	}
 	
-	FieldValidator.prototype.onchange = function (params) {
+	FieldValidator.prototype.onchange = function (event, params) {
 		var elem = params[0];
 		var search = params[1] || false;
 
-		if($jq.trim(elem.value) == "" ||
+		if(trim(elem.value) == "" ||
 				isValid(elem.value, search))
 			elem.style.color = "black";
 		else
 			elem.style.color = "red";
 	}
 
-	FieldValidator.prototype.onblur = function (params) {
+	FieldValidator.prototype.onblur = function (event, params) {
 		var elem = params[0];
 		var search = params[1] || false;
 
@@ -67,12 +68,35 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var search = srch === true;
 		var validator = new FieldValidator();
 		var params = [ field, search ];
-		$jq(field).on('change keyup', validator.onchange.bind(null, params));
-		$jq(field).blur(validator.onblur.bind(null, params));
+		YAHOO.util.Event.on(field, "change", validator.onchange, params);		
+		YAHOO.util.Event.on(field, "keyup", validator.onchange, params);		
+		YAHOO.util.Event.onBlur(field, validator.onblur, params);		
+		validator.onchange({}, params);
+		validator.onblur({}, params);
+	}
+	
+	function FormValidator() {
+	}
+
+	FormValidator.prototype.onsubmit = function (event, field) {
+		if (trim(field.value) === "" ||
+				isValid(field.value)) {
+			return true;
+		} else {
+			alert("'" + field.title + "' field should contain extactly 10 digits!");
+			YAHOO.util.Event.preventDefault(event);
+			return false;
+		}
+	};		
+
+	PhoneValidator.registerFormValidator = function (field) {
+		var validator = new FormValidator(field);
+		YAHOO.util.Event.on(field.form, "submit", validator.onsubmit, field, validator);		
 	}
 
 	PhoneValidator.register = function (field, search) {
 		PhoneValidator.registerFieldValidator(field, search);
+		// PhoneValidator.registerFormValidator(field);
 	}
 
 	FreshDirect.PhoneValidator = PhoneValidator;

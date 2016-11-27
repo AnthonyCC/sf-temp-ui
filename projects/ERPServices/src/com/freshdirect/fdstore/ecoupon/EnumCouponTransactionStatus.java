@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumCouponTransactionStatus extends ValuedEnum {
 	
 	public final static EnumCouponTransactionStatus SUCCESS = new EnumCouponTransactionStatus("S", "Approved", 0);
@@ -27,8 +24,7 @@ public class EnumCouponTransactionStatus extends ValuedEnum {
 		return (EnumCouponTransactionStatus) getEnum(EnumCouponTransactionStatus.class, code);
 	}
 
-	@JsonCreator
-	public static EnumCouponTransactionStatus getEnum(@JsonProperty("value") int id) {
+	public static EnumCouponTransactionStatus getEnum(int id) {
 		return (EnumCouponTransactionStatus) getEnum(EnumCouponTransactionStatus.class, id);
 	}
 

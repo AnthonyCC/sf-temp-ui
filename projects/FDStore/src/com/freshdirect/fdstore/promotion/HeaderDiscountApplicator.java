@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 
@@ -14,11 +14,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 
 public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private HeaderDiscountRule discountRule;
+	private final HeaderDiscountRule discountRule;
 	private DlvZoneStrategy zoneStrategy;
 	private CartStrategy cartStrategy;
 	/**
@@ -26,11 +22,6 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 	 */
 	public HeaderDiscountApplicator(HeaderDiscountRule discountRule) {
 		this.discountRule = discountRule;
-	}
-
-	public HeaderDiscountApplicator() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean apply(String promoCode, PromotionContextI context) {
@@ -102,7 +93,7 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		return this.discountRule;
 	}
 
-	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
@@ -117,10 +108,6 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
 	public void setCartStrategy(CartStrategy cartStrategy) {
 		this.cartStrategy = cartStrategy;
-	}
-
-	public void setDiscountRule(HeaderDiscountRule discountRule) {
-		this.discountRule = discountRule;
 	}
 
 	public String toString() {

@@ -23,7 +23,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 		<%
 	}
 	%>
-	<TD width="20" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0"/></TD>
+	<TD width="20" valign="top"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0"/></TD>
   <TD valign="top" width="<%= W_YA_DELIVERY_ADDR_COL %>"><div style="width:<%= W_YA_DELIVERY_ADDR_COL %>px;word-wrap:break-word;overflow:hidden;"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
 		<font class="text13">
 		<%if(showingCorporateAddress){ %>
@@ -50,18 +50,15 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%=shipAddress.getInstructions()%><br><BR>
 		<%}%>   
 		</font> 
-		<%
-		if (!EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) {
-		%>
 		<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="true">
-		<% if (zone.isUnattended()) { %>
+		<% if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) { %>
 		<font class="text12bold">Unattended delivery</font>:<br>
 		<%= NVL.apply(shipAddress.getUnattendedDeliveryInstructions(),"OK") %>
 		<BR><BR>
 		<% } %>
 		</fd:UnattendedDelivery>
-		<% } 
-		if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
+
+		<%if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
 			<font class="text12bold">Alternate delivery</font>:<br>
 			<%= shipAddress.getAltDelivery().getName()%><br><br> 
 			<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>
@@ -75,7 +72,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 	<%
 	if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
 	%>
-	<A class="cssbutton green transparent small" HREF="<%=linkURL + "?addressId=" + addrPKId %>">EDIT<span class="offscreen"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%> address</span></A>&nbsp;
+	<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
 	
 	<%} %>
 	
@@ -84,25 +81,25 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%
 				if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
 			%>		
-			<button class="cssbutton ghost red small" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);">DELETE<span class="offscreen"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%> address</span></button>
+			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);" ALT="DELETE" BORDER="0">
 		<% } %> <%} %>
-		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="185" HEIGHT="1">
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 		</div>
 	</TD>
 
 	<%itemCounter++;
 	if (saItr.hasNext() && (itemCounter % 3 != 0 )) {  %>
-		<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="15" HEIGHT="1"></TD>
-		<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
-		<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="14" HEIGHT="1"></TD>
+		<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+		<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+		<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
 		<%        
 	}
 }
 	if ( (itemCounter%3)==1) {%>
-    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>" HEIGHT="1" BORDER="0"><BR></TD>
+    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>" HEIGHT="1" BORDER="0"><BR></TD>
 		<%
 	} else if ( (itemCounter%3)==2) {%>
-    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>" HEIGHT="1" BORDER="0"><BR></TD>
+    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>" HEIGHT="1" BORDER="0"><BR></TD>
 		<%
 	}%>
     </TR>

@@ -11,11 +11,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -77,9 +76,9 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		this.version = version;
 	}
 	
-    @Override
+	@Override
 	public void doTag() throws JspException {
-		LOGGER.debug( "Creating data potato: " + name );
+		LOGGER.info( "Creating data potato: " + name );
 
 		// Get the user
 		final FDUserI user = (FDUserI) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
@@ -104,7 +103,7 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		 */
 		boolean incomplete = false;
 		try {
-            incomplete = FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product);
+			incomplete = PopulatorUtil.isProductIncomplete(product);
 		} catch (Exception e) {
 			throw new JspException(e);
 		}
@@ -112,28 +111,23 @@ public class ProductPotatoTag extends SimpleTagSupport {
 
         if (incomplete) {
             // minimal potato population
-            LOGGER.debug("Product " + productId + " is considered 'incomplete', produce light potatos");
+            LOGGER.info("Product " + productId + " is considered 'incomplete', produce light potatos");
             final Map<String, ?> dataMap = DataPotatoField.digProductLight(user, product);
             ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
             if (extraName != null) {
-                LOGGER.debug("Creating light extra potato: " + extraName);
+                LOGGER.info("Creating light extra potato: " + extraName);
                 final Map<String, ?> extraMap = DataPotatoField.digProductLightExtraData(user, product);
                 ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
             }
         } else {
             // normal population
-            LOGGER.debug("Product " + productId + " is produced potatos.");
+            LOGGER.info("Product " + productId + " is produced potatos.");
             final Map<String, ?> dataMap = DataPotatoField.digProduct(user, product, variantId);
             ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
-            if (null  == dataMap) {
-                LOGGER.error("Product data is null or error happened during data collection! Skipping tag.");
-                return;
-            }
-            
             if (extraName != null) {
-                LOGGER.debug("Creating extra potato: " + extraName);
+                LOGGER.info("Creating extra potato: " + extraName);
                 final Map<String, ?> extraMap = DataPotatoField.digProductExtraData(user, product, ((PageContext) getJspContext()).getServletContext(), grpId, version);
                 ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
             }

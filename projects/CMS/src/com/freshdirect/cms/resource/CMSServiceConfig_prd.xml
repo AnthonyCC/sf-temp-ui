@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <module id="com.freshdirect.cms" version="1.0.0">
 
+	<sub-module descriptor="hivemodule_search.xml"/>
+
 	<service-point id="backgroundProcessor" interface="com.freshdirect.cms.search.IBackgroundProcessor">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.search.BackgroundProcessorImpl">
+				<set-service property="searchService" service-id="com.freshdirect.cms.search.SearchService" />
 			</construct>		
 		</invoke-factory>
 	</service-point>

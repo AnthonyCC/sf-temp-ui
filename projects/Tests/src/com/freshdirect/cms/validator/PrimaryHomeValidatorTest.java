@@ -2,7 +2,6 @@ package com.freshdirect.cms.validator;
 
 import java.io.ObjectStreamException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -22,10 +21,8 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
+import com.freshdirect.cms.fdstore.PrimaryHomeValidator;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
-import com.freshdirect.cms.validation.PrimaryHomeValidator;
 
 import junit.framework.TestCase;
 
@@ -42,8 +39,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
 	CmsManager mgr;
 
 	
-	@Override
-    protected void setUp() throws Exception {
+	protected void setUp() throws Exception {
 		/****
 		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/PrimaryHomeValidatorTestConfig.registry");
 		// The addConfiguration() call has the side-effect that FDRegistry.getInstance()
@@ -69,7 +65,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
 		this.contextService = new ContextService(this.contentService);
 
 
-		CmsManager.setInstance(new CmsManager(contentService, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+		CmsManager.setInstance(new CmsManager(contentService, null));
 		this.mgr = CmsManager.getInstance();
 		
     	delegate = null /* new ContentValidationDelegate() */;
@@ -88,7 +84,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
      * has parent cats in both stores, has two primary homes --> PASSED
      */
     public void testWellConfiguredProduct() {
-    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd1");
+    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd1");
     	
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
     	
@@ -103,7 +99,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
      * Prd2 has parent categories in both stores but misses one primary homes
      */
     public void testPartiallyGoodProduct() {
-    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd2");
+    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd2");
     	
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
     	
@@ -119,13 +115,13 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain two members", 2, homes.size());
 
-    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat11") ));
-    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat22") ));
+    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat11") ));
+    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat22") ));
     }
     
     
     public void testProductWithNoPrimaryHomes() {
-    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd3");
+    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd3");
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
 
     	ContentNodeI node = mgr.getContentNode(prdKey);
@@ -139,13 +135,13 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain two members", 2, homes.size());
 
-    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat12") ));
-    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat21") ));
+    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat12") ));
+    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat21") ));
     }
     
     
     public void testHalfOrphanProduct() {
-    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "HalfOrphanPrd");
+    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "HalfOrphanPrd");
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
 
     	ContentNodeI node = mgr.getContentNode(prdKey);
@@ -154,8 +150,8 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	
     	Set<ContentKey> parentKeys = mgr.getParentKeys(prdKey);
     	assertEquals("Product must have two parents", 2, parentKeys.size());
-    	assertTrue("Product must have an orphan parent cat", parentKeys.contains(ContentKey.getContentKey(FDContentTypes.CATEGORY, "OrphanCat") ));
-    	final Set<ContentKey> _parKeys = mgr.getParentKeys(ContentKey.getContentKey(FDContentTypes.CATEGORY, "OrphanCat"));
+    	assertTrue("Product must have an orphan parent cat", parentKeys.contains(new ContentKey(FDContentTypes.CATEGORY, "OrphanCat") ));
+    	final Set<ContentKey> _parKeys = mgr.getParentKeys(new ContentKey(FDContentTypes.CATEGORY, "OrphanCat"));
 		assertEquals("Orphan category should not be a member of any parent node", 0, _parKeys.size());
     	
     	v.validate(delegate, contentService, draftContext, node, request, null);
@@ -167,7 +163,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain exactly one primary home", 1, homes.size());
 
-    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat11") ));
+    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat11") ));
     }
 }
 

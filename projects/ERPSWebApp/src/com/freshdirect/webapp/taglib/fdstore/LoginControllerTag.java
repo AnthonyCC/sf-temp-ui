@@ -8,7 +8,6 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +17,15 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.enums.CaptchaType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
+import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -44,25 +48,17 @@ public class LoginControllerTag extends AbstractControllerTag {
 		this.mergePage = mp;
 	}
 
-	@Override
-    protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		HttpSession session = request.getSession(true);
-        Integer fdLoginAttempt = session.getAttribute(SessionName.LOGIN_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.LOGIN_ATTEMPT) : Integer.valueOf(0);
-
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"),
-				request.getRemoteAddr(), CaptchaType.SIGN_IN, session, SessionName.LOGIN_ATTEMPT,
-				FDStoreProperties.getMaxInvalidLoginAttempt());
-
-        if (request.getParameter(EnumUserInfoName.USER_ID.getCode()) == null) {
-            actionResult.addError(new ActionError(EnumUserInfoName.USER_ID.getCode(), SystemMessageList.MSG_REQUIRED));
-            return true;
-        }
-
-        if (request.getParameter(EnumUserInfoName.PASSWORD.getCode()) == null) {
-            actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_REQUIRED));
-            return true;
-        }
-
+		Integer fdLoginAttempt = session.getAttribute("fdLoginAttempt") != null ? (Integer) session.getAttribute("fdLoginAttempt") : Integer.valueOf(0);
+		boolean isCaptchaSuccess = true;
+		
+		if (request.getParameter("captchaEnabled") != null) {
+			isCaptchaSuccess = CaptchaUtil.validateCaptcha(request);
+			LOGGER.debug("Captcha enabled");
+		}
+		String test = EnumUserInfoName.USER_ID.getCode();
+		String test1 = request.getParameter(test);
 		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
 		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -113,7 +109,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 		    	}
 		    }
         }
-        
+	    
 	    /* merging social account code ends here */
 		String newURL = request.getScheme() + "://" + request.getServerName();
 		if(FDStoreProperties.isLocalDeployment()){
@@ -130,8 +126,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 //					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
 //					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length()), true);
 //				 } else {
-	    			/* the start slash is prefixed in the success.jsp */
-					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+URLEncoder.encode(updatedSuccessPage.substring(1, updatedSuccessPage.length())), true);
+					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()), true);
 //				 }					 	    		
 	    	} else {
 	    		this.setSuccessPage(updatedSuccessPage);
@@ -139,7 +134,6 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			if(actionResult.getErrors() != null && actionResult.getErrors().size() <= 0  && isCaptchaSuccess){		
 				fdLoginAttempt = 0;
-
 			} else {
 				fdLoginAttempt++;
 			}
@@ -164,10 +158,7 @@ public class LoginControllerTag extends AbstractControllerTag {
         } else {
 			fdLoginAttempt++;
 		}
-
-        session.setAttribute(SessionName.LOGIN_ATTEMPT, fdLoginAttempt);
-
-        session.setAttribute(SessionName.LOGIN_SUCCESS, fdLoginAttempt != null && fdLoginAttempt == 0);
+		session.setAttribute("fdLoginAttempt", fdLoginAttempt);
 		
 		return true;
 		

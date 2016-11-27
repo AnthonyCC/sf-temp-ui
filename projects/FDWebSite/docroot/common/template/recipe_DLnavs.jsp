@@ -1,10 +1,7 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
 <%@ page import='java.util.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -15,6 +12,7 @@ final int W_RECIPE_DL_NAVS_TOTAL = 970;
 final int W_RECIPE_DL_NAVS_LEFT = 150;
 final int W_RECIPE_DL_NAVS_RIGHT = 820;
 %>
+
 <%/*
     if (session.isNew()){
     	 response.sendRedirect(response.encodeRedirectURL("site_access.jsp"));
@@ -23,35 +21,30 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 */%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-     <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<style>
-		.W_RECIPE_DL_NAVS_TOTAL { width: <%= W_RECIPE_DL_NAVS_TOTAL %>px; }
-		.W_RECIPE_DL_NAVS_LEFT { width: <%= W_RECIPE_DL_NAVS_LEFT %>px; }
-		.W_RECIPE_DL_NAVS_RIGHT { width: <%= W_RECIPE_DL_NAVS_RIGHT %>px; }
-	</style>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <%@ include file="/shared/template/includes/ccl.jspf" %>
 	<tmpl:get name='customhead'/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
-	data-pagetype="<tmpl:get name='pageType'/>"
->
+<BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	// go find the recipeDepartment...(should be a method on contentFactory
-	ContentType cType = ContentType.RecipeDepartment;
+	ContentType cType = ContentType.get("RecipeDepartment");
 	Set s = CmsManager.getInstance().getContentKeysByType(cType);
 	// there can only be one (hmmmm, the Highlander effect)
 	RecipeDepartment rcpDept = null;
 
 	if (!s.isEmpty()) {
  	   ContentKey cKey = (ContentKey) s.iterator().next();
-           rcpDept = (RecipeDepartment) PopulatorUtil.getContentNode(cKey.getId());
+           rcpDept = (RecipeDepartment) ContentFactory.getInstance().getContentNode(cKey.getId());
 	}
 	//
 	// annotation mode, add overlib stuff
@@ -62,47 +55,46 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 	<fd:javascript src="/assets/javascript/overlib_mini.js"/>
 <%	} %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
+<CENTER CLASS="text10">
+<table width="<%=W_RECIPE_DL_NAVS_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+<tr>
+	<td width="<%=W_RECIPE_DL_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_LEFT%>" height="1" border="0"></td>
+	<td width="<%=W_RECIPE_DL_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="1" border="0"></td>
+</tr>
+<tr>
+	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+</tr>
+<tr>
+	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" colspan="2">
+	<%-- Start Department Nav for Recipe --%> 
+	  <%@ include file="/common/template/includes/i_recipe_dept_nav.jspf"%>
+	<%-- END Recipe Department Nav --%> 
 
-	<section class="container">
-		<CENTER CLASS="text10">
-			<table class="W_RECIPE_DL_NAVS_TOTAL" border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td class="W_RECIPE_DL_NAVS_LEFT"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DL_NAVS_LEFT" height="1" border="0"></td>
-				<td class="W_RECIPE_DL_NAVS_RIGHT"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DL_NAVS_RIGHT" height="1" border="0"></td>
-			</tr>
-			<tr>
-				<td class="W_RECIPE_DL_NAVS_TOTAL" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
-			</tr>
-			<tr>
-				<td class="W_RECIPE_DL_NAVS_TOTAL" colspan="2">
-				<%-- Start Department Nav for Recipe --%> 
-				  <%@ include file="/common/template/includes/i_recipe_dept_nav.jspf"%>
-				<%-- END Recipe Department Nav --%> 
-			
-				</td>
-			</tr>
-			<tr>
-				<td class="W_RECIPE_DL_NAVS_TOTAL" bgcolor="#999966" colspan="6"><img src="/media_stat/images/layout/999966.gif" alt="" width="1" height="1"></td>
-			</tr>
-			<tr valign="top">
-				<td class="W_RECIPE_DL_NAVS_LEFT" bgcolor="#E0E3D0">
-					<!-- Recipe Start Left Nav -->
-			                  <%@include file="/common/template/includes/i_recipe_leftnav.jspf"%>
-			
-					<!-- END RECIPE SIDE NAV -->
-					<img src="/media_stat/images/layout/clear.gif" alt="" height="1" class="W_RECIPE_DL_NAVS_LEFT">
-				</td>
-				<td class="W_RECIPE_DL_NAVS_RIGHT" align="right">
-					<img src="/media_stat/images/layout/clear.gif" alt="" class="W_RECIPE_DL_NAVS_RIGHT" height="15"><br>
-					<!-- content lands here -->
-					<tmpl:get name='content'/>
-					<!-- content ends above here-->
-					<br><br>
-				</td>
-			</tr>
-			</table>
-		</CENTER>
-	</section>
+	</td>
+</tr>
+<tr>
+	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" bgcolor="#999966" colspan="6"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+</tr>
+<tr valign="top">
+	<td width="<%=W_RECIPE_DL_NAVS_LEFT%>" bgcolor="#E0E3D0">
+		<!-- Recipe Start Left Nav -->
+		<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+                  <%@include file="/common/template/includes/i_recipe_leftnav.jspf"%>
+		</oscache:cache>
+
+		<!-- END RECIPE SIDE NAV -->
+		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_RECIPE_DL_NAVS_LEFT%>">
+	</td>
+	<td width="<%=W_RECIPE_DL_NAVS_RIGHT%>" align="right">
+		<img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="15"><br>
+		<!-- content lands here -->
+		<tmpl:get name='content'/>
+		<!-- content ends above here-->
+		<br><br>
+	</td>
+</tr>
+</table>
+</CENTER>
 <%@ include file="/common/template/includes/footer.jspf" %>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>

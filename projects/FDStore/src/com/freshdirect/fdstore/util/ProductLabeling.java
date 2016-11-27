@@ -12,30 +12,31 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Product display helper class
+ * 
+ * @author segabor
+ *
  */
 public class ProductLabeling {
-
-    private static final Logger LOG = LoggerFactory.getInstance(ProductLabeling.class);
+    private final static Logger LOG = LoggerFactory.getInstance(ProductLabeling.class);
     
 	private FDUserI customer;
 	private ZoneInfo pricingZone;
 	private ProductModel product;
 	private PriceCalculator calculator; 
-    private Set<EnumBurstType> hideBursts;
+	Set<EnumBurstType> hideBursts;
 	
 	// display flags
-    private boolean displayDeal;
-    private boolean displayFave;
-    private boolean displayNew;
-    private boolean displaybackInStock;
-    private boolean displayGoingOutOfStock;
+	boolean displayDeal = false;
+	boolean displayFave = false;
+	boolean displayNew = false;
+	boolean displaybackInStock = false;
 
 	/**
 	 * @deprecated
@@ -48,8 +49,7 @@ public class ProductLabeling {
 	 * @param hideDeals Hide Deals burst
 	 * @param hideYourFave Hide Your Fave burst
 	 */
-	@Deprecated
-    public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
+	public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
 	    setCustomer(customer);
 		this.product = product;
 		this.calculator = product.getPriceCalculator();
@@ -105,9 +105,7 @@ public class ProductLabeling {
      */
     private void setCustomer(FDUserI customer) {
         this.customer = customer;
-        this.pricingZone = customer != null && customer.getUserContext()!= null && 
-        				   customer.getUserContext().getPricingContext()!=null && 
-        				   customer.getUserContext().getPricingContext().getZoneInfo()!=null ? customer.getUserContext().getPricingContext().getZoneInfo() : ZonePriceListing.DEFAULT_ZONE_INFO; 
+        this.pricingZone = customer != null ? customer.getUserContext().getPricingContext().getZoneInfo() : ZonePriceListing.DEFAULT_ZONE_INFO; 
     }
 	
 	
@@ -125,15 +123,13 @@ public class ProductLabeling {
 		displayFave = false;
 		displayNew = false;
 		displaybackInStock = false;
-        displayGoingOutOfStock = false;
 		boolean showBurstImage=true;
                 
 		try {		    
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= calculator.getProductInfo();			
-				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null && customer.getUserContext() != null && customer.getUserContext().getPricingContext() != null 
-																	? customer.getUserContext().getPricingContext().getZoneInfo() : pricingZone);
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getUserContext().getPricingContext().getZoneInfo():pricingZone);
 				if(model!=null)
 					showBurstImage=model.isShowBurstImage();			
 			}
@@ -147,15 +143,12 @@ public class ProductLabeling {
 		boolean isNew = (hideBursts == null || !hideBursts.contains(EnumBurstType.NEW) ) && product.isNew();
 		boolean isYourFave = (hideBursts == null || !hideBursts.contains(EnumBurstType.YOUR_FAVE) ) && DYFUtil.isFavorite(product, customer);
 		boolean isBackInStock = (hideBursts == null || !hideBursts.contains(EnumBurstType.BACK_IN_STOCK) ) && product.isBackInStock();
-        boolean isGoingOutOfStock = (hideBursts == null || !hideBursts.contains(EnumBurstType.GOING_OUT_OF_STOCK)) && product.isGoingOutOfStock();
 		
 		// determine what to display
 		if (deal > 0) {
 			displayDeal = true;
 		} else if (isYourFave) {
 			displayFave = true;
-        } else if (isGoingOutOfStock) {
-            displayGoingOutOfStock = true;
 		} else if (isNew) {
 			displayNew = true;
 		} else if (isBackInStock) {
@@ -163,13 +156,16 @@ public class ProductLabeling {
 		}
 	}
 
+
 	public boolean isDisplayDeal() {
 		return displayDeal;
 	}
 
+
 	public boolean isDisplayFave() {
 		return displayFave;
 	}
+
 
 	public boolean isDisplayNew() {
 		return displayNew;
@@ -179,21 +175,16 @@ public class ProductLabeling {
 		return displaybackInStock;
 	}
 
-    public boolean isDisplayGoingOutOfStock() {
-        return displayGoingOutOfStock;
-    }
-
-    public boolean isDisplayAny() {
-        return displayDeal || displayFave || displayNew || displaybackInStock || displayGoingOutOfStock;
+	public boolean isDisplayAny() {
+		return displayDeal || displayFave || displayNew || displaybackInStock;
 	}
+
 
 	public String getTrackingCode() {
 		if (displayDeal) {
 			return EnumBurstType.DEAL.getCode();
 		} else if (displayFave) {
 			return EnumBurstType.YOUR_FAVE.getCode();
-        } else if (displayGoingOutOfStock) {
-            return EnumBurstType.GOING_OUT_OF_STOCK.getCode();
 		} else if (displayNew) {
 			return EnumBurstType.NEW.getCode();
 		} else if (displaybackInStock) {
@@ -202,17 +193,16 @@ public class ProductLabeling {
 		return null;
 	}
 
+
 	public String getBurstCode() {
 		String burst = null;
 		if (isDisplayDeal())
 			burst = Integer.toString(calculator.getHighestDealPercentage());
 		else if (isDisplayFave())
 			burst = "YF";
-        else if (isDisplayGoingOutOfStock())
-            burst = "GO";
 		else if (isDisplayNew())
 			burst = "NE";
-        else if (isDisplayBackinStock())
+		else if (isDisplayNew())
 			burst = "BK";
 		return burst;
 	}
@@ -229,10 +219,6 @@ public class ProductLabeling {
 		return hideBursts != null && hideBursts.contains(EnumBurstType.BACK_IN_STOCK);
 	}
 	
-    public boolean isHideGoingOutOfStock() {
-        return hideBursts != null && hideBursts.contains(EnumBurstType.GOING_OUT_OF_STOCK);
-    }
-
 	public boolean isHideDeals() {
 		return hideBursts != null && hideBursts.contains(EnumBurstType.DEAL);
 	}

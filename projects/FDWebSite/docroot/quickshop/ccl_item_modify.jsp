@@ -1,7 +1,7 @@
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -61,14 +61,9 @@ final int W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL = 601;
 %>
 <fd:FDShoppingCart id='cart' result='result' source='CCL' action='<%= tagAction %>' successPage='<%= successPage %>'>
  <tmpl:insert template='/common/template/quick_shop.jsp'> 
-<%--     <tmpl:put name='title' direct='true'> --%>
-<%--        FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %> --%>
-<%--     </tmpl:put> --%>
-  <tmpl:put name="seoMetaTag" direct="true">
-   <% String var = " FreshDirect - " + (CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item")+  " - " + (null !=productNode?productNode.getFullName():"");
-   %>
-    <fd:SEOMetaTag title= "<%= var %>"></fd:SEOMetaTag>
-  </tmpl:put>
+    <tmpl:put name='title' direct='true'>
+       FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %>
+    </tmpl:put>
 
 <%
    String productLink = (String)request.getAttribute("productLink");

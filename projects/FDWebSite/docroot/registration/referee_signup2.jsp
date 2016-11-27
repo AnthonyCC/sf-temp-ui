@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -5,8 +6,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
-<%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
+
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
@@ -17,22 +17,20 @@
 	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
 	
     String failurePage = "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;	
-%>
-<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
+%>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-    <%--  <title>FreshDirect</title>  --%>
-     <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<title>FreshDirect</title>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
-	
+<%CmRegistrationTag.setRegistrationLocation(session,"referee"); %>
+
+	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
 		String email = (String) session.getAttribute("REFERRAL_EMAIL");
 		String repeat_email = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "");
@@ -40,15 +38,15 @@
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "");
 		String passwordhint = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode()), "");		
-		EnumEStoreId storeid = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
-		if(FDReferralManager.isReferreSignUpComplete(email, storeid)) {
+
+		if(FDReferralManager.isReferreSignUpComplete(email)) {
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
 
 			//set a session attribute so we know registration completed successfully
 			session.setAttribute("regSuccess", true);
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
 				window.location.href="/index.jsp";
 			</script>
@@ -59,7 +57,7 @@
 			if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 
 			%>
-				<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+				<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 				<script language="javascript">
 					window.location.href="/login/login_main.jsp?successPage=%2Findex.jsp";
 				</script>
@@ -106,25 +104,25 @@
 			<span class="bodyCopy">Confirm Email Address <span class="star">*</span> </span>
 			<br /><input type="text" class="text11ref inputDef" maxlength="128" size="21" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email">
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
-			<br /><div class="errortext" style="width:300px;text-align: left;"><%=errorMsg%></div>
+			<br /><div class="text11rbold" style="width:300px;text-align: left;"><%=errorMsg%></div>
 			</fd:ErrorHandler>
 			
 			<br /><br />
 			<span class="bodyCopy">Password <span class="star">*</span> </span> <br />
-			<input type="password"  class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="errortext"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<input type="password"  class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
 			<br /><br />
 			<span class="bodyCopy">First Name <span class="star">*</span> </span> <br />
-			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your first name');" onblur="fillVals(this.id, 'Def','Enter your first name');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your first name');" onblur="fillVals(this.id, 'Def','Enter your first name');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			
 			<br /><br />
 			<span class="bodyCopy">Last Name <span class="star">*</span> </span> <br />
-			<input type="text"  maxlength="25" class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your last name');" onblur="fillVals(this.id, 'Def','Enter your last name');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="errortext"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<input type="text"  maxlength="25" class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your last name');" onblur="fillVals(this.id, 'Def','Enter your last name');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
 			<br /><br />
 			<span class="bodyCopy">Security Question <span class="star">*</span> </span> <br />
 			<span class="text12">What is your town of birth or mother's  maiden name? </span><br /><br />
-			<input type="text"  maxlength="25" class="text11ref inputUser" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="errortext"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<input type="text"  maxlength="25" class="text11ref inputUser" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			<br /><br />
 			<div class="fright hline" id=""><!-- --></div>
 			
@@ -135,7 +133,7 @@
 	</div>
 	</div>
 	<% } } %>
+	</fd:RegistrationController>
 	
 </body>
 </html>
-</fd:RegistrationController>

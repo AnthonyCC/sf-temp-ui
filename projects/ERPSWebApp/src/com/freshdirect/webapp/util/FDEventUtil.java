@@ -2,7 +2,7 @@ package com.freshdirect.webapp.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.event.ClickThroughEventAggregator;
 import com.freshdirect.event.EventLogger;
 import com.freshdirect.event.ImpressionEventAggregator;
@@ -42,20 +42,18 @@ public class FDEventUtil {
 		EventLogger.getInstance().logEvent(event);
 	}
 
-	//Removing the calls to old analytics, to improve the web performance.
 	public static void logRecommendationImpression(String variantId, ContentKey contentKey) {
-		/*FDRecommendationEvent event = FDEventFactory.getImpressionEvent(variantId, contentKey);
-		ImpressionEventAggregator.getInstance().note(event);*/
+		FDRecommendationEvent event = FDEventFactory.getImpressionEvent(variantId, contentKey);
+		ImpressionEventAggregator.getInstance().note(event);
 	}
 
 	public static void flushImpressions() {
 		ImpressionEventAggregator.getInstance().flush();
 	}
 
-	//Removing the calls to old analytics, to improve the web performance.
 	public static void logRecommendationClickThrough(String variantId, ContentKey contentKey) {
-		/*FDRecommendationEvent event = FDEventFactory.getClickThroughEvent(variantId, contentKey);
-		ClickThroughEventAggregator.getInstance().note(event);*/
+		FDRecommendationEvent event = FDEventFactory.getClickThroughEvent(variantId, contentKey);
+		ClickThroughEventAggregator.getInstance().note(event);
 	}
 
 	public static void flushClickThroughs() {

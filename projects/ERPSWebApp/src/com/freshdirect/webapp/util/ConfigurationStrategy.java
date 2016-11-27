@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.util;
 
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 /**
  * Get a {@link ProductImpression} of a {@link ProductModel product}.

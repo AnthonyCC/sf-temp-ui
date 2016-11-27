@@ -12,12 +12,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.enums.ejb.EnumManagerHome;
 import com.freshdirect.enums.ejb.EnumManagerSB;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class EnumManager {
 
@@ -31,7 +27,7 @@ public class EnumManager {
 			try {
 				setInstance(new EnumManager(new ServiceLocator(ErpServicesProperties.getInitialContext())));
 			} catch (NamingException e) {
-				LOGGER.error("Error occured in EnumManager.getInstance", e);
+				LOGGER.error(e);
 				throw new EJBException(e);
 			}
 		}
@@ -47,26 +43,12 @@ public class EnumManager {
 	}
 
 	public List loadEnums(Class daoClass) {
-
-		if (FDStoreProperties
-				.isSF2_0_AndServiceEnabled(FDEcommProperties.EnumManagerSB)) {
-
-			try {
-				LOGGER.info("calling sf2.0 gateway ");
-				return FDECommerceService.getInstance().loadEnum(
-						daoClass.getSimpleName());
-			} catch (Exception e) {
-				throw new FDRuntimeException(e);
-			}
-		} else {
-			try {
-				EnumManagerSB sb = this.getEnumManagerSB();
-				return sb.loadEnum(daoClass.getName());
-			} catch (RemoteException e) {
-				throw new EJBException(e);
-			}
+		EnumManagerSB sb = this.getEnumManagerSB();
+		try {
+			return sb.loadEnum(daoClass.getName());
+		} catch (RemoteException e) {
+			throw new EJBException(e);
 		}
-
 	}
 
 	private EnumManagerSB getEnumManagerSB() {

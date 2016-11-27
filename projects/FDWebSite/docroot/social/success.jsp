@@ -1,45 +1,32 @@
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
-  <%-- <title>FreshDirect</title> --%>
-    <fd:SEOMetaTag title="FreshDirect"/>
-  <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-  <%
-    request.getSession(false).removeAttribute(SessionName.LOGIN_SUCCESS);
-    request.getSession(false).removeAttribute(SessionName.SOCIAL_LOGIN_SUCCESS);
-  %>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body>
-  <div class="social-login-spinner">
-    <img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />  
-  </div>
+<%  
+	String successPage = request.getParameter("successPage");
 
-  <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-  <script>
-    var fd = window.FreshDirect,
-        successPage;
+	if(successPage != null)
+	{
+		%>
+<div class="social-login-spinner">
+	<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
+</div>
+			<script language="javascript">
+				window.top.location='/<%=successPage%>';
+			</script>
+		
+		<% 
+	}
 
-    if (fd) {
-      try {
-      	var decodedSuccessPage = window.decodeURIComponent(fd.utils.getParameters().successPage);
-      	if (decodedSuccessPage && decodedSuccessPage.indexOf('requireDecode=false') !== -1) {
-      		successPage = fd.utils.getParameters().successPage;
-      	} else {
-      		successPage = decodedSuccessPage;
-      	}
-      } catch (e) {}
 
-      successPage = '/' + (successPage || '') + window.top.location.hash;
-
-      console.log('Login succeeded, redirecting to: '+successPage);
-
-      // give some time for GTM and the marketing trackers
-      setTimeout(function () {
-        window.top.location.assign(successPage);
-      }, 500);
-    }
-  </script>
+%>
 </body>
 </html>

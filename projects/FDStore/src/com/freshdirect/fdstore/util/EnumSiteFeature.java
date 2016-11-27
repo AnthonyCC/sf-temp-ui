@@ -13,13 +13,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.Latch;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
-import com.freshdirect.storeapi.application.CmsManager;
 
 
 public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature> {
@@ -78,10 +78,6 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     public final static EnumSiteFeature QS_BOTTOM_CAROUSEL = new EnumSiteFeature("QS_BOTTOM");
     
-    public final static EnumSiteFeature XC_VIEW_CART_CAROUSEL = new EnumSiteFeature("XC_VIEW_CART");
-
-    public final static EnumSiteFeature XC_CHECKOUT_CAROUSEL = new EnumSiteFeature("XC_CHECKOUT");
-
     String name;
 	
 	/**
@@ -126,16 +122,14 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		dynamicEnum.put(name, this);
 	}
 	
-	@Override
-    public int hashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
-	@Override
-    public boolean equals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -151,15 +145,13 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return true;
 	}
 
-	@Override
-    public int compareTo(EnumSiteFeature e) {
+	public int compareTo(EnumSiteFeature e) {
 		if (title != null && e.title != null)
 			return title.compareTo(e.title);
 		return name.compareTo(e.name);
 	}
 	
-	@Override
-    public String toString() {
+	public String toString() {
 		return "EnumSiteFeature[" + name + "]";
 	}
 	
@@ -200,7 +192,7 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		feature = staticEnum.get(name);
 		
 		if (feature == null) {
-			//LOGGER.error("Failed to find site feature with name '" + name + "', store: " + CmsManager.getInstance().getSingleStoreKey());
+			LOGGER.error("Failed to find site feature with name '" + name + "', store: " + CmsManager.getInstance().getSingleStoreKey());
 
 			return EnumSiteFeature.NIL;
 		} else {

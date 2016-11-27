@@ -1,26 +1,21 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Date;
+
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.core.PrimaryKey;
 
 public class PromotionDlvDay extends ModelSupport {
 
-	
-	private static final long serialVersionUID = 8236335448661584774L;
 	private Integer dayId;
 	private Integer redeemCnt;
-	private double capacityUtilization;
 	
-	public PromotionDlvDay(Integer dayId, Integer redeemCnt, double capacityUtilization) {
+	public PromotionDlvDay(Integer dayId, Integer redeemCnt) {
 		super();
 		this.dayId = dayId;
 		this.redeemCnt = redeemCnt;
-		this.capacityUtilization = capacityUtilization;
 	}
 	
-	public PromotionDlvDay() {
-		super();
-	}
-
 	public Integer getDayId() {
 		return dayId;
 	}
@@ -34,14 +29,6 @@ public class PromotionDlvDay extends ModelSupport {
 
 	public void setRedeemCnt(Integer redeemCnt) {
 		this.redeemCnt = redeemCnt;
-	}
-
-	public double getCapacityUtilization() {
-		return capacityUtilization;
-	}
-
-	public void setCapacityUtilization(double capacityUtilization) {
-		this.capacityUtilization = capacityUtilization;
 	}
 	
 }

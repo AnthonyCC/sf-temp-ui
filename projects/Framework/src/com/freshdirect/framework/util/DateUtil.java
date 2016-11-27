@@ -35,7 +35,9 @@ public class DateUtil {
 	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
 	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_mm_a");
-
+	
+	private static final DateFormat CM_TIMESLOT_FORMATTER = new SimpleDateFormat("HHmm");
+	
 	private static final DateFormat MON_DATE_YEAR_FORMATTER = new SimpleDateFormat("MMddyyyy");
 	
 	private static final DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
@@ -57,12 +59,10 @@ public class DateUtil {
 	public static final DateFormat MONTH_DATE_FORMATTER = new SimpleDateFormat("MM/dd");
 	public static final DateFormat DAY_MONTH_DATE_FORMATTER = new SimpleDateFormat("EEE, MMMM dd");
 	public static final DateFormat FULL_DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEEE");
-	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM d");
-	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("ha");
-	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("h:mma");
+	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM dd");
+	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("hha");
+	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("hh:mma");
 	
-    public static final String STANDARDIZED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mmZ";
-
 	private DateUtil() {
 	}
 
@@ -111,10 +111,6 @@ public class DateUtil {
 	/* @return get absolute difference between d1/d2 in days, rounded to nearest */
 	public static int getDiffInDays(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) DAY)));
-	}
-	
-	public static int getDurationInHours(Date d1, Date d2){
-		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
 	}
 	
 	public static int getDiffInDaysFloor(Date d1, Date d2) {
@@ -168,13 +164,6 @@ public class DateUtil {
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
-	
-	public static Date getCurrentDate() {
-		Calendar cal = Calendar.getInstance();
-		cal = truncate(cal);
-		return cal.getTime();
-	}
-	
 	public static Date getCurrentTime() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());		
@@ -274,6 +263,10 @@ public class DateUtil {
 		} else {
 			return null;
 		}
+	}
+	
+	public static String formatCmTimeslot(Date dateValue){
+		return CM_TIMESLOT_FORMATTER.format(dateValue);
 	}
 	
 	public static String formatTime(Date dateValue) {
@@ -442,7 +435,6 @@ public class DateUtil {
 		Date cutoffDateTime = null;
 		Date premiumCutoffDateTime =null;
 		Date now = cal.getTime();
-		//@TODO
 		if (cutoffTime != null && premiumCutoffTime != null) {
 			 cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate),-1);
 			 premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);
@@ -463,14 +455,11 @@ public class DateUtil {
 		return formatter.format(date);
 	}
 	
-    public static DateFormat getStandardizedDateFormatter() {
-        return new SimpleDateFormat(STANDARDIZED_DATE_PATTERN);
-    }
 
 	public static Date getServerTime(Date clientDate) {
 		try {
 			if(clientDate != null) {
-				return serverTimeFormat.parse(serverTimeFormat.format(clientDate));
+				return (Date)serverTimeFormat.parse(serverTimeFormat.format(clientDate));
 			} 
 		}catch(ParseException pe){
 			
@@ -609,18 +598,5 @@ public class DateUtil {
 			.append(endDateString);
 		
 		return hourRange.toString();
-	}
-	
-	public static Date getSubsequentDeliveryDate(int frequency) {
-		
-		Calendar cl = Calendar.getInstance();
-		cl.setTime(new Date());
-		
-		cl.add(Calendar.DATE, 7*frequency);
-		
-		cl.set(Calendar.HOUR, 0);
-		cl.set(Calendar.MINUTE, 0);
-
-		return cl.getTime();
 	}
 } 

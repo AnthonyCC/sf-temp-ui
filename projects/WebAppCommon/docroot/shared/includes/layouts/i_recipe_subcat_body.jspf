@@ -2,26 +2,25 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ page import="java.util.StringTokenizer"%>
-<%@ page import="com.freshdirect.storeapi.content.Html"%>
-<%@ page import="com.freshdirect.storeapi.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.content.Html"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Iterator"%>
-<%@ page import="com.freshdirect.storeapi.content.Recipe"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
-<%@ page import="com.freshdirect.storeapi.content.RecipeSubcategory"%>
-<%@ page import="com.freshdirect.storeapi.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
 <%@ page import="com.freshdirect.fdstore.util.RecipesUtil"%>
 
 <% //expanded page dimensions
 final int W_RECIPE_SUBCAT_BODY_TOTAL = 601;
 %>
-<style>
-	.W_RECIPE_SUBCAT_BODY_TOTAL { width: <%= W_RECIPE_SUBCAT_BODY_TOTAL %>px; }
-</style>
+
+
 <%
 /*
 -- This includes paints the recipe category body and bottom (no side navs)
@@ -97,7 +96,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 %>
 
 
-<table class="W_RECIPE_SUBCAT_BODY_TOTAL" cellpadding="0" cellspacing="0">
+<table width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" cellpadding="0" cellspacing="0">
 <tr>
 	<td>
 	<% 
@@ -111,7 +110,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 	if (catLabelImg != null) {
 		%>
 		<img src="<%=catLabelPath%>"  width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0">
-		<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br/>
+		<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br/>
 		<%
 	}
 	%>
@@ -119,9 +118,9 @@ for (;qryStringTokn.hasMoreTokens();) {
 	<%
 	if (editorialPath!=null && !"".equals(editorialPath.trim())) {
 		%>
-		<div class="W_RECIPE_SUBCAT_BODY_TOTAL" style="text-align:left;" class="text11">
+		<div style="width: <%=W_RECIPE_SUBCAT_BODY_TOTAL%>px; text-align:left;" class="text11">
 			<fd:IncludeMedia name='<%= editorialPath %>' />
-			<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" alt="" class="W_RECIPE_SUBCAT_BODY_TOTAL" height="1" vspace="4">
+			<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" height="1" vspace="4">
 		</div>
 		<%
 	}
@@ -174,7 +173,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 			<%
 		}
 		%>
-		<logic:iterate id="filterDV" collection="<%= filterByKeys %>" type="com.freshdirect.storeapi.content.DomainValue">
+		<logic:iterate id="filterDV" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
 			<span class="dot_separator">&#149;</span>
 			<%
 			if (filterDV.getContentName().equals(filterParam) ) { 
@@ -230,7 +229,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 		  if (!labelPrinted) { 
 		     labelPrinted=true;%>
 			<tr>
-			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/><%}%>
+			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><%}%>
 <%		}  	  	   %>
 			    <a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCat+subCatIdParam+"&recipeId="+oneRecipe+"&trk=cpage")%>" class="recipe_name"><b><%=oneRecipe.getName()%></b></a><br/><span class="recipe_author"><%=oneRecipe.getDisplayableSource()%></span><br/><br/>
  <% 		   paintCount++;

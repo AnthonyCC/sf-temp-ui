@@ -85,7 +85,6 @@ var FreshDirect = FreshDirect || {};
         if(largeUrl && largeUrl.length > 0){
           var beacon = new Image();
           beacon.src = $(this).attr('data-large-url');
-          beacon.alt = '';
 
           beacon.onload = function(){
               // put it in the container
@@ -208,9 +207,7 @@ var FreshDirect = FreshDirect || {};
     } 
   });
 
-  if (!fd.mobWeb) {
-	  loadHdImages();
-  }
+  loadHdImages();
 
   fd.modules.common.utils.register("pdp", "replaceImage", replaceImage, fd);
   fd.modules.common.utils.register("pdp", "loadHdImages", loadHdImages, fd);

@@ -7,15 +7,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
-import com.freshdirect.ecomm.gateway.CountryOfOriginService;
 import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
+import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.StringUtil;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -189,8 +198,7 @@ public class FDCOOLJcoServer extends FdSapServer {
 			}
 
 			if (erpCOOLInfoList.size() > 0) {
-					storeCOOLInfo(erpCOOLInfoList);
-				
+				storeCOOLInfo(erpCOOLInfoList);
 			}
 		} catch (final Exception e) {
 			throw new LoaderException("Saving cool info failed. No update will happen. Exception is " + e);
@@ -200,14 +208,27 @@ public class FDCOOLJcoServer extends FdSapServer {
 	/**
 	 * @param erpCOOLInfoList
 	 */
-	private void storeCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList) throws RemoteException {
-		
+	private void storeCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList) throws NamingException, EJBException,
+			CreateException, FinderException, FDResourceException, RemoteException {
+		Context ctx = null;
+
 		try {
-			CountryOfOriginService.getInstance().saveCountryOfOriginData(erpCOOLInfoList);
-			
+			ctx = ErpServicesProperties.getInitialContext();
+//			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());
+			ErpCOOLManagerSB sb = mgr.create();
+
+			sb.updateCOOLInfo(erpCOOLInfoList);
 		} catch (Exception ex) {
-			throw new RemoteException(ex.toString());
-		} 
+			throw new EJBException(ex.toString());
+		} finally {
+			if (ctx != null) {
+				try {
+					ctx.close();
+				} catch (NamingException e) {
+				}
+			}
+		}
 	}
 
 	/**

@@ -5,7 +5,7 @@ MESSAGES AND ALERTS
 	MESSAGES: Are all grouped together under one container (messageData.options.$messages). They are all either open or closed together, and have a single handler which is appended to the container.
 
 	ALERTS: Act independently, each with it's own handler that is appended to their container(s). Each can be appended to multiple parent containers, each parent will get a handler controlling all locations of the alert.
-
+	
 	On the case that multiple alerts are called at once and the alerts' addTo overlap, like using:
 		[ALERT1,ALERT2], { addTo: 'A1,A2' }, { addTo: 'A2,A3' }
 
@@ -22,7 +22,7 @@ MESSAGE USAGE:
 
 		Optionally use:
 			data-type="IDSTRING" - string id, overrides message id.
-
+			
 		NOTE: The message id is used for ordering and comparison as SystemMessage. If IDSTRING is not in messageData.options.messagesOrder, it will be pushed onto the end.
 
 	to define call manually:
@@ -30,7 +30,7 @@ MESSAGE USAGE:
 			$('#message1').messages('add','IDSTRING');
 
 		IDSTRING: string id
-
+	
 	Events:
 		messageAdded : On a successful add, triggers event on callee.
 		messagesOpen : On open, triggers event on callee.
@@ -39,7 +39,7 @@ MESSAGE USAGE:
 ALERTS USAGE:
 	to define a new alert that runs automatically:
 		add the content to the page:
-
+		
 			<div class="alerts invisible" id="alert1">CONTENT</div>
 
 		The classes "alerts and invisible" are required to automatically use, the id is always required.
@@ -48,7 +48,7 @@ ALERTS USAGE:
 			data-type="IDSTRING" - string id, overrides alert id
 			data-addto="SELECTOR1, ... ,SELECTORN" - jQuery selectors, overrides addTo. default is self
 			data-closehandleraddto="SELECTOR1, ... ,SELECTORN" - jQuery selectors, overrides closeHandlerAddTo. default is self
-
+		
 	to define call manually:
 		call this js:
 			$('#alert1').messages('add', [IDSTRINGS], true, [ALERTOPTSOBJS]);
@@ -61,7 +61,7 @@ ALERTS USAGE:
 				addTo: SELECTORS, - default $(this).attr('data-addto') || this
 				closeHandlerAddTo: SELECTORS - default $(this).attr('data-closehandleraddto') || this
 			}
-
+		
 		The index of [IDSTRINGS] is used for the index of [ALERTOPTSOBJS].
 
 	Optionally, if using addTo, add the html content for those containers.
@@ -94,10 +94,9 @@ SESSIONSTORAGE:
 		options: {
 			SystemMessage: 'SystemMessage',
 			messagesOrder: [],
-			$messages: null,
+			$messages: $('#messages'),
 			handlerSelector: '.handler',
 			messagesOpenClass: 'open',
-			messagesOpenVisHiddenClass: 'visHidden',
 			alertsOpenClass: 'open', //class to show alert is open
 			alertsContainerClass: 'alert-cont', //class to find parent container for alert
 			alertsCloseHandlerClass: 'alert-closeHandler', //class to add to default close handler
@@ -112,12 +111,11 @@ SESSIONSTORAGE:
 		},
 		jsessionId: getJsessionId(),
 		messages: {}, /* MSG1 : HTML */
-		alerts: {}, /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
-		messagesIsClosed: false
+		alerts: {} /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
 	};
 	messageData.options.messagesOrder = [messageData.options.SystemMessage, 'cutoff', 'platterwarning', 'reservationwarning', 'deliveryetawarning'];
 
-
+	
 	var oldHashesStorageKey = messageData.jsessionId+'/messageHashes',
 		oldClosedStorageKey = messageData.jsessionId+'/messagesClose';
 
@@ -131,14 +129,13 @@ SESSIONSTORAGE:
 	};
 
 	function getJsessionId() {
-		var jsessionId = 'FD_NO_SESSION_ID';
-		
-		if ($.isFunction(fd.USQLegalWarning.getJSessionId)) {
-			jsessionId = fd.USQLegalWarning.getJSessionId();
-		} else if (fd.USQLegalWarning.hasOwnProperty('sessionStore')) {
-			jsessionId = fd.USQLegalWarning.sessionStore;
-		}
-		return jsessionId;
+		return ($.isFunction(fd.USQLegalWarning.getJSessionId))
+				? fd.USQLegalWarning.getJSessionId()
+				: function() {
+					return (fd.USQLegalWarning.hasOwnProperty('sessionStore'))
+						? fd.USQLegalWarning.sessionStore
+						: 'FD_NO_SESSION_ID';
+				};
 	}
 
 	function getMessageStorage() {
@@ -146,7 +143,6 @@ SESSIONSTORAGE:
 		if (hasSessionStorage()) {
 			msgS = $.extend(messageStorage, JSON.parse(sessionStorage.getItem(messageData.jsessionId)));
 		}
-		return msgS;
 	};
 
 	function setMessageStorage() {
@@ -174,11 +170,11 @@ SESSIONSTORAGE:
 						}
 					} catch(e) {
 					}
-
+					
 					/* remove previous implementation's leftover data */
 					var itemArr = item.split('/');
-
-					if (itemArr[0] !== messageData.jsessionId && itemArr.length == 2 &&
+					
+					if (itemArr[0] !== messageData.jsessionId && itemArr.length == 2 && 
 						(itemArr[1] == keyHashes || itemArr[1] == keyClosed)
 					) {
 						sessionStorage.removeItem(item);
@@ -230,29 +226,15 @@ SESSIONSTORAGE:
 		}
 	}
 
-	function setOptions(_options) {
-		$.extend(messageData.options, _options);
-	}
-
 	var methods = {
-		isClosed: function() { //for messages ONLY
-			try {
-				return (hasSessionStorage()) ? getMessageStorage().messages.isClosed : messageData.messagesIsClosed;
-			} catch(e) {
-				return true; //no other choice, return as closed
-			}
-		},
 		init: function( _options ) {
-			if (messageData.options.$messages === null) {
-				messageData.options.$messages = $('#messages');
-			}
-			setOptions(_options);
-
+			this.messages('setOptions', _options);
+			
 			getMessageStorage();
 			cleanMessageStorage();
 		},
 		setOptions: function(_options) {
-			setOptions(_options);
+			$.extend(messageData.options, _options);
 		},
 		destroy: function() {
 			return this.each(function(){});
@@ -272,10 +254,8 @@ SESSIONSTORAGE:
 			setMessageStorage();
 		},
 		openMessages: function() {
-			messageData.messagesIsClosed = false;
 			messageStorage.messages.isClosed = false;
-			$(messageData.options.$messages).addClass(messageData.options.messagesOpenClass);
-			$(messageData.options.$messages).removeClass(messageData.options.messagesOpenVisHiddenClass);
+			messageData.options.$messages.addClass(messageData.options.messagesOpenClass);
 			$(messageData.options.$messages).trigger({
 				type: 'messagesOpen'
 			});
@@ -288,7 +268,7 @@ SESSIONSTORAGE:
 						continue;
 					}
 
-
+					
 					for (var alert in messageData.alerts) {
 						if (curAlert !== '_all' && alert !== curAlert) {
 							continue;
@@ -301,12 +281,12 @@ SESSIONSTORAGE:
 							type: 'alertOpen',
 							alert: alert
 						});
-
+						
 						//trigger on parent as well (to catch grouped alerts)
 						$parentCont = $(messageData.alerts[alert].addTo).parent('.'+messageData.options.alertsContainerClass);
 						if ($parentCont !== $(messageData.alerts[alert].addTo)) { //avoid double fire, if possible
 							$parentCont.addClass(messageData.options.alertsOpenClass);
-
+						
 							$parentCont.trigger({
 								type: 'alertOpen',
 								alert: alert
@@ -322,7 +302,7 @@ SESSIONSTORAGE:
 				closeAlerts: [] //array of alerts to close, or _all for all
 			};
 			$.extend(opts, _opts);
-
+			
 			if (opts.closeMessages) {
 				this.messages('closeMessages');
 			}
@@ -330,14 +310,13 @@ SESSIONSTORAGE:
 			this.messages('closeAlerts', opts.closeAlerts);
 		},
 		closeMessages: function() {
-			messageData.messagesIsClosed = true;
 			messageStorage.messages.isClosed = true;
-			$(messageData.options.$messages).removeClass(messageData.options.messagesOpenClass);
-			$(messageData.options.$messages).addClass(messageData.options.messagesOpenVisHiddenClass);
+			messageData.options.$messages.removeClass(messageData.options.messagesOpenClass);
+			
 			$(messageData.options.$messages).trigger({
 				type: 'messagesClose'
 			});
-
+			
 			setMessageStorage();
 		},
 		closeAlerts: function(alertsArr) {
@@ -349,7 +328,7 @@ SESSIONSTORAGE:
 				if (messageData.alerts[curAlert] || curAlert[i] === '_all') {
 					messageStorage.alerts[curAlert].isClosed = true;
 					$(messageData.alerts[curAlert].addTo).removeClass(messageData.options.alertsOpenClass);
-
+					
 					$(messageData.alerts[curAlert].addTo).trigger({
 						type: 'alertClose'
 					});
@@ -365,7 +344,7 @@ SESSIONSTORAGE:
 					}
 				}
 			}
-
+			
 			setMessageStorage();
 		},
 		remove: function(id) {
@@ -385,7 +364,7 @@ SESSIONSTORAGE:
 
 					$addTo.messages('updateAlerts');
 				}
-
+			
 				setMessageStorage();
 			}
 		},
@@ -399,7 +378,7 @@ SESSIONSTORAGE:
 			//show ordered messages
 			for (var i = 0; i < messageData.options.messagesOrder.length; i++) {
 				id = messageData.options.messagesOrder[i];
-
+				
 				if (messageData.messages[id]) {
 					html += '<li class="'+id+'">'+messageData.messages[id].html+'</li>';
 					addHandler = true;
@@ -414,17 +393,17 @@ SESSIONSTORAGE:
 				}
 			}
 
-
+			
 			if (addHandler) {
-				$(messageData.options.$messages).addClass('hashandler');
+				messageData.options.$messages.addClass('hashandler');
 			} else {
-				$(messageData.options.$messages).removeClass('hashandler');
+				messageData.options.$messages.removeClass('hashandler');
 				messageData.options.$messages.messages('closeMessages');
 			}
-
-			$(messageData.options.$messages).find('ul').html(html);
 			
-			return messageData.options.$messages;
+			return this.each(function(){
+				$('ul', messageData.options.$messages)[0].innerHTML = html;
+			});
 		},
 		updateAlerts: function(alertsArr) {
 			if ($.isArray(alertsArr)) {
@@ -450,11 +429,11 @@ SESSIONSTORAGE:
 							}
 
 							alertCont[selector].html += messageData.alerts[alert].html;
-
+							
 							if ($.inArray(selector, alertCont[selector].selectors) === -1) {
 								alertCont[selector].selectors.push(selector);
 							}
-
+							
 							if ($.inArray(alert, alertCont[selector].alertIds) === -1) {
 								alertCont[selector].alertIds.push(alert);
 							}
@@ -470,7 +449,7 @@ SESSIONSTORAGE:
 						var $this = $(e);
 
 						$this.removeClass('invisible').addClass('alert-cont').html(curAlertCont.html);
-
+						
 						contArr.push($this);
 
 						$this.trigger({
@@ -483,14 +462,14 @@ SESSIONSTORAGE:
 						var closerCurAlert = messageData.alerts[e];
 
 						if ($(closerCurAlert.closeHandlerAddTo).find('.'+messageData.options.alertsCloseHandlerClass).length === 0) {
-							$(closerCurAlert.closeHandlerAddTo).append('<a href="#" onclick="event.preventDefault();" class="'+messageData.options.alertsCloseHandlerClass+'" data-alertcloseids="'+curAlertCont.alertIds.join(',')+'" data-parentselector="'+messageData.options.alertsContainerClass+'"><span class="offscreen">close</span></a>');
+							$(closerCurAlert.closeHandlerAddTo).append('<div class="'+messageData.options.alertsCloseHandlerClass+'" data-alertcloseids="'+curAlertCont.alertIds.join(',')+'" data-parentselector="'+messageData.options.alertsContainerClass+'"></div>');
 
 							$(closerCurAlert.closeHandlerAddTo).find('.'+messageData.options.alertsCloseHandlerClass).on('click', messageData.options.alertsCloseHandler);
-
+							
 							$(closerCurAlert.closeHandlerAddTo).trigger({
 								type: 'alertCloseHandlerAdded'
 							});
-
+							
 						}
 					});
 				}
@@ -505,11 +484,10 @@ SESSIONSTORAGE:
 			if (_isAlert) { //alert
 				return this.messages('addAlert', _id, _alertOpts || []);
 			} else { //message
-				return this.messages('addMessage', _id, _alertOpts);
+				return this.messages('addMessage', _id);
 			}
 		},
-
-		addMessage: function(_id, _text) {
+		addMessage: function(_id) {
 			var opened = false, update;
 
 			var result = this.each(function(){
@@ -517,18 +495,17 @@ SESSIONSTORAGE:
 
 				$('script', this).remove();
 				id = _id || $this.attr('data-type');
-
-				text = _text || $this.text();
+				text = $this.text();
 
 				if ($.trim(text).length > 1) {
 					hash = getHash(text);
-					messageData.messages[id] = {hash: hash, html: _text || this.innerHTML};
+					messageData.messages[id] = {hash: hash, html: this.innerHTML};
 
 					if(messageStorage.messages.messagesHashes[id] != hash ) { //check for newly updated message
 						opened = true;
 						messageStorage.messages.messagesHashes[id] = hash;
 					}
-
+					
 					$this.trigger({
 						type: 'messageAdded'
 					});
@@ -542,11 +519,6 @@ SESSIONSTORAGE:
 			if (opened) {
 				update.messages('openMessages');
 			}
-			/* don't close here, it'll close on timing, instead of the msgs status
-			 else {
-				update.messages('closeMessages');
-			}
-			*/
 
 			return result;
 		},
@@ -586,7 +558,7 @@ SESSIONSTORAGE:
 					if (!messageStorage.alerts[id]) {
 						messageStorage.alerts[id] = { hash: '', isClosed: false };
 					}
-
+					
 					if(messageStorage.alerts[id].hash != hash || messageStorage.alerts[id].isClosed === false) { //check for newly updated alert
 						opened = true;
 						messageStorage.alerts[id].hash = hash;
@@ -594,7 +566,7 @@ SESSIONSTORAGE:
 
 						openIdArr.push(id);
 					}
-
+					
 					$this.trigger({
 						type: 'alertAdded'
 					});
@@ -603,12 +575,10 @@ SESSIONSTORAGE:
 				} else {
 					removeItem(id);
 				}
-
+				
 
 			});
-
-			setMessageStorage();
-
+			
 			if (alertData.hasOwnProperty('addTo') && $(alertData.addTo).length !== -1) {
 				update = $(alertData.addTo).messages('updateAlerts', updateIdArr);
 			}
@@ -616,7 +586,7 @@ SESSIONSTORAGE:
 			if (opened) {
 				update.messages('openAlerts', openIdArr);
 			}
-
+			
 			return result;
 		}
 	};
@@ -631,6 +601,13 @@ SESSIONSTORAGE:
 		}
 	};
 
+	// When OAS pushes a system message:
+	$(document).bind('OAS_DONE',function(event,id){
+		if (id == messageData.options.SystemMessage) {
+			$(document.getElementById("OAS_"+messageData.options.SystemMessage)).messages('add', messageData.options.SystemMessage);
+		}
+	});
+
 	$(document).on('click','#messages .handler',function(e){
 		var $messages = $(document.getElementById('messages'));
 		if ($messages.hasClass('open')) {
@@ -640,130 +617,9 @@ SESSIONSTORAGE:
 		}
 	});
 
-	$(function() {
-		$(document).messages('init');
-		if ($('#oas_SystemMessage').length) {
-			$('#oas_SystemMessage').messages('add', 'SystemMessage');
-		}
+	$(document).messages('init');
+	$(document).on('ready', function() {
 		$('.message.invisible').messages('add');
 		$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
-
-		$(".newziptext").on('keydown', function(e){
-
-			var text_length=$(this).val().length;
-			var keycode = (e.keyCode ? e.keyCode : e.which);
-			$(this).removeClass("input-error");
-			$(this).parent().next().css("visibility","");
-			if(keycode == '13'){
-				if(text_length<5 && text_length>=1){
-						$(this).parent().next().css("visibility","visible");
-						$(this).focus();
-						setTimeout(function(){
-							$(this).parent().find("input").focus();
-							$(".newziptext")[0].setSelectionRange(text_length,text_length);
-						},500);
-						$(this).addClass("input-error");
-				}
-				else if(text_length!="" && text_length == 5){
-					$('#messages').removeClass("open");
-					sendZip(e);
-				}
-				else{
-					$("#newziptext").focus();
-				}
-				e.preventDefault();
-			}
-		});
-/*
-		$(".newzipgo").on('keydown', function(e){
-
-			var text_length=$(this).parent().find("input").val().length;
-			console.log(text_length);
-			var keycode = (e.keyCode ? e.keyCode : e.which);
-			if(keycode == '13'){
-				if(text_length<5 && text_length>=1){
-						$(this).parent().next().css("visibility","visible");
-						$(this).parent().find("input").addClass("input-error");
-						$(this).focus();
-						//console.log($(this));
-						setTimeout(function(){
-							$(this).focus();
-						},500);
-				}
-				else if(text_length!= "" && text_length == 5){
-					$('#messages').removeClass("open");
-					sendZip(e);
-				}
-
-				e.preventDefault();
-			}
-		});
-	*/	
-		$(".location-email-text").on('keydown', function(e){
-
-			var email_text=$(this).val();
-			$(this).parent().find(".error-msg").css("visibility","");
-			$(this).parent().find("input").removeClass("input-error");
-			var email_regex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-		  	 if(e.which == '13'){
-		  		var IsValidEmail=email_regex.test(email_text);
-		  		if(IsValidEmail==false && email_text!=""){
-					$(this).parent().find(".error-msg").css("visibility","visible");
-					$(this).parent().find("input").addClass("input-error");
-					setTimeout(function(){
-						$(this).parent().find("input").focus();
-					},500)
-		  		}
-		  		else if(IsValidEmail==true){
-
-		  			//submt email method
-		  			$("#location-submit.fdxgreen").trigger("click");
-		  			//$("#location-submit").click();
-		  			$(this).parent().find(".error-msg").css("visibility","hidden");
-					$(this).parent().find("input").removeClass("input-error");
-		  		}
-		  		e.preventDefault();
-		  	}
-		  	//e.preventDefault();
-
-		});
-/*
-		$("#location-submit.fdxgreen").on('keydown', function(e){
-
-			var email_text=$(this).parent().find('input').val();
-			var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			var IsValidEmail=email_regex.test(email_text);
-		  	 if(e.which == '13'){
-		  		if(IsValidEmail==false && email_text!=""){
-		  			$(this).parent().find("input").removeClass("input-error");
-		  			$(this).parent().find(".error-msg").css("visibility","visible");
-					$(this).parent().find("input").addClass("input-error");
-					setTimeout(function(){
-						$(this).focus();
-					},500);
-					//$(this).parent().find("input").focus();
-		  		}
-		  		else if(IsValidEmail==true && email_text!=""){
-		  			//submt email method
-		  			$(this).trigger("click");
-		  			//$("#location-submit").click();
-
-		  		}
-		  		e.preventDefault();
-		  	}
-		  	//e.preventDefault();
-
-		});
-*/
-    function addMessage(id, isAlert, alertOpts) {
-      return $('body').messages('add', id, isAlert, alertOpts);
-    }
-
-    /* removed requirement to register for mobweb index optimization testing */
-    if (fd && fd.modules && fd.modules.common && fd.modules.common.utils) {
-    	fd.modules.common.utils.register("messages", "add", addMessage, fd);
-    }
-
 	});
 })(FreshDirect);

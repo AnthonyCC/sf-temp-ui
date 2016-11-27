@@ -49,7 +49,6 @@ public class ShoppingCartUtil {
 		
 		FDCartModel originalCart = FDCustomerManager.getSavedCart(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());//FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
 
-		user.resetUserContext();
 		user.setShoppingCart( originalCart );
 		user.invalidateCache();
 

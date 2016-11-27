@@ -1,11 +1,11 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
-<%@ page import='com.freshdirect.storeapi.node.*'%>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
+<%@ page import='com.freshdirect.cms.node.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.util.*'%>
@@ -13,10 +13,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
-RecipeDepartment recipeDepartment = (RecipeDepartment) PopulatorUtil.getContentNode(request.getParameter("deptId"));
+RecipeDepartment recipeDepartment = (RecipeDepartment) ContentFactory.getInstance().getContentNode(request.getParameter("deptId"));
 //transfer to the regular department page if this is  not a recipe department
 if (! (recipeDepartment instanceof RecipeDepartment)) {  %>
 <jsp:forward page="/department.jsp" />
@@ -41,22 +41,24 @@ if (redirectURL!=null) {
     return;
 }
     FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-    String title = "FreshDirect - " + recipeDepartment.getName();
 %>
-
 <tmpl:insert template='/common/template/right_nav.jsp'>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="<%= title %>"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - <%= recipeDepartment.getName() %>"></fd:SEOMetaTag>
 	</tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>recipe_dept</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= recipeDepartment.getName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
-		<% try { %>
-			<%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>
-		<% } catch (Exception ex) {
-				ex.printStackTrace();
-		%>
-		<% } %>
+    <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeDepartment%>"/>
+<oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='14400'>
+<% try { %>
+<%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%>
+<oscache:usecached />
+<% } %>
+</oscache:cache>
+
     </tmpl:put>
 
 </tmpl:insert>

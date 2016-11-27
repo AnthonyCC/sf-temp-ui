@@ -34,6 +34,15 @@
 
 	<tmpl:get name='styles'/>
 	
+	<!--  Added for Password Strength Display -->
+	<!--  
+    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
+    -->
+     <!--  Referred  jquery-1.7.2.min.js from FD-->
+    <!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
+	
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 	<script type="text/javascript">

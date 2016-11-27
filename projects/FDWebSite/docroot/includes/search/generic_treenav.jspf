@@ -1,18 +1,18 @@
 <%@	page import="java.util.Iterator"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeTree"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeTree.TreeElement"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree.TreeElement"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryNodeTree"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%
 	CategoryNodeTree categoryTree = newProds.getCategoryTree();
 	int noOfProds = newProds.getNoOfProducts();
-%>
+%> 
 
 
 <div id="categoryPanel" style="width:150px;">
@@ -30,7 +30,7 @@
 	</div>
 	<%
 		}
-	%>
+	%> 
 	<%
  	String selectedDept = nav.getDepartment();
 	if (selectedDept == null && nav.getCategory() != null) {
@@ -69,7 +69,7 @@
 <%
 	if (FDStoreProperties.isAdServerEnabled()) { %>
 <%--
-<div style="width:150px; margin-top: 15px; overflow: hidden;" id='oas_LittleRandy'>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
 <script type="text/javascript">
 	OAS_AD('LittleRandy');
 </script>
@@ -81,3 +81,5 @@
 <%
 	}
 %>
+
+

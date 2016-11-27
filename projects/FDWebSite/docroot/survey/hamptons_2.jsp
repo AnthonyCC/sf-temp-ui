@@ -76,24 +76,21 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Hamptons Delivery Survey part 2 of 2"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey part 2 of 2</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>Hamptons Delivery Survey part 2 of 2</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <table width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="11" class="text12" align="center"><br>
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <fd:ReceiptSurvey actionName="<%=actionName%>" result="result" successPage="<%=successPage%>" survey="<%=Hamptons05%>">
 <form name="hamptonsSurvey" method="POST">
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Summertime Hamptons Delivery Survey, part 2 of 2</span><br><span class="space4pix"><br></span>
 		Please answer these additional questions regarding Hamptons delivery.
-<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (shownQuestions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -103,17 +100,17 @@ response.setDateHeader ("Expires", 0);
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_HAMPTONS_2_TOTAL-610%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL-610%>" height="1"></td>
 	</tr>
 	<% int quesCount = 4; %>
 	    <logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -166,7 +163,7 @@ response.setDateHeader ("Expires", 0);
 						    <td align="center" bgcolor="#EEEEEE" class="text13" ><span class="space4pix"><br></span><b>SUN</b><br><span class="space4pix"><br></span></td>
 						    <td>&nbsp;</td>
 						  </tr>
-						  <tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="585" height="1"></td><td></td></tr>
+						  <tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="585" height="1"></td><td></td></tr>
 					<% numRow++;
 					} %>
 						<% if (numCol == 0) { %>
@@ -189,7 +186,7 @@ response.setDateHeader ("Expires", 0);
 						<% 
 						if (numCol ==10) { numCol = 0;  %>
 							<td></td></tr>
-							<tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="585" height="1"><%= numRow == 5 ? "<br><span class=\"space4pix\"><br></span>" : "" %></td><td></td></tr>
+							<tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="585" height="1"><%= numRow == 5 ? "<br><span class=\"space4pix\"><br></span>" : "" %></td><td></td></tr>
 						<% } %>
 					
 				<% } else if (question.getDescription().indexOf(" ...") > -1 || "VacationPickup".equalsIgnoreCase(question.getName())) { //rating style %>
@@ -223,7 +220,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="hamptonsSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="hamptonsSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 
 <script language="javascript">

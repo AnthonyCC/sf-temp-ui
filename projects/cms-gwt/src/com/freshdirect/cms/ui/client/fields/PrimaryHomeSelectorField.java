@@ -38,13 +38,13 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 
 	private GwtNodeContext contexts;
 
-	private static final Set<String> ALLOWED_TYPES = new HashSet<String>();
+	private static final Set<String> allowedTypes = new HashSet<String>();
 	static {
-		ALLOWED_TYPES.add("Category");
+		allowedTypes.add("Category");
 	}
 	
 	public PrimaryHomeSelectorField(GwtNodeContext contexts, Map<String,Set<String>> mapping, String storeKey, GwtNodePermission permission) {
-		super("PRIMARY_HOME", ALLOWED_TYPES, false, permission, "Product");
+		super("PRIMARY_HOME", allowedTypes, false, permission, "Product");
 		
 		this.contexts = contexts;
 		this.storeKey = storeKey;
@@ -92,6 +92,8 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
                 @Override
                 public Object render(final OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, final ListStore<OneToManyModel> store,
                         Grid<OneToManyModel> grid) {
+
+                    final int row = store.indexOf(model);
 
                     Button b = new Button("change", new SelectionListener<ButtonEvent>() {
 
@@ -142,24 +144,21 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 		for (String p : contexts.getPaths()) {
 			if (p.contains(selKey)) {
 				String[] _pathFragments = p.split("\\|");
-				TreeContentNodeModel categoryNode = new TreeContentNodeModel("Category", contexts.getLabel(p),
-						_pathFragments[_pathFragments.length - 2]);
-
-                String cosContextOverride = contexts.getCosContext(p);
-                if (!GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE.equals(cosContextOverride)) {
-                    categoryNode.setIconOverride(contexts.getCosContext(p));
-                }
-
-				categoryNode.setHasChildren(false);
-				_treeStore.insert(categoryNode, 0, false);
+				//String[] _labelFragments = contexts.getLabel(p).split(" > ");
+				
+				TreeContentNodeModel alma;
+				alma = new TreeContentNodeModel("Category",
+						contexts.getLabel(p),
+						_pathFragments[_pathFragments.length-2]);
+				alma.setHasChildren(false);
+				_treeStore.insert(alma, 0, false);
 			}
 		}
 		
 		tree.hideToolbar();
 		popup.setHeading(getFieldLabel());
 		popup.addListener(Events.Select, new Listener<BaseEvent>() {
-			@Override
-            public void handleEvent(BaseEvent be) {
+			public void handleEvent(BaseEvent be) {
 				addOneToManyModels(popup.getSelectedItems());
 			}
 		});

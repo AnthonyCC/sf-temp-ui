@@ -23,14 +23,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SortIntValueComparator;
-import com.freshdirect.storeapi.content.SortLongValueComparator;
-import com.freshdirect.storeapi.content.SortValueComparator;
 
 public class FilteringComparatorUtil {
 	private static final Logger LOGGER = LoggerFactory.getInstance(FilteringComparatorUtil.class);
@@ -63,7 +55,7 @@ public class FilteringComparatorUtil {
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_SALE:
-                SmartSearchUtils.collectSaleInfo(products);
+				SmartSearchUtils.collectSaleInfo(products, pricingContext);
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
@@ -128,7 +120,7 @@ public class FilteringComparatorUtil {
 					comparator.chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR)).chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 
 		}
-        SmartSearchUtils.collectAvailabilityInfo(products);
+		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 		return comparator;
 	}
@@ -136,7 +128,7 @@ public class FilteringComparatorUtil {
 	public static List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products, String userId, PricingContext pricingContext) {
 		//Collecting favourites
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(userId, pricingContext)));
-        SmartSearchUtils.collectAvailabilityInfo(products);
+		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 		Collections.sort(products, comparator);
 		List<FilteringSortingItem<ProductModel>> favourites = new ArrayList<FilteringSortingItem<ProductModel>>();
@@ -155,7 +147,7 @@ public class FilteringComparatorUtil {
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparatorForFavorites = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(userId, pricingContext)));
 		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 		comparatorForFavorites.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-        SmartSearchUtils.collectAvailabilityInfo(products);
+		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparatorForFavorites.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 		Collections.sort(favourites, comparatorForFavorites);
 		
@@ -171,7 +163,7 @@ public class FilteringComparatorUtil {
 		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
 		comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(userId, pricingContext)));
 		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
-        SmartSearchUtils.collectAvailabilityInfo(products);
+		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 
 		Collections.sort(products, comparator);
@@ -200,8 +192,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_EXP_DATE_COMPARATOR = new Comparator<ProductModel>() {
 
-		@Override
-        public int compare(ProductModel p1, ProductModel p2) {
+		public int compare(ProductModel p1, ProductModel p2) {
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
@@ -219,8 +210,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_START_DATE_COMPARATOR = new Comparator<ProductModel>() {
 
-		@Override
-        public int compare(ProductModel p1, ProductModel p2) {		
+		public int compare(ProductModel p1, ProductModel p2) {		
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
@@ -238,8 +228,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_DOLLAR_OFF_COMPARATOR = new Comparator<ProductModel>() {
 
-		@Override
-        public int compare(ProductModel p2, ProductModel p1) {	
+		public int compare(ProductModel p2, ProductModel p1) {	
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
@@ -281,8 +270,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_PERCENT_OFF_COMPARATOR = new Comparator<ProductModel>() {
 
-		@Override
-        public int compare(ProductModel p2, ProductModel p1) {			
+		public int compare(ProductModel p2, ProductModel p1) {			
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());
@@ -327,8 +315,7 @@ public class FilteringComparatorUtil {
 	
 	public final static Comparator<ProductModel> COUPON_POPULARITY_COMPARATOR = new Comparator<ProductModel>() {
 
-		@Override
-        public int compare(ProductModel p1, ProductModel p2) {			
+		public int compare(ProductModel p1, ProductModel p2) {			
 			try {
 				FDCouponInfo cp1 = FDCouponFactory.getInstance().getCouponByUpc(p1.getDefaultSku().getProductInfo().getUpc());
 				FDCouponInfo cp2 = FDCouponFactory.getInstance().getCouponByUpc(p2.getDefaultSku().getProductInfo().getUpc());

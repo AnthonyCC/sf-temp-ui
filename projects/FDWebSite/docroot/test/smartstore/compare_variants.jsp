@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@page import="java.util.ArrayList"%>
@@ -17,16 +17,16 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="com.freshdirect.framework.util.StringUtil"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.YmalSource"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.YmalSource"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
@@ -61,7 +61,7 @@
 <%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
 <%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext" %>
 <%@page import="com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO" %>
 <%@page import="com.freshdirect.smartstore.scoring.DataGenerator" %>
@@ -337,11 +337,15 @@ if (useLoggedIn && user != null) {
 	// transform content keys to prods
 	for (Iterator<String> it2 = cartItems.iterator(); it2.hasNext(); ) {
 		String node = it2.next();
-		ProductModel o = (ProductModel)ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(FDContentTypes.PRODUCT, node));
-		if (o != null)
-			prods.add(o);
-		else 
+		try {
+			ProductModel o = (ProductModel)ContentFactory.getInstance().getContentNodeByKey(ContentKey.create(FDContentTypes.PRODUCT, node));
+			if (o != null)
+				prods.add(o);
+			else 
+				ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
+		} catch (ContentKey.InvalidContentKeyException e) {
 			ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
+		}
 	}
 	source = FDStoreRecommender.resolveYmalSource(prods, request);
 	si.setCurrentNode(source);
@@ -452,7 +456,7 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -669,7 +673,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					Triggering item: <% 
 	    						if (source != null) { 
 	    						%><span style="font-weight: normal;" title="<%= ((ContentNodeModel) source).getFullName() + " (" +
-	    								source.getContentKey().getType().name() + ")" %>"><%= source.getContentKey().getId() %></span><% 
+	    								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
 	    						} else { 
 	    						%><span class="not-found">&lt;unidentified&gt;</span><% 
 	    						} %>
@@ -678,7 +682,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					Selected YMAL set: <% 
 	    						if (source != null && source.getActiveYmalSet() != null ) { 
 	    							%><span style="font-weight: normal;" title="<%= source.getActiveYmalSet().getFullName() + " (" +
-	    							source.getActiveYmalSet().getContentKey().getType().name() + ")" %>"><%= source.getActiveYmalSet().getContentKey().getId() %></span><% 
+	    							source.getActiveYmalSet().getContentKey().getType().getName() + ")" %>"><%= source.getActiveYmalSet().getContentKey().getId() %></span><% 
 	    						} else { 
 	    							%><span class="not-found">&lt;unidentified&gt;</span><% 
 	    						} %>
@@ -743,7 +747,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     					<% while (it_cn.hasNext()) {
 	    						ContentNodeModel node = it_cn.next();
     					%>
-	    				<p style="font-weight: normal;" title="<%= node.getFullName() + " (" + node.getContentKey().getType().name() + ")" %>"
+	    				<p style="font-weight: normal;" title="<%= node.getFullName() + " (" + node.getContentKey().getType().getName() + ")" %>"
 	    						><%= node.getContentName() %></p>
     					<% } %>
 					</td>
@@ -960,7 +964,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it_ra.hasNext()) {
 							ContentNodeModel cnm = it_ra.next();
 							ProductModel pm = (ProductModel) cnm;
-							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm);
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
 							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
@@ -1043,7 +1047,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it_rb.hasNext()) {
 							ContentNodeModel cnm = it_rb.next();
 							ProductModel pm = (ProductModel) cnm;
-							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm);
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si2.getPricingContext() != null ? si2.getPricingContext() : PricingContext.DEFAULT);
 							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;

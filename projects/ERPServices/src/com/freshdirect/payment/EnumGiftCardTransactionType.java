@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumGiftCardTransactionType extends ValuedEnum {
 	
 	public final static EnumGiftCardTransactionType REGISTER = new EnumGiftCardTransactionType("REG", "Register", 0);
@@ -28,8 +25,8 @@ public class EnumGiftCardTransactionType extends ValuedEnum {
 	public static EnumGiftCardTransactionType getEnum(String code) {
 		return (EnumGiftCardTransactionType) getEnum(EnumGiftCardTransactionType.class, code);
 	}
-	@JsonCreator
-	public static EnumGiftCardTransactionType getEnum(@JsonProperty("value") int id) {
+
+	public static EnumGiftCardTransactionType getEnum(int id) {
 		return (EnumGiftCardTransactionType) getEnum(EnumGiftCardTransactionType.class, id);
 	}
 

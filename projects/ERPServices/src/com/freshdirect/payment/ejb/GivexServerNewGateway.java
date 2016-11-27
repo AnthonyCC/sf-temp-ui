@@ -47,10 +47,9 @@ public class GivexServerNewGateway extends BaseServerGateway {
 	private GivexResponseModel parseResponse(GivexResponse response) throws GivexException, IOException {
 		if(response.getStatus() == null){
 			throw new IOException();
-		}else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.ApplicationException.name())) {
-				LOGGER.warn("Application Exception occered while making call to 'givex' : " +response.getException().getMessage());
+		}else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.ApplicationException.name()))
 				throw new GivexException(response.getException().getMessage(), response.getException().getCode());
-		}else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.RemoteException.name()))
+		else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.RemoteException.name()))
 			throw new RemoteException();
 		else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.IOException.name()))
 			throw new IOException();

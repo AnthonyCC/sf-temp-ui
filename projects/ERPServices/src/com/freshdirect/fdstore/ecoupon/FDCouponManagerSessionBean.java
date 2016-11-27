@@ -52,6 +52,17 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getInstance(FDCouponManagerSessionBean.class);
 	
+	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws CouponServiceException {
+		List<FDCouponInfo> coupons = null;
+		if(FDCouponProperties.isCouponsBlackHoleEnabled()){
+			LOGGER.debug("Coupons blackhole enabled.");
+			return null;
+		}
+		coupons = FDCouponGateway.getCoupons(couponActivityContext);			
+		
+		return coupons;
+	}
+	
 	public void loadAndSaveCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException,CouponServiceException {
 		Connection conn = null;
 		if(FDCouponProperties.isCouponsBlackHoleEnabled()){
@@ -124,6 +135,21 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		fdEligibleCoupons = FDCouponGateway.evaluateCartAndCoupons(couponCart,couponActivityContext);		
 		return fdEligibleCoupons;
 	}	
+	
+	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws FDResourceException {
+		Connection conn =null;
+		List<FDCouponInfo> coupons= null;
+		try {
+			conn = getConnection();
+			coupons = FDCouponManagerDAO.getCouponsForCRMSearch(conn, searchTerm);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getCouponsForCRMSearch(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+		return coupons;
+	}
 	
 	public List<ErpCouponTransactionModel> getPendingCouponTransactions() throws FDResourceException {
 		Connection conn =null;
@@ -495,6 +521,33 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		}
 	}
 	
+	public int getMaxCouponsVersion() throws FDResourceException {
+		Connection conn =null;
+		try {
+			conn = getConnection();
+			return FDCouponManagerDAO.getMaxCouponsVersion(conn);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getMaxCouponsVersion(): "+e);
+		} finally {
+            close(conn);
+		}
+		return 0;
+	}
+	
+	
+	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws FDResourceException{
+		Connection conn =null;
+		try {
+			conn = getConnection();
+			return FDCouponManagerDAO.getCustomersCouponHistoryInfo(conn,customerId);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getCustomersCouponHistoryInfo(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+	}
+	
 	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException{
 		Connection conn =null;
 		try {
@@ -508,14 +561,13 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		}
 	}
 	
-	
 	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
 		Connection conn =null;
 		try {
 			conn = getConnection();
 			FDCouponTransactionDAO.updateCouponTransaction(conn,transModel);
 		} catch (SQLException e) {
-			LOGGER.info("Exception in updateCouponTransaction(): "+e);
+			LOGGER.info("Exception in getCustomersCouponHistoryInfo(): "+e);
 			throw new FDResourceException(e);
 		} finally {
             close(conn);

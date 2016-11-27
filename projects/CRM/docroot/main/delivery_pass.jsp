@@ -300,12 +300,296 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 					Date expDate = activeItem.getExpirationDate();
 					Map monthAndDays =DeliveryPassUtil.getRemainingMonthsAndDays(expDate);
 			%>
-						
+						<crm:DeliveryPassController dlvPass="<%= activeItem.getModel() %>" actionName="<%=actionName%>" noOfWeeks= "1" result='result'>
+						<fd:ErrorHandler result='<%=result%>' name='unauthorized_msg' id='errorMsg'>
+						   <%@ include file="/includes/i_error_messages.jspf" %>   
+						</fd:ErrorHandler>
+						<table width="100%" cellpadding="2" cellspacing="2" border="0" class="<%= activeItem.getStatusName() %>_pass">
+
+							<tr bgcolor="#FFFFFF">
+								<td colspan="2">
+									<span class="dlv_pass_header"><b>Customer has </b><span class="dlv_pass_name"><%= activeItem.getName() %></span><b> DeliveryPass</b></span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<span class="info_text">Expiration Date: <b><%= CCFormatter.defaultFormatDate(expDate) %></b></span>	
+								</td>
+							</tr>
+							<tr>
+								<td width="65%">
+									<span class="info_text">Remaining days: <b><%= monthAndDays.get("MONTHS") %></b> months <b><%= monthAndDays.get("DAYS") %></b> days</span>
+								</td>
+								<td>
+									<span class="info_text">Status: <b><%= activeItem.getStatusName() %></b>
+								</td>	
+							</tr>
+							<tr>
+								<td>
+									<span class="info_text">Used: <b><%= activeItem.getUsageCount() %></b> times</span>
+								</td>
+							
+								<td>
+									<span class="info_text">Extended: <b><%= activeItem.getExtendedWeeks() %></b> weeks </span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<span class="info_text">Purchased: <b><%= CCFormatter.defaultFormatDate(activeItem.getPurchaseDate()) %></b> order #: <a href="/main/order_details.jsp?orderId=<%= activeItem.getPurchaseOrderId() %>" style="color: #008800;font-size: 8pt;"><%= activeItem.getPurchaseOrderId() %></a></span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">	
+									<% Double refundAmt = (Double) dlvPassInfoMap.get(DlvPassConstants.REFUND_AMOUNT); %>
+									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
+								</td>
+							</tr>	
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
+							<%
+								if(editable && user.isDlvPassActive()) {
+							%>
+							<form name="deliverypass" method="POST">
+							<input type="hidden" name="action_name" value="extend_week">
+							<input type="hidden" name="refundAmount" value="<%=JspMethods.formatPrice(refundAmt.doubleValue())%>">
+							<tr>
+								<td colspan="2">	
+									<select name="orderAssigned" class="combo_text" style="width: 210px;">
+										<option value="">Select the order involved</option>
+										
+										<option value="<%= activeItem.getPurchaseOrderId() %>"><%= activeItem.getPurchaseOrderId() %> *</option>
+										
+										<crm:GetRecentOrdersByDlvPass id="recentOrders" deliveryPassId="<%= activeItem.getDlvPassId() %>">
+										<logic:iterate id="usage" collection="<%= recentOrders %>" type="com.freshdirect.deliverypass.DlvPassUsageLine">
+										<%
+											if(!usage.getOrderIdUsedFor().equals(activeItem.getPurchaseOrderId())) {
+											//Do not add the original purchase order id here.
+										%>											
+											<option value="<%= usage.getOrderIdUsedFor() %>"><%= usage.getOrderIdUsedFor() %> - <%= usage.getOrderStatusUsedFor().getDisplayName() %> - <%= CCFormatter.defaultFormatDate(usage.getDeliveryDate()) %></option>
+										<%
+											}
+										%>	
+										</logic:iterate>
+										</crm:GetRecentOrdersByDlvPass>
+										
+									</select>
+								</td>
+							</tr>	
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">then</span>
+								</td>
+							</tr>	
+							<tr>
+								<td>	
+									<select name="extendReason" class="extend_combo_text" style="width: 210px;">
+										<option value="">Select a reason to extend</option>
+										<logic:iterate id="extendReason" collection="<%= EnumDlvPassExtendReason.getEnumList() %>" type="com.freshdirect.deliverypass.EnumDlvPassExtendReason">
+											<option value="<%= extendReason.getName() %>"><%= extendReason.getDisplayName() %></option>
+										</logic:iterate>
+									</select>
+								</td>
+                                       
+								<td>	
+  									<select name="incrCount" class="extend_combo_text" style="width: 210px;">
+										<option value="">Select number of weeks</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+									</select>
+								</td>
+
+							</tr>	
+							<tr>
+								<td>
+									<a href="javascript:submitAction('incr_expperiod')" style="color: #008800;font-size: 8pt;">Extend DeliveryPass</a>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">or</span>
+								</td>
+							</tr>
+							<tr>
+								<td>	
+									<select name="cancelReason" class="cancel_combo_text" style="width: 210px;">
+										<option value="">Select a reason to cancel</option>
+										<logic:iterate id="cancelReason" collection="<%= EnumDlvPassCancelReason.getEnumList() %>" type="com.freshdirect.deliverypass.EnumDlvPassCancelReason">
+											<option value="<%= cancelReason.getName() %>"><%= cancelReason.getDisplayName() %></option>
+										</logic:iterate>
+
+									</select>
+								</td>
+								<td>
+									<a href="javascript:submitAction('cancel_pass')" style="color: #CC0000;font-size: 8pt;">Cancel DeliveryPass</a>
+								</td>
+							</tr>	
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">Enter notes (required):</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"></textarea>
+								</td>
+							</tr>	
+							</form>
+							
+							<% } else { %>	
+								<tr>
+									<td colspan="2" align="center">	
+										<%= case_required %>
+									</td>
+								</tr>	
+
+							<% } %>
+							<% } %>	
+						</table>
+						</crm:DeliveryPassController>	
 				<%
 					} else {
 					//BSGS PASS
 				%>	
+						<crm:DeliveryPassController dlvPass="<%= activeItem.getModel() %>" actionName="<%=actionName%>" result='result' increment="1" >
+						<fd:ErrorHandler result='<%=result%>' name='unauthorized_msg' id='errorMsg'>
+						   <%@ include file="/includes/i_error_messages.jspf" %>   
+						</fd:ErrorHandler>
 						
+						<table width="100%" cellpadding="2" cellspacing="2" border="0" class="<%= activeItem.getStatusName() %>_pass">
+				
+							<tr bgcolor="#FFFFFF">
+								<td colspan="2">
+									<span class="dlv_pass_header"><b>Customer has </b><span class="dlv_pass_name"><%= activeItem.getName() %></span><b> DeliveryPass</b></span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<span class="info_text">Remaining deliveries: <b><%= activeItem.getRemainingDlvs() %></b></span>
+									&nbsp;&nbsp;&nbsp;	
+
+									<span class="info_text">Status: <b><%= activeItem.getStatusName() %></b>
+								</td>	
+							</tr>
+							<tr>
+								<td width="40%">
+									<span class="info_text" >Used: <b><%= activeItem.getUsageCount() %></b> times</span>
+								</td>
+							
+								<td width="60%">
+									<span class="info_text" >Credited: <b><%= activeItem.getCreditCount() %></b> deliveries</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<span class="info_text">Purchased: <b><%= activeItem.getTotalDlvs() %></b> deliveries <b><%= CCFormatter.defaultFormatDate(activeItem.getPurchaseDate()) %></b> order #: <a href="/main/order_details.jsp?orderId=<%= activeItem.getPurchaseOrderId() %>" ><span class="pur_order_number"><%= activeItem.getPurchaseOrderId() %></span></a></span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">	
+									<% Double refundAmt = (Double) dlvPassInfoMap.get(DlvPassConstants.REFUND_AMOUNT); %>
+									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
+
+								</td>
+							</tr>	
+							<%
+								if(editable &&  user.isDlvPassActive()) {
+							%>
+							<form name="deliverypass" method="POST">
+							<input type="hidden" name="action_name" value="extend_delivery">
+
+							<tr>
+								<td colspan="2">	
+									<select name="orderAssigned" class="combo_text" style="width: 210px;">
+										<option value="">Select the order involved</option>
+										
+										<option value="<%= activeItem.getPurchaseOrderId() %>"><%= activeItem.getPurchaseOrderId() %> *</option>
+										
+										<crm:GetRecentOrdersByDlvPass id="recentOrders" deliveryPassId="<%= activeItem.getDlvPassId() %>">
+										<logic:iterate id="usage" collection="<%= recentOrders %>" type="com.freshdirect.deliverypass.DlvPassUsageLine">
+										<%
+											if(!usage.getOrderIdUsedFor().equals(activeItem.getPurchaseOrderId())) {
+											//Do not add the original purchase order id here.
+										%>											
+											<option value="<%= usage.getOrderIdUsedFor() %>"><%= usage.getOrderIdUsedFor() %> - <%= usage.getOrderStatusUsedFor() %> - <%= CCFormatter.defaultFormatDate(usage.getDeliveryDate()) %></option>
+										<%
+											}
+										%>	
+										</logic:iterate>
+										</crm:GetRecentOrdersByDlvPass>
+										
+									</select>
+								</td>
+							</tr>	
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">then</span>
+								</td>
+							</tr>	
+							<tr>
+								<td colspan="2">	
+									<select name="extendReason" class="extend_combo_text" style="width: 210px;">
+										<option value="">Select a reason to add</option>
+										<logic:iterate id="extendReason" collection="<%= EnumDlvPassExtendReason.getEnumList() %>" type="com.freshdirect.deliverypass.EnumDlvPassExtendReason">
+											<option value="<%= extendReason.getName() %>"><%= extendReason.getDisplayName() %></option>
+										</logic:iterate>
+
+									</select>&nbsp;&nbsp;
+								</td>
+								<td>	
+  									<select name="incrCount" class="extend_combo_text" style="width: 210px;">
+										<option value="">Select number of credits</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+									</select>
+								</td>
+
+							</tr>	
+							<tr>
+								<td>
+									<a href="javascript:submitAction('incr_dlvcount')" style="color: #008800;font-size: 8pt;">Credit DeliveryPass</a>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">or</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">	
+									<select name="cancelReason" class="cancel_combo_text" style="width: 210px;">
+										<option value="">Select a reason to cancel</option>
+										<logic:iterate id="cancelReason" collection="<%= EnumDlvPassCancelReason.getEnumList() %>" type="com.freshdirect.deliverypass.EnumDlvPassCancelReason">
+											<option value="<%= cancelReason.getName() %>"><%= cancelReason.getDisplayName() %></option>
+										</logic:iterate>
+									</select>&nbsp;&nbsp;
+									<a href="javascript:submitAction('cancel_pass')" style="color: #CC0000;font-size: 8pt;">Cancel DeliveryPass</a>
+								</td>
+
+							</tr>	
+							<tr>
+								<td colspan="2">	
+									<span class="info_text">Enter notes (required):</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"></textarea>								
+								</td>
+							</tr>	
+							</form>
+							<% } else { %>		
+							<tr>
+								<td colspan="2" align="center">	
+									<%= case_required %>
+								</td>
+							</tr>	
+							
+							<% } %>
+						</table>
+						</crm:DeliveryPassController>	
 				
 				<%	
 					}

@@ -4,17 +4,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import org.apache.commons.lang.enums.Enum;
-
 /**
  *
  * @author  jmccarter
  * @version
  */
-public class EnumDeliveryType extends Enum implements Serializable {
+public class EnumDeliveryType implements Serializable {
 
 	private static final long	serialVersionUID	= -1948272245997890928L;
 
@@ -37,26 +32,24 @@ public class EnumDeliveryType extends Enum implements Serializable {
 
 	private final int id;
 	private final String code;
-	private final String displayName;
+	private final String name;
 	private final String deliveryModel;
 
 	private EnumDeliveryType(String code, String name, String deliveryModel) {
-		super(code);
 		this.id = idCounter++;
 		this.code = code;
-		this.displayName = name;
+		this.name = name;
 		this.deliveryModel = deliveryModel;
 
 		DELIVERY_TYPE_MAP.put(code, this);
 	}
 
-	@JsonValue
 	public String getCode() {
 		return this.code;
 	}
 
-	public String getDisplayName() {
-		return this.displayName;
+	public String getName() {
+		return this.name;
 	}
 
 	public String getDeliveryModel() {
@@ -67,15 +60,14 @@ public class EnumDeliveryType extends Enum implements Serializable {
 		return this.code;
 	}
 
-	@JsonCreator
 	public static EnumDeliveryType getDeliveryType(String code) {
 		return DELIVERY_TYPE_MAP.get(code);
 	}
 
-	/*public boolean equals(Object o) {
+	public boolean equals(Object o) {
 		if ( o != null && o instanceof EnumDeliveryType ) {
 			return this.id == ((EnumDeliveryType) o).id;
 		}
 		return false;
-	}*/
+	}
 }

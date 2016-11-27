@@ -8,9 +8,9 @@ if (isSmall) width="630";
 	<td>
 		<font class="space4pix"><br><br><br></font><font class="text13">
 		<img src="/media/editorial/site_pages/click_to_call/c2c_hdr_trouble_help.gif" alt="Timeslot Full?"><br>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="0" height="35">
+		<img src="/media_stat/images/layout/clear.gif" width="0" height="35">
 		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><img src="/media/editorial/site_pages/click_to_call/button_call_me_now.gif"  border="0" alt="CLICK TO CALL"></a>
-		<br><img src="/media_stat/images/layout/clear.gif" alt="" width="0" height="15">
+		<br><img src="/media_stat/images/layout/clear.gif" width="0" height="15">
 		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><b>NEW!  Call Me Now</b></a>.
 		Just enter your phone number and a specialist will call you back immediately. <br>
 		

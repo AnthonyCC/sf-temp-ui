@@ -7,7 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_1_ENTER_TOTAL = 970;
@@ -34,10 +34,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShoppingCart().getTotal();
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Add Delivery Address"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Checkout - Add Delivery Address</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Add Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:CheckLoginStatus guestAllowed="false" redirectPage='/checkout/signup_ckt.jsp' />
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage='/checkout/step_1_choose.jsp?addressStatus=new'>
@@ -60,22 +57,22 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	  <tr valign="top"> 
 			<td CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" VALIGN="bottom">
 				 <FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
-		         <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0">
+		         <IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0">
 			</td>
 	    </tr>
 	</TABLE>
 	
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0"><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br />
 	<!-- PROFILE HEADER -->
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
 	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 		 <tr valign="top"> 
 			 <td class="text12" width="375" valign="bottom"> 
 					<font class="title18">Enter Delivery Address (Step 1 of 4)</font><br/>
 					<%if(user.isPickupOnly() ){%>   
-						<b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">delivery zone</a>.
+						<b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large');">delivery zone</a>.
 						Please select one of our pickup locations to place an order.
 					<%}else if(!user.isDepotUser()){%>
 						Please choose a delivery address for this order.
@@ -85,7 +82,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 			</td>
 		</tr>
 	</TABLE>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
 <FORM name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
@@ -104,11 +101,11 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	</TR>
 	</TABLE>
 	
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 	
 	<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
 	
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
 	
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
@@ -120,8 +117,8 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 </TR>
 </TABLE>
 
-	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
-	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 	
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	    <tr valign="top">
@@ -133,7 +130,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Your Cart<br/>
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0">
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
 		</tr>
 	</table>
@@ -141,9 +138,9 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

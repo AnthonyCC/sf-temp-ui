@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <module id="com.freshdirect.cms" version="1.0.0">
 
+	<sub-module descriptor="hivemodule_search.xml"/>
 	<sub-module descriptor="hivemodule_erps.xml"/>
 	<sub-module descriptor="hivemodule_publish.xml"/>
 
@@ -152,10 +153,21 @@
 		VALIDATION
 	-->
 	
+	<configuration-point id="contentValidators" schema-id="objectList"/>
+	<contribution configuration-id="contentValidators">
+		<Object value="instance:com.freshdirect.cms.validation.BasicValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.PrimaryHomeValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.SynonymValidator"/>
+	</contribution>
+
 	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.validation.ValidatingContentService">
 				<service>CompositeService</service>
+				<configuration>contentValidators</configuration>
 			</construct>
 		</invoke-factory>
 	</service-point>

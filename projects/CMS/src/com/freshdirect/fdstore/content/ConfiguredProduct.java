@@ -26,9 +26,7 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 
-    private static final long serialVersionUID = 7188118020157672951L;
-
-    private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
+	private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 
 	private final List<ProductModel> relatedProducts = new ArrayList<ProductModel>();
 	
@@ -353,8 +351,6 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 			fdp = getFDProduct();
 		} catch (FDRuntimeException e) {
 			fdp = null;
-		} catch (CmsRuntimeException e) {
-			fdp = null;
 		}
 		if (fdp == null) {
 			return null;
@@ -570,11 +566,6 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	}
 
 	@Override
-	public String getFdxSEOMetaDescription() {
-	    return getProduct().getFdxSEOMetaDescription();
-	}
-
-	@Override
 	public String getPairItHeading() {
 		return getProduct().getPairItHeading();
 	}
@@ -588,17 +579,4 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public int getTimeToComplete() {
 	    return getProduct().getTimeToComplete();
 	}
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-		 return this.getProduct().getAvailabileQtyForDate(targetDate);
-		
-	}
-	
-	//appdev 6709, fkw-1344
-	@Override
-    public String getEarliestAvailabilityMessage() {
-        return getProduct().getEarliestAvailabilityMessage();
-       
-    }
 }

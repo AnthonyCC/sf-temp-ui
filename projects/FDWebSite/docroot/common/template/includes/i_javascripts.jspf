@@ -3,11 +3,6 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
-<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
-<%@ page import='javax.servlet.http.Cookie' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
@@ -16,24 +11,61 @@
 		using the same /directory/version/ system as scriptaculous for jquery
 		also to avoid conflicts, jQuery's $ will always be set to $jq
 	--%>
-
+	
   <%-- Feature version switcher --%>
   <features:potato />
-	<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
+  <%-- TODO !!! --%>
+  <script type="text/javascript">
+  (function () {
+    window.FreshDirect = window.FreshDirect || {};
+    var fd = window.FreshDirect;
+    
+    fd.features = fd.features || {};
+
+    fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
+
+    fd.properties = fd.properties || {};
+    fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
+    fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
+
+    <% 
+		FDUserI jsUser = (FDUserI)session.getAttribute(SessionName.USER);
+    if (jsUser != null) {
+      int sessionUserLevel = jsUser.getLevel();
+      %>
+    fd.user = {};
+    fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
+    fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+    <% } %>
+  }());
+  </script>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
-	<jwr:script src="/assets/javascript/jquery/corner/jquery.corner.js" useRandomParam="false" />
+	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/dialog-base.js" />
+	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
+	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
+	<fd:javascript src="/assets/javascript/coremetrics.js"/>
+	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
-	<jwr:script src="/fdmisc.js" useRandomParam="false" />
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
+	
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
 
-	<%@ include file="/common/template/includes/extol_tags.jspf" %>
-
-
+  <%-- HTML5 support for IE8 --%>
+  <!--[if lt IE 9]>
+    <fd:javascript src="/assets/javascript/html5.js"/>
+  <![endif]-->
+	
 	<script type="text/javascript" language="javascript">
 
+		var FreshDirect = FreshDirect || {};
+		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};
+		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
 
 		var $jq;
-		var jqInit = false;
+		var jqInit = false; 
 		function initJQuery() {
 			if (typeof(jQuery) == 'undefined') {
 				if (!jqInit) {
@@ -50,17 +82,67 @@
 	<script>
 	(function ($) {
 		$(function () {
-
+			
 			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
 			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
+		
 		});
 	})($jq);
-	</script>
-
-	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
-	<% } %>
-
-	<jwr:script src="/roundedcorners.js" useRandomParam="false" />
+	</script> 
 	
-	<%@ include file="/common/template/includes/i_javascripts_common_bottom.jspf" %>
+	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
+		<fd:javascript src="/assets/javascript/prototype.js"/>
+		<%-- when upgrading scriptaculous please create a new directory for the version --%>
+		<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+		<fd:javascript src="/assets/javascript/modalbox.js"/>
+	<% } %>
+	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
+		<fd:javascript src="/assets/javascript/common_javascript.js"/>
+	<% } %>
+	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
+
+	<%
+		/* Google Analytics Pixel */
+		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
+		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
+		semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
+		if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
+	%>
+	<%
+		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
+			//add param so ftl can do different logic
+			semPixel_GA.setParam("onRaf", "true");
+		}
+	%>
+		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
+	<% /* Google Analytics Pixel */ %>
+
+	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
+	
+	<%
+		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
+		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+
+		if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
+			) {
+			%>
+				<script type="text/javascript">
+		    		$jq(document).ready(function() {
+			    		doOverlayWindow('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
+		    		});
+		    	</script>
+	    	<%
+		}
+	%>
+	
+	  <%-- Bazaarvoice --%>
+  
+  <% 
+  if(FDStoreProperties.isBazaarvoiceEnabled()){
+  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
+  <% } %>
+<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
+  

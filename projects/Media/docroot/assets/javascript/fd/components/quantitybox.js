@@ -28,7 +28,7 @@ var FreshDirect = FreshDirect || {};
   function markProductChanged($quantitybox) {
     var $product = $quantitybox.$product || $quantitybox.parents('[data-component=product]').first();
 
-    if ($product && $product.length) {
+    if ($product && $product.size()) {
       $quantitybox.$product = $product;
       $product.addClass('changed');
     }
@@ -126,11 +126,8 @@ var FreshDirect = FreshDirect || {};
       $input.val(newVal);
     }
 
-    //allow tabbing past without update
-    if (e.keyCode !== fd.utils.keyCode.TAB) {
-        markProductChanged($this);
-        triggerEvent($this,$input.val());    
-    }
+    markProductChanged($this);
+    triggerEvent($this,$input.val());
   });
 
   $(document).on('change','[data-component="quantitybox.value"]',function(){

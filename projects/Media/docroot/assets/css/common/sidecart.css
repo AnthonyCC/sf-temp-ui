@@ -173,7 +173,7 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-  min-width: 112px;
+  width: 112px;
   height: 27px;
   background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);
   background-position: -148px 0px;

@@ -1,6 +1,9 @@
+/**
+ * 
+ */
 package com.freshdirect.mobileapi.util;
 
-import com.freshdirect.storeapi.content.SortOptionModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
 
 public enum SortType {
     RELEVANCY("relevancy"),
@@ -17,18 +20,13 @@ public enum SortType {
 	EXPIRATION_DATE("expr"),
 	PERC_DISCOUNT("poff"),
 	DOLLAR_DISCOUNT("doff"),
-    SUSTAINABILITY_RATING("sust"),
-    ECOUPON("ecoupon"),
-    YOURFAVES("yourFaves"),
-    CUSTFAVES("custFaves"),
-    CUSTOMER_RATING("cxpr");
-
-    private String fdSortValue;
-
-    private SortType(String sortValue) {
+    SUSTAINABILITY_RATING("sust");
+    String fdSortValue;
+    
+    
+    SortType(String sortValue){
         fdSortValue = sortValue;
     }
-
     public static SortType valueFromString(String str) {
         SortType result = RELEVANCY;
         if (RELEVANCY.toString().equalsIgnoreCase(str)) {
@@ -61,12 +59,10 @@ public enum SortType {
             result = DOLLAR_DISCOUNT;
         } else if (SUSTAINABILITY_RATING.toString().equalsIgnoreCase(str)) {
             result = SUSTAINABILITY_RATING;
-        } else if (CUSTFAVES.toString().equalsIgnoreCase(str)) {
-            result = CUSTFAVES;
         }
         return result;
     }
-
+    
     public static SortType sortValueStringToSortType(String minSortType){
     	SortType result = RELEVANCY;
     	
@@ -100,8 +96,6 @@ public enum SortType {
             result = DOLLAR_DISCOUNT;
         } else if (SUSTAINABILITY_RATING.getSortValue().equalsIgnoreCase(minSortType)) {
             result = SUSTAINABILITY_RATING;
-        } else if (CUSTFAVES.getSortValue().equalsIgnoreCase(minSortType)) {
-            result = CUSTFAVES;
         }
     	return result;
     }
@@ -109,7 +103,7 @@ public enum SortType {
     public String getSortValue(){
         return fdSortValue;
     }
-        
+    
     public static SortType wrap(SortOptionModel model)
     {
     	if(model == null || model.getContentName() == null)
@@ -130,23 +124,29 @@ public enum SortType {
     		o = SUSTAINABILITY_RATING;
     	} else if(toCheck.contains("name")){
     		o = NAME;
-    	} else if(toCheck.contains("relevancy")){
-    		o = RELEVANCY;
-    	} else if(toCheck.contains("ourfavorites")){
-    		o = OURFAVES;
-    	} else if(toCheck.contains("department")){
-    		o = DEPARTMENT;
-    	} else if(toCheck.contains("recency")){
-    		o = RECENCY;
-    	} else if(toCheck.contains("ecoupon")){
-    		o = ECOUPON;
-    	} else if(toCheck.contains("yourfavorites")){
-    		o = YOURFAVES;
-    	} else if(toCheck.contains("customerfavoritesfirst")){
-    		o = CUSTFAVES;
-    	} else if(toCheck.contains("customerrating")){
-    		o = CUSTOMER_RATING;
-    	} 
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	} else if(toCheck.contains("")){
+    		
+    	}
     	
     	return o;
     }

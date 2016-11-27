@@ -88,8 +88,6 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName DLV_DEPOT_REG_CODE = new EnumUserInfoName("depotAccessCode", "Registration Code");
 	public final static EnumUserInfoName DLV_WORK_PHONE = new EnumUserInfoName("busphone", "Work Phone Number");
 	public final static EnumUserInfoName DLV_EMPLOYEE_ID = new EnumUserInfoName("employeeId", "Employee ID");
-	
-	public final static EnumUserInfoName FD_SUCCESS_PAGE = new EnumUserInfoName("fd_successPage", "FD Success Page");
 
 	public final static EnumUserInfoName TECHNICAL_DIFFICULTY = new EnumUserInfoName("technical_difficulty", "Technical Difficulty");
 
@@ -99,10 +97,6 @@ public class EnumUserInfoName implements Serializable {
 
 	// ECHECKS
 	public final static EnumUserInfoName CARD_NUMBER_VERIFY = new EnumUserInfoName("cardNumVerify", "Verify Account Number");
-	 public final static EnumUserInfoName BANK_NAME = new EnumUserInfoName(PaymentMethodName.BANK_NAME, "Bank Name");
-	 public final static EnumUserInfoName ABA_ROUTE_NUMBER = new EnumUserInfoName(PaymentMethodName.ABA_ROUTE_NUMBER, "Routing Number");
-	 public final static EnumUserInfoName BANK_ACCOUNT_TYPE = new EnumUserInfoName(PaymentMethodName.BANK_ACCOUNT_TYPE, "Account Type");
-	 
 
 	public final static EnumUserInfoName DLV_ALT_CONTACT_PHONE = new EnumUserInfoName("altContactPhone", "Alt Contact");
 	public final static EnumUserInfoName DLV_ALT_CONTACT_EXT = new EnumUserInfoName("altContactPhoneExt", "Alt Ext");
@@ -126,8 +120,6 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName DLV_METHOD = new EnumUserInfoName("deliveryMethod", "Delivery Method");
 	public final static EnumUserInfoName GC_MESSAGE = new EnumUserInfoName("message", "Message");
 	public final static EnumUserInfoName GC_QUANTITY = new EnumUserInfoName("quantity", "quantity");
-	public final static EnumUserInfoName GC_FLDAMOUNT = new EnumUserInfoName("fldAmount", "Amount");
-	public final static EnumUserInfoName GC_FLDALTAMOUNT = new EnumUserInfoName("fldAltAmount", "Alternate Amount");
 
 	public final static EnumUserInfoName GC_ACCOUNT_FROM = new EnumUserInfoName("fromGCAccount", "From GC Account");
 	public final static EnumUserInfoName GC_ACCOUNT_TO = new EnumUserInfoName("toGCAccount", "To GC Account");
@@ -155,10 +147,6 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName SS_APT_WRONG = new EnumUserInfoName("APT_WRONG", "Apartment is wrong");
 	public final static EnumUserInfoName SS_APT_MISSING = new EnumUserInfoName("APT_MISSING", "Apartment is wrong");
 	public final static EnumUserInfoName DLV_APARTMENT_SS = new EnumUserInfoName("aptSS", "Apt.");
-	
-	//RAF
-	public final static EnumUserInfoName RAF_CLICK_ID = new EnumUserInfoName("rafclickid", "RAF Click ID");
-	public final static EnumUserInfoName RAF_PROMO_CODE = new EnumUserInfoName("rafpromocode", "RAF Promo Code");
 	
 
 	private int id;

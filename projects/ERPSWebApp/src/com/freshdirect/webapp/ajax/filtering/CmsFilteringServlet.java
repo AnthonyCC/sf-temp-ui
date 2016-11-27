@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.ajax.filtering;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,20 +10,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDNotFoundException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
+import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
+import com.freshdirect.webapp.ajax.JsonHelper;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
 
 public class CmsFilteringServlet extends BaseJsonServlet {
@@ -41,26 +49,15 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
         try {
-        	boolean isOAuth = isOAuthTokenInHeader(request);
-        	
-        	if (isOAuth && user.getIdentity() != null) {
-				user = FDCustomerManager.recognize(user.getIdentity(), null, null, null, false, false);
-			}
-        	
-            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user, false);
-            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user);
-            final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
-            writeResponseData(response, payload);
+            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
+            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
+
+            writeResponseData(response, result);
         } catch (InvalidFilteringArgumentException e) {
             returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
-        } catch (FDNotFoundException e) {
-            returnHttpError(404, "Node is not found in CMS", e); // 404 Bad Request
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Global Navigation", e);
-        } catch (FDAuthenticationException e) {
-        	LOGGER.error("Failed to recognize user", e);
-			returnHttpError(500, "Failed to get user.");
-		}
+        }
 
     }
 
@@ -73,68 +70,109 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     }
 
     /**
-     * Processing query from direct http call
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+	 * Processing query from direct http call
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+		
+		try {
+			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
+			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
+			final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser)user);
+			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 
-        try {
-        	boolean isOAuthRequest = isOAuthTokenInHeader(request);
-			if (isOAuthRequest && user.getIdentity() != null) {
-				user = FDCustomerManager.recognize(user.getIdentity(), null, null, null, false, false);
+			if ( request.getParameterMap().keySet().contains("data") ) {
+				final Map<String, Object> clientInput;
+				try {
+
+					//
+					// CoreMetrics reporting section
+					//
+					
+					clientInput = JsonHelper.parseRequestData(request, Map.class);
+					
+					final BrowseEvent cmEvent = clientInput.get("browseEvent") != null ? BrowseEvent
+							.valueOf( ((String) clientInput.get("browseEvent")).toUpperCase())
+							: BrowseEvent.NOEVENT;
+
+					// handle event
+					switch(cmEvent) {
+					case PAGEVIEW:
+						SearchParams searchParams = flow.getBrowseDataPrototype().getSearchParams();
+						if (searchParams.getPageType()==FilteringFlowType.SEARCH) {
+							List<Tab> tabs = searchParams.getTabs();
+							
+							String searchTerm = searchParams.getSearchParams();
+							String suggestedTerm = searchParams.getSearchTerm();
+							Integer searchResultsSize = tabs.size() > 0 ? tabs.get(0).getHits() : 0;
+							Integer recipeSearchResultsSize = tabs.size() > 1 ? tabs.get(1).getHits() : 0;
+
+							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize, recipeSearchResultsSize );
+						} else {
+							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput) );
+						}
+						break;
+					case ELEMENT:
+						new CoremetricsPopulator().appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
+						break;
+					case SORT:
+						new CoremetricsPopulator().appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy());
+						break;
+					case PAGE:
+					case NOEVENT:
+					default:
+						// do nothing
+						break;
+					}
+
+				} catch (JsonParseException e) {
+					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
+				} catch (JsonMappingException e) {
+					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
+				} catch (IOException e) {
+					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
+				} catch (SkipTagException e) {
+					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
+				}				
 			}
-            CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user, true);
-            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDUser) user).isEligibleForDDPP());
-            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user);
-            final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
+			
+			// UNBXD analytics reporting
+			if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 
-            // UNBXD analytics reporting
-            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
-
-                if (navigator.getPageType().isBrowseType() && !navigator.isPdp()) {
-                    BrowseEventTag.doSendEvent(navigator.getId(), user, request);
-                }
-            }
-
-            writeResponseData(response, payload);
-
-        } catch (FDResourceException e) {
-            returnHttpError(400, "Cannot read JSON", e); // 400 Bad Request
-        } catch (FDNotFoundException e) {
-            returnHttpError(404, "Node is not found in CMS", e); // 404 Bad Request
-        } catch (InvalidFilteringArgumentException e) {
-
-            switch (e.getType()) {
-                case NODE_IS_RECIPE_DEPARTMENT:
-                case SPECIAL_LAYOUT:
-                case NODE_HAS_REDIRECT_URL: {
-                    Map<String, String> resp = new HashMap<String, String>();
-                    resp.put("redirectUrl", e.getRedirectUrl());
-                    writeResponseData(response, resp);
-                    break;
-                }
-                case TERMINATE:
-                    LOGGER.error(e.getMessage());
-                    break;
-
-                default:
-                    returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
-                    break;
-            }
-        } catch (FDAuthenticationException e) {
-        	LOGGER.error("Failed to recognize user", e);
-			returnHttpError(500, "Failed to get user.");
+			    if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
+			        BrowseEventTag.doSendEvent(navigator.getId(), user, request);
+			    }
+			}
+			
+			writeResponseData(response, payload);
+			
+		} catch (FDResourceException e) {
+			returnHttpError( 400, "Cannot read JSON", e );	// 400 Bad Request
+		} catch (InvalidFilteringArgumentException e) {
+			
+			switch (e.getType()){
+			case NODE_IS_RECIPE_DEPARTMENT:
+			case SPECIAL_LAYOUT:
+			case NODE_HAS_REDIRECT_URL:{
+				Map<String, String> resp = new HashMap<String, String>();
+				resp.put("redirectUrl", e.getRedirectUrl());
+				writeResponseData(response, resp);
+				break;
+			}
+			case TERMINATE:
+				LOGGER.error(e.getMessage());
+				break;
+				
+			default:
+				returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request	
+				break;
+			}				
 		}
-    }
+	}
 
     @Override
     protected int getRequiredUserLevel() {
         return FDUserI.GUEST;
-    }
-    
-    @Override
-    protected boolean isOAuthEnabled() {
-    	return true;
     }
 }

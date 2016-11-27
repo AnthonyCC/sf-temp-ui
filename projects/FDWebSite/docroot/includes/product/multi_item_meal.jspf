@@ -11,9 +11,9 @@
 ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
 final CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
-String errImage = "<img src=\"/media_stat/images/layout/error.gif\" alt=\"\" border=\"0\">";
+String errImage = "<img src=\"/media_stat/images/layout/error.gif\" border=\"0\">";
 String noErrImage = ""; 
-String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" alt=\"recommended\" border=\"0\">";
+String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" border=\"0\">";
 
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
 int maxWidth=430;
@@ -155,7 +155,7 @@ if (pgErrs.size()>0) {
 	%>
 	<tr>
 	<td><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
-	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 	<%
 	String prodDescr = "";
 	{
@@ -166,7 +166,7 @@ if (pgErrs.size()>0) {
 	}
 	%>
 	
-	<td width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><br><br><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
+	<td width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><br><bt><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
 	<a href="javascript:popup('/meal_item_detail.jsp?mcatId=<%=request.getParameter("catId")%>&mproductId=<%=request.getParameter("productId")%>&mskuCode=<%=defaultSku%>&catId=<%=request.getParameter("catId")%>&productId=<%=request.getParameter("productId")%>&skuCode=<%=defaultSku%>','large_long')"><b>Click here for details and cooking tips.</b></a>
 	</td>
 	</tr>
@@ -253,12 +253,12 @@ if (isAvailable ) { %>
 					tagIsOpen=true;    %>
 					<table  width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 					<tr>
-						<td><img src="/media_stat/images/layout/clear.gif" alt="" width="95" height="1"></td>
-						<td><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
-						<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=maxWidth-115%>" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="<%=maxWidth-115%>" height="1"></td>
 					</tr>
-					<tr><td valign="top" align="left"><img name="<%=imgName %>" src="<%=(prodImage==null ? "/media_stat/images/layout/clear.gif" : prodImage.getPath())%>" alt=""></td>
-					<td valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
+					<tr><td valign="top" align="left"><img name="<%=imgName %>" src="<%=(prodImage==null ? "/media_stat/images/layout/clear.gif" : prodImage.getPath())%>"></td>
+					<td valign="top"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
 					<td valign="top">
 		<%		} 
 				if (prodImage!=null) {
@@ -271,7 +271,7 @@ if (isAvailable ) { %>
 				}
 		%>
 		   <% if (isChefsPick) {%><%=chefPickIndicator%>&nbsp;
-		   <% } else {%><img src="/media_stat/images/layout/clear.gif" alt="" width="11" height="11">&nbsp; <% }  %>
+		   <% } else {%><img src="/media_stat/images/layout/clear.gif" width="11" height="11">&nbsp; <% }  %>
 		       <a href="javascript:popup('meal_item_detail.jsp?mcatId=<%=request.getParameter("catId")%>&mproductId=<%=request.getParameter("productId")%>&mskuCode=<%=defaultSku%>&catId=<%=oneProd.getParentNode()%>&productId=<%=oneProd%>&skuCode=<%=oneProd.getDefaultSku()%>','large_long')" <%=imgRollOver%>><%=JspMethods.getDisplayName(oneProd,prodNameAttribute)%></a>
 				<br>
 		<%	 }  %>
@@ -284,7 +284,7 @@ if (isAvailable ) { %>
 					  <%= result.hasError(variation.getName()+suffix) ? errImage : noErrImage %>
 		<%  		} 
 					if ( varOpts.length>1) { %>
-						<img src="/media_stat/images/layout/clear.gif" alt="" width="11" height="11">&nbsp;
+						<img src="/media_stat/images/layout/clear.gif" width="11" height="11">&nbsp;
 						<select name="<%=variation.getName()+suffix%>"><option value=""><%=variation.getDescription()%></option>
 		<%				
 						for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
@@ -320,11 +320,11 @@ if (isAvailable ) { %>
 		   String salesUnitDescription = "NA";
 		   String salesUnitName = "NA";
 		   FDSalesUnit[] salesUnits;    %>
-		  <logic:iterate id='optProd' collection="<%=stepCat.getProducts()%>" type="com.freshdirect.storeapi.content.ProductModel" indexId='optIdx'>
+		  <logic:iterate id='optProd' collection="<%=stepCat.getProducts()%>" type="com.freshdirect.fdstore.content.ProductModel" indexId='optIdx'>
 	<%	
-			   if (!(optProd.isDiscontinued() || optProd.isUnavailable())) {
+			   if (optProd.isDiscontinued() || optProd.isUnavailable()) continue;
 			   SkuModel dfltSku = optProd.getDefaultSku();
-			   if (!(dfltSku==null)) {
+			   if (dfltSku==null) continue;
 			   skus.add(dfltSku);    %>
 		<fd:FDProductInfo id="productInfo" skuCode="<%=dfltSku.getSkuCode()%>">
 	<%
@@ -359,14 +359,14 @@ if (isAvailable ) { %>
 					<%
 					//////////////// part optional logic
 					 if (EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId() == layout) { %>
-					<td valign="top" align="center" width="140"><img src="/media_stat/images/layout/clear.gif" alt="" width="140" height="1"><br>
+					<td valign="top" align="center" width="140"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"><br>
 					<table width="140" border="0" cellspacing="0" cellpadding="0" align="center">
 					  <tr>
 						<td colspan="2" align="center"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>"></a></td>
 					  </tr>
 					  <tr>
 						<td colspan="2" align="center"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><%=dispObj.getItemName()%></a><br><%=dispObj.getPrice()%>
-						   <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1">
+						   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1">
 						</td>
 					  </tr>
 					  <tr>
@@ -408,7 +408,7 @@ if (isAvailable ) { %>
 		<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr valign="top">
 			<td width="115">
-			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" alt="" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>" name="<%=imgName%>" <%= Integer.parseInt(dispObj.getImageWidth()) < 50 ? "hspace=\"20\"":""%><%= Integer.parseInt(dispObj.getImageWidth()) == 80 ? "hspace=\"5\"":""%>></a></td>
+			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>" name="<%=imgName%>" <%= Integer.parseInt(dispObj.getImageWidth()) < 50 ? "hspace=\"20\"":""%><%= Integer.parseInt(dispObj.getImageWidth()) == 80 ? "hspace=\"5\"":""%>></a></td>
 			<td width="<%=maxWidth-115%>">
 				<table width="<%=maxWidth-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% } 
@@ -431,14 +431,14 @@ if (isAvailable ) { %>
 							  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,0,<%= user.getQuantityMaximum(optProd) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 				
 				<td width="83%"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemName()%></a><br><%=dispObj.getPrice()%>
-						   <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+						   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr><td colspan="3"><span class="space2pix"><br></span></td></tr>
 		
 	<%	prodCount++;  %>
 
 	<%
-		} } }//end optional layout %>
+		} //end optional layout %>
 		   </logic:iterate>  
 	<%     
 		   if (prodCount>1) {  %>
@@ -466,12 +466,12 @@ if (isAvailable ) { %>
                <TR VALIGN="TOP">
                   <TD align="center">
             <BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
@@ -484,7 +484,7 @@ if (isAvailable ) { %>
 	 if (prodCount > 0) {  %>
 	<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr><td><BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR><br>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR><br>
         </td></tr>
     </table>
 	<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -505,10 +505,10 @@ if (isAvailable ) { %>
 			String referer = request.getParameter("referer");
 			if (referer==null) referer = request.getHeader("Referer");
 			if (referer==null) referer = "/view_cart.jsp";			%>
-			<button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
+			<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
        		<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/>
 			<input type="hidden" name="referer" value="<%= referer %>">
-			<a class="cssbutton green transparent" href="<%=referer%>">Back to Cart</a><BR>
+			<a class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><BR>
 	<%	} else {   %>
 		 <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
 	<%  } 
@@ -602,7 +602,7 @@ if (isAvailable ) { %>
 <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
       <td width="100%">
-	<div align="center"><font class="text12" color="#333">
+	<div align="center"><font class="text12" color="#999999">
 		<b>We're sorry! This item is temporarily unavailable.</b>
 	</font></div>
 	</td></tr></table>
@@ -615,15 +615,15 @@ if (isAvailable ) { %>
        <TR VALIGN="TOP">
           <TD align="center">
 			<BR>
-			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
 			<FONT CLASS="space4pix"><br><br></FONT>
        </TD>
        <TR><TD align="center">
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null) { %>
                                <% if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />

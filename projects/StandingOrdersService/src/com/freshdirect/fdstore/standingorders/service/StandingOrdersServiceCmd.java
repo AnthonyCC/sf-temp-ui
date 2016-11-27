@@ -26,16 +26,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.StandingOrdersService;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.InventoryMapInfoBean;
 import com.freshdirect.fdstore.standingorders.SOResult;
-import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
@@ -142,17 +139,14 @@ public class StandingOrdersServiceCmd {
 	public static void runManualJob( String orders, boolean sendReportEmail, boolean sendReminderNotificationEmail, ServletContext context) {	
 		
 		// At the beginning, set "IS_SO_JOB_RUNNING" to "true" to avoid "Simultaneous executions of the Standing Order Job"
-		
-		if(context!=null){
-			context.setAttribute("IS_SO_JOB_RUNNING", "true");
-		}
+		context.setAttribute("IS_SO_JOB_RUNNING", "true");
 		
 		StandingOrdersJobConfig jobConfig = new StandingOrdersJobConfig();
 	
 		List<String> soIdList = null;
 		
 		try{
-				
+						
 			if(null !=orders && !orders.trim().equalsIgnoreCase("")){
 				Set<String> soSet = new HashSet<String>();
 				
@@ -175,18 +169,16 @@ public class StandingOrdersServiceCmd {
 				sendReportMail(result);
 			}
 			
-			if(context!=null){
 			// At the end, remove "IS_SO_JOB_RUNNING" to make "Manual Standing Order Job" available
 			context.removeAttribute("IS_SO_JOB_RUNNING");
-			}
 			
+
 		} catch (Exception e) {
 			LOGGER.error("Manually running StandingOrdersServiceCmd failed with Exception...",e);
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
 		}
 	}
 	
-
 
 	private static boolean isResultHasData(SOResult.ResultList result) {
 		
@@ -211,21 +203,10 @@ public class StandingOrdersServiceCmd {
 			
 			LOGGER.info( "Starting to place orders..." );
 			
-			SOResult.ResultList result = null;//sb.placeStandingOrders(soList, jobConfig);
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
-				result = StandingOrdersService.getInstance().placeStandingOrders(soList, jobConfig);
-			} else{			
-				result = sb.placeStandingOrders(soList, jobConfig);
-			}
+			SOResult.ResultList result = sb.placeStandingOrders(soList, jobConfig);
 			
 			if(isResultHasData(result)){
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
-					StandingOrdersService.getInstance().persistUnavDetailsToDB(result);
-				}
-				else{
-					sb.persistUnavDetailsToDB(result);
-				}
+			sb.persistUnavDetailsToDB(result);
 			}
 			
 			if(result != null){
@@ -265,11 +246,7 @@ public class StandingOrdersServiceCmd {
 			UnavDetailsReportingBean unavDetailsReportingBean = new UnavDetailsReportingBean() ;
 			
 			if(hasData){	
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
-					unavDetailsReportingBean = StandingOrdersService.getInstance().getDetailsForReportGeneration();
-				}else{
 					unavDetailsReportingBean = sb.getDetailsForReportGeneration();
-				}
 			}		
 			final String atpFailureReportMailTo = ErpServicesProperties.getStandingOrdersATPFailureReportRecipientAddress();
 				
@@ -566,19 +543,16 @@ public class StandingOrdersServiceCmd {
 					for (Iterator<FDStandingOrderInfo> iterator = soFailedInfoList.iterator(); iterator
 							.hasNext();) {
 						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
+						
 						buffer.append("<tr>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>");
-						if ( soInfo.getStartTime() != null && soInfo.getEndTime() !=null){
-							buffer.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>");
-						}else{
-							buffer.append("<td nowrap=\"nowrap\">").append("N/A&nbsp;").append("</td>");
-						}
-						buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getErrorHeader()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getFailedOn()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")

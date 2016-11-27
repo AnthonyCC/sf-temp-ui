@@ -12,9 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,36 +23,27 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.crm.CrmCaseSubject;
-import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumNotificationType;
-import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
-import com.freshdirect.customer.ErpAbstractSettlementModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
-import com.freshdirect.customer.ErpFailedChargeSettlementModel;
-import com.freshdirect.customer.ErpFailedSettlementModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
-import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
-import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
-import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;
+import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -65,7 +54,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
-import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
@@ -73,14 +61,14 @@ import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.referral.extole.RafUtil;
 ;
-// this Session bean has been migrated to 2.0 check with 2.0 team if nay changes required
+
 public class PaymentSessionBean extends SessionBeanSupport{
 	
 	private final static Category LOGGER = LoggerFactory.getInstance( PaymentSessionBean.class );
 
 	private transient ErpSaleHome erpSaleHome = null;
+	private transient PaymentGatewayHome gatewayHome=null;
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
-	private static FDCouponManagerHome FdCouponHome =null;
 		
 	/**
 	 * capture the authorization for a given sale id
@@ -96,7 +84,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		if(this.erpSaleHome == null){
 			this.lookupErpSaleHome();
 		}
-		
 		
 		ErpPaymentMethodI paymentMethod = null;
 		int captureCount = 0;
@@ -198,32 +185,8 @@ public class PaymentSessionBean extends SessionBeanSupport{
 						}else{
 							
 							String orderNumber = saleId + "X" + captureCount;
+							capture = gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
 							
-							capture = capturePayment(paymentMethod, gateway, auth, captureAmount,orderNumber,false);
-							 
-							// START APPDEV-5490 
-							boolean isRejected=false;
-							if(EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().
-									equalsIgnoreCase(capture.getSettlementResponseCode())){
-								LOGGER.info("Paypal capture is declined . Retry with new auth sale id : "+saleId );
-								// Write Logic to authorize amount 
-								ErpAuthorizationModel newAuth = gateway.authorize(paymentMethod, orderNumber,auth.getAmount(),auth.getTax(),auth.getMerchantId());
-								
-								if(newAuth.isApproved()){
-									capture = capturePayment(paymentMethod, gateway, newAuth,captureAmount, orderNumber,true);
-								}else if(isNotCaptureApproved(capture, newAuth)){
-									isRejected=true;
-								}
-
-							} if(EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && (PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().
-									equalsIgnoreCase(capture.getSettlementResponseCode()) || isRejected)){
-								LOGGER.info("Paypal capture is rejected after retry. Mark settlement failure  sale id ."+ saleId );
-								
-								forceSettlementFailure(saleId, capture);
-								utx.commit();
-								continue;
-							}
-							// END APPDEV-5490 
 						}
 						
 						eb.addCapture(capture);
@@ -282,21 +245,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}
 			
 			//Committing coupons, if any.
-//			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
-
-			FDCouponManagerSB sb;
-			try {
-				sb = getFDCouponManagerHome().create();
-				sb.postConfirmPendingCouponTransactions(saleId);
-			} catch (RemoteException e1) {
-				FdCouponHome=null;
-				throw e1;
-			} catch (CreateException e1) {
-				FdCouponHome=null;
-				throw e1;
-			}
-			
-			
+			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
 		}catch(ErpTransactionException e){
 			LOGGER.warn(e);
 			try{
@@ -315,75 +264,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 	}
-
-	/**
-	 * @param saleId
-	 * @param capture 
-	 * @throws FinderException
-	 * @throws RemoteException
-	 * @throws ErpTransactionException
-	 */
-	private void forceSettlementFailure(String saleId, ErpCaptureModel capture) throws FinderException, RemoteException,
-			ErpTransactionException {
-		ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));	
-		ErpFailedSettlementModel failedTransaction = new ErpFailedSettlementModel();		
-		failedTransaction.setCardType(EnumCardType.PAYPAL);
-		failedTransaction.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
-		failedTransaction.setAmount(capture.getAmount());
-		failedTransaction.setResponseCode(EnumPaymentResponse.getEnum(capture.getResponseCode()));
-		failedTransaction.setCcNumLast4(capture.getCcNumLast4());
-		failedTransaction.setAbaRouteNumber(capture.getAbaRouteNumber());
-		failedTransaction.setBankAccountType(capture.getBankAccountType());
-		failedTransaction.setDescription(capture.getDescription());
-		failedTransaction.setTransactionSource(EnumTransactionSource.SYSTEM);
-		failedTransaction.setAffiliate(capture.getAffiliate());
-		((ErpSaleModel)saleEB.getModel()).addFailedSettlementPYPL(failedTransaction);
-		saleEB.markAsPaypalSettlementFailed();
-		createCase(saleId, capture.getCustomerId(), CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Sale failed to settle");
-	}
-	
-	private void createCase(String saleId, String customerId, CrmCaseSubject subject, String summary) {
-		CrmSystemCaseInfo info = new CrmSystemCaseInfo(new PrimaryKey(customerId), new PrimaryKey(saleId), subject, summary);
-		new ErpCreateCaseCommand(LOCATOR, info).execute();
-	}
-
-	/**
-	 * @param capture
-	 * @param newAuth
-	 * @return
-	 */
-	private boolean isNotCaptureApproved(ErpCaptureModel capture, ErpAuthorizationModel newAuth) {
-		return !newAuth.isApproved() || PayPalCaptureResponse.Processor.RISK_REJECTED.
-				getResponseCode().equals(capture.getSettlementResponseCode())
-				|| PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.
-				getResponseCode().equals(capture.getSettlementResponseCode());
-	}
-
-	/**
-	 * @param paymentMethod
-	 * @param gateway
-	 * @param auth
-	 * @param captureAmount
-	 * @param orderNumber
-	 * @param isReAuth 
-	 * @return
-	 * @throws ErpTransactionException
-	 */
-	private ErpCaptureModel capturePayment(ErpPaymentMethodI paymentMethod, Gateway gateway,
-			ErpAuthorizationModel auth, Double captureAmount, String orderNumber, boolean isReAuth)
-			throws ErpTransactionException {
-		
-		return gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
-	}
-	
-	private ErpSaleHome getErpSaleHome() {
-		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-	
 	
 	private PostSettlementNotificationHome getPostSettlementNotificationHome() {
 		try {
@@ -391,28 +271,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
-	}
-	private FDCouponManagerHome getFDCouponManagerHome() {
-		if(FdCouponHome!=null)
-			return FdCouponHome;
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			FdCouponHome= (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
-			return FdCouponHome;
-		} catch (NamingException ne) {
-			throw new EJBException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
-	
-	
 	}
 	
 	private ErpCaptureModel doFDCapture(ErpAuthorizationModel auth, double amount, double tax) {
@@ -522,11 +380,11 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			eb.markAsEnroute();
 			utx.commit();
 			LOGGER.info("unconfirm: change the Status from CPG to ENR - done. saleId="+saleId);
-			ErpCouponTransactionModel couponTransModel =getConfirmPendingCouponTransaction(saleId);
+			ErpCouponTransactionModel couponTransModel =FDCouponManager.getConfirmPendingCouponTransaction(saleId);
 			if(null !=couponTransModel){
 				couponTransModel.setTranTime(new Date());
 				couponTransModel.setTranStatus(EnumCouponTransactionStatus.CANCEL);
-				updateCouponTransaction(couponTransModel);
+				FDCouponManager.updateCouponTransaction(couponTransModel);
 			}
 		}catch(Exception e){
 			LOGGER.warn(e);
@@ -539,38 +397,103 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 	}
 
-	private void updateCouponTransaction(
-			ErpCouponTransactionModel couponTransModel)  throws FDResourceException,RemoteException,CreateException{
-		FDCouponManagerSB sb;
-		try {
-			sb = getFDCouponManagerHome().create();
-			sb.updateCouponTransaction(couponTransModel);
+	public void voidCaptures(String saleId) throws ErpTransactionException {
+		List captures = null;
+		Date captureDate = null;
+		if(this.erpSaleHome == null){
+			this.lookupErpSaleHome();
+		}
+
+		UserTransaction utx = null;
+		try{
+	
+			LOGGER.info("Void Capture - start. saleId="+saleId);
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+	
+			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			EnumSaleStatus status = eb.getStatus();
+	
+			if(!status.equals(EnumSaleStatus.PAYMENT_PENDING)){
+				throw new ErpTransactionException("Sale is not captured yet "+saleId);
+			}
+	
+			captures = eb.getCaptures();
+			captureDate = eb.getCaptureDate();
+	
+			utx.commit();
+
+		}catch(ErpTransactionException te){
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw te;	
+		}catch(Exception e){
+			LOGGER.warn(e);
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		}
+		
+		Calendar captureCal = new GregorianCalendar();
+		captureCal.setTime(captureDate);
+		captureCal.add(Calendar.DATE, 1);
+		captureCal.set(Calendar.HOUR_OF_DAY, 14);
+		captureCal.set(Calendar.MINUTE, 0);
+		captureCal.set(Calendar.SECOND, 0);
+		captureCal.set(Calendar.MILLISECOND, 0);
+		Date allowedDate = captureCal.getTime();
+		
+		if(!new Date().before(allowedDate)){
+			throw new ErpTransactionException("It is too late to Unconfirm this order");
+		}
+		
+		if(captures != null && captures.size() > 0){
 			
-		} catch (RemoteException e1) {
-			FdCouponHome=null;
-			throw e1;
-		} catch (CreateException e1) {
-			FdCouponHome=null;
-			throw e1;
-		}
-		}
+			utx = null;
+			try{
+	
+				for (Iterator i = captures.iterator(); i.hasNext(); ) { 
+					
+					ErpCaptureModel capture = (ErpCaptureModel)i.next();
+					
+					utx = this.getSessionContext().getUserTransaction();
+					utx.begin();
+		
+					ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+					ErpSaleModel sale = (ErpSaleModel) eb.getModel();
+					ErpPaymentMethodI paymentMethod = sale.getCurrentOrder().getPaymentMethod();
+					
+					ErpVoidCaptureModel voidCapture = null;
+					
+					Gateway gateway = GatewayFactory.getGateway(capture.getProfileID());
+					voidCapture = gateway.voidCapture(paymentMethod, capture);
+							
+					voidCapture.setTransactionSource(EnumTransactionSource.TRANSPORTATION);
+					eb.addVoidCapture(voidCapture);
+					utx.commit();
+				}
 
-	private ErpCouponTransactionModel getConfirmPendingCouponTransaction(
-			String saleId) throws FDResourceException,RemoteException,CreateException {
-		FDCouponManagerSB sb;
-			try {
-				sb = getFDCouponManagerHome().create();
-				ErpCouponTransactionModel erpCoupMod = sb.getConfirmPendingCouponTransaction(saleId);
-				return erpCoupMod;
-			} catch (RemoteException e1) {
-				FdCouponHome=null;
-				throw e1;
-			} catch (CreateException e1) {
-				FdCouponHome=null;
-				throw e1;
+				LOGGER.info("Void Capture done. saleId="+saleId);
+	
+			}catch(Exception e){
+				LOGGER.warn(e);
+				try{
+					utx.rollback();
+				}catch(SystemException se){
+					LOGGER.warn("Error rolling back transaction", se);
+				}
+				throw new EJBException(e);
 			}
-			}
-
+			
+		}
+	}
+	
 	protected static Map<String,Double> getCaptureAmounts(Gateway gateway, List<ErpAuthorizationModel> auths, double amount){
 		if(auths.isEmpty()){
 			return Collections.EMPTY_MAP;
@@ -812,7 +735,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}
 			
 			//Committing coupons, if any.
-			postConfirmPendingCouponTransactions(saleId);
+			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
 			
 			//TODO: Decide whether to introduce new status 'SETTLEMENT_SAP_PENDING' or not.
 			//Check the sale status, if its settled, settle the sale in SAP.
@@ -839,21 +762,21 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			
 	}
 	
-	private void postConfirmPendingCouponTransactions(String saleId)throws FDResourceException,RemoteException,CreateException {
-		FDCouponManagerSB sb;
+	private  void lookupGatewayHome() {
+		
+		Context ctx = null;
 		try {
-			sb = getFDCouponManagerHome().create();
-			sb.postConfirmPendingCouponTransactions(saleId);
-			
-		} catch (RemoteException e1) {
-			FdCouponHome=null;
-			throw e1;
-		} catch (CreateException e1) {
-			FdCouponHome=null;
-			throw e1;
+			ctx = new InitialContext();
+			this.gatewayHome = (PaymentGatewayHome) ctx.lookup("freshdirect.gateway.PaymentGateway");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
 		}
-		}
-
+	}
+	
 	private GatewayType getGatewayType(ErpPaymentMethodI pm) {
 		String profileId = pm.getProfileID();
 		if (StringUtil.isEmpty(profileId) && !EnumCardType.PAYPAL.equals(pm.getCardType())) {

@@ -1,9 +1,7 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <% //expanded page dimensions
 final int W_EBTCARD_SELECT_TOTAL = 970;
-final int W_EBTCARD_SELECT_CARD = 270;
+final int W_EBTCARD_SELECT_CARD = 280;
 %>
 <%-- Dependencies
     Host page must :
@@ -12,66 +10,68 @@ final int W_EBTCARD_SELECT_CARD = 270;
         - standingOrderDependencyIds variable
 --%>
 <% 
-	String editPage1 = null;
-	FDUserI _user1 = (FDUserI)session.getAttribute(SessionName.USER);
+    String editPage1 = null;
+    FDUserI _user1 = (FDUserI)session.getAttribute(SessionName.USER);
 
-	FDCartModel _cart1 =   _user1.getShoppingCart();
+    FDCartModel _cart1 =   _user1.getShoppingCart();
 
-	String cardStatus1 ="";
-	if(request.getParameter("card")!=null){
-		cardStatus1 = request.getParameter("card");
-	}
+    String cardStatus1 ="";
+    if(request.getParameter("card")!=null){
+            cardStatus1 = request.getParameter("card");
+    }
+    
 
-	boolean showRadioButtons1 = false;
+    boolean showRadioButtons1 = false;
+    
+    if ((request.getRequestURI().toLowerCase().indexOf("your_account")>-1)) { 
+    	editPage1 = "/your_account/edit_ebt_card.jsp";
+    } else if ((request.getRequestURI().toLowerCase().indexOf("gift_card")>-1))  {
+        editPage1 = "/your_account/edit_ebt_card.jsp?gc=true";
+        showRadioButtons1 = true;
+    } else if ((request.getRequestURI().toLowerCase().indexOf("robin_hood")>-1))  {
+        editPage1 = "/your_account/edit_ebt_card.jsp?rh=true";
+        showRadioButtons1 = true;
+    } else {
+        editPage1 = "/checkout/step_3_ebt_edit.jsp";
+        showRadioButtons1=true;
+    }
 
-	if ((request.getRequestURI().toLowerCase().indexOf("your_account")>-1)) { 
-		editPage1 = "/your_account/edit_ebt_card.jsp";
-	} else if ((request.getRequestURI().toLowerCase().indexOf("gift_card")>-1))  {
-		editPage1 = "/your_account/edit_ebt_card.jsp?gc=true";
-		showRadioButtons1 = true;
-	} else if ((request.getRequestURI().toLowerCase().indexOf("robin_hood")>-1))  {
-		editPage1 = "/your_account/edit_ebt_card.jsp?rh=true";
-		showRadioButtons1 = true;
-	} else {
-		editPage1 = "/checkout/step_3_ebt_edit.jsp";
-		showRadioButtons1=true;
-	}
-
-	if (paymentMethods!=null && paymentMethods.size() > 0){
-		int numCreditCards = 0;
-		int numEChecks = 0;
-		int numEBTCards = 0;
-		int itemCounter = 0;
-		int itemNum = 0;
-		boolean isNewOrder = !(_cart1 instanceof FDModifyCartModel);
-		if (selectedPaymPKId==null) selectedPaymPKId="";
-		boolean methodChecked = false;
+    if (paymentMethods!=null && paymentMethods.size() > 0){
+        int numCreditCards = 0;
+        int numEChecks = 0;
+        int numEBTCards = 0;
+        int itemCounter = 0;
+        int itemNum = 0;
+        boolean isNewOrder = !(_cart1 instanceof FDModifyCartModel);
+        if (selectedPaymPKId==null) selectedPaymPKId="";
+        boolean methodChecked = false;
 		ArrayList payMethodsList = new ArrayList(paymentMethods);
 
-		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
-			ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
-			if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
-				numCreditCards++;
-			} else if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
-				numEChecks++;
-			}else if (EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
-				numEBTCards++;
-			}
-		}
+        for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
+            ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
+            if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
+                numCreditCards++;
+            } else if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
+                numEChecks++;
+            }else if (EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
+            	numEBTCards++;
+            }
+        }
 
 		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
 			String checked = "";
-			boolean showDeleteButtons = numEBTCards > 1?true:false;            
-			ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
-			if (!EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
-				continue;
-			}
-			String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
-
-			// rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
-			// if it's a modified order where a credit card account was already selected
-			boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
-			boolean isCCOptionNotAvailable = numCreditCards==0;
+            boolean showDeleteButtons = numEBTCards > 1?true:false;            
+            ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
+            if (!EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
+            	continue;
+            }
+            String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
+            
+            
+            // rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
+            // if it's a modified order where a credit card account was already selected
+            boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
+            boolean isCCOptionNotAvailable = numCreditCards==0;
 			if(!methodChecked) {
 				if (paymentPKId.equals(selectedPaymPKId)){
 					methodChecked = true;
@@ -86,82 +86,70 @@ final int W_EBTCARD_SELECT_CARD = 270;
 				methodChecked = true;
 				checked = "checked";
 			}
-			if((itemCounter % 3)==0) {
-				if(itemCounter!=0) {
-					%></tr></table><br /><br />
-				<% } %>
+            if((itemCounter % 3)==0)  {
+                if(itemCounter!=0) {
+%>
+        </TR></TABLE><br><br>
+<%              } %>
 
-				<table border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
-					<tr valign="top">
-					<%
-						itemCounter=0;
-			} %>
-						<td width="20" class="chooser_radio">
-							<input type="<%=showRadioButtons1?"radio":"hidden"%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" >
-								<% if ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) ) { %>
-									<input
-										type="<%=showRadioButtons?"hidden":"checkbox"%>"
-										id="paymentIsDefault_<%=paymentPKId%>"
-										name="paymentDef"
-										class="paymentDef"
-										<%= ( ((paymentPKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) ? " checked" : "" ) %>
-										data-paymentid="<%= paymentPKId %>"
-										data-isdefault="<%= ((paymentPKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) %>"
-										data-type="<%= paymentM.getCardType().getDisplayName() %>"
-										data-isdebit="<%= paymentM.isDebitCard() %>"
-										data-lastfour="<%= paymentM.getDisplayableAccountNumber() %>"
-									>
-									<label for="paymentIsDefault_<%=paymentPKId%>"><span class="offscreen"><%=paymentM.getName()%></span></label>
-								<% } %>
-						</td>
-						<td width="<%= W_EBTCARD_SELECT_CARD %>" class="text14">
-							<div class="paymentMethod-cont">
-								<label for="paymentMethodList_<%=paymentPKId%>"><%=paymentM.getName()%><br />
-								<b><%=paymentM.getCardType().getDisplayName()%></b></label> - <br />
-								<%= paymentM.getMaskedAccountNumber() %><br />
-								<%=paymentM.getName()%><br />
-								<b><%=paymentM.getCardType().getDisplayName()%></b> - <br /><%= paymentM.getMaskedAccountNumber() %><br />
-								<br />
-								<!-- if we have a billing address -->
-								<b>Billing Address:</b><br />
-								<%=paymentM.getName()%><br />
-								<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentM.getApartment()%><% } %>
-								<br />
-								<% if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
-									<%=paymentM.getAddress2()%><br />
-								<% } %>
-								<%=paymentM.getCity()%>, <%=paymentM.getState()%> <br /><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><br />
-								<br />
-								
-								<div class="paymentMethod-buttons-cont">
-									<a href="<%= editPage1+( (editPage1.indexOf("?")!=-1) ? "&" : "?" )+"paymentId="+paymentPKId %>" data-paymentidedit="<%= paymentPKId %>" class="cssbutton green transparent small">EDIT<span class="offscreen"> Payment Option <%=paymentM.getName()%></span></a>&nbsp;
-									<% if (numCreditCards>1) { %>
-										<button type="button" class="cssbutton ghost red small" name="delete_cc" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">DELETE <span class="offscreen"> Payment Option <%=paymentM.getName()%></span></button>
-									<% } %>
-									<!-- error message about card being expired goes here -->
-									<img src="/media_stat/images/layout/clear.gif" width="<%= W_CREDITCARD_SELECT_CARD %>" height="1" alt="" />
-								</div>
-							</div>
-						</td>
-						<%
-							itemCounter++;
-							itemNum++;
-							if (itemNum < numEBTCards && (itemCounter % 3)!=0) { %>
-								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
-								<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1" alt="" /></td>
-								<td width="14"><img src="/media_stat/images/layout/clear.gif" width="14" height="1" alt="" /></td>
-							<% }
-		} // end of loop
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
+	<TR valign="top">
+<%
+            itemCounter=0;
+          } %>
+	<TD width="20" class="chooser_radio"><input type="<%=showRadioButtons1?"radio":"hidden"%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
+  <TD width="<%= W_EBTCARD_SELECT_CARD %>"> <%--<font class="text10bold">Credit Card</font><br>  --%>
+		<%-- <font class="text10bold"><%=paymentM.getCardType().getFdName()%></font><BR> --%>
+		<FONT CLASS="text12"><%=paymentM.getName()%><BR>
+		<b><%=paymentM.getCardType().getDisplayName()%></b> - <br><%= paymentM.getMaskedAccountNumber() %><BR>
+		
+		<br>
+		<!-- if we have a billing address -->
+		<b>Billing Address:</b><br>
+		<%=paymentM.getName()%><BR>
+		<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentM.getApartment()%><% } %>
+		<BR>
+<%        if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
+		<%=paymentM.getAddress2()%><BR>
+<%        }%>
+		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <BR><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><BR>
+		<BR>
+		</font> 
+		<% if(editPage1.indexOf("?")>-1) { %>
+			<A HREF="<%=editPage1%>&paymentId=<%=paymentPKId%>">
+		<% } else { %>
+			<A HREF="<%=editPage1%>?paymentId=<%=paymentPKId%>">
+		<% } %>
+		<IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
+	<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
 
-		if (itemNum > 0) { // if table ever opened close it gracefully
-			if (itemCounter==1) { %>
-				<%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-				<TD WIDTH="670"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="670" HEIGHT="1" BORDER="0"><br /></TD>
-			<% } else if(itemCounter==2) { %>
-				<%-- this spacer cell  --%>
-				<TD WIDTH="335"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="335" HEIGHT="1" BORDER="0"><br /></TD>
-			<% } %>
-			</TR></TABLE>
-		<% }
-	}
+	<!-- error message about card being expired goes here -->
+  <IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_EBTCARD_SELECT_CARD %>" HEIGHT="1">
+	</TD>
+<%          itemCounter++;
+			itemNum++;
+            if (itemNum < numEBTCards && (itemCounter % 3)!=0){     %>
+			<TD width="20"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"></TD>
+			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
+<%          }
+        } // end of loop
+
+        if (itemNum > 0) { // if table ever opened close it gracefully
+            if (itemCounter==1) {
+%>
+        <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
+        <TD WIDTH="670"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="670" HEIGHT="1" BORDER="0"><BR></TD>
+<%
+            } else if(itemCounter==2) {
+%>
+        <%-- this spacer cell  --%>
+        <TD WIDTH="335"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="335" HEIGHT="1" BORDER="0"><BR></TD>
+<%
+            }
+%>
+    </TR></TABLE>
+<%
+        }
+    }
 %>

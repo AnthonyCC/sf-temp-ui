@@ -41,14 +41,5 @@ public class GrpZonePriceListing implements Serializable {
 	public int size() {
 		return grpZonePriceMap.size();
 	}
-
-	//Introduced for Storefront 2.0
-	public Map<ZoneInfo, GrpZonePriceModel> getGrpZonePriceMap() {
-		return grpZonePriceMap;
-	}
-	
-	
-	
-	
 	
 }

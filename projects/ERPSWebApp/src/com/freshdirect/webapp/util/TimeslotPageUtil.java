@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +26,6 @@ public class TimeslotPageUtil {
 	private final static SimpleDateFormat monthDayFormatter = new java.text.SimpleDateFormat("MMM d");
 	private final static SimpleDateFormat mayMonthDayFormatter = new java.text.SimpleDateFormat("MMM d");
 	private final static SimpleDateFormat monthDayFormatterExp = new java.text.SimpleDateFormat("MMMM");
-	private final static SimpleDateFormat monthDayFormatterExp1 = new SimpleDateFormat("MMMM d");
 
 	public static List getBand(EnumDlvRestrictionReason reason, DlvRestrictionsList restrictions, Date startDate, Date endDate) {
 		return aggregate(getDailyRestrictions(reason, restrictions, startDate, endDate));
@@ -178,9 +176,5 @@ public class TimeslotPageUtil {
 		return dayNameFormatterExp.format(requestedDate.getTime());
 	}
 	
-	public static String formatDeliveryDateNew(Date day){
-		
-		return monthDayFormatterExp1.format(day);
-	}
 	
 }

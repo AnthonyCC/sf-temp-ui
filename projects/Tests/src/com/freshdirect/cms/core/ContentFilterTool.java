@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +32,11 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
-import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 
 public class ContentFilterTool {
@@ -66,7 +63,7 @@ public class ContentFilterTool {
 
             LOG.info("content service inited.");
 
-            CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(ContentFilterTool.class.getCanonicalName(), (new Date()).toString()))));
+            CmsManager.setInstance(new CmsManager(service, null));
 
         }
         return service;
@@ -181,7 +178,7 @@ public class ContentFilterTool {
     private static void addContentKeys(Set contentKeys, ContentType ctype, String keys) {
         String[] strings = StringUtils.split(keys, ',');
         for (int i = 0; i < strings.length; i++) {
-            ContentKey ck = ContentKey.getContentKey(ctype, strings[i].trim());
+            ContentKey ck = new ContentKey(ctype, strings[i].trim());
             //contentKeys.add();
             addContentKeys(contentKeys, ContentFactory.getInstance().getContentNodeByKey(ck) );
         }

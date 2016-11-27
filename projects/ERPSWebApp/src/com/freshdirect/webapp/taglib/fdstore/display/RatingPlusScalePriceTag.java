@@ -36,8 +36,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 		this.savingsPercentage = savingsPercentage;
 	}
 	
-	@Override
-    public int doStartTag() {
+	public int doStartTag() {
 		try {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -46,7 +45,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 				return SKIP_BODY;
 			}
 			
-            ProductImpression impression = new ProductImpression(ProductPricingFactory.getInstance().getPricingAdapter(product));
+			ProductImpression impression = new ProductImpression(ProductPricingFactory.getInstance().getPricingAdapter(product, user.getPricingContext()));			
 			
 			String scaleString = impression.getCalculator().getTieredPrice(savingsPercentage);
 			
@@ -54,7 +53,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 			
 			// TODO include this calculation into the material / tiered pricing model
 			if (savingsPercentage > 0.0) {
-				tieredPercentage = (int) ((tieredPercentage) / (1.0 - savingsPercentage));
+				tieredPercentage = (int) (((double) tieredPercentage) / (1.0 - savingsPercentage));
 			}
 			
 			String rating = JspMethods.getProductRating(product);
@@ -107,8 +106,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 	}
 
 	public static class TagEI extends TagExtraInfo {
-		@Override
-        public VariableInfo[] getVariableInfo(TagData data) {
+		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {};
 		}
 	}

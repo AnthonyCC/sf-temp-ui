@@ -165,15 +165,15 @@
     <li class="pdp-accordion-nutrition-default pdp-accordion-nutrition pdp-accordion-item">
       /* nutrition accondion should open the panel immediately
        * <input type="checkbox" id="pdp-nutrition"> */
-   
-      <a href="#" class="pdp-item-description-toggle" onclick="event.preventDefault();" id="pdp-nutrition" class="nutropen">
+    <input type="checkbox" id="pdp-nutrition" />
+      <label for="pdp-nutrition" class="nutropen">
         <span class="pdp-accordion-item-carrot"></span>
         Nutrition
-      </a>
+      </label>
       <div>
         /* <a href="#" class="nutropen">Click to View!</a> */
         <div data-component="popupContent" style="display:none">
-          <div class="panel-content display" >
+          <div id="drugpanel" class="display" >
             {call .panelContent data="all"}{/call}
           </div>
         </div>
@@ -181,48 +181,6 @@
     </li>
   {/if}
 {/template}
-
-
-/**
-* @param nutritionPanel
-* @param oldNutritionPanel
-*/
-{template .panelMobilApi}
-  {let $hasNewPanel: $nutritionPanel and $nutritionPanel.sections and length($nutritionPanel.sections) > 0 /}
-
-  {if $hasNewPanel or $oldNutritionPanel}
-   
-          <div id="drugpanel" class="display {if $oldNutritionPanel}CLASSIC{else}{$nutritionPanel.type}{/if}">
-            {call .panelContent data="all"}{/call}
-          </div>
-  {/if}
-{/template}
-
-/**
-* @param nutritionPanel
-* @param oldNutritionPanel
-*/
-{template .panelMobilApiProductDetail}
-<html>
-<head>
-	<link type="text/css" rel="stylesheet" href="https://www.freshdirect.com/assets/css/{$nutritionPanel.lowercasetype}_nutrition_display.css"  title="Product Info WebKit View Stylesheet" media="all"/>
-</head>
-<body>
-
-
-	  <div class="detail">
-			<h3>Nutrition Facts</h3>
-			<div class="nutrition">
-  
-            	{call .panelMobilApi data="all"}{/call}
-            
-        	</div>
-		</div>
-	
-</body>
-</html>
-{/template}
-
 
 /**
 * @param nutritionPanel

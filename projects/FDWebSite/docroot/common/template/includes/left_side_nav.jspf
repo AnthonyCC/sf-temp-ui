@@ -50,7 +50,7 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 		if (nl.isBold()) buf.append("<b>");
 		if (nl.showLink()) {
 			
-			buf.append("<a class=\"food_safety_highcontrast\" name=\"leftLink\" href=\"");
+			buf.append("<a name=\"leftLink\" href=\"");
 			
 			buf.append(nl.getURL());
 			buf.append("\"");
@@ -74,6 +74,7 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 	}
 
 %>
+<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='1'>
 <% try { %>
 
 <fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems">
@@ -188,7 +189,8 @@ if (displayedRows > 0) {
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-	
+	<oscache:usecached />
 <% } %>
+</oscache:cache>
 </body>
 <!-- END YOUR STORE table -->

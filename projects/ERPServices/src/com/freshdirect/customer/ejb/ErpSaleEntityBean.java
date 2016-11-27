@@ -69,7 +69,6 @@ import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
@@ -383,7 +382,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		createClientCodes(conn);
 	
 		complaints.create(conn);
-		if(model.hasUsedPromotionCodes()) {
+		if(model.hasUsedPromotionCodes()==true) {
 			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
 		}
 		createCroModMaxDate(conn);
@@ -597,13 +596,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 		PrimaryKey oldPk = model.getPK();
 
-		List<ErpCartonInfo> cartonInfo = null;
-		if(model.getCartonInfo()!=null && model.getCartonInfo().size()>0){
-			cartonInfo = model.getCartonInfo();
-		}else{
-			cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK(), eStoreId);	
-		}
-		 		
+		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
 		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, 
 				cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId, soName, in_modify, lock_timestamp);
 		model.setPK(oldPk);
@@ -1373,7 +1366,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		try {
 			conn = getConnection();
 
-			returnList = ErpCartonsDAO.getCartonInfo(conn, getPK(), model.geteStoreId());
+			returnList = ErpCartonsDAO.getCartonInfo(conn, getPK());
 
 		} catch (SQLException sqle) {
 			throw new ErpTransactionException(sqle.getMessage());
@@ -1783,138 +1776,26 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	
 	
 	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY_OTHER = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
-			+ " s.CUSTOMER_ID=? and s.e_store=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+ " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
 			+
 			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
 			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
 			+ " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C'and pi.on_fd_account<>'M'";
 
 	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY_OTHER = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
-			+ " s.CUSTOMER_ID=? and s.e_store=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+ " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
 			+
 			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
 			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
 			+ " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C'";
 
-	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY_OTHER_FDX= "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
-			+ " s.CUSTOMER_ID=? and s.e_store = ? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
-			+	" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
-			+ " di.salesaction_id=sa.id AND s.status=?  and pi.on_fd_account<>'M'";
-
-
-	public PrimaryKey ejbFindByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore)
-			throws ObjectNotFoundException, FinderException {
-		if (null != pymtMethodTypes && pymtMethodTypes.size() > 0) {
-			Connection conn = null;
-			PreparedStatement ps = null;
-			ResultSet rs = null;
-			if (null == saleType) 		saleType = EnumSaleType.REGULAR;
-
-			try {
-					String eStoreId = eStore.getContentId();
-					String query = null;
-
-					if ( EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId)) {
-						 query = GET_NTH_NONCOS_REG_ORDER_QUERY_OTHER;
-					}else if ( EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStoreId)){
-							query = GET_NTH_NONCOS_REG_ORDER_QUERY_OTHER_FDX;
-					}
-					StringBuffer sb1 = new StringBuffer(query);
-					StringBuffer sb2 = new StringBuffer(GET_NTH_NONCOS_SUB_ORDER_QUERY_OTHER);
-					sb1.append(" and pi.payment_method_type in (?");
-					sb2.append(" and pi.payment_method_type in (?");
-					for (int i = 0; i < pymtMethodTypes.size() - 1; i++) {
-						sb1.append(",?");
-						sb2.append(",?");
-					}
-					sb1.append(")) where row_num=1");
-					sb2.append(")) where row_num=1");
-
-					conn = getConnection();
-					if (EnumSaleType.REGULAR.equals(saleType)) {
-						ps = conn.prepareStatement(sb1.toString());
-					} else {
-						ps = conn.prepareStatement(sb2.toString());
-					}
-					ps.setString(1, customerID);
-					ps.setString(2, eStoreId);
-					ps.setString(3, saleStatus.getStatusCode());
-					for (int i = 0; i < pymtMethodTypes.size(); i++) {
-						ps.setString(i + 4, pymtMethodTypes.get(i).getName());
-					}
-				
-				rs = ps.executeQuery();
-				if (!rs.next()) {
-					throw new ObjectNotFoundException(
-							new StringBuffer(100).append("Unable to find ErpSale for customer : ").append(customerID)
-									.append(" with sale status as ").append(saleStatus.getStatusCode())
-									.append(" and payment type as ").append(pymtMethodTypes.toString()).toString());
-				}
-				PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
-
-				return foundPk;
-
-			} catch (SQLException sqle) {
-				throw new FinderException(sqle.getMessage());
-			} finally {
-				DaoUtil.close(rs);
-				DaoUtil.close(ps);
-				DaoUtil.close(conn);
-			}
-		}
-		return null;
-	}
-
-	public ErpRegisterGiftCardModel getRecentRegistration() {
-		return model.getRecentRegisteration();
-	}
-	
-	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException{
-		try{
-			model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
-			setModified();
-			
-		}catch(ErpTransactionException e){
-			getEntityContext().setRollbackOnly();
-			throw e;
-		}
-	}
-
-	public void markAsPaypalSettlementFailed() throws ErpTransactionException {
-		try{
-			model.markAsPaypalSettlementFailed();
-			setModified();
-		}catch(ErpTransactionException e){
-			getEntityContext().setRollbackOnly();
-			throw e;
-		}
-	}
-	
-	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY_DP_TRIAL = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
-			+ " s.CUSTOMER_ID=?  and s.e_store=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
-			+
-			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
-			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
-			+ " di.salesaction_id=sa.id and di.delivery_type <>'C'and pi.on_fd_account<>'M'";
-
-	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY_DP_TRIAL = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
-			+ " s.CUSTOMER_ID=?  and s.e_store=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
-			+
-			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
-			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
-			+ " di.salesaction_id=sa.id  and di.delivery_type <>'C'";
-
-	public PrimaryKey ejbFindByCriteria(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore)
+	public PrimaryKey ejbFindByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes)
 			throws ObjectNotFoundException, FinderException {
 		if(null != pymtMethodTypes && pymtMethodTypes.size() >0){
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		
-		String eStoreId = eStore.getContentId();
-
-		StringBuffer sb1 = new  StringBuffer(GET_NTH_NONCOS_REG_ORDER_QUERY_DP_TRIAL );
-		StringBuffer sb2 = new  StringBuffer(GET_NTH_NONCOS_SUB_ORDER_QUERY_DP_TRIAL);
+		StringBuffer sb1 = new  StringBuffer(GET_NTH_NONCOS_REG_ORDER_QUERY_OTHER);
+		StringBuffer sb2 = new  StringBuffer(GET_NTH_NONCOS_SUB_ORDER_QUERY_OTHER);
 		
 		sb1.append(" and pi.payment_method_type in (?");
 		sb2.append(" and pi.payment_method_type in (?");
@@ -1936,32 +1817,54 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				ps = conn.prepareStatement(sb2.toString());
 			}
 			ps.setString(1, customerID);
-			ps.setString(2, eStoreId);
+			ps.setString(2, saleStatus.getStatusCode());
 			for(int i=0;i<pymtMethodTypes.size();i++){
 				ps.setString(i+3, pymtMethodTypes.get(i).getName());
 			}
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
 				throw new ObjectNotFoundException(new StringBuffer(100)
 						.append("Unable to find ErpSale for customer : ")
 						.append(customerID).append(" with sale status as ")
+						.append(saleStatus.getStatusCode())
 						.append(" and payment type as ")
 						.append(pymtMethodTypes.toString()).toString());
 			}
 
 			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
+			rs.close();
+			ps.close();
 
 			return foundPk;
 
 		} catch (SQLException sqle) {
 			throw new FinderException(sqle.getMessage());
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
-			DaoUtil.close(conn);
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Error closing connection", sqle2);
+			}
 		}
 		}
 		return null;
+	}
+
+	public ErpRegisterGiftCardModel getRecentRegistration() {
+		return model.getRecentRegisteration();
+	}
+	
+	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException{
+		try{
+			model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
+			setModified();
+			
+		}catch(ErpTransactionException e){
+			getEntityContext().setRollbackOnly();
+			throw e;
+		}
 	}
 	
 }

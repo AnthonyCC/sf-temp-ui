@@ -14,16 +14,19 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAccountVerificationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.ejb.CPMServerGateway;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodHome;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodSB;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class PaymentFraudManager {
 
@@ -34,12 +37,8 @@ public class PaymentFraudManager {
 	public static PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return FDECommerceService.getInstance().createRestrictedPaymentMethod(restrictedPaymentMethod);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.createRestrictedPaymentMethod(restrictedPaymentMethod);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.createRestrictedPaymentMethod(restrictedPaymentMethod);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -52,12 +51,8 @@ public class PaymentFraudManager {
 	public static RestrictedPaymentMethodModel getRestrictedPaymentMethod(PrimaryKey pk) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return FDECommerceService.getInstance().findRestrictedPaymentMethodByPrimaryKey(pk);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.findRestrictedPaymentMethodByPrimaryKey(pk);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.findRestrictedPaymentMethodByPrimaryKey(pk);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -70,12 +65,8 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethodsByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().findRestrictedPaymentMethodByCustomerId(customerId, status);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.findRestrictedPaymentMethodByCustomerId(customerId, status);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.findRestrictedPaymentMethodByCustomerId(customerId, status);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -88,12 +79,8 @@ public class PaymentFraudManager {
 	public static RestrictedPaymentMethodModel getRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().findRestrictedPaymentMethodByPaymentMethodId(paymentMethodId, status);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.findRestrictedPaymentMethodByPaymentMethodId(paymentMethodId, status);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.findRestrictedPaymentMethodByPaymentMethodId(paymentMethodId, status);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -106,12 +93,8 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().findRestrictedPaymentMethods(criteria);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.findRestrictedPaymentMethods(criteria);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.findRestrictedPaymentMethods(criteria);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -124,12 +107,8 @@ public class PaymentFraudManager {
 	public static void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				FDECommerceService.getInstance().storeRestrictedPaymentMethod(restrictedPaymentMethod);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				sb.storeRestrictedPaymentMethod(restrictedPaymentMethod);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			sb.storeRestrictedPaymentMethod(restrictedPaymentMethod);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -142,12 +121,8 @@ public class PaymentFraudManager {
 	public static void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				FDECommerceService.getInstance().removeRestrictedPaymentMethod(pk, lastModifyUser);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				sb.removeRestrictedPaymentMethod(pk, lastModifyUser);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			sb.removeRestrictedPaymentMethod(pk, lastModifyUser);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -160,12 +135,8 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().loadAllPatterns();
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.loadAllPatterns();
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.loadAllPatterns();
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -178,12 +149,8 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().loadAllRestrictedPaymentMethods();
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.loadAllRestrictedPaymentMethods();
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.loadAllRestrictedPaymentMethods();
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -196,13 +163,8 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-		
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().loadAllBadPaymentMethods();
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.loadAllBadPaymentMethods();
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.loadAllBadPaymentMethods();
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -215,13 +177,8 @@ public class PaymentFraudManager {
 	public static boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().checkBadAccount(erpPaymentMethod, useBadAccountCache);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.checkBadAccount(erpPaymentMethod, useBadAccountCache);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.checkBadAccount(erpPaymentMethod, useBadAccountCache);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -234,12 +191,8 @@ public class PaymentFraudManager {
 	public static ErpPaymentMethodI getPaymentMethodByAccountInfo(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
-				return  FDECommerceService.getInstance().findPaymentMethodByAccountInfo(restrictedPaymentMethod);
-			}else{
-				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
-				return sb.findPaymentMethodByAccountInfo(restrictedPaymentMethod);
-			}
+			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			return sb.findPaymentMethodByAccountInfo(restrictedPaymentMethod);
 		} catch (RemoteException e) {
 			invalidateRestrictedPaymentMethodHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -250,9 +203,6 @@ public class PaymentFraudManager {
 	}
 
 	public static void addRestrictedPaymentMethod(ErpPaymentMethodI paymentMethod, EnumRestrictionReason restrictionReason, String note) {
-		if(paymentMethod==null)
-			return;
-		LOGGER.info("Attempting to add restricted payment method entry for customer with ID "+paymentMethod.getCustomerId()+" and name " +paymentMethod.getName()+" and payment method ID of "+paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"");
 		
 		try {
 			RestrictedPaymentMethodCriteria criteria = new RestrictedPaymentMethodCriteria();
@@ -266,6 +216,8 @@ public class PaymentFraudManager {
 			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 			List<RestrictedPaymentMethodModel> list =PaymentFraudManager.getRestrictedPaymentMethodsByCustomerId(paymentMethod.getCustomerId(), EnumRestrictedPaymentMethodStatus.BAD);
+			//PaymentFraudManager.getRestrictedPaymentMethods(criteria);
+
 			// add only if it's not already in there
 			if (list == null || list.size() == 0) {
 				RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
@@ -278,14 +230,24 @@ public class PaymentFraudManager {
 				}
 				model.setAccountNumber(paymentMethod.getAccountNumber().substring(paymentMethod.getAccountNumber().length()-4) );
 				model.setCustomerId(paymentMethod.getCustomerId());
-				model.setPaymentMethodId(paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"");
-				String name = paymentMethod.getName();
-				int i = name.indexOf(" ");
-				String firstName = (i > -1) ? name.substring(0, i) : "";
-				String lastName = (i > -1) ? name.substring(i+1) : name;
-				model.setFirstName(firstName);
-				model.setLastName(lastName);
+				//model.setProfileID(paymentMethod.getProfileID());
 				
+				// set the customer related information of the payment method
+				
+				ErpPaymentMethodModel pm = (ErpPaymentMethodModel)PaymentFraudManager.getPaymentMethodByAccountInfo(model);			
+				if (pm != null) { 					
+					if (pm.getPK() != null) {
+						model.setPaymentMethodId(pm.getPK().getId());
+					}
+					model.setCustomerId(pm.getCustomerId());					
+					// set the customer name
+					String name = pm.getName();
+					int i = name.indexOf(" ");
+					String firstName = (i > -1) ? name.substring(0, i) : "";
+					String lastName = (i > -1) ? name.substring(i+1) : name;
+					model.setFirstName(firstName);
+					model.setLastName(lastName);
+				}
 				model.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 				model.setSource(EnumTransactionSource.SYSTEM);
 				model.setCreateDate(new Date());
@@ -305,11 +267,6 @@ public class PaymentFraudManager {
 			
 	public static void removeRestrictedPaymentMethod(ErpPaymentMethodI paymentMethod, boolean removeOnlyIfSystemCreated) {
 		
-		if(paymentMethod==null)
-			return;
-		else if (StringUtil.isEmpty(paymentMethod.getCustomerId()))
-				return;
-		
 		try {
 			RestrictedPaymentMethodCriteria criteria = new RestrictedPaymentMethodCriteria();
 			if (paymentMethod.getBankAccountType() != null) {
@@ -322,7 +279,7 @@ public class PaymentFraudManager {
 			
 			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			List<RestrictedPaymentMethodModel> list = getRestrictedPaymentMethods(criteria);
+			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
 			// remove only if there is one
 			if (list != null && list.size() == 1) {

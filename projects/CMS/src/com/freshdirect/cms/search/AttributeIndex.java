@@ -1,9 +1,8 @@
 package com.freshdirect.cms.search;
 
 /**
- * Configuration object to instruct
- * {@link com.freshdirect.cms.search.LuceneSearchService} to index a named
- * attribute of nodes with a particular {@link com.freshdirect.cms.ContentType}.
+ * Configuration object to instruct {@link com.freshdirect.cms.search.LuceneSearchService} to index a named attribute of nodes with
+ * a particular {@link com.freshdirect.cms.ContentType}.
  */
 public class AttributeIndex extends ContentIndex {
 	private static final long serialVersionUID = 3283380751457964164L;
@@ -15,12 +14,10 @@ public class AttributeIndex extends ContentIndex {
 	private boolean text;
 
 	private boolean spelled;
-
+	
 	private boolean recurseParent;
 
-	public AttributeIndex(String contentType, String attributeName) {
-		super(contentType);
-		this.attributeName = attributeName;
+	public AttributeIndex() {
 	}
 
 	public String getAttributeName() {
@@ -78,8 +75,7 @@ public class AttributeIndex extends ContentIndex {
 	@Override
 	public String toString() {
 		return "AttributeIndex [contentType=" + getContentType() + ", attributeName=" + attributeName
-				+ (relationshipAttributeName != null ? ", relationshipAttributeName=" + relationshipAttributeName : "")
-				+ ", text=" + text + ", spelled=" + spelled + ", recurseParent=" + recurseParent + "]";
+				+ (relationshipAttributeName != null ? ", relationshipAttributeName=" + relationshipAttributeName : "") + ", text="
+				+ text + ", spelled=" + spelled  + ", recurseParent=" + recurseParent + "]";
 	}
-
 }

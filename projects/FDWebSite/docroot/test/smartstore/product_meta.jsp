@@ -1,9 +1,7 @@
 <%@page import='com.freshdirect.smartstore.fdstore.ProductStatisticsProvider'%>
 <%@page import="com.freshdirect.smartstore.fdstore.ScoreProvider"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@page import='com.freshdirect.storeapi.fdstore.FDContentTypes'%>
+<%@page import='com.freshdirect.cms.ContentKey'%>
+<%@page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
 
 <%
 String prodId = request.getParameter("prodId");
@@ -19,7 +17,7 @@ CustomerId: <input type="text" name="erpId"></br>
 <%
 } else {
    
-   ContentKey pkey = ContentKeyFactory.get(FDContentTypes.PRODUCT, prodId);
+   ContentKey pkey = new ContentKey(FDContentTypes.PRODUCT,prodId);
    Float f = (Float)ScoreProvider.getInstance().getUserProductScore(erpId,pkey);
    float cScore = f == null ? -1 : f.floatValue();
    float gScore = ProductStatisticsProvider.getInstance().getGlobalProductScore(pkey);

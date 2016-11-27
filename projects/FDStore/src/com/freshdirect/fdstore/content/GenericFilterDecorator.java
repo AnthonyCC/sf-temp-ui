@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.Set;
 
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.FilteringValue;
 
 public abstract class GenericFilterDecorator<N> {
 	

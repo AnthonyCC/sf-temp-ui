@@ -26,16 +26,16 @@ final int W_DEPARTMENT_BOTTOM_FEATURED_TOTAL = 683;
 %>
 
 <%-- Featured Products column --%>
-<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 	<% 
 		ProductModel product = contentNode; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
-		if (!(product==null)) {
+		if (product==null) continue;
 		prodParent = product.getParentNode(); 
 		List skus = product.getSkus(); 
-		if (!(product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel))) {
+		if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
 		SkuModel sku = null;
 		String prodPrice = null;
-		if (!(skus.size()==0)) {  // skip this item..it has no skus.  Hmmm?
+		if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
 		if (skus.size()==1) {
 			sku = (SkuModel)skus.get(0);  // we only need one sku
 		} else {
@@ -116,7 +116,6 @@ final int W_DEPARTMENT_BOTTOM_FEATURED_TOTAL = 683;
 		favoritesToShow++;
 
 		if (favoritesToShow==5) break;
-		}}}
 	%>
 </logic:iterate>
 

@@ -137,43 +137,43 @@ if (request.getParameter("fldMessage") !=null) {
 <table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
-        <td colspan="4"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></td>
+        <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="6" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+        <td rowspan="6" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				*&nbsp;Your&nbsp;Name 
 			</span>
 		</td>
-        <td rowspan="6" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1" border="0" /></td>
+        <td rowspan="6" width="15"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0" /></td>
         <td colspan="2">
 			<input type="text" maxlength="55" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>' id='errorMsg'>
-				<span class="errortext">&nbsp;<%=errorMsg%></span>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
 		</td>
         <td rowspan="6" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
-        <td rowspan="6" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
+        <td rowspan="6" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="errortext"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				*&nbsp;Your&nbsp;Email
 			</span>
 		</td>
         <td colspan="2">
 			<input type="text" maxlength="80" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>' id='errorMsg'>
-				<span class="errortext">&nbsp;<%=errorMsg%></span>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
 		</td>
     </tr>
 
     <tr>
     	<td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="errortext"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
 				*&nbsp;Delivery&nbsp;Method
 			</span>
     	</td>
@@ -181,7 +181,7 @@ if (request.getParameter("fldMessage") !=null) {
 			<input type="hidden" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> />
 			<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" checked />I'll Download a PDF and Print It.
 			<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_METHOD.getCode() %>' id='errorMsg'>
-				<span class="errortext">&nbsp;<%=errorMsg%></span>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
     	</td>
     </tr>
@@ -189,21 +189,21 @@ if (request.getParameter("fldMessage") !=null) {
     
 	<tr>
 		<td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_QUANTITY.getCode()%>">class="errortext"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_QUANTITY.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				*&nbsp;Quantity
 			</span>
 		</td>
         <td colspan="2">
 			<input type="text" maxlength="25" size="21" class="text11" name="<%=EnumUserInfoName.GC_QUANTITY.getCode()%>"  id="<%=EnumUserInfoName.GC_QUANTITY.getCode()%>" required="true" value="<%=fdQuantity %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_QUANTITY.getCode()%>' id='errorMsg'>
-				<span class="errortext">&nbsp;<%=errorMsg%></span>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
 		</td>
     </tr>
 
     
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="errortext"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
     	<td colspan="2">
 			<select class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 			   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>	
@@ -216,19 +216,19 @@ if (request.getParameter("fldMessage") !=null) {
 			</select>
 			<input type="text" maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> />
 			<fd:ErrorHandler result='<%=result%>' name='fldAmount' id='errorMsg'>
-				<span class="errortext">&nbsp;<%=errorMsg%></span>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
 			Enter amount (min. $20.00)
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="100" border="0" /></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="100" border="0" /></td>
         <td colspan="2">&nbsp;</td>
     </tr>
 
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 <!--
 <table border="0" cellspacing="0" cellpadding="2" width="675">
     <tr valign="top">
@@ -242,11 +242,11 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" alt="" width="675" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 -->
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="2" width="675">
 	<tr valign="top">
@@ -260,7 +260,7 @@ if (request.getParameter("fldMessage") !=null) {
 <table border="0" cellspacing="1" cellpadding="0" width="675">
 <tr valign="MIDDLE">
     <td></td>
-    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
     <td></td>
 </tr>
 </table>

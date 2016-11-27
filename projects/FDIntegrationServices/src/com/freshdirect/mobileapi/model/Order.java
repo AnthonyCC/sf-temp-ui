@@ -22,6 +22,9 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -32,6 +35,7 @@ import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
@@ -43,9 +47,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrappe
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
 public class Order {
@@ -90,7 +91,7 @@ public class Order {
         return tagWrapper.cancelOrder(orderId);
     }
 
-    public com.freshdirect.mobileapi.controller.data.response.Order getOrderDetail(SessionUser user, boolean dlvPassCart) throws FDException {
+    public com.freshdirect.mobileapi.controller.data.response.Order getOrderDetail(SessionUser user) throws FDException {
         /*
          * DUP: FDWebSite/docroot/your_account/order_details.jsp
          * DUP: FDWebSite/docroot/your_account/i_order_detail_delivery_payment.jspf
@@ -106,7 +107,6 @@ public class Order {
          */
         com.freshdirect.mobileapi.controller.data.response.Order orderDetail = new com.freshdirect.mobileapi.controller.data.response.Order();
         orderDetail.setStatus(target.getOrderStatus().getDisplayName());
-        orderDetail.setModifycount(target.modifyOrderCount());
         FDReservation reservation = target.getDeliveryReservation();
         ErpAddressModel dlvAddress = target.getDeliveryAddress();
         ErpPaymentMethodI paymentMethod = target.getPaymentMethod();
@@ -119,10 +119,10 @@ public class Order {
             //Set modification cutoff time
             if(EnumEStoreId.FDX.name().equalsIgnoreCase(target.getEStoreId().name())){
             	orderDetail.setModificationCutoffTime(target.getDeliveryInfo().getDeliveryCutoffTime());
-            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), target.getDeliveryInfo().getDeliveryCutoffTime()));
+            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), new ActionResult()));
             }else{
             	orderDetail.setModificationCutoffTime(reservation.getCutoffTime());
-            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), reservation.getCutoffTime()));
+            	orderDetail.setModifiable(OrderInfo.isModifiable(reservation.getCutoffTime(), target.getOrderStatus(), target.getOrderType(), target.isMakeGood()));
             }
             
         }

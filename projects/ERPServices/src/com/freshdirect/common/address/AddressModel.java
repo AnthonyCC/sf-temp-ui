@@ -239,11 +239,5 @@ public class AddressModel extends ModelSupport implements AddressI {
 		
 		return sb.toString();
 	}
-	
-	@Override
-	public void setId( String id ) {
-		if (id != null)
-			this.setPK( new PrimaryKey( id ) );
-	}
 
 }

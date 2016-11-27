@@ -21,7 +21,6 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -72,8 +71,9 @@ public class FDCouponManagerDAO {
         
 	public static void storeCoupons(Connection conn, List<FDCouponInfo> coupons) throws SQLException{
 		PreparedStatement ps =null;
+		PreparedStatement ps1 =null;
 		Date currentTime =new Date();
-		LOGGER.info("CouponMetaData - no.of coupons: "+ (null!=coupons?coupons.size():null));
+		
 		int version =createHistoryData(conn,new Timestamp(currentTime.getTime()));		
 		ps =conn.prepareStatement(
 					"INSERT INTO CUST.FDCOUPON "
@@ -198,48 +198,33 @@ public class FDCouponManagerDAO {
 		return upcInfo;
 	}
 	
-	public static List<FDCouponInfo> getActiveCoupons(Connection conn, Date lastModified) throws SQLException {
-		List<FDCouponInfo> coupons = new ArrayList<FDCouponInfo>();
+	public static List<FDCouponInfo> getActiveCoupons(Connection conn,Date lastModified) throws SQLException{
+		List<FDCouponInfo> coupons= new ArrayList<FDCouponInfo>();
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			if(checkIfLatestCouponsExists(conn, lastModified)){
-				
-				if (null == lastModified) {
-					ps = conn.prepareStatement(
-							"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) "
-									+ " FROM CUST.FDCOUPON FC1 WHERE FC1.COUPON_ID=FC.COUPON_ID) AND CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)"
-									+ " ORDER BY FC.COUPON_ID");
-					if (FDCouponProperties.isCouponCacheDaysLimitEnabled()) {
-						int days = FDCouponProperties.getCouponCacheDaysLimit();
-						ps = conn.prepareStatement(
-						" SELECT (select  date_created FROM  cust.FDCOUPON_HISTORY where version=A.min_version) as date_created, fdc.*, upc.* FROM "+
-						" (SELECT c.coupon_id, max(version) max_version, (select min(version) from cust.fdcoupon where coupon_id=c.coupon_id) as min_version FROM (select version v from cust.fdcoupon_history ch where  CH.DATE_CREATED > (SYSDATE-" + days+")) h, "+
-						" cust.fdcoupon c where c.version=h.v group by   c.coupon_id ) A, "+
-						" cust.fdcoupon fdc, cust.FDCOUPON_REQ_UPC upc WHERE fdc.coupon_id=A.coupon_id and A.max_version=fdc.version and upc.FDCOUPON_ID=fdc.id ");
-					}
-				} else {
-					/*ps = conn.prepareStatement(
-							"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH1 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"
-									+ " AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >?) AND CH1.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)  ORDER BY FC.COUPON_ID");*/
-					
-					ps = conn.prepareStatement(
-							" SELECT (select  date_created FROM  cust.FDCOUPON_HISTORY where version=A.min_version) as date_created, fdc.*, upc.* FROM "+
-							" (SELECT c.coupon_id, max(version) max_version, (select min(version) from cust.fdcoupon where coupon_id=c.coupon_id) as min_version FROM (select version v from cust.fdcoupon_history ch where  CH.DATE_CREATED > ?) h, cust.fdcoupon c where c.version=h.v group by   c.coupon_id ) A, "+
-							" cust.fdcoupon fdc, cust.FDCOUPON_REQ_UPC upc WHERE fdc.coupon_id=A.coupon_id and A.max_version=fdc.version and upc.FDCOUPON_ID=fdc.id ");
-	
-					// ps=conn.prepareStatement("SELECT * FROM CUST.FDCOUPON FC WHERE VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY WHERE DATE_CREATED > ?)");
-					ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
-				}
-	
-				rs = ps.executeQuery();
-				loadCouponsFromResultSet(coupons, rs);
-			}			
-			return coupons;
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+		if(null ==lastModified){
+			ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) " +
+					" FROM CUST.FDCOUPON FC1 WHERE FC1.COUPON_ID=FC.COUPON_ID) AND CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)"+
+					" ORDER BY FC.COUPON_ID");
+			if(FDCouponProperties.isCouponCacheDaysLimitEnabled()){
+				int days = FDCouponProperties.getCouponCacheDaysLimit();
+				ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH2 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"+
+						" AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >(SYSDATE-"+days+")) AND CH2.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) ORDER BY FC.COUPON_ID");
+			}
+		}else{
+			ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH1 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"+
+					" AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >?) AND CH1.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)  ORDER BY FC.COUPON_ID");
+			
+//			ps=conn.prepareStatement("SELECT * FROM CUST.FDCOUPON FC WHERE VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY WHERE DATE_CREATED > ?)");
+			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));			
 		}
+		
+		ResultSet rs = ps.executeQuery();
+		loadCouponsFromResultSet(coupons, rs);
+
+		rs.close();
+		ps.close();
+		
+		return coupons;
 	}
 
 	private static void loadCouponsFromResultSet(List<FDCouponInfo> coupons,
@@ -311,28 +296,99 @@ public class FDCouponManagerDAO {
 		return couponInfo;
 	}
 	
-	
-	public static boolean checkIfLatestCouponsExists(Connection conn, Date lastModified) throws SQLException {  	
-		boolean latestCouponsExists = true;
-		
-		if(null != lastModified){
-			String query = "select 1 from CUST.FDCOUPON_HISTORY where DATE_CREATED > ?";
+	public static List<FDCouponInfo> getCouponsForCRMSearch(Connection conn, String searchTerm) throws SQLException {  	
+			String QUERY = "SELECT * FROM CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY) AND " +
+					" CH.VERSION=(select min(fc1.version) from cust.fdcoupon fc1 where FC1.COUPON_ID=FC.COUPON_ID)" +
+							" AND  EXISTS(SELECT 1 from CUST.FDCOUPON_REQ_UPC UPC where UPC.FDCOUPON_ID=fc.id) and (lower(short_desc) like (?) or coupon_id = ? ";		       
+			List<FDCouponInfo> coupons= new ArrayList<FDCouponInfo>();
+			if(FDCouponProperties.isCouponCacheDaysLimitEnabled()){
+				int days = FDCouponProperties.getCouponCacheDaysLimit();
+				QUERY = "SELECT * FROM CUST.FDCOUPON FC,CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH1 WHERE FC1.COUPON_ID=FC.COUPON_ID"+
+						" AND FC1.VERSION=CH1.VERSION AND CH1.DATE_CREATED >(SYSDATE-"+days+")) AND  EXISTS(SELECT 1 from CUST.FDCOUPON_REQ_UPC UPC where UPC.FDCOUPON_ID=fc.id) and  CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) and (lower(short_desc) like (?) or coupon_id = ? ";
+			}
 			PreparedStatement ps = null;
-			ResultSet rs = null;
+			boolean coupon_value = false;
+			double value = 0;
 			try {
-				ps = conn.prepareStatement(query);
-				ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
-				rs = ps.executeQuery();
-				if (!rs.next()) {
-					latestCouponsExists = false;			
-				}
-			} finally {
-				DaoUtil.close(rs);
-				DaoUtil.close(ps);
-			}		
-		}
-		return latestCouponsExists;
+				value = Double.parseDouble(searchTerm);
+				QUERY = QUERY + "or value = ?)";
+				coupon_value = true;
+			} catch (NumberFormatException e) {
+				QUERY = QUERY + ")";
+			}
+			
+			ps = conn.prepareStatement(QUERY);			
+			ps.setString(1, "%" + searchTerm.toLowerCase() + "%");
+			ps.setString(2, searchTerm);
+			if(coupon_value) {
+				ps.setDouble(3, value);
+			}
+			ResultSet rs = ps.executeQuery();
+			loadCouponsFromResultSet(coupons, rs);
+			rs.close();
+			ps.close();
+			
+			return coupons;
 	}
 	
+	public static int getMaxCouponsVersion(Connection conn) throws SQLException {  	
+		String QUERY = "select max(version) from CUST.FDCOUPON_HISTORY";		       
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(QUERY);			
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1);			
+			}
+		} finally {
+			rs.close();
+			ps.close();
+		}		
+		return 0;
+	}
+	
+	public static List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(Connection conn,String customerId) throws SQLException{
+		List<FDCustomerCouponHistoryInfo> list = new ArrayList<FDCustomerCouponHistoryInfo>();
+		String QUERY = "select cl.*,s.id as \"SALE_ID\",s.status as \"SALE_STATUS\",S.CROMOD_DATE as \"SALE_DATE\", sa.requested_date as \"DELIVERY_DATE\" from cust.couponline cl, cust.sale s,cust.orderline ol,cust.salesaction sa"
+                        + " where s.type='REG' and CL.ORDERLINE_ID=ol.id and OL.SALESACTION_ID=sa.id and sa.sale_id=s.id and SA.ACTION_DATE=S.CROMOD_DATE and S.CUSTOMER_ID=?"
+                        + " ";//and not exists(select 1 from CUST.COUPON_TRANS ct, cust.salesaction sa1 where ct.salesaction_id=sa1.id and sa1.sale_id=s.id and ct.trans_type='CANCEL_ORDER' and ct.trans_status in ('S','P'))";
+		
+		int days = FDCouponProperties.getCustomerCouponUsageHistoryDaysLimit();
+		if(days >0){
+			QUERY="select cl.*,s.id as \"SALE_ID\",s.status as \"SALE_STATUS\",S.CROMOD_DATE as \"SALE_DATE\", sa.requested_date as \"DELIVERY_DATE\" from cust.couponline cl, cust.sale s,cust.orderline ol,cust.salesaction sa"
+                    + " where s.type='REG' and CL.ORDERLINE_ID=ol.id and OL.SALESACTION_ID=sa.id and sa.sale_id=s.id and SA.ACTION_DATE=S.CROMOD_DATE and S.CUSTOMER_ID=?"
+                    + " and SA.REQUESTED_DATE > (SYSDATE-"+ days +")"
+                    + " ";//and not exists(select 1 from CUST.COUPON_TRANS ct, cust.salesaction sa1 where ct.salesaction_id=sa1.id and sa1.sale_id=s.id and ct.trans_type='CANCEL_ORDER' and ct.trans_status in ('S','P'))";
+                   
+		}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(QUERY);	
+			ps.setString(1, customerId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				FDCustomerCouponHistoryInfo info =new FDCustomerCouponHistoryInfo();
+				info.setCouponId(rs.getString("COUPON_ID"));
+				info.setCouponDesc(rs.getString("COUPON_DESC"));
+				info.setVersion(rs.getInt("VERSION"));
+				info.setDiscountAmt(rs.getDouble("DISC_AMT"));
+				info.setSaleId(rs.getString("SALE_ID"));
+				info.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("SALE_STATUS")));
+				info.setSaleDate(rs.getDate("SALE_DATE"));
+				info.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
+				list.add(info);
+			}
+		} finally {
+			if(null !=rs){
+				rs.close();
+			}
+			if(null !=ps){
+				ps.close();
+			}
+		}	
+		return list;
+	}
 }
 

@@ -12,9 +12,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class DepartmentModel extends ProductContainer {
 
-    private static final long serialVersionUID = -5341255930768744401L;
-
-    private static final int MAX_ITEMS_PER_COLUMN_DEFAULT = 15;
+	private static final int MAX_ITEMS_PER_COLUMN_DEFAULT = 15;
 
 	private final List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 
@@ -37,12 +35,12 @@ public class DepartmentModel extends ProductContainer {
 		super(cKey);
 	}
 
+
 	public Image getTitleImage() {
         return FDAttributeFactory.constructImage(this, "DEPT_TITLE");
 	}
 
-	@Override
-    public Image getPhoto() {
+	public Image getPhoto() {
         return FDAttributeFactory.constructImage(this, "DEPT_PHOTO");
 	}
 
@@ -75,7 +73,7 @@ public class DepartmentModel extends ProductContainer {
      */
     @SuppressWarnings("unchecked")
     public List<Html> getAssocEditorial() {
-        return FDAttributeFactory.constructWrapperList(this, "ASSOC_EDITORIAL");
+        return (List<Html>) FDAttributeFactory.constructWrapperList(this, "ASSOC_EDITORIAL");
     }
 
 	/**
@@ -140,8 +138,7 @@ public class DepartmentModel extends ProductContainer {
 
 
 	public static Comparator<DepartmentModel> DepartmentNameComparator = new Comparator<DepartmentModel>() {
-		@Override
-        public int compare( DepartmentModel dept1, DepartmentModel dept2 ) {
+		public int compare( DepartmentModel dept1, DepartmentModel dept2 ) {
 			String name1 = dept1.getFullName().toLowerCase();
 			String name2 = dept2.getFullName().toLowerCase();
 			return (name1.compareTo(name2));
@@ -176,6 +173,23 @@ public class DepartmentModel extends ProductContainer {
 		return FDAttributeFactory.constructHtml(this, "departmentBanner");
 	}
 
+
+	public String getFeaturedRecommenderTitle() {
+		return getAttribute("featuredRecommenderTitle", "");
+	}
+	
+	public boolean isFeaturedRecommenderRandomizeProducts() {
+	    return getAttribute("featuredRecommenderRandomizeProducts", false);
+	}
+
+	public String getFeaturedRecommenderSiteFeature() {
+		return getAttribute("featuredRecommenderSiteFeature", "");
+	}
+
+	public CategoryModel getFeaturedRecommenderSourceCategory() {
+		return getSingleRelationshipNode("featuredRecommenderSourceCategory");
+	}
+	
 	public String getMerchantRecommenderTitle() {
 		return getAttribute("merchantRecommenderTitle", "");
 	}
@@ -202,8 +216,7 @@ public class DepartmentModel extends ProductContainer {
         return FDAttributeFactory.constructHtml(this, "seasonalMedia");
 	}
 
-	@Override
-    public boolean isTopLevelCategory(){
+	public boolean isTopLevelCategory(){
 		return false;
 	}
 
@@ -270,9 +283,15 @@ public class DepartmentModel extends ProductContainer {
 		return FDAttributeFactory.lookup(this, "tabletHeaderBanner", null);
 	}
 
+
+
 	public List<ImageBanner> getHeroCarousel() {
 		ContentNodeModelUtil.refreshModels(this, "heroCarousel", heroCarousel, false);
 		return new ArrayList<ImageBanner>(heroCarousel);
 	}
 
+
+
+	
+	
 }

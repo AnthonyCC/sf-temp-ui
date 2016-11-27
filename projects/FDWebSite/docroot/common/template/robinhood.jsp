@@ -1,7 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_ROBINHOOD_TOTAL = 970;
@@ -27,20 +26,19 @@ final int W_ROBINHOOD_TOTAL = 970;
 	 */
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-    <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%--
 		Does robinhood need the GC js lib?
 			-batchley 20100827
 	--%>
-	<jwr:script src="/giftcards.js" useRandomParam="false" />
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<jwr:style src="/giftcards.css" media="all" />
+	<fd:css href="/assets/css/giftcards.css"/>
 
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 
@@ -60,6 +58,7 @@ final int W_ROBINHOOD_TOTAL = 970;
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 	<center>
 	<%
 		boolean modOrder = false;
@@ -92,14 +91,14 @@ final int W_ROBINHOOD_TOTAL = 970;
 
 	<table width="<%=W_ROBINHOOD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
 			<td align="center">
-				<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_ROBINHOOD_TOTAL%>"><br />
+				<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_ROBINHOOD_TOTAL%>"><br />
 				<!-- content lands here -->
 				<tmpl:get name='content'/>
 				<!-- content ends above here-->
@@ -107,13 +106,13 @@ final int W_ROBINHOOD_TOTAL = 970;
 			</td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_ROBINHOOD_TOTAL%>"><br></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_ROBINHOOD_TOTAL%>"><br></td>
 		</tr>
 		<tr valign="bottom">
-			<td width="<%=W_ROBINHOOD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 	</table>
 

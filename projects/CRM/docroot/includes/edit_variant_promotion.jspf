@@ -6,7 +6,6 @@
 <%@ page import="com.freshdirect.fdstore.customer.ProfileAttributeName"%>
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam"%>
 <%@ page import='com.freshdirect.fdstore.promotion.PromoVariantModel'%>
-<%@ page import='java.util.Calendar' %>
 
 
 
@@ -90,9 +89,7 @@
 				<%}%>
 			</select>&nbsp;<select name="start_year" class="pulldown">
 				<option></option>
-				<%
-				int curYear = Calendar.getInstance().get(Calendar.YEAR);
-				for(int year = 2002; year <= curYear; year++){
+				<%for(int year = 2002; year <=2015; year++){
 					String y = String.valueOf(year); %>
 					<option <%=y.equals(promotion.getStartYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
 				<%}%>
@@ -118,7 +115,7 @@
 				<%}%>
 			</select>&nbsp;<select name="end_year" class="pulldown">
 				<option></option>
-				<%for(int year = 2002; year <= curYear; year++){
+				<%for(int year = 2002; year <=2015; year++){
 					String y = String.valueOf(year); %>
 					<option <%=y.equals(promotion.getExpirationYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
 				<%}%>

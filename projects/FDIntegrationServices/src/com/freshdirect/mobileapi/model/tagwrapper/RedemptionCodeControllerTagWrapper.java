@@ -4,7 +4,6 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.RedemptionCodeControllerTag;
 
 public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper implements RequestParamName, SessionParamName {
@@ -43,7 +42,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
      * @return
      * @throws FDException
      */
-    public ResultBundle applyRedemptionCode(String redemptionCode, boolean dlvPassCart) throws FDException {
+    public ResultBundle applyRedemptionCode(String redemptionCode) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION,  SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_RECENT_ORDER_NUMBER, }, new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
 
@@ -52,19 +51,17 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
         addRequestValue(REQ_PARAM_PROMO_ERROR_FLAG, "");
         getWrapTarget().setActionName(ACTION_APPLY_CODE);
         setMethodMode(true);
-        ((RedemptionCodeControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
         return result;
     }
     
-    public ResultBundle applyCode(String code, boolean dlvPassCart) throws FDException {
+    public ResultBundle applyCode(String code) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_RECENT_ORDER_NUMBER, }, new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
 
         addRequestValue(REQ_PARAM_REDEMPTION_CODE, code);       
         getWrapTarget().setActionName(ACTION_PROMO_GIFT_CODE);
         setMethodMode(true);
-        ((RedemptionCodeControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
         return result;
     }
@@ -74,7 +71,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
      * @return
      * @throws FDException
      */
-    public ResultBundle removeRedemptionCode(String redemptionCode, boolean dlvPassCart) throws FDException {
+    public ResultBundle removeRedemptionCode(String redemptionCode) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_ACTION, REQ_PARAM_RECENT_ORDER_NUMBER },
                 new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
@@ -82,7 +79,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
         addRequestValue(REQ_PARAM_REDEMPTION_CODE, redemptionCode);
         addRequestValue(REQ_PARAM_ACTION, ACTION_REMOVE_CODE);
         //getWrapTarget().setActionName(ACTION_REMOVE_CODE);
-        ((RedemptionCodeControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
+        
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
         return result;
     }

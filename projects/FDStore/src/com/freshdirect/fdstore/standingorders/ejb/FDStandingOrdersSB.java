@@ -73,14 +73,4 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public Collection<FDStandingOrder> loadCustomerNewStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException,RemoteException;
 	
 	public FDStandingOrder loadSOCron(PrimaryKey pk) throws FDResourceException,RemoteException;
-	
-	public void turnOffReminderOverLayNewSo(String standingOrderId)throws FDResourceException,RemoteException;
-	
-	public void updateSoCartOverlayFirstTimePreferences(String customerId)throws FDResourceException,RemoteException;
-	
-	public void updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException;
-	public void updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException;
-	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException, RemoteException;
-	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException, RemoteException;
-	
 }

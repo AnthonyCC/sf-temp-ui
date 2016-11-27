@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.atp;
 
 import java.util.Date;
-import java.util.Iterator;
 
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.framework.util.DateRange;
@@ -42,27 +41,4 @@ public class FDStatusAvailability implements FDAvailabilityI {
 		}
 		return null;
 	}
-	
-	@Override
-	public double getAvailabileQtyForDate(java.util.Date targetDate) {
-		/*
-		 * Since this is a wrapper for an(many)  AvailablityInterface, we can call that one(s)
-		 */
-
-
-		return  this.availability. getAvailabileQtyForDate(targetDate);
-
-	}
-
-
-	
-	// the below methos are used only for SF 2.0
-	public EnumAvailabilityStatus getStatus() {
-		return status;
-	}
-
-	public FDAvailabilityI getAvailability() {
-		return availability;
-	}
-	
 }

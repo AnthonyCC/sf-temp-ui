@@ -170,15 +170,15 @@ if (timeslots.size() > 0) {
 		var timeslotChooserFunctions = {};
 		var varminslots = varminslots || {};
 		<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">varminslots['<%= slot.getId() %>'] = "<%= slot.getMinOrderAmt()+ " "+slot.isMinOrderMet() %>";</logic:iterate>
-
+		
+		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeContext() != null) { 
+			/* do nothing */
+		} else { %>
+			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">timeslotChooserFunctions['<%= slot.getId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" /></logic:iterate>
+		<% } %>
 		var timeslot_info = <%=isStaticSlot%>;
-		<%
-			/* only set these the first time */
-			if (!defaultColExp) {
-		%>
 		var dayIndex = 0;
 		var slotIndex = -1;
-		<% } %>
 		var daypartIndex<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
 		var daypartAdvIndex<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
 		var daypartAdvNewIndex<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
@@ -236,7 +236,7 @@ if (timeslots.size() > 0) {
 	StringBuffer stringBuffer = new StringBuffer();
 	stringBuffer.append("<center>\n")
 				.append("	<div class=\""+(timeslots.size()>1 ? "float_children":"float_children_noborder")+"\" id=\"timeslots_grid"+contentId+"\">\n")
-				.append("		<table role=\"presentation\" border=\"0\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">\n")
+				.append("		<table border=\"0\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">\n")
 				.append("			<tr>\n");
 
 /* START DAY ITERATOR */ %><logic:iterate id="day" collection="<%= __ts_days %>" type="java.util.Date"><%
@@ -256,18 +256,14 @@ if (timeslots.size() > 0) {
 			}
 		}
 	}
-	String midweekDeliveryPass = user.hasMidWeekDlvPass() ? "midweekdp":"";
+
 	stringBuffer.append("				<td class=\"ts_d\" valign=\"top\">\n")
-				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC " + midweekDeliveryPass + "\" >\n")
-				.append("						<a href=\"#\" onclick=\"event.preventDefault(); \" class=\"accessibleOutlineFF\"  aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+"  "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots, Press ENTER key to view timeslots")+"  \"><table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >\n")
+				.append("						<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
-				.append("								<td align=\"center\" colspan=\"3\">\n");
+				.append("								<td align=\"center\" colspan=\"3\">\n")
+				.append("									<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");
 	
-	if (user.isMidWeekDlvPassApplicable(day)) {
-        stringBuffer.append("                                <div class=\"tsDayDeliveryPass\"><img src=\"/media/editorial/site_pages/deliverypass/images/group.svg\" alt=\"Delivery Pass\"></div>\n");
-    }
-    
-	stringBuffer.append("                                    <div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");
 	
 	
 	if (!__genericTsTable) {
@@ -276,17 +272,19 @@ if (timeslots.size() > 0) {
 	
 	stringBuffer.append("								</td>\n")
 				.append("							</tr>\n")
-				.append("						</table></a>\n")
+				.append("						</table>\n")
 				.append("					</div>\n")
-				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE " + midweekDeliveryPass + "\" style=\"display: none;\">\n")
-				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\" aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+" "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+" \"><table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE\" style=\"display: none;\">\n")
+				.append("						<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("							<tr>\n")
+				.append("								<td class=\"tsHeaderE_top\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\" /></td>\n")
+				.append("								<td class=\"tsHeaderE_topC\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" /></td>\n")
+				.append("								<td class=\"tsHeaderE_top\" width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\" /></td>\n")
+				.append("							</tr>\n")
 				.append("							<tr>\n")
 				.append("								<td align=\"center\" colspan=\"3\" valign=\"middle\">\n")
-				.append("									<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">\n");
-	if (user.isMidWeekDlvPassApplicable(day)) {
-        stringBuffer.append("                                <div class=\"tsDayDeliveryPass\"><img src=\"/media/editorial/site_pages/deliverypass/images/group-2.svg\" alt=\"Delivery Pass\"></div>\n");
-    }
-	stringBuffer.append("										<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>\n");
+				.append("									<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">\n")
+				.append("										<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>\n");
 	
 	// hide date
 	if (!__genericTsTable) {
@@ -297,10 +295,10 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("									</div>\n")
 				.append("								</td>\n")
 				.append("							</tr>\n")
-				.append("						</table></a>\n")
+				.append("						</table>\n")
 				.append("					</div>\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_tsTable_timeInfo\" style=\"display: none;\">"+day.getTime()+"</div>\n")
-				.append("					<table role=\"presentation\" border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable tsTableC\" cellspacing=\"0\" cellpadding=\"0\">\n");
+				.append("					<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable tsTableC\" cellspacing=\"0\" cellpadding=\"0\">\n");
 		
 	int slotIndex = 0;
 	Date cutoffTime = null;
@@ -336,7 +334,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -382,7 +380,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -428,7 +426,9 @@ if (timeslots.size() > 0) {
 				
 	/* dayPart line */
 	stringBuffer.append("						<tr id=\""+"daypart_d"+dayIndex+"_tr"+"\" class=\"dayPart\">\n")
-				.append("							<td id=\"daypart_d"+dayIndex+"\"></td>\n")
+				.append("							<td id=\"daypart_d"+dayIndex+"\">")
+					.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"1\" border=\"0\" />")
+				.append("</td>\n")
 				.append("						</tr>\n");
 
 	if (!isForAdvOrdSlots && !isForNewAdvOrdSlots) {
@@ -468,7 +468,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -512,7 +512,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -572,16 +572,16 @@ if (timeslots.size() > 0) {
 	for(Date day: days){
 		stringBuffer.append("				<td valign=\"top\" class=\"footer_container\">\n")
 					.append("					<div id=\"ts_d"+fdayIndex+"_fE\" style=\"display: none;\">\n")
-					.append("						<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n")
+					.append("						<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n")
 					.append("							<tr>\n")
-					.append("								<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" width=\"1\" height=\"5\"></td>\n")
+					.append("								<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>\n")
 					.append("								<td width=\"5\" bgcolor=\"#ffffff\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\" border=\"0\"></td>\n")
 					.append("								<td bgcolor=\"#ffffff\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"5\" alt=\"\"></td>\n")
 					.append("								<td width=\"5\"bgcolor=\"#ffffff\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\"></td>\n")
-					.append("								<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" width=\"1\" height=\"5\"></td>\n")
+					.append("								<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>\n")
 					.append("							</tr>\n")
 					.append("							<tr>\n")
-					.append("								<td bgcolor=\"#ffffff\" colspan=\"2\" rowspan=\"2\" height=\"6\" width=\"6\"><IMG src=\"/media_stat/images/layout/bottom_left.gif\" alt=\"\" width=\"6\" height=\"6\"></td>\n")
+					.append("								<td bgcolor=\"#ffffff\" colspan=\"2\" rowspan=\"2\" height=\"6\" width=\"6\"><IMG src=\"/media_stat/images/layout/bottom_left.gif\" width=\"6\" height=\"6\"></td>\n")
 					.append("								<td bgcolor=\"#ffffff\" height=\"5\"></td>\n")
 					.append("								<td bgcolor=\"#ffffff\" colspan=\"2\" rowspan=\"2\" height=\"6\" width=\"6\"><IMG src=\"/media_stat/images/layout/bottom_right.gif\" width=\"6\" height=\"6\" alt=\"\"></td>\n")
 					.append("							</tr>\n")
@@ -598,7 +598,7 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("			</tr>\n");
 
 	if (!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-		%>$jq(function() { defaultColumnExpand(dayIndex,slotIndex); });
+		%>document.observe("dom:loaded", function() { defaultColumnExpand(dayIndex,slotIndex); });
 		<%
 	}
 %>

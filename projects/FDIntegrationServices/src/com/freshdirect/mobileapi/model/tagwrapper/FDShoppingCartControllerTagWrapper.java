@@ -2,9 +2,11 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -12,6 +14,8 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
@@ -20,7 +24,6 @@ import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 import com.freshdirect.mobileapi.controller.data.request.SmartStoreConfiguration;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
-import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.CartEvent;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -47,13 +50,11 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent, FDCartLineI cartLine, boolean dlvPassCart) throws FDException {
+    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent, FDCartLineI cartLine) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
-                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,
-                SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_IS_QUICKBUY, REQ_PARAM_CARTLINE },
-                new String[] { REQ_PARAM_ATC_SUFFIX,
+                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_IS_QUICKBUY,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_CARTLINE  }, new String[] { REQ_PARAM_ATC_SUFFIX,
                 REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE}); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, updateItemInCart.getCartLineId());
@@ -97,6 +98,22 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
         */
+      //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+        if(productConfiguration.getCmPageId()!=null && !productConfiguration.getCmPageId().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGEID, productConfiguration.getCmPageId());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+        }
+        if(productConfiguration.getCmPageContentHeirarchy()!=null && !productConfiguration.getCmPageContentHeirarchy().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, productConfiguration.getCmPageContentHeirarchy());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+        }
+        if(productConfiguration.getCmVirtualCategory()!=null && !productConfiguration.getCmVirtualCategory().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, productConfiguration.getCmVirtualCategory());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+        }
         if(productConfiguration.getAddedFrom()!=null && !productConfiguration.getAddedFrom().isEmpty()){
         	addRequestValue(REQ_PARAM_ADDED_FROM, productConfiguration.getAddedFrom());
         } else {
@@ -126,18 +143,16 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         }
 
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_UPDATE_ITEM_IN_CART);
-        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
 
     }
 
-    public ResultBundle refreshDeliveryPass(boolean dlvPassCart) throws FDException {
+    public ResultBundle refreshDeliveryPass() throws FDException {
         addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE,SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE },
                 new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(null);
-        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -146,9 +161,9 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle removeItemFromCart(String cartLineId, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
+    public ResultBundle removeItemFromCart(String cartLineId, CartEvent cartEvent) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
-        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE },
+        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_CARTLINE  },
                 new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, cartLineId);
@@ -161,7 +176,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         // As long as a parameter w/ key "remove" exists in the request w/ a non-null value, 
         // it's enough to trick the tag controller.
         addRequestValue(ACTION_REMOVE_FROM_CART, "some-not-null-value");
-        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
+
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -171,15 +186,14 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle addItemToCart(AddItemToCart addItemToCart, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
+    public ResultBundle addItemToCart(AddItemToCart addItemToCart, CartEvent cartEvent) throws FDException {
 
         setCartEventLoggingSetsAndGets(cartEvent);
 
         //"ymal_box"
         //ymalSetId
         addExpectedRequestValues(new String[] { REQ_PARAM_VARIANT, REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
-                REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_EVALUATE_COUPONS,
-                REQ_PARAM_ADDED_FROM,
+                REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_ADDED_FROM,
                 REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID, REQ_PARAM_CARTLINE}, new String[] {
                 REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED,
@@ -210,6 +224,22 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_RECIPE_ID, addItemToCart.getRecipeId());
         addRequestValue(REQ_PARAM_IS_QUICKBUY, addItemToCart.isQuickBuy());
         
+        //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+        if(productConfiguration.getCmPageId()!=null && !productConfiguration.getCmPageId().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGEID, productConfiguration.getCmPageId());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+        }
+        if(productConfiguration.getCmPageContentHeirarchy()!=null && !productConfiguration.getCmPageContentHeirarchy().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, productConfiguration.getCmPageContentHeirarchy());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+        }
+        if(productConfiguration.getCmVirtualCategory()!=null && !productConfiguration.getCmVirtualCategory().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, productConfiguration.getCmVirtualCategory());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+        }
         if(productConfiguration.getAddedFrom()!=null && !productConfiguration.getAddedFrom().isEmpty()){
         	addRequestValue(REQ_PARAM_ADDED_FROM, productConfiguration.getAddedFrom());
         } else {
@@ -274,7 +304,6 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         }
 
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_TO_CART);
-        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
@@ -307,10 +336,10 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
+    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, CartEvent cartEvent) throws FDException {
         addExpectedRequestValues(new String[] { REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_CATEGORY_ID, REQ_PARAM_YMAL_BOX, REQ_PARAM_IMPRESSESION_ID, REQ_PARAM_ATC_SUFFIX,
-                REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS,
+                REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY,
                 REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID, REQ_PARAM_CARTLINE}, new String[] { REQ_PARAM_FD_ACTION, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_ATC_SUFFIX, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE  }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_SKUS_ADDED }); //gets,sets
@@ -347,6 +376,23 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
             } else {
                 addRequestValue(REQ_PARAM_SALES_UNIT + "_" + idx, null);
+            }
+            
+          //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+            if(pc.getCmPageId()!=null && !pc.getCmPageId().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_PAGEID, pc.getCmPageId());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+            }
+            if(pc.getCmPageContentHeirarchy()!=null && !pc.getCmPageContentHeirarchy().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, pc.getCmPageContentHeirarchy());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+            }
+            if(pc.getCmVirtualCategory()!=null && !pc.getCmVirtualCategory().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, pc.getCmVirtualCategory());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
             }
             if(pc.getAddedFrom()!=null && !pc.getAddedFrom().isEmpty()){
             	addRequestValue(REQ_PARAM_ADDED_FROM, pc.getAddedFrom());
@@ -418,7 +464,6 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
         setMethodMode(true);
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_MULTIPLE_TO_CART);
-        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -429,12 +474,12 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle removeMultipleItemsFromCart(List<String> cartLineIds, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
+    public ResultBundle removeMultipleItemsFromCart(List<String> cartLineIds, CartEvent cartEvent) throws FDException {
     	
     	addExpectedRequestValues(new String[] { REQ_PARAM_CARTLINE } , new String[] {REQ_PARAM_CARTLINE} );
         ActionResult actionResult = new ActionResult();
         for (String cartLineId : cartLineIds) {
-            ResultBundle rmResult = this.removeItemFromCart(cartLineId, cartEvent, dlvPassCart);
+            ResultBundle rmResult = this.removeItemFromCart(cartLineId, cartEvent);
 
             for (Object error : rmResult.getActionResult().getErrors()) {
                 actionResult.addError((ActionError) error);

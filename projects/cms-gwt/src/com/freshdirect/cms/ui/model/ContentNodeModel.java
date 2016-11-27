@@ -8,28 +8,34 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This model object represents a content node, it contains an key, a label, and a type.
  * It is used for example by the tree widgets.
+ * 
+ * @author zsombor
+ *
  */
 
 public class ContentNodeModel extends BaseModel implements Comparable<ContentNodeModel>, IsSerializable {
-    
+
     private static final long serialVersionUID = 1L;
 
-    private String previewUrl;
-    private int width = 0;
-    private int height = 0;
-    private String iconOverride = "";
-
-	protected ContentNodeModel() {
+    private String previewUrl = null;
+    private int width = 0;    
+    private int height = 0; 
+    
+	protected ContentNodeModel() {		
 	}
 
+    
     public ContentNodeModel( String type, String label, String key ) {
 		setLabel( label );
 		setKey( key );
 		setType( type );
     }
-
+    
     public ContentNodeModel( ContentNodeModel node ) {
-		this(node.getType(), node.getLabel(), node.getKey());
+		setLabel( node.getLabel() );
+		setKey( node.getKey() );
+		setType( node.getType() );
+		
 		setWidth( node.getWidth() );
 		setHeight( node.getHeight() );
 		setPreviewUrl( node.getPreviewUrl() );
@@ -87,14 +93,9 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		this.height = height;
 	}
 
-    public String getIconOverride() {
-        return iconOverride;
-    }
-
-    public void setIconOverride(String iconOverride) {
-        this.iconOverride = iconOverride;
-    }
-
+	
+	
+	
 	public boolean isMediaType() {
 		String type = getType();
 		return type != null && ( type.equals( "Image" ) || type.equals( "Html" ) );
@@ -128,7 +129,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	        ContentNodeModel c = (ContentNodeModel) obj;
 	        return c.getKey().equals(getKey());
 	    }
-	    return false;
+	    return false;	   	    
 	}
 	
     public Widget renderLinkComponent() {
@@ -163,7 +164,6 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
         }
         sb.append( "<td><img src=\"img/icons/" );
         sb.append(getType());
-        sb.append(getIconOverride());
         sb.append(".gif\"></td>");
         sb.append("<td><a href=\"#");
         sb.append(getKey());
@@ -223,7 +223,6 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
         sb.append("\">");
         sb.append("<img src=\"img/icons/");
         sb.append(getType());
-        sb.append(getIconOverride());
         sb.append(".gif\">");
         sb.append("</a></td></tr></table>");
         return sb.toString();

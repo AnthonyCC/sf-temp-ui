@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -9,6 +9,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%
 RecipeVariant variant;
@@ -18,22 +19,22 @@ String variantId = request.getParameter("variantId");
 String recipeId = request.getParameter("recipeId");
 
 if (variantId != null) {
-	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
+	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
 
 } else {
-	throw new FDNotFoundException("No variantId or recipeId supplied");
+	throw new IllegalArgumentException("No variantId or recipeId supplied");
 }
 
 if (recipe == null) {
 	throw new IllegalArgumentException("No recipe found");
 }
 if (variant == null) {
-	throw new FDNotFoundException("No variant found");
+	throw new IllegalArgumentException("No variant found");
 }
 
 if (!variant.isAvailable()) {
@@ -46,7 +47,7 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 if (recipeId != null) {
 
-recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 RecipeSource source          = recipe.getSource();
 String       sourceName      = "";
 
@@ -60,14 +61,11 @@ MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
 MediaI recipePrepdMedia = recipe.getPreparationMedia();
 MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 
-String title = "FreshDirect - " + recipe.getName();
+	
 %>
 
 <tmpl:insert template='/common/template/print_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<table cellpadding="0" cellspacing="0" border="0" width="600">
 			<tr valign="top">
@@ -75,12 +73,12 @@ String title = "FreshDirect - " + recipe.getName();
 				<span class="title16"><%=recipe.getName().toUpperCase()%></span><br>
 	 			<span class="recipe_author"><%=sourceName%> <%=recipe.getAuthorNames()%></span><br>
 	 			<% if(recipeDesc!=null){ %><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><br><% } %>
-				<% if(recipeIngrdMedia!=null){ %><br><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
+				<% if(recipeIngrdMedia!=null){ %><br><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
 				</td>
 				<td width="10%" style="padding-left:15px;"><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %></td>
 			</tr>
 			<tr>
-				<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation.gif" width="93" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><br><% } %>
+				<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation.gif" width="93" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><br><% } %>
 				<% if (recipeCpyrghtMedia!=null) {  %><br><span class="recipe_copyright"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></span><% } %>
 				<div class="recipe_fd" style="border-top:solid 1px #CCCCCC; border-bottom:solid 1px #CCCCCC; margin-top: 10px; margin-bottom: 10px; padding-top: 6px; padding-bottom: 6px; font-weight:bold;">This recipe &mdash; and hundreds of others from your favorite chefs and authors &mdash; can be found at FreshDirect.com</strong></div>
 				</td>

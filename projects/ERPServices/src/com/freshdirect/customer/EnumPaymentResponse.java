@@ -12,9 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 
 
 /**
@@ -31,7 +28,6 @@ public class EnumPaymentResponse extends ValuedEnum {
     public final static EnumPaymentResponse PICK_UP_CARD	= new EnumPaymentResponse(3, "P", "Ther is a problem with the card take it from cardholder");
     public final static EnumPaymentResponse EXPIRED_CARD	= new EnumPaymentResponse(4, "X", "Expired Card");
     public final static EnumPaymentResponse ERROR			= new EnumPaymentResponse(5, "E", "A processing error has occured");
-    public final static EnumPaymentResponse REVERSED		= new EnumPaymentResponse(901, "R", "Reverse authorization has occured");
     
     public final static EnumPaymentResponse INSUFFIENT_FUNDS_R			= new EnumPaymentResponse(6, "R01", "Insufficient Funds");
     public final static EnumPaymentResponse CLOSED_ACCOUNT_R			= new EnumPaymentResponse(7, "R02", "Closed Account");
@@ -117,7 +113,6 @@ public class EnumPaymentResponse extends ValuedEnum {
 
     private String description;
 		
-    @JsonCreator
 	public static EnumPaymentResponse getEnum(String code) {
 		return (EnumPaymentResponse) getEnum(EnumPaymentResponse.class, code);
 	}
@@ -151,7 +146,6 @@ public class EnumPaymentResponse extends ValuedEnum {
         this.description = description;
     }
 
-    @JsonValue
     public String getCode() {
 		return getName();
 	}	

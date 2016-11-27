@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.freshdirect.fdlogistics.services.IAirclicService;
-import com.freshdirect.fdlogistics.services.ICommerceService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -44,7 +43,5 @@ public class LogisticsServiceLocator {
 	public ILogisticsService getLogisticsService() {
 		return (ILogisticsService)factory.getBean("logisticsService");
 	}
-	public ICommerceService getCommerceService() {
-		return (ICommerceService)factory.getBean("commerceService");
-	}
+
 }

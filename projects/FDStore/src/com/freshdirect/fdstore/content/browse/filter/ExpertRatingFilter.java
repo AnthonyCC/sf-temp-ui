@@ -2,10 +2,10 @@ package com.freshdirect.fdstore.content.browse.filter;
 
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public class ExpertRatingFilter extends AbstractRangeFilter {
 
@@ -22,7 +22,7 @@ public class ExpertRatingFilter extends AbstractRangeFilter {
 		ProductModel node = ctx.getProductModel();
 		EnumOrderLineRating rating = node.getProductRatingEnum();
 		if (rating.getValue() > 0) {
-            final double val = rating.getQualityRating();
+			final double val = rating.getValue()/2.0;
 
 			return invertChecker(isWithinRange(val));
 		}

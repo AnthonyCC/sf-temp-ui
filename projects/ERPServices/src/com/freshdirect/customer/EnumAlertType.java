@@ -20,7 +20,6 @@ public class EnumAlertType extends Enum {
 	public static final EnumAlertType ECHECK = new EnumAlertType("ECHECK", "ECheck Alert");
 	public static final EnumAlertType REFERRER = new EnumAlertType("REFERRER", "Referrer Alert");
 	public static final EnumAlertType EBT = new EnumAlertType("EBT", "EBT Alert");
-	public static final EnumAlertType CREDIT = new EnumAlertType("CREDIT", "Credit Alert");
 
 	private final String description;
 

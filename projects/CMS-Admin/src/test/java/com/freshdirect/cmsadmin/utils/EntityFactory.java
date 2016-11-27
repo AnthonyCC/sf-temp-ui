@@ -163,14 +163,6 @@ public final class EntityFactory {
         return draftChange;
     }
 
-    public static DraftChange createDraftChange(Draft draft) {
-        DraftChange draftChange = new DraftChange();
-        draftChange.setContentKey(DRAFT_CHANGE_CONTENTKEY);
-        draftChange.setAttributeName(DRAFT_CHANGE_ATTRIBUTE_NAME);
-        draftChange.setId(ID);
-        draftChange.setValue(DRAFT_CHANGE_ATTRIBUTE_VALUE);
-        draftChange.setDraft(draft);
-        return draftChange;
-    }
+
 
 }

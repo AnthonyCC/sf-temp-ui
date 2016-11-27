@@ -146,65 +146,65 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
-        <td colspan="4"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></td>
+        <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12" width="185">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">*&nbsp;Your&nbsp;Name</label> 
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
         <td colspan="2">
-			<input type="text" maxlength="55" size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<input type="text" maxlength="55" tabIndex="1" size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 		</td>       
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">&nbsp;Donor&nbsp;Organization</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>&nbsp;Donor&nbsp;Organization</label>
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="55"   size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
+			<input type="text" maxlength="55" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
 	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">*&nbsp;Your&nbsp;Email</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80"   size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<input type="text" maxlength="80" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
 	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
-				<label for="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>">&nbsp;Organization&nbsp;Name</label>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				<label>&nbsp;Organization&nbsp;Name</label>
 			</span>
         </td>
         <td colspan="2">
-			<input type="hidden" maxlength="55" class="text11" size="40" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" />
-			<input type="hidden" maxlength="80" size="40" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>"  />
-			<span class="text14"><%= fldRecipientName %></span>
-			<input  type="hidden" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
+			<input type="hidden" maxlength="55" tabIndex="3"  class="text11" size="40" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" />
+			<input type="hidden" maxlength="80" tabIndex="6"  size="40" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>"  />
+			<label><%= fldRecipientName %></label>
+			<input  type="hidden" type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
         </td>
     </tr>
 
     	
 	
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="errortext"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label>*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
 			<table>
 				<tr>
 					<td width="65">
-						<select class="text9 customsimpleselect" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select tabIndex="7"  class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -215,7 +215,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 						</select>
 					</td>
 					<td>
-						<input type="text" style="margin-left:10px;" maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
 						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
@@ -225,7 +225,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 		</td>
 	</tr>    
 	<tr>
-	 	<td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br /></td>
+	 	<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br /></td>
 	</tr>
 	<tr>
 	 	<td colspan="5" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
@@ -234,6 +234,6 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 
 <table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>">
 <tr valign="MIDDLE">
-    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
 </tr>
 </table>

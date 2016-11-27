@@ -39,7 +39,6 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
-import com.freshdirect.cms.classgenerator.GeneratedNodeGeneratorFactory;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.DaoUtil;
@@ -147,7 +146,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     public void setContentTypeService(ContentTypeServiceI typeService) {
         this.typeService = typeService;
-        this.generator = GeneratedNodeGeneratorFactory.getInstance().getNodeGenerator(typeService, com.freshdirect.cms.classgenerator.ContentNodeGenerator.DEFAULT_PREFIX);
+        this.generator = new ContentNodeGenerator(typeService);
     }
 
     @Override
@@ -183,8 +182,8 @@ public class DbContentService extends AbstractContentService implements ContentS
                 ResultSet resultSet = ps.executeQuery();
 
                 while (resultSet.next()) {
-                    ContentKey sourceKey = ContentKey.getContentKey(resultSet.getString("parent_contentnode_id"));
-                    ContentKey destKey = ContentKey.getContentKey(resultSet.getString("child_contentnode_id"));
+                    ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
+                    ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
                     handler.addRelation(sourceKey, destKey);
                 }
                 resultSet.close();
@@ -228,7 +227,8 @@ public class DbContentService extends AbstractContentService implements ContentS
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                returnSet.add(ContentKey.getContentKey(rs.getString("id")));
+                // returnSet.add(new ContentKey(new ContentType(rs.getString("contenttype_id")), rs.getString("id")));
+                returnSet.add(ContentKey.decode(rs.getString("id")));
             }
             rs.close();
             ps.close();
@@ -269,7 +269,7 @@ public class DbContentService extends AbstractContentService implements ContentS
             + " where r.parent_contentnode_id in (?)" + " order by r.parent_contentnode_id, r.def_name, r.ordinal";
 
     // [APPDEV-3423] fixed parent key getter
-    private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id " + "from  cms_navtree " + "where child_contentnode_id=?";
+    private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id " + "from  cms.navtree " + "where child_contentnode_id=?";
 
     @Override
     public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
@@ -309,7 +309,7 @@ public class DbContentService extends AbstractContentService implements ContentS
             ps.setString(1, key.getEncoded());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ContentKey parentKey = ContentKey.getContentKey(rs.getString(1));
+                ContentKey parentKey = ContentKey.decode(rs.getString(1));
                 set.add(parentKey);
             }
             rs.close();
@@ -562,7 +562,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     private void processNodesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap, DraftContext draftContext) throws SQLException {
         while (rs.next()) {
-            ContentKey key = ContentKey.getContentKey(rs.getString("id"));
+            ContentKey key = ContentKey.decode(rs.getString("id"));
             ContentNodeI node = createContentNode(key, draftContext);
             
             if (node != null) {
@@ -585,7 +585,7 @@ public class DbContentService extends AbstractContentService implements ContentS
         List<String> currValue = new ArrayList<String>();
 
         while (rs.next()) {
-            ContentKey key = ContentKey.getContentKey(rs.getString(1));
+            ContentKey key = ContentKey.decode(rs.getString(1));
             String attrName = rs.getString(2);
 
             if (!key.equals(currKey) || !attrName.equals(currAttrName)) {

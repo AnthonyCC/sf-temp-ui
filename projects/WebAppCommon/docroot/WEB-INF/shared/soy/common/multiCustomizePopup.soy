@@ -4,7 +4,7 @@
  * @param data
  */
 {template .multiCustomizePopup autoescape="false"}
-  <div id="multi-customize-popup" data-eventsource="FinalizingExternal">
+  <div id="multi-customize-popup" data-cmeventsource="FinalizingExternal">
     <div class="qs-popup-content customize-popup" data-current-step="{$data.state ? $data.state : 1}">
       <h1 class="header" data-multi-step="1">Customize Your Items</h1>
       <p class="description" data-multi-step="1">We cut meat, cheese and seafood to order. Tell us how you want it <strong>(*required)</strong></p>
@@ -214,11 +214,11 @@
       <select name="{$name}" data-component="productDataConfiguration" data-productdata-name="{$name}" {if isNonnull($optional) and not $optional}data-atl-required="true" data-atc-required="true"{/if}>
         <option value="">{$label}</option>
       {foreach $option in $values}
-          <option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}{if $option.cvp == '0'}{else} - {$option.cvp} {/if}</option>
+          <option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}{if $option.cvp == '0'} - no charge{else} - {$option.cvp} {/if}</option>
       {/foreach}
       </select>
       {if $popupUrl}
-       <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?<span class="offscreen">help</span></button>
+       <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
       {/if}
     </div>
 {/if}
@@ -248,7 +248,7 @@
   {if $align=='left'}{$label}{/if}
   </label>
   {if $popupUrl}
-   <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?<span class="offscreen">help</span></button>
+   <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
   {/if}
 </div>
 {/deltemplate}

@@ -62,10 +62,7 @@
 		</logic:iterate>
 	<% } %>
 	
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Pickup"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Pickup</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>FreshDirect - Pickup</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true"/>
 	</tmpl:put>

@@ -5,6 +5,7 @@ var FreshDirect = FreshDirect || {};
 
     var $ = fd.libs.$;
     var WIDGET = fd.modules.common.widget;
+    var DISPATCHER = fd.common.dispatcher;
 
     // TMP: move to popupwidget.js?
     var popupWidget = Object.create(WIDGET,{
@@ -66,9 +67,6 @@ var FreshDirect = FreshDirect || {};
               if (this.popup) {
                 this.popup.hide(e);
               }
-              if (this.closeCB) {
-                this.closeCB();
-              }
             }
         },
         noscroll: {
@@ -104,7 +102,7 @@ var FreshDirect = FreshDirect || {};
         },
         initTrigger:{
             value:function(){
-                var cnt = $('#' + this.popupId), $popupBody=cnt.find(this.bodySelector);
+                var cnt = $('#' + this.popupId);
                 this.popup = new fd.modules.common.PopupContent(
                         cnt.hide(),
                         this.$trigger,
@@ -119,11 +117,6 @@ var FreshDirect = FreshDirect || {};
                     if(e.target === e.currentTarget){ self.popup.hide(); }
                   });
                 }
-
-                //add scroll event tracking
-            	$popupBody.on('scroll', fd.utils.throttle(function(e) {
-            		$(window).trigger('lazyLoad');
-            	}, 500));
             }
         },
         render:{
@@ -135,8 +128,7 @@ var FreshDirect = FreshDirect || {};
                   return;
                 }
 
-            	if ($('.mm-page').length) {
-            		data = data || {};
+            	if ($jq('.mm-page').length) {
             		data.mobWeb = true;
             	}
 
@@ -155,19 +147,13 @@ var FreshDirect = FreshDirect || {};
                 }else{
                     $popupBody.html(bt({data: data || {}}));
                 }
-
+                
                 setTimeout(function () {
-                  if (fd.modules.common.Elements) {
-                    fd.modules.common.Elements.decorate($popupBody);
-                  }
-                  if (fd.modules.common.Select) {
-                    fd.modules.common.Select.selectize($popupBody);
-                  }
-                  if (fd.modules.common.Select) {
-                    fd.modules.common.aria.decorate();
-                  }
+                  fd.modules.common.Elements.decorate($popupBody);
+                  fd.modules.common.Select.selectize($popupBody);
+                  fd.modules.common.aria.decorate();
                 }, 10);
-
+                
                 // reposition the popups
                 if (this.popup && !this.popup.placeholderActive && this.popup.shown) {
                   this.popup.reposition();
@@ -176,10 +162,10 @@ var FreshDirect = FreshDirect || {};
         },
         refreshBody:{
             value:function(data,template,header){
-            	if ($('.mm-page').length) {
-            		$('#'+this.popupId).addClass('mm-page-ifr');
+            	if ($jq('.mm-page').length) {
+            		$jq('#'+this.popupId).addClass('mm-page-ifr');
             	} else {
-            		$('#'+this.popupId).removeClass('mm-page-ifr');
+            		$jq('#'+this.popupId).removeClass('mm-page-ifr');
             	}
                 if(template){
                     this.bodyTemplate=template;
@@ -200,14 +186,9 @@ var FreshDirect = FreshDirect || {};
           }
         }
     });
-    if (fd.modules && fd.modules.common && fd.modules.common.utils) {
-    	fd.modules.common.utils.register("modules.common", "popupWidget", popupWidget, fd);
-    } else {
-    	//self register
-    	fd.modules = fd.modules || {};
-    	fd.modules.common = fd.modules.common || {};
-    	fd.modules.common.popupWidget = popupWidget;
-    }
+
+    fd.modules.common.utils.register("modules.common", "popupWidget", popupWidget, fd);
+
 
   /**
    * Init popup

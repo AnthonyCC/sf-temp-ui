@@ -8,7 +8,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_SURVEY_COS_TOTAL = 970;
@@ -38,17 +38,14 @@ String[] checkSurveyForm = new String[questions.size()];
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="true" /> 
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - At The Office Feedback Survey"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - At The Office Feedback Survey</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect At The Office Feedback Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <fd:ReceiptSurvey actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="<%=cosFeedback%>">
 
 <table width="<%=W_SURVEY_COS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <% if (submitted) { %>
-<tr><td colspan="7" class="text12" align="center"><br><br><span class="title18">THANK YOU</span><br>Your feedback is greatly appreciated.<br><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<tr><td colspan="7" class="text12" align="center"><br><br><span class="title18">THANK YOU</span><br>Your feedback is greatly appreciated.<br><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <form method="post" name="cosFeedbackSurvey">
 	<tr>
@@ -57,16 +54,16 @@ String[] checkSurveyForm = new String[questions.size()];
 			<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
 			<br><%@ include file="/includes/i_error_messages.jspf" %><span class="space2pix"><br></span>
 		</fd:ErrorHandler>
-<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_COS_TOTAL%>" height="1" vspace="2"></td>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_COS_TOTAL%>" height="1" vspace="2"></td>
 	</tr>
 	<tr align="center">
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6+50%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6+50%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
 	</tr>
 
 	<%  int quesNum = 0; 
@@ -104,7 +101,7 @@ String[] checkSurveyForm = new String[questions.size()];
 				<tr>
 					<td colspan="7" class="text12"><%=quesNum%>. <b><%=question.getDescription()%></b></td>
 				</tr>
-				<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"></td></tr>
+				<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 					<% if (currQues.equals("q2")) { %>
 						<tr align="center">
 							<td colspan="2" align="left"></td>
@@ -213,13 +210,13 @@ String[] checkSurveyForm = new String[questions.size()];
 				</tr>
 				<tr>
 					<td></td>
-					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="70" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
+					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="70" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
 				</tr>
 				<tr><td colspan="7"><br><br></td></tr>
 			<% } %>
         </logic:iterate>
 		<tr>
-		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_COS_TOTAL%>" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="postOrderSurvey.submit()" alt="SUBMIT"><br><br>
+		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_COS_TOTAL%>" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="postOrderSurvey.submit()" alt="SUBMIT"><br><br>
 		
 		</td>
 	</tr>

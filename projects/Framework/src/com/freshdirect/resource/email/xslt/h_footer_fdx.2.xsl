@@ -56,12 +56,14 @@
 							</p>
 							
 							<p>**The Free Delivery Offer is for free delivery on qualifying orders for a 
-							30 day period. Offer applies to first-time customers only. Offer excludes gratuities. Qualifying orders must: exceed minimum purchase 
-							requirements before taxes &amp; fees; be within eligible delivery areas; and select a delivery window 
-							greater than 1 hour. Offer is subject to availability. Offer 
-							commences automatically on the day of your first purchase and will 
-							expire 30 days thereafter. FoodKick reserves the right to cancel or modify this offer at any time. Offer is nontransferable. 
-							Void where prohibited. &#169; <xsl:value-of select="substring(//curYear,1,4)" />. Fresh Direct, LLC. All Rights Reserved.
+							60 day period. Offer applies to first-time customers only. Free delivery means 
+							no delivery or service fees. Qualifying orders must (a) exceed minimum purchase 
+							requirements before taxes &amp; fees, (b) be within eligible delivery areas, and (c) 
+							have a delivery window greater than 1 hour. Offer is subject to availability. Offer 
+							will automatically apply starting on the day of your first purchase and will 
+							expire sixty (60) days thereafter. This is a limited time offer. FoodKick reserves 
+							the right to cancel or modify this offer at any time. Offer is nontransferable. 
+							Void where prohibited.
 							</p>	
 							
 							<xsl:if test="//fromEmail != ''">
@@ -71,7 +73,7 @@
 							If you prefer not to receive promotional email messages from us, please <a style="color: #888;" href="http://e.freshdirect.com/FoodkickUnsubscribe">click here</a>.<br/><br/>
 							<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
 							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br/><br/>
-							FreshDirect, LLC. 2 St Ann's Ave Bronx, NY 10454<br/><br/>
+							23-30 Borden Ave. Long Island City, NY 11101<br/><br/>
 							<!-- <a href="#">Customer Agreement</a><br /> -->
 							
 							<a href="#" style="color: #888; text-decoration:none;">Customer Agreement</a><br/>

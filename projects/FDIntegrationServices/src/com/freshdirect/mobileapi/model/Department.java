@@ -3,17 +3,14 @@ package com.freshdirect.mobileapi.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.content.BannerModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BannerModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.SortOptionModel;
 import com.freshdirect.mobileapi.controller.data.ImageBanner;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 
 public class Department extends ProductContainer {
-
     private String name;
 
     private String id;
@@ -27,13 +24,7 @@ public class Department extends ProductContainer {
     private List<DepartmentSection> sections = new ArrayList<DepartmentSection>();
     
     private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
-
-    private String pageTitle;
-
-    private String seoMetaDescription;
     
-    private List<String> sortLabels;
-
     public static Department wrap(DepartmentModel model) {
     	return wrapDepartment(model, 0);
     }
@@ -50,7 +41,7 @@ public class Department extends ProductContainer {
         List<Image> images = new ArrayList<Image>();
         result.setImages(images);
         
-        com.freshdirect.storeapi.content.Image heroImage = model.getHeroImage();
+        com.freshdirect.fdstore.content.Image heroImage = model.getHeroImage();
         if(heroImage != null) {
         	Image detailImage = new Image();
         	detailImage.setHeight(heroImage.getHeight());
@@ -60,7 +51,7 @@ public class Department extends ProductContainer {
             images.add(detailImage);
         }
         
-        com.freshdirect.storeapi.content.Image smallImage = model.getPhotoSmall();
+        com.freshdirect.fdstore.content.Image smallImage = model.getPhotoSmall();
         if(smallImage != null) {
         	Image detailImage = new Image();
         	detailImage.setHeight(smallImage.getHeight());
@@ -70,7 +61,7 @@ public class Department extends ProductContainer {
             images.add(detailImage);
         }
         
-        com.freshdirect.storeapi.content.Image fullImage = model.getPhoto();
+        com.freshdirect.fdstore.content.Image fullImage = model.getPhoto();
         if(fullImage != null) {
         	Image detailImage = new Image();
         	detailImage.setHeight(fullImage.getHeight());
@@ -81,7 +72,7 @@ public class Department extends ProductContainer {
         }        
         result.setNoOfProducts(noOfProducts);
         
-        com.freshdirect.storeapi.content.Image tabletIcon = model.getTabletIcon();
+        com.freshdirect.fdstore.content.Image tabletIcon = model.getTabletIcon();
         
         if (tabletIcon != null) {
         	Image icon = new Image();
@@ -98,10 +89,10 @@ public class Department extends ProductContainer {
             result.setBanner(new Image(banner.getImage()));
         }
         
-       List<com.freshdirect.storeapi.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
+       List<com.freshdirect.fdstore.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
        List<ImageBanner> heroCarouselImgBannerList = new ArrayList<ImageBanner>();
       
-       for(com.freshdirect.storeapi.content.ImageBanner heroCarousel: heroCarouselList){
+       for(com.freshdirect.fdstore.content.ImageBanner heroCarousel: heroCarouselList){
     	   
 		if (heroCarousel != null) {
 			
@@ -130,25 +121,14 @@ public class Department extends ProductContainer {
 		if(heroCarouselImgBannerList!=null && heroCarouselImgBannerList.size()!= 0) {
 		result.setHeroCarousel(heroCarouselImgBannerList);
 		}
-
+		
        }
-
-        if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
-            result.setPageTitle(model.getFdxPageTitle());
-            result.setSeoMetaDescription(model.getFdxSEOMetaDescription());
-        } else {
-            result.setPageTitle(model.getPageTitle());
-            result.setSeoMetaDescription(model.getSEOMetaDescription());
-        }
-
-        List<String> sortLabels = new ArrayList<String>();
-        for (SortOptionModel sortOption : model.getSortOptions()) {
-            sortLabels.add(sortOption.getSelectedLabel());
-        }
-        result.setSortLabels(sortLabels);
-
+		
         return result;
     }
+    
+   
+    
 
     public String getName() {
         return name;
@@ -205,29 +185,6 @@ public class Department extends ProductContainer {
 	public void setHeroCarousel(List<ImageBanner> heroCarousel) {
 		this.heroCarousel = heroCarousel;
 	}
-
-    public String getPageTitle() {
-        return pageTitle;
-    }
-
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
-    }
-
-    public String getSeoMetaDescription() {
-        return seoMetaDescription;
-    }
-
-    public void setSeoMetaDescription(String seoMetaDescription) {
-        this.seoMetaDescription = seoMetaDescription;
-    }
-
-    public List<String> getSortLabels() {
-        return sortLabels;
-    }
-
-    public void setSortLabels(List<String> sortLabels) {
-        this.sortLabels = sortLabels;
-    }
-
+	
+	
 }

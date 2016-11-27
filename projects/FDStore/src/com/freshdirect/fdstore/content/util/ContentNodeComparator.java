@@ -8,60 +8,52 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.sort.CustomerPopularityComparator;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PrioritizedI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.sort.PopularityComparator;
 import com.freshdirect.fdstore.content.sort.SaleComparator;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.PrioritizedI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
+/**@author ekracoff on Feb 13, 2004*/
 public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 	
-    private static final Logger LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
+	private static Logger LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
 
-    private List<SortStrategyElement> strategy;
-    private Comparator<ContentNodeModel> popularityComparator;
-    private Comparator<ContentNodeModel> saleComparator;
-    private Comparator<ContentNodeModel> customerPopularityComparator;
+	List<SortStrategyElement> strategy;
+	
+	private Comparator<ContentNodeModel> popularityComparator = null;
+	private Comparator<ContentNodeModel> saleComparator = null;
 
-    public ContentNodeComparator(FDUserI user, List<SortStrategyElement> strategy) {
-        this.strategy = strategy;
+	public ContentNodeComparator(List<SortStrategyElement> strategy) {
+		this.strategy = strategy;
+		
+		for ( SortStrategyElement e : strategy ) {
+			
+			if ( e.getSortType() == SortStrategyElement.PRODUCTS_BY_POPULARITY && popularityComparator == null ) {
+				popularityComparator = new PopularityComparator();
+			}
+			
+			if ( e.getSortType() == SortStrategyElement.PRODUCTS_BY_SALE && saleComparator == null ) {
+				saleComparator = new SaleComparator();
+			}
+			
+		}
+	}
 
-        for (SortStrategyElement e : strategy) {
-            if (e.getSortType() == SortStrategyElement.PRODUCTS_BY_POPULARITY && popularityComparator == null) {
-                popularityComparator = new PopularityComparator();
-            }
-
-            if (e.getSortType() == SortStrategyElement.PRODUCTS_BY_SALE && saleComparator == null) {
-                saleComparator = new SaleComparator();
-            }
-
-            if (e.getSortType() == SortStrategyElement.PRODUCTS_BY_CUSTOMER_POPULARITY && customerPopularityComparator == null) {
-                String userId = (user != null && user.getIdentity() != null) ? user.getIdentity().getErpCustomerPK() : null;
-                PricingContext pricingContext = (user != null && user.getUserContext() != null) ? user.getUserContext().getPricingContext() : null;
-                customerPopularityComparator = new CustomerPopularityComparator(userId, pricingContext);
-            }
-
-        }
-    }
-
-	@Override
-    public int compare(ContentNodeModel node1, ContentNodeModel node2) {
+	public int compare(ContentNodeModel node1, ContentNodeModel node2) {
 		int rslt = 0;
 		for (Iterator<SortStrategyElement> i = strategy.iterator(); i.hasNext() && rslt == 0;) {
 			SortStrategyElement strategyElement = i.next();
@@ -98,8 +90,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				if (!(node1 instanceof SkuModel) && node2 instanceof SkuModel) return -1;
 				if (node1 instanceof SkuModel && node2 instanceof SkuModel)  return 0;
 
-				PrioritizedI p1 = node1;
-				PrioritizedI p2 = node2;
+				PrioritizedI p1 = (PrioritizedI) node1;
+				PrioritizedI p2 = (PrioritizedI) node2;
 				return p1.getPriority() - p2.getPriority();
 
 			case SortStrategyElement.PRODUCTS_BY_NAME :
@@ -143,20 +135,13 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 			case SortStrategyElement.PRODUCTS_BY_SALE :
 				return compareBySale(node1, node2, descending);
 				
-            case SortStrategyElement.PRODUCTS_BY_CUSTOMER_POPULARITY:
-                return compareByCustomerPopularity(node1, node2, descending);
-
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
 
 	}
 
-    private int compareByCustomerPopularity(ContentNodeModel node1, ContentNodeModel node2, boolean descending) {
-        return descending ? customerPopularityComparator.compare(node2, node1) : customerPopularityComparator.compare(node1, node2);
-    }
-
-    private int compareBySale(ContentNodeModel node1, ContentNodeModel node2, boolean descending) {
+	private int compareBySale( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
 		return descending ? saleComparator.compare( node2, node1 ) : saleComparator.compare( node1, node2 );
 	}
 
@@ -248,7 +233,7 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 			double servingSize = -1;
 			double nutValue = Double.NaN; //in case nutrition value is not found
 			for (Iterator<FDNutrition> iNut = nList.iterator(); iNut.hasNext() && (servingSize == 0 || !foundNutrition);) {
-				FDNutrition fdNut = iNut.next();
+				FDNutrition fdNut = (FDNutrition) iNut.next();
 				if (fdNut.getName().equals(ErpNutritionType.getType("SERVING_SIZE").getDisplayName())) {
 					servingSize = fdNut.getValue();
 					//in case we are actually sorting by serving_size
@@ -329,8 +314,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return Integer.MAX_VALUE;
 			}
 			
-			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(ProductInfoUtil.getPickingPlantId(skuModel.getProductInfo()));
+			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(plantID);
 			
 			if (kosherInfo == null || !kosherInfo.hasKosherSymbol() || kosherInfo.getKosherSymbol().equals(EnumKosherSymbolValue.NONE)) {
 				return Integer.MAX_VALUE;
@@ -558,7 +543,7 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 		if(EnumWineSortType.RATING.equals(EnumWineSortType.getWineSortType(attributeName))){
 			List<DomainValue> ratingValues = pm.getWineRating1();
 			if(ratingValues != null && ratingValues.size() > 0){
-				DomainValue dv = ratingValues.get(0);
+				DomainValue dv = (DomainValue) ratingValues.get(0);
 				try {
 					attrValue = new Integer(dv.getValue());
 				}catch(NumberFormatException ne){
@@ -569,21 +554,21 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 		if(EnumWineSortType.REGION.equals(EnumWineSortType.getWineSortType(attributeName))) {
 			List<DomainValue> regionValues = pm.getNewWineRegion();
 			if(regionValues != null && regionValues.size() > 0){
-				DomainValue dv = regionValues.get(0);
+				DomainValue dv = (DomainValue) regionValues.get(0);
 				attrValue = dv.getValue();
 			}
 		}
 		if(EnumWineSortType.VARIETY.equals(EnumWineSortType.getWineSortType(attributeName))) {
 			List<DomainValue> varietalValues = pm.getWineVarietal();
 			if(varietalValues != null && varietalValues.size() > 0){
-				DomainValue dv = varietalValues.get(0);
+				DomainValue dv = (DomainValue) varietalValues.get(0);
 				attrValue = dv.getValue();
 			}
 		}
 		if(EnumWineSortType.VINTAGE.equals(EnumWineSortType.getWineSortType(attributeName))){
 			List<DomainValue> vintageValues = pm.getWineVintage();
 			if(vintageValues != null && vintageValues.size() > 0){
-				DomainValue dv = vintageValues.get(0);
+				DomainValue dv = (DomainValue) vintageValues.get(0);
 				try {
 					attrValue = new Integer(dv.getValue());
 				}catch(NumberFormatException ne){

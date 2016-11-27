@@ -1,5 +1,5 @@
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>FreshDirect - Cheese 101</title>
 
@@ -9,6 +9,7 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <a name="top"></a>
 <center>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
@@ -19,13 +20,13 @@
 	<tr valign="TOP">
 		<td width="120" align="RIGHT" rowspan="2" class="bodyCopySmall"><img src="/media_stat/images/template/cheese/cheese101.gif" width="98" height="23" border="0" alt="CHEESE 101"><br><br><a href="101_selecting.jsp">Selecting</a><br><a href="101_buying.jsp">Buying</a><br><a href="101_storing.jsp">Storing</a><br><a href="101_serve.jsp">Serving Amounts</a><br><b>How to Cut</b><br><a href="101_plate.jsp">How to Plate</a><br><a href="101_board.jsp">Arranging a Board</a><br><a href="101_grate.jsp">Grating</a><br><a href="101_rind.jsp">About the Rind</a><br><a href="101_drinks.jsp">Pairing Drinks</a><br><br><img src="/media/images/navigation/department/cheese/che_manager_noname.jpg" border="0"><br>
 		</td>
-		<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" hspace="0" vspace="0">
+		<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" hspace="0" vspace="0">
 		</td>
-		<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/999966.gif" alt="" width="1" height="300" hspace="0" vspace="0">
+		<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/999966.gif" width="1" height="300" hspace="0" vspace="0">
 		</td>
-		<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" hspace="0" vspace="0">
+		<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" hspace="0" vspace="0">
 		</td>
-		<td valign="TOP" width="379"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" hspace="0" vspace="0"><br><font class="title16">How to Cut</font><br><font class="bodyCopySmall">Cutting the cheese isn't as easy as it sounds. Cheeses crumble, 
+		<td valign="TOP" width="379"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" hspace="0" vspace="0"><br><font class="title16">How to Cut</font><br><font class="bodyCopySmall">Cutting the cheese isn't as easy as it sounds. Cheeses crumble, 
 break, and squash. To avoid disaster, use the right tools.
 <p>
 			<table cellpadding="0" cellspacing="0" border="0" width="379">
@@ -60,7 +61,7 @@ break, and squash. To avoid disaster, use the right tools.
 							a pie; cut log-shaped ch&egrave;vres crosswise into little disks.<br>
 						</td>
 					</tr>
-			</table></font><img src="/media_stat/images/layout/clear.gif" alt="" width="379" height="10" hspace="0" vspace="0">
+			</table></font><img src="/media_stat/images/layout/clear.gif" width="379" height="10" hspace="0" vspace="0">
 		</td>
 	</tr>
 	<!-- APPDEV 4284<tr valign="TOP">

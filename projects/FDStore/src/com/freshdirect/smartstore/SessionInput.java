@@ -8,19 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
-import com.freshdirect.storeapi.content.YmalSource;
 
 /**
  * Represents session information.
@@ -32,7 +32,7 @@ import com.freshdirect.storeapi.content.YmalSource;
  */
 public class SessionInput implements Cloneable {
 
-    private Set<ContentKey> cartContents;
+	private Set<ContentKey> cartContents = null;
 
 	private String customerId;
 
@@ -64,7 +64,7 @@ public class SessionInput implements Cloneable {
 
 	private Map<String, List<ContentKey>> previousRecommendations;
 
-    private int maxRecommendations = Integer.MAX_VALUE;
+	int maxRecommendations = Integer.MAX_VALUE;
 
 	/**
 	 * Page window size. Defaulted to maxRecommendations if set to 0
@@ -108,11 +108,6 @@ public class SessionInput implements Cloneable {
 	 */
 	private Set<ContentKey> cmsRecommenderKeys = new HashSet<ContentKey>();
 	
-    private List<ProductReference> productSamples;
-
-    private boolean onlyTabHeader;
-
-    private boolean error;
 
 	protected SessionInput() {
 	}
@@ -149,8 +144,7 @@ public class SessionInput implements Cloneable {
 			initCartContents(user);
 			initRecentItems(user);
 			this.pricingCtx = user.getUserContext().getPricingContext();
-            this.fulfillmentContext = user.getUserContext().getFulfillmentContext();
-            productSamples = user.getProductSamples();
+			this.fulfillmentContext = user.getUserContext().getFulfillmentContext(); 
 		}
 	}
 
@@ -525,6 +519,10 @@ public class SessionInput implements Cloneable {
 		return cloned;
 	}
 
+
+
+
+
 	public FulfillmentContext getFulfillmentContext() {
 		return fulfillmentContext;
 	}
@@ -533,31 +531,11 @@ public class SessionInput implements Cloneable {
 		this.fulfillmentContext = fulfillmentContext;
 	}
 
-    public List<ProductReference> getProductSamples() {
-        return productSamples;
-    }
 
-    public void setProductSamples(List<ProductReference> productSamples) {
-        this.productSamples = productSamples;
-    }
 
-    public boolean isOnlyTabHeader() {
-        return onlyTabHeader;
-    }
 
-    public void setOnlyTabHeader(boolean onlyTabHeader) {
-        this.onlyTabHeader = onlyTabHeader;
-    }
 
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
-    }
-
-    public static class Builder {
+	public static class Builder {
 		private int maxRecommendations = Integer.MAX_VALUE;
 		private int windowSize = 0;
 		
@@ -730,5 +708,4 @@ public class SessionInput implements Cloneable {
 		}
 
 	}
-
 }

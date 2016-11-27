@@ -39,10 +39,7 @@ function displayStatus(){
 </script>
 
 <tmpl:insert template='/common/template/robinhood.jsp'>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Donation Order</tmpl:put> --%>
-	<tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Donation Order"></fd:SEOMetaTag>
-    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Donation Order</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
 <%
@@ -88,9 +85,9 @@ String optInInd = request.getParameter("optinInd");
 	<table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
     <td rowspan="5" width="20" ><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-    <td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/template/system_msgs/996699_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
-    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+    <td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/template/system_msgs/996699_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
     <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 </tr>
 <tr>
@@ -105,15 +102,15 @@ String optInInd = request.getParameter("optinInd");
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 	</td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+    <td bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 </tr>
 <tr>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
     <td bgcolor="#ffffff"><img height="4" border="0" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
 </tr>
 <tr>
-    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 </tr>
 </table>
 <br/>
@@ -141,7 +138,7 @@ String optInInd = request.getParameter("optinInd");
 	  </tr>
 	<tr>
 		<td colspan="3" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/ff9933.gif" /><br />
+			<img style="margin: 2px 0;" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
 		</td>
 	</tr>
 	<tr>
@@ -190,16 +187,16 @@ boolean isCheckEligible = false;
     </tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
 
-<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
 
 
 
 	<table width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" vspace="3"><br />
+					<img src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>  
 			</td>   
 		</tr>
@@ -225,7 +222,7 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>	
 		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>">
 		<% String optinout=null;%>
@@ -233,7 +230,7 @@ boolean isCheckEligible = false;
 		<% errorMsg = SystemMessageList.MSG_RH_OPTIN_BELOW_REQUIRED;
 		   optinout = " ";
 		%>
-		<tr><td align="right"><font class="errortext" align="right"><%= errorMsg %></font></td></tr>
+		<tr><td align="right"><font class="text11rbold" align="right"><%= errorMsg %></font></td></tr>
 		</fd:ErrorHandler>
 		<tr>
 			<td align="right">
@@ -252,7 +249,7 @@ boolean isCheckEligible = false;
 			  <% } %>
 		</tr>
 		<tr>
-	    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
+	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
     	</td></tr>
 		<tr>
 			<td align="right">
@@ -267,7 +264,7 @@ boolean isCheckEligible = false;
 			</td>
 		</tr>
 		<tr>
-	    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
+	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
     	</td>
 		<tr valign="top">
 			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" align="right" colspan="2">

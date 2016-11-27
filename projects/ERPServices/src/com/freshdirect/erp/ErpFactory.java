@@ -23,25 +23,33 @@ import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeHome;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeSB;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
-import com.freshdirect.ecomm.gateway.ErpInfoService;
-import com.freshdirect.ecomm.gateway.ErpNutritionService;
-import com.freshdirect.ecomm.gateway.ErpNutritionServiceI;
+import com.freshdirect.erp.ejb.BatchManagerHome;
+import com.freshdirect.erp.ejb.BatchManagerSB;
+import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
+import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoSB;
+import com.freshdirect.erp.ejb.ErpInfoHome;
+import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductHome;
+import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 
 /**
  * Singleton class for accessing the ERP-layer remote objects.
@@ -58,10 +66,6 @@ public class ErpFactory {
 	public static ErpFactory getInstance() {
 		if (factory == null) {
 			factory = new ErpFactory();
-			if(FDStoreProperties.isLocalDeployment()) {
-				factory.lastRefresh = System.currentTimeMillis();
-				factory.REFRESH_PERIOD = FDStoreProperties.TEN_DAYS_IN_MILLIS;
-			}
 		}
 		return factory;
 	}
@@ -71,166 +75,208 @@ public class ErpFactory {
 	private long REFRESH_PERIOD = 1000 * 60 * 15; // 15 minutes
 	private long lastRefresh = 0;
 
+	private ErpInfoHome erpInfoHome = null;
 
 	public Collection findMaterialsBySapId(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsBySapId(searchterm);
-		
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsBySapId(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findMaterialsBySku(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsBySku(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsBySku(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findMaterialsByDescription(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsByDescription(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsByDescription(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findMaterialsByClass(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsByClass(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsByClass(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findMaterialsByCharacteristic(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsByCharacteristic(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsByCharacteristic(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findMaterialsByBatch(int batchNum) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findMaterialsByBatch(batchNum);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findMaterialsByBatch(batchNum);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findProductsBySapId(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsBySapId(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsBySapId(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public ErpProductInfoModel findProductBySku(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-					return ErpInfoService.getInstance().findProductBySku(searchterm);
-				
-			
-		} catch (ObjectNotFoundException onfe) {
-			return null;
-		}catch (RemoteException re) {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			try {
+				return infoSB.findProductBySku(searchterm);
+			} catch (ObjectNotFoundException onfe) {
+				return null;
+			}
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findProductsLikeSku(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsLikeSku(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsLikeSku(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findProductsByDescription(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsByDescription(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsByDescription(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection findProductsLikeUPC(String searchterm) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsLikeUPC(searchterm);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsLikeUPC(searchterm);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsByUPC(upc);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsByUPC(upc);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 	
 	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().findProductsByCustomerUPC(erpCustomerPK,upc);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsByCustomerUPC(erpCustomerPK, upc);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
-	
+	private void lookupInfoHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			erpInfoHome = (ErpInfoHome) ctx.lookup(ErpServicesProperties.getInfoHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+			}
+		}
+	}
 
 	private ErpMaterialHome materialHome = null;
 
@@ -255,6 +301,55 @@ public class ErpFactory {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 			materialHome = (ErpMaterialHome) ctx.lookup(ErpServicesProperties.getMaterialHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+			}
+		}
+	}
+
+	private ErpCharacteristicValuePriceHome cvpHome = null;
+
+	public ErpCharacteristicValuePriceModel getCharacteristicValuePrice(
+		ErpMaterialModel material,
+		ErpCharacteristicValueModel charValue)
+		throws FDResourceException {
+		if (cvpHome == null) {
+			lookupCVPriceHome();
+		}
+		try {
+			ErpCharacteristicValuePriceEB charValEB =
+				cvpHome.findByMaterialAndCharValue((VersionedPrimaryKey) material.getPK(), (VersionedPrimaryKey) charValue.getPK());
+			return (ErpCharacteristicValuePriceModel) charValEB.getModel();
+		} catch (ObjectNotFoundException onfe) {
+			//
+			// not found, price is zero...
+			//
+			ErpCharacteristicValuePriceModel charValuePrice = new ErpCharacteristicValuePriceModel();
+			charValuePrice.setCharacteristicValueId(charValue.getPK().getId());
+			charValuePrice.setConditionType("");
+			charValuePrice.setMaterialId(material.getPK().getId());
+			charValuePrice.setPrice(0.0);
+			charValuePrice.setPricingUnit("");
+			charValuePrice.setSapId("");
+			charValuePrice.setSalesOrg("");
+			charValuePrice.setDistChannel("");
+			return charValuePrice;
+		} catch (FinderException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+	private void lookupCVPriceHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			cvpHome = (ErpCharacteristicValuePriceHome) ctx.lookup(ErpServicesProperties.getCharacteristicValuePriceHome());
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {
@@ -297,6 +392,52 @@ public class ErpFactory {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 			productHome = (ErpProductHome) ctx.lookup(ErpServicesProperties.getProductHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+			}
+		}
+	}
+
+	private BatchManagerHome batchHome = null;
+
+	public BatchModel getBatch(int batchId) throws FDResourceException {
+		if (batchHome == null) {
+			lookupBatchHome();
+		}
+		try {
+			BatchManagerSB batchSB = batchHome.create();
+			BatchModel bm = (BatchModel) batchSB.getBatch(batchId);
+			return bm;
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+	public Collection getBatches() throws FDResourceException {
+		if (batchHome == null) {
+			lookupBatchHome();
+		}
+		try {
+			BatchManagerSB batchSB = batchHome.create();
+			return batchSB.getRecentBatches();
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+	private void lookupBatchHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			batchHome = (BatchManagerHome) ctx.lookup(ErpServicesProperties.getBatchHome());
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {
@@ -369,12 +510,11 @@ public class ErpFactory {
 			//
 			// get the attributes for this erpmodel and its children
 			//
-			FlatAttributeCollection attrs = null;
+			AttributeFacadeSB atrSB = attributeHome.create();
 			GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
 			erpModel.accept(idVisitor);
 			String[] rootIds = idVisitor.getRootIds();
-			AttributeFacadeSB atrSB = attributeHome.create();
-			attrs = atrSB.getAttributes(rootIds);
+			FlatAttributeCollection attrs = atrSB.getAttributes(rootIds);
 			//
 			// apply attributes to the erpmodel and its children
 			//
@@ -408,9 +548,7 @@ public class ErpFactory {
 			//
 			// ask it to save the attributes
 			//
-			
 			atrSB.storeAttributes(attrs, user, sapId);
-			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -427,7 +565,6 @@ public class ErpFactory {
 					erpModel.accept(idVisitor);
 					String[] rootIds = idVisitor.getRootIds();
 					attrs = atrSB.getAttributes(rootIds);
-					///JJ
 					//
 					// and re-apply attributes to the erpObject and its characteristics
 					//
@@ -449,23 +586,32 @@ public class ErpFactory {
 
 	public List<Map<String, String>> generateClaimsReport() throws FDResourceException {
 		try {
-
-			ErpNutritionServiceI service = ErpNutritionService.getInstance();
-			return service.generateClaimsReport();
-
+			if (nutritionHome == null) {
+				lookupNutritionHome();
+			}
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			return nutrSB.generateClaimsReport();
 		} catch (RemoteException ce) {
 			throw new FDResourceException(ce);
-		} 
+		} catch (CreateException re) {
+			throw new FDResourceException(re);
+		}
 
 	}
 
 	private synchronized void refreshNutritionReportCache() throws FDResourceException {
 		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
 			try {
+				if (nutritionHome == null) {
+					lookupNutritionHome();
+				}
 
-				this.nutritionReport = ErpNutritionService.getInstance().generateNutritionReport();
+				ErpNutritionSB nutrSB = nutritionHome.create();
+				this.nutritionReport = nutrSB.generateNutritionReport();
 
 				lastRefresh = System.currentTimeMillis();
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
 			} catch (RemoteException re) {
 				throw new FDResourceException(re);
 			}
@@ -486,114 +632,184 @@ public class ErpFactory {
 			}
 		}
 	}
-	
+
+	private ErpNutritionHome nutritionHome = null;
+
 	public ErpNutritionModel getNutrition(String skuCode) throws FDResourceException {
-
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
 		try {
-			return ErpNutritionService.getInstance().getNutrition(skuCode);
-
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			return nutrSB.getNutrition(skuCode);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
-
+	
 	public NutritionPanel getNutritionPanel(String skuCode) throws FDResourceException {
-
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
 		try {
-			return ErpNutritionService.getInstance().getNutritionPanel(skuCode);
-
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			return nutrSB.getNutritionPanel(skuCode);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public void saveNutrition(ErpNutritionModel nutrition, String user) throws FDResourceException {
-
-		try {
-			ErpNutritionService.getInstance().updateNutrition(nutrition, "dataloader");
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
+		if (nutritionHome == null) {
+			lookupNutritionHome();
 		}
-	}
-
-	public void saveNutritionPanel(NutritionPanel panel) throws FDResourceException {
-
 		try {
-			ErpNutritionService.getInstance().saveNutritionPanel(panel);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public void deleteNutritionPanel(String skuCode) throws FDResourceException {
-
-		try {
-			ErpNutritionService.getInstance().deleteNutritionPanel(skuCode);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Collection<FDGroup> findGrpsForMaterial(String matId) throws FDResourceException {
-		
-		try {
-			
-				return FDECommerceService.getInstance().findGrpsForMaterial(matId);
-			
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			nutrSB.updateNutrition(nutrition, user);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 	
-	public void setOverriddenBackInStock(String sku, Map<String,String> salesAreaOverrides) throws FDResourceException {
-		
+	public void saveNutritionPanel(NutritionPanel panel) throws FDResourceException {
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
 		try {
-			
-			
-				ErpInfoService.getInstance().setOverriddenBackInStock(sku, salesAreaOverrides);
-			
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			nutrSB.saveNutritionPanel(panel);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public void deleteNutritionPanel(String skuCode) throws FDResourceException {
+		if (nutritionHome == null) {
+			lookupNutritionHome();
+		}
+		try {
+			ErpNutritionSB nutrSB = nutritionHome.create();
+			nutrSB.deleteNutritionPanel(skuCode);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+	private void lookupNutritionHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			nutritionHome = (ErpNutritionHome) ctx.lookup(ErpServicesProperties.getNutritionHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+			}
+		}
+	}
+	
+	private ErpGrpInfoHome erpGrpInfoHome = null;
+
+	public Collection<FDGroup> findGrpsForMaterial(String matId) throws FDResourceException {
+		if (erpGrpInfoHome == null) {
+			lookupGrpInfoHome();
+		}
+		try {
+			ErpGrpInfoSB remote = erpGrpInfoHome.create();
+			return remote.findGrpsForMaterial(matId);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	private void lookupGrpInfoHome() throws FDResourceException {
+		if (erpGrpInfoHome != null) {
+			return;
+		}
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			erpGrpInfoHome = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				ne.printStackTrace();
+			}
+		}
+	}
+	
+	public void setOverriddenBackInStock(String sku, Map<String,String> salesAreaOverrides) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 infoSB.setOverriddenBackInStock(sku, salesAreaOverrides);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 	
 	public void setOverriddenNewness(String sku, Map<String,String> salesAreaOverrides) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				ErpInfoService.getInstance().setOverriddenNewness(sku, salesAreaOverrides);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 infoSB.setOverriddenNewness(sku, salesAreaOverrides);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
 	public Map<String,String> getOverriddenBackInStock(String sku) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().getOverriddenBackInStock(sku);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 return infoSB.getOverriddenBackInStock(sku);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 	
 	public Map<String,String> getOverriddenNewness(String sku) throws FDResourceException {
-		
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
 		try {
-			
-			
-				return ErpInfoService.getInstance().getOverriddenNewness(sku);
-			
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 return infoSB.getOverriddenNewness(sku);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
-
 }

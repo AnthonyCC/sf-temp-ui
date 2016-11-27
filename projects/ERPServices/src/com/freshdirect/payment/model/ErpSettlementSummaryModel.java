@@ -15,11 +15,9 @@ import com.freshdirect.framework.core.*;
 
 public class ErpSettlementSummaryModel extends ModelSupport{
 	
-	private static final long serialVersionUID = 689911209863086288L;
-	
-	private List<ErpSummaryDetailModel> summaryDetails = new ArrayList<ErpSummaryDetailModel>(); //list of detail records
-	private List<ErpSettlementInvoiceModel> invoices = new ArrayList<ErpSettlementInvoiceModel>(); //list of invoices
-	private List<ErpSettlementTransactionModel> settlementTrxns = new ArrayList<ErpSettlementTransactionModel>(); //list of transactions
+	private List summaryDetails = new ArrayList(); //list of detail records
+	private List invoices = new ArrayList(); //list of invoices
+	private List settlementTrxns = new ArrayList(); //list of transactions
 	
 	private Date processPeriodStart = null;
 	private Date processPeriodEnd = null;
@@ -166,10 +164,10 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.settlementFileDate = settlementFileDate;
 	}
 	
-	public List<ErpSummaryDetailModel> getSummaryDetails(){
+	public List getSummaryDetails(){
 		return this.summaryDetails;
 	}
-	public void setSummaryDetails(List<ErpSummaryDetailModel> summaryDetails){
+	public void setSummaryDetails(List summaryDetails){
 		this.summaryDetails = summaryDetails;
 	}
 	
@@ -177,10 +175,10 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.summaryDetails.add(detail);
 	}
 	
-	public List<ErpSettlementInvoiceModel> getInvoices(){
+	public List getInvoices(){
 		return this.invoices;
 	}
-	public void setInvoices(List<ErpSettlementInvoiceModel> invoices){
+	public void setInvoices(List invoices){
 		this.invoices = invoices;
 	}
 	public void addInvoice(ErpSettlementInvoiceModel invoice){
@@ -247,7 +245,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		return settlementTrxns;
 	}
 
-	public void setSettlementTrxns(List<ErpSettlementTransactionModel> settlementTrxns) {
+	public void setSettlementTrxns(List settlementTrxns) {
 		this.settlementTrxns = settlementTrxns;
 	}
 	
@@ -269,11 +267,5 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 
 	public String toString() {
 		return super.toString() + " " + System.identityHashCode(this); 
-	}
-	
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
 	}
 }

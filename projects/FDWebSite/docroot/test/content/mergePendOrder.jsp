@@ -3,7 +3,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -24,7 +24,7 @@
 	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title> Pending Order Merge Project Test Page </title>
 		<style>

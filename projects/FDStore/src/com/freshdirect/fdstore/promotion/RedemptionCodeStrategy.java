@@ -8,11 +8,6 @@ public class RedemptionCodeStrategy implements PromotionStrategyI {
 		this.redemptionCode = redemptionCode;
 	}
 
-	public RedemptionCodeStrategy() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public String getRedemptionCode() {
 		return this.redemptionCode;
 	}
@@ -39,9 +34,5 @@ public class RedemptionCodeStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
-	}
-
-	public void setRedemptionCode(String redemptionCode) {
-		this.redemptionCode = redemptionCode;
 	}
 }

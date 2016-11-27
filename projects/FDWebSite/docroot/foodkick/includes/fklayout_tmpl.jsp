@@ -1,15 +1,12 @@
 <%@ include file="fk_presenter_vars.jspf" %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ include file="password_flow_vars.jspf" %>
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
-<%-- 		<title> <tmpl:get name='title'/> </title> --%>
-        <tmpl:get name="seoMetaTag"/>
-        <%@ include file="/common/template/includes/metatags.jspf" %>
+		<title> <tmpl:get name='title'/> </title>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,6 +24,8 @@
 		<link href="<%=FK_CONFIG_DIRS.get("BOOTSTRAP_DIR") %>/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="<%=FK_CONFIG_DIRS.get("CSS_DIR") %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
+		<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
+		<script type="text/javascript">cmSetClientID("51640000|33000004",true,"data.coremetrics.com","freshdirect.com");</script>
 		<tmpl:get name='header'/>
 	</head>
 	<body>
@@ -44,11 +43,11 @@
 						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>hamburger_helper.svg" />
 					</a>
 					<ul class="dropdown mobile_dropdown" id="mobile_dropdown_menu">
-						<!-- <li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li> -->
-						<!-- <li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li> -->
-						<!-- <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
-						<!-- <li><a href="about_us.jsp">About Us</a></li> -->
-						<!-- <li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li> -->
+						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
+						<li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
+						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
+						<li><a href="about_us.jsp">About Us</a></li>
+						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 						
 						<li>
 							<a href="<%=FK_CONFIG_URLS.get("FD_SITE_LINK") %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
@@ -56,16 +55,16 @@
 					</ul>
 				</li>
 			
-				<!-- <li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li> -->
-				<!-- <li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li> -->
+				<li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
+				<li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
 				<li class="logo_link">
-					<a href="https://www.foodkick.com">
+					<a href="<%=url_prefix %>#slideshow">
 						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>freshkick_logo_v2.svg" />
 					</a>
 				</li>
-				<!-- <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
-				<!-- <li class="standard_link"><a href="about_us.jsp">About Us</a></li> -->
-				<!-- <li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li> -->
+				<!--  <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
+				<li class="standard_link"><a href="about_us.jsp">About Us</a></li>
+				<li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 			</ul>
 		</nav>
 
@@ -130,6 +129,7 @@
 	</body>
 	
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
+	<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
 	<script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/foodkick.js"></script>
 	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
 	

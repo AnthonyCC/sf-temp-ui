@@ -218,10 +218,8 @@ String[] tropical = {
 %>
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Fruit - Seasonal Guide"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Fruit - Seasonal Guide</tmpl:put> --%>
+
+    <tmpl:put name='title' direct='true'>FreshDirect - Fruit - Seasonal Guide</tmpl:put>
 	
     	<tmpl:put name='content' direct='true'>
 		<style type="text/css">
@@ -285,7 +283,7 @@ padding: 2px;
 
 <table width="<%=W_SEASONAL_GUIDE_TOTAL%>" border="0" cellspacing="0" cellpadding="0" align="left">
 	<tr>
-		<td><img src="/media_stat/images/template/fruit/lil_tony_season.jpg" width="106" height="118"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="124" height="8"></td>
+		<td><img src="/media_stat/images/template/fruit/lil_tony_season.jpg" width="106" height="118"><br><img src="/media_stat/images/layout/clear.gif" width="124" height="8"></td>
 		<td colspan="15"><img src="/media_stat/images/template/fruit/fruit_season_hdr.gif" width="374" height="19"><br><br>
 		Generally most fruit is available all year long, but the best way to assure the best taste is to buy during peak season. We've developed this seasonal guide to help you identify the tastiest fruits at any time of the year. Just remember to use this as a guideline only since local weather and farming conditions can always affect availability and quality.
 		<br><br><img src="/media_stat/images/template/fruit/fruit_season_key.gif" width="543" height="20"></td>
@@ -310,22 +308,22 @@ padding: 2px;
 		<%= season_months[column4] %>
 	</tr>
 	<tr height="4"> 
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_TOTAL - W_SEASONAL_GUIDE_MONTH*12 - 5*3%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_TOTAL - W_SEASONAL_GUIDE_MONTH*12 - 5*3%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
 	</tr>
 	<tr style="cursor: hand;" onClick="document.location='<%=category%>apl'">  
 		<td class="fruit"><a href="<%=category%>apl">APPLES</a></td>

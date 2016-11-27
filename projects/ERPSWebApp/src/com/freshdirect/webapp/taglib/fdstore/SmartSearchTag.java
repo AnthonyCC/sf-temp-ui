@@ -19,31 +19,35 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.http.HttpHeaders;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.ContentSearchUtil;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeSearchPage;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.SortIntValueComparator;
+import com.freshdirect.fdstore.content.SortLongValueComparator;
+import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.ContentSearchUtil;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeSearchPage;
-import com.freshdirect.storeapi.content.SearchResults;
-import com.freshdirect.storeapi.content.SortIntValueComparator;
-import com.freshdirect.storeapi.content.SortLongValueComparator;
-import com.freshdirect.storeapi.content.SortValueComparator;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.util.RequestUtil;
 
+/**
+ * @author zsombor, csongor
+ * 
+ */
 public class SmartSearchTag extends AbstractProductPagerTag {
 	private static final long serialVersionUID = 3093054384959548572L;
 
@@ -82,7 +86,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 
 		if (nav.getUpc() != null) {
 			searchTerm = nav.getUpc();
-            return StoreServiceLocator.contentSearch().searchUpc(userId, nav.getUpc());
+			return ContentSearch.getInstance().searchUpc(userId, nav.getUpc());
 		} else {
 			searchTerm = nav.getSearchTerm();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -109,14 +113,13 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_POPULARITY:
-                comparator = ComparatorChain
-                        .create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getFDUser().getUserContext().getPricingContext())));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_SALE:
-                SmartSearchUtils.collectSaleInfo(products);
+				SmartSearchUtils.collectSaleInfo(products, getPricingContext());
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
@@ -151,7 +154,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 			default:
 				return null;
 		}
-        SmartSearchUtils.collectAvailabilityInfo(products);
+		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 		return comparator;
 	}
@@ -160,7 +163,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	protected void postProcess(SearchResults results) {
 
 		if (FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && nav.getSortBy().equals(SearchSortType.BY_RELEVANCY)) {
-            List<FilteringSortingItem<ProductModel>> products = FilteringComparatorUtil.reOrganizeFavourites(results.getProducts(), getUserId(), getPricingContext());
+			List<FilteringSortingItem<ProductModel>> products = FilteringComparatorUtil.reOrganizeFavourites(results.getProducts(), getUserId(), getPricingContext());
 			results = new SearchResults(products, results.getRecipes(), results.getCategories(), searchTerm, ContentSearchUtil.isQuoted(searchTerm));
 		}
 

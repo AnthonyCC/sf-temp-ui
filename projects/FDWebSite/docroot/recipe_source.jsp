@@ -1,7 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -11,13 +11,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
+Recipe recipe;
 String recipeId = request.getParameter("recipeId");
 
-if (recipeId == null) {
-    throw new FDNotFoundException("No recipeId supplied");
-}
+if (recipeId != null) {
 
-Recipe recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 RecipeSource source = recipe.getSource();
 List featuredRecipes = source.getFeaturedRecipes();
 String sourceName =source !=null ? source.getName() : "";
@@ -42,16 +41,12 @@ StringBuffer authorNames = new StringBuffer("");
    if (authors.size() > 0) {
    	authorNames.append("</b>");
    }
-
-title = "FreshDirect - " + title;
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%=title%>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
     <tmpl:put name='content' direct='true'>
+    	<fd:CmPageView wrapIntoScriptTag="true" recipeSource="<%=sourceName%>"/>
 		<table width="520">
 			<tr valign="top">
 				<td width="5%" style="padding-right:10px;"><% if (leftContent != null) { %><fd:IncludeMedia name='<%= leftContent.getPath() %>' /><% } %></td>
@@ -60,10 +55,10 @@ title = "FreshDirect - " + title;
 					<br>
 					<div>
 					<b>Other Recipe<%= (featuredRecipes.size() > 1) ?"s":""%> from this Book</b><br>
-					  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
+					  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
 					  <% if (!aFeatRecipe.isAvailable()) { %>
 					  	<%=aFeatRecipe.getName()%><br>
-					  <% } else if(!(!aFeatRecipe.isAvailable())) { %>
+					  <% continue; } else { %>
 						  <a href="javascript:backtoWin('<%=response.encodeURL("/recipe.jsp?recipeId="+aFeatRecipe)%>&trk=rpop');"><%=aFeatRecipe.getName()%></a><br>
 					<% } %>
 				   </logic:iterate>
@@ -75,3 +70,4 @@ title = "FreshDirect - " + title;
 		</table>
     </tmpl:put>
 </tmpl:insert>
+<% } %>

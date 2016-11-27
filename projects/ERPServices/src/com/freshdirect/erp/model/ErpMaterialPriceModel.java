@@ -12,7 +12,6 @@ package com.freshdirect.erp.model;
 import com.freshdirect.erp.DurableModelI;
 import com.freshdirect.erp.ErpModelSupport;
 import com.freshdirect.erp.ErpVisitorI;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 
 /**
@@ -73,13 +72,13 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 		this.setSapZoneId(sapZoneId);
 		this.setPromoPrice(promoPrice);
 		if("1000".equals(salesOrg)) {
-			salesOrg=FDStoreProperties.getDefaultFdSalesOrg();
-			distChannel=FDStoreProperties.getDefaultFdDistributionChannel();
+			salesOrg="0001";
+			distChannel="01";
 		}
-		this.setSalesOrg(StringUtil.isEmpty(salesOrg)?FDStoreProperties.getDefaultFdSalesOrg():salesOrg);
-		this.setDistChannel(StringUtil.isEmpty(distChannel)?FDStoreProperties.getDefaultFdDistributionChannel():distChannel);
-		this.setSalesOrg("1000".equals(getSalesOrg())?FDStoreProperties.getDefaultFdSalesOrg():getSalesOrg());
-		this.setDistChannel("1000".equals(getDistChannel())?FDStoreProperties.getDefaultFdDistributionChannel():getDistChannel());
+		this.setSalesOrg(StringUtil.isEmpty(salesOrg)?"0001":salesOrg);
+		this.setDistChannel(StringUtil.isEmpty(distChannel)?"01":distChannel);
+		this.setSalesOrg("1000".equals(getSalesOrg())?"0001":getSalesOrg());
+		this.setDistChannel("1000".equals(getDistChannel())?"01":getDistChannel());
 	}
 	
 	/**

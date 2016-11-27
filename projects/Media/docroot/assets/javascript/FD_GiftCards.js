@@ -623,7 +623,7 @@ function showDialogs() {
 									/*Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )*/
 								]),
 								Builder.node( 'div', { className: 'card_controls_select' }, [
-									Builder.node( 'select', { 'aria-label':'choose card design',class:'customsimpleselect',id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
+									Builder.node( 'select', { id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
 										optionArray
 									])
 								])
@@ -907,7 +907,7 @@ function showDialogs() {
 				title: '',
 				overlayOpacity: .85,
 				overlayClose: false,
-				width: 450,
+				width: 425,
 				transitions: false,
 				autoFocusing: false,
 				centered: true,

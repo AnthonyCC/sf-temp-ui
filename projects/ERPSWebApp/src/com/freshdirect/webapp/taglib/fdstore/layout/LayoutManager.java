@@ -11,15 +11,15 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
-import com.freshdirect.storeapi.content.EnumLayoutType;
-import com.freshdirect.storeapi.content.ProductContainer;
 
 public class LayoutManager extends BodyTagSupport {
 	
@@ -120,8 +120,6 @@ public class LayoutManager extends BodyTagSupport {
 		if (isDepartment) {
 			s.setGrabberDepth(0);
 		}
-
-        s.setLayoutType(layoutType);
 
 		if (layoutType == EnumLayoutType.GENERIC.getId()) {
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
@@ -532,7 +530,6 @@ public class LayoutManager extends BodyTagSupport {
 		private String layoutFileName = null;
 		private List<SortStrategyElement> sortStrategy = new ArrayList<SortStrategyElement>();
 		private boolean returnSkus = false;
-        private int layoutType;
 
 		public boolean isFilterDiscontinued() {
 			return filterDiscontinued;
@@ -600,7 +597,7 @@ public class LayoutManager extends BodyTagSupport {
 					+ "\n ProductSortByFirst ="
 					+ layoutFileName
 					+ "\n returnSkus ="
-                    + returnSkus + "\n layoutType =" + layoutType);
+					+ returnSkus);
 		}
 		
 		public void setFilterDiscontinued(boolean b) {
@@ -649,15 +646,6 @@ public class LayoutManager extends BodyTagSupport {
 		public void setReturnSkus(boolean flag) {
 			this.returnSkus = flag;
 		}
-
-        public int getLayoutType() {
-            return layoutType;
-        }
-
-        public void setLayoutType(int layoutType) {
-            this.layoutType = layoutType;
-        }
-
 	}
 
 	

@@ -12,23 +12,23 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringFlow;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.content.ProductFilterMenuDecorator;
 import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
@@ -105,7 +105,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	@Override
 	protected void preProcess(List<FilteringSortingItem<ProductModel>> items) {
 		for(FilteringSortingItem<ProductModel> item:items){
-            item.setNode(ProductPricingFactory.getInstance().getPricingAdapter(item.getNode()));
+			item.setNode(ProductPricingFactory.getInstance().getPricingAdapter(item.getNode(), getPricingContext()));
 		}		
 	}
 	
@@ -137,9 +137,8 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 
 	public PricingContext getPricingContext() {
 		getFDUser();
-        if (user != null) {
-            return user.getUserContext().getPricingContext();
-        }
+		if (user != null)
+			return user.getPricingContext();
 		return PricingContext.DEFAULT;
 	}
 	

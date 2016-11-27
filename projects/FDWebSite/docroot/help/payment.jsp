@@ -41,7 +41,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=tableWidth%>" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>			
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=tableWidth%>" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>			
 			<li type="dot"><A HREF="#question1">How do I pay?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>
 			<li type="dot"><A HREF="#question2">How does credit card payment work?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>
 			<li type="dot"><A HREF="#question3">How does checking account payment work?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>
@@ -142,7 +142,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" alt="" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" alt="" width="6" height="1" border="0">top of page</A>
+			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" width="6" height="1" border="0">top of page</A>
 			<br><br><BR>			
 	   </TD>
 	</TR>

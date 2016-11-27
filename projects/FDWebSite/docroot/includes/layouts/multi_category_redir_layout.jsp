@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
@@ -13,6 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
 
 
 <%	
@@ -122,7 +123,7 @@ for( int itmIdx=0; itmIdx < availableList.size(); itmIdx++ ) {
 				<table width="<%=maxWidth%>" align="center" cellpadding="0"	cellspacing="0" border="0">
 					<tr>
 						<td>
-							<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="8">
 						</td>
 					</tr>
 				</table>

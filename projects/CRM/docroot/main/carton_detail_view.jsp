@@ -19,7 +19,7 @@
 		<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 
 <%
-	List cartonInfo = null;
+	List cartonInfo = FDCustomerManager.getCartonDetails((FDOrderI) order);	
 %>
 
 <% int idx = 0; %>
@@ -48,7 +48,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 					</tr>
 					
 					<% idx = 0; %>
@@ -57,7 +57,7 @@
 							<tr valign="top">
 								<td width="150px"> 
 									<input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getActualQuantity() %>">
+									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
 									<input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 									<input type="hidden" name="estPrice_<%=idx%>" value="">
 									<input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
@@ -66,7 +66,7 @@
 										<input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
 									</logic:iterate>
 
-									<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
+									<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 									<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 										<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 									<% } %>
@@ -92,7 +92,7 @@
 								
 								<tr valign="top" class="list_component_row">
 									<td width="150px">										
-										<%= component.getActualQuantity() %>&nbsp;
+										<%= component.getPackedQuantity() %>&nbsp;
 										<% if(component.getWeightUnit() != null) { %>
 											<%= component.getWeightUnit().toLowerCase() %>
 										<% } %>
@@ -154,7 +154,7 @@ Short shipped items:
 						</td>
 					</tr>
 					<tr>
-						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 					</tr>
 					
 					<% idx = 0; %>
@@ -163,7 +163,7 @@ Short shipped items:
 							<tr valign="top">
 								<td width="150px"> 
 									<input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getActualQuantity() %>">
+									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
 									<input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 									<input type="hidden" name="estPrice_<%=idx%>" value="">
 									<input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
@@ -172,7 +172,7 @@ Short shipped items:
 										<input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
 									</logic:iterate>
 
-									<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
+									<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 									<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 										<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 									<% } %>
@@ -198,7 +198,7 @@ Short shipped items:
 								
 								<tr valign="top" class="list_component_row">
 									<td width="150px">										
-										<%= component.getActualQuantity() %>&nbsp;
+										<%= component.getPackedQuantity() %>&nbsp;
 										<% if(component.getWeightUnit() != null) { %>
 											<%= component.getWeightUnit().toLowerCase() %>
 										<% } %>

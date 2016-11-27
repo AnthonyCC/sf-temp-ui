@@ -41,7 +41,29 @@
 						String depotAccessCodeError = "";
 					%>
 					<% if (zipResult.isSuccess()) { %>
+						<fd:DepotLoginController actionName='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' result='depotResult'>
+							<% String[] checkZipForm = {EnumUserInfoName.DLV_ZIPCODE.getCode(), "notInZone", "DeliveryServerDown", "technicalDifficulty"}; %>
+							
+							<fd:ErrorHandler result='<%= zipResult %>' field='<%=checkZipForm%>' id='errorMsg'>
+								<span class="error_detail"><%=errorMsg%></span>
+							</fd:ErrorHandler>
+							
+							<% String[] checkDepotForm = {EnumUserInfoName.DLV_DEPOT_CODE.getCode(), EnumUserInfoName.DLV_DEPOT_REG_CODE.getCode()}; 
+								//"wrongAccessCode", "missingDepotCode", 
+							%>
 						
+							<fd:ErrorHandler result='<%= depotResult %>' field='<%=checkDepotForm%>' id='errorMsg'>
+								<span class="error_detail"><%=errorMsg%></span>
+							</fd:ErrorHandler>
+						
+							<fd:ErrorHandler result='<%= depotResult %>' name='<%=EnumUserInfoName.DLV_DEPOT_CODE.getCode()%>' id='errorMsg'>
+								<%depotCodeError = "<span class=\"error_detail\">"+ errorMsg + "</span>";%>
+							</fd:ErrorHandler>
+					
+							<fd:ErrorHandler result='<%= depotResult %>' name='<%=EnumUserInfoName.DLV_DEPOT_REG_CODE.getCode()%>' id='errorMsg'>
+								<%depotAccessCodeError = "<span class=\"error_detail\">"+ errorMsg + "</span>";%>
+							</fd:ErrorHandler>
+						</fd:DepotLoginController>
 					<%	} %>
 				</td>
 			</tr>

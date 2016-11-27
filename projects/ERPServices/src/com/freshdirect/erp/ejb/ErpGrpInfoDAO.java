@@ -23,15 +23,9 @@ import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
-/**
- *@deprecated Please use the ErpGrpInfoDaoI  in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 public class ErpGrpInfoDAO {
 
 
@@ -41,7 +35,7 @@ public class ErpGrpInfoDAO {
 	
     
     private static final String ALL_GRP_PRICING_SELECT_SQL="SELECT MAX(VERSION) VERSION,SAP_ID  FROM ERPS.GRP_SCALE_MASTER GROUP BY (SAP_ID) ";
-   	@Deprecated
+   	
 	public static Collection<FDGroup> getAllGroupIds(Connection con) throws SQLException{
 		
 		   Connection conn = con;
@@ -60,22 +54,21 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
- 	       LOGGER.debug("All Grp Id List :"+groups.size());
+ 	       LOGGER.info("All Grp Id List :"+groups.size());
 		   return groups; 
 	}
     
 	
-	private static final String GRP_PRICING_SELECT_MAT_SQL="SELECT  DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'1400') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+ 
+	private static final String GRP_PRICING_SELECT_MAT_SQL="SELECT  DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+ 
             " WHERE g.ID IN "+
             " (select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?) "+
             " AND g.version=(SELECT MAX(version) version FROM ERPS.GRP_SCALE_MASTER WHERE sap_id=G.SAP_ID) "+
             " AND ACTIVE='X'      and gp.grp_id=g.id ";
 
-	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW= " SELECT DISTINCT  g.SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'1400') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+	
-		    " (select  gcm.sap_id, max(gcm.version) v from erps.material_grp mg, ERPS.GRP_SCALE_MASTER gcm    WHERE    mg.mat_id= ? and gcm.id=MG.GRP_ID  group by gcm.sap_id) A,ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
-		    " WHERE A.sap_id=G.sap_id and a.v=g.version and g.active='X' and g.id=GP.GRP_ID and g.version=gp.version and a.v=gp.version "+
-		    " and not exists (Select 1 from ERPS.GRP_SCALE_MASTER gcm where gcm.sap_id=A.sap_id and gcm.version>a.v)";
-	@Deprecated
+	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW="SELECT DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+
+	       " (select grp_id,version from erps.material_grp mg where mat_id=?) A, ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
+	       " WHERE A.grp_id=g.id and a.version=g.version and g.id=GP.GRP_ID and g.version=(select max(version) from ERPS.GRP_SCALE_MASTER WHERE sap_id=g.sap_id) and g.active='X' and g.version=gp.version ";
+
 	public static Map<String,FDGroup> getGroupIdentityForMaterial(Connection conn,String matId) throws SQLException{
 		FDGroup group=null;
 	   PreparedStatement ps = null;
@@ -109,7 +102,7 @@ public class ErpGrpInfoDAO {
  	    	//Do not associate the group info with the material/product.
  	    	return null;
  	    }
-		//LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
+		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
 		return groups; 			
 	}
 	
@@ -118,7 +111,6 @@ public class ErpGrpInfoDAO {
                                                            +" (select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?)" 
                                                            +" and g.version=(select max(version) version from ERPS.GRP_SCALE_MASTER where sap_id=G.SAP_ID)"  
                                                            +" and ACTIVE='X'"; 
-	@Deprecated
 	public static Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(Connection conn,String matId) throws SQLException{
 		Map<SalesAreaInfo, FDGroup> salesAreaGroups = new HashMap<SalesAreaInfo, FDGroup>();
 		PreparedStatement ps = null;
@@ -145,7 +137,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	    }
-		//LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
+		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
 		return salesAreaGroups; 			
 	}
 	
@@ -153,7 +145,7 @@ public class ErpGrpInfoDAO {
     													" from  ERPS.GRP_SCALE_MASTER where sap_id=? and version=?"; 
 	
 
-	@Deprecated
+
 	public static ErpGrpPriceModel getGrpInfo(Connection conn,String grpId, int version) throws SQLException{
 				ErpGrpPriceModel groupInfo=null;
 			   PreparedStatement ps = null;
@@ -184,15 +176,15 @@ public class ErpGrpInfoDAO {
 			    	   if(rs != null) rs.close();
 			    	   if(ps != null) ps.close();
 			    }
-				//LOGGER.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
+				LOGGER.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
 				return groupInfo; 			
 		}
 	
 	
 	
-	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION, NVL(SALES_ORG,'1400') as SALES_ORG,NVL(DISTRIBUTION_CHANNEL,'01') as DISTRIBUTION_CHANNEL FROM ERPS.GRP_PRICING "+
+	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION, NVL(SALES_ORG,'0001') as SALES_ORG,NVL(DISTRIBUTION_CHANNEL,'01') as DISTRIBUTION_CHANNEL FROM ERPS.GRP_PRICING "+
 															" WHERE GRP_ID=? AND VERSION= ?";
-	@Deprecated
+	
 	public static Set<ErpGrpPriceZoneModel> getGrpPricingInfo(Connection con,String grpId,int version) throws SQLException{
 		   Connection conn = con;
 		   PreparedStatement ps = null;
@@ -215,8 +207,8 @@ public class ErpGrpInfoDAO {
 	            	 double price=rs.getDouble("PRICE");
 	            	 String salesOrg = rs.getString("SALES_ORG");
 	            	 String distChannel = rs.getString("DISTRIBUTION_CHANNEL");
-	            	 if(salesOrg==null)salesOrg=FDStoreProperties.getDefaultFdSalesOrg();
-	            	 if(distChannel==null)distChannel=FDStoreProperties.getDefaultFdDistributionChannel();
+	            	 if(salesOrg==null)salesOrg="0001";
+	            	 if(distChannel==null)distChannel="01";
 	            	 ErpGrpPriceZoneModel  grpPriceZoneInfo=new ErpGrpPriceZoneModel(new ZoneInfo(zoneId,salesOrg, distChannel),quantity,unitOfMeasure,price, scaleUnit);	            	 
 	            	 grpPriceZoneInfo.setId(id);
 	            	 zoneList.add(grpPriceZoneInfo);
@@ -227,7 +219,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       //LOGGER.debug("zoneList :"+zoneList.size());
+	       LOGGER.info("zoneList :"+zoneList.size());
 		   return zoneList; 	
 	}
 	
@@ -244,7 +236,7 @@ public class ErpGrpInfoDAO {
 	
 	
 
-	@Deprecated
+	
    public static Collection getFilteredSkus(Connection con,List skus) throws SQLException{
 	   
 	   Connection conn = con;
@@ -319,7 +311,7 @@ public class ErpGrpInfoDAO {
     	   if(rs != null) rs.close();
     	   if(ps != null) ps.close();
        }
-       //LOGGER.debug("sku size :"+skus.size());
+       LOGGER.info("sku size :"+skus.size());
 	   return skus;
 	   
    }
@@ -328,7 +320,7 @@ public class ErpGrpInfoDAO {
 	
 	public static final String GRP_PRICING_MAT_SELECT_SQL=" SELECT ID ,  MAT_ID ,  GRP_ID , VERSION FROM ERPS.MATERIAL_GRP WHERE GRP_ID=? and VERSION=? ";
 															
-	@Deprecated
+	
 	public static Set getGrpMatInfoDetails(Connection con,String grpId,int version) throws SQLException{
 		   Connection conn = con;
 		   PreparedStatement ps = null;
@@ -351,7 +343,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       //LOGGER.debug("matList :"+matList.size());
+	       LOGGER.info("matList :"+matList.size());
 		   return matList; 	
 	}
 	
@@ -360,7 +352,6 @@ public class ErpGrpInfoDAO {
     " (SELECT MAX(version) v,  sap_id FROM erps.material WHERE sap_id IN <XYZ> GROUP BY sap_id) T "+ 
    " WHERE T.v=m.version and T.sap_id=M.SAP_ID ";
 	
-	@Deprecated
 	public static List<String> getSkuCodes(Connection conn, Set<String> matIds) throws SQLException{
 		   List<String> skuList=new ArrayList<String>();
 		   PreparedStatement ps = null;
@@ -394,12 +385,12 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       //LOGGER.debug("matList :"+skuList.size());
+	       LOGGER.info("matList :"+skuList.size());
 		   return skuList; 	
 	}
 	
 	public static final String GET_LATEST_VERSION_NUM =" SELECT max(version)latest from erps.GRP_SCALE_MASTER where sap_id = ?";
-	@Deprecated
+
 	 public static int getLatestVersionNumber(Connection con, String grpId) throws SQLException {
 		   Connection conn = con;
 		   PreparedStatement ps = null;
@@ -435,8 +426,7 @@ public class ErpGrpInfoDAO {
          "AND MG.GRP_ID = GSM.ID " +
          "AND GSM.ACTIVE = 'X' " +
          "GROUP BY sap_id";
-	
-	@Deprecated
+	   	
 	public static Collection<FDGroup> getAllGroupsForMaterial(Connection con, String matId) throws SQLException {
 		Connection conn = con;
 		PreparedStatement ps = null;
@@ -463,8 +453,6 @@ public class ErpGrpInfoDAO {
 	}
 	public static final String GET_LATEST_ACTIVE_GROUP="select SAP_ID,VERSION from erps.grp_scale_master gcm where GCM.SAP_ID=? and "+ 
 	" version=(select max(version) from  erps.grp_scale_master gcm where GCM.SAP_ID=?) and gcm.active='X' ";
-	
-	@Deprecated
 	public static FDGroup getLatestActiveGroup(Connection con,String group) throws SQLException{
 		Connection conn = con;
 		PreparedStatement ps = null;
@@ -500,7 +488,6 @@ public class ErpGrpInfoDAO {
             +" where gsm.version=(select max(gsm1.version) from ERPS.GRP_SCALE_MASTER gsm1 where GSM1.SAP_ID=GSM.SAP_ID) and gsm.active='X' "
             +" and gsm.version=gh.version and MG.GRP_ID=gsm.id order by gsm.sap_id,mg.mat_id ";
 	
-	@Deprecated
 	public static Map<String,List<String>> getModifiedOnlyGroups(Connection con,Date lastModified) throws SQLException{
 		Connection conn = con;
 		PreparedStatement ps = null;

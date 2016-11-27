@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 		<fd:css href="css/reset.css"/>

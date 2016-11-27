@@ -1,9 +1,4 @@
-<%@ page contentType='text/plain' import='com.freshdirect.erp.model.*,com.freshdirect.storeapi.content.*,com.freshdirect.storeapi.*,java.util.*,com.freshdirect.fdstore.*'%> 
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:ProductSearch results='searchResults' searchtype='<%= request.getParameter("searchtype") %>' searchterm='<%= request.getParameter("searchterm") %>'>
-<% /* File format */
+<%@ page contentType='text/plain' import='com.freshdirect.erp.model.*,com.freshdirect.fdstore.*,com.freshdirect.fdstore.content.*,java.util.*' %><%@ taglib uri='template' prefix='tmpl' %><%@ taglib uri='logic' prefix='logic' %><%@ taglib uri='freshdirect' prefix='fd' %><fd:ProductSearch results='searchResults' searchtype='<%= request.getParameter("searchtype") %>' searchterm='<%= request.getParameter("searchterm") %>'><% /* File format */
 /*
 Data element			Data type		Length	
 SAP Material#			CHAR			18

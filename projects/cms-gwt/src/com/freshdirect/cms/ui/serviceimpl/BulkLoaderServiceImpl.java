@@ -1,34 +1,34 @@
 package com.freshdirect.cms.ui.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletRequest;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.ui.editor.bulkloader.BulkLoadPreviewSessionStore;
-import com.freshdirect.cms.ui.editor.bulkloader.service.ContentBulkLoaderService;
-import com.freshdirect.cms.ui.editor.permission.service.PermissionService;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.EnumCardinality;
+import com.freshdirect.cms.application.CmsRequestI.Source;
+import com.freshdirect.cms.node.ChangedContentNode;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
+import com.freshdirect.cms.ui.model.bulkload.BulkLoadPreviewState;
+import com.freshdirect.cms.ui.model.bulkload.BulkLoadReverseRelationship;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadCell;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadHeader;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadRow;
 import com.freshdirect.cms.ui.service.BulkLoaderService;
 import com.freshdirect.cms.ui.service.ServerException;
+import com.freshdirect.fdstore.FDRuntimeException;
 
 public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderService {
 
     private static final long serialVersionUID = 3988173646720452184L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BulkLoaderServiceImpl.class);
-
-    private PermissionService permissionService = EditorServiceLocator.permissionService();
-
-    private ContentBulkLoaderService contentBulkLoaderService = EditorServiceLocator.contentBulkLoaderService();
 
     public BulkLoaderServiceImpl() {
         super();
@@ -36,10 +36,10 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
 
     @Override
     public GwtBulkLoadHeader getPreviewHeader() {
-        GwtBulkLoadHeader header = BulkLoadPreviewSessionStore.getPreviewHeader(getThreadLocalRequest().getSession());
+        GwtBulkLoadHeader header = (GwtBulkLoadHeader) getThreadLocalRequest().getSession().getAttribute("previewHeader");
 
         if (header == null)
-            throw new RuntimeException("Bulk load preview header have not been loaded correctly");
+            throw new FDRuntimeException("Bulk load preview header have not been loaded correctly");
 
         return header;
     }
@@ -75,28 +75,118 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
     }
 
     private List<GwtBulkLoadRow> getBulkLoadRows() {
-
-        List<GwtBulkLoadRow> rows = BulkLoadPreviewSessionStore.getPreviewRows(getThreadLocalRequest().getSession());
+        @SuppressWarnings("unchecked")
+        List<GwtBulkLoadRow> rows = (List<GwtBulkLoadRow>) getThreadLocalRequest().getSession().getAttribute("previewRows");
 
         if (rows == null)
-            throw new RuntimeException("Bulk load preview rows have not been loaded correctly");
+            throw new FDRuntimeException("Bulk load preview rows have not been loaded correctly");
         return rows;
     }
 
     @Override
     public GwtSaveResponse save() throws ServerException {
-        CmsServiceLocator.draftContextHolder().setDraftContext(getDraftContext());
-        if (!permissionService.isNodeModificationEnabled()) {
-            throw new ServerException("Can't save nodes as a publish is in progress");
-        }
-
+        HttpServletRequest request = getThreadLocalRequest();
         List<GwtBulkLoadRow> rows = getBulkLoadRows();
+
         try {
-            return contentBulkLoaderService.save(getUser(), rows);
+            Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
+            Map<String, ContentNodeI> rrNodes = new HashMap<String, ContentNodeI>();
+            Map<String, String> rrAttributes = new HashMap<String, String>();
+            for (GwtBulkLoadRow row : rows) {
+                GwtBulkLoadCell cell = row.getCells().get(0);
+                if ("_K".equals(cell.getAttributeType())) {
+                    ContentNodeI node = null;
+                    if (cell.getStatus().getState() == BulkLoadPreviewState.CREATE) {
+                        ContentKey key = ContentKey.decode(cell.getParsedValue().toString());
+                        ContentNodeI prototype = contentService.createPrototypeContentNode(key, getDraftContext());
+                        node = new ChangedContentNode(prototype);
+                        nodes.put(node.getKey(), node);
+                    } else if (cell.getStatus().getState() == BulkLoadPreviewState.UPDATE) {
+                        ContentKey key = ContentKey.decode(cell.getParsedValue().toString());
+                        ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
+                        node = new ChangedContentNode(clone);
+                        nodes.put(node.getKey(), node);
+                    }
+                    row.getRowStatus().setNode(node);
+                }
+            }
+            for (GwtBulkLoadRow row : rows) {
+                ContentNodeI node = (ContentNodeI) row.getRowStatus().getNode();
+                if (node != null) {
+                    for (int i = 1; i < row.getCells().size(); i++) {
+                        GwtBulkLoadCell cell = row.getCells().get(i);
+                        if (cell.getStatus().getState().isOperation()) {
+                            if ("R".equals(cell.getAttributeType())) {
+                                if (node.getDefinition().getAttributeDef(cell.getAttributeName()).getCardinality() == EnumCardinality.ONE) {
+                                    @SuppressWarnings("unchecked")
+                                    ContentKey key = cell.getParsedValue() != null ? ContentKey.decode(((Collection<String>) cell.getParsedValue()).iterator().next()) : null;
+                                    node.setAttributeValue(cell.getAttributeName(), key);
+                                } else /* EnumCardinality.MANY */ {
+                                    @SuppressWarnings("unchecked")
+                                    Collection<String> keys = (Collection<String>) cell.getParsedValue();
+                                    if (keys == null) {
+                                        node.setAttributeValue(cell.getAttributeName(), null);
+                                    } else {
+                                        ArrayList<ContentKey> nodeKeys = new ArrayList<ContentKey>(keys.size());
+                                        for (String key : keys) {
+                                            ContentKey nodeKey = ContentKey.decode(key);
+                                            nodeKeys.add(nodeKey);
+                                        }
+                                        node.setAttributeValue(cell.getAttributeName(), nodeKeys);
+                                    }
+                                }
+                            } else if ("_RR".equals(cell.getAttributeType())) {
+                                String attributeName = cell.getAttributeName();
+                                ContentNodeI rrNode = rrNodes.get(attributeName);
+                                String rrAttribute = rrAttributes.get(attributeName);
+                                if (rrNode == null) {
+                                    int dotIndex = attributeName.indexOf('.');
+                                    String keyPart = attributeName.substring(0, dotIndex);
+                                    ContentKey key = ContentKey.decode(keyPart);
+                                    rrNode = nodes.get(key);
+                                    if (rrNode == null) {
+                                        ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
+                                        rrNode = new ChangedContentNode(clone);
+                                    }
+                                    rrNodes.put(attributeName, rrNode);
+                                    nodes.put(rrNode.getKey(), rrNode);
+
+                                    rrAttribute = attributeName.substring(dotIndex + 1);
+                                    rrAttributes.put(attributeName, rrAttribute);
+                                }
+                                @SuppressWarnings("unchecked")
+                                Collection<ContentKey> value = (Collection<ContentKey>) rrNode.getAttributeValue(rrAttribute);
+                                if (value == null) {
+                                    value = new ArrayList<ContentKey>();
+                                }
+
+                                BulkLoadReverseRelationship change = (BulkLoadReverseRelationship) cell.getParsedValue();
+                                if (change == BulkLoadReverseRelationship.ADD) {
+                                    if (!value.contains(node.getKey())) {
+                                        value.add(node.getKey());
+                                    }
+                                } else /* BulkLoadReverseRelationship.REMOVE */ {
+                                    value.remove(node.getKey());
+                                }
+
+                                if (!value.isEmpty()) {
+                                    rrNode.setAttributeValue(rrAttribute, value);
+                                } else {
+                                    rrNode.setAttributeValue(rrAttribute, null);
+                                }
+                                Object o = rrNode.getAttributeValue(rrAttribute);
+                                System.out.println(o);
+                            } else {
+                                node.setAttributeValue(cell.getAttributeName(), cell.getParsedValue());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ContentServiceImpl.saveNodes(request, nodes.values(), Source.BULKLOADER);
         } catch (RuntimeException e) {
-            LOGGER.error("error saving changes", e);
             throw new ServerException("error saving changes", e);
         }
-
     }
 }

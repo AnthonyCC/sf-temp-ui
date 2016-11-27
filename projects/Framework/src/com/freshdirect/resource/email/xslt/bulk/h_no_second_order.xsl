@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 		<title>Get $10 off your second order!</title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -43,14 +43,14 @@
 		<td>
 			<p>Dear <xsl:value-of select="customer/firstName"/>,</p>
 			
-			<p>We hope your first <a href="http://www.freshdirect.com/index.jsp?serviceType=HOME">FreshDirect</a> experience was nothing short of excellent. Now we're giving you 10 good reasons to come back for seconds.</p>
+			<p>We hope your first <a href="http://www.freshdirect.com/index.jsp">FreshDirect</a> experience was nothing short of excellent. Now we're giving you 10 good reasons to come back for seconds.</p>
 			
             <p>Just place your next web order ($40 minimum), and give us your thoughts. We'll give you <b>$10 more free fresh food.</b>* Plus, you have free delivery for two more orders.</p>
 			
             <p>Did somebody say <a href="http://www.freshdirect.com/quickshop/index.jsp">Reorder</a>? It's easy to shop from your top items, past orders, and shopping lists to stay stocked on all your favorites.</p>
 			
             <p>GO AHEAD, START SHOPPING.<br />
-			<a href="http://www.freshdirect.com/index.jsp?serviceType=HOME">www.freshdirect.com</a></p>
+			<a href="http://www.freshdirect.com/index.jsp">www.freshdirect.com</a></p>
             
 			<p>You can also contact us via email at <a href="mailto:service@freshdirect.com">service@freshdirect.com</a></p>
 			

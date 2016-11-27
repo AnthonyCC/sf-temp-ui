@@ -176,11 +176,10 @@ public class LogisticsDataDecoder {
 				timeslot.getCutoffDateTime(), timeslot.getPremiumCutoffDateTime(),
 				timeslot.getZoneId(), timeslot.getZoneCode(), timeslot.isNormalAvailCapacity(), timeslot.isAvailCTCapacity(), timeslot.getGeoRestricted(), 
 				timeslot.isTimeslotRestricted(), timeslot.isTimeslotRemoved(), timeslot.getStoreFrontAvailable(), timeslot.isUnavailable(), timeslot.getEcoFriendly(), 
-				timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isPremiumSlot(), timeslot.isFdxSlot(),
+				timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(), timeslot.isFdxSlot(),
 				timeslot.getTotalAvailable(), timeslot.getBaseAvailable(), timeslot.getChefsTableAvailble(), timeslot.isRadius(), timeslot.getTravelZone(), 
 				timeslot.getModX(), timeslot.getModY(), timeslot.getAdditionalDistance(), EnumRegionServiceType.getEnum(timeslot.getRegionServiceType()),
-				timeslot.getSoFirstDeliveryDate(),timeslot.getOriginalCutoffDateTime(), timeslot.getCapacityUtilizationPercentage());
-		t.setSameDaySlot(timeslot.isSameDaySlot());
+				timeslot.getSoFirstDeliveryDate(),timeslot.getOriginalCutoffDateTime());
 		return t;
 	}
 	
@@ -262,7 +261,7 @@ public class LogisticsDataDecoder {
 	
 			result = new FDZoneCutoffInfo(cutoff.getZoneCode(), cutoff.getDay(), 
 				new TimeOfDay(cutoff.getStartTime()), 
-				new TimeOfDay(cutoff.getEndTime()), cutoff.getCutoffTime());
+				new TimeOfDay(cutoff.getEndTime()), new TimeOfDay(cutoff.getCutoffTime()));
 		}
 		return result;
 	}

@@ -79,8 +79,7 @@ public abstract class FDCustomerProductList extends FDCustomerList {
 		stat.setFrequency(1);
 		stat.setFirstPurchase(new Date());
 		stat.setLastPurchase(new Date());
-		if(selection.getCustomerListLineId()!=null)
-			stat.setId(selection.getCustomerListLineId());
+		
 		return stat;
 	}
 

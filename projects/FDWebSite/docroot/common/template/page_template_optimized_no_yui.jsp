@@ -8,11 +8,11 @@
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-<%--   <title><tmpl:get name='title'/></title> --%>
-    <tmpl:get name="seoMetaTag"/>
+  <title><tmpl:get name='title'/></title>
+    
   <%@ include file="/common/template/includes/metatags.jspf" %>
   <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
   <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>
@@ -69,10 +69,33 @@
 		</script>
 		
 		<jwr:script src="/fdmisc.js" useRandomParam="false" />
-		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
+		
+		<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
+			<jwr:script src="/commonjavascript.js" useRandomParam="false" />
+		<% } else { %>
+			<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
+		<% } %>
+		
 		<jwr:script src="/fdccl.js"  useRandomParam="false" />
 	
 		<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
+		
+		<%
+			FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
+			FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+	
+			if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+					(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
+				) {
+				%>
+					<script type="text/javascript">
+			    		$jq(document).ready(function() {
+				    		doOverlayWindow('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
+			    		});
+			    	</script>
+		    	<%
+			}
+		%>
 	  
   <%-- END i_javascripts_optimized.jspf --%>
   
@@ -83,7 +106,8 @@
 </head>
 
 <body>
-
+      
+  <%@ include file="/shared/template/includes/i_body_start.jspf" %>       
   <%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
      
   <div id="main" class="container staticpage">

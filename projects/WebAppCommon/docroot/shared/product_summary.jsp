@@ -1,8 +1,8 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
-<%@ page import='com.freshdirect.storeapi.content.ProductModel'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.ProductModel'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='java.util.*'%>
 <%@ page import='java.io.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -16,6 +16,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%!
 //**** Methods used on the product pages.  **** 
@@ -88,14 +89,8 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 
 <tmpl:insert template='/shared/template/summary.jsp'>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
-<%
-String prodPageRatingStuff = getProdPageRatings(productNode,response);
-String title = "FreshDirect - " + currentFolder.getFullName() + " Guide: " + productNode.getFullName();
-%>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+<%String prodPageRatingStuff = getProdPageRatings(productNode,response);%>
+<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName()  %> Guide: <%= productNode.getFullName() %></tmpl:put>
 <tmpl:put name='pageTitle' direct='true'><%= currentFolder.getFullName().toUpperCase()  %> GUIDE</tmpl:put>
 
 <tmpl:put name='content' direct='true'>

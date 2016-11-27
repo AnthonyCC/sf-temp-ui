@@ -2,38 +2,20 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 
-
 public class AccountActivityUtil implements SessionName {
-
-	private static final Category LOGGER = LoggerFactory.getInstance(AccountActivityUtil.class);
 
 	public static FDActionInfo getActionInfo(HttpSession session) {
 		return getActionInfo(session, "");
 	}
 
-	public static FDActionInfo getActionInfo(HttpSession session, FDUserI user) {
-		FDActionInfo info = getActionInfo(session, "");
-		if (info.getIdentity() == null && user != null && user.getIdentity() != null) {
-			info.setIdentity(user.getIdentity());
-			LOGGER.info("fdActionInfo identity" + info.getIdentity() + ", fdUserId=" + info.getFdUserId());
-		}
-		return info;
-	}
-	
 	public static FDActionInfo getActionInfo(HttpSession session, String note) {
 		EnumTransactionSource src;
 		String initiator="SYSTEM";//default
@@ -69,22 +51,9 @@ public class AccountActivityUtil implements SessionName {
 	            src = EnumTransactionSource.FOODKICK_WEBSITE;
 	            agent = null;
 	            initiator = "CUSTOMER";
-		} else if (app != null
-                && app.equalsIgnoreCase(EnumTransactionSource.FDX_IPHONE
-                        .getCode())) {
-            src = EnumTransactionSource.FDX_IPHONE;
-            agent = null;
-            initiator = "CUSTOMER";
-		} else if (app != null
-				&& app.equalsIgnoreCase(EnumTransactionSource.ANDROID_PHONE
-						.getCode())) {
-			src = EnumTransactionSource.ANDROID_PHONE;
-			agent = null;
-			initiator = "CUSTOMER";
-		}  	else {
+		}else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;
-			
 			initiator = "CUSTOMER";
 		}
 		
@@ -96,17 +65,9 @@ public class AccountActivityUtil implements SessionName {
 			eStore=currentUser.getUserContext().getStoreContext().getEStoreId();
 		
 		}
-		
-		if(currentUser!=null && currentUser.getUser()!=null && currentUser.getUser().getMasqueradeContext()!=null ) {
-            FDActionInfo.setMasqueradeAgentTL(currentUser.getUser().getMasqueradeContext().getAgentId());
-        }
-		
-		FDActionInfo info = new FDActionInfo(eStore,src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
-		info.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, currentUser));
 
-		if(currentUser!=null) {
-			info.setClientIp(currentUser.getClientIp());
-		}
+		FDActionInfo info = new FDActionInfo(eStore,src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
+
 		return info;
 	}
 	

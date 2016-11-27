@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.SearchNavigator;
@@ -27,7 +28,6 @@ import com.freshdirect.framework.util.CSVUtils;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 
 public class SnapshotGenerator {

@@ -19,23 +19,16 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.RequestIdCache;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ContentNodeModelUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getInstance(ContentNodeModelUtil.class);
+    private final static Logger LOGGER = LoggerFactory.getInstance(ContentNodeModelUtil.class);
 
-    private static final boolean STRICT_MODE = false;
-    
-    // Model Request caches
-    public static final String CMS_PARENT_KEY_CACHE_NAME = "cmsParentKeyCache";
-    public static final String CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME = "cmsContentNodeAttributeCache";
+    private final static boolean STRICT_MODE = false;
 
-    private static final Map<String, String> CONTENT_TO_TYPE_MAP = new HashMap<String, String>();
+    private static Map<String, String> CONTENT_TO_TYPE_MAP = new HashMap<String, String>();
 
     static {
         CONTENT_TO_TYPE_MAP.put("Store", ContentNodeModel.TYPE_STORE);
@@ -74,7 +67,7 @@ public class ContentNodeModelUtil {
         CONTENT_TO_TYPE_MAP.put("GlobalNavigation", ContentNodeModel.TYPE_GLOBAL_NAVIGATINO);
     }
 
-    private static final LinkedHashMap<String, Class<?>> TYPE_MODEL_MAP = new LinkedHashMap<String, Class<?>>();
+    private static LinkedHashMap<String, Class<?>> TYPE_MODEL_MAP = new LinkedHashMap<String, Class<?>>();
 
     static {
         TYPE_MODEL_MAP.put("Sku", SkuModel.class);
@@ -131,29 +124,6 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("SearchSuggestionGroup", SearchSuggestionGroupModel.class);
         TYPE_MODEL_MAP.put("RecipeTag", RecipeTagModel.class);
         TYPE_MODEL_MAP.put("ImageBanner", ImageBanner.class);
-    }
-    
-    static {
-        if (ContentNodeModelUtil.isRequestCacheEnabled()) {
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_PARENT_KEY_CACHE_NAME, 5000, 30l));
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, 20000, 30l));
-        }
-    }
-
-    public static boolean isRequestCacheEnabled(){
-        return !CmsManager.getInstance().isReadOnlyContent();
-    }
-
-    public static String getRequestIdCacheKey(String... ids) {
-        StringBuffer cacheKey = new StringBuffer();
-        String requestId = RequestIdCache.getRequestId();
-        if (requestId != null && ContentNodeModelUtil.isRequestCacheEnabled()) {
-            for (String id : ids) {
-                cacheKey.append(id).append('_');
-            }
-            cacheKey.append(requestId);
-        }
-        return cacheKey.toString();
     }
 
     public static String getCachedContentType(String type) {
@@ -239,14 +209,8 @@ public class ContentNodeModelUtil {
     }
 
     public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent, boolean inheritedAttrs) {
-        boolean isRefreshed = false;
-        List updatedChildModels = null;
-        final String cacheKey = ContentNodeModelUtil.getRequestIdCacheKey(refModel.getContentKey().getId(), refNodeAttr);
-        if (!cacheKey.isEmpty()) {
-            updatedChildModels = EhCacheUtil.getListFromCache(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey);
-        }
-        if (updatedChildModels == null) {
-            updatedChildModels = new ArrayList<ContentNodeModelImpl>();
+
+        synchronized (childModels) {
             Object value;
 
             if (!inheritedAttrs) {
@@ -261,34 +225,24 @@ public class ContentNodeModelUtil {
                 newKeys = new ArrayList<ContentKey>();
             }
 
-            isRefreshed = !compareKeys(newKeys, childModels);
+            boolean equal = compareKeys(newKeys, childModels);
 
-            if (isRefreshed) {
-                for (int i = 0; i < newKeys.size(); i++) {
-                    ContentKey key = newKeys.get(i);
-                    ContentNodeModelImpl newModel = buildChildContentNode(refModel, key, setParent, i);
-                    if (newModel != null) {
-                        updatedChildModels.add(newModel);
-                    }
-                }
-                refreshChildModels(childModels, updatedChildModels);
-                if (!cacheKey.isEmpty()) {
-                    EhCacheUtil.putListToCache(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey, updatedChildModels);
+            if (equal)
+                return false; // didn't need to refresh
+
+            childModels.clear();
+            for (int i = 0; i < newKeys.size(); i++) {
+                ContentKey key = newKeys.get(i);
+
+                ContentNodeModelImpl m = buildChildContentNode(refModel, key, setParent, i);
+
+                if (m != null) {
+                    childModels.add(m);
                 }
             }
-        } else {
-            refreshChildModels(childModels, updatedChildModels);
         }
-
-        return isRefreshed;
+        return true;
     }
-
-	private static void refreshChildModels(List childModels, List cachedChildModels) {
-		synchronized (childModels) {
-			childModels.clear();
-			childModels.addAll(cachedChildModels);
-		}
-	}
 
     private static ContentNodeModelImpl buildChildContentNode(ContentNodeModelImpl refModel, ContentKey key, boolean setParent, int i) {
         // cache instances in navigable relationships
@@ -301,7 +255,7 @@ public class ContentNodeModelUtil {
             cache = refModel.getContentKey().equals(otherKey);
         }
         if (cache) {
-            ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getContentNodeByKey(key);
+            ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getCachedContentNodeByKey(key);
             if (cachedContentNodeByKey != null) {
                 ContentNodeModel parentNode = cachedContentNodeByKey.getParentNode();
                 if (parentNode == null) {
@@ -482,7 +436,7 @@ public class ContentNodeModelUtil {
     }
 
     public static ContentKey getContentKey(String type, String contentId) {
-        return ContentKey.getContentKey(ContentType.get(type), contentId);
+        return new ContentKey(ContentType.get(type), contentId);
     }
 
     /**
@@ -493,7 +447,7 @@ public class ContentNodeModelUtil {
      */
     public static ContentKey getAliasCategoryRef(String type, String contentId) {
         ContentKey refKey = null;
-        ContentKey key = ContentKey.getContentKey(ContentType.get(type), contentId);
+        ContentKey key = new ContentKey(ContentType.get(type), contentId);
         ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(key);
         // Make sure the category is not hidden.
         if (cn != null && !cn.isHidden() && cn instanceof CategoryModel) {

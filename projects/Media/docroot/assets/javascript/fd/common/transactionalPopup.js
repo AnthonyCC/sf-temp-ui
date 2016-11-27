@@ -65,8 +65,6 @@ var FreshDirect = FreshDirect || {};
     },
     open: {
       value: function (config) {
-        /* close previous one, fixes timing error issue APPDEV-6437 */
-        fd.common[this.popupId].close();
         var target = config.element,
             width = $(target).width(),
             popupId=this.popupId,
@@ -74,7 +72,7 @@ var FreshDirect = FreshDirect || {};
             relatedHolder = $('#'+popupId+' .transactional-related-item'),
             mainHolder = $('#'+popupId+' .transactional-main-item'),
             learnMoreLink = $('#'+popupId+' .transactional-popup-learnmore'),
-            eventSource = "",
+            cmEvSource = "",
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             $img = $(pimg).find('img.portrait-item-productimage'),
@@ -132,11 +130,11 @@ var FreshDirect = FreshDirect || {};
             $(el).attr('fdform', 'trnp_'+$(el).attr('fdform'));
           });
 
-          $('#'+popupId).attr('data-eventsource', null);
-          eventSource = $(target).closest('[data-eventsource]').data('eventsource');
+          $('#'+popupId).attr('data-cmeventsource', null);
+          cmEvSource = $(target).closest('[data-cmeventsource]').data('cmeventsource');
 
-          if(eventSource && eventSource.length > 0){
-            $('#'+popupId).attr('data-eventsource', eventSource);
+          if(cmEvSource && cmEvSource.length > 0){
+            $('#'+popupId).attr('data-cmeventsource', cmEvSource);
           }
 
           if (this.adjustWidth) {
@@ -164,10 +162,6 @@ var FreshDirect = FreshDirect || {};
               visibility: 'hidden'
             }).removeClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html(related.html());
-
-            //lazy load
-            $('#'+popupId+' '+this.relatedBodySelector).find('.lazyload:not(.lazy-loaded)').trigger('lazyLoad');
-            
             //pass on classes from container
             relatedHolder.addClass(related.attr('class'));
             related.remove();
@@ -241,7 +235,7 @@ var FreshDirect = FreshDirect || {};
               }
 
               this.showRelated = setTimeout($.proxy(function () {
-                var wwidth = $('.container:not([id*="oas"])').length ? $('.container.global:not([id*="oas"])').first()[0].getBoundingClientRect().right : $(window).width(),
+                var wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width(),
                     ppos = $('#'+popupId).position().left;
 
                 this.showRelated = null;
@@ -268,10 +262,6 @@ var FreshDirect = FreshDirect || {};
                   $(relatedHolder).find('[data-component="addToListButton"]').trigger("focus");
                 }
 
-                if (!related.attr('data-impression-reported')) {
-                  related.attr('data-impression-reported', true);
-                  fd.common.dispatcher.signal('productImpressions', { el: related, type: 'impressionsPushed', listData: {channel: 'rec_flyout'}});
-                }
               }, this), 500);
             }
 
@@ -279,6 +269,7 @@ var FreshDirect = FreshDirect || {};
             // fix for: icon font does not appear on :before in IE8, only on hover
             $('#'+popupId + ' ' + "[data-component='addToListButton']").trigger('focus');
           }
+          
 
 
           /* hooklogic click event */
@@ -287,16 +278,12 @@ var FreshDirect = FreshDirect || {};
                 	/* exclusion elems */
                 	if (
                 		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
-                	) { return;
+                	) { return; 
                 	} else {
                 		$(e).data('hooklogic-beacon-click', 'true');
                 		$(e).on('click', function(event) {
-                			var id = $(this).closest('.portrait-item').attr('id') + '_hlClick';
-                			if ($('#'+popupId).find('img#'+id).length !== 0) {
-                				return; //stop multiple firings
-                			}
                         	var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
-                        	$('#'+popupId).append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+                        	$('#'+popupId).append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
                 		});
                 	}
         	  }
@@ -317,11 +304,6 @@ var FreshDirect = FreshDirect || {};
         scLeft = $(window).scrollLeft(),
         scTop = $(window).scrollTop(),
         positions = {}, wwidth;
-    
-    if (!transactionalPopup.popup.$el.is(':visible')) {
-    	//fallback to alignTo element if transactional popup is not visible (like when using the keyboard)
-    	trPopupBox = transactionalPopup.popup.$alignTo && transactionalPopup.popup.$alignTo[0].getBoundingClientRect();
-    }
 
     if (relatedBox && relatedBox.width !== 0) {
       trPopupBox = {
@@ -337,10 +319,11 @@ var FreshDirect = FreshDirect || {};
     if (trPopupBox && trPopupBox.width !== 0) {
       positions = {
         left: trPopupBox.left + scLeft,
-        top: trPopupBox.top + scTop
+        top: trPopupBox.top + scTop,
+        minHeight: trPopupBox.height
       };
 
-      wwidth = $(".container").length ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
+      wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
 
       if (trPopupBox.left + popupBox.width > wwidth) {
         positions.left = trPopupBox.right - popupBox.width + scLeft;
@@ -367,16 +350,8 @@ var FreshDirect = FreshDirect || {};
 
   };
 
-  $(function() {
-	  if ($.fn['ellipsis']) {
-      $('.product-name-no-brand').each(function(i,e) {
-        window.requestAnimationFrame(function() {
-          $(e).ellipsis({ lines: 4 });
-        });
-      });
-	  }
-  });
-
+  $(".product-name-no-brand").ellipsis({ lines: 4 });
+  
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
     // block popup open if we force it in browseMain
@@ -385,17 +360,13 @@ var FreshDirect = FreshDirect || {};
       return false;
     }
 
-    var element = $(event.currentTarget).closest('[data-component="product"]'),
-        config = {
-          element: element,
-          productId:element.data('productId'),
-          catId:element.data('catId')
-        };
-    if (element.data('virtualCategory')) {
-      config.virtualCategory = element.data('virtualCategory');
-    }
-    if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').length === 0) {
-      transactionalPopup.open(config);
+    var element = $(event.currentTarget).closest('[data-component="product"]');
+    if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').size() === 0) {
+      transactionalPopup.open({
+        element: element,
+        productId:element.data('productId'),
+        catId:element.data('catId')
+      });
     }
 
    });

@@ -3,11 +3,9 @@ package com.freshdirect.webapp.ajax.product.data;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.SalesUnitRatio;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleContainer;
@@ -41,18 +39,11 @@ public class ProductData extends BasicProductData implements SkuData {
      * Is product available for sale?
      */
     protected boolean available;
-    
-    /**
-     * Available qty in inventory, adjusted for FK/FD
-     */
-    protected double availableQty;
 
-	/**
+    /**
      * Is product discontinued for sale?
      */
     protected boolean isDiscontinued;
-    
-    private boolean isOutOfSeason;
 
     /**
      * This flag signals that product data is rather incomplete Expect that most of them are not populated It might only be turned on when populating products / skus without
@@ -67,7 +58,7 @@ public class ProductData extends BasicProductData implements SkuData {
      */
     protected Quantity quantity;
 
-    protected boolean maxProductSampleQuantityReached;
+    protected double productSampleQuantity;
     /**
      * Amount for sales-unit enum type, containing the full enum, plus the selected value.
      */
@@ -96,8 +87,6 @@ public class ProductData extends BasicProductData implements SkuData {
      * burst image type: fav, new, back, free
      */
     protected String badge;
-
-    protected boolean newProduct;
 
     // Ratings
     protected int wineRating;
@@ -165,11 +154,7 @@ public class ProductData extends BasicProductData implements SkuData {
     protected boolean variationDisplay;
 
     protected ProductData browseRecommandation;
-    
-    @JsonIgnore
-    private ProductModel productModel;
-    @JsonIgnore
-    private boolean requirePopulation;
+
     /**
      * Messaging - various messages
      */
@@ -227,16 +212,6 @@ public class ProductData extends BasicProductData implements SkuData {
      * Note, only positive values are valid, 0 means no-value
      */
     private int timeToComplete = 0;
-    
-    private String pageBeaconOfApi;
-    
-    public ProductData() {
-    	
-    }
-    public ProductData(ProductModel p) {
-    	productModel = p;
-    	requirePopulation = true;
-    }
     
     public String getProductQualityNote() {
         return productQualityNote;
@@ -351,15 +326,6 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setAvailable(boolean available) {
         this.available = available;
     }
-    
-    public double getAvailableQty() {
-    	return Math.floor(availableQty);
-		
-	}
-
-	public void setAvailableQty(double availableQty) {
-		this.availableQty = availableQty;
-	}
 
     public boolean isDiscontinued() {
         return isDiscontinued;
@@ -367,14 +333,6 @@ public class ProductData extends BasicProductData implements SkuData {
 
     public void setDiscontinued(boolean isDiscontinued) {
         this.isDiscontinued = isDiscontinued;
-    }
-
-    public boolean isOutOfSeason() {
-        return isOutOfSeason;
-    }
-
-    public void setOutOfSeason(boolean isOutOfSeason) {
-        this.isOutOfSeason = isOutOfSeason;
     }
 
     public String getDepartmentDesc() {
@@ -403,12 +361,12 @@ public class ProductData extends BasicProductData implements SkuData {
         this.quantity = quantity;
     }
 
-    public boolean isMaxProductSampleQuantityReached() {
-        return maxProductSampleQuantityReached;
+    public Double getProductSampleQuantity() {
+        return productSampleQuantity;
     }
 
-    public void setMaxProductSampleQuantityReached(boolean maxProductSampleQuantityReached) {
-        this.maxProductSampleQuantityReached = maxProductSampleQuantityReached;
+    public void setProductSampleQuantity(Double productSampleQuantity) {
+        this.productSampleQuantity = productSampleQuantity;
     }
 
     @Override
@@ -688,7 +646,7 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setBrowseRecommandation(ProductData browseRecommandation) {
         this.browseRecommandation = browseRecommandation;
     }
-    
+
     public String getMsgCancellation() {
         return msgCancellation;
     }
@@ -934,34 +892,5 @@ public class ProductData extends BasicProductData implements SkuData {
 
 	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
-	}
-
-    public boolean isNewProduct() {
-        return newProduct;
-    }
-
-    public void setNewProduct(boolean newProduct) {
-        this.newProduct = newProduct;
-    }
-    
-    public boolean isRequirePopulation(){
-    	return requirePopulation;
-    }
-    public void setRequirePopulation(boolean b){
-    	requirePopulation = b;
-    	if (!b) {
-    		productModel = null;
-    	}
-    }
-    public ProductModel getProductModel() {
-    	return productModel;
-    }
-
-	public String getPageBeaconOfApi() {
-		return pageBeaconOfApi;
-	}
-
-	public void setPageBeaconOfApi(String pageBeaconOfApi) {
-		this.pageBeaconOfApi = pageBeaconOfApi;
 	}
 }

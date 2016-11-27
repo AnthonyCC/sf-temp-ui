@@ -2,20 +2,22 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ecomm.gateway.CountryOfOriginService;
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
+import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDCOOLInfoCache extends FDAbstractCache {
 	
@@ -34,18 +36,19 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 	}
 	
 	protected Map<ErpCOOLKey, ErpCOOLInfo> loadData(Date since) {
-		Map<ErpCOOLKey, ErpCOOLInfo> data = new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		try {
-
-			data = CountryOfOriginService.getInstance().getCountryOfOriginData(since);
-
-			LOGGER.info("FDCOOLInfoCache REFRESHED: " + data.size());
+			LOGGER.info("REFRESHING");
+			ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
+			Map<ErpCOOLKey, ErpCOOLInfo> data = sb.load(since);
+			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
 			throw new FDRuntimeException(e);
 		} catch (EJBException e) {
 			throw new FDRuntimeException(e);
-		}
+		} catch (CreateException e) {
+			throw new FDRuntimeException(e);
+		} 
 	}
 	
 	protected Date getModifiedDate(Object item) {
@@ -66,6 +69,14 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		ErpCOOLKey key= new ErpCOOLKey(sapMatID,plantID);
 		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(key);
 		return info!=null? info.getCountryInfo():null;
+	}
+	
+	private ErpCOOLManagerHome lookupCOOLInfoHome() {
+		try {
+			return (ErpCOOLManagerHome) serviceLocator.getRemoteHome(ErpServicesProperties.getCOOLManagerHome());
+		} catch (NamingException ne) {
+			throw new EJBException(ne);
+		}
 	}
 
 }

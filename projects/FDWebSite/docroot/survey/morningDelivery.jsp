@@ -45,24 +45,21 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Morning Delivery Survey"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Morning Delivery Survey</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>Morning Delivery Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <table width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="11" class="text12" align="center"><br>
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <fd:ReceiptSurvey actionName="submitSurvey" result="result" successPage="/survey/morningDelivery.jsp?info=thankyou" survey="<%=MorningDelivery%>">
 <form name="morningDeliverySurvey" method="POST">
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Morning Delivery Survey</span><br><span class="space4pix"><br></span>
 		FreshDirect knows that our customers love our service and the fresh food we deliver. We are currently researching the concept of expanding our delivery windows to weekday mornings. Your responses to this brief survey will help us understand our customers' needs. Of course, in accordance with the FreshDirect Privacy Policy, all of your answers will be kept confidential.
-<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -72,17 +69,17 @@ response.setDateHeader ("Expires", 0);
 		</td>
 	</tr>
 	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL-610%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL-610%>" height="1"></td>
 	</tr>
 	<tr>
 		<td colspan="11">
@@ -150,7 +147,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="morningDeliverySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="morningDeliverySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,8 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.servlet.jsp.JspException;
+
+import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.mockejb.interceptor.AspectSystem;
@@ -26,12 +27,12 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.index.IndexerService;
-import com.freshdirect.cms.index.configuration.IndexerConfiguration;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.AutoComplete;
 import com.freshdirect.cms.search.ContentIndex;
-import com.freshdirect.cms.search.SearchTestUtils;
+import com.freshdirect.cms.search.LuceneSearchService;
+import com.freshdirect.cms.search.LuceneSearchServiceTest;
+import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryZoneInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
@@ -45,8 +46,6 @@ import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockPageContext;
 
-import junit.framework.TestCase;
-
 public class SmartSearchTest extends TestCase {
 
     private final static Logger LOGGER = Logger.getLogger(SmartSearchTest.class);
@@ -55,28 +54,29 @@ public class SmartSearchTest extends TestCase {
         super(name);
     }
 
-    boolean alreadyInited = false;
+    boolean                alreadyInited = false;
 
-    ContentServiceI service;
-    IndexerService indexer;
+    ContentServiceI        service;
+    LuceneSearchService    searchService;
 
-    MockPageContext ctx;
+    MockPageContext        ctx;
     MockHttpServletRequest request;
-    SmartSearchTag sst;
+    SmartSearchTag         sst;
 
     @Override
-    public void setUp() throws Exception {
+	public void setUp() throws Exception {
         AutoComplete.setDisableAutocompleter(true);
 
         Context context = TestUtils.createContext();
-
+        
         TestUtils.createMockContainer(context);
 
         TestUtils.createTransaction(context);
 
         AspectSystem aspectSystem = TestUtils.createAspectSystem();
 
-        // aspectSystem.add(new ErpCustomerFinderAspect(null));
+        //aspectSystem.add(new ErpCustomerFinderAspect(null));
+        
 
         LOGGER.info("CMS init");
         List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
@@ -87,34 +87,42 @@ public class SmartSearchTest extends TestCase {
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FilteredStore2.xml");
 
         List<ContentIndex> indexes = new ArrayList<ContentIndex>();
-        AttributeIndex index = new AttributeIndex("Product", "FULL_NAME");
+        AttributeIndex index = new AttributeIndex();
+        index.setContentType("Product");
+        index.setAttributeName("FULL_NAME");
         indexes.add(index);
 
-        indexer = SearchTestUtils.createIndexerService(indexes);
-//        indexer.setSynonyms(Collections.<SynonymDictionary> emptyList());
-//        indexer.setSpellingSynonyms(Collections.<SynonymDictionary> emptyList());
+        searchService = LuceneSearchServiceTest.createSearchService(indexes, LuceneSearchServiceTest.createTempDir(SmartSearchTest.class.getName(), "tmp"));
+		searchService.setSynonyms(Collections.<SynonymDictionary>emptyList());
+		searchService.setSpellingSynonyms(Collections.<SynonymDictionary>emptyList());
 
         Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
-        indexer.fullIndex(contentNodes.values(), IndexerConfiguration.getDefaultConfiguration());
+        searchService.index(contentNodes.values(), true);
 
-        CmsManager.setInstance(new CmsManager(service,
-                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+        CmsManager.setInstance(new CmsManager(service, searchService));
 
         aspectSystem.add(new ScoreFactorGlobalNameAspect(Collections.singleton(ScoreProvider.GLOBAL_POPULARITY)));
-
-        aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899", 4.0)
-                .addAvailableSku("DAI0059088", 5.0));
+        
+        aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899",
+                4.0).addAvailableSku("DAI0059088", 5.0));
 
         aspectSystem.add(new FDFactoryZoneInfoAspect());
-        /*
-         * aspectSystem.add(new ProductStatisticProviderAspect() { public Map getGlobalProductScores() { try { Map map = new HashMap();
-         * map.put(ContentKey.create(FDContentTypes.PRODUCT, "cfncndy_ash_mcrrd"), new Float(100)); map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new
-         * Float(90)); map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"), new Float(80)); return map; } catch (InvalidContentKeyException e) { throw new
-         * RuntimeException(e); } }
-         * 
-         * });
-         */
+        /*aspectSystem.add(new ProductStatisticProviderAspect() {
+            public Map getGlobalProductScores() {
+                try {
+                    Map map = new HashMap();
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "cfncndy_ash_mcrrd"), new Float(100));
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(90));
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"), new Float(80));
+                    return map;
+                } catch (InvalidContentKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        });*/
         ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
+             
 
             @Override
             protected double getPersonalizedScore(String userId, ContentKey key, int idx) {
@@ -127,7 +135,7 @@ public class SmartSearchTest extends TestCase {
                 }
                 return 0;
             }
-
+            
             @Override
             protected double getGlobalScore(ContentKey key, int idx) {
                 String id = key.getId();
@@ -140,10 +148,11 @@ public class SmartSearchTest extends TestCase {
                 if ("dai_organi_2_milk_02".equals(id)) {
                     return 80;
                 }
-
+             
                 return 0;
             }
-
+            
+            
         }.addPersonalizedFactors(ScoreProvider.USER_FREQUENCY).addGlobalFactors(ScoreProvider.GLOBAL_POPULARITY));
 
         GlobalCompiler.getInstance().addVariable(ScoreProvider.GLOBAL_POPULARITY, Expression.RET_FLOAT);
@@ -154,7 +163,7 @@ public class SmartSearchTest extends TestCase {
     void initTag() {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "my-test-user-id", "fdId"));
         request = (MockHttpServletRequest) ctx.getRequest();
-
+        
         sst = new MockedSmartSearchTag();
         sst.setPageContext(ctx);
     }
@@ -486,7 +495,7 @@ public class SmartSearchTest extends TestCase {
 
             assertTreeElement("root element 1", "Dairy", 2, 1, iter.next());
             assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, iter.next());
-
+            
             assertNotNull("has products", sst.getPageProducts());
 
             assertEquals("product list size", 3, sst.getNoOfProducts());
@@ -494,7 +503,7 @@ public class SmartSearchTest extends TestCase {
             Set<BrandModel> brandSet = sst.getBrands();
             assertEquals("brand set size", 1, brandSet.size());
             assertContentNodeWithNameInTheCollection("brandset", brandSet, "Organic Valley");
-
+            
             assertEquals("filtered product list size", 3, sst.getNoOfBrandFilteredProducts());
             assertContentNodeModelKey("filtered product: pop score", "dai_orgval_whlmilk_01", sst.getPageProducts().get(0));
             assertContentNodeModelKey("filtered product: pop score", "dai_organi_1_milk_01", sst.getPageProducts().get(1));
@@ -537,7 +546,7 @@ public class SmartSearchTest extends TestCase {
     }
 
     private static void assertContentNodeWithNameInTheCollection(String errorMsg, Collection<? extends ContentNodeModel> collection, String fullName) {
-        for (ContentNodeModel cnm : collection) {
+        for ( ContentNodeModel cnm  : collection ) {
             if (fullName.equals(cnm.getFullName())) {
                 return;
             }

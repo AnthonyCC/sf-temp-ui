@@ -10,7 +10,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>We've issued your credits</title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -84,17 +84,7 @@
 		</div>
 		
 		<div style="margin: 15px 0; font-size: 16px;">
-			<xsl:choose>
-				<xsl:when test="complaint/storeCreditAmount &gt; 0 and complaint/cashBackAmount &gt; 0">
-					Hang tight, it may take up to two business days for your store credit to become available. Once it's loaded to your account we'll automatically subtract the store credit from your next order total at the last stage of checkout. Please note that refunds to your credit card should reflect on your statement within five business days.
-				</xsl:when>
-				<xsl:when test="complaint/storeCreditAmount = 0 and complaint/cashBackAmount &gt; 0">
-					Hang tight, it may take up to five business days for the amount to reflect back on your card.
-				</xsl:when>
-				<xsl:when test="complaint/storeCreditAmount &gt; 0 and complaint/cashBackAmount = 0">
-					Hang tight, it may take up to two business days for your store credit to become available. Once it's loaded to your account we'll automatically subtract the store credit from your next order total at the last stage of checkout.
-				</xsl:when>
-			</xsl:choose>
+			Hang tight, it takes about 2 business days for your store credit to become available. Once it's loaded to your account, we'll automatically subtract the store credit from your next order total at the last stage of checkout. Hooray!
 		</div>
 		
 		<div style="margin: 15px 0; font-size: 16px;">

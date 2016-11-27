@@ -39,7 +39,7 @@ if ("POST".equals(request.getMethod())) {
         cal.set(Calendar.YEAR, year);
         dateParam = cal.getTime();
      
-        lateDlvLines =  null;
+        lateDlvLines = CallCenterServices.getLateDeliveryReport(dateParam);
 }
 %>
 <jsp:include page="/includes/reports_nav.jsp" />

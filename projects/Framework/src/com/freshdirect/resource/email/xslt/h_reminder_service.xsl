@@ -11,7 +11,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" /> 
 		<title>A friendly reminder from FreshDirect.</title>
@@ -28,7 +28,7 @@
 
 <table width="100%" cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="90%">
 		<tr>
@@ -56,7 +56,7 @@
 	</td></tr>
 	</table>
 </td>
-<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

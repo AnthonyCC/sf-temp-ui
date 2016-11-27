@@ -128,18 +128,18 @@
  */
 {deltemplate expressco.restrictionpopupbody variant="'ageverification'"}
 <form id="ageverification" fdform="restriction_ageverification" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/restriction">
- <input type="hidden" name="action" value="applyAgeVerification"/>
- <h1 class='ageverification__title'>Age Verification for orders containing alcohol</h1>
- <p class='ageverification__section'>By law, purchasers of alcoholic beverages must be at least 21 years of age. You may not legally order any alcoholic beverages unless you are at least 21 years of age. Furthermore, you may not purchase alcoholic beverages for anyone who is under the age of 21. FreshDirect reserves the right to refuse service, terminate accounts, remove alcoholic beverages, or cancel orders at its sole discretion.</p>
- <p class='ageverification__section'>If your order contains alcoholic beverages, the person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature. If no one over the age of 21 can sign for delivery, the driver will remove alcoholic beverages from the order and you will be charged a 50% restocking fee.</p>
- <div class='ageverification__verifybox'>
-   <input class='ageverification__verifyinput aria-label="age verification" customcheckbox' name='verifyage' type='checkbox' required>
-   <label class="ageverification__verifylabeltext customcheckboxlabel fake-checkbox">I certify that I am over 21 years of age. I will present identification at the time of delivery.</label>
- </div>
- <p class='ageverification__section'>IT IS A VIOLATION PUNISHABLE UNDER LAW FOR ANY PERSON UNDER THE AGE OF TWENTY-ONE TO PRESENT ANY WRITTEN EVIDENCE OF AGE WHICH IS FALSE, FRAUDULENT OR NOT ACTUALLY HIS OWN FOR THE PURPOSE OF ATTEMPTING TO PURCHASE ANY ALCOHOLIC BEVERAGE.</p>
- <div class='ageverification__buttons'>
-   <button class="cssbutton green ageverification__submitbutton" type="submit">Save</button>
-   <span class="ageverification__removebutton" fdform-button="removeandproceed">Remove alcohol from my cart and proceed</span>
- </div>
+  <input type="hidden" name="action" value="applyAgeVerification"/>
+  <h1 class='ageverification__title'>Age Verification for orders containing alcohol</h1>
+  <p class='ageverification__section'>By law, purchasers of alcoholic beverages must be at least 21 years of age. You may not legally order any alcoholic beverages unless you are at least 21 years of age. Furthermore, you may not purchase alcoholic beverages for anyone who is under the age of 21. FreshDirect reserves the right to refuse service, terminate accounts, remove alcoholic beverages, or cancel orders at its sole discretion.</p>
+  <p class='ageverification__section'>If your order contains alcoholic beverages, the person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature. If no one over the age of 21 can sign for delivery, the driver will remove alcoholic beverages from the order and you will be charged a 50% restocking fee.</p>
+  <label class='ageverification__verifybox'>
+    <input class='ageverification__verifyinput customcheckbox' name='verifyage' type='checkbox' required>
+    I certify that I am over 21 years of age. I will present identification at the time of delivery.
+  </label>
+  <p class='ageverification__section'>IT IS A VIOLATION PUNISHABLE UNDER LAW FOR ANY PERSON UNDER THE AGE OF TWENTY-ONE TO PRESENT ANY WRITTEN EVIDENCE OF AGE WHICH IS FALSE, FRAUDULENT OR NOT ACTUALLY HIS OWN FOR THE PURPOSE OF ATTEMPTING TO PURCHASE ANY ALCOHOLIC BEVERAGE.</p>
+  <div class='ageverification__buttons'>
+    <button class="cssbutton green ageverification__submitbutton" type="submit">Save</button>
+    <span class="ageverification__removebutton" fdform-button="removeandproceed">Remove alcohol from my cart and proceed</span>
+  </div>
 </form>
 {/deltemplate}

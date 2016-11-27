@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 /**
  * Represent a time of day at a one minute precision.
@@ -19,7 +18,7 @@ public class TimeOfDay implements Comparable<TimeOfDay>, Serializable {
 	public final static TimeOfDay			MIDNIGHT			= new TimeOfDay( 0, 0 );
 	public final static TimeOfDay			NEXT_MIDNIGHT		= new TimeOfDay( 24, 0 );
 
-	private static SimpleDateFormat			FORMATTER			= new SimpleDateFormat( "hh:mm a", Locale.US );
+	private static SimpleDateFormat			FORMATTER			= new SimpleDateFormat( "hh:mm a" );
 
 	/** Normalized to 1970-01-01, only time portion relevant */
 	private Date normalDate;

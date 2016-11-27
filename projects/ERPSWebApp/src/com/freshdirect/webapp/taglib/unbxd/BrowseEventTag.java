@@ -9,13 +9,12 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
@@ -32,18 +31,21 @@ public class BrowseEventTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException {
+
         final PageContext pageContext = (PageContext) getJspContext();
+
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
         if (user != null) {
             final String contentId = req.getParameter("id");
+
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 // check input
                 if (contentId == null) {
                     throw new JspException("Parameter error: Null content ID was given");
                 }
+
                 doSendEvent(contentId, user, req);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");
@@ -52,24 +54,21 @@ public class BrowseEventTag extends SimpleTagSupport {
     }
 
     public static void doSendEvent(String containerId, FDUserI user, HttpServletRequest request) {
-        if (!user.isRobot()) {
-            final ContentNodeModel model = ContentFactory.getInstance().getContentNode(containerId);
-            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
+        final ContentNodeModel model = ContentFactory.getInstance().getContentNode(containerId);
+        if (model instanceof ProductContainer) {
 
-            if (model instanceof ProductContainer) {
-                final Visitor visitor = Visitor.withUser(user);
-                final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
+            final Visitor visitor = Visitor.withUser(user);
+            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
-                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction,null);
+            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null);
 
-                LOGGER.debug("Sending browse event for content ID " + containerId);
+            LOGGER.debug("Sending browse event for content ID " + containerId);
 
-                // log event
-                EventLoggerService.getInstance().log(event);
+            // log event
+            EventLoggerService.getInstance().log(event);
 
-            } else {
-                LOGGER.debug("Discard event for content ID " + containerId);
-            }
+        } else {
+            LOGGER.debug("Discard event for content ID " + containerId);
         }
     }
 }

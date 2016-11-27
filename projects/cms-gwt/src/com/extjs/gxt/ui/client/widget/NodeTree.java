@@ -65,8 +65,7 @@ public class NodeTree extends ContentPanel {
 		 *            the index
 		 * @return the tool
 		 */
-		@Override
-        public Component getTool(int index) {
+		public Component getTool(int index) {
 			return toolBar.getItem(index);
 		}
 
@@ -75,8 +74,7 @@ public class NodeTree extends ContentPanel {
 		 * 
 		 * @return the count
 		 */
-		@Override
-        public int getToolCount() {
+		public int getToolCount() {
 			return toolBar.getItemCount();
 		}
 
@@ -86,8 +84,7 @@ public class NodeTree extends ContentPanel {
 		 * @param tool
 		 *            the tool to be inserted
 		 */
-		@Override
-        public void addTool(Component tool) {
+		public void addTool(Component tool) {
 			insertTool(tool, getToolCount());
 		}
 
@@ -99,8 +96,7 @@ public class NodeTree extends ContentPanel {
 		 * @param index
 		 *            the insert location
 		 */
-		@Override
-        public void insertTool(Component tool, int index) {
+		public void insertTool(Component tool, int index) {
 
 				toolBar.insert(tool, index);
 
@@ -112,8 +108,7 @@ public class NodeTree extends ContentPanel {
 		 * @param tool
 		 *            the tool to remove
 		 */
-		@Override
-        public void removeTool(Component tool) {
+		public void removeTool(Component tool) {
 
 				toolBar.remove(tool);
 
@@ -135,8 +130,7 @@ public class NodeTree extends ContentPanel {
 			ComponentHelper.doDetach(toolBar);
 		}
 
-		  @Override
-        protected void onRender(Element target, int index) {
+		  protected void onRender(Element target, int index) {
 			setElement(DOM.createDiv(), target, index);
 			addStyleName("x-small-editor");
 			addStyleName("nodetree-header");
@@ -231,7 +225,7 @@ public class NodeTree extends ContentPanel {
 	private class NodeTreeIconProvider implements ModelIconProvider<TreeContentNodeModel> {
 		@Override
 		public AbstractImagePrototype getIcon( TreeContentNodeModel model ) {
-            return IconHelper.createPath("img/icons/" + model.getType() + model.getIconOverride() + ".gif");
+			return IconHelper.createPath( "img/icons/" + model.getType() + ".gif" );
 		}		
 	}
 	
@@ -261,7 +255,6 @@ public class NodeTree extends ContentPanel {
 	
     private class SearchCallback implements AsyncCallback<List<TreeContentNodeModel>> {
     	
-        @Override
         public void onSuccess( List<TreeContentNodeModel> result ) {
             mainStore.removeAll();
             for ( TreeContentNodeModel m : result ) {
@@ -278,7 +271,6 @@ public class NodeTree extends ContentPanel {
             // store.add( result, false );
         }
         
-        @Override
         public void onFailure( Throwable caught ) {
             if ( isMainTree() )
             	MainLayout.getInstance().stopProgress();
@@ -312,7 +304,7 @@ public class NodeTree extends ContentPanel {
     	
     	public void initTokens(String path) {    		
     		nodes = mainStore.getRootItems();
-    		tokens = new StringTokenizer( path, TreeContentNodeModel.PATH_SEPARATOR );
+    		tokens = new StringTokenizer( path, TreeContentNodeModel.pathSeparator );
     		eatToken();
     		TreePanel<TreeContentNodeModel>.TreeNode tn = null;
     		while ( ( tn = tree.findNode( currentNode ) ) != null && tn.isExpanded() ) {
@@ -659,7 +651,7 @@ public class NodeTree extends ContentPanel {
 		TreeContentNodeModel parent = mainStore.getParent( node );
 		if ( parent != null )
 			getSelectedPathRecursive( parent, sb );		
-		sb.append( TreeContentNodeModel.PATH_SEPARATOR );
+		sb.append( TreeContentNodeModel.pathSeparator );
 		sb.append( node.getKey() );
 	}
 	

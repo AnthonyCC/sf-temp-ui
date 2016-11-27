@@ -9,14 +9,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumWineFilterValueType;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.WineFilterValue;
 
 public class WineFilter implements Serializable, Cloneable {
 	private static final long serialVersionUID = 3245612819349391160L;
@@ -175,13 +170,13 @@ public class WineFilter implements Serializable, Cloneable {
 			if (available != null) {
 				if (available) {
 					ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(key);
-                    p = ProductPricingFactory.getInstance().getPricingAdapter(p);
+					p = ProductPricingFactory.getInstance().getPricingAdapter(p, pricingContext);
 					if (p != null)
 						products.add(p);
 				}
 			} else {
 				ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(key);
-                p = ProductPricingFactory.getInstance().getPricingAdapter(p);
+				p = ProductPricingFactory.getInstance().getPricingAdapter(p, pricingContext);
 				if (p != null) {
 					available = p.isFullyAvailable();
 					availabilityCache.get().put(key, available);
@@ -198,15 +193,10 @@ public class WineFilter implements Serializable, Cloneable {
 	private Collection<ContentKey> getProductKeysForDomainValue(WineFilterValue value) {
 		if (value.getWineFilterValueType() == EnumWineFilterValueType.CMS)
 			return ContentFactory.getInstance().getWineProductKeysByDomainValue((DomainValue) value);
-        else if (value.getWineFilterValueType() == EnumWineFilterValueType.PRICE) {
-            if (WineFilterPriceIndex.getInstance().get().get(pricingContext) != null) {
-                return WineFilterPriceIndex.getInstance().get().get(pricingContext).get(value);
-            } else {
-                return new HashSet<ContentKey>();
-            }
-        }
+		else if (value.getWineFilterValueType() == EnumWineFilterValueType.PRICE)
+			return WineFilterPriceIndex.getInstance().get().get(pricingContext).get((EnumWinePrice) value);
 		else if (value.getWineFilterValueType() == EnumWineFilterValueType.RATING)
-			return WineFilterRatingIndex.getInstance().get().get(value);
+			return WineFilterRatingIndex.getInstance().get().get((EnumWineRating) value);
 		else
 			throw new IllegalArgumentException("unknown type of wine filter value: " + value.getWineFilterValueType().name());
 	}

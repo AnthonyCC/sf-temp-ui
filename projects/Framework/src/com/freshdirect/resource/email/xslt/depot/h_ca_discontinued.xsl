@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
 		<title>FreshDirect Depot Delivery</title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -26,7 +26,7 @@
 
 <table cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="90%">
@@ -60,7 +60,7 @@
 </table>
 </td>
 
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

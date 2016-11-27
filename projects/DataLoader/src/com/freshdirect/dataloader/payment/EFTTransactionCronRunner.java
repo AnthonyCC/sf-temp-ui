@@ -27,13 +27,9 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
@@ -92,12 +88,7 @@ public class EFTTransactionCronRunner {
 			ReconciliationSB reconciliationSB = reconciliationCronHome.create();
 			//ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			// process bad transactions
-			List badTxnList ;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-				badTxnList=ReconciliationService.getInstance().loadBadTransactions(startDate, endDate);
-			}else{
-			badTxnList = reconciliationSB.loadBadTransactions(startDate, endDate);
-			}
+			List badTxnList = reconciliationSB.loadBadTransactions(startDate, endDate);
 			processBadTransactions(badTxnList, reconciliationSB,saleHome);
 			LOGGER.info("echeckCron finished");
 
@@ -140,23 +131,11 @@ public class EFTTransactionCronRunner {
 					String description = paymentResponse.getDescription();
 					int usageCode = 2;
 					ErpAffiliate aff = ErpAffiliate.getAffiliateByMerchant(EnumCardType.ECP, paymentTransaction.getMerchantId());
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-						ReconciliationService.getInstance().addSettlement(getSettlementModel(amount,accountNumber,aff,sequenceNumber,paymentResponse,description), 
-								saleId, 
-								aff, 
-								false);
-						}else{
 					reconciliationSB.addSettlement( getSettlementModel(amount,accountNumber,aff,sequenceNumber,paymentResponse,description), 
 													saleId, 
 													aff, 
 													false);
-						}
-					ErpSettlementInfo info;
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-					ReconciliationService.getInstance().processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
-					}else{
 					reconciliationSB.processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
-					}
 					FDCustomerManager.sendSettlementFailedEmail(saleId);
 				} catch (Exception e) {
 					LOGGER.error("EFTTransactionCronRunner.processFailedTransactions: Account Number = " + StringUtil.maskCreditCard(paymentTransaction.getBankAccountNumber()) + "-"+ e.getMessage());						

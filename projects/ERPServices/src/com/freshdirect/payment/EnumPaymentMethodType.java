@@ -6,16 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 	
 public class EnumPaymentMethodType extends ValuedEnum {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8764418168037406726L;
 	public final static EnumPaymentMethodType CREDITCARD = new EnumPaymentMethodType("CC", "Credit Card", 0);
 	public final static EnumPaymentMethodType ECHECK = new EnumPaymentMethodType("EC", "E-Check", 1);
 	public final static EnumPaymentMethodType GIFTCARD = new EnumPaymentMethodType("GC", "Gift-Card", 1);
@@ -31,12 +23,11 @@ public class EnumPaymentMethodType extends ValuedEnum {
 		this.description = description;
 	}
 	
-	@JsonCreator
 	public static EnumPaymentMethodType getEnum(String code) {
 		return (EnumPaymentMethodType) getEnum(EnumPaymentMethodType.class, code);
 	}
-	@JsonCreator
-	public static EnumPaymentMethodType getEnum(@JsonProperty("value") int id) {
+
+	public static EnumPaymentMethodType getEnum(int id) {
 		return (EnumPaymentMethodType) getEnum(EnumPaymentMethodType.class, id);
 	}
 
@@ -58,12 +49,6 @@ public class EnumPaymentMethodType extends ValuedEnum {
 
 	public String toString() {
 		return this.description;		
-	}
-	
-	@JsonValue
-	public String getCode(){
-		return super.getName();
-		
 	}
 
 }

@@ -70,9 +70,6 @@ public class LogisticsDataEncoder {
 		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
 				model.getCountry(), "", "", model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
 				model.getCompanyName());
-		if(model.getAddressType() != null) {
-			address.setAddressType(model.getAddressType().getName());
-		}
 		return address;
 		
 	}
@@ -140,11 +137,7 @@ public class LogisticsDataEncoder {
 		return request;
 	}
 
-    public static Customer encodeCustomer(ContactAddressModel address, String customerId) {
-        return encodeCustomer(address, customerId, new CustomerAvgOrderSize(0, 0, 0));
-    }
-
-	public static Customer encodeCustomer(ContactAddressModel address, String customerId, CustomerAvgOrderSize orderSize) {
+	public static Customer encodeCustomer(ContactAddressModel address, String customerId) {
 		Customer customer = new Customer();
 		customer.setAddress(encodeAddress(address));
 		String custId = (customerId == null)?address.getCustomerId():customerId;
@@ -153,6 +146,12 @@ public class LogisticsDataEncoder {
 		customer.setFirstName(address.getFirstName());
 		customer.setLastName(address.getLastName());
 		customer.setServiceType(address.getServiceType().getName());
+		customer.setOrderSize(new CustomerAvgOrderSize(0,0,0));
+		return customer;
+	}
+	
+	public static Customer encodeCustomer(ContactAddressModel address, String customerId, CustomerAvgOrderSize orderSize) {
+		Customer customer = encodeCustomer(address, customerId);
 		customer.setOrderSize(orderSize);
 		return customer;
 	}
@@ -347,15 +346,16 @@ public class LogisticsDataEncoder {
 		return request;
 	}
 
-    public static ValidateReservationRequest encodeValidateReservation(CustomerAvgOrderSize orderSize, FDReservation reservation, ErpAddressModel address, TimeslotEvent event) {
-        boolean isAddressDeleted = address == null;
-        ValidateReservationRequest request = new ValidateReservationRequest();
-        request.setCart(encodeCart(event));
-        request.setReservationId(reservation.getId());
-        request.setAddressDeleted(isAddressDeleted);
-        request.setCustomer(encodeCustomer(isAddressDeleted ? reservation.getAddress() : address, null, orderSize));
-        return request;
-    }
+	public static ValidateReservationRequest encodeValidateReservation(
+			CustomerAvgOrderSize orderSize, FDReservation reservation,
+			ErpAddressModel address, TimeslotEvent event) {
+		ValidateReservationRequest request = new ValidateReservationRequest();
+		request.setCart(encodeCart(event));
+		request.setReservationId(reservation.getId());
+		request.setAddressDeleted(address == null);
+		request.setCustomer(encodeCustomer(address, null, orderSize));
+		return request;
+	}
 	
 	public static SubscriptionRequest encodeAddSubscriptionRequest(
 			String customerId, String mobileNumber, String textOffers,
@@ -379,9 +379,9 @@ public class LogisticsDataEncoder {
 
 	public static CreateOrderRequest encodeUpdateOrderRequest(String orderId,
 			String parentOrderId, double tip, String reservationId,String firstName,String lastName, 
-			String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) {
+			String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber,String erpOrderId) {
 		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId,
-				firstName,lastName, deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber,erpOrderId,containsAlcohol);
+				firstName,lastName, deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber,erpOrderId);
 		return request;
 	}
 	

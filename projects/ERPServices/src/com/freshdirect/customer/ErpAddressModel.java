@@ -2,14 +2,12 @@ package com.freshdirect.customer;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.BasicAddressI;
 import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.address.ContactAddressAdapter;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.common.address.PhoneNumberDeserializer;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -33,9 +31,9 @@ public class ErpAddressModel extends ContactAddressModel {
 	private String altLastName;
 
 	private String altApartment;
-	@JsonDeserialize(using = PhoneNumberDeserializer.class)
+
 	private PhoneNumber altPhone;
-	@JsonDeserialize(using = PhoneNumberDeserializer.class)
+
 	private PhoneNumber altContactPhone;
 
 	private EnumUnattendedDeliveryFlag unattendedDeliveryFlag;
@@ -55,14 +53,6 @@ public class ErpAddressModel extends ContactAddressModel {
 	
 	private String scrubbedStreet;
 	
-	//COS17-76 2nd emil for COS users
-		private boolean notifyOrderPlaceToSecondEmail;
-		private boolean  notifyOrderModifyToSecondEmail;
-		private boolean notifyOrderInvoiceToSecondEmail;
-		private boolean notifySoReminderToSecondEmail;
-		private boolean notifyCreditsToSecondEmail;
-		private boolean notifyVoiceshotToSecondEmail;
-		
 	public String getScrubbedStreet() {
 		return scrubbedStreet;
 	}
@@ -83,8 +73,8 @@ public class ErpAddressModel extends ContactAddressModel {
 		this.altApartment = "";
 		this.altPhone = new PhoneNumber("");
 
-		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.OPT_IN;
-		this.unattendedDeliveryInstructions = "OK";
+		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
+		this.unattendedDeliveryInstructions = "";
 		this.setAddressInfo(new AddressInfo());
 		
 	}
@@ -320,62 +310,6 @@ public class ErpAddressModel extends ContactAddressModel {
 
 	public void setEbtAccepted(boolean isEbtAccepted) {
 		this.isEbtAccepted = isEbtAccepted;
-	}
-
-	public EnumDeliverySetting getAltDeliverySetting() {
-		return altDeliverySetting;
-	}
-
-	public void setAltDeliverySetting(EnumDeliverySetting altDeliverySetting) {
-		this.altDeliverySetting = altDeliverySetting;
-	}
-
-	public boolean isNotifyOrderPlaceToSecondEmail() {
-		return notifyOrderPlaceToSecondEmail;
-	}
-
-	public void setNotifyOrderPlaceToSecondEmail(boolean notifyOrderPlaceToSecondEmail) {
-		this.notifyOrderPlaceToSecondEmail = notifyOrderPlaceToSecondEmail;
-	}
-
-	public boolean isNotifyOrderModifyToSecondEmail() {
-		return notifyOrderModifyToSecondEmail;
-	}
-
-	public void setNotifyOrderModifyToSecondEmail(boolean notifyOrderModifyToSecondEmail) {
-		this.notifyOrderModifyToSecondEmail = notifyOrderModifyToSecondEmail;
-	}
-
-	public boolean isNotifyOrderInvoiceToSecondEmail() {
-		return notifyOrderInvoiceToSecondEmail;
-	}
-
-	public void setNotifyOrderInvoiceToSecondEmail(boolean notifyOrderInvoiceToSecondEmail) {
-		this.notifyOrderInvoiceToSecondEmail = notifyOrderInvoiceToSecondEmail;
-	}
-
-	public boolean isNotifySoReminderToSecondEmail() {
-		return notifySoReminderToSecondEmail;
-	}
-
-	public void setNotifySoReminderToSecondEmail(boolean notifySoReminderToSecondEmail) {
-		this.notifySoReminderToSecondEmail = notifySoReminderToSecondEmail;
-	}
-
-	public boolean isNotifyCreditsToSecondEmail() {
-		return notifyCreditsToSecondEmail;
-	}
-
-	public void setNotifyCreditsToSecondEmail(boolean notifyCreditsSecondEmail) {
-		this.notifyCreditsToSecondEmail = notifyCreditsSecondEmail;
-	}
-
-	public boolean isNotifyVoiceshotToSecondEmail() {
-		return notifyVoiceshotToSecondEmail;
-	}
-
-	public void setNotifyVoiceshotToSecondEmail(boolean notifyVoiceshotToSecondEmail) {
-		this.notifyVoiceshotToSecondEmail = notifyVoiceshotToSecondEmail;
 	}
 
 }

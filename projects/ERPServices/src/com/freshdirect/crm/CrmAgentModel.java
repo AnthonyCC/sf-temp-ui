@@ -247,12 +247,4 @@ public class CrmAgentModel extends ModelSupport {
 	public void setCurFacilityContext(String curFacilityContext) {
 		this.curFacilityContext = curFacilityContext;
 	}
-
-	
-	//Introduced for Storefront 2.0
-	public String getRoleCode() {
-		return roleCode;
-	}
-	
-	
 }

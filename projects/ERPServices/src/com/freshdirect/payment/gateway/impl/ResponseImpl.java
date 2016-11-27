@@ -10,7 +10,7 @@ import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 
 
-public class ResponseImpl implements Response {
+class ResponseImpl implements Response {
 
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class ResponseImpl implements Response {
 		this.ewalletTxId = ewalletTxId;
 	}
 
-	public ResponseImpl(Request request) {
+	ResponseImpl(Request request) {
 		this.request=request;
 	}
 	
@@ -211,13 +211,13 @@ public class ResponseImpl implements Response {
 	
 	
 	
-	public void setResponseCode(String responseCode) {
+	void setResponseCode(String responseCode) {
 		this.responseCode=responseCode;
 	}
 	public String getResponseCode() {
 		return this.responseCode;
 	}
-	public void setResponseCodeAlt(String responseCodeAlt) {
+	void setResponseCodeAlt(String responseCodeAlt) {
 		this.responseCodeAlt=responseCodeAlt;
 	}
 	public String getResponseCodeAlt() {

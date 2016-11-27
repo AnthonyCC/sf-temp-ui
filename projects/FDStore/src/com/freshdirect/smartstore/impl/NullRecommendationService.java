@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * A service that always returns the empty list.

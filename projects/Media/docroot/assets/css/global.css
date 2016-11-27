@@ -1,5 +1,16 @@
 /* global, non-browser specific, css */
 
+@font-face {
+	font-family: 'BebasRegular';
+	src: url('/assets/css/fonts/BEBAS___-webfont.eot');
+	src: url('/assets/css/fonts/BEBAS___-webfont.eot?#iefix') format('eot'),
+		url('/assets/css/fonts/BEBAS___-webfont.woff') format('woff'),
+		url('/assets/css/fonts/BEBAS___-webfont.ttf') format('truetype'),
+		url('/assets/css/fonts/BEBAS___-webfont.svg#webfontOJIfwzl6') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
 
 html { height: 100%; }
 body { color: #333; font-family : Verdana, Arial, sans-serif; font-size : 10px; height: 100%; }
@@ -7,7 +18,6 @@ body.OASonly { padding: 0; margin: 0; overflow: hidden;}
 center {clear:both;}
 
 table { text-align: left; }
-table.text-align-center {text-align: center}
 td {
 	font-size: 10px;
 	font-family: Verdana, Arial, sans-serif;
@@ -18,8 +28,9 @@ font: 13px verdana;
 line-height: 26px;
 text-decoration: none;
 }
-/* high color contrast for links with reference to style guide(ux) */ 
-a:link { color: #408244;  text-decoration: none; }
+
+a:link { color: #458b4c;  text-decoration: none; }
+a:visited { color: #458b4c ; text-decoration: none; }
 a:hover, a:active, a:focus { color: #5fb069;  text-decoration: underline; }
 a.lNavTableItemSelected { font-family: Verdana; color: #669933 ; font-weight: bold; }
 
@@ -49,7 +60,7 @@ img { border:none }
 .bodyCopy ul    { margin: 0; padding: 0; }
 .bodyCopy ul li { list-style-position: inside; list-style-type: disc; padding-left: 15px; text-indent: -15px; padding-bottom: 4px; margin-left: 0; }
 
-.error 		    { font-size: 10px; font-family: Verdana; color : #b93d3f; }
+.error 		    { font-size: 10px; font-family: Verdana; color : #990000; }
 .search         { width:100px; font-size: 10px; font-family: Verdana, Arial, sans-serif; }
 .gbold          { color: #336600; font-weight: bold; }
 .rbold          { color: #FF0000; font-weight: bold; }
@@ -58,11 +69,11 @@ img { border:none }
 input.radio     { background : #FFFFFE; color: #000000; }
 A.list		    { line-height: 12px; }
 
-.error_title     		{ font-size: 13px; color: #b93d3f; font-family: Verdana, Arial, sans-serif; font-weight: bold; }
-.error_text	     		{ font-size: 9px; color: #b93d3f; font-family: Verdana, Arial, sans-serif; }
-.error_text a:link 		{ color: #b93d3f; }
-.error_text a:visited 	{ color: #b93d3f; }
-.error_text a:active 	{ color: #b93d3f; }
+.error_title     		{ font-size: 13px; color: #CC0000; font-family: Verdana, Arial, sans-serif; font-weight: bold; }
+.error_text	     		{ font-size: 9px; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.error_text a:link 		{color: #CC0000}
+.error_text a:visited 	{color: #CC0000}
+.error_text a:active 	{color: #CC0000}
 
 .greybox		{ color: #333; background: #EEEEEE; font-size: 9px; font-family: Verdana, Arial, sans-serif; }
 
@@ -70,7 +81,6 @@ A.list		    { line-height: 12px; }
 .groceryProductLinePrice 	{ font-size: 12px; font-weight: bold; color:#555; font-family: Arial, sans-serif;}
 .favoritePrice  			{ font-size: 11px; font-weight: bold; color:#333; line-height: 16px; font-family: Tahoma, Arial, sans-serif;}
 .productPageSinglePrice  	{ font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPageSinglePrice-free { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #B93D3F;}
 .productPagePrimaryVarPrice { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSecondaryVarPrice 	  { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSinglePriceUnit  	  { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
@@ -111,7 +121,7 @@ A.list		    { line-height: 12px; }
 .text10grbold    { font-size: 9px; color: #666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10w	     { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
 .text10wbold     { font-size: 9px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10rbold     { font-size: 9px; color: #B93D3F; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text10rbold     { font-size: 9px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10blbold    { font-size: 9px; color: #6699CC; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .title10 	     { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -123,29 +133,11 @@ A.list		    { line-height: 12px; }
 .text11gbold	 { font-size: 10px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text11nb        { font-size: 10px; font-weight: normal; color: #777777; font-family: Verdana, Arial, sans-serif; }
 .text11wbold     { font-size: 10px; color: #FFFFFF;  font-weight: bold;font-family: Verdana, Arial, sans-serif; }
-/* .text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; } */
-/* .text11orbold	 { font-size: 10px; font-weight: bold; color: #f93; font-family: Verdana, Arial, sans-serif; } */
+.text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.text11orbold	 { font-size: 10px; font-weight: bold; color: #f93; font-family: Verdana, Arial, sans-serif; }
 .text11pkbold	 { font-size: 10px; font-weight: bold; color: #CC6666; font-family: Verdana, Arial, sans-serif; }
 .text11prpbold	 { font-size: 10px; font-weight: bold; color: #969; font-family: Verdana, Arial, sans-serif; }
 
-/* high contrast color change for success msg text-accessibility  */
-.success13text   { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif;}
-
-/*High color contrast for error messages text-accessibility */
-.error_detail,
-.errortext     { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; color:#B93D3F;}
-
-/*changing  error messages text globally to different font size */
-.accessibleFont a { font-size:13px;}
-.accessibleFont a:hover,.accessibleFont a:focus{ text-decoration:underline; outline:none;}
-
-/*warning text message */
-.warningtext {
-color:black;
-font-family:Verdana,Arial,sans-serif;
-font-size:10px;
-font-weight:bold;
-}
 .title11 		 { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text12 		 { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
@@ -153,8 +145,8 @@ font-weight:bold;
 .text12 ol 		 { position: relative; left: 10px; }
 .text12px 		 { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
 .text12bold 	 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text12rnormal	 { font-size: 11px; font-weight: normal; color: #B93D3F; font-family: Verdana, Arial, sans-serif; }
-.text12rbold	 { font-size: 11px; font-weight: bold; color: #B93D3F; font-family: Verdana, Arial, sans-serif; }
+.text12rnormal	 { font-size: 11px; font-weight: normal; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.text12rbold	 { font-size: 11px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
 .text12wbold     { font-size: 11px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title12 		 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text13bold 	 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -305,8 +297,8 @@ font-size: 14px;
     color: #999966;	
 }
 [data-component="carousel"] [data-component="carousel-list"]{
-	text-align: center;
-	padding-top: 0;
+                text-align: center;
+                padding-top: 12px;
 }
 
 /* BEST CELLARS */
@@ -334,19 +326,16 @@ font-size: 14px;
 	border-bottom: 1px solid #996;
 	margin-bottom: 8px;
 }
-.orderSummary td {
+.orderSummary {
 	background-color: #e0e3d0;
 	line-height: 20px;
 }
-td.transparentBG {
-	background-color: transparent;
-}
 .orderTotal {
+	background-color: #969;
 	color: white;
 	line-height: 20px;
 }
 .orderTotal td {
-	background-color: #969;
 	font-size: 13px;
 }
 
@@ -486,7 +475,7 @@ td.ymal_separator {
 }
 
 td.ymal_addtocart {
-	padding			: 5px;
+	padding			: 0px;
 }
 
 table.ymal caption {
@@ -1943,7 +1932,47 @@ div.control, div.slotRow, div.time {
 		margin: 0;
 		padding: 0;
 	}
+	
+/* for coremetrics */
+.coremetrics-iframe {
+	position: absolute;
+	top: -9999em;
+	left: -9999em;
+}
 
+/* jQuery UI css overrides */
+	.ui-dialog .ui-widget-header,  .ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+		border: 0 none;
+	}
+	.ui-dialog .ui-dialog-titlebar-close {
+		padding: 0px;
+		top:11px;
+		border: none;
+	}
+	.ui-dialog .ui-widget-header .ui-icon {
+		background: transparent url('/media/editorial/site_access/images/round_x.gif') no-repeat;
+		width: 20px;
+		height: 18px;
+	}
+	.ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+	}
+	.ui-widget-overlay {
+		background: #fff url('../../../common/jquery-ui_base/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x;
+		filter:Alpha(Opacity=80); 
+		opacity: 0.8;
+	}
+	#uimodal-output {
+	    background: #fff none;
+	}
+	.ui-dialog-titlebar {
+	    min-height: 10px;
+		color: #333;
+	}
+	.ui-widget-content {
+    	background: #fff none;
+	}
 	
 	#toptoolbar {
         position:relative;
@@ -2120,7 +2149,7 @@ div.control, div.slotRow, div.time {
 		height: 37px;
 		position: absolute;
 		bottom: 10px;
-		right: 0;
+		right: -5px;
 		display: block;
 	}
 	.burst-usq .without-background {
@@ -3227,248 +3256,8 @@ div#i_viewcart td {
 }
 
 .modProd-banner>span {
-	font-family: Verdana, Arial, sans-serif;
-	font-size: 30px;
-	font-weight: bold;
-	margin: 15px 0;
-	text-align: center;
-}
-
-.browse-oas-top {
-	margin-bottom: 8px;
-}
-
-.oas-cnt .emptyOAS,
-.oas-cnt a[href*="empty.gif"],
-[id*="oas_"] a[href*="empty.gif"] {
- display: none;
- visibility: hidden;
-}
-table.accessibilitySpacing td{
-	padding:1px 0;
-}
-.icon-base{
-	width: 40px;
-	height: 40px;
-	background-size: 100%;
-	background-repeat: no-repeat;
-}
-.icon-base.icon-pdf{
-	background-image: url('/media/images/icons/adobe-pdf.png');
-}
-.qtyinput .quantity_minus,
-.qtyinput .quantity_plus{
-    width: 36px;
-    background-color: #4fa157;
-    border: 1px solid #4fa157;
-    height: 34px;
-    line-height: 32px;
-    font-size: 24px;
-    font-family: Verdana;
-    text-align: center;
+	color: #F93;
+	font-size: 32px;
     font-weight: bold;
-    color: #fff;
-    background-image: none;
-    text-decoration: none;
-    text-indent: 0;
-    padding: 0;
-    border-radius: 3px;
-    transition: background-color 0.12s ease-in-out 0s;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.qtyinput .quantity_minus:hover,
-.qtyinput .quantity_plus:hover{
-    background-color: #458d4e;
-    border: 1px solid #458d4e;
-}
-.qtyinput input[type="text"].qty {
-    width: 58px;
-    height: 36px;
-    font-size: 18px;
-    font-weight: bold;
-    font-family: Verdana;
-    margin: -1px 3px 0;
-    padding: 0;
-    border: 2px #c2c2c2 solid;
-}
-.qtyinput input[type="text"].qty:hover{
-    border-color: #68aa6d;
-}
-#popupcart .qtyinput input.qty {
-    height: 16px;
-    width: 38px;
-    font-size: 11px;
-    padding: 2px;
-    margin: 1px 0;
-}
-/* //timeslots accessibility */
-.displayTable{  	
-	display:table !important;
- }
- .tableHeaderGroup{ 
- 	display:table-header-group !important;
- } 
-.tableFooterGroup{ 
-	display:table-footer-group !important;
-}
-/* focus style for sign in button in overlay and signin page*/
-
-input#signupbtn:focus, input#signinbtn:focus{
-    border-style: solid;
-    border-width: 1px !important;
-}
-
-button.space {
-    margin-left: 10px;
-}
-
-.aptfields{
-	display:inline-block;
-	vertical-align:top;
-}
-
-.clickable,.fake-radio{
-	cursor: pointer;
-}
-
-.hasSubstitute {
-	color: #999;
-}
-.substitution {
-	color: #333;
-}
-.sublevel_arrow { /* /media_stat/images/common/sublevel_arrow_green.svg */
-	height: 1em;
-	width: 1em;
-}
-.lowercase {
-	text-transform: lowercase;
-}
-.text-uppercase {
-	text-transform: uppercase;
-}
-.position-absolute {
-	position: absolute;
-}
-.padding-left-10{
-	padding-left: 10px;
-}
-.padding-right-10{
-	padding-right: 10px;
-}
-.zipcodefld{
-	display:inline-block;
-	vertical-align:inherit;
-}
-
-.prodMod-modLink { display: none; }
- table.order_history_table {
-	font-size: 14px;
-}
-
-table.order_history_table tr{
-	height: 50px;
-}
-
-table.order_history_table td,table.order_history_table th{
-	font-size: inherit;
-	padding: 0 0 0 10px;
-}
-
-.order_history_table .order_history_table_total_header{
-	width: 100px;
-	padding-right:20px;
-}
-td.text10.order_history_table_total{
-	padding-right:20px;
-}
-.order_history_table .order_history_table_status_header{
-	width: 110px;
-}
-
-.order_history_table img {
-	width: 20px;
-}
-
-table.order_history_table tr:nth-child(odd){
-	background-color: #f8f8f8;
-}
-
-table.order_history_table tr:nth-child(1) th{
-	background-color: #eee;
-}
-#transactionalPopup .customsimpleselect {
-    width: 100%;
-}
-
-a.portrait-item-image-link{
-	display:block;
-	color:#333;
-}
-
-a.portrait-item-image-link:focus .portrait-item-header{
-	outline:none !important;
-	text-decoration:underline;
-}
-a.portrait-item-image-link:focus{
-      outline:none !important;
-}
-a.portrait-item-image-link:hover .portrait-item-header{
-	outline:none !important;
-	text-decoration:underline;
-}
-
-a.portrait-item-price-deal:focus{
-    text-decoration:underline;
-    outline:none;
-}
-
-a.portrait-item-price-deal:hover{
-    text-decoration:underline;
-}
-/* firefox bug fix of focus state in reorder, browse pages */
-
-.menuBox li:hover *{
-text-decoration:underline;
-}
-.menuBox li.disabled:hover *{
-text-decoration:none;
-}
-.menuBox li.selected:focus *{
-text-decoration:underline;
-}
-section.main .leftnav .menuBox label input:focus + span > span{
- text-decoration:underline;
-}
-
-.sticky-fixed-wrapper {
-	position: fixed;
-	top: 0;
-	width: 100%;
-	z-index: 2000;
-	background-color: #fff;
-	left: 0;
-}
-/* bug fix for the overlapping content in browse, search and reorder pages */
-
-div#quickshop,.container.browse section.main,section.container.srch section.main{
-	min-width:970px;
-}
-.assistivetext{
-	font-size:14px;
-}
-.assistivetext a{
-	
-	outline:none !important;
-}
-.ddpp-item.radius-border.border-green ul{
-	padding-left: 0;
-}
-.hidelist{
-    list-style:none;
+    font-family: Verdana, Arial, sans-serif;
 }

@@ -15,7 +15,7 @@
   {if $options}<p>Options: {$options}</p>{/if}
   {if $price}<p>Estimated Price: {$price}</p>{/if}
   {if $imageUrl}
-   <p><img class="pic" src="{$imageUrl}" alt="{$name}" /></p>
+   <p><img class="pic" src="{$imageUrl}" alt="Product {$name}" /></p>
   {/if}
 {/template}
 
@@ -59,7 +59,7 @@
                 <input style="display:none" type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove" checked>
         {/if}
         {if $hasRecommendations}
-          <div class="replacements" data-eventsource="ATP">
+          <div class="replacements" data-cmeventsource="ATP">
             {call common.simpleCarousel}
               {param items:$recommendedProducts /}
               {param itemType:'grid' /}

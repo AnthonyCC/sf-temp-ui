@@ -26,12 +26,6 @@
 	float: left;
 }
 
-.appHeader #publishInfo {
-	margin-left: 10px;
-	font-weight: bold;
-	color: red;
-}
-
 .appHeader .userLabel {
 	float: left;
 	padding: 0px 10px;
@@ -43,9 +37,6 @@
 	background-color: red;
 }
 
-.appHeaderDraft #publishInfo {
-    color: black;
-}
 
 /* command links in the header  */
 .commandLink,.logoutLink {
@@ -624,7 +615,7 @@ dl.bulk-loader-preview-legend dd {
 .publish-history-info {
 	position: absolute;
 	top: 3px;
-	left: 77px;
+	left: 83px;
 	overflow: hidden;
 	font-size: 10px;
 }
@@ -758,44 +749,4 @@ dl.bulk-loader-preview-legend dd {
 	padding: 10px;
 	margin-top: 10px;
 	background-color: #F2F2F2;
-}
-
-
-.OverrideRed{
-}
-
-.OverrideRed:before{
-       display:inline-block;
-       background: url(img/icons/CategoryOverrideRed.gif);
-       content:" ";
-       vertical-align: bottom;
-       height: 16px;
-       width: 16px;
-       margin: 0 2px 0 0;
-}
-
-.OverrideGreen{
-}
-
-.OverrideGreen:before{
-       display:inline-block;
-       background: url(img/icons/CategoryOverrideGreen.gif);
-       content:" ";
-       vertical-align: bottom;
-       height: 16px;
-       width: 16px;
-       margin: 0 2px 0 0;
-}
-
-.NoOverride{
-}
-
-.NoOverride:before{
-       display:inline-block;
-       background: url(img/icons/Category.gif);
-       content:" ";
-       vertical-align: bottom;
-       height: 16px;
-       width: 16px;
-       margin: 0 2px 0 0;
 }

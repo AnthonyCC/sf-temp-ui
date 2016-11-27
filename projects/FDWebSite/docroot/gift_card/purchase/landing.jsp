@@ -16,17 +16,11 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put> --%>
-  <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Purchase Gift Card" pageId="landing"></fd:SEOMetaTag>
+	<tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>
+		 <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="landing"></fd:SEOMetaTag>
 	</tmpl:put>
-	<tmpl:put name='pageType' direct='true'>gc_landing</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<style>
-			.W_GIFTCARD_LANDING_TOTAL { width: <%= W_GIFTCARD_LANDING_TOTAL %>px; }
-			.W_GIFTCARD_OPTIONS_TOTAL { width: <%= W_GIFTCARD_OPTIONS_TOTAL %>px; }
-			.W_GIFTCARD_DONATION_TOTAL { width: <%= W_GIFTCARD_DONATION_TOTAL %>px; }
-		</style>
 
 		<%
 			String fdTemplateId = "";
@@ -62,17 +56,17 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		%>
 		<%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 		
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_GIFTCARD_LANDING_TOTAL">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
 			<tr>
 				<td valign="top">
-					<table role="presentation" border="0" cellspacing="0" cellpadding="2" class="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? "W_GIFTCARD_OPTIONS_TOTAL" : "W_GIFTCARD_LANDING_TOTAL" %>">
+					<table border="0" cellspacing="0" cellpadding="2" width="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td align="center">
@@ -83,44 +77,43 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr> 				
 					</table>
 				</td>
 		<% if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td>&nbsp;</td>
 				<td bgcolor="#cccccc">
-					<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" alt="" height="1" border="0" />
+					<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" height="1" border="0" />
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td valign="top">
-					<table role="presentation" border="0" cellspacing="0" cellpadding="2" class="W_GIFTCARD_DONATION_TOTAL">
+					<table border="0" cellspacing="0" cellpadding="2" width="<%=W_GIFTCARD_DONATION_TOTAL%>" >
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_donation_header.html" />
 							</td>
 						</tr>
 						<tr>
-							<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+							<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td>
-								<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
+								<form name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
 									<div style="overflow-y:scroll;overflow-x:hidden;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
-									<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="278" >
-										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.storeapi.content.DonationOrganization">
+									<table border="0" cellspacing="0" cellpadding="2" width="278" >
+										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.fdstore.content.DonationOrganization">
 											<tr>
 												<td width="15" valign="top">
 													<div style="padding-top:20px"><input type="radio" class="text11" name="gcDonId" id="gcDonId_<%= donId.getContentName() %>" value="<%= donId.getContentName() %>" <%= (fdGCDonId != null && donId.getContentName().equals(fdGCDonId)) ? "checked" : "" %> />
 													</div>
 												</td>
 												<td width="65" valign="top">											
-													<label for="gcDonId_<%= donId.getContentName() %>">
 													<%
 														String addDefaultOrgLogo = "<input type=\"image\" name=\"default_org_logo\" src=\"/media/editorial/giftcards/org_logo_blank.gif\" width=\"61\" height=\"61\" alt=\"\" border=\"0\" />";
 													%>		
-													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml(donId.getOrganizationName()) : addDefaultOrgLogo %>
-													</label>&nbsp;
+													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml() : addDefaultOrgLogo %>
+													&nbsp;
 												</td>
 												<td valign="top" width="255">
 													<%
@@ -145,20 +138,20 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				<% } %>
 			</tr>
 			<tr>
-				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" /></td>
+				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" /></td>
 			</tr>
 			<tr>
-				<td colspan="3" align="center">
-					<button class="cssbutton orange" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" >CUSTOMIZE YOUR GIFT CARD</button>
+				<td colspan="3" align="center"><a href="">
+					<input type="image" src="/media_stat/images/giftcards/landing/shop_giftcard_btn.jpg" alt="Customize Your Gift Card" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" />
 				</td>
 			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td align="center" colspan="2">
-					<button class="cssbutton orange" name="gcDonateLand_shopNow" id="gcLand_shopNow" onClick="return pendGC();return false;" >Donate Gift Card</button>
+					<input type="image" src="/media_stat/images/giftcards/landing/donate_giftcard_btn.jpg" alt="Donate Giftcard" name="gcDonateLand_shopNow" id="gcLand_shopNow" border="0" onClick="return pendGC();return false;" />
 				</td>
 			<% } %>
 			</tr>
 			<tr>
-				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" /></td>
+				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" /></td>
 			</tr>
 			<tr>
 				<td align="center" colspan="5">

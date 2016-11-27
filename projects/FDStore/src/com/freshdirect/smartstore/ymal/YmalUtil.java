@@ -12,14 +12,14 @@ import javax.servlet.ServletRequest;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.YmalSource;
 
 
 /**
@@ -33,8 +33,7 @@ public class YmalUtil {
 	private static Category LOGGER = LoggerFactory.getInstance(YmalUtil.class);
 
 	protected static class PriceComparator implements Comparator<FDCartLineI> {
-		@Override
-        public int compare(FDCartLineI c1, FDCartLineI c2) {
+		public int compare(FDCartLineI c1, FDCartLineI c2) {
 			return ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE
 					.compare(c1.lookupProduct(), c2.lookupProduct());
 		}
@@ -97,7 +96,6 @@ public class YmalUtil {
 	 * @param source
 	 * @param request
 	 */
-    // TODO find better solution
 	public static void resetActiveYmalSetSession(YmalSource source, ServletRequest request) {
 		if (request.getAttribute("freshdirect.ymalSource.reset") == null) {
 			if (source != null)

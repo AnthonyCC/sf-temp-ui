@@ -7,42 +7,41 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryNodeTree;
+import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
+import com.freshdirect.fdstore.content.SortValueComparator;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.fdstore.util.TimeRange;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategoryNodeTree;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SearchResults;
-import com.freshdirect.storeapi.content.SortValueComparator;
-import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
 
 public class GetNewProductsTag extends AbstractProductPagerTag {
 	private static final long serialVersionUID = 4285691979496555198L;
 
 	public static class TagEI extends TagExtraInfo {
-		@Override
-        public VariableInfo[] getVariableInfo(TagData data) {
+		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] { new VariableInfo(data.getAttributeString("id"), GetNewProductsTag.class.getName(), true,
 					VariableInfo.NESTED) };
 		}
@@ -58,20 +57,18 @@ public class GetNewProductsTag extends AbstractProductPagerTag {
 	protected SearchResults getResults() {
 		Date now = new Date();
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>(1000);
-        Map<ContentKey, Map<String, Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+		Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
 		ZoneInfo zone=getFDUser().getUserContext().getPricingContext().getZoneInfo();
 		String productNewnessKey="";
 		if(zone!=null) {
 			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}
-        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
-            ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-            items.add(new FilteringSortingItem<ProductModel>(product).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
-        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
-            ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-            items.add(new FilteringSortingItem<ProductModel>(product).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		SearchResults results = new SearchResults(items, FilteringSortingItem.<Recipe> emptyList(),
 				FilteringSortingItem.<CategoryModel> emptyList(), null, false);

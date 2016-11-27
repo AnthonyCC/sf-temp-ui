@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import com.freshdirect.framework.mail.TEmailI;
-import com.freshdirect.framework.util.DaoUtil;
 
 public class TMailerGatewayDAO {
 
@@ -16,21 +15,17 @@ public class TMailerGatewayDAO {
 	
 	public static String getTransactionEmailStatus(Connection conn,String modelId) throws SQLException{
 		String status=null;
-		PreparedStatement ps =null;
-		ResultSet rs = null;
 		try
 		{
-   	       ps = conn.prepareStatement(GET_TRAN_EMAIL_STATUS_SQL);   	          	         	      
-   	       ps.setString(1, modelId);
+   	       PreparedStatement ps = conn.prepareStatement(GET_TRAN_EMAIL_STATUS_SQL);   	          	         	      
+   	        ps.setString(1, modelId);
    	       
-   	       rs=ps.executeQuery();
+   	       ResultSet rs=ps.executeQuery();
    	          	       
    	       if(rs.next()) status=rs.getString("STATUS");
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally {
-	    	DaoUtil.close(rs,ps);
 	    }
 
 		return status;
@@ -42,10 +37,9 @@ public class TMailerGatewayDAO {
 	public static final String UPDATE_TRANS_EMAIL_MASTER=" UPDATE CUST.TRANS_EMAIL_MASTER SET STATUS=?,ERROR_TYPE=?,ERROR_DESC=?,CROMOD_DATE=SYSDATE WHERE ID=? "; 
 	
 	public static void updateTransactionEmailInfoStatus(Connection conn,String modelId,String status,String errorType, String errorDesc) throws SQLException {
-		PreparedStatement ps = null;
 		try
 		{
-   	       ps = conn.prepareStatement(UPDATE_TRANS_EMAIL_MASTER);   	       
+   	       PreparedStatement ps = conn.prepareStatement(UPDATE_TRANS_EMAIL_MASTER);   	       
    	       ps.setString(1, status);
    	       if(errorType!=null && errorType.trim().length()>0)
    	            ps.setString(2, errorType);
@@ -64,8 +58,6 @@ public class TMailerGatewayDAO {
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally {
-	    	DaoUtil.close(ps);
 	    }
 	       
 		    
@@ -77,10 +69,9 @@ public class TMailerGatewayDAO {
 														 " VALUES (CUST.SYSTEM_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, SYSDATE) "; 
 	
 	public static void insertTransactionEmailFailureInfo(Connection conn,TEmailI mail,String status,String errorType,String errorDesc) throws SQLException {
-		PreparedStatement ps =null;
 		try
 		{
-   	       ps = conn.prepareStatement(INSERT_TRANS_EMAIL_FAIURE);   	       
+   	       PreparedStatement ps = conn.prepareStatement(INSERT_TRANS_EMAIL_FAIURE);   	       
    	       ps.setString(1, mail.getId());
    	       ps.setString(2, mail.getTargetProgId());
    	       ps.setString(3, mail.getEmailTransactionType());
@@ -102,8 +93,6 @@ public class TMailerGatewayDAO {
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally {
-	    	DaoUtil.close(ps);
 	    }
 	       
 		    
@@ -114,16 +103,13 @@ public class TMailerGatewayDAO {
 	
 	public static void resetTransactionalEmailInfo(Connection conn) throws SQLException{
 	    int count=0;
-	    PreparedStatement ps = null;
-	    try
+		try
 		{
-   	       ps = conn.prepareStatement(RESET_TRAN_EMAIL_SQL);   	          	          	       
-   	       count=ps.executeUpdate();   	          	     
+   	       PreparedStatement ps = conn.prepareStatement(RESET_TRAN_EMAIL_SQL);   	          	          	       
+   	        count=ps.executeUpdate();   	          	     
    	          	          	       
 		}catch(SQLException e){
 	      	 throw e;
-	    }finally{
-	    	DaoUtil.close(ps);
 	    }
 	       		   	
 	}
@@ -132,21 +118,17 @@ public class TMailerGatewayDAO {
 	
 	public static int getFailedTransactionalEmailCount(Connection conn) throws SQLException  {
 	    int count=0;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try
 		{
-   	       ps = conn.prepareStatement(SELECT_FAILED_EMAILS_SQL);   	          	       
+   	       PreparedStatement ps = conn.prepareStatement(SELECT_FAILED_EMAILS_SQL);   	          	       
    	        
-   	       rs=ps.executeQuery();
+   	       ResultSet rs=ps.executeQuery();
    	       
    	       if(rs.next())  count=rs.getInt("count");
    	          	       
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    } finally{
-	    	DaoUtil.close(rs,ps);
 	    }
 	       
 		return count;

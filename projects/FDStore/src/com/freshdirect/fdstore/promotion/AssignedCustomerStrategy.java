@@ -9,7 +9,7 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class AssignedCustomerStrategy implements PromotionStrategyI {
 
-	private Map<String,AssignedCustomerParam> assignedCustomers;
+	private final Map<String,AssignedCustomerParam> assignedCustomers;
 	private Integer rollingExpirationDays = null;
 	private boolean isMaxUsagePerCustomer = false;
 	
@@ -69,18 +69,6 @@ public class AssignedCustomerStrategy implements PromotionStrategyI {
 	@Override
 	public int getPrecedence() {
 		return 800;
-	}
-
-	public Map<String, AssignedCustomerParam> getAssignedCustomers() {
-		return assignedCustomers;
-	}
-
-	public void setAssignedCustomers(Map<String, AssignedCustomerParam> assignedCustomers) {
-		this.assignedCustomers = assignedCustomers;
-	}
-
-	public void setMaxUsagePerCustomer(boolean isMaxUsagePerCustomer) {
-		this.isMaxUsagePerCustomer = isMaxUsagePerCustomer;
 	}
 
 	public String toString() {

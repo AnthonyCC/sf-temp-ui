@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.freshdirect.storeapi.content.CMSPageRequest;
-import com.freshdirect.storeapi.content.CMSWebPageModel;
-
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.loader.CacheLoader;
 import net.sf.ehcache.loader.CacheLoaderFactory;
+
+import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
 
 public class FDCacheLoaderFactory extends CacheLoaderFactory {
 	

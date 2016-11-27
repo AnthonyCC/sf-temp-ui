@@ -6,13 +6,13 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
 	
 	var $=fd.libs.$;
-  var DISPATCHER = fd.common.dispatcher;
+	
 
 	var	CARTDATA_HEADER = 'header',
 			CARTDATA_ERRORMSG = 'errorMessage',
 			CARTDATA_TOTAL = 'subTotal',
-			CARTDATA_SAVE_AMOUNT = 'saveAmount',
 			CARTDATA_MODIFY = 'modifyOrder',
+			CARTDATA_COREMETRICS = 'coremetricsScript',
 			CARTDATA_SECTIONS = 'cartSections',
 			CARTDATA_CARTLINES = 'itemCount',
       HEADER_COUNTER = 'requestCounter',
@@ -29,7 +29,6 @@ var FreshDirect = FreshDirect || {};
       $checkoutButton = $("#popupcart .checkout"),
       orderLines = $("#sidecartbuttons .summary .nritems"),
       summary = $("#sidecartbuttons .totalprice, #popupcart .totalprice, .locabar-popupcart-total");
-  	  saveAmountElement = $('#popupcart .save-amount');
   
   var $locabar_popupcart_count = $('.locabar-popupcart-count');
 
@@ -39,16 +38,16 @@ var FreshDirect = FreshDirect || {};
   var requestCounter = 0;
 
   var partials={
-    quantity:'<div class="qtyinput small" data-component="quantitybox" data-min="{{qMin}}" data-max="{{qMax}}" data-step="{{qInc}}"><button id="popucart_qty_minus_{{id}}" class="quantity_minus" data-component="quantitybox.dec">-<span class="offscreen">decrease quantity</span></button><label for="popucart_qty_{{id}}"><span class="offscreen">please choose the required quantity for {{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</span></label><input id="popucart_qty_{{id}}" class="qty" type="text" value="{{quantity}}" data-component="quantitybox.value"><button id="popucart_qty_plus_{{id}}" class="quantity_plus" data-component="quantitybox.inc">+<span class="offscreen">increase quantity</span></button></div>',
+    quantity:'<div class="qtyinput small" data-component="quantitybox" data-min="{{qMin}}" data-max="{{qMax}}" data-step="{{qInc}}"><button id="popucart_qty_minus_{{id}}" class="quantity_minus" data-component="quantitybox.dec">-</button><input id="popucart_qty_{{id}}" class="qty" type="text" value="{{quantity}}" data-component="quantitybox.value"><button id="popucart_qty_plus_{{id}}" class="quantity_plus" data-component="quantitybox.inc">+</button></div>',
     salesunit:'<option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>{{name}}</option>',
     section:'<tr class="section"><th colspan="4"><div class="title">{{title}}</div></th></tr>{{#cartLines}}{{>cartline}}{{/cartLines}}',
     remove:'<div class="remove"><button class="remove">remove</button></div>',
-    cartline:'<tr class="cartline" name="{{id}}" data-component="cartline" data-freeproduct="{{freeSamplePromoProduct}}"><td class="remove">{{>remove}}</td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<label for="popucart_qty_{{id}}"><span class="offscreen">please choose the required quantity for {{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</span></label><select id="popucart_qty_{{id}}">{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td>'
+    cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td class="remove">{{>remove}}</td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td><div class="price">{{price}}</div></td>'
   };
   
   /* fdx has a dif col order */
   var partialsFdx=$.extend({}, partials, {
-		  cartline:'<tr class="cartline" name="{{id}}" data-component="cartline" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<label for="popucart_qty_{{id}}"><span class="offscreen">please choose the required quantity for {{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</span></label><select id="popucart_qty_{{id}}">{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td><td class="remove">{{>remove}}</td>'
+		  cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{price}}</div></td><td class="remove">{{>remove}}</td>'
   });
 
 
@@ -60,15 +59,7 @@ var FreshDirect = FreshDirect || {};
   function updateTotal(total) {
     summary.html(total);
   };
-  
-  function updateSaveAmount(saveAmount) {
-	  saveAmountElement.html("You've Saved " + saveAmount);
-	  if (saveAmount){
-		  saveAmountElement.show();
-	  } else {
-		  saveAmountElement.hide();
-	  }
-  }
+
   function updateSections(cartData) {
 	  var cartHtml='';
 	  if (FreshDirect.locabar.isFdx === true) {
@@ -140,13 +131,19 @@ var FreshDirect = FreshDirect || {};
     return changeCount ? data : null;
   };
 
-  /* GTM data dispatch */
-  var gtmDispatch = function(data) {
-    if (data.googleAnalyticsData) {
-      DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
-    }
-  };
-
+  /* this shouldn't exist */
+  var coremetricsEval = function(cartData){
+    if(cartData === false ) return false;
+    try {
+	    if(cartData[CARTDATA_COREMETRICS]) {
+	    	eval(cartData[CARTDATA_COREMETRICS]);
+	    }
+    } catch (e) {
+		// Ignore any errors coming from coremetrics:
+    	// if coremetrics fails we don't want the whole js code to die ...
+    	// console.log( "coremetrics script has failed! " + e );
+	}
+  }
 
   var updateHtml = function(cartData) {
     if(cartData === false ) {
@@ -161,11 +158,7 @@ var FreshDirect = FreshDirect || {};
     if( CARTDATA_TOTAL in cartData ) {
       updateTotal(cartData[CARTDATA_TOTAL]);
     }
-    
-    if (CARTDATA_SAVE_AMOUNT in cartData) {
-      updateSaveAmount(cartData[CARTDATA_SAVE_AMOUNT]);
-    }
-    
+
     if( CARTDATA_SECTIONS in cartData ) {
       updateSections(cartData);
     }
@@ -217,8 +210,7 @@ var FreshDirect = FreshDirect || {};
       stayOnClick: true,
       closeHandle: '#popupcart .close',
       disabled: isDisabled,
-      $clickTrigger: $clickTrigger,
-      appendTo: '#locabar_popupcart'
+      $clickTrigger: $clickTrigger
     }
   ), cartProperties);
 	  
@@ -267,8 +259,8 @@ var FreshDirect = FreshDirect || {};
     var ajax = Bacon.fromPromise($.ajax(ajaxData)); 
     focusedElementId = document.activeElement && document.activeElement.id;
 
-    /* dispatch google tag manager related data */
-    ajax.onValue(gtmDispatch);
+    /* if there is a value, then eval the coremetrics scripts */
+    ajax.onValue(coremetricsEval);
 
     /* show spinner */
     var state = ajax.map(false).toProperty(true);
@@ -313,14 +305,11 @@ var FreshDirect = FreshDirect || {};
 
   fd.modules.common.utils.register("modules.header", "Cart", cartContext , fd);
   
-  // [APPDEV-6528] - Free Delivery Pass
-  $('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
-	  $("#popupcart .content .cartline .price").each(function() {
-		  if($(this).text() == "$0.00"){
-			  $(this).text("FREE").addClass("product-price-free");
-		  }
-		});
+  //[APPDEV-4203] - Product Sampling for your cart popup
+  $(document).on('hover', '#sidecartbuttons', function() {
+	  $("#popupcart .content .cartline[data-freeproduct='true'] .price").text("FREE");
+	  $("#popupcart .content .cartline[data-freeproduct='true'] .price").addClass("product-sample-free");
   });
-  
+
 }(FreshDirect));
 

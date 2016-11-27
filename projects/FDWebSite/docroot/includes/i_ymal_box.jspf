@@ -9,13 +9,13 @@
 <%@ page import='com.freshdirect.fdstore.FDConfigurableI' %>
 <%@ page import='com.freshdirect.fdstore.FDSalesUnit' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import="com.freshdirect.storeapi.content.YmalSource" %>
-<%@ page import="com.freshdirect.storeapi.content.YmalSet" %>
-<%@ page import='com.freshdirect.storeapi.content.ContentNodeModel' %>
-<%@ page import='com.freshdirect.storeapi.content.ProductModel' %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.DepartmentModel' %>
-<%@ page import='com.freshdirect.storeapi.content.Recipe' %>
+<%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
+<%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
+<%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.DepartmentModel' %>
+<%@ page import='com.freshdirect.fdstore.content.Recipe' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult'%>
@@ -39,7 +39,6 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_YMAL_BOX_TOTAL = 590;
@@ -115,7 +114,7 @@ final int W_YMAL_BOX_INNER = 540;
 	}
 
 %>
-<jwr:script src="/roundedcorners.js" useRandomParam="false" />
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 <%-- PRICING PART --%>
 <fd:javascript src="/assets/javascript/pricing.js"/>
 <fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= fd_user %>" impressions="<%= impressions %>"/>
@@ -130,7 +129,7 @@ final int W_YMAL_BOX_INNER = 540;
 %>
 	<div style="clear: both; font-size: 0px;"></div>
   <div id="ymal-table" style="border: 2px solid #996699; width: <%= W_YMAL_BOX_TOTAL %>px; margin-left: 0px; margin-top: 15px">
-		<div class="ymal_highcontrast" style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
+		<div style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
 		<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 <%
 
@@ -143,7 +142,7 @@ final int W_YMAL_BOX_INNER = 540;
 
 %>				<div align="center">
 <%		if (ym_hdr != null) { %>
-					<span class="highcontrast_ymal" style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
+					<span style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
 <%		} else { %>
 					<img width="149" height="9" border="0" alt="YOU MIGHT ALSO LIKE" src="/media_stat/images/template/confirmation/recommended_prods.gif"/>
 <%		} %>
@@ -155,6 +154,7 @@ final int W_YMAL_BOX_INNER = 540;
 
 				<form class="ymal" id="<%= TX_FORM_NAME %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 					
+					<fd:CmFieldDecorator/>
 					<input type="hidden" name="ymal_box" value="present">
 				
 <%		if (ym_aset != null) { %>
@@ -278,16 +278,22 @@ final int W_YMAL_BOX_INNER = 540;
 						
 						<tr>
 							<td class="ymal_addtocart" colspan="<%= rsize %>" class="text11bold">
-								        <div>
+								<table width="100%">
+									<tr>
+										<td width="33%"></td>
+										<td align="center" width="34%">
 											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
-											<button class="cssbutton orange" type="input" id="addMultipleToCart" name="addMultipleToCart">ADD SELECTED TO CART</button></div>
+											<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 											<%--<fd:IsAlcoholic>
 												<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart" quantityCheck="true" event="onclick"/>
 											</fd:IsAlcoholic>--%>
-										<div style="padding-top:5px;">
-									<span class="text14">Total Price:</span>&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" aria-label="total price" style="width:60px; height: 15px;" name="total" value="" size="6" class="text14bold" onChange="" onFocus="blur()">
+										</td>
+										<td align="right" width="33%">
+											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
 											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
-									</div>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 <%		} %>
@@ -308,7 +314,7 @@ final int W_YMAL_BOX_INNER = 540;
 			showSeparator = true;
 		}
 %>				<img src="/media_stat/images/template/confirmation/ymal_recipes_hdr.gif" width="170" height="11" border="0" alt="YOU MIGHT ALSO LIKE"><br>
-				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 <%
 		for (Iterator<Recipe> it = r_recipes.iterator(); it.hasNext();) {
 			Recipe rec = it.next();
@@ -329,8 +335,8 @@ final int W_YMAL_BOX_INNER = 540;
 %>				<hr class="ymalSeparator_category" noshade="noshade"/>
 <%		}
 %>				<div align="center" style="padding-top: 8px; padding-bottom: 8px;">
-					<div class="highcontrast_ymal" style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
+					<div style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 <%
 		for (Iterator<CategoryModel> it = r_cats.iterator(); it.hasNext();) {
 			CategoryModel c = it.next();

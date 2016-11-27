@@ -22,6 +22,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -30,7 +31,6 @@ import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ItemCount;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
@@ -88,7 +88,7 @@ public class RestrictionService {
                 continue;
             }
             CartData.Item item = CartDataService.defaultService().populateCartDataItem(cartLine, fdProduct, new ItemCount(), user.getShoppingCart(),
-                    Collections.<Long> emptySet(), productNode, user);
+                    Collections.<Integer> emptySet(), productNode, user);
             populatedCartLines.add(item);
         }
         return populatedCartLines;
@@ -168,15 +168,13 @@ public class RestrictionService {
     private List<FDCartLineI> getNonEBTExclusiveCartLine(FDUserI user) {
         FDCartModel cart = user.getShoppingCart();
         List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
-        if(null !=cart && null !=cart.getPaymentMethod()){
-	        if (EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())) {
-	            for (FDCartLineI cartLine : cart.getOrderLines()) {
-	                if (cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
-	                    ebtIneligibleOrderLines.add(cartLine);
-	                }
-	            }
-	            cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
-	        }
+        if (EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())) {
+            for (FDCartLineI cartLine : cart.getOrderLines()) {
+                if (cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
+                    ebtIneligibleOrderLines.add(cartLine);
+                }
+            }
+            cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
         }
         return ebtIneligibleOrderLines;
     }

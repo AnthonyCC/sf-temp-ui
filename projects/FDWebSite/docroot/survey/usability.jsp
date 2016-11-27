@@ -49,17 +49,14 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Tell us what you think of the site"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Tell us what you think of the site</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>Tell us what you think of the site</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <table width="<%=W_SURVEY_USABILITY_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="10" class="text12" align="center"><br>
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <fd:ReceiptSurvey actionName="submitSurvey" result="result" successPage="/survey/usability.jsp?info=thankyou" survey="<%=Usability%>">
 <form name="usabilitySurvey" method="POST">
@@ -68,7 +65,7 @@ response.setDateHeader ("Expires", 0);
 We're always looking for ways to make your shopping experience better and your answers to this survey will help us to do so. It should take less than 5 minutes of your time. No one knows the FreshDirect web site as well as our customers, and we value your expert opinion highly. Of course, in accordance with the FreshDirect <a href="javascript:popup('/help/privacy_policy.jsp?type=popup','large')">Privacy Policy</a>, all of your answers will be kept confidential. Thank you in advance for your feedback &mdash; it's greatly appreciated.
 <br><br>
 If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
-<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -78,16 +75,16 @@ If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_LEFT%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_RIGHT%>" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_USABILITY_NA%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_LEFT%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_RIGHT%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_NA%>" height="1"></td>
 	</tr>
 	<tr>
 		<td colspan="10">
@@ -170,7 +167,7 @@ If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="10" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="usabilitySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="10" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="usabilitySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

@@ -26,8 +26,6 @@ public class PaymentMethod {
     
     private String value;
     
-    private boolean isDebitCard;
-    
     public PaymentMethod(com.freshdirect.mobileapi.model.PaymentMethod paymentMethod) {
         this.id = paymentMethod.getId();
         this.billingAddress = new BillingAddress(paymentMethod);
@@ -40,7 +38,6 @@ public class PaymentMethod {
         this.emailId = paymentMethod.getEmailId();
         this.value = paymentMethod.getProfileId();
         this.tokenType = paymentMethod.getTokenType();
-        this.isDebitCard = paymentMethod.isDebitCard();
     }
 
     public PaymentMethod(com.freshdirect.mobileapi.model.PaymentMethod paymentMethod,String type) {
@@ -54,7 +51,6 @@ public class PaymentMethod {
         }else{
         	this.value = paymentMethod.getProfileId(); // Set Client Token
         }
-        this.isDebitCard = paymentMethod.isDebitCard();
     }
    
     
@@ -114,8 +110,7 @@ public class PaymentMethod {
 		return value;
 	}
 
-	public boolean isDebitCard() {
-		return isDebitCard;
-	}
+	
+
 	
 }

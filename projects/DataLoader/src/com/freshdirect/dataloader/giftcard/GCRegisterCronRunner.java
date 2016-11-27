@@ -27,9 +27,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -56,19 +53,13 @@ public class GCRegisterCronRunner {
 		}
 
 		Context ctx = null;
-		SaleCronSB sb = null;
 		try {
 			LOGGER.info("GCRegisterCron started");
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
-				SaleCronService.getInstance().registerGiftCards(registerTimeout);
-			} else {
-				ctx = getInitialContext();
+			ctx = getInitialContext();
+			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
-				SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-				sb = home.create();
-
-				sb.registerGiftCards(registerTimeout);
-			}
+			SaleCronSB sb = home.create();
+			sb.registerGiftCards(registerTimeout);
 			LOGGER.info("GCRegisterCron finished");
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -96,6 +87,7 @@ public class GCRegisterCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="GCRegisterCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

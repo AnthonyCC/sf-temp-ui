@@ -13,7 +13,13 @@
 			<td colspan="2" align="right">Category:&nbsp;</td>
 			<td colspan="2"><select name="category" class="pulldown" onChange="javascript:refreshForm(this.form);" style="width: 300px;">
 				<option value="">- Select -</option>
-				
+				<%
+				for(Iterator i = categories.iterator(); i.hasNext(); ){
+			        String cat = (String) i.next();
+			        if (cat == null) continue;
+			     %>
+					<option <%=cat.equals(category) ? "selected" : "" %> value="<%=cat%>"><%=cat%></option>
+				<%}%>
 			</select></td>
 			
 		</tr>
@@ -22,7 +28,16 @@
 			<td colspan="2"><select name="name" class="pulldown" id="profiles_name" onChange="javascript:refreshForm(this.form);" style="width: 300px;">
 				<option value="">- Select -</option>
 				
+				<%
 				
+				for(Iterator i = profileAttributeNames.keySet().iterator(); i.hasNext(); ){
+			        String iName = (String) i.next();
+			        ProfileAttributeName profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(iName); 
+			        boolean isSameCategory = ("".equals(category) || (profileAttributeName != null && category.equalsIgnoreCase(profileAttributeName.getCategory()))); 
+			        if (profileAttributeName != null && profileAttributeName.getIsEditable() && isSameCategory) { %>
+					<option <%=iName.equals(name) ? "selected" : "" %> value="<%=iName%>"><%=profileAttributeName.getDescription()%></option>
+				<%	}
+				}%>
 			</select><fd:ErrorHandler result="<%= result %>" name="name" id='errorMsg'><span class="error">&nbsp;<%=errorMsg%></span></fd:ErrorHandler>
 			<script>sortByText('profiles_name', false, false, -1); $jq('#profiles_name').val('<%= name %>');</script>
 			</td>
@@ -39,7 +54,11 @@
 			<td colspan="2" align="right">Value:&nbsp;</td>
 			<% 
 			String profileAttrValueType = EnumProfileAttrValueType.TEXT.getName();
-			
+			ProfileAttributeName profileAttributeName = null;
+			if (!"".equals(name) && ((profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(name)) != null)
+				&& profileAttributeName.getAttributeValueType() != null) {
+				profileAttrValueType = profileAttributeName.getAttributeValueType(); 			
+			}
 			if (EnumProfileAttrValueType.TEXT.getName().equals(profileAttrValueType)) { %>
 				<td colspan="2"><input type="text" name="value" class="input" style="width: 300px;" value="<%=value%>"><fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error">&nbsp;<%=errorMsg%></span></fd:ErrorHandler></td>
 			<% } else if (EnumProfileAttrValueType.SET.getName().equals(profileAttrValueType)) { %>

@@ -2,10 +2,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <tmpl:insert template='/common/template/bestcellars/large_pop.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Best Cellars - Privacy Policy"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Best Cellars - Privacy Policy</tmpl:put> --%>
+	<tmpl:put name='title' direct='true'>Best Cellars - Privacy Policy</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			<div align="left">
 			<font class="bc_title"><b>Privacy Policy</b></font>

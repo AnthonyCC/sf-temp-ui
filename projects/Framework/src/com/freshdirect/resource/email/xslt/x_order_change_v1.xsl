@@ -9,7 +9,7 @@
 <xsl:template match="fdemail">
 Hello <xsl:value-of select="customer/firstName"/>,
 
-We've updated your order information. You will receive your final invoice on the day of your delivery. Please look over the details below.
+We've updated your order information. Please look over the details below.
 
 If you'd like to make further changes:
 http://www.freshdirect.com/your_account/manage_account.jsp

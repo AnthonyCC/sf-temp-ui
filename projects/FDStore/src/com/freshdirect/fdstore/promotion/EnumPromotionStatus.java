@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumPromotionStatus extends Enum{
 	private static final long serialVersionUID = 3857209226074690728L;
 
@@ -29,8 +26,7 @@ public class EnumPromotionStatus extends Enum{
 		this.description = description;
 	}
 	
-	@JsonCreator
-	public static EnumPromotionStatus getEnum(@JsonProperty("name") String name) {
+	public static EnumPromotionStatus getEnum(String name) {
 		return (EnumPromotionStatus) getEnum(EnumPromotionStatus.class, name);
 	}
 

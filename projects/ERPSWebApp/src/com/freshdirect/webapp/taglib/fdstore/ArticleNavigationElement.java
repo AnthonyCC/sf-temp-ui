@@ -5,7 +5,13 @@
  */
 
 package com.freshdirect.webapp.taglib.fdstore;
-import com.freshdirect.storeapi.content.*;
+import com.freshdirect.fdstore.content.*;
+ /*
+ *
+ * @author  rgayle
+ * @version 
+ * Navigation element that is not a content node, but is owned by a content node.
+ */
 
 public class ArticleNavigationElement extends NavigationElement{
     

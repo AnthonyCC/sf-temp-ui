@@ -8,15 +8,10 @@ package com.freshdirect.fdstore.customer;
 import javax.naming.*;
 import javax.ejb.*;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.List;
 
 import com.freshdirect.framework.core.PrimaryKey;
 
 import com.freshdirect.fdstore.customer.ejb.*;
-import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
-import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
-import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.*;
 
 import com.freshdirect.customer.*;
@@ -27,9 +22,7 @@ public class FDCustomerFactory {
 
 	private static FDCustomerHome fdCustomerHome = null;
 	private static ErpCustomerHome erpCustomerHome = null;
-	private static ErpCustomerManagerHome erpCustomerManagerHome = null;
-	private static ErpCustomerInfoHome erpCustomerInfoHome = null;
-	
+
     private FDCustomerFactory () {
     }
 
@@ -38,37 +31,28 @@ public class FDCustomerFactory {
 	}
 
 	public static FDCustomerModel getFDCustomer(String fdCustomerId) throws FDResourceException {
+		if (fdCustomerHome==null) {
+			lookupFDCustomerHome();
+		}
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-				return CustomerIdentityService.getInstance().getFDCustomer(fdCustomerId, null);
-			} else {
-				if (fdCustomerHome == null) {
-					lookupFDCustomerHome();
-				}
-				FDCustomerEB eb = fdCustomerHome.findByPrimaryKey(new PrimaryKey(fdCustomerId));
-				return (FDCustomerModel) eb.getModel();
-			}
-		} catch (FinderException fe) {
-			fdCustomerHome = null;
+			FDCustomerEB eb = fdCustomerHome.findByPrimaryKey( new PrimaryKey( fdCustomerId ) );
+			return (FDCustomerModel) eb.getModel();
+		} catch(FinderException fe) {
+			fdCustomerHome=null;
 			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			fdCustomerHome = null;
+		} catch(RemoteException re) {
+			fdCustomerHome=null;
 			throw new FDResourceException(re);
 		}
 	}
-
+    
 	public static FDCustomerModel getFDCustomerFromErpId(String erpCustomerId) throws FDResourceException {
+		if (fdCustomerHome==null) {
+			lookupFDCustomerHome();
+		}
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId);
-			} else {
-				if (fdCustomerHome==null) {
-					lookupFDCustomerHome();
-				}
-				FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
-				return (FDCustomerModel) eb.getModel();
-			}
-			
+			FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
+			return (FDCustomerModel) eb.getModel();
 		} catch(FinderException fe) {
 			fdCustomerHome=null;
 			throw new FDResourceException(fe);
@@ -78,22 +62,18 @@ public class FDCustomerFactory {
 		}
 	}
 
-	public static String getFDCustomerIdFromErpId(String erpCustomerId) throws FDResourceException {
+	public static String getFDCustomerIdFromErpId( String erpCustomerId ) throws FDResourceException {
+		if (fdCustomerHome==null) {
+			lookupFDCustomerHome();
+		}
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId).getPK().getId();
-			} else {
-				if (fdCustomerHome == null) {
-					lookupFDCustomerHome();
-				}
-				FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
-				return ((FDCustomerModel) eb.getModel()).getPK().getId();
-			}
-		} catch (FinderException fe) {
-			fdCustomerHome = null;
+			FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
+			return ( (FDCustomerModel) eb.getModel() ).getPK().getId();
+		} catch(FinderException fe) {
+			fdCustomerHome=null;
 			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			fdCustomerHome = null;
+		} catch(RemoteException re) {
+			fdCustomerHome=null;
 			throw new FDResourceException(re);
 		}
 	}
@@ -103,83 +83,57 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
+		if (erpCustomerHome==null) {
+			lookupErpCustomerHome();
+		}
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-				return CustomerIdentityService.getInstance().getErpCustomer(erpCustomerId);
-			}
-			if (erpCustomerHome == null) {
-				lookupErpCustomerHome();
-			}
-			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey(new PrimaryKey(erpCustomerId));
-			return (ErpCustomerModel) eb.getModel();
-		} catch (FinderException fe) {
-			erpCustomerHome = null;
+			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey( new PrimaryKey( erpCustomerId ) );
+			return (ErpCustomerModel)eb.getModel();
+		} catch(FinderException fe) {
+			erpCustomerHome=null;
 			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			erpCustomerHome = null;
+		} catch(RemoteException re) {
+			erpCustomerHome=null;
+			throw new FDResourceException(re);
+		}
+	}
+
+    public static ErpCustomerModel getErpCustomerByUserId(String userId) throws FDResourceException {
+		if (erpCustomerHome==null) {
+			lookupErpCustomerHome();
+		}
+		try {
+			ErpCustomerEB eb = erpCustomerHome.findByUserId(userId);
+			return (ErpCustomerModel) eb.getModel();
+		} catch(FinderException fe) {
+			fdCustomerHome=null;
+			throw new FDResourceException(fe);
+		} catch(RemoteException re) {
+			fdCustomerHome=null;
 			throw new FDResourceException(re);
 		}
 	}
 
 	public static ErpCustomerInfoModel getErpCustomerInfo(FDIdentity identity) throws FDResourceException {
-		return getErpCustomerInfo( null !=identity ? identity.getErpCustomerPK():null );
+		return getErpCustomerInfo( identity.getErpCustomerPK() );
 	}
 
-	@Deprecated
 	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
-		if(null !=erpCustomerId){
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-					return CustomerInfoService.getInstance().getErpCustomerInfo(erpCustomerId);
-				}
-				if (erpCustomerInfoHome == null) {
-					lookupErpCustomerInfoHome();
-				}
-				ErpCustomerInfoModel customerInfo = (ErpCustomerInfoModel) erpCustomerInfoHome.findByErpCustomerId(erpCustomerId).getModel();
-				return customerInfo;
-			} catch(FinderException fe) {
-				erpCustomerInfoHome = null;
-				throw new FDResourceException(fe);
-			} catch(RemoteException re) {
-				erpCustomerInfoHome = null;
-				throw new FDResourceException(re);
-			}
+		if (erpCustomerHome==null) {
+			lookupErpCustomerHome();
 		}
-		return null;
-	}
-	
-	public static List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId (String erpCustomerId) throws FDResourceException{
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
-				return CustomerPaymentService.getInstance().getCustomerCreditsByErpCustId(erpCustomerId);
-			}
-			if (erpCustomerManagerHome == null) {
-				lookupErpCustomerManagerHome();
-			}
-			ErpCustomerManagerSB erpCustMgrSb =  (ErpCustomerManagerSB)erpCustomerManagerHome.create();
-			return erpCustMgrSb.getCustomerCreditsByErpCustId(erpCustomerId);
-		} catch(CreateException fe) {
-			erpCustomerManagerHome = null;
+			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey(new PrimaryKey( erpCustomerId ));
+			return eb.getCustomerInfo();
+		} catch(FinderException fe) {
+			erpCustomerHome=null;
 			throw new FDResourceException(fe);
 		} catch(RemoteException re) {
-			erpCustomerManagerHome = null;
+			erpCustomerHome=null;
 			throw new FDResourceException(re);
 		}
-		
 	}
-	protected static void lookupErpCustomerInfoHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			erpCustomerInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {}
-		}
-	}
+
 	protected static void lookupFDCustomerHome() throws FDResourceException {
 		Context ctx = null;
 		try {
@@ -199,20 +153,6 @@ public class FDCustomerFactory {
 		try {
 			ctx = FDStoreProperties.getInitialContext();
 			erpCustomerHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {}
-		}
-	}
-	
-	protected static void lookupErpCustomerManagerHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			erpCustomerManagerHome =  (ErpCustomerManagerHome) ctx.lookup("freshdirect.erp.CustomerManager");
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {

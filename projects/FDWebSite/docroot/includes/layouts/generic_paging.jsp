@@ -1,6 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -10,7 +10,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%!
 	public String getPageNumbers( HttpServletRequest requestObj, HttpServletResponse responseObj, int pageNumber, int itemsPerPage, ContentNodeModel currFolder, int itemsCount ) {
@@ -183,8 +183,8 @@
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 	<tr>
 		<td CLASS="text10">
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="12"><b>Page: </b><%=pagingLinks%>&nbsp;(<%=displayList.size()%> items)<br/>
-			<img src="/media_stat/images/layout/clear.gif" alt="" height="24">
+			<img src="/media_stat/images/layout/clear.gif" width="12"><b>Page: </b><%=pagingLinks%>&nbsp;(<%=displayList.size()%> items)<br/>
+			<img src="/media_stat/images/layout/clear.gif" height="24">
 		</td>
 	</tr>
 </table>
@@ -202,7 +202,7 @@
 	
 	<tr valign="top">
 		<td CLASS="text10" align="left" width="50%">
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="12"><b><%=currentFolder.getFullName()%></b>&nbsp;(<%=displayList.size()%> items)
+			<img src="/media_stat/images/layout/clear.gif" width="12"><b><%=currentFolder.getFullName()%></b>&nbsp;(<%=displayList.size()%> items)
 		</td>
 		<td CLASS="text10" ALIGN="RIGHT" width="50%">Display
 		 
@@ -219,14 +219,14 @@
 				<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(20,-1)+"&trk=numb") %>">20</A> |
 				<B>28</B>
 			<% } %> 
-			per page<img src="/media_stat/images/layout/clear.gif" alt="" width="12">
+			per page<img src="/media_stat/images/layout/clear.gif" width="12">
 			
 		</td>
 	</tr>
 	
 	<tr>
 		<td CLASS="text10" colspan="2">
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="12"><b>Page: </b><%=pagingLinks%>
+			<img src="/media_stat/images/layout/clear.gif" width="12"><b>Page: </b><%=pagingLinks%>
 		</td>
 	</tr>
 	

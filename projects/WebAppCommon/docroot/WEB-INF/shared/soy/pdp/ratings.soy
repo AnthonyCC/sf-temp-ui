@@ -12,8 +12,8 @@
 {if $expertRating or $wineRating or $sustainabilityRating or $bazaarVoice or $customerRating}
 <ul class="ratings">
 {if $sustainabilityRating}<li>{call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
-<span class="sustrating-text"><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a>
-</span></li>{/if}
+<label class="sustrating-text"><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a>
+</label></li>{/if}
 {if $expertRating}<li>{call pdp.expertRating}{param ratingValue:$expertRating /}{/call}</li>{/if}
 {if $bazaarVoice}<li><label for="pdp-customerReview" id="BVRRSummaryContainer"></label></li>{/if}
 {if $wineRating}<li>{call common.rating.wine}{param ratingValue:$wineRating /}{/call}</li>{/if}

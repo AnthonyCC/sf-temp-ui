@@ -21,16 +21,4 @@ public interface ErpInvoiceLineI extends Serializable {
 	public double getActualDiscountAmount();
 	
 	public double getCouponDiscountAmount() ;
-	
-	public String getSubstitutedSkuCode(); // return the skucode of the substituted product from SAP
-	
-	public String getSubSkuStatus(); // return the status of the substituted skucode
-	
-	public String getMaterialNumber();
-	
-	public double getActualCost();
-	
-	public double getActualPrice();
-	
-	
 }

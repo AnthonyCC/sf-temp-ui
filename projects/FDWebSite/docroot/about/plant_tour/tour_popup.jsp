@@ -1,6 +1,6 @@
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
+
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -36,11 +36,8 @@ currImgSrc = imgSrc + currNum + ".jpg";
 %>
 
 <tmpl:insert template='/common/template/small_pop.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - A Photographic Tour"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - A Photographic Tour</tmpl:put> --%>
-  <tmpl:put name='content' direct='true'>
+	<tmpl:put name='title' direct='true'>FreshDirect - A Photographic Tour</tmpl:put>
+		<tmpl:put name='content' direct='true'>
 <script>
 var imgNum = <%=imgNum%>;
 var maxNum = <%=deptMaxNum%>;
@@ -63,8 +60,8 @@ function buildImgSrc (numDirection) {
 
 
 <div align="center"><a href="javascript:window.reallyClose();"><img src="<%=currImgSrc%>" width="235" height="294" name="deptImg" border="0"></a>
-<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><span class="text12"><a href="javascript:swapImage('deptImg',buildImgSrc('prev'));">< previous image</a> | <a href="javascript:swapImage('deptImg',buildImgSrc('next'));">next image ></a>
-</span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"></div>
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><span class="text12"><a href="javascript:swapImage('deptImg',buildImgSrc('prev'));">< previous image</a> | <a href="javascript:swapImage('deptImg',buildImgSrc('next'));">next image ></a>
+</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"></div>
 	</tmpl:put>
 </tmpl:insert>
 

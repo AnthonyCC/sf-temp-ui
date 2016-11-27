@@ -90,17 +90,6 @@ public interface SessionName {
     public static final String CLICK_ID = "CLICKID";
     public static final String COUPONCODE = "COUPONCODE";
     
-    public static final String MSG_FOR_LOGIN_PAGE = "MSG_FOR_LOGIN_PAGE";
-    
     // PayPal
     public static final String PAYPAL_DEVICE_ID = "DEVICE_ID";
-
-    public static final String SOCIAL_LOGIN_PROVIDER = "social_login_provider";
-    public static final String LOGIN_ATTEMPT = "fdLoginAttempt";
-    public static final String LOGIN_SUCCESS = "loginSuccess";
-    public static final String SIGNUP_ATTEMPT = "fdSignUpAttempt";
-    public static final String SIGNUP_SUCCESS = "signupSuccess";
-    public static final String SOCIAL_LOGIN_SUCCESS = "socialLoginSuccess";
-    
-    public static final String PAYMENT_ATTEMPT = "fdPaymentAttempt";
 }

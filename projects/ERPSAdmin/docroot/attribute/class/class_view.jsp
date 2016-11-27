@@ -10,23 +10,19 @@
     <tmpl:put name='title' content='class view page' direct='true'/>
 
     <tmpl:put name='leftnav' direct='true'>
-    	
         <div id="leftnav">
-        	<%-- 
 			<!-- SAP class tree goes here -->
 			<fd:ClassTree id="classTree">
 				<logic:iterate id="erpClass" collection="<%= classTree %>" type="com.freshdirect.erp.model.ErpClassModel">
 					<a href="class_view.jsp?sapId=<%= erpClass.getSapId() %>"><%= erpClass.getSapId() %></a><br>
 				</logic:iterate>
 			</fd:ClassTree>
-			--%>
 		</div>
-		
     </tmpl:put>
 
 
     <tmpl:put name='content' direct='true'>
-            <%--
+
             <fd:Class id="erpClass" sapId='<%= request.getParameter("sapId") %>'>
 
             <form action="class_view.jsp" method="post">
@@ -96,7 +92,7 @@
             </fd:MaterialSearch>
 
             </fd:Class>
-            --%>
+        
     </tmpl:put>
 
 

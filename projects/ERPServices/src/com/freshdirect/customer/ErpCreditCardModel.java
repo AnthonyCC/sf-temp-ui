@@ -1,8 +1,6 @@
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -19,7 +17,6 @@ public class ErpCreditCardModel extends ErpPaymentMethodModel {
 
 	private static final long	serialVersionUID	= 4226856315306939606L;
 	
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date expirationDate;
 	private EnumCardType cardType;
 

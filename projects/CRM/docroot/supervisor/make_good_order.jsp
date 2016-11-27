@@ -35,7 +35,7 @@
             cal.set(Calendar.YEAR, year);
             dateParam = cal.getTime();
          
-            searchResults = null;
+            searchResults = CallCenterServices.getMakeGoodOrder(dateParam);
     }
 %>
 

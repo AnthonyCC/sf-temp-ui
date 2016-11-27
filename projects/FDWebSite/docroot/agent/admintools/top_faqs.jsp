@@ -15,12 +15,11 @@
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.DateFormatSymbols" %>
-<%@ page import="com.freshdirect.storeapi.application.CmsManager" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@ page import="com.freshdirect.storeapi.ContentNodeI" %>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes" %>
+<%@ page import="com.freshdirect.cms.application.CmsManager" %>
+<%@ page import="com.freshdirect.cms.application.ContentTypeServiceI" %>
+<%@ page import="com.freshdirect.cms.ContentKey" %>
+<%@ page import="com.freshdirect.cms.ContentNodeI" %>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 
 <%-- Customer ID is not really required in this page, however masquerade context is passed via FDUserI interface --%>
@@ -34,15 +33,15 @@
 %>
 <%
 CmsManager          manager     = CmsManager.getInstance();
+ContentTypeServiceI typeService = manager.getTypeService();
 // FIXME FDX version?
 final boolean isFd = "FreshDirect".equalsIgnoreCase( manager.getSingleStoreKey().getId() );
-final ContentKey key = isFd ? ContentKeyFactory.get(FDContentTypes.FDFOLDER, "FAQ") : ContentKeyFactory.get(FDContentTypes.FDFOLDER, "FAQ_fdx") ;
+final ContentKey key = isFd ? new ContentKey(FDContentTypes.FDFOLDER, "FAQ") : new ContentKey(FDContentTypes.FDFOLDER, "FAQ_fdx") ;
 ContentNodeI contentNode = manager.getContentNode(key);
 %><tmpl:insert template='/common/template/no_border_nonav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Top FAQs"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - Top FAQs</tmpl:put> --%>
+
+
+<tmpl:put name='title' direct='true'> Top FAQs</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 

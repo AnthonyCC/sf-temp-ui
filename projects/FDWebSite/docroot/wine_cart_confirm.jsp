@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.*' %>
@@ -38,7 +38,7 @@ if (catIdParam!=null && !"".equals(catIdParam)) {
   if (catNode instanceof RecipeCategory) {
         jspTemplate ="/common/template/recipe_DLRnavs.jsp" ;
   }
-
+  
 
     int templateType=catNode instanceof HasTemplateType ? ((HasTemplateType)catNode).getTemplateType(1) : 1;
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
@@ -46,37 +46,32 @@ if (catIdParam!=null && !"".equals(catIdParam)) {
     } else { //assuming the default (Generic) Template
         jspTemplate = "/common/template/both_dnav.jsp";
     }
-
-
+        
+  
 }
 Recipe recipe = null;
 
 %>
 
 <tmpl:insert template='<%=jspTemplate%>'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Cart Confirmation"/>
-    </tmpl:put>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Cart Confirmation</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Cart Confirmation</tmpl:put>
 
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
+	
 
-
-
+    
 <tmpl:put name='content' direct='true'>
-
-  <div id='oas_ProductNote'>
-  	<SCRIPT LANGUAGE=JavaScript>
-  		<!--
-  		OAS_AD('ProductNote');
-  		//-->
-  	</SCRIPT>
-  </div>
+		
+	<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ProductNote');
+		//-->
+	</SCRIPT>
 
 	<!-- Includes Bottom of Items added to Cart -->
 	<fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
-<%
+<%	
 	  FDCartLineModel orderLine = (FDCartLineModel)cart.getRecentOrderLines().get(0);
 
 	  if (orderLine.getRecipeSourceId() != null) {
@@ -85,7 +80,7 @@ Recipe recipe = null;
 
       boolean groupByDepartments = false;
 %>
-	<%@ include file="/includes/i_add_to_cart_confirmation.jspf" %>
+	<%@ include file="/includes/i_add_to_cart_confirmation.jspf" %>	
 
 	<%
 	ContentNodeModel context;
@@ -97,11 +92,11 @@ Recipe recipe = null;
 	request.setAttribute("sitePage", context.getPath());
 	%>
 		<fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
-
-
-			<%@include file="/includes/i_cart_confirm_bottom.jspf"%>
+    
+    
+			<%@include file="/includes/i_cart_confirm_bottom.jspf"%>	
 		</fd:ProductGroup>
-
+	
 	</fd:FDShoppingCart>
 	<!-- End Includes Bottom of Items added to Cart -->
 

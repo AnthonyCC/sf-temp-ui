@@ -69,10 +69,6 @@ public class CartSubTotalBoxService {
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String VIEW_CART_TAX_AVALARA = "Added during Checkout";
     private static final String TIP = "Tip";
-    
-    private static final String DELIVERY_CHARGE_ID = "deliverycharge";
-    private static final String DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME = "Delivery Premium (Hamptons) (waived)";
-    private static final String DELIVERY_PREMIUM_HAMPTONS_NAME = "Delivery Premium (Hamptons)";
 
     private CartSubTotalBoxService() {
     }
@@ -97,7 +93,7 @@ public class CartSubTotalBoxService {
         subTotalBox.add(data);
     }
 
-    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, boolean hasMultipleStores) {
+    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri, boolean hasMultipleStores) {
         CartSubTotalFieldData data = new CartSubTotalFieldData();
         data.setId(TOTALTAX_ID);
         if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {
@@ -141,7 +137,6 @@ public class CartSubTotalBoxService {
         }
 
         boolean deliveryPassPopupNeeded = false;
-        boolean deliveryPassFreeTrialEligible = user.isDPFreeTrialOptInEligible();
         String deliveryPassName = DELIVERY_FEE_NAME;
         String deliveryPassValue = ZERO_POINT_ZERO_ZERO_VALUE;
         if (isDlvPromotionApplied) {
@@ -159,30 +154,7 @@ public class CartSubTotalBoxService {
             }
         }
         
-        if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM)> 0) {
-            if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
-                CartSubTotalFieldData data = new CartSubTotalFieldData();
-                data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME);
-                data.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
-                subTotalBox.add(data);
-            } else {
-                CartSubTotalFieldData data = new CartSubTotalFieldData();
-                data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_PREMIUM_HAMPTONS_NAME);
-                data.setValue(JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)));
-                if (cart.isChargeTaxable(EnumChargeType.DLVPREMIUM)) {
-                    data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
-                }
-                subTotalBox.add(data);
-            }
-        }
-        
         if(null!=cart.getEStoreId() && "FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
-        	deliveryPassPopupNeeded=false;
-        }
-        
-        if(user.isDlvPassTimeslotNotMatched() || cart.getDeliveryPassCount() > 0){
         	deliveryPassPopupNeeded=false;
         }
         
@@ -199,7 +171,6 @@ public class CartSubTotalBoxService {
         data.setId(DELIVERY_FEE_ID);
         data.setText(deliveryPassName);
         data.setValue(deliveryPassValue);
-        data.getOther().put("deliveryPassFreeTrialEligible", deliveryPassFreeTrialEligible);
         data.getOther().put("deliveryPassPopupNeeded", deliveryPassPopupNeeded);
         if (isTaxableItemInCart) {
             data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
@@ -277,7 +248,7 @@ public class CartSubTotalBoxService {
             }
         }
 
-        if (isRedemptionApplied && !removeLinkDisplayed) {
+        if (isRedemptionApplied) {
             if (redemptionPromo.isSampleItem()) {
                 CartSubTotalFieldData sampleRedemptionPromo = new CartSubTotalFieldData();
                 sampleRedemptionPromo.setId(REDEMPTION_PROMO_ID);
@@ -311,7 +282,7 @@ public class CartSubTotalBoxService {
             }
         }
 
-        if (redemptionPromo != null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode) && !removeLinkDisplayed) {
+        if (redemptionPromo != null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
             CartSubTotalFieldData lineItemRedemptionPromo = new CartSubTotalFieldData();
             lineItemRedemptionPromo.setId(REDEMPTION_PROMO_ID);
             lineItemRedemptionPromo.setText(redemptionPromo.getDescription());
@@ -401,17 +372,22 @@ public class CartSubTotalBoxService {
         subTotalBox.add(data);
     }
 
-    public CartSubTotalFieldData createSavingToBox(FDCartI cart) {
-        double saving = cart.getSaveAmount(true);
+    public void populateSavingToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
+        double saving = cart.getTotalDiscountValue() + cart.getCustomerCreditsValue();
+
+        for (FDCartLineI orderLine : cart.getOrderLines()) {
+            if (hasCartLineGroupDiscount(orderLine)) {
+                saving += orderLine.getGroupScaleSavings();
+            }
+        }
 
         if (0 < saving) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(YOU_SAVED);
             data.setText(YOU_SAVED_TEXT);
             data.setValue(JspMethods.formatPrice(saving));
-            return data;
+            subTotalBox.add(data);
         }
-        return null;
     }
 
     public void populateTipToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
@@ -424,8 +400,12 @@ public class CartSubTotalBoxService {
         }
     }
 
+    private boolean hasCartLineGroupDiscount(FDCartLineI cartLine) {
+        return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;
+    }
+
 	public void populateAvalaraTaxToBox(
-			List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
+			List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri) {
 		 CartSubTotalFieldData data = new CartSubTotalFieldData();
 	        data.setId(AVAL_TOTALTAX_ID);
 	        if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {

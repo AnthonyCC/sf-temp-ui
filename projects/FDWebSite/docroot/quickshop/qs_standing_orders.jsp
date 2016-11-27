@@ -31,10 +31,10 @@
 
 <tmpl:insert template='/quickshop/includes/qs_template.jsp'>
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
-<%--     <tmpl:put name='title' direct='true'>FreshDirect - Standing Orders</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Standing Orders</tmpl:put>
     
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Standing Orders" pageId="standing_orders"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="standing_orders"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qscommon.js" useRandomParam="false" /><script>
     var FreshDirect = FreshDirect || {};
@@ -44,11 +44,9 @@
 
     	var $ = fd.libs.$;
     	
-    	fd.quickshop.common.tabMeta.update();
-    	if (fd.common.tabbedRecommender) {
-    		var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
-    		fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
-    	}
+    	fd.quickshop.common.tabMeta.update();	
+    	var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
+    	fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
     }(FreshDirect));
     
     //Show the OAS AD APPDEV-4294 

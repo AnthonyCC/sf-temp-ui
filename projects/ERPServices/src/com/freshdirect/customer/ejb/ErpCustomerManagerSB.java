@@ -28,7 +28,6 @@ import com.freshdirect.customer.ErpComplaintInfoModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
-import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
@@ -55,10 +54,8 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 
@@ -68,15 +65,6 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @version $Revision:52$
  * @author $Author:Viktor Szathmary$
  */
-
-/**
- *@deprecated Please use the OrderResource in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
-
-@Deprecated
 public interface ErpCustomerManagerSB extends EJBObject {
     
     /**
@@ -147,14 +135,26 @@ public interface ErpCustomerManagerSB extends EJBObject {
      *
      * @return Map of order line number -> List of ErpInventoryModel objects
      */
-    public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout, String isFromLogin) throws RemoteException;
+    public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout) throws RemoteException;
     
     /**
      * Get a specific sale.
      */
     public ErpSaleModel getOrder(PrimaryKey erpSalePk) throws RemoteException;
     
-  
+    /**
+	 * Get multiple sales
+	 */
+	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) throws RemoteException;
+    
+    /**
+     * Get lightweight info about a customer's orders.
+     *
+     * @param erpCustomerPk primary key of ErpCustomer
+     *
+     * @return collection of ErpSaleInfo objects
+     */
+    public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
     
     /**
      * Add an invoice to ErpSale
@@ -168,12 +168,14 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo) throws ErpTransactionException, RemoteException;
     
     public void reconcileSale(String saleId, Boolean isShorted) throws ErpTransactionException, RemoteException;
-     
+    
+    public void cutoff(String pk) throws RemoteException;
+    
     public Collection<ModelI> getFailedAuthorizationSales() throws RemoteException;
     
-    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException, FDResourceException;
+    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException;
     
-    public String approveComplaint(String complaintId, boolean isApproved, String csrId, Double limit) throws ErpComplaintException, RemoteException, FDResourceException;
+    public String approveComplaint(String complaintId, boolean isApproved, String csrId, Double limit) throws ErpComplaintException, RemoteException;
     
     public void updateCustomerCredit(PrimaryKey pk, String customerCreditId, double delta) throws RemoteException;
     
@@ -189,6 +191,12 @@ public interface ErpCustomerManagerSB extends EJBObject {
 
 	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
 
+	public String addSettlement(ErpSettlementModel model, String saleId, String authId) throws ErpTransactionException, RemoteException;
+    
+    public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException, RemoteException;
+    
+    public void createCaseForSale(String saleId, String reason) throws ErpSaleNotFoundException, RemoteException;
+    
     public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException;
     
     public void processSaleReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
@@ -197,14 +205,24 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public List<ErpTruckInfo> getTruckNumbersForDate(Date deliveryDate) throws RemoteException;
     
+    public List<DlvSaleInfo> getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws RemoteException;
+    
     public DlvSaleInfo getDlvSaleInfo (String orderNumber) throws ErpSaleNotFoundException, RemoteException;
     
     public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
     
     public void approveReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
-     
+    
+    public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
+    
+    public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws ErpTransactionException, RemoteException;
+    
+    public List<RedeliverySaleInfo> getRedeliveries(Date date) throws RemoteException;
+    
     public ErpComplaintInfoModel getComplaintInfo(String saleId, String complaintId) throws RemoteException;
-     
+    
+    public List<FDConfiguredProduct> getEveryItemEverOrdered(PrimaryKey erpCustomerPK) throws RemoteException;
+    
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException, RemoteException;
 
 	public List<DlvSaleInfo> getOrdersForDateAndAddress(Date date, String address, String zipcode) throws RemoteException;
@@ -225,19 +243,26 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	
 	public void addChargeInvoice(String saleId, double charge) throws RemoteException;
 	
+	public ErpOrderHistory getOrdersByDlvPassId(String customerPk, String dlvPassId) throws RemoteException;
+	
+	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(String customerPk) throws RemoteException;
+	
 	public void updateDlvPassIdToSale(String saleId, String dlvPassId) throws RemoteException;
+	
+	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(String customerPk, String dlvPassId, int noOfDaysOld) throws RemoteException;
 	
 	public int getValidOrderCount(PrimaryKey erpCustomerPk) throws RemoteException;
 	
 	public String getLastOrderID(PrimaryKey erpCustomerPk) throws RemoteException;
 	
+	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) throws RemoteException;
+
 	   /**
      * Get lightweight info about a customer's used promotions.
      *
      * @param erpCustomerPk primary key of ErpCustomer
      *
      * @return ErpPromotionHistory
-     * @deprecated
      */
     public ErpPromotionHistory getPromoHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
     
@@ -252,21 +277,26 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
 	public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType paymentType) throws ErpSaleNotFoundException, RemoteException; 
 	
-	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore) throws ErpSaleNotFoundException, RemoteException;
-	
-	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore) throws ErpSaleNotFoundException, RemoteException;
+	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException, RemoteException;
+    
+    public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException;
     
     public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 
 	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException;
 
+    public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException;
+    
+    public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException;
+    
     public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException, ErpTransactionException;
+    
+    public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  throws RemoteException;
     
     public String getSapCustomerId(String erpCustomerPk) throws RemoteException;
 
     public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
     public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) throws RemoteException;
-
-    public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException;
     
+    public boolean updateSalesShippingInfo(Map<String,ErpShippingInfo> erpShippingMap) throws ErpTransactionException ,RemoteException;
 }

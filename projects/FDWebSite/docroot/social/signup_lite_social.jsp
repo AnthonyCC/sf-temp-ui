@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*,java.util.HashMap"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -29,6 +30,7 @@
 	
     String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
+    CmRegistrationTag.setRegistrationLocation(session,"signup lite");
 %>	
 
 <fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>	
@@ -43,18 +45,20 @@
 	%>
 
 <!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 
-   <%--  <title>FreshDirect</title> --%>
-      <fd:SEOMetaTag title="FreshDirect"/>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<title></title>
+	
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	
 	<fd:css href="/assets/css/social_connected.css" />	
 		
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 
 <!-- enable/disable the submit button based on valid entries -->
@@ -142,7 +146,7 @@
 			//System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
 		%>
 			<div style="width:500px;">
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" style="align:center;"/>
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" style="align:center;"/>
 			</div>
 			<script language="javascript">
 				window.top.location="/index.jsp";
@@ -181,14 +185,14 @@
 						<tr>
 						 <td>&nbsp;</td>						  
 							<td class="errMsg">
-								<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
+								<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
 							</td>
                         </tr>
                         
                         <tr>
                         <td>&nbsp;</td>                       
                             <td class="errMsg">
-                            <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
+                            <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
                             </td>
                         </tr>
 
@@ -210,7 +214,7 @@
 							<!-- <td id="zipcodeError" class="red">&nbsp;</td> -->
 						</tr>
 										
-					<% if (result.hasError(EnumUserInfoName.DLV_FIRST_NAME.getCode())) { %><tr><td class="errMsg "><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.DLV_FIRST_NAME.getCode())) { %><tr><td class="errMsg "><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					<tr>
 					 <td>
 							<!-- span id should be the input box id+"_img" -->
@@ -220,7 +224,7 @@
 					</td></tr>
 					
 					
-					<% if (result.hasError(EnumUserInfoName.DLV_LAST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.DLV_LAST_NAME.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					<tr>
 					 <td>
 							<!-- span id should be the input box id+"_img" -->
@@ -230,18 +234,18 @@
 					
 					
 					
-					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %><tr><td>&nbsp;</td><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>													
+					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %><tr><td>&nbsp;</td><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>													
 					<tr>
 					 <td>
 							<!-- span id should be the input box id+"_img" -->
 							<span class="error_img" id="email_img">&nbsp;</span>
 					</td>	
-					<td><input class="padding-input-box text11ref inputDef required" aria-label="email" type="email"  maxlength="128" size="21" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email" placeholder="E-mail">
+					<td><input class="padding-input-box text11ref inputDef required" type="email"  maxlength="128" size="21" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email" placeholder="E-mail">
 					</td></tr>
 					
 					
 					<% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td>&nbsp;</td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
-						 <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+						 <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 				    <tr>
 						
 						<td>
@@ -251,7 +255,7 @@
 						
 						<td>
 						 	
-						<input class="padding-input-box text11ref inputUser required" aria-label="password" type="password"  size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password">	
+						<input class="padding-input-box text11ref inputUser required" type="password"  size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password">	
 						</td>						
 					</tr>
 			
@@ -259,7 +263,7 @@
 					<td>&nbsp;</td>
 					<td><span class="text9 bodyCopySULNote" style="color:#B8B894;font-size:11px;">Security Question:What is your town of birth or mother's maiden name?</span>
 					</td></tr>
-					<% if (result.hasError(EnumUserInfoName.PASSWORD_HINT.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					<% if (result.hasError(EnumUserInfoName.PASSWORD_HINT.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					<tr>
 					 <td>
 							<!-- span id should be the input box id+"_img" -->
@@ -340,7 +344,7 @@
 			<span class="bottom-links">
    			 <b>Already have a password? 
    			  <a href="#"
-							 onclick="window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin(); ">
+							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', height: 580, opacity: .5}) ">
 							 Log in
 			  </a>
    			 

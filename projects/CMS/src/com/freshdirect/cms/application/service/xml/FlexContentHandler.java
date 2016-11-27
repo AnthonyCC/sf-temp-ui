@@ -19,7 +19,7 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.meta.ContentTypeUtil;
-import com.freshdirect.cms.publish.flow.tasks.PublisherTask;
+import com.freshdirect.cms.publish.PublishXmlTask;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -86,7 +86,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 		} else if (last == null) {
 			// expect a node or meta
 			// process meta-data
-			if (PublisherTask.DC_NAMESPACE.equals(namespaceURI)) {
+			if (PublishXmlTask.NS_DC.equals(namespaceURI)) {
 				stack.push(new Metadata(localName));
 				return;
 			}
@@ -112,7 +112,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 			ContentType type = parseType(localName);
 			String ref = atts.getValue("ref");
 			if (ref != null) {
-				ContentKey key = ContentKey.getContentKey(type, ref);
+				ContentKey key = new ContentKey(type, ref);
 				stack.push(key);
 			} else {
 				ContentNodeI node = parseNode(localName, atts);
@@ -146,7 +146,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 		if (id == null) {
 			id = "flex_" + ID_GENERATOR++;
 		}
-		ContentKey key = ContentKey.getContentKey(type, id);
+		ContentKey key = new ContentKey(type, id);
 		ContentNodeI contentNode = createNode(key);
 		//in case of real time publish we need to clear the attributes value for setting up the new values
 		if (isRealTimePublish && contentNode!=null && contentNode.getAttributes()!=null) {			

@@ -16,8 +16,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
+import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -33,6 +33,7 @@ public class FDPromotionVisitor {
 		eligibilities = evaluatePromotions(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
+		resolveLineItemConflicts(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		Set<String> combinableOffers = applyPromotions(context, eligibilities);
 		
@@ -106,6 +107,23 @@ public class FDPromotionVisitor {
         	}
         }
 	}
+
+	
+    
+
+	/**
+	 * Smart Savings no longer effective
+	 * 
+	 * @param context
+	 * @param eligibilities
+	 */
+	@Deprecated
+	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
+		//Reload the promo variant map based on new promotion eligibilities.	
+		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);
+		context.getUser().setPromoVariantMap(pvMap);
+	}
+
 	
 	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
          long startTime = System.currentTimeMillis();
@@ -114,15 +132,13 @@ public class FDPromotionVisitor {
          
          //Get All Automatic Promo codes.  Evaluate them.
          Collection<PromotionI> promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
-         //Automatic promotions are not applicable for DP only carts.
-         if(!context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() || (context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && !context.getShoppingCart().containsDlvPassOnly())){
-        	 for (PromotionI autopromotion : promotions) {
+         for (PromotionI autopromotion : promotions) {
                String promoCode = autopromotion.getPromotionCode();               
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
-         	}
-         } 
+        }
+         
          //Get the redemption promotion if user redeemed one and evaluate it.
          PromotionI redeemedPromotion = context.getRedeemedPromotion();
          if(redeemedPromotion != null){
@@ -133,32 +149,28 @@ public class FDPromotionVisitor {
                if(e && redeemedPromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode);
                if(!e) { apply_raf_promo = true; }
          }
-         //Referral/WS promotions are not applicable for DP only carts.         
-         if(!context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() || (context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && !context.getShoppingCart().containsDlvPassOnly())){
-	         String wsPromoCode =  context.getUsedWSPromotionCode();
-	         if(wsPromoCode != null && !eligibilities.isEligible(wsPromoCode)) {
-	        	 //Evaluate for an already redeemed WS promotion.
-	        	 PromotionI promo = PromotionFactory.getInstance().getPromotion(wsPromoCode);
-	        	 boolean e = promo.evaluate(context);
-	        	 eligibilities.setEligibility(wsPromoCode, e);
-	         }
-	         
-	       //Evaluate the referral promotions
-	         if(FDStoreProperties.isExtoleRafEnabled() ? context.getUser().getRafPromoCode() != null : context.getUser().getReferralCustomerId() != null) {
-	        	 if(apply_raf_promo) {
-		        	 //User did not use any redemption code, so its ok to check the eligibility of the referral promotion
-			         Collection<PromotionI> referralPromotions = context.getUser().getReferralPromoList();         
-			         for (Iterator<PromotionI> i = referralPromotions.iterator(); i.hasNext();) {        	 
-			             PromotionI autopromotion  = (PromotionI) i.next(); 
-			             String promoCode = autopromotion.getPromotionCode();
-			             LOGGER.debug("---------------------Referral promotion: " + promoCode);
-			             boolean e = autopromotion.evaluate(context);
-			             eligibilities.setEligibility(promoCode, e);
-			             if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
-			         }
-	        	 }
-	         }
+         String wsPromoCode =  context.getUsedWSPromotionCode();
+         if(wsPromoCode != null && !eligibilities.isEligible(wsPromoCode)) {
+        	 //Evaluate for an already redeemed WS promotion.
+        	 PromotionI promo = PromotionFactory.getInstance().getPromotion(wsPromoCode);
+        	 boolean e = promo.evaluate(context);
+        	 eligibilities.setEligibility(wsPromoCode, e);
+         }
          
+       //Evaluate the referral promotions
+         if(FDStoreProperties.isExtoleRafEnabled() ? context.getUser().getRafPromoCode() != null : context.getUser().getReferralCustomerId() != null) {
+        	 if(apply_raf_promo) {
+	        	 //User did not use any redemption code, so its ok to check the eligibility of the referral promotion
+		         Collection<PromotionI> referralPromotions = context.getUser().getReferralPromoList();         
+		         for (Iterator<PromotionI> i = referralPromotions.iterator(); i.hasNext();) {        	 
+		             PromotionI autopromotion  = (PromotionI) i.next(); 
+		             String promoCode = autopromotion.getPromotionCode();
+		             LOGGER.debug("---------------------Referral promotion: " + promoCode);
+		             boolean e = autopromotion.evaluate(context);
+		             eligibilities.setEligibility(promoCode, e);
+		             if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
+		         }
+        	 }
          }
          
          
@@ -266,56 +278,51 @@ public class FDPromotionVisitor {
 
 	private static Set<String> applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
         String headerPromoCode = "";
+      //Step 1: Process all sample, delivery promo, extend DP promo, automatic non-combinable header and line item offers.
+        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
+              PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+              if(!promo.isRedemption())
+              if(!promo.isDollarValueDiscount() || (!promo.isCombineOffer())) {
+            	  	
+                    boolean applied = promo.apply(context);
+                    if (applied) {
+                          if(promo.isHeaderDiscount()){
+                                //This logic has been added to filter the max discount promocode
+                                //when there are more than one. Currently this happens only in the
+                                //case of automatic header discounts.
+                                headerPromoCode = promoCode;
+                          } else if(!promo.isLineItemDiscount()){
+                                //Add any non-line item/header promos to the applied list. 
+                                eligibilities.setApplied(promoCode);      
+                          }
+                    }
+              }
+        }
+        boolean isCombinableOfferApplied = false;
+        //Step 2: Process all automatic combinable header and line item offers.
         Set<String> combinableOffers = new HashSet<String>();
-        
-        //Automatic promotions are not applicable for DP only carts.
-        if(!context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() || (context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && !context.getShoppingCart().containsDlvPassOnly())){
-	      //Step 1: Process all sample, delivery promo, extend DP promo, automatic non-combinable header and line item offers.
-	        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
-	              PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-	              if(!promo.isRedemption())
-	              if(!promo.isDollarValueDiscount() || (!promo.isCombineOffer())) {
-	            	  	
-	                    boolean applied = promo.apply(context);
-	                    if (applied) {
-	                          if(promo.isHeaderDiscount()){
-	                                //This logic has been added to filter the max discount promocode
-	                                //when there are more than one. Currently this happens only in the
-	                                //case of automatic header discounts.
-	                                headerPromoCode = promoCode;
-	                          } else if(!promo.isLineItemDiscount()){
-	                                //Add any non-line item/header promos to the applied list. 
-	                                eligibilities.setApplied(promoCode);      
-	                          }
-	                    }
-	              }
-	        }
-	        boolean isCombinableOfferApplied = false;
-	        //Step 2: Process all automatic combinable header and line item offers.
-//	        Set<String> combinableOffers = new HashSet<String>();
-	        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
-	            PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-	            if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
-	          	  	//Process all automatic combinable header and line item offers.
-	                  boolean applied = promo.apply(context);
-	                  if (applied ) {
-	                	  if(promo.isHeaderDiscount()){
-	                		  isCombinableOfferApplied = true;  
-	                		  combinableOffers.add(promoCode);
-	                	  } 
-	                  }
-	            }
-	      }
-	        //Add the final header promo code to the applied list from Step 1 if isCombinableOfferApplied is false. 
-	        if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
-	        	if(!isCombinableOfferApplied)
-	              eligibilities.setApplied(headerPromoCode);
-	        	else{
-	        		//remove non combinable header promo.
-	        		String code = context.getNonCombinableHeaderPromotion().getPromotionCode();
-	        		context.getShoppingCart().removeDiscount(code);
-	        	}
-	        }
+        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
+            PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+            if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
+          	  	//Process all automatic combinable header and line item offers.
+                  boolean applied = promo.apply(context);
+                  if (applied ) {
+                	  if(promo.isHeaderDiscount()){
+                		  isCombinableOfferApplied = true;  
+                		  combinableOffers.add(promoCode);
+                	  } 
+                  }
+            }
+      }
+        //Add the final header promo code to the applied list from Step 1 if isCombinableOfferApplied is false. 
+        if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
+        	if(!isCombinableOfferApplied)
+              eligibilities.setApplied(headerPromoCode);
+        	else{
+        		//remove non combinable header promo.
+        		String code = context.getNonCombinableHeaderPromotion().getPromotionCode();
+        		context.getShoppingCart().removeDiscount(code);
+        	}
         }
         return combinableOffers;
 

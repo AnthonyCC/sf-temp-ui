@@ -6,15 +6,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -64,7 +67,17 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				/*}*/
 				session.setAttribute(SessionName.USER, user);
 			}
-		
+			
+			if("updateWeeklyReservation".equals(action)) {
+				this.populate(request);
+				this.validate(actionResult);
+				if(actionResult.isFailure()){
+					return true;
+				}
+				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, null, false);
+				FDCustomerManager.updateWeeklyReservation(user.getIdentity(), timeslot, addressId, AccountActivityUtil.getActionInfo(session));
+			}
+
 			if ("changeReservation".equals(action)) {
 				this.populate(request);
 				this.validate(actionResult);
@@ -88,7 +101,8 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				if (actionResult.isFailure()) {
 					return true;
 				}
-				FDCustomerManager.cancelReservation(user, reservation, this.rsvType, AccountActivityUtil.getActionInfo(session), event);
+				FDCustomerManager.cancelReservation(user.getIdentity(), reservation, this.rsvType, AccountActivityUtil.getActionInfo(session), event);
+				user.setReservation(null);
 				session.setAttribute(SessionName.USER, user);
 			}
 		} catch (FDResourceException e) {
@@ -114,7 +128,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				
 		this.timeslotId = NVL.apply(request.getParameter("deliveryTimeslotId"), "");
 		this.addressId = NVL.apply(request.getParameter("addressId"), "");
-		this.rsvType = EnumReservationType.getEnum(NVL.apply(request.getParameter("reservationType"), "OTR"));
+		this.rsvType = EnumReservationType.getEnum(NVL.apply(request.getParameter("reservationType"), ""));
 		try {
 			this.chefstable = user.isChefsTable()||"true".equals(request.getParameter("chefstable"));
 		} catch (FDResourceException e) {
@@ -137,7 +151,9 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException, ReservationException {
-		FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
+		FDReservation rsv = FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
+		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
+		user.setReservation(rsv);
 	}
 	
 	

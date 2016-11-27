@@ -32,24 +32,17 @@ import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * @version $Revision:26$
  * @author $Author:Kashif Nadeem$
- */
-
-/**
- *@deprecated Please use the FraudPreventionServiceI  in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
  */
 public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
@@ -69,7 +62,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.customer.ejb.ErpFraudHome";
 	}
-	@Deprecated
+	
 	public Set<EnumFraudReason> checkRegistrationFraud(ErpCustomerModel erpCustomer) {
 
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
@@ -123,7 +116,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return (fraudReasons);
 	}
-	@Deprecated
+
 	public boolean checkShipToAddressFraud(String erpCustomerId, ErpAddressModel address) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -158,7 +151,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return retval;
 	}
-	@Deprecated
+
 	public boolean checkBillToAddressFraud(String erpCustomerId, ContactAddressModel address) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -192,7 +185,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return retval;
 	}
-	@Deprecated
+
 	public boolean checkPhoneFraud(String erpCustomerId, Collection<PhoneNumber> phones) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -232,7 +225,6 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	/**
 	 * @return null, or fraud reason
 	 */
-	@Deprecated
 	public EnumFraudReason preCheckOrderFraud(
 		PrimaryKey erpCustomerPk,
 		ErpAbstractOrderModel order,
@@ -368,7 +360,6 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	 *  do fraud checks that create cases, now that the order is created(or not) but case will not be rolled back
 	 * @return void
 	 */
-	@Deprecated
 	public void postCheckOrderFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
@@ -472,7 +463,6 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	 * Checks for orders over acceptable threshhold. Creates a CRM case if order total > $750 
 	 * @return true if order total > $750 and not for CSR
 	 */
-	@Deprecated
 	
 	public void postCheckGiftCardFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
@@ -555,7 +545,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	@Deprecated
+	
 	public EnumFraudReason preCheckGiftCardFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
 		
 
@@ -587,22 +577,17 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		if (order.getAmount() > ErpServicesProperties.getGiftCardStrictOrderLimit() && !csr) {
 			return EnumFraudReason.MAX_GC_ORDER_TOTAL;
 		}
-		
-		Connection conn = null;
-		try {
-			conn = getConnection();
-//			Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
-			Date _24HrsAgo = DateUtil.addDays(new Date(), -1);
-			int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), _24HrsAgo, EnumSaleType.GIFTCARD);
-			LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
-			if (ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr) {
-				return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;
-			}
+
+		try{
+		Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
+		int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(getConnection(), erpCustomerPk.getId(), threeDaysAgo,EnumSaleType.GIFTCARD);
+		LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
+		if(ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr){
+			return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;
+		}
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);
 			throw new EJBException(ex.getMessage());
-		}finally{
-			close(conn);
 		}
 		return null;
 		
@@ -633,7 +618,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 	}
 	
-	@Deprecated
+
 	public EnumFraudReason preCheckDonationFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
 		
 
@@ -645,57 +630,13 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		return null;
 		
 	}
-	@Deprecated
+	
 	public void postCheckDonationFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
 			return ;
 		}
 		//TODO: Any checks required or not like 3 day limit etc. 
-		
-	}
-	
-	public boolean isRegistrationForIPRestricted(String ip) {
-		String whitelistedIps = FDStoreProperties.getWhitelistedIPs();
-		
-		if(StringUtil.isEmpty(ip)) {
-			return false;
-		}else if (whitelistedIps == null || whitelistedIps.indexOf(ip)!=-1) {
-			return false;
-		}
-		
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			int count= dao.getRegistrationsForIP(conn, ip);
-			return count>=FDStoreProperties.getAccountCreationLimitPerIP();
-	} catch (SQLException ex) {
-			LOGGER.error("SQLException occurred", ex);
-			throw new EJBException(ex.getMessage());
-		}finally{
-			close(conn);
-		}
-		
-		
-	}
-	
-public boolean isCardVerificationRateLimitBreached(String customerId) {
-		
-		if(StringUtil.isEmpty(customerId)) {
-			return true;
-		}
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			int count= dao.getCardVerificationRateForCustomer(conn, customerId);
-			return count>=FDStoreProperties.getCardVerificationRateLimit();
-	} catch (SQLException ex) {
-			LOGGER.error("SQLException occurred", ex);
-			throw new EJBException(ex.getMessage());
-		}finally{
-			close(conn);
-		}
-		
 		
 	}
 	

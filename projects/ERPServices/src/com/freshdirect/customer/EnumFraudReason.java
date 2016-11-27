@@ -18,9 +18,6 @@ public class EnumFraudReason extends Enum {
 	public static final EnumFraudReason MAX_GC_ORDER_TOTAL = new EnumFraudReason("MAX_GC_ORDER_TOTAL", "Order amount above maximum ($5000)");
 	public static final EnumFraudReason MAX_ORDER_COUNT_LIMIT = new EnumFraudReason("MAX_ORDER_COUNT_LIMIT", "more then 3 orders in last 24 hrs");
 	public static final EnumFraudReason REFEREE_FN_LN_ZIP = new EnumFraudReason("DUP_FN_LN_ZIP", "Duplicate FN-LN-Zip combo");
-	public static final EnumFraudReason TOO_MANY_ACCOUNTS_CREATED_FROM_IP = new EnumFraudReason("MAX_ACCOUNTS_FROM_IP", "Account creation is temporarily unavailable.");
-	public static final EnumFraudReason CARD_VERIFICATION_RATE_LIMIT = new EnumFraudReason("CARD_VERIFICATION_RATE_LIMIT", "Account used for Card testing.");
-	
 	private final String description;
 
 	public EnumFraudReason(String name, String description) {

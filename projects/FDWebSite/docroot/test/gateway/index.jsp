@@ -1,4 +1,4 @@
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <title>Gateway Testing Index</title>
 </head>

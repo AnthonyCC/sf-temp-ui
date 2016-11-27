@@ -1,6 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -233,7 +233,7 @@ if(folderShownCount>0){
 </TD></TR>
 <TR VALIGN="TOP">
 <TD WIDTH="<%=W_COFFEE_BY_REGION_IMG%>">&nbsp;</TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COLS%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="12" BORDER="0"><BR><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_COFFEE_BY_REGION_COLS%>" HEIGHT="1" BORDER="0"><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="12" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COLS%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_COFFEE_BY_REGION_COLS%>" HEIGHT="1" BORDER="0"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"></TD>
 </TR></table>
 <%}%>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_BY_REGION_TOTAL%>">
@@ -271,21 +271,21 @@ if (fldrDescription!=null && fldrDescription.trim().length() >=1) { %>
 %>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" width="<%=W_COFFEE_BY_REGION_COLS-1%>">
 <TR VALIGN="TOP"><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(1)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(2) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(3) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(4) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
 <%=regionProdCols.getColValue(4)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
 <%
     // if the next folder is a not A child of the outerFolder..then display the unavailable stuff
@@ -297,21 +297,21 @@ if (fldrDescription!=null && fldrDescription.trim().length() >=1) { %>
 <TR VALIGN="TOP"><TD colspan="13" width="<%=W_COFFEE_BY_REGION_COLS-1%>"><br><font color="#999999"><b>Currently Unavailable</b></font><br></TD></tr>
 
 <TR VALIGN="TOP"><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(1)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(2) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(3) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(4) > 0){%>
-<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
 <%=regionProdCols.getColValue(4)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
 
 <%

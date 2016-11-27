@@ -13,8 +13,6 @@ import java.text.ParseException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
@@ -31,14 +29,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		return service.getExtoleCreateConversionRequest();
-			}else{
-				FDExtoleManagerSB sb = managerHome.create();
-				return sb.getExtoleCreateConversionRequest();
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			return sb.getExtoleCreateConversionRequest();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -54,14 +46,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		return service.getExtoleApproveConversionRequest();
-			}else {
-				FDExtoleManagerSB sb = managerHome.create();
-				return sb.getExtoleApproveConversionRequest();
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			return sb.getExtoleApproveConversionRequest();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -77,14 +63,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		service.updateConversionRequest(convResponse);
-			}else { 
-				FDExtoleManagerSB sb = managerHome.create();
-				sb.updateConversionRequest(convResponse);
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			sb.updateConversionRequest(convResponse);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -100,14 +80,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		service.saveExtoleRewardsFile(rewards);
-			}else{
-				FDExtoleManagerSB sb = managerHome.create();
-				sb.saveExtoleRewardsFile(rewards);
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			sb.saveExtoleRewardsFile(rewards);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -150,14 +124,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		service.createConversion();
-			}else{
-				FDExtoleManagerSB sb = managerHome.create();
-				sb.createConversion();
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			sb.createConversion();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -174,14 +142,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		service.approveConversion();
-			}else {
-				FDExtoleManagerSB sb = managerHome.create();
-				sb.approveConversion();
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			sb.approveConversion();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -198,13 +160,8 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		service.downloadAndSaveRewards(fileName);
-			}else{
-				FDExtoleManagerSB sb = managerHome.create();
-				sb.downloadAndSaveRewards(fileName);
-			}
+			FDExtoleManagerSB sb = managerHome.create();
+			sb.downloadAndSaveRewards(fileName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

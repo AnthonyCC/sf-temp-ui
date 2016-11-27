@@ -2,19 +2,17 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaDataItem;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaDataItemCountry;
 
 public class FormMetaDataService {
 
@@ -38,11 +36,9 @@ public class FormMetaDataService {
 		formMetaData.setExpireMonth(populateCardExpireMonth(null));
 		formMetaData.setExpireYear(populateCardExpireYear(null));
 		formMetaData.setState(populateState(null, null));
-		formMetaData.setCountry(populateCountry(null, formMetaData));
-        if (user != null) {
-            formMetaData.setEnableECheck(populateECheck(user));
-            formMetaData.setEnableEbtCheck(populateEbtCheck(user));
-        }
+		formMetaData.setCountry(populateCountry(null));
+		formMetaData.setEnableECheck(populateECheck(user));
+		formMetaData.setEnableEbtCheck(populateEbtCheck(user));
 		formMetaData.setPaymentPromoOAS(XC_PAYMENT_PROMO_OAS_SITEPAGE);
 		return formMetaData;
 	}
@@ -68,24 +64,16 @@ public class FormMetaDataService {
 		return result;
 	}
 
-	public List<FormMetaDataItemCountry> populateCountry(String ccCountry) {
-		return populateCountry(ccCountry, null);
-	}
-	
-	public List<FormMetaDataItemCountry> populateCountry(String ccCountry, FormMetaData formMetaData) {
-		List<FormMetaDataItemCountry> result = new ArrayList<FormMetaDataItemCountry>();
+	public List<FormMetaDataItem> populateCountry(String ccCountry) {
+		List<FormMetaDataItem> result = new ArrayList<FormMetaDataItem>();
 		if (ccCountry == null) {
 			ccCountry = DEFAULT_COUNTRY_CODE;
 		}
 		for (BillingCountryInfo countryInfo : BillingCountryInfo.getEnumList()) {
-			FormMetaDataItemCountry data = new FormMetaDataItemCountry();
+			FormMetaDataItem data = new FormMetaDataItem();
 			data.setKey(countryInfo.getCode());
 			data.setValue(countryInfo.getName());
 			data.setSelected(countryInfo.getCode().equalsIgnoreCase(ccCountry));
-			data.setStates(populateState(countryInfo.getCode(), null));
-			if (formMetaData != null) {
-				formMetaData.getCountryCodeIndexMap().put(countryInfo.getCode(), result.size());
-			}
 			result.add(data);
 		}
 		return result;
@@ -143,7 +131,7 @@ public class FormMetaDataService {
 	}
 
 	public boolean populateECheck(FDUserI user) throws FDResourceException {
-		return user.isCheckEligible() && !user.isECheckRestricted();//!FDCustomerManager.isECheckRestricted(user.getIdentity());
+		return user.isCheckEligible() && !FDCustomerManager.isECheckRestricted(user.getIdentity());
 	}
 
 	public boolean populateEbtCheck(FDUserI user) {

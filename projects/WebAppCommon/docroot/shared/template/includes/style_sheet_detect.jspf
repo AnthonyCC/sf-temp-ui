@@ -1,49 +1,46 @@
 <%--
-    this file will be included in the <head> tag
+	this file will be included in the <head> tag
 --%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
-%><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
+%><%@ page import='com.freshdirect.fdstore.content.EnumLayoutType'
 %><%
-    int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+%><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
+  <%-- global css files, header, footer, etc. --%>
+  <jwr:style src="/global.css" media="all" />
 
-    String style_sheet_detect_uri = request.getRequestURI();
-    boolean style_sheet_detect_isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
-    boolean style_sheet_detect_isCheckout = (style_sheet_detect_uri.indexOf("/expressco/") != -1) ? true : false;
-%>
+  <%-- IE + IE6 fixes --%>
+  <!--[if IE]>
+  <fd:css href="/assets/css/common/footer.ie.css" media="all" />
+  <![endif]-->
+  <!--[if lte IE 6]>
+  <fd:css href="/assets/css/common/globalnav.ie6.css" media="all" />
+  <![endif]-->
 
- <jwr:style src="/grid.css" media="all" />
- <%-- global css files, header, footer, etc. --%>
- <jwr:style src="/global.css" media="all" />
+  <%-- old css files --%>
+  <jwr:style src="/oldglobal.css" media="all" />
 
- <%-- old css files --%>
- <jwr:style src="/oldglobal.css" media="all" />
-
-    <%
-    if (!style_sheet_detect_isCheckout && request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
-        %><jwr:style src="/opt_MAC_01.css" media="all" /><%
-    }
-    %>
-    <% if (!style_sheet_detect_isReorder && !style_sheet_detect_isCheckout) { %>
-        <jwr:style src="/opt_04.css" media="all" />
-    
-        <% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
-        <%-- TODO: create a jawr bundle, don't use if --%>
-                <jwr:style src="/assets/css/common/grid_supplement.css" media="all" />
-                <jwr:style src="/assets/css/common/product_grid.css" media="all" />
-                <jwr:style src="/assets/css/search.css" media="all" />
-         <% } %>
-    <% } %>
-    <% if (style_sheet_detect_isReorder && !style_sheet_detect_isCheckout) { %>
-       <jwr:style src="/quickshop.css" media="all" />
-    <% } %>
-    <% if (style_sheet_detect_isCheckout) { %>
-       <jwr:style src="/expressco.css" media="all" />
-    <% } %>
-    
-    <jwr:style src="/accessibility.css" media="all" />
-    
-    <jwr:style src="/rollout_feature_testing.css" media="all" />
-    
-    <%-- Keep the media include last, so it can always override any css auto-loaded --%>
-    <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
+	<%
+	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
+		%><fd:css href="/assets/css/mac_ie.css" media="all" /><%
+	}
+	%>
+	<!--[if lte IE 6]>
+	<fd:css href="/assets/css/pngfix_ie6.css" media="all" />
+	<![endif]--> 
+	<fd:css href="/assets/css/wine.css" media="all" />
+	<!--[if lte IE 7]>
+	<fd:css href="/assets/css/wine-ie.css" media="all" />
+	<![endif]-->
+	
+	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
+    <%-- TODO: create a jawr bundle, don't use if --%>
+		<fd:css href="/assets/css/common/grid_supplement.css" media="all" />
+ 		<fd:css href="/assets/css/common/product_grid.css" media="all" />
+		<fd:css href="/assets/css/search.css" media="all" />
+ 	<% } %>
+	
+	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
+	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

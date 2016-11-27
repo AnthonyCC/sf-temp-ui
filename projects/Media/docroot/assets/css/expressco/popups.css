@@ -34,42 +34,6 @@
 	width: 650px;
 }
 
-.ec-popup.addpaymentmethodpopup {
-    position: static;
-    display: inline-block;
-    text-align: left;
-    overflow: auto;
-    max-width: 650px;
-    box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.13);
-    border: none;
-}
-
-.ec-popup.defaultpaymentprompt .ec-popup-header {
-  display: none;
-}
-.ec-popup.defaultpaymentprompt {
-	position: static;
-	display: inline-block;
-	vertical-align: middle;
-	text-align: left;
-	overflow: auto;
-	width: 350px;
-}
-.defaultpaymentprompt_cont {
-	padding: 20px 40px;
-	text-align: center;
-	background-color: #fff;
-}
-.defaultpaymentprompt_question {
-	font-size: 14px;
-	font-weight: bold;
-	color: #333;
-	text-align: left;
-}
-.defaultpaymentprompt_buttons {
-	margin-top: 20px;
-}
-
 .ec-popup.addaddresspopup .ec-popup-header {
   display: none;
 }
@@ -109,14 +73,8 @@
   cursor: pointer;
 }
 .ec-popup-close-icon {
-/*   top: 5px; */
-/*   width: 18px; */
-/*   height: 18px; */
-/*   background: url(/media_stat/images/quickshop/button-close.png) no-repeat; */
-    top: -35px;
-    right: -35px;
-    width: 25px;
-    height: 25px;
-    background: url(/media_stat/images/close.png) no-repeat;
-    background-size: 100%;
+  top: 5px;
+  width: 18px;
+  height: 18px;
+  background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
 }

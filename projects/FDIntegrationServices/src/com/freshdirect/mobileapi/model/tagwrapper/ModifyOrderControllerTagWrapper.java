@@ -24,8 +24,8 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
 
     public ResultBundle cancelOrder(String orderId) throws FDException {
 
-        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED },
-                new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION },
+                new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES }, new String[] {
                 REQ_PARAM_ALLOW_MODIFY_ORDER, REQ_PARAM_ALLOW_RETURN_ORDER, REQ_PARAM_IS_REFUSED_ORDER, REQ_PARAM_ALLOW_CANCEL_ORDER,
                 REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER });//gets,sets
@@ -56,21 +56,20 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
      * @throws FDException
      */
     public ResultBundle loadOrderToCartForUpdate(String orderId) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED },
-                new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION },
+                new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES, REQ_PARAM_MERGE_PENDING }, new String[] {
                 REQ_PARAM_ALLOW_MODIFY_ORDER, REQ_PARAM_ALLOW_RETURN_ORDER, REQ_PARAM_IS_REFUSED_ORDER, REQ_PARAM_ALLOW_CANCEL_ORDER,
                 REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER, REQ_PARAM_MERGE_PENDING });//gets,sets
 
         addRequestValue(REQ_PARAM_ACTION, ACTION_MODIFY_ORDER);
-        ((ModifyOrderControllerTag) wrapTarget).setMobileRequest(true);
         ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
 
     public ResultBundle cancelModify(String orderId) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED },
+        addExpectedSessionValues(new String[] { SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_APPLICATION },
                 new String[] { SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS, SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED, SESSION_PARAM_MODIFY_PAYMENT_BILLING_REFERENCE  }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CANCEL_REASON, REQ_PARAM_CANCEL_NOTES, REQ_PARAM_MERGE_PENDING }, new String[] {
                 REQ_PARAM_ALLOW_MODIFY_ORDER, REQ_PARAM_ALLOW_RETURN_ORDER, REQ_PARAM_IS_REFUSED_ORDER, REQ_PARAM_ALLOW_CANCEL_ORDER,

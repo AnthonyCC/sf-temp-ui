@@ -33,11 +33,6 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
-  if (fd.modules && fd.modules.common && fd.modules.common.utils) {
-    fd.modules.common.utils.register("modules.common", "widget", widget, fd);
-  } else {
-	fd.modules = fd.modules || {};
-	fd.modules.common = fd.modules.common || {};
-	fd.modules.common.widget = widget;
-  }
+
+  fd.modules.common.utils.register("modules.common", "widget", widget, fd);
 }(FreshDirect));

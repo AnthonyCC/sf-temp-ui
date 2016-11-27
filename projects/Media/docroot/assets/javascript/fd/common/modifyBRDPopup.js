@@ -9,22 +9,6 @@ var FreshDirect = FreshDirect || {};
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
 
-  /* ATC result page reload, only listen when needed */
-  var ModifyBRDPopupAtcSuccess = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'atcResult'
-    },
-    callback: {
-      value: function (data) {
-        data.forEach(function (atcItemInfo) {
-          if (atcItemInfo.status === 'SUCCESS') {
-            window.location.reload();
-          }
-        });
-      }
-    }
-  });
-
   var ModifyBRDPopup1 = Object.create(WIDGET, {
     signal: {
       value: 'pendingPopupData'
@@ -55,9 +39,6 @@ var FreshDirect = FreshDirect || {};
           fd.common.transactionalPopup.close();
           $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
         } catch (e) {}
-        
-        //show ghost overlay
-        $(this.placeholder).find('.popupcontentoverlay').show();
       }
     },
 
@@ -67,7 +48,6 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         $(this.popupId).hide();
-        $(this.placeholder).find('.popupcontentoverlay').hide();
       }
     },
 
@@ -116,10 +96,8 @@ var FreshDirect = FreshDirect || {};
         // focus on open
         try {
           fd.common.transactionalPopup.close();
-          $(this.placeholder).find('.MBRD-modify').not(':hidden').first().focus();
+          $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
         } catch (e) {}
-        //show ghost overlay
-        $(this.placeholder).find('.popupcontentoverlay').show();
       }
     },
 
@@ -129,7 +107,6 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         $(this.popupId).hide();
-        $(this.placeholder).find('.popupcontentoverlay').hide();
       }
     },
     orderInput: {
@@ -153,9 +130,6 @@ var FreshDirect = FreshDirect || {};
         var items = fd.modules.common.productSerialize(e.target);
         var orderId = $(this.orderInput).val();
 
-        //listen for reload
-        ModifyBRDPopupAtcSuccess.listen();
-        
         fd.components.AddToCart.triggerATC(items,{orderId:orderId}, $(this.placeholder), this.data.eventSource, (this.data.mobWeb) ? true : this.data.ignoreRedirect);
         this.close();
       }
@@ -189,9 +163,7 @@ var FreshDirect = FreshDirect || {};
   // $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-close', ModifyBRDPopup2.close.bind(ModifyBRDPopup2));
 
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-close', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1)); // :(
-  $(document).on('click', ModifyBRDPopup1.placeholder + ' .MBRD1-close', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1)); // :(
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-close', ModifyBRDPopup2.cancelClick.bind(ModifyBRDPopup2));
-  $(document).on('click', ModifyBRDPopup2.placeholder + ' .MBRD2-close', ModifyBRDPopup2.cancelClick.bind(ModifyBRDPopup2));
 
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-neworder', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1));
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-modify', ModifyBRDPopup1.modifyClick.bind(ModifyBRDPopup1));
@@ -201,6 +173,7 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-selectall', ModifyBRDPopup2.selectAllClick.bind(ModifyBRDPopup2));
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-deselectall', ModifyBRDPopup2.deSelectAllClick.bind(ModifyBRDPopup2));
+
 
 }(FreshDirect));
 

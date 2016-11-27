@@ -9,11 +9,8 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDNotFoundException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
-import com.freshdirect.webapp.util.RequestUtil;
 
 public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.webapp.BodyTagSupport {
 
@@ -46,13 +43,7 @@ public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.web
 			result = this.getResult();
 
 		} catch (Exception ex) {
-			if(ex instanceof FDNotFoundException || ex instanceof FDSkuNotFoundException) {
-				LOGGER.info("FDSKUISSUE01:" + RequestUtil.getClientIp(request) + ":" + request.getHeader("User-Agent") + ":" + CookieMonster.getCookie(request) 
-													+ " : " + request.getRequestURL() + ":" + ex.getMessage());
-				
-			} else {
-				LOGGER.warn("Exception occured in getResult", ex);
-			}
+			LOGGER.warn("Exception occured in getResult", ex);
 			throw new JspException(ex);
 		}
 

@@ -117,10 +117,10 @@ public interface CrmCaseI extends Serializable {
 	/* [APPREQ-478] Cartons associated to case */
 	
 	// Get assigned cartons for case (missing, damaged, misloaded)
-    public List<String> getCartonNumbers();
+    public List getCartonNumbers();
 
     // Set assigned cartons
-    public void setCartonNumbers(List<String> cartons);
+    public void setCartonNumbers(List cartons);
     
     public boolean isPrivateCase() ;
 

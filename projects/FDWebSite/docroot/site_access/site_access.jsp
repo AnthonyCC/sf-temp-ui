@@ -1,4 +1,3 @@
-<%@page import="utils.system"%>
 <%@ page import='java.util.*'  %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
@@ -9,7 +8,6 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page buffer="16kb" %>
 <%
 	response.addHeader("Pragma", "no-cache");
@@ -33,7 +31,7 @@
     
     //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
     if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
-		successPage = "/index.jsp?serviceType=CORPORATE";
+		successPage = "/department.jsp?deptId=COS";
 	}
  
 
@@ -101,21 +99,12 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 <fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-	<html lang="en-US" xml:lang="en-US">
+	<html>
 		<head>
 			<title>FreshDirect</title>
 	
 			<%-- <%@ include file="/common/template/includes/metatags.jspf" %> --%>
-			
-			<%
-			Enumeration<String> attributeNames = pageContext.getAttributeNamesInScope(2);
- 			while (attributeNames.hasMoreElements()){
- 				if (attributeNames.nextElement().equals("template-stack")){	%> 
-				    <tmpl:get name="seoMetaTag"/>
-				<%}
-			}
-			%>
-			
+			<tmpl:get name="seoMetaTag"/>
 			<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 	
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
@@ -124,7 +113,9 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
-		<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">			
+		<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+			
 			
 			<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 			<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>

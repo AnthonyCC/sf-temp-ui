@@ -51,9 +51,9 @@
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
 <%
         List timeslotLst = timeslots.getTimeslotsForDate(day);
-		if (!((timeslotLst == null) || (timeslotLst.size() == 0))){
-			
-		%>
+		if ((timeslotLst == null) || (timeslotLst.size() == 0)){
+			continue;
+		}%>
 		<%=TimeslotPageUtil.formatDayName(day)%>&nbsp;
 		
         <%
@@ -69,7 +69,6 @@
 			out.print(" ( <b>delivery not available on " + unavailableFormatter.format(firstSlot.getStartDateTime()) + "</b> ) ");
 		}
 		out.print("<br>");
-		}
 %>
 	</logic:iterate>
 </logic:iterate>

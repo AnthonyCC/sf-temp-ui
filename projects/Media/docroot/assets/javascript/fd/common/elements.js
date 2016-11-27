@@ -12,7 +12,7 @@ var FreshDirect = FreshDirect || {};
   Elements.prototype.getWidget = function () {
     var widgetNode,
     	orig = this.el;
-
+  
     if(this.el.hasClass('customradio')) {
       if (this.el.parent().hasClass('fake-radio-wrapper')) {
         return this.el;
@@ -27,34 +27,15 @@ var FreshDirect = FreshDirect || {};
 	     $(orig).wrap( "<div class='select-wrapper'></div>" );
 	   }
    } else if (this.el.hasClass('customcheckbox')) {
-	     if (this.el.parent().hasClass('fake-checkbox-wrapper')) {
-	         return this.el;
-	        } else {
-	        var id = orig.attr('id');
-
-	        if (!id) {
-	         var rnd = Math.random() + '';
-	         rnd = rnd.substring(2, rnd.length);
-	         id = 'customcheckbox_' + Date.now() +'_' + rnd;
-	         orig.attr('id', id);
-	        }
-	        $origParent = $(orig).parent(); //original parent
-	        $origLabel = $origParent.find('.customcheckboxlabel'); //check for existing label
-	          $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>"); //becomes new parent
-	         
-	          if ($origLabel.length) { //if existing label, move to correct place in dom
-	        	  if (!$origLabel.attr('for')) {
-	                  $origLabel.attr('for', id);
-	               }
-	  	        $origLabel.addClass('fake-checkbox'); //required for css
-	             $(orig).parent().append($origLabel);
-	          } else { //generic empty checkbox
-	              $(orig).parent().append('<label class="fake-checkbox" for="' + id + '"></label>');
-	          }
-	        }
-          }
-	    };
-
+      if (this.el.parent().hasClass('fake-checkbox-wrapper')) {
+  	    return this.el;
+  	   } else {
+  	     $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>");
+  	     $(orig).parent().append('<span class="fake-checkbox"></span>');
+  	   }
+     };
+  };
+ 
   Elements.DEFAULT_CONFIG = {
     display: 'none'
   };
@@ -63,12 +44,12 @@ var FreshDirect = FreshDirect || {};
     var root = root || $(document.body),
     	els  = root.find('input.customradio, select.customsimpleselect, input.customcheckbox'),
         element;
-
+    
     if (els.length === 0) {
     	root = $(document.body);
     	els = root.find('input.customradio, select.customsimpleselect, input.customcheckbox');
     }
-
+    
     els.each(function (i, el) {
         element = new Elements(el);
     });

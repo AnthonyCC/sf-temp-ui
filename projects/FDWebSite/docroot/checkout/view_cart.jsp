@@ -1,11 +1,12 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.customer.EnumChargeType" %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -40,10 +41,9 @@ if (user.isEligibleForClientCodes()) {
 boolean showMinError = true;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="YOUR CART-Please review the items in your cart before going to Checkout"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title'>FreshDirect - View Cart</tmpl:put> --%>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
   <jwr:style src="/quickshop.css"/>
@@ -74,8 +74,9 @@ boolean showMinError = true;
 
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
+<fd:SmartSavingsUpdate promoConflictMode="false"/>
 
-
+<tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 	if(!UserValidationUtil.validateContainsDlvPassOnly(request, result)) {
@@ -204,7 +205,7 @@ StringBuffer buffer = new StringBuffer(
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-<%-- 	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put> --%>
+	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put>
 	<tmpl:put name="delivery-fee"><%@ include file="/includes/i_cart_delivery_fee.jspf" %></tmpl:put>
 	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
 </tmpl:insert>
@@ -212,10 +213,10 @@ StringBuffer buffer = new StringBuffer(
 
 <!-- PROFILE HEADER -->
 <% if(!modifyOrderMode) { %>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 <% } %>
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0">
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 
@@ -235,7 +236,7 @@ StringBuffer buffer = new StringBuffer(
 </table>
 
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%= W_CHECKOUT_VIEW_CART_TOTAL-2 %>" height="1" border="0" alt="" /><br />
+<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= W_CHECKOUT_VIEW_CART_TOTAL-2 %>" height="1" border="0" alt="" /><br />
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
@@ -243,6 +244,11 @@ StringBuffer buffer = new StringBuffer(
 	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
 	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<%if ("updateQuantities".equals(actionName)) {%>
+	<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>	
+<%}%>
+
 
 </tmpl:put>
 </fd:RedemptionCodeController>

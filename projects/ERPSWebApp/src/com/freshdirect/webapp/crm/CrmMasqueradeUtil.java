@@ -7,9 +7,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,30 +22,16 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
-import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -94,9 +78,8 @@ public class CrmMasqueradeUtil {
         if (params.makeGoodFromOrderId != null) {
             final FDOrderI order = FDCustomerManager.getOrder(identity, params.makeGoodFromOrderId);
             ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
-            Map<String, Double> maximumQuantitiesBySkuCode = calculateMaximumQuantityBySkuCode(order);
             for (FDCartLineI mgOrderLine : order.getOrderLines()) {
-                ctx.addMakeGoodOrderLineIdQuantity(mgOrderLine.getOrderLineId(), maximumQuantitiesBySkuCode.get(mgOrderLine.getSkuCode()));
+                ctx.addMakeGoodOrderLineIdQuantity(mgOrderLine.getOrderLineId(), mgOrderLine.getQuantity());
             }
 
             // extract carton numbers for order lines
@@ -107,20 +90,8 @@ public class CrmMasqueradeUtil {
 
         return ctx;
     }
-
-    private static Map<String, Double> calculateMaximumQuantityBySkuCode(FDOrderI order) {
-        Map<String, Double> maxQuantitiesBySkuCode = new HashMap<String, Double>();
-        for (FDCartLineI orderLine : order.getOrderLines()) {
-            String skuCode = orderLine.getSkuCode();
-            double quantity = orderLine.getQuantity();
-            if (maxQuantitiesBySkuCode.containsKey(skuCode)) {
-                quantity += maxQuantitiesBySkuCode.get(skuCode);
-            }
-            maxQuantitiesBySkuCode.put(skuCode, quantity);
-        }
-        return maxQuantitiesBySkuCode;
-    }
-
+	
+	
 	public static String generateLaunchURL(CrmAgentModel agent, HttpServletRequest request, FDUserI user, String eStoreId) throws FDResourceException, IllegalArgumentException {
 		EnumEStoreId storeId = eStoreId != null ? EnumEStoreId.valueOf(eStoreId) : EnumEStoreId.FD;
 		if (storeId == null) {
@@ -173,16 +144,7 @@ public class CrmMasqueradeUtil {
 				url += "&modifyOrderId=" + params.modifyOrderId;
 			}
 		}
-		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
-				if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
-					FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.ADMINISTRATOR, user.getIdentity(), "", "Masquerading from CRM", null, user.getFDCustomer().getId());
-					ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
-					PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
-			}
-		}else if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && null!=user.getFDCustomer().getDefaultPaymentType() 
-      		  && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
-			user.resetDefaultPaymentValueType();
-		}
+
 		return url;
 	}
 
@@ -225,12 +187,7 @@ public class CrmMasqueradeUtil {
 			} else if ("product_promos".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/agent/ppicks_email_products.jsp";
 			} else if ("dp_search_results".equalsIgnoreCase(params.destination)) {
-				if (null != user && null != user.getUserContext() && null != user.getUserContext().getStoreContext()
-						&& EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
-					redirectUri = "/pdp.jsp?productId=mkt_fk_dpss_onemonth&catId=sale_promo";
-				} else {
-					redirectUri = "/srch.jsp?pageType=search&searchParams=delivery+pass";
-				}
+				redirectUri = "/srch.jsp?pageType=search&searchParams=delivery+pass";
 			} else if ("addon".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/";
 			}
@@ -252,7 +209,7 @@ public class CrmMasqueradeUtil {
 			}
 		} else {
 			if (params.shopFromOrderId != null) {
-                redirectUri = "/your_account/order_details.jsp?orderId=" + params.shopFromOrderId;
+				redirectUri = "/quickshop/shop_from_order.jsp?orderId="+params.shopFromOrderId;
 			}
 			if (params.modifyOrderId != null) {
 				redirectUri = "/your_account/modify_order.jsp?orderId="+params.modifyOrderId+"&action=modify";
@@ -270,7 +227,7 @@ public class CrmMasqueradeUtil {
 		List<Object> orderIdList = new ArrayList<Object>( Arrays.asList(new String[]{ makeGoodFromOrderId }) );
 
 		QuickShopListRequestObject potato = new QuickShopListRequestObject();
-		potato.setOrderIdList( orderIdList );
+		potato.setOrderIdList( (List<Object>)orderIdList );
 		potato.setTab( EnumQuickShopTab.PAST_ORDERS );
 		potato.setActivePage( 0 );
 		potato.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
@@ -426,21 +383,4 @@ public class CrmMasqueradeUtil {
             LOGGER.debug("Carton Number " + cartLine.getCartonNumber() + " has been assigned to cart line (R_ID: " + cartLine.getRandomId() + ")");
         }
     }
-    
-    public static void resubmitOrder(String saleId) throws FDResourceException, FDAuthenticationException, ErpTransactionException {
-    	
-    	FDOrderI order = FDCustomerManager.getOrderForCRM(saleId);
-		String erpCustomerId = order.getCustomerId();
-		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerId);
-		FDIdentity fdIdentity = new FDIdentity(erpCustomerId, fdCustomer.getPK().getId());
-		
-		FDUser user = FDCustomerManager.recognize(fdIdentity);
-		
-		CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),FDCustomerManager.getValidOrderCount(fdIdentity));
-		CallCenterServices.resubmitOrder(saleId, cra, order.getOrderType());
-    }
-    
-    public static void resubmitCustomer(String customerId) throws FDResourceException {
-		CallCenterServices.resubmitCustomer(customerId);
-	}
 }

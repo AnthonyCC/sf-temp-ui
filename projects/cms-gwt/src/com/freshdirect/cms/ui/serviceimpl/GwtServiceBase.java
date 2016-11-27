@@ -3,14 +3,15 @@ package com.freshdirect.cms.ui.serviceimpl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.draft.domain.DraftContext;
-import com.freshdirect.cms.draft.service.DraftService;
-import com.freshdirect.cms.properties.service.PropertyResolverService;
-import com.freshdirect.cms.ui.editor.permission.domain.GwtUserBuilder;
-import com.freshdirect.cms.ui.editor.permission.domain.Persona;
-import com.freshdirect.cms.ui.editor.permission.domain.PersonaWrapper;
-import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.CmsUser;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.application.draft.controller.DraftPopulatorServlet;
+import com.freshdirect.cms.application.permission.domain.CmsUserBuilder;
+import com.freshdirect.cms.application.permission.domain.Persona;
+import com.freshdirect.cms.application.permission.domain.PersonaWrapper;
+import com.freshdirect.cms.application.permission.service.PersonaService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public abstract class GwtServiceBase extends RemoteServiceServlet {
@@ -19,24 +20,34 @@ public abstract class GwtServiceBase extends RemoteServiceServlet {
 
     protected static final String CMS_USER_SESSION_NAME = "CMS_USER";
 
-    private static PropertyResolverService propertyResolverService = CmsServiceLocator.propertyResolverService();
+    protected ContentServiceI contentService;
+    
+    
+    public GwtServiceBase() {
+        this.contentService = CmsManager.getInstance();
+    }
+    
+    public CmsUser getCmsUser() {
+        HttpServletRequest request = getThreadLocalRequest();
+        return getCmsUserFromRequest(request);
+    }
 
     /**
      * Obtain CMS User from request
-     *
+     * 
      * @param request
      * @return
      */
-    public static GwtUser getGwtUserFromRequest(HttpServletRequest request) {
+    public static CmsUser getCmsUserFromRequest(HttpServletRequest request) {
         String userName = request.getUserPrincipal().getName();
         return populateCmsUser(request, userName);
     }
 
-    private static GwtUser populateCmsUser(HttpServletRequest request, String userName) {
-        PersonaWrapper personaWrapper = EditorServiceLocator.personaService().loadPermissionsForUser(userName);
-        GwtUser cmsUser = (GwtUser) request.getSession().getAttribute(CMS_USER_SESSION_NAME);
+    private static CmsUser populateCmsUser(HttpServletRequest request, String userName) {
+        PersonaWrapper personaWrapper = PersonaService.defaultService().loadPermissionsForUser(userName);
+        CmsUser cmsUser = (CmsUser) request.getSession().getAttribute(CMS_USER_SESSION_NAME);
         if (personaWrapper.isUpdateUser() || cmsUser == null) {
-            cmsUser = buildUser(request.getSession(), userName, personaWrapper.getPersona());
+            cmsUser = buildCmsUser(request.getSession(), userName, personaWrapper.getPersona());
         }
         storeDraftContext(request, cmsUser);
         return cmsUser;
@@ -44,57 +55,39 @@ public abstract class GwtServiceBase extends RemoteServiceServlet {
 
     /**
      * Obtain draft context available for the session
-     *
+     * 
      * @return
      */
     public DraftContext getDraftContext() {
-        HttpServletRequest request = getThreadLocalRequest();
-        DraftContext draftContext = (DraftContext) request.getSession().getAttribute(DraftService.CMS_DRAFT_CONTEXT_SESSION_NAME);
-        if (draftContext == null) {
-            draftContext = DraftContext.MAIN;
-        }
-        return draftContext;
+        DraftContext draftContext = getCmsUser().getDraftContext();
+        return draftContext != null ? draftContext : DraftContext.MAIN;
     }
 
-    public GwtUser getUser() {
-        HttpServletRequest request = getThreadLocalRequest();
-        GwtUser user = (GwtUser) request.getSession().getAttribute(CMS_USER_SESSION_NAME);
-        return user;
-    }
-
-    private static GwtUser buildUser(HttpSession session, String userName, Persona persona) {
-        GwtUserBuilder userBuilder = new GwtUserBuilder(userName);
-        userBuilder.setPersona(persona);
-        GwtUser gwtUser = userBuilder.build();
-
-        if (gwtUser.isHasAccessToPermissionEditorApp()) {
-            gwtUser.setCmsAdminURL(propertyResolverService.getCmsAdminUiUri());
-        }
-
-        session.setAttribute(CMS_USER_SESSION_NAME, gwtUser);
-        return gwtUser;
-    }
-
-    private static String populateLoginErrorMessage(HttpServletRequest request, GwtUser cmsUser) {
-        String loginErrorMessage = (String) request.getSession().getAttribute(DraftService.CMS_DRAFT_LOGIN_ERROR_MESSAGE_SESSION_NAME);
-        cmsUser.setLoginErrorMessage(loginErrorMessage);
-        return loginErrorMessage;
-    }
-
-    private static void storeDraftContext(HttpServletRequest request, GwtUser cmsUser) {
-        final DraftContext draftContext = (DraftContext) request.getSession().getAttribute(DraftService.CMS_DRAFT_CONTEXT_SESSION_NAME);
+    private static void storeDraftContext(HttpServletRequest request, CmsUser cmsUser) {
+        final DraftContext draftContext = (DraftContext) request.getSession().getAttribute(DraftPopulatorServlet.CMS_DRAFT_CONTEXT_SESSION_NAME);
         if (!DraftContext.MAIN.equals(draftContext)) {
             if (populateLoginErrorMessage(request, cmsUser) == null) {
                 // update user with context when available and allowed
                 if (draftContext == null) {
-                    cmsUser.setDraftContextName(DraftContext.MAIN.getDraftName());
-                    cmsUser.setDraftActive(false);
+                    cmsUser.setDraftContext(DraftContext.MAIN);
                 } else {
-                    cmsUser.setDraftContextName(draftContext.getDraftName());
-                    cmsUser.setDraftActive(true);
+                    cmsUser.setDraftContext(draftContext);
                 }
             }
         }
     }
 
+    private static String populateLoginErrorMessage(HttpServletRequest request, CmsUser cmsUser) {
+        String loginErrorMessage = (String) request.getSession().getAttribute(DraftPopulatorServlet.CMS_DRAFT_LOGIN_ERROR_MESSAGE_SESSION_NAME);
+        cmsUser.setLoginErrorMessage(loginErrorMessage);
+        return loginErrorMessage;
+    }
+
+    private static CmsUser buildCmsUser(HttpSession session, String userName, Persona persona) {
+        CmsUserBuilder permissionBuilder = new CmsUserBuilder(userName);
+        permissionBuilder.setPersona(persona);
+        CmsUser cmsUser = permissionBuilder.build();
+        session.setAttribute(CMS_USER_SESSION_NAME, cmsUser);
+        return cmsUser;
+    }
 }

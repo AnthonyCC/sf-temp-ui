@@ -5,12 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
@@ -26,7 +23,6 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.reverse.BackReference;
 import com.freshdirect.cms.reverse.BidirectionalReference;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Simple implementation of {@link com.freshdirect.cms.ContentNodeI}.
@@ -38,12 +34,12 @@ public class ContentNode implements ContentNodeI {
 
 	private static final long	serialVersionUID	= -2807267115367900617L;
 
-	private static final Logger LOGGER = LoggerFactory.getInstance(ContentNode.class);
-
+	/** originating content service */
 	private final ContentServiceI contentService;
 	
+	/** */
 	private final DraftContext draftContext;
-	
+
 	/** content key of the node */ 
 	private final ContentKey key;
 
@@ -51,19 +47,19 @@ public class ContentNode implements ContentNodeI {
 	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
 	/**
-    * @param contentService the {@link ContentServiceI} originating this node (never null)
-    * @param key content key of this node (never null)
-    */
-   public ContentNode(ContentServiceI contentService, DraftContext draftContext, ContentKey key) {
-       if (key == null) {
-           throw new IllegalArgumentException("ContentKey cannot be null");
-       }
-       this.key = key;
-       this.contentService = contentService;
-       this.draftContext = draftContext;
-       this.initializeAttributes(contentService.getTypeService());
-   }
-	
+	 * @param contentService the {@link ContentServiceI} originating this node (never null)
+	 * @param key content key of this node (never null)
+	 */
+	public ContentNode(ContentServiceI contentService, DraftContext draftContext, ContentKey key) {
+		if (key == null) {
+			throw new IllegalArgumentException("ContentKey cannot be null");
+		}
+		this.key = key;
+		this.contentService = contentService;
+		this.draftContext = draftContext;
+		this.initializeAttributes(contentService.getTypeService());
+	}
+
     public ContentNode(ContentServiceI contentService, ContentKey key) {
         this(contentService, DraftContext.MAIN, key);
     }
@@ -103,7 +99,7 @@ public class ContentNode implements ContentNodeI {
 
 	@Override
     public ContentTypeDefI getDefinition() {
-	    return contentService.getTypeService().getContentTypeDefinition(getKey().getType());
+		return contentService.getTypeService().getContentTypeDefinition(getKey().getType());
 	}
 
 	//
@@ -179,7 +175,6 @@ public class ContentNode implements ContentNodeI {
             oas.writeObject(this);
             oas.close();
         } catch (IOException e) {
-            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} contentService={1} attributes={2}", key, contentService, attributes), e);
             return null;
         }
 
@@ -190,10 +185,8 @@ public class ContentNode implements ContentNodeI {
             oin = new ObjectInputStream(bais);
             return (ContentNodeI) oin.readObject();
         } catch (ClassNotFoundException e) {
-            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} contentService={1} attributes={2}", key, contentService, attributes), e);
             return null;
         } catch (IOException e) {
-            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} contentService={1} attributes={2}", key, contentService, attributes), e);
             return null;
         }
 	}

@@ -1,12 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5" id="FDMobile">
   <display-name>FDMobile</display-name>
-
-  <!-- Parent Spring context that includes CMS services -->
-  <!-- Definition file: beanRefContext.xml, project: cmseue -->
   <context-param>
-    <param-name>parentContextKey</param-name>
-    <param-value>parentApplicationContext</param-value>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -19,12 +16,6 @@
     <filter-name>CORSFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  <filter>
-     <description>Monitors the warmup status and redirect user to warmup page if it's in progress.</description>
-     <display-name>Warmup Monitor</display-name>
-     <filter-name>WarmupMonitor</filter-name>
-    <filter-class>com.freshdirect.webapp.filters.WarmupMonitorFilter</filter-class>
-  </filter>
   <filter>
     <filter-name>UrlRewriteFilter</filter-name>
     <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>

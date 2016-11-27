@@ -2,9 +2,6 @@ package com.freshdirect.payment.model;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  *
  * @author  knadeem
@@ -44,26 +41,23 @@ public class EnumSummaryDetailType implements Serializable {
 		return false;
 	}
 	
-	@JsonCreator
-	public static EnumSummaryDetailType getSummaryDetail(@JsonProperty("code") String code) {
-
-		if (VISA.getCode().equalsIgnoreCase(code)) {
+	public static EnumSummaryDetailType getSummaryDetail(String code){
+		
+		if(VISA.getCode().equalsIgnoreCase(code)){
 			return VISA;
-		} else if (MASTERCARD.getCode().equalsIgnoreCase(code)) {
-			return MASTERCARD;
-		} else if (AMERICAN_EXPRESS.getCode().equalsIgnoreCase(code)) {
-			return AMERICAN_EXPRESS;
-		} else if (DINERS_CLUB.getCode().equalsIgnoreCase(code)) {
-			return DINERS_CLUB;
-		} else if (CARTE_BLANCHE.getCode().equalsIgnoreCase(code)) {
-			return CARTE_BLANCHE;
-		} else if (NOVUS.getCode().equalsIgnoreCase(code)) {
-			return NOVUS;
-		} else if (JCB.getCode().equalsIgnoreCase(code)) {
-			return JCB;
-		} else if (PAYPAL.getCode().equalsIgnoreCase(code)) {
-			return PAYPAL;
-		} else {
+		}else if(MASTERCARD.getCode().equalsIgnoreCase(code)){
+			return MASTERCARD;	
+		}else if(AMERICAN_EXPRESS.getCode().equalsIgnoreCase(code)){
+			return AMERICAN_EXPRESS;	
+		}else if(DINERS_CLUB.getCode().equalsIgnoreCase(code)){
+			return DINERS_CLUB;	
+		}else if(CARTE_BLANCHE.getCode().equalsIgnoreCase(code)){
+			return CARTE_BLANCHE;	
+		}else if(NOVUS.getCode().equalsIgnoreCase(code)){
+			return NOVUS;	
+		}else if(JCB.getCode().equalsIgnoreCase(code)){
+			return JCB;	
+		}else{
 			return null;
 		}
 	}

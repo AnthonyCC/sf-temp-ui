@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,13 @@ import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletUtil;
+import com.freshdirect.fdstore.ewallet.PaymentData;
 import com.freshdirect.fdstore.ewallet.PaymentMethodName;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.EwalletPaymentMethod;
 import com.freshdirect.mobileapi.controller.data.EwalletResponse;
 import com.freshdirect.mobileapi.controller.data.request.EwalletRequest;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethod;
@@ -44,7 +46,10 @@ public class EwalletService {
 	private static String EWALLET_STATUS_ON="ON";
 	private static String EWALLET_STATUS_OFF="OFF";
 	private static String EWALLET_ERR_EMPTY_CART="ERR_EMPTY_CART";
+	private static final String EXPRESSCHECKOUT_TRASCODE_EXP ="EXP";
+	private static final String EXPRESSCHECKOUT_TRASCODE_PEX ="PEX";
 	private static String EWALLET_FALSE="false";
+	private static String EWALLET_TRUE="true";
 	private static final String PARAM_REQUEST_TOKEN = "oauth_token";
 	private static final String PARAM_OAUTH_VERIFIER = "oauth_verifier";
 	private static final String PARAM_CHECKOUT_URL = "checkout_resource_url";
@@ -168,8 +173,6 @@ public class EwalletService {
 			if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
 				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 				EwalletRequestData requestData = createEwalletStdCheckoutRequestData(ewalletRequest,user.getFDSessionUser(),request);
-				boolean isDebitCardSwitch = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-				requestData.setDebitCardSwitch(isDebitCardSwitch);
 				//  
 				requestData.seteWalletType(ewalletRequest.geteWalletType());
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.standardCheckoutData(requestData);
@@ -261,7 +264,7 @@ public class EwalletService {
 							isPayPalPaired = true;
 						}else{
 							// If Paired PayPal account doesn't have valid Vault Token then delete the PayPal account/disconnect
-							FDCustomerManager.removePaymentMethod(ewalletRequest.getFdActionInfo(), paymentMethod, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
+							FDCustomerManager.removePaymentMethod(ewalletRequest.getFdActionInfo(), paymentMethod);
 							// Delete the Vault token from CUST.CUST_EWALLET table as well.
 							FDCustomerManager.deleteLongAccessToken(ewalletRequest.getCustomerId(), ""+EnumEwalletType.PP.getValue());
 						}
@@ -270,8 +273,6 @@ public class EwalletService {
 				if(!isPayPalPaired){
 					EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 					EwalletRequestData requestData = new EwalletRequestData();
-					boolean isDebitCardSwitch = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-					requestData.setDebitCardSwitch(isDebitCardSwitch);
 					requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 					requestData.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
 					EwalletResponseData ewalletResponseData = mobileRequestProcessor.isPayPalPaired(requestData);
@@ -323,7 +324,6 @@ public class EwalletService {
 				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
 				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 				requestData.setCustomerId(ewalletRequest.getCustomerId());
-				requestData.setDebitCardSwitch(ewalletRequest.getFdActionInfo().isDebitCardSwitch());
 				
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.disconnectWallet(requestData);
 				Map<String, String> result = ewalletResponseData.getResParam();
@@ -356,10 +356,9 @@ public class EwalletService {
 	
 	/**
 	 * @param ewalletRequest
-	 * @param isDebitCardSwitch 
 	 * @return
 	 */
-	public EwalletResponse addPayPalWallet(final EwalletRequest ewalletRequest, boolean isDebitCardSwitch){
+	public EwalletResponse addPayPalWallet(final EwalletRequest ewalletRequest){
 		EwalletResponse ewalletResponse = new EwalletResponse();
 		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
 		try {
@@ -376,7 +375,6 @@ public class EwalletService {
 				requestData.setReqParams(reqParams);
 				requestData.setCustomerId(ewalletRequest.getCustomerId());
 				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
-				requestData.setDebitCardSwitch(isDebitCardSwitch);
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.addPayPalWallet(requestData);
 				ValidationResult validationResult = ewalletResponseData.getValidationResult();
 				if(validationResult != null && validationResult.getErrors() != null && !validationResult.getErrors().isEmpty()){
@@ -439,7 +437,6 @@ public class EwalletService {
 		
 		requestData.seteWalletType(ewalletRequest.geteWalletType());
 		requestData.setMobileCallbackDomain(ewalletRequest.getCallBackUrl());
-		requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 		FDSessionUser fdSessionUser =user.getFDSessionUser();
 		// Prepare shopping cart for PostShopping Cart service call
 		EwalletUtil.prepareShoppingCartItems(fdSessionUser,requestData, MobileApiProperties.getMediaPath());
@@ -476,6 +473,171 @@ public class EwalletService {
 		}
 		return ewalletResponse;
 	}
+	
+	
+	/**
+	 * @param ewalletRequest
+	 * @param user
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	public EwalletResponse checkoutData(final EwalletRequest ewalletRequest,final SessionUser user,final HttpServletRequest request){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		try{
+			String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+			if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
+				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+				EwalletRequestData requestData = createEwalletRequestData(ewalletRequest,user.getFDSessionUser(),request);
+				//  
+				requestData.seteWalletType(ewalletRequest.geteWalletType());
+				EwalletResponseData ewalletResponseData = mobileRequestProcessor.checkoutData(requestData);
+				
+				if(ewalletResponseData.getPaymentMethod() != null) {
+					ewalletResponse = mapCheckoutData(ewalletResponseData);
+					ewalletResponse.seteWalletStatus(ewalletStatus);
+				}
+				ewalletResponse.setSuccessMessage("");
+			}
+			else{
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF", ewalletRequest.geteWalletType()+" is disabled");
+			}
+			ewalletResponse.seteWalletStatus(ewalletStatus);
+		}catch(Exception exception){
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.addErrorMessage("Exception while calling CheckoutData Service for "+ewalletRequest.geteWalletType() +" EWallet Provider", exception.getMessage());
+			exception.printStackTrace();
+			LOGGER.error("Error while calling Checkout Data Service", exception);
+		}
+		return ewalletResponse;
+	}
+	
+	
+	/**
+	 * @param ewalletRequest
+	 * @return
+	 * @throws FDResourceException 
+	 */
+	public EwalletResponse preCheckout(final EwalletRequest ewalletRequest,final SessionUser user) throws FDResourceException{
+	
+		EwalletResponse ewalletResponse = null;
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
+			EwalletRequestData requestData = createPreCheckoutEwalletRequestData(ewalletRequest,user.getFDSessionUser());
+			requestData.seteWalletType(ewalletRequest.geteWalletType());
+			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+			try{
+				EwalletResponseData ewalletResponseData = mobileRequestProcessor.preCheckoutData(requestData);
+				ewalletResponse = mapPreCheckoutResponseData(ewalletResponseData);
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.setPreCheckoutTxnId(ewalletResponseData.getPreCheckoutTnxId());
+				ewalletResponse.setSuccessMessage("");
+			}catch(Exception exception){
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.addErrorMessage("Exception while calling PreCheckout Service for "+ewalletRequest.geteWalletType() +" EWallet Provider", exception.getMessage());
+				exception.printStackTrace();
+				LOGGER.error("Error while calling Checkout Service", exception);
+			}
+			
+		}else{
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.seteWalletStatus(ewalletStatus);
+			ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF", ewalletRequest.geteWalletType()+" is disabled");
+		}
+		return ewalletResponse;
+	}
+	
+	/**
+	 * @param ewalletRequest
+	 * @param user
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public EwalletResponse expressCheckout(final EwalletRequest ewalletRequest,SessionUser user, HttpServletRequest request) throws FDResourceException{
+	
+		EwalletResponse ewalletResponse = null;
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
+			
+			EwalletRequestData requestData = createExpCheckoutEwalletReqData(ewalletRequest,user.getFDSessionUser(),request);
+			
+			requestData.seteWalletType(ewalletRequest.geteWalletType());
+			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+			try{
+				EwalletResponseData ewalletResponseData = null;
+				if (ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_EXP)) {
+					ewalletResponseData = mobileRequestProcessor.expressCheckoutWithoutPrecheckout(requestData);
+				}else if(ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_PEX)){
+					// 
+					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getPaymentMethods();
+					if(paymentMethods != null){
+						ErpPaymentMethodI paymentMethod = getEWalletPaymentMethod(paymentMethods,ewalletRequest.geteWalletType());
+						PaymentData paymentData  = createPaymentData(paymentMethod);
+						requestData.setPaymentData(paymentData);
+						ewalletResponseData = mobileRequestProcessor.expressCheckout(requestData);
+					}
+				}
+				ewalletResponse = mapExpCheckoutResponseData(ewalletResponseData);
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+			}catch(Exception exception){
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.addErrorMessage("Exception while calling PreCheckout Service for "+ewalletRequest.geteWalletType() +" EWallet Provider", exception.getMessage());
+				exception.printStackTrace();
+				LOGGER.error("Error while calling Checkout Service", exception);
+			}
+			
+		}else{
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.seteWalletStatus(ewalletStatus);
+			ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF", ewalletRequest.geteWalletType()+" is disabled");
+		}
+		return ewalletResponse;
+	}
+	
+	/**
+	 * @param payment
+	 * @return
+	 */
+	private PaymentData createPaymentData(final ErpPaymentMethodI payment) {
+        PaymentData paymentData = new PaymentData();
+        paymentData.setId(payment.getPK().getId());
+        paymentData.setTitle(payment.getName());
+        if (payment.getCardType() != null) {
+            paymentData.setType(payment.getCardType().getDisplayName());
+        }
+        paymentData.setNameOnCard(payment.getName());
+        String maskedAccountNumber = payment.getMaskedAccountNumber();
+        if (maskedAccountNumber != null)
+        {
+            if (8 < maskedAccountNumber.length()) {
+                maskedAccountNumber = maskedAccountNumber.substring(maskedAccountNumber.length() - 8);
+            }
+            paymentData.setAccountNumber(maskedAccountNumber);
+        }
+        paymentData.setBestNumber(payment.getBestNumberForBillingInquiries());
+        if (payment.getExpirationDate() != null) {
+            paymentData.setExpiration(DateUtil.getCreditCardExpiryDate(payment.getExpirationDate()));
+        }
+        	
+	        paymentData.setAddress1(payment.getAddress1());
+	        paymentData.setAddress2(payment.getAddress2());
+	        paymentData.setApartment(payment.getApartment());
+	        paymentData.setCity(payment.getCity());
+	        paymentData.setZip(payment.getZipCode());
+	        paymentData.setState(payment.getState());
+	        paymentData.setAbaRouteNumber(payment.getAbaRouteNumber());
+       
+        if (payment.getBankAccountType() != null) {
+            paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
+        }
+        paymentData.setBankName(payment.getBankName());
+        
+        paymentData.seteWalletID(payment.geteWalletID());
+        paymentData.setVendorEWalletID(payment.getVendorEWalletID());
+        return paymentData;
+    }
 	/**
 	 * @param paymentMethods
 	 * @param ewalletType
@@ -493,6 +655,94 @@ public class EwalletService {
 		return null;
 	}
 	
+
+	/**
+	 * @param ewalletResponseData
+	 * @return
+	 */
+	private EwalletResponse mapExpCheckoutResponseData(EwalletResponseData ewalletResponseData){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		if(ewalletResponseData.getTransactionId() != null && ewalletResponseData.getPaymentMethod() != null){
+			ewalletResponse.setCheckoutTransactionId(ewalletResponseData.getTransactionId());
+			com.freshdirect.mobileapi.model.PaymentMethod paymentMethod =com.freshdirect.mobileapi.model.PaymentMethod.wrap(ewalletResponseData.getPaymentMethod());
+			PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethod);
+			ewalletResponse.setPaymentMethod(resPaymentMethod);
+			ewalletResponse.setSuccessMessage("");
+		}
+		return ewalletResponse;
+		
+	}
+	/**
+	 * @param ewalletResponseData
+	 * @return
+	 */
+	private EwalletResponse mapPreCheckoutResponseData(EwalletResponseData ewalletResponseData){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		List<EwalletPaymentMethod> walletPaymentMethods = new ArrayList<EwalletPaymentMethod>();
+		
+		if(ewalletResponseData != null && ewalletResponseData.getPaymentDatas()!=null && !ewalletResponseData.getPaymentDatas().isEmpty()){
+			for(PaymentData paymentData : ewalletResponseData.getPaymentDatas()){
+				EwalletPaymentMethod ewalletPaymentMethod = new EwalletPaymentMethod();
+				ewalletPaymentMethod.setCardId(paymentData.getId());
+				ewalletPaymentMethod.setCardType(paymentData.getType());
+				
+					ewalletPaymentMethod.setMaskedAccountNumber("XXXXXXXX"+paymentData.getAccountNumber());
+					
+				ewalletPaymentMethod.setName(paymentData.getNameOnCard());
+				if(paymentData.getExpiration()!=null){
+					String expiration = paymentData.getExpiration();
+					ewalletPaymentMethod.setExpirationMonth(expiration.split("/")[0]);
+					ewalletPaymentMethod.setExpirationYear(expiration.split("/")[1]);
+				}
+				ewalletPaymentMethod.setPreferredCard(EWALLET_FALSE);
+				if(ewalletResponseData.getPreferredMPCard().equals(paymentData.getId())){
+					ewalletPaymentMethod.setPreferredCard(EWALLET_TRUE);
+				}
+				walletPaymentMethods.add(ewalletPaymentMethod);
+			}
+		}
+		ewalletResponse.setPaymentMethods(walletPaymentMethods);
+		return ewalletResponse;
+	}
+	
+	/**
+	 * @param ewalletRequest
+	 * @param user
+	 * @return
+	 * @throws FDResourceException
+	 */
+	private EwalletRequestData createExpCheckoutEwalletReqData(final EwalletRequest ewalletRequest,final FDUserI user, final HttpServletRequest request) throws FDResourceException{
+		EwalletRequestData ewalletRequestData = new EwalletRequestData();
+		ewalletRequestData.seteWalletType(ewalletRequest.geteWalletType());
+		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
+		ewalletRequestData.setMobileCallbackDomain(ewalletRequest.getOriginUrl());
+		FDActionInfo fdActionInfo = AccountActivityUtil
+				.getActionInfo(request.getSession());
+		ewalletRequestData.setFdActionInfo(fdActionInfo);
+		ewalletRequestData.setPaymentechEnabled(user.isPaymentechEnabled());
+		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
+		if(ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_EXP)){
+			ewalletRequestData.setPrecheckoutTransactionId(ewalletRequest.getPrecheckoutTransactionId());
+			ewalletRequestData.setPrecheckoutCardId(ewalletRequest.getEwalletCardId());
+		}
+		
+		return ewalletRequestData;
+	}
+	
+	/**
+	 * @param ewalletRequest
+	 * @param user
+	 * @return
+	 * @throws FDResourceException
+	 */
+	private EwalletRequestData createPreCheckoutEwalletRequestData(final EwalletRequest ewalletRequest,final FDUserI user) throws FDResourceException{
+		EwalletRequestData ewalletRequestData = new EwalletRequestData();
+		ewalletRequestData.seteWalletType(ewalletRequest.geteWalletType());
+		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
+		
+		return ewalletRequestData;
+	}
+	
 	/**
 	 * @param ewalletResponseData
 	 * @return
@@ -506,6 +756,29 @@ public class EwalletService {
 		ewalletResponse.setCheckoutTransactionId(ewalletResponseData.getTransactionId());
 		
 		return ewalletResponse;
+	}
+	/**
+	 * @param ewalletRequest
+	 * @return
+	 * @throws FDResourceException 
+	 */
+	private EwalletRequestData createEwalletRequestData(final EwalletRequest ewalletRequest,final FDUserI user, final HttpServletRequest request) throws FDResourceException{
+		EwalletRequestData ewalletRequestData = new EwalletRequestData();
+		ewalletRequestData.setPairingToken(ewalletRequest.getPairingToken());
+		ewalletRequestData.setPairingVerifier(ewalletRequest.getPairingVerifer());
+		Map<String,String> params = new HashMap<String,String>();
+		params.put(PARAM_REQUEST_TOKEN, ewalletRequest.getOauthToken());
+		params.put(PARAM_OAUTH_VERIFIER, ewalletRequest.getOauthVerifer());
+		params.put(PARAM_CHECKOUT_URL, ewalletRequest.getCheckoutUrl());
+		ewalletRequestData.setReqParams(params);
+		ewalletRequestData.setPaymentechEnabled(user.isPaymentechEnabled());
+		
+		FDActionInfo fdActionInfo = AccountActivityUtil
+				.getActionInfo(request.getSession());
+		ewalletRequestData.setFdActionInfo(fdActionInfo);
+		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
+	
+		return ewalletRequestData;
 	}
 	
 	/**
@@ -545,7 +818,6 @@ public class EwalletService {
 		FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
 		ewalletRequestData.setFdActionInfo(fdActionInfo);
 		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
-		ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 	
 		return ewalletRequestData;
 	}

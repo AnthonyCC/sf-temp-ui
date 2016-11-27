@@ -9,7 +9,6 @@ public class LoginRequest implements Serializable{
 	private String userId;
 	private String password;
 	private String successPage;
-	private String captchaToken;
 	private boolean fdtcacknowledge;
 	
 	public boolean isFdtcacknowledge() {
@@ -38,13 +37,5 @@ public class LoginRequest implements Serializable{
 	}
 	public void setSuccessPage(String successPage) {
 		this.successPage = successPage;
-	}
-	
-	public String getCaptchaToken() {
-		return captchaToken;
-	}
-	
-	public void setCaptchaToken(String captchaToken) {
-		this.captchaToken = captchaToken;
 	}
 }

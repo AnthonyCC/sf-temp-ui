@@ -2,8 +2,8 @@
 <%@ page import='java.util.*'  %>
 <%@ page import='java.io.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -14,7 +14,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%! //expanded page dimensions
 final int W_PRODUCT_FOLDER_LIST_TOTAL = 601;
@@ -54,10 +54,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
 <TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="<%=W_PRODUCT_FOLDER_LIST_TOTAL%>">
     <TR VALIGN="TOP">
-        <td width="<%=W_PRODUCT_FOLDER_LIST_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PRODUCT_FOLDER_LIST_IMG_PADDING%>" height="1" border="0"></td>
-        <TD WIDTH="<%=W_PRODUCT_FOLDER_LIST_IMG%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PRODUCT_FOLDER_LIST_IMG%>" height="1" border="0"></TD>
-        <td width="<%=W_PRODUCT_FOLDER_LIST_TEXT_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PRODUCT_FOLDER_LIST_TEXT_PADDING%>" height="1" border="0"></td>
-        <TD WIDTH="<%=W_PRODUCT_FOLDER_LIST_TEXT%>" VALIGN="middle"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PRODUCT_FOLDER_LIST_TEXT%>" height="1" border="0"><BR>
+        <td width="<%=W_PRODUCT_FOLDER_LIST_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_PRODUCT_FOLDER_LIST_IMG_PADDING%>" height="1" border="0"></td>
+        <TD WIDTH="<%=W_PRODUCT_FOLDER_LIST_IMG%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_PRODUCT_FOLDER_LIST_IMG%>" height="1" border="0"></TD>
+        <td width="<%=W_PRODUCT_FOLDER_LIST_TEXT_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_PRODUCT_FOLDER_LIST_TEXT_PADDING%>" height="1" border="0"></td>
+        <TD WIDTH="<%=W_PRODUCT_FOLDER_LIST_TEXT%>" VALIGN="middle"><img src="/media_stat/images/layout/clear.gif" width="<%=W_PRODUCT_FOLDER_LIST_TEXT%>" height="1" border="0"><BR>
     </TR>
 <%!
 public void prodFldrList(Collection itemCollection,ContentNodeModel currentFolder,HttpServletResponse response,JspWriter out, String trkCode) throws JspException {

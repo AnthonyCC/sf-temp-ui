@@ -5,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $ = fd.libs.$;
-
+  
   function _update($subtotal){
     var pricingInfo = $subtotal.attr('data-prices') || '[]',
         salesunitInfo = $subtotal.attr('data-suratio') || '[]',
@@ -22,22 +22,22 @@ var FreshDirect = FreshDirect || {};
   	  		var salesUnit = itemInfo.salesUnit,
   	  		qty = parseFloat(itemInfo.quantity),
   	        origqty = qty;
-  	  	}
+  	  	}        
         var pricingUnit = "",
         template = $subtotal.attr('data-template') || '[]';
 
     template = FreshDirect.modules.common.utils.discover(template);
-
+    
     /* Convert JSON string to JSON object */
-    try { pricingInfo = JSON.parse(pricingInfo); } catch (e) {}
+    try { pricingInfo = JSON.parse(pricingInfo); } catch (e) {} 
     try { salesunitInfo = JSON.parse(salesunitInfo); } catch (e) {}
     try { gpricingInfo = JSON.parse(gpricingInfo); } catch (e) {}
     try { cvprices = JSON.parse(cvprices); } catch (e) {}
-
-    /* grab the pricingUnit because we will need that - first one is just fine because all are the same */
+      
+    /* grab the pricingUnit because we will need that - first one is just fine because all are the same */    
     try { pricingUnit = pricingInfo[0].pricingUnit; } catch (e) {}
-
-    /* we may need to convert if actual salesUnit and pricingUnit is not the same - in that case multiply with the appropriate ratio */
+    
+    /* we may need to convert if actual salesUnit and pricingUnit is not the same - in that case multiply with the appropriate ratio */   
     try {
       if ( salesUnit !== pricingUnit ) {
         salesunitInfo.forEach(function (si) {
@@ -45,7 +45,7 @@ var FreshDirect = FreshDirect || {};
             qty = qty * si.ratio;
           }
         });
-      }
+      }   
     } catch (e) {
     }
 
@@ -72,7 +72,7 @@ var FreshDirect = FreshDirect || {};
         cvprices.forEach(function(cvp){
           if(itemInfo.configuration[cvp.name] === cvp.value) {
             if( cvp.applyHow === '1' ) {
-              price += origqty * cvp.price;
+              price += origqty * cvp.price;                 
             } else if( cvp.applyHow === '0' ) {
               price += qty * cvp.price;
             }
@@ -109,28 +109,19 @@ var FreshDirect = FreshDirect || {};
       $subtotal.closest('[data-component="product"]').addClass('invalidQty');
       $subtotal.html("");
     }
-
-    return price;
+    
   }
-
+  
   var Subtotal = {
       update:function(product) {
-        var $subtotal = $(product).find('[data-component="subtotal"]'),
-            sendsubtotal = $(product).find('[data-sendsubtotal="true"]').length > 0,
-            id = $(product).find('[data-sendPriceId]').attr('data-sendPriceId'),
-            price;
+        var $subtotal = $(product).find('[data-component="subtotal"]');
         if($subtotal.length) {
-          price = _update($subtotal);
-        }
-        if (sendsubtotal) {
-          var data = {};
-          data[id] = price;
-          $(document).trigger("product-subtotal", data);
+          _update($subtotal);         
         }
       },
       innerTemplate:common.subtotalInner
   };
-
+  
   function eventHandler(event){
     var ct = $(event.currentTarget);
     if( ct.data('component') !== 'product' ) {
@@ -138,32 +129,28 @@ var FreshDirect = FreshDirect || {};
     }
     Subtotal.update(ct);
   }
-
+  
   function pccHandler (e) {
     var $product = $('[data-productdata-name="atcItemId"][value="'+e.productId+'"]').parents('[data-product-id], [data-productid]');
 
-    if ($product.length < 1) {
+    if ($product.size() < 1) {
       $product = $('[data-productid="'+e.productId+'"], [data-product-id="'+e.productId+'"]');
     }
 
 
-    if ($product.length > 0) {
+    if ($product.size() > 0) {
       Subtotal.update($product);
     }
   }
 
   $(document).on('quantity-change','[data-component="product"]',eventHandler);
-
+  
   $(document).on('salesunit-change','[data-component="product"]',eventHandler);
-
+  
   $(document).on('change','[data-component="productDataConfiguration"]',eventHandler);
 
   $(document).on('transactionalPopup-open','[data-component="product"]',eventHandler);
-
-  $(document).on('reorderPopup-open','[data-component="product"]',eventHandler);
-
-  $(document).on('reorderPopup-refresh','[data-component="product"]',eventHandler);
-
+  
   $(document).on('soCustomizePopup', function(){Subtotal.update($jq("#customizePopup form[data-component='product']"))});
 
   $(document).on('productConfigurationChange', pccHandler);

@@ -19,7 +19,7 @@ public class DynamicSiteFeature implements Comparable<DynamicSiteFeature>, Seria
 	@Deprecated
 	boolean smartSaving;
 
-	public  DynamicSiteFeature(String name, String title, String prez_title, String prez_desc, boolean smartSaving) {
+	protected DynamicSiteFeature(String name, String title, String prez_title, String prez_desc, boolean smartSaving) {
 		if (name == null)
 			throw new IllegalArgumentException("name must not be null");
 		

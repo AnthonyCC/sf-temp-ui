@@ -113,7 +113,7 @@ public class IpLocatorUtil {
 			address.setCity(ipLocatorData.getCity());
 			
 			FDCustomerManager.storeUser(user);
-			LOGGER.info("Appended city and state fields to address: " + address);
+			LOGGER.error("Appended city and state fields to address: " + address);
 		}
 	}
 	

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.mail.TellAFriend;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.util.TellAFriendUtil;
 
 public class SiteEmailPreviewTag extends AbstractGetterTag implements SessionName{
 	

@@ -8,16 +8,15 @@ import java.sql.Types;
 import java.util.List;
 
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.payment.EnumBankAccountType;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
-import com.freshdirect.payment.EnumBankAccountType;
-import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.PaymentManager;
 
 public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSupport {
 
@@ -103,7 +102,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 
 		String id = this.getNextId(conn, "CUST");
 
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int index = 1;
 			ps.setString(index++, id);
@@ -119,7 +118,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			if (model.getExpirationDate() != null) {
 				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
 			} else {
-				ps.setNull(index++, Types.DATE); 
+				ps.setNull(index++, Types.DATE);
 			}
 			if (model.getCardType() != null) {
 				ps.setString(index++, model.getCardType().getFdName());
@@ -222,7 +221,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
-			ps.setString(index++, (model.isDebitCard()==false)?"O":"D");
+			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 
 		//}
 		try {
@@ -245,7 +244,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, " +
 				"ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED," +
 
-				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -274,7 +273,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setVendorEWalletID(rs.getString("VENDOR_EWALLET_ID"));
 				model.setEmailID(rs.getString("PAYPAL_ACCOUNT_ID"));
 				model.setDeviceId(rs.getString("DEVICE_ID"));
-				model.setDebitCard((null!=rs.getString("IS_DEBIT_CARD") && rs.getString("IS_DEBIT_CARD").equals("D"))?true:false);
+				//model.setDebitCard((null!=rs.getString("IS_DEBIT_CARD") && rs.getString("IS_DEBIT_CARD").equals("Y"))?true:false);
 				
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());
@@ -289,7 +288,6 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				/*model.setProfileID("36280971");
 				model.setAccountNumLast4("7978");*/
 				model.setBestNumberForBillingInquiries(rs.getString("BEST_NUM_BILLING_INQ"));
-				
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}

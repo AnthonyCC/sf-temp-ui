@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.standingorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,30 +11,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerList;
-import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeVariant;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
@@ -46,17 +45,11 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class StandingOrderCartServlet extends BaseJsonServlet {
 	/**
-	 *
+	 * 
 	 */
 	private static final long serialVersionUID = 3987286560828009595L;
 
 	private static final Logger LOG = LoggerFactory.getInstance(StandingOrderCartServlet.class);
-	
-	private static final String ACTION_TURN_OFF_REMINDER_OVERLAY="turnOffReminderOverlay";
- 
-	private static final String ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME="turnOffCartOverlayFirsttime";
-	
-	private static final String ACTION_TRUN_OFF_SO_FEATURE_OVERLAY = "turnOffSoFeatureOverlay";
 
 	@Override
 	protected boolean synchronizeOnUser() {
@@ -75,7 +68,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		try {
 
 			Collection<FDStandingOrder> sos = m.getValidStandingOrder(user.getIdentity());
-			Collection<Map<String, Object>> so3Details=StandingOrderHelper.convertStandingOrderToSoy(sos,false,false, user);
+			Collection<Map<String, Object>> so3Details=StandingOrderHelper.convertStandingOrderToSoy(sos,false);
 			writeResponseData(response,so3Details);
 		} catch (FDResourceException e) {
 			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
@@ -83,7 +76,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
 		} catch (PricingException e) {
 			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
-		}
+		} 
 	}
 
 	@Override
@@ -95,7 +88,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			AddToListRequestData reqData = parseRequestData(request, AddToListRequestData.class);
 
 			try {
-
+			
 				if (null != reqData.getActiontype() && "AddProductToSO".equalsIgnoreCase(reqData.getActiontype())) {
 
 				   if(validateSO3AlcoholResrtiction(reqData,user)){
@@ -103,23 +96,23 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 				   } else {
 					storeCustomerList(reqData, user);
 					storeDefualtStandingOrder(reqData, user);
-
+				
 					FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
 					 if(null!=so){
 						 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 						 if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							 so.getStandingOrderCart().refreshAll(true);
 						 }
-						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=ErpServicesProperties.getStandingOrderSoftLimit()){
+						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=ErpServicesProperties.getStandingOrderSoftLimit()){    
 							 StandingOrderHelper.clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"}) ;
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
 						 } if("Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
 							 so.setAlcoholAgreement(true);
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
-						 }
-						 user.setRefreshSO3(true);
-						orderResponseData=StandingOrderHelper.populateResponseData(so,true);
 
+						 }
+						orderResponseData=StandingOrderHelper.populateResponseData(so,true);
+	
 					 } else {
 						 orderResponseData.setMessage("Standing Order has been deleted. " +
 						 		" Please choose another Standing Order") ;
@@ -138,41 +131,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			 orderResponseData.setSuccess(false);
 			 LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
 			}
-
-			if (null != reqData.getActiontype()	&& ACTION_TURN_OFF_REMINDER_OVERLAY.equalsIgnoreCase(reqData.getActiontype())
-					&& reqData.getStandingOrderId() != null) {
-				try {
-						FDStandingOrdersManager.getInstance().turnOffReminderOverLayNewSo(reqData.getStandingOrderId());
-				} catch (FDResourceException e) {
-					LOG.error("Got the exeption while updating the RemiderOverlay flag for New Standing order"+e);
-				}
-			}
-			
-			
-			if (null!= reqData && ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME.equalsIgnoreCase(reqData.getActiontype())) {
-				try {
-					String customerId=getCustomerId(user);
-					if(customerId!=null) {
-						user.setRefreshSoCartOverlay(true);
-						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(customerId);
-					}
-				} catch (FDResourceException e) {
-					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
-				}
-			}
-			
-			if (null!= reqData && ACTION_TRUN_OFF_SO_FEATURE_OVERLAY.equalsIgnoreCase(reqData.getActiontype())) {
-				try {
-					String customerId=getCustomerId(user);
-					if(customerId!=null) {
-						FDStandingOrdersManager.getInstance().updateNewSoFeaturePreferences(customerId);
-						user.setSoFeatureOverlay(false);
-					}
-				} catch (FDResourceException e) {
-					LOG.error("Got the exeption while updating the New So Feature Preferences "+e);
-					}
-			}
-			
+		
 		}else{
 			// User level not sufficient.
 			 orderResponseData.setMessage("User Session is expired please try login to add the product to Standing order") ;
@@ -184,17 +143,13 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 	}
 
-	private String getCustomerId(FDUserI user) {
-		return user.getIdentity()!=null?user.getIdentity().getErpCustomerPK():null;
-	}
-
 	protected boolean validateSO3AlcoholResrtiction(AddToListRequestData reqData, FDUserI user) {
 
 		String soId=reqData.getStandingOrderId();
 		FDStandingOrder so = null;
 		boolean isAlcoholPopupDisplay=false;
 		try {
-
+			
 			    FDProduct product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(reqData.getItems().get(0).getSkuCode()));
 
 				if(product.isAlcohol() && !"Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
@@ -203,7 +158,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						isAlcoholPopupDisplay=true;
 					}
 				}
-
+			
 		} catch (FDResourceException e) {
             LOG.error("ERROR WHILE GETTING STANDING ORDER : ID "+ soId);
 		} catch (FDSkuNotFoundException e) {
@@ -211,12 +166,12 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		}
 		return isAlcoholPopupDisplay;
 	}
-
-
+	
+	
 	protected void storeDefualtStandingOrder(AddToListRequestData reqData,
 			FDUserI user) throws HttpErrorResponse{
 		try {
-			FDStandingOrdersManager.getInstance().updateDefaultStandingOrder(reqData.getListId(),user.getIdentity());
+			FDStandingOrdersManager.getInstance().updateDefaultStandingOrder(reqData.getListId(),user.getIdentity()); 
 		} catch (FDResourceException e) {
 			returnHttpError(500, "System error (FDResourceException) - couldn't persist Standing Order list", e); // 500
 																											// Internal// Server																									// Error
@@ -282,19 +237,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 		// Save list
 		try {
-			list = FDListManager.storeCustomerList(list);
-			FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
-			if (StandingOrderHelper.isEligibleForSo3_0(user) && reqData.getStandingOrderId() != null) {
-				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
-				if( so!= null && "Y".equalsIgnoreCase(so.getActivate())) {
-				List<FDCustomerListItem> cartLine=list.getLineItems();
-				for (Iterator<FDCustomerListItem> iterator = cartLine.iterator(); iterator.hasNext();) {
-						FDCustomerProductListLineItem fDCustomerProductListLineItem = (FDCustomerProductListLineItem) iterator.next();
-							if(fDCustomerProductListLineItem.isSojustAddedItemToCart() && null != fDCustomerProductListLineItem.getPK())
-									user.getSoCartLineMessagesMap().put(fDCustomerProductListLineItem.getPK().getId(), "NewItem");
-				}
-			  }
-			}
+			FDListManager.storeCustomerList(list);
 		} catch (FDResourceException e) {
 			returnHttpError(500, "System error (FDResourceException) - couldn't persist Standing order  list", e); // 500 Internal Server Error
 		}
@@ -310,7 +253,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			try {
 				FDCustomerProductListLineItem listItem = createListLineItem(item, recipeId, false);
 				list.addLineItem(listItem);
-				listItem.setSojustAddedItemToCart(true);
+
 				// create response item
 				responseItem.setItemName(listItem.getFullName());
 				responseItem.setMessage("Added to List");
@@ -382,7 +325,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 	private static String collectRecipeIngredients(List<AddToCartItem> items, String recipeId, String recipeVariantId) {
 		// Collect recipe ingredients
 		Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(
-		        ContentKeyFactory.get(ContentType.Recipe, recipeId));
+				new ContentKey(ContentType.get("Recipe"), recipeId));
 		RecipeVariant recipeVariant = null;
 
 		if (recipeVariantId != null) {
@@ -416,5 +359,4 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		return recipe.getName();
 	}
 
-	
 }

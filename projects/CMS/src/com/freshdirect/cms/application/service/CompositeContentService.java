@@ -208,10 +208,8 @@ public class CompositeContentService extends AbstractContentService implements C
 			service.handle(serviceReq);
 			// TODO process service response 
 		}
-		
-		CmsResponseI response = new CmsResponse();
 
-		return response;
+		return new CmsResponse();
 	}
 
 	/**

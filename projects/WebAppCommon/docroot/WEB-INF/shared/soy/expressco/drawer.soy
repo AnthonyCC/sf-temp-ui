@@ -12,16 +12,16 @@
 	{/call}
 {else}
 	{if $drawers and isNonnull($drawers)}
-		<div data-component="drawer" data-drawer-columns="{if length($drawers) == 1}1{else}3{/if}">
-		  <nav class="drawer-header">
-		  <ul>
+		<div data-component="drawer" data-drawer-columns="3">
+		  <nav class="drawer-header" role="tablist">
 			{foreach $drawer in $drawers}
 			  {call .drawerheader}
 				{param title: $drawer.title /}
 				{param id: $drawer.id /}
+				{param enabled: $drawer.enabled /}
+				{param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
 			  {/call}
 			{/foreach}
-			</ul>
 		  </nav>
 		  <div class="drawer-content">
 			<ul data-drawer-default>
@@ -46,51 +46,52 @@
 
 /**
  * @param drawers
+ * @param? mobWeb
  */
 {template .drawermobweb autoescape="false"}
+	{if $mobWeb}{/if}
 	{if $drawers and isNonnull($drawers)}
 		<div data-component="drawer" data-drawer-columns="1">
+		
 			{foreach $drawer in $drawers}
-				<div class="drawer-row {if $drawer.id == 'address' or length($drawers) == 1} auto-height{/if}" data-row-id="{$drawer.id}">
-					<nav class="drawer-header">
-                      <ul>
-						{call .drawerheader}
-							{param title: $drawer.title /}
+				<nav class="drawer-header" role="tablist">
+					{call .drawerheader}
+						{param title: $drawer.title /}
+						{param id: $drawer.id /}
+						{param enabled: $drawer.enabled /}
+						{param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
+					{/call}
+				</nav>
+				<div class="drawer-content">
+					<ul data-drawer-default>
+						{call .drawerpreview}
+							{param preview: $drawer.preview /}
 							{param id: $drawer.id /}
 						{/call}
-					   </ul>
-                     </nav>
-					<div class="drawer-content">
-						<ul data-drawer-default>
-							{call .drawerpreview}
-								{param preview: $drawer.preview /}
-								{param id: $drawer.id /}
-							{/call}
-						</ul>
-						{call .drawercontent}
-							{param content: $drawer.content /}
-							{param id: $drawer.id /}
-						{/call}
-					</div>
+					</ul>
+					{call .drawercontent}
+						{param content: $drawer.content /}
+						{param id: $drawer.id /}
+					{/call}
 				</div>
 			{/foreach}
 		</div>
-		<div id="external-payments-container"></div>
 	{/if}
 {/template}
-
 
 /**
  * @param title
  * @param id
+ * @param enabled
+ * @param? onOpenCoremetrics
  */
 {template .drawerheader autoescape="false"}
-<li id="{$id}-tab" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
-  <div><span class="title">{$title}</span>
-  	<span class="cancel hidden right"><button class="cssbutton green transparent large cancel-button">Cancel <span class="offscreen">changes</span></button></span>
-  	<span class="close hidden right"><button class="cssbutton green large close-button">Done <span class="offscreen">Editing</button></span>
-  </div>
- 
+<li id="{$id}-tab" role="tab" tabindex="0" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
+  <h2>{$title}</h2>
+  {if $enabled}
+    <button class="change cssbutton green small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change<span class="offscreen">{$title}</span></button>
+    <button class="cancel cssbutton red small">Cancel<span class="offscreen">{$title} Change</span></button>
+  {/if}
 </li>
 {/template}
 
@@ -99,7 +100,7 @@
  * @param id
  */
 {template .drawerpreview autoescape="false"}
-<li data-drawer-default-content="{$id}">{$preview ? $preview : '<div class="drawer-content-loading center"></div>'}</li>
+<li data-drawer-default-content="{$id}">{$preview ? $preview : ''}</li>
 {/template}
 
 /**
@@ -107,7 +108,7 @@
  * @param id
  */
 {template .drawercontent autoescape="false"}
-<div id="{$id}-tab-content" data-drawer-content="{$id}">
+<div id="{$id}-tab-content" data-drawer-content="{$id}" role="tabpanel" tabindex="0" aria-labelledby="{$id}-tab">
   <div>
     {$content ? $content : ''}
   </div>

@@ -1,7 +1,6 @@
 package com.freshdirect.fdlogistics.controller;
 
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +76,6 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 
@@ -97,14 +95,16 @@ public class OMSController extends BaseController  {
 	OrdersDTO getOrderById(@PathVariable("orderId") String orderId) {
 
 		OrdersDTO orders = new OrdersDTO();
-			try {
-				OrderDTO order =orderService.getOrderById(orderId);
-				orders.getOrders().add(order);
-			} catch (FDLogisticsServiceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		FDOrderI fdorder = null;
+		try {
+			fdorder = FDCustomerManager.getOrder(orderId);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		OrderDTO order = convertToOrderDTOModel(fdorder);
+		//order = orderService.getOrderById(orderId);
+		orders.getOrders().add(order);
 		orders.setSuccessMessage("orders retrieved successfully"); 
 	
 		return orders;
@@ -259,9 +259,6 @@ public class OMSController extends BaseController  {
 		custModel.setHomePhone((f.getDeliveryInfo().getDeliveryAddress().getPhone()!=null)?f.getDeliveryInfo().getDeliveryAddress().getPhone().toString():"");
 		order.setOrderNumber(f.getErpSalesId());
 		order.setErpOrderNumber(f.getSapOrderId());
-		if(f.getPaymentMethod()!=null && f.getPaymentMethod().getCardType()!=null)
-		order.setCardType(f.getPaymentMethod().getCardType().getName());
-		
 		if(f.getDeliveryInfo()!=null)
 		{
 		order.setArea(f.getDeliveryInfo().getDeliveryZone());
@@ -458,6 +455,23 @@ public class OMSController extends BaseController  {
 		return result;
 	}
 	
+
+	@RequestMapping(value = "/delivery/redelivery/{orderId}", method = RequestMethod.POST)
+	public @ResponseBody
+	Result redeliveryOrder(@PathVariable("companycode") String companycode, @PathVariable("orderId") String orderId) {
+		LOGGER.debug("Going to create a Redelivery");
+		
+		try {
+			LOGGER.debug("Going to create a Redelivery");
+			DlvPaymentManager.getInstance().addRedelivery(orderId);
+		} catch (FDResourceException e) {
+			return Result.createFailureMessage("action failed");
+		} catch (ErpSaleNotFoundException e) {
+			return Result.createFailureMessage("action failed");
+		}
+		return Result.createSuccessMessage("orders refused successfully");
+	}
+
 	@RequestMapping(value = "/etaw", method = RequestMethod.POST)
 	public @ResponseBody
 	Result sendOrdersETAW(@RequestBody OrdersETAWList orders) {
@@ -629,13 +643,7 @@ private static MailerGatewayHome mailerHome	= null;
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
 		}*/
 		
-			try {
-				FDECommerceService.getInstance().logActivity(activityRecord);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		new ErpLogActivityCommand( activityRecord ).execute();		
 	}
 	
 	private void sendTechnicalMail ( String msg ) {

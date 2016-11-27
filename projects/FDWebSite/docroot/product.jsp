@@ -4,24 +4,23 @@
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import='java.net.URLEncoder'%>
 <%@page import="java.util.Locale"%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus id="user" />
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>
@@ -30,7 +29,18 @@
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
+<%
+// Handle no-product case
+if (productNode==null) {
+    throw new JspException("Product not found in Content Management System");
+} else if (productNode.isDiscontinued()) {
+    throw new JspException("Product Discontinued :"+request.getParameter("productId"));
+}
 
+
+
+
+%>
 <fd:ClickThru product="<%= productNode %>"/>
 <%
 //--------OAS Page Variables-----------------------
@@ -153,6 +163,8 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 </tmpl:put>
 <tmpl:put name='content' direct='true'>
+	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<%
 		SkuModel _dfltSku =null;
 		FDProduct _fdprod =null;
@@ -169,11 +181,9 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 	%>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
-  <div id='oas_ProductNote'>
 	<script type="text/javascript">
 		OAS_AD('ProductNote');
 	</script>
-  </div>
 
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
@@ -181,14 +191,14 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 
 
 <% if(leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff()) { %>
-<CENTER><font class="text11"><b>CURRENTLY AVAILABLE - <font class="errortext"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</font>.</b><br></CENTER> To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</font><p>
+<CENTER><font class="text11"><b>CURRENTLY AVAILABLE - <font class="text11rbold"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</font>.</b><br></CENTER> To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</font><p>
 <% } %>
 
 <fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
 	String cartMode = CartName.ADD_TO_CART;
 	FDCartLineI templateLine = null ;
-
+	
 	request.setAttribute("actionResult", actionResult);
 	request.setAttribute("user", user);
 	request.setAttribute("productNode", productNode);
@@ -203,7 +213,7 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 %>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
-<!-- product layout : <%= prodPageLayout.getLayoutPath() %> -->
+<!-- product layout : <%= prodPageLayout.getLayoutPath() %> --> 
 
 <jsp:include page="<%= prodPageLayout.getLayoutPath() %>" flush="false"/>
 

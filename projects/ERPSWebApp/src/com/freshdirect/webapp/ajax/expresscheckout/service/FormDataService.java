@@ -51,7 +51,6 @@ public class FormDataService {
 		final SubmitForm submitForm = new SubmitForm();
 		submitForm.setFormId(formDataRequest.getFormId());
 		submitForm.setSuccess(formValidation.getErrors().isEmpty());
-        submitForm.setResult(formValidation.getResult());
 		formDataResponse.setFormSubmit(submitForm);
 		formDataResponse.setValidationResult(formValidation);
 		formValidation.setFdform(formDataRequest.getFormId());

@@ -57,7 +57,6 @@ public class ContentChangeTrackerService extends ProxyContentService {
      */
     @Override
     public CmsResponseI handle(CmsRequestI request) {
-
         if (DraftContext.MAIN != request.getDraftContext()) {
             // do not track changes in draft mode
             return getProxiedService().handle(request);

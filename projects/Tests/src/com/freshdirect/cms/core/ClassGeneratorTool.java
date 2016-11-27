@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javassist.CannotCompileException;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeI;
@@ -23,8 +25,6 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.classgenerator.ClassGeneratorContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-
-import javassist.CannotCompileException;
 
 public class ClassGeneratorTool {
     private static final Logger LOG = Logger.getLogger(ClassGeneratorTool.class);
@@ -79,13 +79,13 @@ public class ClassGeneratorTool {
 
         int M = 10;
         
-        benchmark(s1, 100000*M, ContentKey.getContentKey(ContentType.get("Foo"), "fooNode"));
-        benchmark(s3, 100000*M, ContentKey.getContentKey(ContentType.get("Foo"), "fooNode"));
+        benchmark(s1, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
+        benchmark(s3, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
 
         long a = 0,b=0;
         for (int i=0;i<M;i++) {
-            a+= benchmark(service, 100000, ContentKey.getContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
-            b+= benchmark(service2, 100000, ContentKey.getContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
+            a+= benchmark(service, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
+            b+= benchmark(service2, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
         }
         System.out.println("AVER:"+ (a/M)+"\t"+service.getClass().getName() + " -> 100");
         double rate = ((double)b/(double)a)*100;
@@ -97,10 +97,10 @@ public class ClassGeneratorTool {
     private static void baseTest() {
         ContentTypeServiceI contentService = ContentFilterTool.createTypeService();
         LOG.info("content service inited.");
-        ContentNodeGenerator c = new ContentNodeGenerator(contentService, ContentNodeGenerator.DEFAULT_PREFIX);
+        ContentNodeGenerator c = new ContentNodeGenerator(contentService);
 
         {
-            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -141,7 +141,7 @@ public class ClassGeneratorTool {
             
         }
         {
-            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.IMAGE, "image"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.IMAGE, "image"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -158,7 +158,7 @@ public class ClassGeneratorTool {
              */
         }
         {
-            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.DEPARTMENT, "depart"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.DEPARTMENT, "depart"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());

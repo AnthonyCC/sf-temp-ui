@@ -45,28 +45,4 @@ public class RefusedOrder implements PaymentCommandI {
 		}	
 	}
 
-	//Introduced for Storefront2.0  to get the saleId , fullreturn and isAlcoholOnly
-	/**
-	 * @return the saleId
-	 */
-	public String getSaleId() {
-		return saleId;
-	}
-
-	/**
-	 * @return the fullReturn
-	 */
-	public boolean isFullReturn() {
-		return fullReturn;
-	}
-
-
-	/**
-	 * @return the alcoholOnly
-	 */
-	public boolean isAlcoholOnly() {
-		return alcoholOnly;
-	}
-
-
 }

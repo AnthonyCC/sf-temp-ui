@@ -27,13 +27,13 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @associates <{ErpAddressModel}>
 	 * @label ship to
 	 */
-	private LocalObjectList<ErpAddressModel> shipToAddresses = new LocalObjectList<ErpAddressModel>();
+	private LocalObjectList shipToAddress = new LocalObjectList();
 
-	private LocalObjectList<ErpPaymentMethodI> paymentMethods = new LocalObjectList<ErpPaymentMethodI>();
+	private LocalObjectList paymentMethodList = new LocalObjectList();
 
-	private LocalObjectList<ErpCustomerCreditModel> customerCredits = new LocalObjectList<ErpCustomerCreditModel>();
+	private LocalObjectList customerCredits = new LocalObjectList();
 
-	private LocalObjectList<ErpCustomerAlertModel> customerAlerts = new LocalObjectList<ErpCustomerAlertModel>();
+	private LocalObjectList customerAlerts = new LocalObjectList();
 
 	private ErpCustomerInfoModel customerInfo;
 	
@@ -86,7 +86,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 */
 	public List<ErpAddressModel> getShipToAddresses() {
 		// shallow copy
-		return (List<ErpAddressModel>)this.shipToAddresses.clone();
+		return (List<ErpAddressModel>)this.shipToAddress.clone();
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @param element ShipToAddress model object
 	 */
 	public void addShipToAddress(ErpAddressModel element) {
-		this.shipToAddresses.add(element);
+		this.shipToAddress.add(element);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @throws CollectionException if the PK was not found.
 	 */
 	public void updateShipToAddress(ErpAddressModel element) {
-		this.shipToAddresses.update(element);
+		this.shipToAddress.update(element);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @return false if not found
 	 */
 	public boolean removeShipToAddress(PrimaryKey pk) {
-		return null != this.shipToAddresses.removeByPK(pk);
+		return null != this.shipToAddress.removeByPK(pk);
 	}
 
 	public List<ErpCustomerCreditModel> getCustomerCredits() {
@@ -174,19 +174,19 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	}
 
 	public List<ErpPaymentMethodI> getPaymentMethods() {
-	    return (List<ErpPaymentMethodI>)this.paymentMethods.clone();
+	    return (List<ErpPaymentMethodI>)this.paymentMethodList.clone();
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element){
-		((List<ErpPaymentMethodI>)this.paymentMethods).add(element);
+		((List<ErpPaymentMethodI>)this.paymentMethodList).add(element);
 	}
 
 	public void updatePaymentMethod(ErpPaymentMethodI element) {
-		this.paymentMethods.update((ErpPaymentMethodModel)element);
+		this.paymentMethodList.update((ErpPaymentMethodModel)element);
 	}
 
 	public boolean removePaymentMethod(PrimaryKey pk) {
-	    return null != this.paymentMethods.removeByPK(pk);
+	    return null != this.paymentMethodList.removeByPK(pk);
 	}
 
 	public boolean isOnAlert() {
@@ -213,12 +213,5 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	}
 	public void setSapBillToAddress(ContactAddressModel sapBillToAddress) {
 		this.sapBillToAddress = sapBillToAddress;
-	}
-	
-	@Override
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
 	}
 }

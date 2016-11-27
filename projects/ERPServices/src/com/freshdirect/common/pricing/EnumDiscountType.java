@@ -6,11 +6,8 @@
  * Copyright (c) 2001 FreshDirect, Inc.
  *
  */
-package com.freshdirect.common.pricing;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+package com.freshdirect.common.pricing; 
+ 
 /**
  * Type-safe enumeration for promotion types.
  *
@@ -19,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class EnumDiscountType implements java.io.Serializable {
 
-	private static final long serialVersionUID = 8691354216860378728L;
 	public final static EnumDiscountType PERCENT_OFF = new EnumDiscountType(0, "Percentage off");
 	public final static EnumDiscountType DOLLAR_OFF = new EnumDiscountType(1, "Dollar off");;
 	public final static EnumDiscountType FREE = new EnumDiscountType(2, "Free item");
@@ -38,8 +34,7 @@ public class EnumDiscountType implements java.io.Serializable {
 		return this.id;
 	}
 
-	@JsonCreator
-	public static EnumDiscountType getPromotionType(@JsonProperty("id") int t) {
+	public static EnumDiscountType getPromotionType(int t) {
 		switch (t) {
 			case 0:
 				return PERCENT_OFF;
@@ -56,7 +51,6 @@ public class EnumDiscountType implements java.io.Serializable {
 		}
 	}
 
-	
 	public String toString() {
 		return this.name;
 	}

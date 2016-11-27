@@ -7,16 +7,17 @@
 <%@page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html lang="en-US" xml:lang="en-US">
+<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Add to Cart w/o Page Reload Test Page</title>
 <%@ include file="/common/template/includes/metatags.jspf" %>
 <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/shared/template/includes/ccl.jspf" %>
 <link rel="stylesheet" href="/assets/css/test/search/style.css" type="text/css">

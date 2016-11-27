@@ -1,11 +1,11 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
@@ -13,9 +13,9 @@
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -125,6 +125,10 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 			</display:ItemGrabber>
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
+				<script type="text/javascript">
+				var cmPageCarousel = cmPageCarousel || {};	
+				cmPageCarousel["<%=cat.getContentKey().getId()%>"] = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-"+cat.getContentKey().getId()%>' elementCategory="carousel"/>} 
+				</script>
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
             hideContainer="<%= tabId %>" width="<%=W_WINE_EXPERT_FAVS_TOTAL-90%>" trackingCode="<%= trk %>" numItems="4" appendWineParams="<%= true %>" parentId="jesseRecommends" offset="45" eventHandlersObj='cmPageCarousel["<%=cat.getContentKey().getId()%>"]'><%
 						ProductModel product = (ProductModel) currentItem; 

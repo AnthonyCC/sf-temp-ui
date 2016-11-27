@@ -50,23 +50,20 @@ user.setSoTemplateCart(new FDCartModel());
 
 <potato:pendingExternalAtcItem standingOrder="true"/>
 <potato:singlePageCheckout standingOrder="true"/>
+<potato:cartData standingOrder="true"/>
 <%	
-	//Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
+	Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
 	Collection<Map<String,Object>> soList= null;// StandingOrderHelper.convertStandingOrderToSoy(
 	//FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos), true);
 	Map<String,Object> upComingDataMap = new HashMap<String,Object>();
 	Map<String,Object> standingOrderSettingDataMap = new HashMap<String,Object>();
 	upComingDataMap.put( "upComingData", soList );
-	user.setRefreshSO3(true);
-	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false,true));
+	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false));
 %>
 <script>
 	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) %>
 	FreshDirect.standingorder.currentPage = "manage";
 </script>
-<fd:GetStandingOrderHelpInfo id="helpSoInfo">
-	<script>var helpSoInfo=<%=helpSoInfo%>;</script>
-</fd:GetStandingOrderHelpInfo>
 
 <%  if(false && soList!=null && !soList.isEmpty()) { %>
 	<div class="standing-orders-3-upcoming-deliveries">
@@ -100,15 +97,9 @@ user.setSoTemplateCart(new FDCartModel());
 		</a>
 		<hr class="standing-orders-3-edit-header-line">
 	</div>
-	<div class="standing-orders-3-so-settings-top">
-		<div class="so3-create-new-so">
-			<div class="so3-create-new-so-text">Create a New Standing Order</div>
-			<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
-		</div>
-		<div class="standing-orders-3-so-setting-tutorial">
-			<a class="standing-orders-3-so-setting-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><span class="offscreen">download user guide pdf</span></a>
-			<a class="standing-orders-3-so-setting-tutorial-text" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><b>Need Help?</b> Download the User Guide.</a>
-		</div>
+	<div class="so3-create-new-so">
+		<div class="so3-create-new-so-text">Create a New Standing Order</div>
+		<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
 		<div class="clear"></div>
 	</div>
 	<div class="standing-orders-3-edit-so-settings">

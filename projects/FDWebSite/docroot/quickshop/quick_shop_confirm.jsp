@@ -3,7 +3,7 @@
 %><%@ page import='com.freshdirect.fdstore.util.*'
 %><%@ page import='com.freshdirect.fdstore.customer.*'
 %><%@ page import='com.freshdirect.fdstore.lists.*'
-%><%@ page import='com.freshdirect.storeapi.content.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
 %><%@ page import='com.freshdirect.fdstore.promotion.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
 %><%@ page import="com.freshdirect.common.pricing.*"
@@ -24,7 +24,7 @@ final int W_QIUCK_SHOP_CONFIRM_INNER = 590;
 %><%
 	request.setAttribute("confirmation.location","quickshop");
 	String fromPage = null;
-	String spacer = "/media_stat/images/layout/clear.gif"; 
+	String spacer = "/media_stat/images/layout/clear.gif";
 	String servlet_context = request.getContextPath();
 	String qsDeptId = request.getParameter("qsDeptId");
 	boolean hasDeptId = qsDeptId != null && !"".equals(qsDeptId);
@@ -65,11 +65,7 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 <%
 	if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) {
 %> 
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put> --%>
-	<tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Quickshop - Shop from This Order"></fd:SEOMetaTag>
-    </tmpl:put>
-	
+	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'>
 	<font class="space4pix"><br/></font>
 	<a href="/quickshop/all_lists.jsp">
@@ -82,10 +78,7 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 	<% } %>
 	</tmpl:put>
 <%  } else {  %>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Quick Shop Confirm</tmpl:put> --%>
-    <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - Quick Shop Confirm"></fd:SEOMetaTag>
-    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Quick Shop Confirm</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><font class="text10"><b><%= pageNavTitle %></b></font><br><font class="space4pix"><br></font><%= pageNav %><br><br></tmpl:put>
 <%  } %>
 <%

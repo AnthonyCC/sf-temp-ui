@@ -55,9 +55,7 @@ var FreshDirect = FreshDirect || {};
       value: function (e) {
         if (nutritionPopup.popup && nutritionPopup.popup.shown) {
           nutritionPopup.popup.hide(e);
-          var $parent= $('.pdp-accordion-nutrition');
-          $parent.find('.pdp-item-description-toggle').attr('checked', null);
-          $parent.trigger('change');
+          $('.pdp-accordion-nutrition>input[type="checkbox"]').prop('checked', false).trigger('change');
         }
       }
     }
@@ -67,7 +65,7 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('change','.pdp-accordion-nutrition', function(e){
     e.preventDefault();
-    $(e.target).find('.pdp-item-description-toggle').attr('checked') ? nutritionPopup.open() : nutritionPopup.close();
+    $(e.target).prop('checked') ? nutritionPopup.open() : nutritionPopup.close();
   });
 
   fd.modules.common.utils.register("components", "nutritionPopup", nutritionPopup, fd);

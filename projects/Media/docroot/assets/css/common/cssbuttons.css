@@ -27,7 +27,7 @@ a.cssbutton:link,
   transition: background-color 0.12s ease-in-out 0s;
 	text-indent:0;
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	-moz-osx-font-smoothing: grayscale;		
 }
 
 .cssbutton + .cssbutton {
@@ -44,11 +44,6 @@ a.cssbutton:active {
 	text-decoration:none;
 }
 
-.cssbutton.full-width,
-a.cssbutton.full-width {
-	width: 100%;
-}
-
 a.cssbutton.large,
 button.cssbutton.large,
 .cssbutton.large {
@@ -60,7 +55,7 @@ a.cssbutton.small,
 button.cssbutton.small,
 .cssbutton.small {
   font-size: 12px;
-  padding: 7px 14px;
+  padding: 7px 12px;
 }
 
 a.cssbutton.wide,
@@ -397,27 +392,13 @@ span.cssbutton.notext[class*=" icon-"] {
   font-weight: normal;
   text-shadow: none;
 }
-/* remove button focus and hover states in reorder pages */
+
 .cssbutton.white.transparent:hover {
   color: #888;
-  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
-  background-color: #ffffff;
-}
-
-.cssbutton.white.transparent:focus{
-  color: #888;
-  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
-  background-color: #ffffff;
 }
 
 .cssbutton.round {
   border-radius: 50%;
-}
-
-.cssbutton.arrowbutton:after {
-  content: '\276F';
-  position: relative;
-  right: -5px;
 }
 
 .cssbutton.disabled,
@@ -428,7 +409,7 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton[disabled]:active,
 .cssbutton.disabled:focus,
 .cssbutton[disabled]:focus {
-  color: #858585;
+  color: #858585;  
   background-color: #e8e8ea;
   border-color: #e8e8ea;
   cursor: not-allowed;
@@ -437,73 +418,4 @@ span.cssbutton.notext[class*=" icon-"] {
 
 .remove-item-button {
 	padding-right: 0;
-}
-
-/* gray, full transparent - OBSOLETE */
-  .cssbutton.grey.full-transparent {
-    color: #494948;
-    background-color: transparent;
-    border: 1px solid #7a7e7e;
-    border-radius: 0;
-  }
-
-  .cssbutton.grey.full-transparent:hover {
-    color: white;
-    background-color: #30a24a;
-  }
-
-  .cssbutton.grey.full-transparent:active {
-    color: #494948;
-    background-color: #ffffff;
-    border-color: #7a7e7e;
-  }
-
-  .cssbutton.grey.full-transparent:focus {
-    color: #494948;
-    border-color: #7e7e7e;
-    box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
-  }
-/* gray, full transparent - OBSOLETE */
-
-a.cssbutton.flat {
-  font-weight: normal;
-  padding: 5px 20px;
-}
-/* add to list buttons in reorder pages */
-
-#transactionalPopup .portrait-item-atl .addtolist.cssbutton.cssbutton-flat.purpleborder:focus{
-	color: #5fb069 !important;
-    text-decoration: underline !important;
-    outline-style: solid;
-    outline-color: white;
-    outline-width: thick;
-}
-
-button.addtolist.cssbutton.cssbutton-flat.purpleborder:hover{
-    color: #5fb069 !important;
-    text-decoration: underline !important;
-}
-
-a.cssbutton.whiteborder, .cssbutton.whiteborder {
-  border: 1px solid #fff;
-}
-
-a.cssbutton.whiteborder.transparent,
-.cssbutton.whiteborder.transparent {
-  color: #ffffff;
-  background-color: transparent;
-  border: 1px solid #ffffff;
-}
-a.cssbutton.whiteborder.transparent:hover,
-.cssbutton.whiteborder.transparent:hover {
-  background-color: rgba(0,0,0,0.1);
-}
-a.cssbutton.whiteborder.transparent:active,
-.cssbutton.whiteborder.transparent:active {
-  background-color: rgba(0,0,0,0.2);
-}
-a.cssbutton.whiteborder.transparent:focus,
-.cssbutton.whiteborder.transparent:focus {
-  background-color: rgba(0,0,0,0.1);
-  box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb;
 }

@@ -8,9 +8,6 @@
 * @param? soName
 * @param? soOrderDate
 * @param? orderModifiable
-* @param? hasSettledOrder
-* @param? deliveryPassTrialActivated
-* @param? deliveryType
 * @param? soActivate
 * @param? soFrequency
 * @param? soEstimatedTotal
@@ -30,9 +27,6 @@
     {param soName: $soName /}
     {param soOrderDate: $soOrderDate /}
     {param orderModifiable: $orderModifiable /}
-    {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
-    {param hasSettledOrder: $hasSettledOrder /}
-    {param deliveryType: $deliveryType /}
   {/call}
 {elseif  $soActivate}
 	<h1 class="so-success-h1">Your Standing Order has been placed!</h1>
@@ -53,9 +47,6 @@
 	    {param soOrderDate: $soOrderDate /}
 	    {param orderModifiable: $orderModifiable /}
 	    {param soActivate: $soActivate /}
-	    {param hasSettledOrder: $hasSettledOrder /}
-	    {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
-	    {param deliveryType: $deliveryType /}
  	{/call}
 {/if}
 {/template}
@@ -73,12 +64,9 @@
  * @param? orderId Number of order
  * @param? rightBlock
  * @param? receipt
- * @param? deliveryPassTrialActivated
  * @param? soName
  * @param? soOrderDate
  * @param? orderModifiable
- * @param? hasSettledOrder
- * @param? deliveryType
  * @param? soActivate
  */
 {template .successtotal autoescape="false"}
@@ -100,14 +88,11 @@
       {param receiptLines: $receipt.receiptLines /}
       {param totalLabel: $receipt.totalLabel /}
       {param total: $receipt.total /}
-      {param saveAmount: $receipt.saveAmount /}
       {param soName: $soName /}
       {param soOrderDate: $soOrderDate /}
       {param orderModifiable: $orderModifiable /}
-      {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
       {param soActivate: $soActivate /}
     {/call}
-    {if $hasSettledOrder and $deliveryType == 'H'}<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF_success_450x89.jpg" alt="Refer-A-Friend" /></a></div>{/if}
   </div>
   <div class="successtotal-right">
     <div class="tips">
@@ -121,12 +106,69 @@
 {/template}
 
 /**
+ * @param? id
+ ** param? year
+ * @param? month
+ * @param? dayOfMonth
+ * @param? dayOfWeek
+ * @param? timePeriod
+ * @param? soFreq
+ * @param? soActivated
+ * @param? soCutOffDeliveryTime
+ * @param? soCutOffFormattedDeliveryDate
+ * @param? shortDayOfWeek
+ * @param? soDeliveryDate
+ */
+{template .successtimeslot autoescape="false"}
+	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
+		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
+		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
+		  	<div class="successtimeslot_time">
+		    	{$timePeriod ? $timePeriod : ''}
+		  	</div>
+		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
+		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
+			  		{if $soFreq == '1'}
+			  			Every
+			  		{elseif $soFreq == '2'}
+			  			Every Other
+			  		{elseif $soFreq == '4'}
+			  			Every Fourth
+			  		{/if} {$dayOfWeek ? $dayOfWeek : ''}
+		  		</div>			
+		  </div>
+		  {if not $soActivated and $soCutOffFormattedDeliveryDate and $soCutOffDeliveryTime}
+			<div class="standing-orders-3-successtimeslot_date-reservation">
+			  	To keep this delivery reservation,</br>
+			  	activate this standing order by:</br>
+			  	{$soCutOffFormattedDeliveryDate} at {$soCutOffDeliveryTime}
+			</div>
+			<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	First delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {else}
+		  	<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	Next delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {/if}
+		</div>
+	{else}
+		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
+		  <div class="successtimeslot_date">
+		    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
+		  </div>
+		  <div class="successtimeslot_time">
+		    {$timePeriod ? $timePeriod : ''}
+		  </div>
+		</div>
+	{/if}
+{/template}
+
+/**
 * @param orderId Number
 * @param receiptLines List of receipt data
-* @param saveAmount Value of amount you've saved
 * @param totalLabel Label of Subtotal
 * @param total Value of Subtotal
-* @param? deliveryPassTrialActivated
 * @param? soName
 * @param? soOrderDate
 * @param orderModifiable
@@ -134,13 +176,10 @@
 */
 {template .receiptBox autoescape="false"}
 <div class="orderbox">
-  {if $deliveryPassTrialActivated}
-  	<div class="dpsuccess">Congratulations! Your <a href="/your_account/delivery_pass.jsp">DeliveryPass</a><sup>&reg;</sup> trial is good to go.</div>
-  {/if}
   {if $soActivate}
      <h2 class="orderid">{$soName}</h2>
   {else}
-  <h2 class="orderid">Order #<a href="/your_account/order_details.jsp?orderId={$orderId}" title="Click here to view this order in your order history">{$orderId}</a>
+  <h2 class="orderid">Order #{$orderId}
   	{if $soName}
   		<div class="standing-order-3-receiptBox">{$soName}, {$soOrderDate} Delivery</div>
   	{/if}
@@ -150,155 +189,17 @@
     <ul class="ordertotal">
       {foreach $receipt in $receiptLines}
         <li data-receipt-id="{$receipt.id}">
-          <span class="receipt-text">
-          	{if $receipt.id == 'fuelsurcharge'}
-          		<a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">{$receipt.text}</a>
-          	{else}
-          		{$receipt.text}
-          	{/if}
-          </span>
+          <span class="receipt-text">{$receipt.text}</span>
           <span class="receipt-price">{$receipt.value}{if $receipt.other and $receipt.other.mark}{$receipt.other.mark}{/if}</span>
         </li>
       {/foreach}
     </ul>
   {/if}
   <p class="estimated">{$totalLabel}: {$total}</p>
-    {if $saveAmount}
-  	<div class="save-amount">You've Saved: {$saveAmount}</div>
-  {/if}
   {if $orderModifiable}
   <div class="successmodifyorderbutton-cont">
-  <button class="cssbutton orange modify-order-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
+  <button class="cssbutton orange" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
   </div>
   {/if}
 </div>
-{/template}
-
-/**
-* @--param? header Media string from CMS
-* @param? orderId Number of order
-* @param? receipt Map of receipt data
-* @--param? rightBlock Media string from CMS
-* @--param? orderModifiable
-* @param? hasSettledOrder
-* @param? deliveryPassTrialActivated
-* @param? deliveryType
-* @param? soActivate
-*/
-{template .successpageMod56 autoescape="false"}
-{if $deliveryPassTrialActivated}
-	<div class="dpsuccess">Congratulations! Your <a href="/your_account/delivery_pass.jsp">DeliveryPass</a><sup>&reg;</sup> trial is good to go.</div>
-{/if}
-<div class="leftCol">
-	{if $orderId or $soActivate}
-		<div class="orderconfirmed-cont">
-			<div class="orderconfirmed-checkmark-cont"><div class="orderconfirmed-checkmark"></div></div>
-			<div class="orderconfirmed-title"></div>
-		</div>
-		{call .receiptBoxMod56}
-			{param orderId: $orderId /}
-			{param receipt: $receipt /}
-			{param receiptLines: $receipt.receiptLines /}
-			{param totalLabel: $receipt.totalLabel /}
-			{param total: $receipt.total /}
-			{param saveAmount: $receipt.saveAmount /}
-			{param showModifyAndReceiptButton: ($soActivate)?false:true /}
-			{param deliveryPassTrialActivated: false /}/* always pass false here, trial done separately */
-		{/call}
-		{if $hasSettledOrder and $deliveryType == 'H'}
-			<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF2525_orderconfirmpage_new.png" alt="Refer-A-Friend" /></a></div>
-		{/if}
-	{/if}
-</div>
-{/template}
-
-/**
-* @param soActivate
-* @param soDeliveryDay
-* @param soDeliveryTime
-* @param soEstimatedTotal
-* @param soFrequency
-* @param soId
-* @param soName
-* @--param? soOrderDate
-*/
-{template .standingorderInfoMod56 autoescape="false"}
-	{if $soActivate}
-		<div class="section standingorder-info">
-			<div class="colHeader standingorder-info-header"><h2>Standing Order Summary</h2><a id="standingorder_info_view_btn" class="so-success-details-button cssbutton cssbutton-flat purple nontransparent view-btn" href="/quickshop/standing_orders.jsp?soid={$soId}#soid_{$soId}">View Details<span class="offscreen"> of Standing Order {$soName}</span></a></div>
-			
-			<div class="subsection">
-				<div class="standingorder-info-name-label info-label">NAME</div>
-				<div class="success-soinfo-name">{$soName}</div>
-			</div>
-			<div class="subsection">
-				<div class="standingorder-info-first-delivery-label info-label">FIRST DELIVERY</div>
-				<div class="success-soinfo-date">{$soDeliveryTime}</div>
-			</div>
-			<div class="subsection">
-				<div class="standingorder-info-frequency-label info-label">FREQUENCY</div>
-				<div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
-			</div>
-			<div class="subsection">
-				<div class="standingorder-info-est-total-label info-label">ESTIMATED TOTAL</div>
-				<div class="success-soinfo-total">${$soEstimatedTotal}</div>
-			</div>
-		</div>
-	{/if}
-{/template}
-
-/**
-* @param orderId Number
-* @param? receipt Map of receipt data
-* @--param receiptLines List of receipt data
-* @param saveAmount Value of amount you've saved
-* @param totalLabel Label of Subtotal
-* @param total Value of Subtotal
-* @--param? deliveryPassTrialActivated
-* @param showModifyAndReceiptButton
-*/
-{template .receiptBoxMod56 autoescape="false"}
-<div class="orderbox">
-	<div class="modify-order-before-label" style="display: none">Modify Order before:</div>
-	<div class="modify-order-before-value"></div>
-
-	{if $showModifyAndReceiptButton}
-		{literal}
-			<style>/* also show edit buttons */
-				.mod56 .edit-btn { display: block; }
-			</style>
-		{/literal}
-		<div class="successmodifyorderbutton-cont">
-			<button id="modify_order_btn" class="cssbutton orange large success-modify-order-btn" data-gtm-source="order confirmation" data-gtm-click data-gtm-click-error>Modify Order</button>
-		</div>
-		<div class="successreceiptbutton-cont">
-			<button class="cssbutton green transparent large view-receipt-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/order_details.jsp?orderId={$orderId}'">View Receipt</button>
-		</div>
-	{/if}
-
-	<p class="estimated"><span class="totalLabel">{$totalLabel}</span>&nbsp;<span class="totalAmount">{$total}</p>
-
-	{if $saveAmount}
-		<div class="save-amount">You've Saved: {$saveAmount}</div>
-	{/if}
-
-	<div class="NOMOBWEB">
-		{call .estTotalNoteAndContactContainerMod56}
-			{param receipt: $receipt /}
-		{/call}
-	</div>
-</div>
-{/template}
-
-/**
-* @param receipt Map of receipt data
-*/
-{template .estTotalNoteAndContactContainerMod56 autoescape="false"}
-	<div class="estTotalNoteAndContactContainer">
-		{if $receipt.estimatedTotal}
-			<div class="estimated-note">*An estimated order total is provided above. When your order is ready we'll weigh and assemble your goods and e-mail you the final total.</div>
-		{/if}
-
-		<div class="contact-us">Have questions about your order? <a href="/help/index.jsp">Contact Us</a></div>
-	</div>
 {/template}

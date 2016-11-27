@@ -37,22 +37,18 @@
  * @param? pastOrdersGroupedByYear orders grouped by year (for popup)
  */
 {template .ordersQS22}
-   
   {let $limit: 20 /}
-  <ul class="checkboxlist orders-list">
-    {foreach $item in $firstMenuItems}
-      {call quickshop.orderMenuItem}
-        {param item: $item /}
-      {/call}
-    {/foreach}
-  </ul>
-
+  {foreach $item in $firstMenuItems}
+    {call quickshop.orderMenuItem}
+      {param item: $item /}
+    {/call}
+  {/foreach}
   {if $pastOrdersGroupedByYear and length($pastOrdersGroupedByYear)}
     <button class="seemore" aria-haspopup="true" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></button>
     <div class="moreorders">
       <span class="bubblearrow"></span>
       {foreach $orders in $pastOrdersGroupedByYear}
-     <fieldset><legend class="offscreen">filter products by year {$orders.year} orders</legend> <ul class="orderlist">
+      <ul class="orderlist">
         <li class="header">{$orders.year}</li>
         {foreach $item in $orders.orders}
           {if index($item) % 20 == 0 and index($item) != 0}
@@ -64,7 +60,7 @@
             {param item: $item /}
           {/call}
         {/foreach}
-      </ul></fieldset>
+      </ul>
       {/foreach}
     </div>
   {/if}
@@ -74,7 +70,7 @@
  * @param item menu item
  */
 {template .orderMenuItem}
-<li>
+  <li>
     {let $info}
       {switch $item.info}
         {case 'Cancelled'}cancelled

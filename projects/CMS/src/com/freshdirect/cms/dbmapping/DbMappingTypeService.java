@@ -2,7 +2,6 @@ package com.freshdirect.cms.dbmapping;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,23 +12,18 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.BaseContentTypeService;
 import com.freshdirect.cms.util.CollectionUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Type service that automatically discovers definitions based on
  * JDBC metadata.
  */
 public class DbMappingTypeService extends BaseContentTypeService implements ContentTypeServiceI {
-
-    private final Category LOGGER = LoggerFactory.getInstance(DbMappingContentService.class);
 
 	/** Map of {@link ContentType} -> {@link DbContentTypeDef} */
 	private final Map<ContentType,DbContentTypeDef> typeDefinitions = new HashMap<ContentType,DbContentTypeDef>();
@@ -74,7 +68,6 @@ public class DbMappingTypeService extends BaseContentTypeService implements Cont
 			}
 
 		} catch (SQLException e) {
-            LOGGER.error(MessageFormat.format("Error getting content keys by type for mapping {0}", mappings), e);
 			throw new CmsRuntimeException(e);
 		} finally {
 			if (conn != null) {

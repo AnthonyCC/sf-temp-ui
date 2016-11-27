@@ -5,20 +5,58 @@
 	the final composite bundle included has logic determining it (determined by context)
 	
  --%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
-%><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
+%><%@ page import='com.freshdirect.fdstore.content.EnumLayoutType'
+%><%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"
 %><%
 	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
-%>
-<%-- mark global webfont preload hints --%>
-	<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Bold.woff2" as="font">
-	<link rel="preload" href="/assets/css/fonts/TradeGotBolConTwe.woff2" as="font">
-	<link rel="preload" href="/assets/css/fonts/TradeGotConEig.woff2" as="font">
+	if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% }
+	BrowserInfo cssBrowserInfo = new BrowserInfo(request);
 	
-<jwr:style src="/globalOpt.css" media="all" />
+	String compBundleName = "/globalOpt";
+	
+	%><!-- <%= (cssBrowserInfo.getType()==null)?"null":cssBrowserInfo.getType() %> <%= cssBrowserInfo.getVersion() %> --><%
+	
+	/* add exceptions for IE */
+	if (cssBrowserInfo.isInternetExplorer()) {
+		compBundleName += "_IE";
+		
+		float ver = Float.parseFloat(cssBrowserInfo.getVersion());
+		
+		/* we only have special files for IE7 and below */
+		if (ver < 8.0) {
+			if (ver >= 7.0) {
+				compBundleName += "7";
+			} else {
+				compBundleName += "76";
+			}
+		}
+	}
 
-    <jwr:style src="/rollout_feature_testing.css" media="all" />
+	/* exception for Macs */
+	if (cssBrowserInfo.isMac()) {
+		compBundleName += "_Mac";
+	}
+	
+	
+	//add extension
+	compBundleName += ".css";
+	
+	/*
+		We'll end up with one of these bundle names:
+			/globalOpt_IE.css		: PC, IE >= 8
+			/globalOpt_IE7.css		: PC, IE == 7
+			/globalOpt_IE76.css		: PC, IE == 6
+			/globalOpt_IE_Mac.css	: MAC, IE >= 8
+			/globalOpt_IE7_Mac.css	: MAC, IE == 7
+			/globalOpt_IE76_Mac.css	: MAC, IE == 6
+			/globalOpt_Mac.css		: MAC, Non-IE
+			/globalOpt.css			: PC, Non-IE
+	 */
+%>
+<jwr:style src="<%= compBundleName %>" media="all" />
 
 <%-- Keep the media include last, so it can always override any css auto-loaded --%>
 <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

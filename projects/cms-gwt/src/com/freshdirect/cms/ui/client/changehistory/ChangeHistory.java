@@ -93,8 +93,9 @@ public class ChangeHistory extends LayoutContainer {
         }
 
         // ============ CHANGETYPE ============
-        columns.add(noSort(new ColumnConfig("changeType", "Type", 50)));
-
+        if (isMainBrach) {
+            columns.add(noSort(new ColumnConfig("changeType", "Type", 50)));
+        }
         // ============ CONTENTNODE ============
         if (query == null || query.getContentKey() == null) {
             ColumnConfig cc = noSort(new ColumnConfig("key", "Content", 150));
@@ -108,15 +109,12 @@ public class ChangeHistory extends LayoutContainer {
         // ============ OLD VALUE ============
         if (isMainBrach) {
             columns.add(colourColumn(RED, noSort(new ColumnConfig("old", "Old Value", 200))));
-            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
-
-            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("note", "Note", 200))));
-        } else {
-            columns.add(colourColumn(RED, noSort(new ColumnConfig("old", "Old Value", 200))));
-            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
-
-            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("mergeValue", "Merge Value", 200))));
         }
+
+        // ============ NEW VALUE ============
+        columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
+
+        columns.add(colourColumn(GREEN, noSort(new ColumnConfig("note", "Note", 200))));
 
         final PagingToolBar toolBar = new PagingToolBar(20);
         toolBar.bind(loader);
@@ -181,4 +179,5 @@ public class ChangeHistory extends LayoutContainer {
         cc.setStyle("background-color:" + colour);
         return cc;
     }
+
 }

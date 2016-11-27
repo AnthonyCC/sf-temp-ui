@@ -61,10 +61,6 @@ public class RecommendationServiceType extends Enum {
     public final static RecommendationServiceType TAB_STRATEGY =
 		new RecommendationServiceType("tab-strategy");
 
-    public final static RecommendationServiceType PRODUCT_SAMPLE = new RecommendationServiceType("product_sample");
-
-    public final static RecommendationServiceType PRODUCT_DONATION = new RecommendationServiceType("product_donation");
-
 	/**
 	 * Constructor.
 	 * Not public, since it is a constant.

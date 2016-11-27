@@ -37,13 +37,4 @@ public class CrmQueueInfo implements Serializable {
 		return "CrmQueueInfo[" + queueCode + ", " + open + ", " + unassigned + ", " + oldest + "]";
 	}
 
-	// Used For Storefront 2.0 Implementation
-	/**
-	 * @return the queueCode
-	 */
-	public String getQueueCode() {
-		return queueCode;
-	}
-	
-
 }

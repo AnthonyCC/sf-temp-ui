@@ -1,13 +1,8 @@
-<%@ page import="com.freshdirect.fdstore.FDProductInfo"%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@page import="com.freshdirect.fdstore.FDProductInfo"%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.freshdirect.storeapi.content.ProductModel
-		, com.freshdirect.storeapi.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.storeapi.content.ContentFactory
-		, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods' 
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods';
 %><% 
 
 /* Make sure there's no wayward returns or spaces outside of code brackets, or the image could be corrupted. */
@@ -208,13 +203,13 @@ if ( !"".equals(id)) {
 	id = "Product:"+request.getParameter("pId");
 
 	//get product model
-	ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
+	ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
 
 	//if not a product, check for a SKU instead
 	if (product == null) {
 		id = "Sku:"+request.getParameter("pId");
 		//get sku model
-		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
 
 		if (sku != null) {
 			//found a valid SKU
@@ -481,10 +476,10 @@ try {
 //null check background image
 if (background != null) {
 //and the actual output
-	/*JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
+	JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
 	JPEGEncodeParam jep = encoder.getDefaultJPEGEncodeParam(background);
 	jep.setQuality(iQ, (boolean)true); //change here to allow baseline as optional
-	encoder.encode(background, jep);*/ //Commented this entire block since using classes in sun package is not allowed and will not work during JDK upgrade.
+	encoder.encode(background, jep);
 }
 	response.getOutputStream().close();
 

@@ -12,7 +12,7 @@
 	} else {
 		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%
 	} %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
@@ -35,6 +35,7 @@
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%
 		boolean modOrder = false;
 		boolean inViewCart = false;
@@ -63,19 +64,19 @@
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
 
 	<center class="text10">
-		<table role="presentation" width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+		<table width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td><%@ include file="/common/template/includes/deptnav.jspf" %></td>
 			</tr>
 			<tr>
-				<td class="onePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td class="onePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr valign="top">
 				<td align="center">
-					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_TOP_NAV_ONLY_TOTAL%>"><br />
+					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_TOP_NAV_ONLY_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->

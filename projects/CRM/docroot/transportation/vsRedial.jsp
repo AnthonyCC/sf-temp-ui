@@ -44,7 +44,7 @@
 		cModel.setVsDetailsID(id);
 		cModel.setLateIssueId(lateId);
 		cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 		 
-		String call_id = null;		
+		String call_id = CallCenterServices.saveVSRedialInfo(cModel);		
 		
 		StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 		originalXML.append(menuid);
@@ -86,7 +86,7 @@
 		vsrp = new VoiceShotResponseParser(firstresult);
 	}	
 	String lateId = request.getParameter("lateid");
-	List<CrmVSCampaignModel> calldetails = null;
+	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVSRedialList(id1, lateId);
 
 	if("true".equals(request.getParameter("submission")) && vsrp != null) {
 	%>	

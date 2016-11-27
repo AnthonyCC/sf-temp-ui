@@ -1,8 +1,9 @@
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -15,7 +16,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
@@ -75,17 +76,17 @@ if (sortedColl==null) sortedColl = new ArrayList();
  
  <table width="427" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="195" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="13" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="13" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="205" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="195" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="205" height="1"></td>
 		</tr>
 		<tr valign="top">
 			
     <td align="center" class="text12">
 		<img src="/media/images/headers/chefs_picks.gif" width="129" height="23"><br>
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 <%
 	// TEST CategoryModel testCat = (CategoryModel) ContentFactory.getInstance().getContentNode("cof_ef_org");
 	boolean hideFi = false;
@@ -98,7 +99,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	    request.setAttribute("recommendationsRendered","true");
 	    int ord=1;
 %>
-<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.storeapi.content.ProductModel"><%
+<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 			ProductModel productNode = contentNode;
 			ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 			String fiRating = "";
@@ -126,8 +127,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
 			<td></td>
 			<td bgcolor="#CCCCCC"></td>
 			<td></td>
-			<td class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br><img src="/media/images/headers/menu.gif" width="61" height="14"><br>
-			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>
+			<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br><img src="/media/images/headers/menu.gif" width="61" height="14"><br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
 <%
 
     CategoryModel displayCategory = null;
@@ -136,16 +137,18 @@ if (sortedColl==null) sortedColl = new ArrayList();
     StringBuffer appendColumnPrices = new StringBuffer(200);
 
 %>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <% 
         ProductModel product;
 		if (contentNode instanceof ProductModel) {
 			 product = (ProductModel)contentNode;
-		
-        if (!(product.isDiscontinued() || product.isUnavailable())) {
+		} else {
+			continue;
+		}
+        if (product.isDiscontinued() || product.isUnavailable()) continue;
         prodParent = product.getParentNode(); 
         List skus = product.getSkus(); 
-        if (!(prodParent==null || !(prodParent instanceof CategoryModel))) {
+        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
 
     for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
         SkuModel sku = (SkuModel)li.next();
@@ -157,7 +160,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
         SkuModel sku = null;
         String prodPrice = null;
-        if (!(skuSize==0)) {  // skip this item..it has no skus.  Hmmm?
+        if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
             sku = (SkuModel)skus.get(0);  // we only need one sku
         }
@@ -198,11 +201,6 @@ if (sortedColl==null) sortedColl = new ArrayList();
         regularProducts.append(prodPrice);
         regularProducts.append("</font>");
         regularProducts.append("<br><span class=\"space8pix\"><br></span>");
-        
-		} 
-		}
-		}
-		}
 %>
  </logic:iterate>
 <% if (regularProducts.length()>0) { %><%=regularProducts.toString()%><% } %>

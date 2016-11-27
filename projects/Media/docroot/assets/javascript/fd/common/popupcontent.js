@@ -73,9 +73,8 @@ var FreshDirect = FreshDirect || {};
 
       }
 
-      // move $el to the end of body by default
-      var safeAppendTo = $(this.config.appendTo).length ? this.config.appendTo : document.body;
-      this.$el.appendTo(safeAppendTo);
+      // move $el to the end of body
+      this.$el.appendTo(document.body);
 
       if (this.config.zIndex) {
         this.$el.css('z-index', this.config.zIndex+2);
@@ -103,8 +102,7 @@ var FreshDirect = FreshDirect || {};
 
       $(window).on('resize',$.proxy(function(e){
         var clicked;
-        /* exclude mobile web. Chrome will fire resize when showing the soft kb */
-        if(this.shown && !fd.mobWeb){
+        if(this.shown){
           clicked = this.clicked;
           this.hide(null, true);
           this.show();
@@ -217,7 +215,7 @@ var FreshDirect = FreshDirect || {};
       var el = this.$el;
       setTimeout(function(){
         boundingRect = el[0].getBoundingClientRect();
-
+        
         screenOffset =  $(window).height() - (boundingRect.bottom);
         if(screenOffset<0) {
           try {
@@ -234,8 +232,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.focus = function () {
-    var $el = this.$el,
-        lastEl = '';
+    var $el = this.$el;
 
     // store old tabindices & reset
     this.tabIndices = [];
@@ -251,61 +248,32 @@ var FreshDirect = FreshDirect || {};
         });
       }
     }.bind(this));
-
     $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
       var $tiel = $(tiel);
-      if (!$el.find($tiel).length) {
-          $tiel.attr('tabindex', '-1');
-      }
-    });
 
+      $tiel.attr('tabindex', '-1');
+    });
 
     // set new tabindices for popup
-    if ($el.attr('data-tabindex') !== 'manual') {
-        $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
-          var $tiel = $(tiel);
+    $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
+      var $tiel = $(tiel);
 
-          lastEl = i+1;
-
-          $tiel.attr('tabindex', lastEl);
-        });
-    }
-  //tabindex order for overlays and popup
-    $el.find('.qs-popup-close-icon,.qs-popup-help-icon').each(function(i,e) {
-        if (!$(e).is(':hidden')) {
-              $(e).attr('tabindex', lastEl+=1);
-        }
+      $tiel.attr('tabindex', i+1);
     });
 
-//    if ($el.find('.qs-popup-close-icon').length > 0 ) {
-//        var close = $el.find('.qs-popup-close-icon')[0];
-//        $(close).attr('tabindex', lastEl+1);
-//      }
-
     // focus first element
-    if ($el.find('.portrait-item[data-component="product"]').attr('data-dontfocusform') !== 'true' && $el.find('form').length > 0) {
+    if ($el.find('form').size() > 0) {
       $el = $el.find('form').first();
     }
 
-    //$el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
-    var $lowestTabElem = null;
-
-    $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
-        if ($lowestTabElem === null || $jq(e).attr('tabIndex') < $jq($lowestTabElem).attr('tabIndex')) {
-            $lowestTabElem = $jq(e);
-        }
-    });
-
-    if ($lowestTabElem !== null) {
-        $lowestTabElem.focus();
-    }
+    $el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
   };
 
   PopupContent.prototype.unfocus = function () {
     var $el = this.$el, rect;
 
     // remove -1 tabindices from document
-    $('[tabindex="-1"]').not('[nofocus]').each(function (i, tiel) {
+    $('[tabindex="-1"]').each(function (i, tiel) {
       var $tiel = $(tiel);
 
       $tiel.attr('tabindex', null);
@@ -389,9 +357,9 @@ var FreshDirect = FreshDirect || {};
 
     if (this.$alignTo.attr('data-alignpopupfunction') && !ignoreCustomFunction) {
       // call custom alignment function if exists
-      // align function should be registered under
+      // align function should be registered under 
       // FreshDirect.popups.alignment namespace
-      var alignFunction = fd.popups && fd.popups.alignment &&
+      var alignFunction = fd.popups && fd.popups.alignment && 
                           fd.popups.alignment[this.$alignTo.attr('data-alignpopupfunction')];
 
       if (alignFunction) {
@@ -424,8 +392,8 @@ var FreshDirect = FreshDirect || {};
       this.$alignTo.appendTo(this.$ghost);
       this.placeholderActive = true;
     }
-
-    if(align && !fd.mobWeb) {
+    
+    if(align) {
       var position={};
       // trigger, vertical
       if(align[0]==='t') {
@@ -435,7 +403,7 @@ var FreshDirect = FreshDirect || {};
       } else if(align[0]==='c') {
         position.top = offset.top + height/2;
       }
-
+      
       // trigger, horizontal
       if(align[1]==='l') {
         position.left = offset.left;
@@ -444,14 +412,14 @@ var FreshDirect = FreshDirect || {};
       } else if(align[1]==='c') {
         position.left = offset.left + width/2;
       }
-
+      
       // popup, vertical
       if(align[3]==='c') {
         position.top = position.top - contentHeight/2;
       } else if(align[3]==='b') {
         position.top = position.top - contentHeight;
       }
-
+      
       // popup, horizontal
       if(align[4]==='c') {
         position.left = position.left - contentWidth/2;
@@ -469,7 +437,7 @@ var FreshDirect = FreshDirect || {};
         }
       } else if (align[6] === 'p') {
         var viewContainer = $('.content').first();
-        if (viewContainer.length === 0) {
+        if (viewContainer.size() === 0) {
           viewContainer = $(document.body);
         }
         if (position.left < $(window).scrollLeft()) {
@@ -494,7 +462,7 @@ var FreshDirect = FreshDirect || {};
 
       this.$el.attr('data-align', align);
 
-    } else if(align!==false && !fd.mobWeb) {
+    } else if(align!==false) {
       if (this.config.valign === 'bottom') {
           this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
       } else {
@@ -525,8 +493,7 @@ var FreshDirect = FreshDirect || {};
     delay: 300,
     placeholder: true,
     overlay: true,
-    stayOnClick: true,
-    appendTo: document.body
+    stayOnClick: true
     // closehandle: '.close'
     // alignTo
     // aligntoselector
@@ -534,11 +501,5 @@ var FreshDirect = FreshDirect || {};
   };
 
   // register in fd namespace
-  if (fd.modules && fd.modules.common && fd.modules.common.utils) {
-	  fd.modules.common.utils.register("modules.common", "PopupContent", PopupContent, fd);
-  } else {
-	  fd.modules = fd.modules || {};
-	  fd.modules.common = fd.modules.common || {};
-	  fd.modules.common.PopupContent = PopupContent;
-  }
+  fd.modules.common.utils.register("modules.common", "PopupContent", PopupContent, fd);
 }(FreshDirect));

@@ -2,9 +2,9 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.mobileapi.controller.data.PhoneNumber;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.StoreModel;
 
 public class ShipToAddress extends DeliveryAddress {
 
@@ -32,12 +32,6 @@ public class ShipToAddress extends DeliveryAddress {
     private String instructions;
     
     private Set availableServiceTypes;
-    
-    private String unattendedDeliveryFlag;
-    
-    private String unattendedDeliveryInstructions;
-
-    private boolean unattendedEnabledZone;
 
 	public Set getAvailableServiceTypes() {
 		return availableServiceTypes;
@@ -82,10 +76,6 @@ public class ShipToAddress extends DeliveryAddress {
         if(store!=null && store.getContentName()!=null && "FDX".equals(store.getContentName())) {
             this.availableServiceTypes = address.getAvailableServiceTypes();
          }
-        
-        this.unattendedDeliveryFlag = (null != address.getUnattendedDeliveryFlag() ? address.getUnattendedDeliveryFlag().getName() : "");
-        this.unattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
-        this.unattendedEnabledZone = address.isUnattendedEnabledZone();
     }
 
     public String getFirstName() {
@@ -164,13 +154,11 @@ public class ShipToAddress extends DeliveryAddress {
         this.altType = altType;
     }
 
-	@Override
-    public String getInstructions() {
+	public String getInstructions() {
 		return instructions;
 	}
 
-	@Override
-    public void setInstructions(String instructions) {
+	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
 	
@@ -183,27 +171,4 @@ public class ShipToAddress extends DeliveryAddress {
 		this.deliveryInstruction = deliveryInstruction;
 	}
 
-    public String getUnattendedDeliveryFlag() {
-        return unattendedDeliveryFlag;
-    }
-
-    public void setUnattendedDeliveryFlag(String unattendedDeliveryFlag) {
-        this.unattendedDeliveryFlag = unattendedDeliveryFlag;
-    }
-    
-    public String getUnattendedDeliveryInstructions() {
-        return unattendedDeliveryInstructions;
-    }
-    
-    public void setUnattendedDeliveryInstructions(String unattendedDeliveryInstructions) {
-        this.unattendedDeliveryInstructions = unattendedDeliveryInstructions;
-    }
-
-    public boolean isUnattendedEnabledZone() {
-        return unattendedEnabledZone;
-    }
-
-    public void setUnattendedEnabledZone(boolean unattendedEnabledZone) {
-        this.unattendedEnabledZone = unattendedEnabledZone;
-    }
 }

@@ -25,10 +25,9 @@ public class AtpErrorData implements DateFormat {
 		this.firstAvailableDate = (firstAvailableDate != null ? formatter.parse(firstAvailableDate) : null);
 	}
 
-//	public void setFirstAvailableDate(Date firstAvailableDate) {
-//		this.firstAvailableDate = firstAvailableDate;
-//	}
-	
+	public void setFirstAvailableDate(Date firstAvailableDate) {
+		this.firstAvailableDate = firstAvailableDate;
+	}
 	public List<Group> getGroups() {
 		return groups;
 	}

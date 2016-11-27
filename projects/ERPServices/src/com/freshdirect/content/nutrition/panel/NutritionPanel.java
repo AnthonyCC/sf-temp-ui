@@ -26,11 +26,7 @@ public class NutritionPanel implements Serializable {
 	private Date lastModifiedDate;
 	private List<NutritionSection> sections = new ArrayList<NutritionSection>();
 	private NutritionPanelType type = NutritionPanelType.DRUG; // FIXME: default value?
-	//story appdev6259 unifying where we get nutrition information requred keeping the css in the same place.
-	private String viewportCss="";
 	
-
-
 	/**
 	 * Special 'Copy Constructor' (static factory method)
 	 * Does a deep copy (will duplicate sections and items)
@@ -58,9 +54,6 @@ public class NutritionPanel implements Serializable {
 	
 	public NutritionPanelType getType() {
 		return type;
-	}
-	public String getLowercasetype() {
-		return type.getJsName().toLowerCase().trim();
 	}
 	
 	public void setType( NutritionPanelType type ) {
@@ -99,14 +92,6 @@ public class NutritionPanel implements Serializable {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 	
-	public String getViewportCss() {
-		return viewportCss;
-	}
-
-	public void setViewportCss(String viewportCss) {
-		this.viewportCss = viewportCss;
-	}
-	
 	public String toJSON() {
 		ObjectMapper mapper = new ObjectMapper();
 		Writer writer = new StringWriter();
@@ -123,9 +108,5 @@ public class NutritionPanel implements Serializable {
 		return null;
 	}
 	
-	
-	public boolean getDisplayforApi(){
-		return true;
-	}
 
 }

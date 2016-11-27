@@ -15,3 +15,17 @@
 
 <% System.out.println("************inside new error page"); %>
 
+<crm:AdminToolsController result="result">
+	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
+	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%= result %>' name='actionfailure' id='errorMsg'>
+	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%= result %>' name='fixsuccess' id='errorMsg'>
+	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>
+
+
+
+</crm:AdminToolsController>

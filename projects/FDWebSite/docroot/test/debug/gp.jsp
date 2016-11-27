@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
@@ -11,22 +11,23 @@
 <%@ page import='java.net.URLEncoder' %>
 <%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <fd:CheckLoginStatus guestAllowed='true' />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <%@page import="com.freshdirect.fdstore.grp.FDGrpInfoManager"%>
-<%@page import="com.freshdirect.common.pricing.MaterialPrice"%><html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<%@page import="com.freshdirect.common.pricing.MaterialPrice"%><html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
 		<title>Group Price</title>
 
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
-		<jwr:script src="/giftcards.js" useRandomParam="false" />
+		<fd:javascript src="/assets/javascript/prototype.js"/>
+		<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript"></script>
+		<fd:javascript src="/assets/javascript/modalbox.js"/>
+		<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
 		<fd:css href="/assets/css/pc_ie.css"/>
-		<jwr:style src="/giftcards.css" media="all" />
+		<fd:css href="/assets/css/giftcards.css"/>
 		<fd:css href="/assets/css/modalbox.css"/>
 
 	</head>

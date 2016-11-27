@@ -10,13 +10,14 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.ecomm.gateway.SmartStoreConfigurationService;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -75,15 +76,20 @@ final public class VariantRegistry {
 		return siteFeatureMap.get(siteFeature);
 	}
 
-	
+	private SmartStoreServiceConfigurationSB getServiceConfiguration() {
+	    return FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
+	}
+
 	private void load() {
 		try {
 			ScarabInfrastructure.reload();
 			EnumSiteFeature.refresh();
-			Collection<Variant> variants = new ArrayList<Variant>();
+			SmartStoreServiceConfigurationSB sb;
 
+			sb = getServiceConfiguration();
+			Collection<Variant> variants = new ArrayList<Variant>();
 			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
-				variants.addAll(SmartStoreConfigurationService.getInstance().getVariants(feature));
+				variants.addAll(sb.getVariants(feature));
 
 			LOGGER.info("loading variants:" + variants);
 

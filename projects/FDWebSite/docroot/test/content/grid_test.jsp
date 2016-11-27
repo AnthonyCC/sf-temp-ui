@@ -5,12 +5,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@page import="java.util.List"%>
 <%@ page import="java.util.*"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%><html lang="en-US" xml:lang="en-US">
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%><html>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
@@ -27,6 +27,7 @@ final String trk = "srch"; // tracking code
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/ccl.jspf" %>
 	<fd:javascript src="/assets/yui-2.9.0/selector/selector-min.js" />

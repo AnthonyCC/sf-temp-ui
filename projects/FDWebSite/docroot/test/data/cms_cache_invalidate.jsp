@@ -5,7 +5,7 @@
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
   <%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <title>CMS Cache Invalidation</title>

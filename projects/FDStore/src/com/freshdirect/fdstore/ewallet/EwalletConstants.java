@@ -70,7 +70,6 @@ public class EwalletConstants {
 	public static final String PAYPAL_CLIENT_TOKEN_TXN="ClientTokenTxn";
 	public static final String PAYPAL_CREATE_CUSTOMER_TXN="CreateCustomerTxn";
 	public static final String PAYPAL_GET_VAULT_TOKEN_TXN="GetVaultTokenTxn";
-	public static final String PAYPAL_VERIFY_VAULT_TOKEN_TXN="VerifyVaultToken";
 	
 	public static final String PAYPAL_TXN_SUCCESS="SUCCESS";
 	public static final String PAYPAL_TXN_FAIL="FAIL";

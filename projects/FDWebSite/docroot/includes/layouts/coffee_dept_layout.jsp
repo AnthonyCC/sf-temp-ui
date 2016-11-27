@@ -1,6 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -10,7 +10,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_COFFEE_DEPT_LAYOUT_TOTAL = 765;
@@ -91,15 +91,15 @@ if (catDescription !=null && catDescription.trim().length() >=1) { %>
 <FONT CLASS="space4pix"><BR></FONT></TD>
 <%
     if (itmCounter %2==0) { %>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="35" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="35" HEIGHT="1" BORDER="0"></TD>
 <%  }%>
 <%}
 // if we did not print an even amount then put the remain cell in.
 if (itmCounter<=0 && itmCounter%2==0 ) {
 %>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_IMG%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height ="1" border="0"></TD>
-<td width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>" height ="1" border="0"></td>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>" height ="1" border="0"><BR>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_IMG%>"><img src="/media_stat/images/layout/clear.gif" width="50" height ="1" border="0"></TD>
+<td width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>" height ="1" border="0"></td>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>" height ="1" border="0"><BR>
 <BR><FONT CLASS="space4pix"><BR></FONT></TD>
 <%} %>
 </TR></TABLE>

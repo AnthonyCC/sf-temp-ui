@@ -16,38 +16,17 @@
 	<jsp:forward page="/checkout/view_cart.jsp"/>
 </c:if>
 
+<c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
+<potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="15"  cmEventSource="cc_tabbedRecommender" />
+<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}" cmEventSource="CC_YMAL"  sendVariant="<%= true %>"/>
+<c:set target="${deals}" property="selected" value="deals" />
 <div class="pdp pdp-cc">
-	<soy:render template="serverRendered.pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" injectAdditonalData="false" />
+  <soy:render template="pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />
 	<div class="span-16 first cc-ymalCarousel">
-		<script>
-			$jq(document).ready(function() {
-	          	$jq.ajax('/api/carousel?siteFeature=YMAL&maxItems=25&eventSource=CC_YMAL&sendVariant=true&type=ymal&currentNodeKey=${cartConfirmPotatoes["cartConfirmPotatoes"][0].cartLine.cmskey}').then(function(data) {
-	          		$jq('.pdp-cc .cc-ymalCarousel').html(common.ymalCarousel(data));
-              FreshDirect.components.carousel.changePage($jq('.pdp-cc .cc-ymalCarousel [data-component="carousel"]').first(), null);
-          		});
-			});
-        </script>
+		<soy:render template="common.ymalCarousel" data="${ymal}" />
 	</div>
 	<div class="span-16 first cc-tabbedCarousel">
-		<script>
-			$jq(document).ready(function() {
-	          	$jq.ajax('/api/carousel?type=deals&siteFeature=DEALS_QS&maxItems=15&eventSource=cc_tabbedRecommender').then(function(data) {
-	          		if(data && data.isNewProductsCarouselLoaded) {
-	          			data.selected = 'newproducts';
-	          			$jq('.pdp-cc .cc-tabbedCarousel').html(common.tabbedCarousel(data));
-	          		} else if (data) {
-	          			data.selected = 'deals';
-	          			$jq('.pdp-cc .cc-tabbedCarousel').html(common.tabbedCarousel(data));
-	          		}
-	          	});
-			});
-        </script>
+		<soy:render template="common.tabbedCarousel" data="${deals}" />
 	</div>
 </div>
-
-
-
-
-	          	
-	          		
-	          		
+<script>cartConfirm=<fd:ToJSON object="${cartConfirmPotatoes}" noHeaders="true"/></script>

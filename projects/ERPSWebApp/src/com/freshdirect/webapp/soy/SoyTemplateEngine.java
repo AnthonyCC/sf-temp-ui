@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -34,11 +33,6 @@ public class SoyTemplateEngine {
 	 * Base folder for soy templates
 	 */
 	public static final String SOY_BASE = "/WEB-INF/shared/soy/";
-	
-	/**
-	 * Base namespace for soy server rendered templates
-	 */
-	private static final String SOY_SERVER_TEMPLATE_BASE = "serverRendered/";
 	
 	/**
 	 * The usual logger...
@@ -339,14 +333,6 @@ public class SoyTemplateEngine {
 		
 		if ( resolveDependencies ) {
 			String dependencies = (String)props.get( pkgStr );
-			// server rendered templates by default have dependency to the base namespace
-			if (dependencies == null && pkgStr.startsWith(SOY_SERVER_TEMPLATE_BASE)) {
-				dependencies = pkgStr.replaceFirst(SOY_SERVER_TEMPLATE_BASE, "");
-				String subDep = (String)props.get( dependencies );
-				if (subDep != null) {
-					dependencies += " ," + subDep;
-				}
-			}
 			if ( dependencies != null ) {
 				StringTokenizer tok = new StringTokenizer( dependencies, " ," );
 				while ( tok.hasMoreTokens() ) {
@@ -381,22 +367,20 @@ public class SoyTemplateEngine {
 		
 	}
 	
-    /**
-     * Converts any bean that is serializable to JSON to a java Map. To be used for server side Soy template rendering. default date formatter: MM/dd/yyyy
-     * 
-     * @param bean
-     * @return
-     */
-    public static Map<String, Object> convertToMap(Object bean) {
-        return convertToMap(bean, new SimpleDateFormat("MM/dd/yyyy"));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> convertToMap(Object bean, DateFormat dateFormat) {
-        ObjectMapper m = new ObjectMapper();
-        m.setDateFormat(dateFormat);
-        Map<String,Object> map = m.convertValue( bean, Map.class );
-        return map;
-    }
+	/**
+	 * Converts any bean that is serializable to JSON to a java Map.
+	 * To be used for server side Soy template rendering.
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static Map<String,Object> convertToMap( Object bean ) {
+	  	ObjectMapper m = new ObjectMapper();
+	  	m.setDateFormat(new SimpleDateFormat("MM/dd/yyyy"));
+	  	Map<String,Object> map = m.convertValue( bean, Map.class );
+	  	return map;		
+	}
 
 }
+

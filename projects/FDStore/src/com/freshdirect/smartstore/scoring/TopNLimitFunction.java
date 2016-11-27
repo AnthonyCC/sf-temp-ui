@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.sampling.RankedContent.Single;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class TopNLimitFunction extends OrderingFunction {
 

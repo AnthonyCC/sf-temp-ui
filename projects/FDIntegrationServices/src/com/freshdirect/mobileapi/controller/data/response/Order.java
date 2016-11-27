@@ -2,7 +2,6 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Set;
 
 import com.freshdirect.mobileapi.controller.data.Message;
 
@@ -21,18 +20,8 @@ public class Order extends Message implements HasCartDetailField {
     private String deliveryZone;
     private String orderNumber;
     private boolean modifiable;
-    private Integer modifycount;
-    private Set<Long> recentIds;
     
-    public Integer getModifycount() {
-		return modifycount;
-	}
-
-	public void setModifycount(Integer modifycount) {
-		this.modifycount = modifycount;
-	}
-
-	public String getDeliveryZone() {
+    public String getDeliveryZone() {
 		return deliveryZone;
 	}
 
@@ -140,12 +129,4 @@ public class Order extends Message implements HasCartDetailField {
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
-
-	public Set<Long> getRecentIds() {
-		return recentIds;
-	}
-
-	public void setRecentIds(Set<Long> recentIds) {
-		this.recentIds = recentIds;
-	}
 }

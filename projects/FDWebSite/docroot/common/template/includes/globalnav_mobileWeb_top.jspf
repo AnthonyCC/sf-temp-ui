@@ -1,158 +1,71 @@
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.framework.util.NVL' %>
-<%@ page import='org.apache.commons.lang.StringEscapeUtils'%>
-<%
-	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;
-%>
-<% if (!inMobWebTemplateOptimized) { /* don't use in optimized, required js isn't included */ %>
-	<!-- pendingorderbar s -->
-		<comp:pendingOrderBar user="<%= user %>" />
-	<!-- pendingorderbar e -->
-<% } %>
-<div class="mobweb-topnav">
+<div>
 	<div class="locationbar" style="display: none;">
 		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>
 	</div>
 	<nav class="navbar">
-		<!-- Adding Skip to Navigation : Start-->
-	<a href="#skip_to_content" class="skipnav">Skip to Content</a>
-        <!-- Adding Skip to Navigation : End-->
 		<div class="navbar-header">
 			<div class="pull-left navbar-header-left">
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
 					<span class="icon-bar"></span>
-					<span class="offscreen">main menu</span>
 				</button>
-				<a class="navbar-brand" href="#"><img data-src="/media/mobileweb/images/topbar-fd-logo.png" alt="go to FreshDirect homepage" class="img-responsive" /></a>
+				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
 			</div>
 			<div class="pull-right rightSide">
 				<div class="navbar-ecomvalue">
-					<% if (!isHelp && false) { /* FDMW18-113: hide functionality */ %>
-						<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); $jq(this).trigger('resize'); return false;"><span class="offscreen">Toggle Search Display</span></a>
-					<% } %>
+					<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); return false;"><span class="offscreen">Toggle Search Display</span></a>
 				</div>
-				<% if (!(user.getShoppingCart() instanceof FDModifyCartModel)) { %>
-					<div class="navbar-ecomvalue">
+				<div class="navbar-ecomvalue">
+				
+					<%
+					String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 					
-						<%
-							String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
-						
-							if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
-								List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
-								List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
-								
-								if (user.getLevel() >= FDUserI.RECOGNIZED) {
-									temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
-								} else {
-									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
-								}
-								
-								//now check if they can go to reservation instead
-								if (user.isEligibleForPreReservation()) {
-									temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
-								}
-								
-								//check if user has addresses besides pickup
-								if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
-									//nope, change url
-									temp_delivery_link = "/help/delivery_info_check_slots.jsp";
-								}
+						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
+							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
+							List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+							
+							if (user.getLevel() >= FDUserI.RECOGNIZED) {
+								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+							} else {
+								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 							}
-						%>
-						<a href="<%= temp_delivery_link %>" class="icon-truck"><span class="offscreen">View Delivery Timeslots</span></a>
-					</div>
-				<% } %>
+							
+							//now check if they can go to reservation instead
+							if (user.isEligibleForPreReservation()) {
+								temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
+							}
+							
+							//check if user has addresses besides pickup
+							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+								//nope, change url
+								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+							}
+						}
+					%>
+					<a href="<%= temp_delivery_link %>" class="icon-truck"></a>
+				</div>
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">
-					<fd:GetCart id="cart">
-						<div id="locabar_popupcart_trigger" class="locabar_triggers" >
-							<div class="bold cursor-pointer locabar_triggers_menuitem">
-			          			<a href="/view_cart.jsp" role="menuitem">
-									<span class="offscreen">View Cart</span>
-									<div style="display: inline-block;">
-										<div class="locabar-cart-count-cont">
-											<div class="locabar-cart"></div>
-											<div class="locabar-circle-cont locabar-popupcart-count"><%= (inMobWebTemplateOptimized) ? cart.getItemCount() : "0" %></div>
-										</div>
-									</div>
-								</a>
-							</div>
-							<%-- GetCart is required for cart count, but no popup cart in mobweb. set display: none --%>
-							<div id="locabar_popupcart" class="locabar_triggers_menu posAbs" style="display:none;">
-								<div class="ui-arrow-buffer"></div>
-								<div class="ui-arrow ui-top"></div>
-								<div id="sidecartbuttons">
-									<div class="buttons">
-										<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
-									</div>
-									<div class="summary">
-										<span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
-									</div>
-								</div>
-								<div id="popupcart">
-								   	<div class="header"><span class="quantity">Quantity</span><span class="price">Price</span></div>
-								   	<div class="body">
-								       	<table class="content"></table>
-								       	<p class="emptymsg">Your cart is empty.</p>
-								       	<p class="spinner">Loading cart...</p>
-								   	</div>
-								   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
-								   	<div class="footer-buttons">
-										<span class="close"></span><br />
-										<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
-										<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
-									</div>
-					    		</div>
-							</div>
-						</div>
-						<% 
-						// if user is recognized, has placed order recently and shopping cart is in modifying mode
-						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED && 
-							(user.getShoppingCart() instanceof FDModifyCartModel)) {
-							
-							FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
-							if (moCart != null && 
-								moCart.getOriginalOrder() != null && 
-								moCart.getOriginalOrder().getDeliveryReservation() != null && 
-								moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
-								%>
-								<script>
-									$jq(function() {
-										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
-										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEE.").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
-									 	var showModifyingOrderMessage = function () {
-									 		FreshDirect.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
-									 		FreshDirect.components.modifyOrderMessage.stickyMessage('#location-modify-order-bar', 0);
-									 	}
-									 	if (window.FreshDirect && FreshDirect.components && FreshDirect.components.modifyOrderMessage) {
-									 		showModifyingOrderMessage();
-								 		} else if ($jq) {
-								 			$jq(document).one('modifyOrderMessage-loaded', showModifyingOrderMessage);
-								 		}
-							 		});
-								</script>
-							<% 
-								}
-							}
-						%>
-					</fd:GetCart>
+					<a href="/view_cart.jsp" class="icon-shopbag">
+						<i class="icon-cart"></i>
+						<%-- Cart count requires the popupcart.js (which is not loaded)							
+							<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+						 --%>
+					</a>
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			<% if (!isHelp) { /* FDMW18-113: hide in search */ %>
-				<div id="search" style="display: block;"><%-- FDMW18-113 : always show, change back to none if using toggle again --%>
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-						<span class="icon-search"></span>
-						<span class="icon-cancel-circle-after" style="display: none;"></span>
-						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="searchinput search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" value="<%= StringEscapeUtils.escapeHtml(NVL.apply(request.getParameter("searchParams"), "")) %>" />
-					</form>
-				</div>
-			<% } %>
+			<div id="search" style="display: none;">
+				<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<span class="icon-search"></span>
+					<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+				</form>
+			</div>
 		</div>
 	</nav>
 </div>
-<span id="skip_to_content"></span>
+
 <%-- nav menu --%>
 <%
 	StoreModel store = ContentFactory.getInstance().getStore();
@@ -212,16 +125,14 @@
 			</span>
 			<ul class="navMenuItems-reorder rem-navbar">
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Items</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
 				</li>
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Orders</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
 				</li>
-				<!-- 
-					<li>
-						<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
-					</li>
-				 -->
+				<li>
+					<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
+				</li>
 			</ul>
 		</li>
 		
@@ -233,7 +144,7 @@
 				</span>
 				<ul class="navMenuItems-shopmore rem-navbar">
 					<li>
-						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">Fresh Deals</a></span>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
 					</li>
 					<li>
 						<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>
@@ -266,11 +177,6 @@
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
-		<% if (isChat) { %>
-			<li class="hide-on-subopen no-divider">
-				<span><a id="open-chat-popup">Contact Us</a></span>
-			</li>
-		<% } %>
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>
 		</li>

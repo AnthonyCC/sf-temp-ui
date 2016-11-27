@@ -46,10 +46,6 @@
 	<bean id="emailCaptureController"
 		class="com.freshdirect.mobileapi.controller.EmailCaptureController"
 		parent="baseController" />
-		
-	<bean id="RouteInfoController"
-		class="com.freshdirect.mobileapi.controller.RouteInfoController"
-		parent="baseController" />
 	
 	<bean id="externalInterfaceController" class="com.freshdirect.mobileapi.controller.ExternalInterfaceController" parent="baseController" />
 	
@@ -96,13 +92,13 @@
 
 	<bean id="newProductController" class="com.freshdirect.mobileapi.controller.NewProductController"
 		parent="baseController" />
-
+						
 	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.ExternalAccountController"
 		parent="baseController" />
-
-   	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
+		
+    	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
 		parent="baseController" />
-
+		
 	<!-- <bean id="ewalletStatusController" class="com.freshdirect.mobileapi.controller.EwalletStatusController"
 		parent="baseController" />  -->
 	
@@ -114,18 +110,7 @@
 
 	<bean id="ewalletStandardController" class="com.freshdirect.mobileapi.controller.EwalletStandardController"
 		parent="baseController" />
-
-    <bean id="adController" class="com.freshdirect.mobileapi.controller.AdController"
-        parent="baseController" />
-        
-    <bean id="selfCreditController" class="com.freshdirect.mobileapi.controller.SelfCreditController"
-		parent="baseController" />
-
-    <bean id="productRecommenderController" class="com.freshdirect.mobileapi.controller.ProductRecommenderController"
-        parent="baseController">
-        <property name="recommenderService" ref="productRecommenderService" />
-    </bean>
-
+				
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -141,7 +126,6 @@
 				<prop key="**/account.do">accountController</prop>
 				<prop key="**/contactus.do">contactUsController</prop>
 				<prop key="**/emailcapture.do">emailCaptureController</prop>
-				<prop key="**/routeinfo.do">RouteInfoController</prop>
 				<prop key="**/configvalue.do">configurationController</prop>
 				<prop key="**/lookup.do">lookupController</prop>
 				<prop key="**/test.do">testController</prop>
@@ -166,9 +150,6 @@
 				<prop key="ewalletprecheckout.do">ewalletExpressController</prop>
 				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
 				<prop key="**/ewalletstdcheckout.do">ewalletStandardController</prop>
-                <prop key="**/ad.do">adController</prop>
-                <prop key="**/selfcredit.do">selfCreditController</prop>
-                <prop key="**/recommend.do">productRecommenderController</prop>
 			</props>
 		</property>
 	</bean>
@@ -217,5 +198,4 @@
 	</bean>
 
 	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
-
 </beans>

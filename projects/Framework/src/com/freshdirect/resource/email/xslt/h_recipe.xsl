@@ -11,7 +11,7 @@
 
 <xsl:template match="fdemail">
 <xsl:if test="not(preview) or preview = 'false'"> 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<base href="http://www.freshdirect.com/"/>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
@@ -165,7 +165,7 @@
 						<br/>
                         <img src="http://www.freshdirect.com/media_stat/recipe/rec_hdr_preparation.gif" width="93" height="10"/>
                         <br/>
-                        <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/>
+                        <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/>
                         <br/>
                         <xsl:value-of select="/fdemail/preparationMedia"
                                       disable-output-escaping = "yes"

@@ -23,7 +23,6 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.NVL;
 
 /**
@@ -86,22 +85,18 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement("SELECT * FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?");
-			ps.setString(1, parentPK.getId());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				ErpDeliveryInfoPersistentBean bean = new ErpDeliveryInfoPersistentBean(new PrimaryKey(rs.getString("SALESACTION_ID")), rs);
-				bean.setParentPK(parentPK);
-				lst.add(bean);
-			}
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?");
+		ps.setString(1, parentPK.getId());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ErpDeliveryInfoPersistentBean bean = new ErpDeliveryInfoPersistentBean(new PrimaryKey(rs.getString("SALESACTION_ID")), rs);
+			bean.setParentPK(parentPK);
+			lst.add(bean);
 		}
-
+		rs.close();
+		rs = null;
+		ps.close();
+		ps = null;
 		return lst;
 	}
 
@@ -110,12 +105,12 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
 
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE, CATALOG_KEY,"
-		+ "ORDER_PLACEMENT_SECOND_EMAIL,  ORDER_MODIFY_SECOND_EMAIL, ORDER_INVOICE_SECOND_EMAIL, SO_REMINDERS_SECOND_EMAIL, CREDITS_SECOND_EMAIL, VOICESHOT_SECOND_EMAIL ) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE, CATALOG_KEY) " +
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?)";	
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT SERVICE_TYPE FROM " +
+        " CUST.ADDRESS WHERE ID=?), ?)";	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);		
 		PreparedStatement ps = conn.prepareStatement(STORE_DELIVERY_INFO);
@@ -209,20 +204,8 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setDouble(43, this.model.getMinDurationForModStart());  
 		ps.setDouble(44, this.model.getMinDurationForModification());
 		ps.setString(45, this.model.getOrderMobileNumber()!=null?this.model.getOrderMobileNumber().getPhone():"");
-		String serviceType = (address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.getName();
-		if(serviceType.equals(EnumServiceType.HOME.name())||serviceType.equals(EnumServiceType.CORPORATE.name())||serviceType.equals(EnumServiceType.PICKUP.name())){
-			ps.setString(46, serviceType);
-		}else{
-			ps.setNull(46, Types.VARCHAR);
-		}
-			
-		//COS17-76
-		ps.setString(48, address.isNotifyOrderPlaceToSecondEmail()? "Y" : "");
-		ps.setString(49, address.isNotifyOrderModifyToSecondEmail()? "Y" : "");
-		ps.setString(50, address.isNotifyOrderInvoiceToSecondEmail()? "Y" : "");
-		ps.setString(51, address.isNotifySoReminderToSecondEmail()? "Y" : "");
-		ps.setString(52, address.isNotifyCreditsToSecondEmail()? "Y" : "");
-		ps.setString(53, address.isNotifyVoiceshotToSecondEmail()? "Y" : "");
+		ps.setString(46, address.getId());		
+        
 		
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -246,26 +229,21 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) as PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, " +
 		"'('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE, ALT_PHONE_EXT, " +
-		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE,CATALOG_KEY,"
-		+ " ORDER_PLACEMENT_SECOND_EMAIL,  ORDER_MODIFY_SECOND_EMAIL, ORDER_INVOICE_SECOND_EMAIL, SO_REMINDERS_SECOND_EMAIL, CREDITS_SECOND_EMAIL, VOICESHOT_SECOND_EMAIL"
-		+ " FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE,CATALOG_KEY FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
 		
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
-			ps.setString(1, this.getPK().getId());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				this.loadFromResultSet(rs);
-			} else {
-				throw new SQLException("No such ErpDeliveryInfo PK: " + this.getPK());
-			}
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
+		ps.setString(1, this.getPK().getId());
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			this.loadFromResultSet(rs);
+		} else {
+			throw new SQLException("No such ErpDeliveryInfo PK: " + this.getPK());
 		}
+		rs.close();
+		rs = null;
+		ps.close();
+		ps = null;
 	}
     
 	private final PhoneNumber convertPhoneNumber(String phone, String extension, String type) {
@@ -327,20 +305,9 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		if (unattendedDeliveryInstructions != null) {
 			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
 			address.setUnattendedDeliveryInstructions(unattendedDeliveryInstructions);
-		} else {
-			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_OUT);
-			address.setUnattendedDeliveryInstructions(null);
 		}
 		address.setCompanyName(rs.getString("COMPANY_NAME"));
-
-		//COS17-76 2nd emil for COS users
-		address.setNotifyOrderPlaceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL")) ? true : false);
-		address.setNotifyOrderModifyToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_MODIFY_SECOND_EMAIL")) ? true : false);
-		address.setNotifyOrderInvoiceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_INVOICE_SECOND_EMAIL")) ? true : false);
-		address.setNotifySoReminderToSecondEmail( "Y".equalsIgnoreCase(rs.getString("SO_REMINDERS_SECOND_EMAIL")) ? true : false);
-		address.setNotifyCreditsToSecondEmail( "Y".equalsIgnoreCase(rs.getString("CREDITS_SECOND_EMAIL")) ? true : false);
-		address.setNotifyVoiceshotToSecondEmail( "Y".equalsIgnoreCase(rs.getString("VOICESHOT_SECOND_EMAIL")) ? true : false);
-	
+				
 		// added as part of logistics reintegration
 		this.model.setDeliveryRegionId(rs.getString("DLVREGION_ID"));
 		this.model.setDeliveryHandoffTime(rs.getTimestamp("HANDOFFTIME"));

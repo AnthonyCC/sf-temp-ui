@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -44,8 +42,6 @@ import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.framework.util.DaoUtil;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
@@ -57,7 +53,7 @@ public class FDStandingOrderDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO,SO.ZONE_CODE, SO.TIP, SO.REMINDER_OVERLAY, SO.DELETE_DATE";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP";
 
 	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
@@ -83,37 +79,19 @@ public class FDStandingOrderDAO {
 			" and SO.START_TIME IS NOT NULL and SO.END_TIME is not null and SO.NEXT_DATE IS NOT NULL and SO.FREQUENCY IS NOT NULL "+
 			"order by SO.CREATED_TIME DESC ";
 	
-	//query used at 2 places, old SO cron flow and 2days notification in SO cron  
+	private static final String LOAD_ACTIVE_STANDING_ORDERS =
+		"select " + FIELDZ_ALL + " " +
+		"from CUST.STANDING_ORDER SO " +
+		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+		"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL order by CCL.NAME";
+
 	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS =
 			"select " + FIELDZ_ALL + " " +
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' " +
-			"order by CCL.NAME";
-	
-	private static final String LOAD_ACTIVE_STANDING_ORDERS =
-			"select " + FIELDZ_ALL + " " +
-			"from CUST.STANDING_ORDER SO " +
-			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL " +
-			"order by CCL.NAME";
-	
-	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS_FOR_WEEK =
-			"select " + FIELDZ_ALL + " " +
-			"from CUST.STANDING_ORDER SO " +
-			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and  NEXT_DATE between trunc(SYSDATE+1) and trunc(SYSDATE+7) " +
-			"order by CCL.NAME";
-	
-	private static final String LOAD_ACTIVE_STANDING_ORDERS_FOR_WEEK =
-			"select " + FIELDZ_ALL + " " +
-			"from CUST.STANDING_ORDER SO " +
-			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED IS NULL and  NEXT_DATE between trunc(SYSDATE+1) and trunc(SYSDATE+7)" +
 			"order by CCL.NAME";
 	
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
@@ -125,8 +103,8 @@ public class FDStandingOrderDAO {
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
-	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,ZONE_CODE,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO,REMINDER_OVERLAY) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
+	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 	
 	private static final String UPDATE_STANDING_ORDER = "update CUST.STANDING_ORDER set " +
 	"CUSTOMER_ID = ?, " +
@@ -144,9 +122,7 @@ public class FDStandingOrderDAO {
 	"ERROR_DETAIL = ?, " +	
 	"IS_ACTIVATED= ?, "+
 	"MODIFIED_TIME= ?, "+
-	"DELETE_DATE= ?, "+
-	"TIP=?, "+
-	"ZONE_CODE=?"+
+	"TIP=?"+
 	"where ID = ?";
 	
 	
@@ -192,7 +168,7 @@ public class FDStandingOrderDAO {
 	
 	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL , LAST_ERROR=? ,ERROR_HEADER=?, ERROR_DETAIL=? WHERE ID=?";
 
-	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y', so.reminder_overlay='N' where so.id=?";
+	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y'  where  so.id=?" ;
 	
 	private static final String IS_CUSTOMER_HAS_STANDING_ORDER="SELECT  count(*)  as SO_COUNT from CUST.STANDING_ORDER SO WHERE "+
 				" SO.CUSTOMER_ID=? AND SO.DELETED<>1 ";
@@ -200,12 +176,6 @@ public class FDStandingOrderDAO {
 	private static final String UPDATE_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so='Y' WHERE  so.customer_id = ? AND SO.CUSTOMERLIST_ID=? ";
 	
 	private static final String REVERT_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so=NULL WHERE  so.customer_id = ? AND SO.default_so='Y' ";
-	
-	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
-	
-	private static final String UPDATE_DELETE_DATE = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
-	
-	
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -273,49 +243,25 @@ public class FDStandingOrderDAO {
 				loadStandingOrderAlternateDateForSO(conn, so);
 				sorders.add( so );
 			}
+
+			rs.close();
+			ps.close();
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
 		}
 		
 		return sorders;
 	}
 
-	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(Connection conn, boolean isNewSo) throws SQLException {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
-
-		try {
-			
-			if (isNewSo) {
-				ps = conn.prepareStatement(LOAD_NEW_SO_ACTIVE_STANDING_ORDERS_FOR_WEEK);
-			} else {
-				ps = conn.prepareStatement(LOAD_ACTIVE_STANDING_ORDERS_FOR_WEEK);
-			}
-			rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				FDStandingOrder so = new FDStandingOrder();
-				so = populate(rs, so);
-				loadStandingOrderAlternateDateForSO(conn, so);
-				sorders.add( so );
-			}
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
-
-		}
-		
-		return sorders;
-	}
-
+	
 	/**
 	 * Returns customer's active standing orders
 	 * 
@@ -456,13 +402,7 @@ public class FDStandingOrderDAO {
 		so.setCustomerEmail(rs.getString("USER_ID"));
 		so.setStartTime( rs.getTime("START_TIME") );
 		so.setEndTime( rs.getTime("END_TIME") );
-		if(null != so.getStartTime() && !"00:00:00".equalsIgnoreCase(so.getStartTime().toString())){	//COS17-33
-			so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
-		}else{
-			so.setStartTime(null);
-			so.setEndTime(null);
-			so.setNextDeliveryDate(null);
-		}
+		so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
 		so.setPreviousDeliveryDate(so.getNextDeliveryDate());
 		
 		so.setFrequency( rs.getInt("FREQUENCY") );
@@ -478,37 +418,13 @@ public class FDStandingOrderDAO {
 		so.setCustomerListName( listName );
 		so.setActivate( rs.getString("IS_ACTIVATED") );
 		so.setDefault(rs.getString("DEFAULT_SO")!=null && "Y".equals(rs.getString("DEFAULT_SO"))?true:false);
-		so.setZone(rs.getString("ZONE_CODE"));
-		so.setTipAmount(rs.getDouble("TIP"));
-		so.setReminderOverlayForNewSo(rs.getString("REMINDER_OVERLAY")!=null?(rs.getString("REMINDER_OVERLAY").equalsIgnoreCase("Y")?true:false):false);
-		so.setDeleteDate(rs.getDate("DELETE_DATE"));
 		
+		so.setTipAmount(rs.getDouble("TIP"));
 		
 		return so;
 	}
 	
 	
-	//activated SO template, user chosen delete date
-	public void deleteActivatedSO( Connection conn, String id, String deleteDate) throws SQLException {
-		PreparedStatement ps = null;
-		try {
-			int i = 1;
-			ps = conn.prepareStatement(UPDATE_DELETE_DATE);
-			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-			ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
-			ps.setString(i, id);
-			ps.executeUpdate();
-		} catch (ParseException e) {
-			LOGGER.error(
-					"while updating the Delete date, got the exception for Standing order id:"
-							+ id, e);
-		} finally {
-			DaoUtil.close(ps);
-		}
-	}
-	
-	
-	// Deletes Unactivated SO templates coming from servlet
 	public void deleteStandingOrder( Connection conn, String soPk, String listPk ) throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement( DELETE_STANDING_ORDER );
@@ -526,45 +442,6 @@ public class FDStandingOrderDAO {
 		ps.executeUpdate();		
 		ps.close();
 	}
-	
-	
-	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL)";
-	
-	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL )";	
-	
-	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET CUSTOMERLIST_ID=NULL where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL";
-
-	
-	//flow coming from cron 		
-	public List<String> deleteSOByDate( Connection conn, FDStandingOrder so) throws SQLException {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		List<String> soList = new ArrayList<String>();
-		try {			
-			soList.add(so.getId());
-			
-			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_DETAILS_BYDATE );
-			ps.setString( 1, so.getId() );
-			ps.executeUpdate();		
-			ps.close();
-			
-			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_BYDATE );
-			ps.setString( 1, so.getId() );
-			ps.executeUpdate();		
-			ps.close();
-			
-			ps = conn.prepareStatement( DELETE_STANDING_ORDER_BYDATE );
-			ps.setString( 1, so.getId() );
-			ps.executeUpdate();
-			ps.close();				
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);}		
-		return soList;		
-	}	
 	
 	public String createStandingOrder(Connection conn, FDStandingOrder so) throws SQLException {
 		LOGGER.debug( "FDStandingOrderDAO.createStandingOrder()" );
@@ -604,11 +481,9 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
 			ps.setString(counter++, null!=so.getActivate()? so.getActivate():null);
-			ps.setString(counter++, so.getZone());
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Created Time
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDouble(counter++, so.getTipAmount());
-			ps.setString(counter++, "Y");
 			ps.setString(counter++, "Y");
 
 			ps.execute();
@@ -651,11 +526,18 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getLastError() == null ? null : so.getLastError().name());
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
-			ps.setString(counter++, so.getActivate());						//COS17-27
+
+			// to deactivate standing order if there is an error so that customer can go and reactivate them by fixing the error 
+			if(so.getLastError() != null && so.getErrorHeader()!=null && so.getErrorDetail()!=null
+					&& "Y".equals(so.getActivate())){
+				ps.setString(counter++, "N");
+
+			}else{
+				ps.setString(counter++, so.getActivate());
+
+			}
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
-			ps.setDate(counter++, so.getDeleteDate()!=null?(java.sql.Date) so.getDeleteDate():null);
 			ps.setDouble(counter++,so.getTipAmount());
-			ps.setString(counter++, so.getZone());
 			ps.setString(counter++, so.getId());
 
 			ps.executeUpdate();
@@ -2096,78 +1978,4 @@ public void removeTimeSlotInfoFromSO(Connection con,List<String> list) throws SQ
 			}
 		}		
 	}
-
-public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) throws SQLException {
-	PreparedStatement ps=null;
-		try{	
-			ps = con.prepareStatement(UPDATE_REMIDER_OVERLAY_STANDING_ORDER);
-			ps.setString(1, standingOrderId);
-			ps.executeUpdate();
-			LOGGER.info("turn Off ReminderOverLayNewSo for standing order id: "+standingOrderId);
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(ps != null) {
-				ps.close();
-			}
-		}
-		
-	}
-
-	//New customer who has 1 SO gets the Popup
-	public static void updateSoCartOverlayFirstTimePreferences(Connection conn, String customerId)throws SQLException {
-		PreparedStatement ps = null;
-		try {
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_CART_OVERLAY_FIRSTTIME = ? where customer_id=?");
-				ps.setString(1, "N");
-				ps.setString(2, customerId);
-				ps.execute();
-
-			} catch (Exception e) {
-				LOGGER.error("Error while updating updateSoCartOverlayFirstTimePreferences in DB", e);
-				} finally {
-							if (ps != null) {
-								ps.close();
-							}
-				}
-		}
-	
-	//SoFeatureOverlay
-	public static void updateNewSoFeaturePreferences(Connection conn, String customerId)throws SQLException {
-		PreparedStatement ps = null;
-		try {
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_FEATURE_OVERLAY = ? where customer_id=?");
-				ps.setString(1, "N");
-				ps.setString(2, customerId);
-				ps.execute();
-
-			} catch (Exception e) {
-				LOGGER.error("Error while updating updateNewSoFeaturePreferences in DB", e);
-				} finally {
-							if (ps != null) {
-								ps.close();
-							}
-				}
-		}
-	
-	public static void updateDeActivatedSOError(Connection conn, String soId)throws SQLException{
-		PreparedStatement ps = null;
-		try {
-				ps = conn.prepareStatement("update CUST.STANDING_ORDER set ERROR_HEADER= ?, ERROR_DETAIL=? where ID=?");
-				ps.setString(1, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorHeader());
-				ps.setString(2, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorDetail(null));
-				ps.setString(3, soId);
-				ps.execute();
-
-			} catch (Exception e) {
-				LOGGER.error("Error while updating updateSOError in DB", e);
-				} finally {
-					if (ps != null) {
-						ps.close();
-					}
-				}
-		}
-
 }
-	
-

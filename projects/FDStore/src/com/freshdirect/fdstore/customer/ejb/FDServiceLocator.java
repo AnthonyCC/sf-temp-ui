@@ -10,25 +10,38 @@ import javax.naming.NamingException;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
-import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerHome;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
+import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
+import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
-import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
+import com.freshdirect.smartstore.ejb.ScoreFactorHome;
+import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
+import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
+import com.freshdirect.smartstore.ejb.VariantSelectionHome;
+import com.freshdirect.smartstore.ejb.VariantSelectionSB;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 
 public class FDServiceLocator extends ERPServiceLocator {
 
@@ -131,6 +144,15 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
+    public FDSurveyHome getSurveyHome() {
+        try {
+            return (FDSurveyHome) getRemoteHome(FDStoreProperties.getFDSurveyHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    
     public FDCustomerManagerHome getFDCustomerManagerHome() {
         try {
             return (FDCustomerManagerHome) getRemoteHome(FDStoreProperties.getFDCustomerManagerHome());
@@ -142,6 +164,23 @@ public class FDServiceLocator extends ERPServiceLocator {
     public EwalletServiceHome getEwalletServiceHome() {
         try {
             return (EwalletServiceHome) getRemoteHome(FDStoreProperties.getEwalletServiceHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public ExternalAccountManagerHome getExternalLoginManagerHome() {
+        try {
+            return (ExternalAccountManagerHome) getRemoteHome(FDStoreProperties.getExternalAccountManagerHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+ 
+    
+	public ErpEWalletHome getErpEWalletHome() {
+        try {
+            return (ErpEWalletHome) getRemoteHome(FDStoreProperties.getErpEWalletHome());
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -194,6 +233,16 @@ public class FDServiceLocator extends ERPServiceLocator {
     }
 
     
+    public FDSurveySB getSurveySessionBean() {
+        try {
+            return getSurveyHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
     public FDCustomerManagerSB getFDCustomerManagerSessionBean() {
         try {
             return getFDCustomerManagerHome().create();
@@ -202,6 +251,60 @@ public class FDServiceLocator extends ERPServiceLocator {
         } catch (CreateException e) {
             throw new EJBException(e);
         }
+    }
+    
+    public OfflineRecommenderHome getOfflineRecommenderHome() {
+        try {
+            return (OfflineRecommenderHome) getRemoteHome(OfflineRecommenderHome.JNDI_HOME);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public OfflineRecommenderSB getOfflineRecommender() {
+        try {
+            return getOfflineRecommenderHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public VariantSelectionHome getVariantSelectionHome() {
+        try {
+            return (VariantSelectionHome) getRemoteHome("freshdirect.smartstore.VariantSelection");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public VariantSelectionSB getVariantSelectionSessionBean() {
+        try {
+            return getVariantSelectionHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public FDZoneInfoHome getFDZoneInfoHome() {
+        try {
+            return (FDZoneInfoHome) getRemoteHome("freshdirect.fdstore.ZoneInfoManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }        
+    }
+    
+    public FDZoneInfoSB getFDZoneInfoSessionBean() {
+        try {
+            return getFDZoneInfoHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }        
     }
     
     public FDFactoryHome getFDFactoryHome() {
@@ -222,8 +325,29 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
 
-   
-   
+    // get service configuration home bean
+    private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
+        try {
+            return (SmartStoreServiceConfigurationHome) getRemoteHome("freshdirect.smartstore.SmartStoreServiceConfiguration");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public SmartStoreServiceConfigurationSB getSmartStoreServiceConfiguration() {
+        try {
+            return getServiceConfigurationHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public ScoreFactorHome getScoreFactorHome() throws NamingException {
+        return (ScoreFactorHome) getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
+    }
+    
     public TEmailInfoHome getTMailerHome() {
         try {
             return (TEmailInfoHome) getRemoteHome("java:comp/env/ejb/TEmailInfoManager");//freshdirect.fdstore.TEmailInfoManager");
@@ -240,12 +364,5 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public ErpCustomerInfoHome getErpCustomerInfoHome() {
-        try {
-            return (ErpCustomerInfoHome) getRemoteHome(FDStoreProperties.getErpCustomerInfoHome());//freshdirect.fdstore.TEmailInfoManager");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
 
 }

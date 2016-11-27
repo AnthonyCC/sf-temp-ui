@@ -7,11 +7,10 @@
 	//expanded page dimensions
 	final int W_DNAV_NO_SPACE_TOTAL = 970;	
 %>
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-<%-- 		<title><tmpl:get name='title'/></title> --%>
-        <tmpl:get name="seoMetaTag"/>
+		<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
@@ -27,6 +26,7 @@
 	<!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 	<!--<![endif]-->
+		<tmpl:get name="cmPageViewTag"/>
 		
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
 		      

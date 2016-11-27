@@ -13,42 +13,42 @@ import com.freshdirect.temails.TEmailsRegistry;
 
 public final class TEmailContentFactory {
 
-	private static TEmailContentFactory factory = null;
+	private static TEmailContentFactory factory=null;
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
 	public static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	
+	private static Category LOGGER = LoggerFactory.getInstance( TEmailContentFactory.class );
 
-	private static Category LOGGER = LoggerFactory.getInstance(TEmailContentFactory.class);
-
-	private TEmailContentFactory() {
-
+	
+	private TEmailContentFactory()
+	{
+		
 	}
-
-	public static TEmailContentFactory getInstance() {
-
-		if (factory == null) {
-			factory = new TEmailContentFactory();
+	
+	public static  TEmailContentFactory getInstance(){
+	
+		if(factory==null){
+			factory=new TEmailContentFactory();
 		}
 		return factory;
 	}
-
-	public TEmailI createTransactionEmailModel(TEmailTemplateInfo info, Map input) {
-
+		
+	public  TEmailI createTransactionEmailModel(TEmailTemplateInfo info, Map input) 
+	{
+		
+		
 		// get the context;
-		// get the formated email data
-		TEmailContextI context = TEmailsUtil.getTranEmailContext(info.getTransactionType(), info.getProvider(), input);
-
-
-		SilverpopTemplateXmlFactory silverpopTemplateXmlFactory = new SilverpopTemplateXmlFactory();
-
-
-		String content = silverpopTemplateXmlFactory.generateEmailXml(info, context, input);
-
-
+		// get the formated email data		
+		TEmailContextI context=TEmailsUtil.getTranEmailContext(info.getTransactionType(),info.getProvider(),input);
+		
+		TEmailEngineI engine= TEmailsRegistry.getTEmailsEngine(info.getProvider().getName());				
+		String content=(String)engine.formatTemplates(context, info.getTemplateId());		
+		
 		LOGGER.debug("--------------------------------------------Email Content: " + content);
-
 		// create the TEMAILINFOMODEL data and set everything
-		// return the same
-		return TEmailsUtil.createTransEmailModel(info, input, content);
+		// return the same				
+		return  TEmailsUtil.createTransEmailModel(info,input,content);
 	}
-
+	
+		    				
 }

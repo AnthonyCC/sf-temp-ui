@@ -3,12 +3,8 @@
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import="com.freshdirect.enums.CaptchaType" %>
-<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
 
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 
 <% //expanded page dimensions
 final int W_REGISTRATION_SIGNUP_TOTAL = 970;
@@ -29,7 +25,7 @@ String[] checkRegistrationForm = {
 	EnumUserInfoName.REPEAT_PASSWORD.getCode(), EnumUserInfoName.PASSWORD_HINT.getCode(),
 	EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
 								
-String[] checkErrorType = {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), "address", "technical_difficulty", "captcha"};
+String[] checkErrorType = {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), "address", "technical_difficulty"};
 %>
 <%//***********************************  Error Handling ******************************************%>
 
@@ -37,8 +33,8 @@ String[] checkErrorType = {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserI
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 String fldTitle 			= request.getParameter("title");
-String fldName 				= NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
-String fldLastName 			= NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
+String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
+String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
 String fldHomePhone 		= request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
 String fldBusinessPhone 	= request.getParameter("busphone");
 String fldBusinessPhoneExt 	= request.getParameter("busphoneext");
@@ -60,11 +56,7 @@ String fldPassword          = request.getParameter(EnumUserInfoName.PASSWORD.get
 String fldRepeatPassword    = request.getParameter(EnumUserInfoName.REPEAT_PASSWORD.getCode());
 String fldPasswordHint      = request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode());
 String fldTermsAndConditions = request.getParameter(EnumUserInfoName.CUSTOMER_AGREEMENT.getCode());
-
-//Captcha.
-boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(), session, SessionName.SIGNUP_ATTEMPT);
-String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_UP);
-	
+//String fldHtmlEmail 		= request.getParameter("isSendHTMLEmail");
 String fldHowDidYouHear 	= request.getParameter("howDidYouHear");
 if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
     fldTermsAndConditions = "checked";
@@ -88,7 +80,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 }
 %>
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="347" valign="bottom">
 <%if(user.isDepotUser() || user.isCorporateUser()){%>
@@ -104,13 +96,13 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 </tr>
 <tr>
 	<td colspan="2" width="693">
-		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 <%if(!user.isDepotUser() && !user.isCorporateUser()){%>
 <% if (user.isPickupOnly() || user.isEligibleForSignupPromotion()) {%>
 <tr><td colspan="3" align="center">
-    <table role="presentation" cellpadding="0" cellspacing="0" width="600" border="0">
+    <table cellpadding="0" cellspacing="0" width="600" border="0">
     <tr><td class="bodyCopy"><font class="space4pix"><br /></font>
         <% if (user.isPickupOnly()) {%>
 			<b>Please enter your home address.</b> We may not deliver to your home yet but if you live in
@@ -130,10 +122,10 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 	<%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %>
 </fd:ErrorHandler>
 					
-<table role="presentation" border="0" cellspacing="1" cellpadding="0" width="685">
+<table border="0" cellspacing="1" cellpadding="0" width="685">
 <tr valign="middle">
-	<td width="120" align="right" class="text12"><label for="title_signup">Title</label></td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<select id="title_signup" class="text11" name="title">
+	<td width="120" align="right" class="text12">Title</td>
+	<td width="565" colspan="2">&nbsp;&nbsp;<select class="text11" name="title">
 		<option <%=("".equalsIgnoreCase(fldTitle) ? "selected" : "")%>></option>
 		<option value="Mr" <%=("Mr".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mr.</option>
 		<option value="Mrs" <%=("Mrs".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mrs.</option>
@@ -145,34 +137,34 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>">*&nbsp;First Name</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;First Name
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" aria-describedby="firstname_signup_error" maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>" /> (full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <span id="firstname_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>" /> (full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>">*&nbsp;Last Name</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Last Name
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" aria-describedby="lastname_signup_error" maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>" />
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span id="lastname_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>" />
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 
 <% if (user.isDepotUser()) {%>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="workDepartment">*&nbsp;Dept/Division</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Dept/Division
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input id="workDepartment" aria-describedby="div_signup_error" maxlength="25" class="text11" size="21" type="text" name="workDepartment" required="true" value="<%=fldWorkDepartment%>" />
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode() %>' id='errorMsg'><span id="div_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="workDepartment" required="true" value="<%=fldWorkDepartment%>" />
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <%
@@ -181,13 +173,13 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 	%>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="employeeId">*&nbsp;Employee Id</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Employee Id
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input id="employeeId" maxlength="25" aria-describedby="employeeid_signup_error" class="text11" size="21" type="text" name="employeeId" required="true" value="<%=fldEmployeeId%>" />
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_EMPLOYEE_ID.getCode() %>' id='errorMsg'><span id="employeeid_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="employeeId" required="true" value="<%=fldEmployeeId%>" />
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_EMPLOYEE_ID.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <%  }
@@ -198,40 +190,40 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 <%}%>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>">*&nbsp;Home Phone #</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Home Phone #
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" aria-describedby="homephone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=NVL.apply(fldHomePhone,"")%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span id="homephone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-	<label for="homephoneext">&nbsp;&nbsp;Ext.&nbsp;&nbsp;<span class="offscreen">extension for home phone number</span></label><input id="homephoneext" type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=NVL.apply(request.getParameter("homephoneext"),"")%>" />
+	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=request.getParameter("homephoneext")%>" />
 	</td>
 </tr>
 <tr valign="top">
 	<td width="120"><br /></td>
-	<td width="565" class="text9" colspan="2"> <fd:ErrorHandler result='<%=result%>' name='homephone' id='errorDesc'><font class="errortext"><%= errorDesc %></font><br /></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;i.e. (212) 555-1212</td>
+	<td width="565" class="text9" colspan="2"> <fd:ErrorHandler result='<%=result%>' name='homephone' id='errorDesc'><font class="text11rbold"><%= errorDesc %></font><br /></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;i.e. (212) 555-1212</td>
 </tr>
 
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<%if(user.isDepotUser()){%>*&nbsp;<%}%><span id="workPhone_lbl"><%=EnumServiceType.CORPORATE.equals(serviceType)? "*&nbsp;" : ""%><label for="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>">Work Phone #</label></span>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<%if(user.isDepotUser()){%>*&nbsp;<%}%><span id="workPhone_lbl"><%=EnumServiceType.CORPORATE.equals(serviceType)? "*&nbsp;" : ""%>Work Phone #</span>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input aria-describedby="workphone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=NVL.apply(fldBusinessPhone,"")%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span id="workphone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		<label for="busphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for work phone number</span></font>&nbsp;&nbsp;</label><input id="busphoneext" type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=NVL.apply(fldBusinessPhoneExt,"")%>" />
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<font class="text12">Ext.</font>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>" />
 	</td>
 </tr>
 
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="cellphone">&nbsp;Cell/Alt. #</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		&nbsp;Cell/Alt. #
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input id="cellphone" aria-describedby="alternatenumber_signup_error" type="text" maxlength="14" size="21" class="text11" name="cellphone" value="<%=NVL.apply(fldCellPhone,"")%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span id="alternatenumber_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		<label for="cellphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for alternate phone number</span></font>&nbsp;&nbsp;</label><input id="cellphoneext" type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=NVL.apply(fldCellPhoneExt,"")%>" />
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="cellphone" value="<%=fldCellPhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<font class="text12">Ext.</font>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=fldCellPhoneExt%>" />
 	</td>
 </tr>
 
@@ -244,12 +236,12 @@ if(user.isDepotUser()){
 %>
 
 <%@ include file="/shared/includes/i_depot_locations.jspf" %>
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
-		If your home address is within a FreshDirect <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">delivery zone</a>, you can also get deliveries there.<br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
+		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br />
 		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
 			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br />
 		<% } %>
@@ -257,7 +249,7 @@ if(user.isDepotUser()){
 	</td>
 </tr>
 </table>
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="693">
 	<%@ include file="/shared/includes/registration/i_signup_address_fields.jspf" %>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0" /></td></tr>
 </table>
@@ -268,57 +260,57 @@ if(user.isDepotUser()){
 <br>
 <br>
 <br />
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
 
-<table role="presentation" border="0" cellspacing="1" cellpadding="0" width="685">
+<table border="0" cellspacing="1" cellpadding="0" width="685">
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.EMAIL.getCode()%>">*&nbsp;E-mail Address</label>
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;E-mail Address
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.EMAIL.getCode()%>" aria-describedby="email_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=NVL.apply(fldEmail,"")%>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span id="email_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>">*&nbsp;Repeat E-mail</label>
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Repeat E-mail
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" aria-describedby="repeatemail_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=NVL.apply(fldRepeatEmail,"") %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span id="repeatemail_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldRepeatEmail %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120"></td>
 	<td class="text11">
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
+		<img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
 	</td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.PASSWORD.getCode()%>">*&nbsp;Password</label>
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Password
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.PASSWORD.getCode()%>" aria-describedby="pwd_signup_error" class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%=NVL.apply(fldPassword,"") %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span id="pwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>">*&nbsp;Repeat Password</label>
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Repeat Password
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" aria-describedby="repeatpwd_signup_error" class="text9" size="21" type="password" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="" value="<%=NVL.apply(fldRepeatPassword,"") %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span id="repeatpwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" size="21" type="password" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="" value="<%= fldRepeatPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
 </tr>
 
 <tr valign="top">
@@ -326,78 +318,55 @@ if(user.isDepotUser()){
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12" rowspan="2">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-			<label for="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>">&nbsp;Town of Birth or<br />Mother's Maiden<br />Name</label>
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+			&nbsp;Town of Birth or<br />Mother's Maiden<br />Name
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td height="25">
-		&nbsp;&nbsp;<input id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" aria-describedby="hint_signup_error" size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" value="<%=NVL.apply(fldPasswordHint,"")%>" />
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span id="hint_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+		&nbsp;&nbsp;<input size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" value="<%= fldPasswordHint%>" />
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />If you forget your password, we'll use this security word to verify your identity.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />If you forget your password, we'll use this security word to verify your identity.<font class="space4pix"><br /></font></td>
 </tr>
 </table>
 
 
 <br />
 <br />
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 	<tr valign="top">
 		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br /></td>
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br /></td>
 	</tr>
 </table><br />
-<textarea aria-label="terms and conditions" cols="90" rows="7" readonly xname="tos">
-
-<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/i_user_agreement.txt"></fd:IncludeMedia>
-<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/i_user_agreement_espanol.txt"></fd:IncludeMedia>
+<textarea cols="90" rows="7" readonly xname="tos">
+	<%@ include file="/includes/registration/i_user_agreement.txt" %>
+	<%@ include file="/includes/registration/i_user_agreement_espanol.txt" %>
 </textarea>
 
 <br /><br />
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="390">
+<table cellpadding="0" cellspacing="0" border="0" width="390">
 	<tr valign="top">
 		<td colspan="2"><font class="space4pix"><br /></font></td>
 	</tr>
 	<tr valign="top">
-		<td width="45" align="right">*&nbsp;<input id="terms" aria-describedby="useragreement_signup_error" required="true" type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%> />&nbsp;&nbsp;</td>
+		<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%> />&nbsp;&nbsp;</td>
 		<td>
-			<font class="text12bold"><label for="terms">I have read and agree to the Customer Agreement</label></font><br />
+			<font class="text12bold">I have read and agree to the Customer Agreement</font><br />
 			<a href="javascript:popup('/registration/user_agreement.jsp','large')"><font class="text12">Click here for a printable version</font></a>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><span id="useragreement_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler><font class="space4pix"><br /></font></td>
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><font class="space4pix"><br /></font></td>
 	</tr>
-	<% if (showCaptcha) { %>
-	<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
-	<tr valign="top" id="sign-up-g-recaptcha-container">
-	<td>&nbsp;</td>
-		<td align="left">
-			<div id="sign-up-g-recaptcha" class="g-recaptcha"></div>
-		</td>
-		
-	</tr>
-	<script type="text/javascript">
-	  FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
-		  fd.components.captchaWidget.render('sign-up-g-recaptcha', function() {
-	    		$jq('#litesignup').trigger('change');
-			}, function () {
-				$jq('#sign-up-g-recaptcha-container').hide();
-			}, function () {
-				$jq('#litesignup').trigger('change');
-			});
-	  });
-	 
-	</script>
-	<% } %>
 </table>
 <br /><br />
 <% if (request.getRequestURI().toLowerCase().indexOf("checkout")==-1){ %>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
-	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0" /></td></tr>
-		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" align="right"><input aria-label="i agree to customer agreement sign me up" type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
-	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0" /></td></tr>
+<table cellpadding="0" cellspacing="0" border="0" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
+	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
 </table><br />
 <% } %>
 
@@ -405,7 +374,7 @@ if(user.isDepotUser()){
 String uri = request.getRequestURI();
 if(uri.indexOf("registration")> -1){
 %>
-<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<b>Having problems signing up?</b><br />

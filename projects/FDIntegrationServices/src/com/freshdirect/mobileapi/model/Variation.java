@@ -17,8 +17,8 @@ import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class Variation {
@@ -80,7 +80,7 @@ public class Variation {
             if (cvprice > 0.0) {
                 option.setCharacteristicValuePrice(currencyFormatter.format(cvp.getPrice()) + "/" + cvp.getPricingUnit());
             } else {
-                option.setCharacteristicValuePrice("");
+                option.setCharacteristicValuePrice(" - no charge ");
             }
 
         }

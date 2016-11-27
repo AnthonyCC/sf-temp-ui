@@ -13,16 +13,16 @@ import com.freshdirect.cms.publish.PublishTask;
 public interface IBackgroundProcessor {
 
     BackgroundStatus getStatus();
-
+    
     /**
      * Re-index the nodes, which match the given search terms.
      * @param terms
      */
     Future<Integer> backgroundReindex(final Collection<String> terms);
-
+    
     /**
      * Re-index all the nodes.
-     * @return
+     * @return 
      */
     Future<Integer> backgroundReindex();
 
@@ -34,8 +34,6 @@ public interface IBackgroundProcessor {
     Future<Integer> rebuildWineIndex();
 
     void executePublish(Publish publish);
-
-    void executeFeedPublish(Publish publish);
 
     void setPublishTasks(List<PublishTask> publishTasks);
 

@@ -3,12 +3,12 @@ package com.freshdirect.fdstore.content.browse.filter;
 import java.math.BigDecimal;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class CustomerRatingFilter extends AbstractRangeFilter {
 

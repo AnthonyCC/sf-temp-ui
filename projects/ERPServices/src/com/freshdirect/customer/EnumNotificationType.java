@@ -3,9 +3,6 @@ package com.freshdirect.customer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class EnumNotificationType implements java.io.Serializable{
 
 	
@@ -26,8 +23,7 @@ public class EnumNotificationType implements java.io.Serializable{
 		NOTIFICATION_MAP.put(code, this);
 	}
 	
-	@JsonCreator
-	public static EnumNotificationType getNotificationType(@JsonProperty("code") String code){
+	public static EnumNotificationType getNotificationType(String code){
 		return NOTIFICATION_MAP.get(code);
 	}
 	

@@ -88,28 +88,6 @@ var FreshDirect = FreshDirect || {};
           $('#'+this.popupId+' '+this.bodySelector+' [fdform]').each(function (i, el) {
             $(el).attr('fdform', 'trnp_'+$(el).attr('fdform'));
           });
-
-          /* hooklogic click event */
-          $('#'+this.popupId + ' [data-hooklogic-beacon-click]').closest('#'+this.popupId).find('a,button,.portrait-item-productimage_wrapper').each(function(i,e) {
-        	  if (!$(e).data('hooklogic-beacon-click')) {
-                	/* exclusion elems */
-                	if (
-                		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
-                	) { return;
-                	} else {
-                		$(e).data('hooklogic-beacon-click', 'true');
-                		$(e).on('click', function(event) {
-                			var $parent = $(this).closest('.pdp-evenbetter-popupContainer');
-                			var id = $parent.data('product-id') + '_hlClick';
-                			if ($parent.find('img#'+id).length !== 0) {
-                				return; //stop multiple firings
-                			}
-                        	var url = $parent.data('hooklogic-beacon-click');
-                        	$parent.append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
-                		});
-                	}
-        	  }
-          });
         }
       }
     }

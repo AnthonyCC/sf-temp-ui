@@ -11,8 +11,6 @@ package com.freshdirect.erp.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.sap.SapProperties;
 
@@ -24,11 +22,10 @@ import com.freshdirect.sap.SapProperties;
  * @author     $Author$
  * @stereotype fd-model
  */
-public class ErpInventoryEntryModel extends ModelSupport implements Comparable<Object> {
+public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 	private static final long serialVersionUID = 3557841522645345674L;
 
 	/** Inventory entry start date */
-	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date startDate;
 
 	/** Inventory level quantity in base UOM */
@@ -97,13 +94,7 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable<O
 	public String toString() {
 		return "ErpInventoryEntryModel[" + this.plantId + " " + this.startDate + " " + this.quantity + "]";
 	}
-	
-	@Override
-	public void setId( String id ) {
-		if (id != null)
-			super.setId(id);
-	}
-	
+
 	@Override
 	public int compareTo(Object o)
 	{

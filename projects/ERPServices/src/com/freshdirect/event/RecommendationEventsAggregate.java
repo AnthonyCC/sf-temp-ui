@@ -21,7 +21,6 @@ public class RecommendationEventsAggregate implements Serializable {
 	private int frequency;
 	private String eStoreId;
 	
-	public RecommendationEventsAggregate(){}
 	/**
 	 * Constructor.
 	 * @param contentId 
@@ -57,10 +56,6 @@ public class RecommendationEventsAggregate implements Serializable {
 	
 	public int getFrequency() {
 		return frequency;
-	}
-	
-	public String geteStoreId() {
-		return eStoreId;
 	}
 	
 	public String getEStoreId() {

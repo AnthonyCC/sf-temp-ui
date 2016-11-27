@@ -8,9 +8,7 @@
  */
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-/**
+/** 
  * Simple Bean for department complaint reasons
  *
  * @version $Revision:4$
@@ -24,17 +22,14 @@ public class ErpComplaintReason implements java.io.Serializable {
 	private String departmentName;
 	private String reason;
 
-	int priority;
-	String subjectCode; // Case subject code
+	int	priority;
+	String subjectCode;	// Case subject code
 
 	private EnumComplaintDlvIssueType dlvIssueType;
 
-	public ErpComplaintReason(@JsonProperty("id") String id, @JsonProperty("departmentCode") String dept_code,
-			@JsonProperty("departmentName") String dept_name, @JsonProperty("reason") String reason,
-			@JsonProperty("priority") int pri, @JsonProperty("subjectCode") String subjectCode,
-			@JsonProperty("deliveryIssueType") EnumComplaintDlvIssueType dlvIssueType) {
-		this.id = id;
-		this.departmentCode = dept_code;
+	public ErpComplaintReason(String id, String dept_code,String dept_name, String reason, int pri, String subjectCode, EnumComplaintDlvIssueType dlvIssueType) {
+        this.id = id;
+        this.departmentCode = dept_code;
 		this.departmentName = dept_name;
 		this.reason = reason;
 		this.priority = pri;
@@ -42,9 +37,9 @@ public class ErpComplaintReason implements java.io.Serializable {
 		this.dlvIssueType = dlvIssueType;
 	}
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
 	public String getDepartmentCode() {
 		return this.departmentCode;
@@ -72,9 +67,9 @@ public class ErpComplaintReason implements java.io.Serializable {
 		return subjectCode;
 	}
 
+	
 	/**
 	 * Returns type of delivery issue (can be null)
-	 * 
 	 * @return
 	 */
 	public EnumComplaintDlvIssueType getDeliveryIssueType() {
@@ -82,7 +77,7 @@ public class ErpComplaintReason implements java.io.Serializable {
 	}
 
 	public String toString() {
-		return "{id=" + this.id + "; dept=" + this.departmentName + "; reason=" + this.reason + "}";
+		return "{id="+this.id+"; dept="+this.departmentName+"; reason="+this.reason+"}";
 	}
 
 	@Override
@@ -93,7 +88,7 @@ public class ErpComplaintReason implements java.io.Serializable {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();

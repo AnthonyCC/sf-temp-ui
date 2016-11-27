@@ -16,7 +16,7 @@ Browse topics in specified within categories on the left.
 <table style="border:solid 1px #999999;">
 <tr valign="top">
 <td class="field_column">Corporate Address:</td>
-<td>2 St Ann's Ave <br>Bronx, NY 10454</td>
+<td>23-30 Borden Ave.<br>Long Island City, NY 11101</td>
 </tr>
 <tr valign="top">
 <td class="field_column">Corporate Office</td>

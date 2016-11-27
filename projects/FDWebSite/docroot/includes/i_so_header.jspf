@@ -96,7 +96,7 @@
 								<div class="ctrl"><%@include file="i_so_chgfrq.jspf" %></div></span>
 						<span class="add_items"><h4>Need to Add Items?</h4>
 								<p>Simply shop now and return to checkout.<small>(To remove items, use Your Cart below.)</small></p>
-								<div class="ctrl"><a href="/index.jsp?serviceType=CORPORATE"><img src="/media_stat/images/template/quickshop/shop_for_more.png" width="125" height="22" /></a></div></span>
+								<div class="ctrl"><a href="/department.jsp?deptId=COS"><img src="/media_stat/images/template/quickshop/shop_for_more.png" width="125" height="22" /></a></div></span>
 						<span class="dlv_payment"><h4>Delivery & Payment Options</h4>
 								<p>You must complete checkout to confirm changes.</p>
 								<div class="ctrl"><button type="submit" name="nextStep" value="true" style="background:none;border:0;margin:0;padding:0;cursor:pointer"><img src="/media_stat/images/template/quickshop/continue_checkout.png" width="167" height="22" /></button></div></span>

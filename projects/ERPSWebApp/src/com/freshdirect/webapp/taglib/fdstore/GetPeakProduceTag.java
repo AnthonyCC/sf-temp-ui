@@ -28,17 +28,16 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 
@@ -85,7 +84,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	}
 	
 	private Collection getAllPeakProduceForDept(DepartmentModel dept,UserContext userCtx) throws FDResourceException {
-		//String plantID=userCtx.getFulfillmentContext().getPlantId();
+		String plantID=userCtx.getFulfillmentContext().getPlantId();
 	    List products=new ArrayList();
 		List deptList=new ArrayList();
 		//System.out.println("|=== dept.getContentKey().getId()  :"+dept.getContentKey().getId());
@@ -102,8 +101,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				sku=i.next().toString();
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
-					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && 
-							isPeakProduce(productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo)))) {
+					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && isPeakProduce(productInfo.getRating(plantID))) {
 						
 						try {
 							   ProductModel sm=ContentFactory.getInstance().getProduct(sku);
@@ -327,7 +325,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 					continue;
 				}
 				try {
-					rating=sku.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(sku.getProductInfo()));
+					rating=sku.getProductInfo().getRating(plantID);
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}

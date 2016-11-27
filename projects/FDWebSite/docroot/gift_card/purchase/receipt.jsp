@@ -9,7 +9,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
@@ -25,13 +25,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType'%>
-<%@ page import='com.freshdirect.storeapi.application.CmsManager'%>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.CmsManager'%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 
 <% //expanded page dimensions
 final int W_GIFTCARD_RECEIPT_TOTAL = 970;
@@ -43,18 +40,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put> --%>
-	<tmpl:put name='pageType' direct='true'>gc_receipt</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
-		<style>
-			.W_GIFTCARD_RECEIPT_TOTAL { width: <%= W_GIFTCARD_RECEIPT_TOTAL %>px; }
-			.W_GIFTCARD_RECEIPT_TOTAL-340 { width: calc( <%= W_GIFTCARD_RECEIPT_TOTAL %>px - 340px ); }
-			.W_GIFTCARD_RECEIPT_TOTAL-350 { width: calc( <%= W_GIFTCARD_RECEIPT_TOTAL %>px - 350px ); }
-		</style>
 
 <%
 //--------OAS Page Variables-----------------------
@@ -64,9 +52,20 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <%
 FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
 EnumGiftCardType gcType = sessionuser.getGiftCardType();
+
+
+
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
 <fd:GetOrder id='cart' saleId='<%=orderNumber%>'>
+	<script type="text/javascript">
+		<fd:CmShop9 order="<%=cart%>"/>
+		<fd:CmOrder order="<%=cart%>"/>
+		<fd:CmRegistration force="true"/>
+		<fd:CmConversionEvent eventId="became_a_customer"/>
+	</script>
+
+
 <%
 	FDRecipientList recipients = cart.getGiftCardRecipients();
 
@@ -75,23 +74,23 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	Html _donOrgMedia = null;
 	if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
 		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
-		CmsManager manager = CmsManager.getInstance();
-		ContentKey contentKey = ContentKeyFactory.get(FDContentTypes.FDFOLDER, "donationOrganizationList");
+		CmsManager manager = CmsManager.getInstance();	
+		ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
 		ContentNodeI contentNode = manager.getContentNode(contentKey);
-		
+
 		if(null != contentNode){
 			Set subNodes = contentNode.getChildKeys();
 			for (Object object : subNodes) {
 				ContentKey subContentKey = (ContentKey) object;
 				if(null != subContentKey){
-					ContentType contentType = subContentKey.getType();
+					ContentType contentType = subContentKey.getType(); 
 					if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){
 						DonationOrganization _org = new DonationOrganization(subContentKey);
 						donationOrgList.add(_org);
 					}
 				}
 			}
-			for (DonationOrganization _org : donationOrgList) {
+			for (DonationOrganization _org : donationOrgList) {			
 				Iterator<RecipientModel> i = recipients.getRecipients().listIterator();
 				while(i.hasNext()) {
 					ErpRecipentModel erm = (ErpRecipentModel)i.next();
@@ -113,7 +112,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	int idx = 0;
 %>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_GIFTCARD_RECEIPT_TOTAL">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL%>">
 <tr>
 	<td colspan="6"class="text11">
 
@@ -129,19 +128,19 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 				</tr>
 			</table>
 		<% }%>
-		<img src="/media_stat/images/layout/ff9933.gif" alt="" class="W_GIFTCARD_RECEIPT_TOTAL" height="1" border="0" vspace="8"><br><br>
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
 	</td>
 
 </tr>
 
 <TR VALIGN="TOP">
-    <TD class="W_GIFTCARD_RECEIPT_TOTAL-340">
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" class="W_GIFTCARD_RECEIPT_TOTAL-340">
+    <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TR VALIGN="TOP">
-            <TD class="W_GIFTCARD_RECEIPT_TOTAL-340" COLSPAN="2">
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2">
             	<span class="title18"><b>PLEASE NOTE:</b><br/></span><BR>
             	<% if(gcType != null && EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) {%>
-
+			           
 			            It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
 			            We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
 			            <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
@@ -158,18 +157,18 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
-            <TD class="W_GIFTCARD_RECEIPT_TOTAL-350">
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-350%>">
             <font class="space4pix"><br></font>
      </TD>
         </TR>
         </TABLE>
     </TD>
     <TD valign="top" align="CENTER" width="40">
-    	 	<img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="280"><br>
+    	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br>
 	    </td>
     <TD WIDTH="300">
-        <span class="title14">PAYMENT INFO</span><BR>
-        <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
@@ -188,14 +187,14 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
             <br><br>
 			<b>Credit Card</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
             <font class="space4pix"><br></font>
-
+            
             <font class="space4pix"><br></font>
 	                <%= paymentMethod.getName()%><BR>
 	                <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
             <BR>
-
-
-
+            
+            
+            
             <% if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {%>
 	                <b>Billing Address:</b><BR>
 	                <font class="space4pix"><br></font>
@@ -213,31 +212,31 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	                    <%= paymentMethod.getBillingRef() %><br>
 	                <%
             }%>
-
-
+            
+			
             </FONT>
             </TD>
         </TR>
         </TABLE>
-
+        
         </TD>
-
+        
     </TR>
-
- </TABLE>
+        
+ </TABLE>  
  <br />
- <IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/cccccc.gif" alt="" class="W_GIFTCARD_RECEIPT_TOTAL" height="1"><br>
+ <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
+<IMG src="/media_stat/images/layout/cccccc.gif" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1"><br>
 <br /><br />
-<%
+<% 
 //for display of recipient number
 int indx = 1;
 %>
 
-
-<table class="W_GIFTCARD_RECEIPT_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
+ 
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
-			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font class="orange">#<%=orderNumber%></font></b></span><br /><br />
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
             <span class="title12"><b>View this order (and download printable PDFs of your gifts) in Your Account.</b></span></a>
 			</td>
@@ -246,8 +245,7 @@ int indx = 1;
 
 <table class="recipTable">
 		<tr>
-		    <th><div class="offscreen">Recipient list</div></th>
-			<th><div class="recipAmount">Amount</div></th>
+			<td><div class="recipAmount">Amount</div></td>
 		</tr>
 			<%
 			Iterator<RecipientModel> i = recipients.getRecipients().listIterator();
@@ -255,15 +253,16 @@ int indx = 1;
 				ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>
 		<tr>
-			 <td>
+			<td>
 				<div class="recipRow" id="<%=erm.getSale_id()%>Row">
 					<div class="recipNumber" id="<%=erm.getSale_id()%>Number"><%= indx %>.&nbsp;</div>
 					<div class="recipName" id="<%=erm.getSale_id()%>Name"><%= erm.getRecipientName()%></div>
-               </div>
-            </td>
-			  <td>
-			     <div class="recipAmount" id="<%=erm.getSale_id()%>Amount"><b>$<%= erm.getFormattedAmount() %></b></div>
-			  </td>
+
+					<div class="recipAmount" id="<%=erm.getSale_id()%>Amount">$<%= erm.getFormattedAmount() %></div>
+
+					
+				</div>
+			<td>
 		</tr>
 			<%
 				indx++;
@@ -271,9 +270,9 @@ int indx = 1;
 			%>
 
 </table>
-<table class="W_GIFTCARD_RECEIPT_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 		</tr>
 
         <tr>
@@ -281,28 +280,24 @@ int indx = 1;
         </tr>
 <% if (FDStoreProperties.isAdServerEnabled()) { %>
 <tr><td><br><br></td></tr>
-<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
+<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 <tr><td>
-<table class="W_GIFTCARD_RECEIPT_TOTAL" cellpadding="0" cellspacing="0">
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 <tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
-  <div id='oas_ReceiptBotLeft'>
-    <SCRIPT LANGUAGE=JavaScript>
-  		<!--
-  		OAS_AD('ReceiptBotLeft');
-  		//-->
-    </SCRIPT>
-  </div>
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotLeft');
+		//-->
+</SCRIPT>
 </td>
 <td width="50%" style="padding-left: 10px;" align="center">
-  <div id='oas_ReceiptBotRight'>
-    <SCRIPT LANGUAGE=JavaScript>
-  		<!--
-  		OAS_AD('ReceiptBotRight');
-  		//-->
-    </SCRIPT>
-  </div>
-</td>
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotRight');
+		//-->
+</SCRIPT>
+</td>		
 </table><br>
 </td></tr>
 <% } %>

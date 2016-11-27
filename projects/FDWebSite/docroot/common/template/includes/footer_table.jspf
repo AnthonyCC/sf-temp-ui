@@ -14,7 +14,7 @@
 			<span class="dot"><a class="globalnavitem" id="globalfooteritem-billorrights" href="/category.jsp?catId=about_billrights&trk=bnav"><span>Your Bill Of Rights</span></a></span>
 		</div>
 		<div class="right">			
-			<span class="dot"><a class="globalnavitem" id="globalfooteritem-office" href="index.jsp?serviceType=CORPORATE&trk=bnav"><span>At The Office</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalfooteritem-office" href="/department.jsp?deptId=COS&trk=bnav"><span>At The Office</span></a></span>
 			<span class="dot"><a class="globalnavitem" id="globalfooteritem-giftcards" href="<%=giftPath%>"><span>Gift Card</span></a></span>
 			<span class="dot"><a class="globalnavitem" id="globalfooteritem-newprod" href="/newproducts.jsp?trk=bnav"><span>New Products</span></a></span>
 		</div>		

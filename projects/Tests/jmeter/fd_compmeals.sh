@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Retrieve component group meal product data from server.
 # Command line options:

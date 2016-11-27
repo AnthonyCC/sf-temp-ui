@@ -8,17 +8,17 @@ import org.apache.log4j.Category;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class EnumAccountActivityType implements java.io.Serializable {
-
+	
 	private static final long	serialVersionUID	= -2281974517045649443L;
 
 	private final static Category LOGGER = LoggerFactory.getInstance(EnumAccountActivityType.class);
-
+	
 	private final static Map<String,EnumAccountActivityType> ACCOUNT_ACTIVITY_MAP = new HashMap<String,EnumAccountActivityType>();
-
+	
 	private static int idCounter = 0;
 
 	public final static EnumAccountActivityType		UNKNOWN								= new EnumAccountActivityType( "Unknown", "Unknown Message" );
-
+	
 	public final static EnumAccountActivityType		CHANGE_PASSWORD						= new EnumAccountActivityType( "Chg Password", "Change Password" );
 	public final static EnumAccountActivityType		CANCEL_ORDER						= new EnumAccountActivityType( "Cancel Order", "Cancel Order" );
 	public final static EnumAccountActivityType		ACTIVATE_ACCOUNT					= new EnumAccountActivityType( "Activate Acct", "Activate Account" );
@@ -63,7 +63,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		ADD_CUST_PROMO						= new EnumAccountActivityType( "A Cust Promo", "Add Customer Promo" );
 	public final static EnumAccountActivityType		EDIT_CUST_PROMO						= new EnumAccountActivityType( "E Cust Promo", "Edit Customer Promo" );
 	public final static EnumAccountActivityType		REMOVE_CUST_PROMO					= new EnumAccountActivityType( "R Cust Promo", "Remove Customer Promo" );
-
+	
 	// Delivery Pass Activity Type.
 	public final static EnumAccountActivityType		CREDIT_DLV_PASS						= new EnumAccountActivityType( "Cr Dlv Pass", "Credited One Delivery" );
 	public final static EnumAccountActivityType		EXTEND_DLV_PASS						= new EnumAccountActivityType( "Extd Dlv Pass", "Extended One Week" );
@@ -75,17 +75,15 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		MASS_RETURN							= new EnumAccountActivityType( "Mass Return", "Mass Return" );
 
 	public final static EnumAccountActivityType		FLIP_AUTORENEW_DP_FLAG				= new EnumAccountActivityType( "Flip AutoRenew", "Flip AutoRenew DP Flag" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType( "DP AR ON FD", "FD- AutoRenew DP flag turned ON" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType( "DP AR OFF FD", "FD- AutoRenew DP flag turned OFF" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON_FDX		= new EnumAccountActivityType( "DP AR ON FDX", "FDX - AutoRenew DP flag turned ON" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF_FDX		= new EnumAccountActivityType( "DP AR OFF FDX", "FDX - AutoRenew DP flag turned OFF" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType( "DP AR ON", "AutoRenew DP flag turned ON" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType( "DP AR OFF", "AutoRenew DP flag turned OFF" );
 	public final static EnumAccountActivityType		VIEW_CC_ECHECK						= new EnumAccountActivityType( "View CC/ECHECK", "View cc/echeck account number" );
 	public final static EnumAccountActivityType		VIEW_CC								= new EnumAccountActivityType( "View CC", "View CC Details" );
 	public final static EnumAccountActivityType		VIEW_ECHECK							= new EnumAccountActivityType( "View ECHECK", "View eCheck Details" );
 	public final static EnumAccountActivityType		ADD_GIFT_CARD						= new EnumAccountActivityType( "AddGiftCard", "Add Gift Card" );
 	public final static EnumAccountActivityType		GC_APPLY_FAILED						= new EnumAccountActivityType( "GCApplyFailed", "GC Apply Failed" );
 	public final static EnumAccountActivityType		REMOVE_GIFT_CARD					= new EnumAccountActivityType( "RemoveGiftCard", "Remove Gift Card" );
-
+	
 	// Standing Orders
 	public final static EnumAccountActivityType		STANDINGORDER_FAILED				= new EnumAccountActivityType( "SO-Failed", "Failed to make Standing Order" );
 	public final static EnumAccountActivityType		STANDINGORDER_PLACED				= new EnumAccountActivityType( "SO-Placed", "Standing Order placed successfully." );
@@ -105,14 +103,13 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_CREATED				= new EnumAccountActivityType( "SO-Created", "Standing Order created." );
 	public final static EnumAccountActivityType		STANDINGORDER_MODIFIED				= new EnumAccountActivityType( "SO-Modified", "Standing Order modified." );
 	public final static EnumAccountActivityType		STANDINGORDER_DELETED				= new EnumAccountActivityType( "SO-Deleted", "Standing Order deleted." );
-	public final static EnumAccountActivityType		STANDINGORDER_TEMPLATE_DEL_DATE_SET	= new EnumAccountActivityType( "SO-TemptDelete", "SO-template delete date was choosen by user");
 	public final static EnumAccountActivityType		STANDINGORDER_SAVE_FAILED			= new EnumAccountActivityType( "SO-SaveFailed", "Standing Order update/save failed." );
 	public final static EnumAccountActivityType		STANDINGORDER_ERROR_CLEARED			= new EnumAccountActivityType( "SO-ErrorCleared", "Standing Order error cleared." );
-
+	
 	public final static EnumAccountActivityType 	NOTIFICATION_CREATED 				= new EnumAccountActivityType("NF-Created", "Notification created.");
 	public final static EnumAccountActivityType 	NOTIFICATION_DELETED 				= new EnumAccountActivityType("NF-Deleted", "Notification deleted.");
 	public final static EnumAccountActivityType 	NOTIFICATION_CHECKED 				= new EnumAccountActivityType("NF-Checked", "Notification checked for user.");
-
+	
 	public final static EnumAccountActivityType		PAYMENT_METHOD_VERIFICATION			= new EnumAccountActivityType( "CC Verify", "Credit Card verification." );
 	public final static EnumAccountActivityType		DUPLICATE_PAYMENT_METHOD			= new EnumAccountActivityType( "Dupe Payment", "Duplicate Payment Used." );
 	public final static EnumAccountActivityType		REFER_A_FRIEND						= new EnumAccountActivityType( "ReferAFriend", "Referral Sent." );
@@ -128,31 +125,22 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		DISABLE_REFERRAL_PROMO				= new EnumAccountActivityType( "Disable RAFPromo", "Disable Referral Promotion" );
 	public final static EnumAccountActivityType		NEW_DP_TC_AGREE						= new EnumAccountActivityType( "Agreed To DpTc", "Agreed To New DeliveryPass Terms" );
 	public final static EnumAccountActivityType		SMS_ALERT  	                        = new EnumAccountActivityType( "SMS Notif.", "SMS Notification text message options" );
-	public final static EnumAccountActivityType		DEFAULT_PM_SYS  	           		= new EnumAccountActivityType( "Dflt PM S", "Default Payment Method added by SYSTEM" );
-	public final static EnumAccountActivityType		DEFAULT_PM_CUST  	           		= new EnumAccountActivityType( "Dflt PM C", "Default Payment Method added by CUSTOMER" );
-	public final static EnumAccountActivityType		DEFAULT_PM_ND  	           		= new EnumAccountActivityType( "Dflt PM ND", "Default Payment Method not entered" );
-	public final static EnumAccountActivityType		DEFAULT_PM_DELETED  	           	= new EnumAccountActivityType( "Dflt PM DLTD", "Default Payment Method deleted" );
-	public final static EnumAccountActivityType		DP_FREE_TRIAL_OPT_IN  	           	= new EnumAccountActivityType( "Free DPass Optin", "Opted-in for Free trial dlv pass" );
 	
-	// Self-Credit
-    public final static EnumAccountActivityType SELF_CREDIT_ERROR = new EnumAccountActivityType("SC Error", "Self-submitted credit error");
-    public final static EnumAccountActivityType SELF_CREDIT_APPR_ERROR = new EnumAccountActivityType("SC Appr Error", "Approval error for self-submitted credit");
-    public final static EnumAccountActivityType REG_CREDIT_APPR_ERROR = new EnumAccountActivityType("RegC Appr Error", "Approval error for credit");
-
-	private EnumAccountActivityType(String code, String name) {
+	
+    private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
         this.code = code;
         this.name = name;
-
+        
         if ( code == null || code.length() == 0 ) {
         	LOGGER.warn( "Activity code cannot be null or empty. This will cause sql errors later." );
         	return;
         }
         if ( code.length() > 16 ) {
         	LOGGER.warn( "Activity code ["+code+"] cannot be longer than 16. This will cause sql errors later." );
-        	return;
+        	return;        	
         }
-
+        
         ACCOUNT_ACTIVITY_MAP.put(code, this);
     }
 
@@ -177,7 +165,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString() {
 		return getCode() + " / " + getName();

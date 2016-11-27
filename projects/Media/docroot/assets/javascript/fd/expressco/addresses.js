@@ -9,8 +9,7 @@ var FreshDirect = FreshDirect || {};
 
   var address = Object.create(DRAWER_WIDGET,{
     signal:{
-      value: 'address',
-  	  writable: true
+      value:'address'
     },
     contentTemplate: {
       value: expressco.addresscontent

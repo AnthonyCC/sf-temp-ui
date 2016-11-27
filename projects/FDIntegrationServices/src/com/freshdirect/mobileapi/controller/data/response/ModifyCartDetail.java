@@ -5,8 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * @author Rob
  *
@@ -43,11 +41,6 @@ public class ModifyCartDetail extends CartDetail {
 
     public String getReservationCutoff() {
         return dateFormatter.format(reservationCutoff);
-    }
-
-    @JsonIgnore
-    public Date getReservationCutoffDate() {
-        return reservationCutoff;
     }
 
     public void setReservationCutoff(Date reservationCutoff) {

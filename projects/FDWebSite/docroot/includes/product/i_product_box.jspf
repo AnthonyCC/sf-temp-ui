@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@page import="com.freshdirect.fdstore.*"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
@@ -125,6 +125,7 @@
 		%>
 			<form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;" data-component="product">
 				<fd:AddToCartPending id="<%= formName %>" action="addMultipleToCart" rebindSubmit="true"/>
+				<fd:CmFieldDecorator/>
 				<input type="hidden" name="itemCount" value="1">
 				<fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 				<div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>

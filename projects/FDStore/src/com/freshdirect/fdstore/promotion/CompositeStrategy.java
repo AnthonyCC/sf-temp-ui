@@ -6,7 +6,7 @@ import java.util.List;
 public class CompositeStrategy implements PromotionStrategyI {
 
 	private List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
-	private int operator;
+	private final int operator;
 	
 	public static final int OR = 0;
 	public static final int AND = 1;
@@ -15,11 +15,6 @@ public class CompositeStrategy implements PromotionStrategyI {
 		this.operator = operator;
 	}
 	
-	public CompositeStrategy() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public void addStrategy(PromotionStrategyI strategy){
 		strategies.add(strategy);
 	}
@@ -68,21 +63,5 @@ public class CompositeStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
-	}
-
-	public List<PromotionStrategyI> getStrategies() {
-		return strategies;
-	}
-
-	public void setStrategies(List<PromotionStrategyI> strategies) {
-		this.strategies = strategies;
-	}
-
-	public int getOperator() {
-		return operator;
-	}
-
-	public void setOperator(int operator) {
-		this.operator = operator;
 	}
 }

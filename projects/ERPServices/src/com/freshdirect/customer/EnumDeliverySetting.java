@@ -6,9 +6,6 @@
 
 package com.freshdirect.customer;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  *
  * @author  rfalck
@@ -30,7 +27,6 @@ public class EnumDeliverySetting implements java.io.Serializable {
         return this.id;
     }
 
-    @JsonValue
     public String getDeliveryCode() {
 		return this.deliveryCode;
 	}
@@ -39,7 +35,6 @@ public class EnumDeliverySetting implements java.io.Serializable {
         return this.name;
     }
 
-    @JsonCreator
 	public static EnumDeliverySetting getDeliverySetting(String code) {
 		if ( "none".equalsIgnoreCase(code) ) {
 			return NONE;

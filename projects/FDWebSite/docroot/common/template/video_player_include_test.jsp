@@ -1,14 +1,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
-    <fd:SEOMetaTag title="Youtube Google Analytics Test Page"/>
-<%-- 	<title>Youtube Google Analytics Test Page</title> --%>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 
+	<title>Youtube Google Analytics Test Page</title>
 	<fd:AnalyticsInit/>
 	<!-- Load the swfobject library-->
 	<fd:javascript src="/assets/javascript/swfobject.js" />

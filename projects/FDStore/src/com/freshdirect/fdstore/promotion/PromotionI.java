@@ -34,7 +34,7 @@ public interface PromotionI extends Serializable {
 	
 	public EnumPromotionType getPromotionType();
 	
-	public Timestamp getLastModified();
+	public Timestamp getModifyDate();
 	//The following methods were added as part of Category Discount Implementation.
 	public boolean isRedemption();
 	
@@ -67,8 +67,4 @@ public interface PromotionI extends Serializable {
 	public double getLineItemDiscountPercentage();
 	
 	public String getRedemptionCode();
-	
-	public void setStrategiesList(List<PromotionStrategyI> strategies);
-	
-	public double getCapcityUtilization();
 }

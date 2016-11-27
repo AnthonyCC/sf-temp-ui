@@ -89,8 +89,6 @@ public interface SessionParamName {
      
      public final static String COUPON_CODE = SessionName.COUPONCODE;
      
-     public final static String MSG_FOR_LOGIN_PAGE = SessionName.MSG_FOR_LOGIN_PAGE;
-     
      public static final String TAXATION_TYPE_SESSION = "TAXATION_TYPE";
     
 

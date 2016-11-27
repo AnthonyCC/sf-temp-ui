@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public class EnumChargeType extends Enum {
 
 	public final static EnumChargeType DELIVERY			= new EnumChargeType("DLV", "000000000000008888", "Delivery Surcharge", "FR010000");
@@ -37,7 +34,6 @@ public class EnumChargeType extends Enum {
 		this.taxCode = taxCode;
 	}
 
-	@JsonValue
 	public String getCode() {
 		return this.getName();
 	}
@@ -54,7 +50,6 @@ public class EnumChargeType extends Enum {
 		return taxCode;
 	}
 
-	@JsonCreator
 	public static EnumChargeType getEnum(String name) {
 		return (EnumChargeType) getEnum(EnumChargeType.class, name);
 	}

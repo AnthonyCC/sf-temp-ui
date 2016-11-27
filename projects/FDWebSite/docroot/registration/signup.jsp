@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -23,23 +24,21 @@ final int W_SIGNUP_TOTAL = 970;
 
 	if(userx.isCorporateUser()){
 		regType = AccountUtil.CORP_USER;
-		regContSuccessPage += "/index.jsp?serviceType=CORPORATE";
+		regContSuccessPage += "/department.jsp?deptId=COS";
 	}else if (userx.isDepotUser()){
 		regType = AccountUtil.DEPOT_USER;
-		regContSuccessPage += "/index.jsp?serviceType=DEPOT";
+		regContSuccessPage += "/index.jsp";
 	}else{
 		regType = AccountUtil.HOME_USER;
-		regContSuccessPage += "/index.jsp?serviceType=HOME";
+		regContSuccessPage += "/index.jsp";
 	}
 	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 	
+	CmRegistrationTag.setRegistrationLocation(session,"signup");
 %>
 <fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 
@@ -58,7 +57,7 @@ final int W_SIGNUP_TOTAL = 970;
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<table role="presentation" width="<%=W_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=W_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="<%=W_SIGNUP_TOTAL%>" class="text13">
 <%
@@ -84,7 +83,7 @@ final int W_SIGNUP_TOTAL = 970;
 					Sign up now and start getting better food at a better price. No credit card information is required until you place an order.
 				<% } %>
 			<% } else { %>
-				Sign up now and start getting better food at a better price. No credit card information is required until you place an order. Please note that your area is not within our <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">current delivery zones</a>, so you will only be able to place an order for pickup.
+				Sign up now and start getting better food at a better price. No credit card information is required until you place an order. Please note that your area is not within our <a href="javascript:popup('/help/delivery_zones.jsp','large')">current delivery zones</a>, so you will only be able to place an order for pickup.
 			<% } %>
 			<br /><br />
 			<b>Already have a password?</b><br />
@@ -94,14 +93,15 @@ final int W_SIGNUP_TOTAL = 970;
 		<% if (FDStoreProperties.isGiftCardEnabled()) { %>
 			<br /><br />
 			<b>Looking for Gift Cards?</b><br />
-			<a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here<span class="offscreen">for more details about gift cards</span></a>.
+			<a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here</a>.
 		<% } %>
 	</td>
 </tr>
 </table>
-<form name="address" id="address" method="post" ><fieldset><legend class="offscreen">signup for freshdirect</legend>
+<form name="address" id="address" method="post" >
 <%@ include file="/includes/registration/i_signup.jspf" %>
-</fieldset></form>
+</form>
 </tmpl:put>
 </tmpl:insert>
 </fd:RegistrationController>
+

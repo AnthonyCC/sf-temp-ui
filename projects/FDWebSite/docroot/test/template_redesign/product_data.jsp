@@ -6,7 +6,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Product Data Potato</title>
@@ -33,6 +33,14 @@
   <hr/>
 
 
+  <hr/>
+  	<h1> SCARAB PERSONAL RECOMMENDATIONS </h1>
+  <hr/>
+  <potato:recommender name="recommenderPotato" siteFeature="SCR_PERSONAL" maxItems="50"/>
+  <soy:render template="test.product_iterator" data="<%= recommenderPotato %>" />
+  <hr/>
+  <fd:ToJSON object="<%= recommenderPotato %>" noHeaders="true"/>
+  <hr/>
   
 </body>
 </html>

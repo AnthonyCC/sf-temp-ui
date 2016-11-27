@@ -8,8 +8,6 @@ public class ErpCaptureModel extends ErpPaymentModel{
 	private String description;
 	private String merchantId;
 	
-	private String settlementResponseCode;
-	
 	/** Creates new ErpCaptureTransactionModel */
     public ErpCaptureModel() {
 		super(EnumTransactionType.CAPTURE);
@@ -77,20 +75,4 @@ public class ErpCaptureModel extends ErpPaymentModel{
 	public void setEwalletTxId(String ewalletTxId) {
 		this.ewalletTxId = ewalletTxId;
 	}
-
-	/**
-	 * @return the settlementResponseCode
-	 */
-	public String getSettlementResponseCode() {
-		return settlementResponseCode;
-	}
-
-	/**
-	 * @param settlementResponseCode the settlementResponseCode to set
-	 */
-	public void setSettlementResponseCode(String settlementResponseCode) {
-		this.settlementResponseCode = settlementResponseCode;
-	}
-	
-	
 }

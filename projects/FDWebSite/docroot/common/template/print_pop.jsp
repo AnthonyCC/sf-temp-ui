@@ -3,16 +3,17 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-    <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
+
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(650,700); window.focus();" topmargin="10" marginheight="10">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <center>
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
@@ -21,8 +22,8 @@
 	<td align="right"><a href="javascript:window.print();" onMouseover="swapImage('PRINT_IMG','/media_stat/images/navigation/global_nav/print_page_01.gif')" onMouseout="swapImage('PRINT_IMG','/media_stat/images/navigation/global_nav/print_page.gif')"><img src="/media_stat/images/navigation/global_nav/print_page.gif" width="54" height="26" border="0" name="PRINT_IMG"></a></td>
 </tr>
 <tr>
-<td><img src="/media_stat/images/layout/cccccc.gif" alt="" width="300" height="1" vspace="6"></td>
-<td><img src="/media_stat/images/layout/cccccc.gif" alt="" width="300" height="1" vspace="6"></td>
+<td><img src="/media_stat/images/layout/cccccc.gif" width="300" height="1" vspace="6"></td>
+<td><img src="/media_stat/images/layout/cccccc.gif" width="300" height="1" vspace="6"></td>
 </tr>
 <tr valign="top">
 	<td colspan="2" align="center">
@@ -31,7 +32,7 @@
 	<%-- content ends above here--%>
 	</td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td></tr>
 <tr>
 	<td><a href="#top">Back to top</a></td>
 	<td align="right"><a href="javascript:window.reallyClose();">Close window</a></td>

@@ -43,10 +43,9 @@ if(windowSize.equalsIgnoreCase("large")){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-<%--     <title> <%=name%></title> --%>
-     <fd:SEOMetaTag title="<%=name%>"/>
+    <title> <%=name%></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -55,6 +54,8 @@ if(windowSize.equalsIgnoreCase("large")){
 </head>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  onLoad="window.focus()">
+
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <A NAME="top"></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=tableWidth%>">

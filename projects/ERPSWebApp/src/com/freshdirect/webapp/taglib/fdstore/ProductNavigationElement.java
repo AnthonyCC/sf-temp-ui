@@ -8,7 +8,7 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public class ProductNavigationElement extends NavigationElement {
 

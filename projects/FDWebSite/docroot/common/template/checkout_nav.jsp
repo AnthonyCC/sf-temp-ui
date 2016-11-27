@@ -16,14 +16,15 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 %>
 
 
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
     	<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+		<fd:javascript src="/assets/javascript/timeslots.js"/>
 		
+  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<jwr:style src="/timeslots.css" media="all" />
+		<fd:css href="/assets/css/timeslots.css"/>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
@@ -35,6 +36,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<!--[if gt IE 8]><body class="ie9"><![endif]-->
 	<!--[if !IE]><!--><body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10"><!--<![endif]-->
 	
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
 			<center>
 		
@@ -66,7 +68,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 			<table width="<%=W_CHECKOUT_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 				<tr valign="top">
 					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" align="center">
-						<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_CHECKOUT_NAV_TOTAL%>"/><br/>
+						<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_CHECKOUT_NAV_TOTAL%>"/><br/>
 			
 						<!-- content lands here -->
 						
@@ -79,11 +81,11 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 				</tr>
 				
 				<tr valign="bottom">
-					<td width="<%=W_CHECKOUT_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"/></td>
 				</tr>
 				
 				<tr>
-					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_CHECKOUT_NAV_TOTAL%>" height="1" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_CHECKOUT_NAV_TOTAL%>" height="1" border="0"/></td>
 				</tr>
 			</table>
 			

@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -19,7 +19,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_COMPONENT_GROUP_MEAL_TOTAL = 601;
@@ -54,9 +54,9 @@ boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mob
 ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
 final CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
-String errImage = "<img src=\"/media_stat/images/layout/error.gif\" alt=\"\" border=\"0\">";
+String errImage = "<img src=\"/media_stat/images/layout/error.gif\" border=\"0\">";
 String noErrImage = ""; 
-String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" alt=\"recommended\" border=\"0\">";
+String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" border=\"0\">";
 String prodPopup = "prod_desc_popup.jsp?";
 String prodPopUpSize = "small";
 
@@ -114,7 +114,7 @@ if (!hasTemplate) {
 	// build a map of characteristic. / req. char.values, now that we know the default sku
 	Map tmpConfig = new HashMap();
 	for (Iterator varItr= variations.keySet().iterator(); varItr.hasNext();) {
-		String variation = (String) varItr.next();
+		String variation = (String) varItr.next();;
 		String reqVarOpt = request.getParameter( variation );
 		if (reqVarOpt!=null && !"".equals(reqVarOpt)) {
 			tmpConfig.put(variation, reqVarOpt);
@@ -214,8 +214,8 @@ if (pgErrs.size()>0) {
 	  <br><span class="space8pix"><br></span>
 	</td></tr>
 	<tr>
-	  <td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" alt="<%=productNode.getFullName()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
-	  <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
+	  <td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
+	  <td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 	  <td valign="top" width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
 	  <a href="javascript:popup('<%=prodPopup%>catId=<%=parentCat%>&prodId=<%=productNode%>&skuCode=<%=defaultSku%>','<%=prodPopUpSize%>')"><b>Click here for details.</b></a>
 	</td>
@@ -225,6 +225,7 @@ if (pgErrs.size()>0) {
 
 <form id="productForm" name="productForm" method="POST" action="<%=formAction%>">
 	<fd:AddToCartPending id="productForm"/>
+	<fd:CmFieldDecorator/>
 	<input type="hidden" name="productId<%=suffix%>" value='<%= templateLine.getProductName() %>'>
 	<input type="hidden" name="catId<%=suffix%>" value='<%= templateLine.getCategoryName() %>'>
 <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
@@ -297,7 +298,7 @@ if (isAvailable ) {
 		if (matCharNames.size()>0) { 	%>
 		   <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left"><FONT CLASS="space4pix"><BR><BR></FONT>
-		<%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>" alt=""> <%  }  %>
+		<%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
 		<%	if (mediaPath!=null) { %><br><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 			<BR></td></tr>
 		   </table>
@@ -316,14 +317,14 @@ if (isAvailable ) {
 			String imgRollOver = "";   %>
 			<table  width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			  <tr>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="95" height="6"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= (mobWeb) ? "" : W_COMPONENT_GROUP_MEAL_TOTAL-115 %>" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="95" height="6"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="<%= (mobWeb) ? "" : W_COMPONENT_GROUP_MEAL_TOTAL-115 %>" height="1"></td>
 			  </tr>
    			  <tr>
 <%			if (paintDropdownVertical) { %>
-				  <td valign="top" align="left"><img name="<%=imgName %>" src="<%=(prodImage==null ? "/media_stat/images/layout/clear.gif" : prodImage.getPath())%>" alt=""></td>
-				  <td valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
+				  <td valign="top" align="left"><img name="<%=imgName %>" src="<%=(prodImage==null ? "/media_stat/images/layout/clear.gif" : prodImage.getPath())%>"></td>
+				  <td valign="top"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
 				  <td valign="top">
                         <% } else { %>
 				  <td colspan="3" valign="top">
@@ -345,7 +346,7 @@ if (isAvailable ) {
 						sbRollover = null;
 					}    			%>
 			   <%          if (isChefsPick) {%><%=chefPickIndicator%>&nbsp;
-			   <%          } else {%><img src="/media_stat/images/layout/clear.gif" alt="" width="14" height="11">&nbsp;<% }  %>
+			   <%          } else {%><img src="/media_stat/images/layout/clear.gif" width="14" height="11">&nbsp;<% }  %>
 				      <a href="javascript:popup('<%=prodPopup%>catId=<%=oneProd.getParentNode()%>&prodId=<%=oneProd%>&skuCode=<%=oneProd.getDefaultSku()%>','<%=prodPopUpSize%>')" <%=imgRollOver%>><%=JspMethods.getDisplayName(oneProd,prodNameAttribute)%></a>
 				     <br>
 		<% 	     } %> <br>
@@ -361,10 +362,9 @@ if (isAvailable ) {
 					<%
 					if ( varOpts!=null && varOpts.length>1) {
 						if (paintDropdownVertical) { %>
-						  <img src="/media_stat/images/layout/clear.gif" alt="" width="14" height="11">&nbsp;
-<%                                              }  %>	
-					      <label><%=(String)fdVarOptDesc.get(mcName)%>
-						<select name="<%=mcName+suffix%>" CLASS="text11" <%=(!paintDropdownVertical ?"style=\"width: 190px\"" :"")%>><option value="">please choose</option>
+						  <img src="/media_stat/images/layout/clear.gif" width="14" height="11">&nbsp;
+<%                                              }  %>						
+						<select name="<%=mcName+suffix%>" CLASS="text11" <%=(!paintDropdownVertical ?"style=\"width: 190px\"" :"")%>><option value=""><%=(String)fdVarOptDesc.get(mcName)%></option>
 						<%				
 						for (int voIdx = 0; voIdx < varOpts.length; voIdx++) {
 							String optSkuCode=varOpts[voIdx].getSkuCode();
@@ -383,11 +383,11 @@ if (isAvailable ) {
 							%> 
 							<option value="<%=varOpts[voIdx].getName()%>" <%=selected%>>&nbsp;<%=varOpts[voIdx].getDescription()%></option> <%
 						}
-						%> </select> </label>
+						%> </select>
 						<% if (paintDropdownVertical || selectTagCnt%3==2  || !mcnItr.hasNext() ) { %>
 						     <br> <font class="space4pix"><br></font><%
 						   } else { %>
-						    <img src="/media_stat/images/layout/clear.gif" alt="" width="2" height="1">
+						    <img src="/media_stat/images/layout/clear.gif" width="2" height="1">
 						<% } 
 						selectTagCnt++;
 					} else if (varOpts!=null){ %>
@@ -412,10 +412,10 @@ if (isAvailable ) {
 		   String salesUnitName = "NA";
 		   
 		   FDSalesUnit[] salesUnits;    %>
-		  <logic:iterate id='optProd' collection="<%=optionalProducts%>" type="com.freshdirect.storeapi.content.ProductModel" indexId='optIdx'>
+		  <logic:iterate id='optProd' collection="<%=optionalProducts%>" type="com.freshdirect.fdstore.content.ProductModel" indexId='optIdx'>
 	<%	
 		   SkuModel dfltSku = optProd.getDefaultSku();
-		   if (!(dfltSku==null)) {
+		   if (dfltSku==null) continue;
 		   skus.add(dfltSku);    %>
 		   <fd:FDProductInfo id="productInfo" skuCode="<%=dfltSku.getSkuCode()%>">
 	<%
@@ -438,7 +438,7 @@ if (isAvailable ) {
 		      <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left">
 	<%	      if (imgMedia!=null) {   %><img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
-	<%	      if (mediaPath!=null) { %><br><br><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
+	<%	      if (mediaPath!=null) { %><br><bt><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 		       <br><br></td></tr>
 		    </table>
 		    <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -446,14 +446,14 @@ if (isAvailable ) {
 	
 	    	  if (!paintOptionalVertical) {  // paint the optional category using the Horizontal style
 	    	     if (prodCount==0){%><tr><% }  %>
-		     <td valign="top" align="center" width="140"><img src="/media_stat/images/layout/clear.gif" alt="" width="140" height="1"><br>
+		     <td valign="top" align="center" width="140"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"><br>
 			<table width="140" border="0" cellspacing="0" cellpadding="0" align="center">
 			  <tr>
 				<td colspan="2" align="center"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>"></a></td>
 			  </tr>
 			  <tr>
 				<td colspan="2" align="center"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><%=dispObj.getItemName()%></a><br><%=dispObj.getPrice()%>
-				   <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1">
+				   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1">
 				</td>
 			  </tr>
 			  <tr>
@@ -473,7 +473,7 @@ if (isAvailable ) {
 					<td valign="bottom" align="left">
 					  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
 					  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
-					  <ximg src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1">
+					  <ximg src="/media_stat/images/layout/clear.gif" width="10" height="1">
 					</td>
 				   </tr>
 				  </table>
@@ -496,7 +496,7 @@ if (isAvailable ) {
 			<tr valign="top">
 			<td width="115">
 			<span style="display:inline-block;position:relative;">
-			<img src="<%=dispObj.getImagePath()%>" alt="" border="0" name="<%=imgName%>">
+			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>">
 			<fd:USQProductBurst product="<%=null%>" suffix="swap" forceLogo="true"/></span></td>
 			<script type="text/javascript">
 				<%="swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-wine-swap\")"%>
@@ -522,21 +522,21 @@ if (isAvailable ) {
 						<%--input type="hidden" name='<%="alcoholic_" + prodCount %>' id='<%="alcoholic_" + prodCount %>' value='<%="quantity_" + prodCount %>'/ --%>
 					<!-- /fd:IsAlcoholic -->
           <div class="qtyinput">
-            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-            <input class="qty" aria-label="quantity" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
-            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+            <input class="qty" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
+            <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
           </div>
         </td>
 				
 				<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-215%>"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemNameWithoutBreaks()%></a><nobr> <%=(!"".equals(dispObj.getSalesUnitDescription()) ? dispObj.getSalesUnitDescription()+" - " : "")%><%=dispObj.getPrice()%></nobr>
-				   <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr><td colspan="3"><span class="space4pix"><br><br></span></td></tr>
 		
 	<%	    prodCount++;  %>
 
 	<%
-		  } }//end optional layout %>
+		  } //end optional layout %>
 	       </logic:iterate>  
 <%             if (prodCount>1) { 
 	          if (paintOptionalVertical) { %></table></td> <%   }   %>            
@@ -555,12 +555,12 @@ if (isAvailable ) {
                <TR VALIGN="TOP">
                   <TD align="center">
             <BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
@@ -573,7 +573,7 @@ if (isAvailable ) {
 	 if (prodCount > 0) {  %>
 	<table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr><td><BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR><br>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR><br>
         </td></tr>
     </table>
     
@@ -583,7 +583,7 @@ if (isAvailable ) {
 	<tr><td align="left"><fd:IncludeMedia name='<%= productNode.getProductTerms().getPath()%>' /></td></tr>
         <tr><td align="left">
     		<fd:ErrorHandler result='<%=result%>' name='agreeToTerms'>
-    		  <span class="errortext">To add meal to cart, please agree to these terms.</span><br>
+    		  <span class="text11rbold">To add meal to cart, please agree to these terms.</span><br>
     		</fd:ErrorHandler></td>
         </tr>
         <tr>
@@ -599,12 +599,12 @@ if (isAvailable ) {
 			<td<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? " colspan=\"2\"" : "" /* single column */ %>>
 				<div class="qtyinput">
 					<span class="qtymessage">Quantity</span>
-					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
-					<input type="text" CLASS="qty" aria-label="quantity" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
-					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
+					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+					<input type="text" CLASS="qty" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
+					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
 					<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? "<br />" : "" %>
-					<span class="qtyprice"><label for="price_field">Price</label></span>
-					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput accessibleblurinput" type="text" aria-live="polite" id="price_field" name="price" size="6" disabled="disabled" onChange="" tabindex="0" value=""/>
+					<span class="qtyprice">Price</span>
+					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput" type="text" name="price" size="6" onChange="" onFocus="blur()" value=""/>
 				</div>
 			<% if (mobWeb && CartName.MODIFY_CART.equals(cartMode)) { %>
 				<%-- do nothing, but make the row a single column (above), the divs will handle the split --%>
@@ -618,10 +618,10 @@ if (isAvailable ) {
 					if (referer==null) referer = "/view_cart.jsp";
 					%>
 					<div class="prodMod-buttons-cont">
-						<button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br />
+						<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br />
        					<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br />
 						<input type="hidden" name="referer" value="<%= referer %>">
-						<a class="cssbutton green transparent" href="<%=referer%>">Back to Cart</a><br />
+						<a class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><br />
 					</div>
 				<% } else if (CartName.MODIFY_LIST.equals(cartMode) || CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
 	
@@ -651,7 +651,7 @@ if (isAvailable ) {
 					<% if (request.getParameter("recipeId") != null) { %>
 						<input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
 					<% } %>
-					<a href="<%=referer%>" class="cssbutton green transparent">Back to Cart</a><BR><BR>
+					<a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><BR><BR>
 				<% } else { %>
 					<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
 				<% } %>
@@ -679,7 +679,7 @@ if (isAvailable ) {
         		<td colspan="2" align="right"> 
 					<br />
 					<div>
-	    				<a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" alt="save to lists" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" alt="" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
+	    				<a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
 						<div style="text-align: right; margin-bottom: 1ex;"></div>
     				</div>
     				<br />
@@ -769,7 +769,7 @@ if (isAvailable ) {
 <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
       <td width="100%">
-	<div align="center"><font class="text12" color="#333">
+	<div align="center"><font class="text12" color="#999999">
 		<b>We're sorry! This item is temporarily unavailable.</b>
 	</font></div>
 	</td></tr></table>
@@ -782,15 +782,15 @@ if (isAvailable ) {
        <TR VALIGN="TOP">
           <TD align="center">
 			<BR>
-			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 			<FONT CLASS="space4pix"><br><br></FONT>
        </TD>
        <TR><TD align="center">
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null) { %>
                                <% if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />

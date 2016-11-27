@@ -18,8 +18,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.enums.CaptchaType;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -27,7 +28,6 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-import com.freshdirect.webapp.util.CaptchaUtil;
 
 public class LoginServlet extends HttpServlet {
 
@@ -45,32 +45,24 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		LoginResponse loginResponse = new LoginResponse();
 		LoginRequest loginRequest = parseRequestData(request, response, LoginRequest.class);
-		if (loginRequest != null) {
-			// validate captcha if it's enabled
-			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(loginRequest.getCaptchaToken(),
-					request.getRemoteAddr(), CaptchaType.SIGN_IN, request.getSession(), SessionName.LOGIN_ATTEMPT,
-					FDStoreProperties.getMaxInvalidLoginAttempt());
-			if (!isCaptchaSuccess) {
-				loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
-				writeResponse(response, loginResponse);
-				return;
-			}
-			
+		if(loginRequest != null) {
 			ActionResult actionResult = new ActionResult();
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
 															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage(), false);
 			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
 			
+			
+			
+			 if(user !=null&&!user.getTcAcknowledge()){
+				 loginResponse.setMessage("TcAgreeFail");
+				 request.getSession().setAttribute("fdTcAgree", false);
+					
+			 }
+			
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
-				// check T&C only if login success
-				if (user !=null && !user.getTcAcknowledge()) {
-					 loginResponse.setMessage("TcAgreeFail");
-					 request.getSession().setAttribute("fdTcAgree", false);
-						
-				 }
 				loginResponse.setSuccess(true);
-				request.getSession().setAttribute(SessionName.LOGIN_ATTEMPT, Integer.valueOf(0));
+				request.getSession().setAttribute("fdLoginAttempt", Integer.valueOf(0));
 			} else {
 				Iterator<ActionError> actions = actionResult.getErrors()
 						.iterator();
@@ -87,20 +79,21 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 				
-				int fdLoginAttempt = CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
+				Integer fdLoginAttempt = request.getSession().getAttribute("fdLoginAttempt") != null ? (Integer) request.getSession().getAttribute("fdLoginAttempt") : Integer.valueOf(0);
+				fdLoginAttempt++;
+				request.getSession().setAttribute("fdLoginAttempt", fdLoginAttempt);
 				if(fdLoginAttempt >= FDStoreProperties.getMaxInvalidLoginAttempt()){
 					//Should be the redirecting key to login page.
 					loginResponse.setMessage("CaptchaRedirect");
 				}
 			}
-        }
-
+        } 
         writeResponse(response, loginResponse);
 	}
 	
-	private void writeResponse(HttpServletResponse response, LoginResponse loginResponse) {
+	private void writeResponse(HttpServletResponse response,LoginResponse loginResponse) {
 		try {
-			Writer w = response.getWriter();
+			Writer w =response.getWriter();
 			getMapper().writeValue(w, loginResponse);
 		} catch (JsonGenerationException e) {
 			LOGGER.warn("JsonGenerationException ", e);

@@ -13,13 +13,13 @@
 <script type="text/javascript" language="javascript">
 //<!--
 
-function loadSignature(order,estoreId)
+function loadSignature(order)
 {
 	
 	
 	var ajaxRequest = new Ajax.Request('/api/signature.jsp', {
 	    method:       'get', 
-	    parameters:   {orderId: order,estoreId:estoreId}, 
+	    parameters:   {orderId: order}, 
 	    asynchronous: true,
 	    onComplete:   showResponse
 	});
@@ -206,7 +206,7 @@ function loadSignature(order,estoreId)
 					<td>Name on account&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getName() %>
 				 	<%if(showSignature  && FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature()){%>
-					&nbsp;<a href="javascript:pop('/api/signature.jsp?orderId=<%=((FDOrderI)order).getErpSalesId()%>&estoreId=<%=((FDOrderI)order).getEStoreId()%>','300','400')">View Signature</a> 
+					&nbsp;<a href="javascript:pop('/api/signature.jsp?orderId=<%=((FDOrderI)order).getErpSalesId()%>','300','400')">View Signature</a> 
 					
 					</td>
 					<%}%> 
@@ -364,9 +364,7 @@ function loadSignature(order,estoreId)
 					<% } else { %>
 						<br>
 						<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a><br/>
-						<% if(FDStoreProperties.isMealBundleCartonLinkEnabled()) { %>
-						<a href="javascript:pop('/main/carton_detail_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Details (For Meal Bundle)</a>  
-						<% } %>
+						<a href="javascript:pop('/main/carton_detail_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Details (For Meal Bundle)</a>
 						</br>
 					<% } %>
 				<% } %>

@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>Kosher Fish Now Available!</title>
@@ -43,10 +43,10 @@
 		</tr>
 		
 		<tr>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="42" height="1" vspace="8"/></td>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="272" height="1" vspace="8"/></td>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="271" height="1" vspace="8"/></td>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="42" height="1" vspace="8"/></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="42" height="1" vspace="8"/></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="272" height="1" vspace="8"/></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="271" height="1" vspace="8"/></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="42" height="1" vspace="8"/></td>
 		</tr>
 		
     	<tr align="center">
@@ -59,8 +59,8 @@
 		
 		<tr align="center">
 			<td><img src="http://www.freshdirect.com/media_stat/images/template/email/kosher/u.gif" width="28" height="28"/></td>
-			<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14"/><br/>
-			Succulent salmon fillets, thick rosy tuna steaks, festive striped bass - we have the freshest kosher seafood in New York! Whether you are planning to grill a whole fish or make a hearty stew, seafood makes a quick, healthy meal. All our fish is custom-prepared and <b>Certified Kosher</b> by the <b>Orthodox Union ("OU")</b> and <b>Breuer Kahal Adas Jeshurun ("KAJ")</b>.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18"/></td>
+			<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14"/><br/>
+			Succulent salmon fillets, thick rosy tuna steaks, festive striped bass - we have the freshest kosher seafood in New York! Whether you are planning to grill a whole fish or make a hearty stew, seafood makes a quick, healthy meal. All our fish is custom-prepared and <b>Certified Kosher</b> by the <b>Orthodox Union ("OU")</b> and <b>Breuer Kahal Adas Jeshurun ("KAJ")</b>.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18"/></td>
 			<td><img src="http://www.freshdirect.com/media_stat/images/template/email/kosher/kaj.gif" width="28" height="28"/></td>
 		</tr>
 		

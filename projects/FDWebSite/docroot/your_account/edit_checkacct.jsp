@@ -6,10 +6,7 @@ final int W_YA_EDIT_CHECKACCT = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Checking Account"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Checking Account</tmpl:put> --%>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Checking Accountd</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>
 
@@ -22,14 +19,13 @@ final int W_YA_EDIT_CHECKACCT = 970;
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 <%boolean proceedThruCheckout=false;%>
-<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_EDIT_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-
+<form method="post">
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 <font class="title18">Edit Checking Account</font><br>
 Learn more about how this service works.
-To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>
+To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
 </td>
 </tr>
 </table>
@@ -37,7 +33,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <%@ include file="/includes/ckt_acct/edit_checkacct_fields.jspf"%>
 <br><br>
 
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%= W_YA_EDIT_CHECKACCT %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= W_YA_EDIT_CHECKACCT %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 	<TR VALIGN="TOP">

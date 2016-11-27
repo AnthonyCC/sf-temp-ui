@@ -1,7 +1,6 @@
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.customer.EnumSaleType;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.sap.bapi.BapiCartonDetailsForSale;
 import com.freshdirect.sap.bapi.BapiCartonInfo;
@@ -29,7 +28,7 @@ import com.sap.conn.jco.JCoException;
  *
  * @author kkanuganti
  */
-public  class JcoBapiFunctionFactory extends BapiFactory {
+public class JcoBapiFunctionFactory extends BapiFactory {
     
 	public BapiCreateCustomer getCreateCustomerBuilder() throws SapException
 	{
@@ -61,17 +60,11 @@ public  class JcoBapiFunctionFactory extends BapiFactory {
 		}
 	}
 
-	public BapiMaterialAvailability getMaterialAvailabilityBuilder(final EnumATPRule  atpRule) throws SapException
+	public BapiMaterialAvailability getMaterialAvailabilityBuilder(boolean isMultiLevel) throws SapException
 	{
-		if(atpRule==null) {
-			throw new IllegalArgumentException("ATP rule is NULL.");
-		}
-		else if(!JcoBapiMaterialAvailability.ATPRule_TO_BAPI_MAPPING.containsKey(atpRule.getName())) {
-			throw new IllegalArgumentException("ATP rule "+atpRule+" is invalid for Material availability.");
-		}
 		try
 		{
-			return new JcoBapiMaterialAvailability(atpRule);
+			return new JcoBapiMaterialAvailability(isMultiLevel);
 		} 
 		catch (JCoException e) {
 			throw new SapException(e);
@@ -237,6 +230,4 @@ public  class JcoBapiFunctionFactory extends BapiFactory {
 			throw new SapException(e);
 		}
 	}
-
-	
 }

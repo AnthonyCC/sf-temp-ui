@@ -12,7 +12,13 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recommender;
+import com.freshdirect.fdstore.content.RecommenderStrategy;
+import com.freshdirect.fdstore.content.YmalSet;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -22,12 +28,6 @@ import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recommender;
-import com.freshdirect.storeapi.content.RecommenderStrategy;
-import com.freshdirect.storeapi.content.YmalSet;
-import com.freshdirect.storeapi.content.YmalSource;
 
 /**
  * @author csongor

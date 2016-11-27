@@ -15,7 +15,7 @@
 
 <tmpl:put name='content' direct='true'>
 
-<% List searchResults = null; %>
+<% List searchResults = CallCenterServices.getSignupPromoAVSExceptions(); %>
 
 <jsp:include page="/includes/supervisor_nav.jsp" />
 <div class="sub_nav">

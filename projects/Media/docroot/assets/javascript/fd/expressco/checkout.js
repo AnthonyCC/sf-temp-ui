@@ -8,10 +8,6 @@ var FreshDirect = FreshDirect || {};
       FORMS = fd.modules.common.forms,
       $ = fd.libs.$;
   var FORMS = fd.modules.common.forms;
-  var dlvPassCart = false;
-  if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
-	  dlvPassCart = true;
-  }
 
   // checkout flow drawer enabler/disabler
   var coFlowChecker = Object.create(fd.common.signalTarget, {
@@ -40,17 +36,9 @@ var FreshDirect = FreshDirect || {};
     },
     checkFlow: {
       value: function () {
-    	if ($('#expresscheckout').hasClass("deliverypasscheckout")) {
-    		var payment = (fd.expressco && fd.expressco.paymentmethod && fd.expressco.paymentmethod.data && fd.expressco.paymentmethod.data.selected) || (FORMS.serialize('payment').id);
-    		if (payment) {
-                this.enableCheckout();
-            } else {
-            	this.disableCheckout();
-            }
-    	} else {
-        var address = (fd.expressco && fd.expressco.address && fd.expressco.address.data && fd.expressco.address.data.selected) || FORMS.serialize('address').id,
+        var address = FORMS.serialize('address').id,
             timeslot = $('[timeslot-id]').attr('timeslot-id'),
-            payment = (fd.expressco && fd.expressco.paymentmethod && fd.expressco.paymentmethod.data && fd.expressco.paymentmethod.data.selected) || (FORMS.serialize('payment').id)
+            payment = FORMS.serialize('payment').id;
 
         if (address) {
           this.enableTimeslot();
@@ -63,22 +51,13 @@ var FreshDirect = FreshDirect || {};
           this.disableTimeslot();
           this.disableCheckout();
         }
-    	}
+
       }
     },
     enableCheckout: {
       value: function () {
         FORMS.releaseLockFormResubmit($('[fdform="checkout"]'));
-        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', null)
-        	.find('.tabbable').removeAttr('nofocus').each(function (i, e) {
-        		var originalTabIndex = $(e).data('orig-tab-index');
-        		if (originalTabIndex != null){
-        			$(e).attr('tabindex', originalTabIndex);
-        		} else {
-        			$(e).removeAttr('tabindex');
-        		}
-        			
-        	});
+        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', null);
       }
     },
     enableTimeslot: {
@@ -89,16 +68,7 @@ var FreshDirect = FreshDirect || {};
     disableCheckout: {
       value: function () {
         FORMS.lockFormResubmit($('[fdform="checkout"]'));
-        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', 'true')
-        	.find(':tabbable, .tabbable').addClass('tabbable').attr('nofocus', true).each(function(i, e) {
-        		// store the original tab index to the element
-        		if ($(e).data('orig-tab-index') == null) {
-        		var originalTabIndex = $(e).attr('tabindex');
-        		if (originalTabIndex != null)
-        			$(e).data('orig-tab-index', originalTabIndex);
-        		}
-        		$(e).attr('tabindex', -1);
-        	})
+        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', 'true');
       }
     },
     disableTimeslot: {
@@ -122,13 +92,12 @@ var FreshDirect = FreshDirect || {};
       e.stopPropagation();
      
       if(!fd.terms){
-      	  doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+      	  doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
       	  $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('disabled', null);
       	  return false;
         }
      
       formData.action = 'placeOrder';
-      formData.dlvPassCart = dlvPassCart;
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
         method: "POST",
@@ -152,110 +121,12 @@ var FreshDirect = FreshDirect || {};
         FORMS.releaseLockFormResubmit(FORMS.getEl(id));
       }
     }
+    
+    
   });
 
-  // re-enable checkout on general warnings
-  var warningHandler = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: ['warning', 'warnings']
-    },
-    callback: {
-      value: function () {
-        var coForm = FORMS.get("checkout");
-
-        if (coForm) {
-          coForm.releaseLockWhenNotRedirecting("checkout");
-          $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
-            .done( function (d) {
-              FreshDirect.common.dispatcher.signal('timeslot', d);
-            });
-        }
-      }
-    }
-  });
-  warningHandler.listen();
-
-  var timeslotDrawerDeferred = jQuery.Deferred();
-  var timeslotDrawerDependencyLoaded = function () {
-	  timeslotDrawerDeferred.resolve();
-  }
-  var initSoyComponents = function () {
-	  // Check if the page should redirect to another page
-	  $.get('/api/expresscheckout?action=getRedirectUrl')
-	  	.done( function (d) {
-	  		if (d) {
-				FreshDirect.common.dispatcher.signal('redirectUrl', d);
-			}
-	  	});
-	  // Check restriction
-	  $.get('/api/expresscheckout/restriction')
-	  	.done( function (d) {
-			FreshDirect.common.dispatcher.signal('restriction', d);
-			
-	  	});
-	  
-	  // Check ATP
-	  $.get('/api/expresscheckout/atpfailure')
-	  	.done( function (d) {
-	  		if (d)
-	  			FreshDirect.common.dispatcher.signal('atpFailure', d);
-	  	});
-	  
-	  initSoyDrawers();
-  }
-  var initSoyDrawers = function () {
-	  var drawerDeferred = jQuery.Deferred();
-	  var contextDeferred = jQuery.Deferred();
-	  
-	  // Load Drawer, Form metadata, and session context info for checkout
-	  $.when($.get('/api/expresscheckout?action=getDrawer&dlvPassCart=' + dlvPassCart), $.get('/api/expresscheckout?action=getFormMetaData'))
-	  	.done( function (v1, v2) {
-	  		window.FreshDirect = window.FreshDirect || {};
-	  		window.FreshDirect.expressco.data = window.FreshDirect.expressco.data || {};
-	  		window.FreshDirect.expressco.data.formMetaData = window.FreshDirect.metaData = v2 && v2[0];
-	  		FreshDirect.common.dispatcher.signal('drawer', v1 && v1[0]);
-	  		drawerDeferred.resolve();
-	  	});
-	  //$.get('/api/expresscheckout?action=resetContext').always( function() {
-		  contextDeferred.resolve();
-	  //});
-
-	  $.when(drawerDeferred, contextDeferred).then(function () {
-		  // Load payment
-		  $.get('/api/expresscheckout/payment?dlvPassCart=' + dlvPassCart)
-			.done( function (d) {
-				if (!d.hasOwnProperty('dlvPassCart')) {
-					d.dlvPassCart = dlvPassCart;
-				}
-				FreshDirect.common.dispatcher.signal('payment', d);
-				if($(".deliverypass-payment").length > 0){
-					dialogWindowRealignFunc();
-				}
-			});
-		  // Load address
-		  $.get('/api/expresscheckout/deliveryaddress')
-		  	.done( function (d) {
-		  		FreshDirect.common.dispatcher.signal('address', d);
-			});
-		  	
-		// Load timeslot;
-		  $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
-		  	.done( function (d) {
-		  		timeslotDrawerDeferred.then(function () {
-		  			FreshDirect.common.dispatcher.signal('timeslot', d);
-		  		});
-		  	});
-	  });
-	  
-  }
   fd.utils.registerModule('expressco', 'checkout', {
-    coFlowChecker: coFlowChecker,
-    initSoyComponents: initSoyComponents,
-    initSoyDrawers: initSoyDrawers,
-    timeslotDrawerDependencyLoaded: timeslotDrawerDependencyLoaded
+    coFlowChecker: coFlowChecker
   }, fd, 'checkout', '2_0');
-  $(document).on('click','.skipnav',function(){
-	   $('#content :tabbable:first').focus();
-	   return false;
-	});
+
 }(FreshDirect));

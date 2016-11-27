@@ -7,7 +7,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<title>We Were Unable to Process Your Payment</title>
 	<base href="http://www.freshdirect.com/" />

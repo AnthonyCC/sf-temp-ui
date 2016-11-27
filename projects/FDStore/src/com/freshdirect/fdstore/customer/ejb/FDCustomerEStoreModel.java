@@ -1,23 +1,23 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.sms.EnumSMSAlertStatus;
 
 /**
- *
+ * 
  * @author ksriram
  * Customer's store specific default delivery address, payment method and depot location info.
  */
 public class FDCustomerEStoreModel extends ModelSupport{
 
 	private static final long serialVersionUID = -8890913479519201820L;
-
+	
 	private String fdCustomerPk;
 	private String defaultShipToAddressPK;
 	private String defaultPaymentMethodPK;
@@ -45,31 +45,10 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean emailOptIn = false;
 	private Boolean fdxEmailOptIn = false;
 	private Boolean tcAcknowledge = false;
-	private String rafClickId;
-    private String rafPromoCode;
-    private Boolean dpFreeTrailOptin = false;
-    private String hasAutoRenewDP;
-    private String autoRenewDpType;
 
-    @JsonProperty("informOrderModifyViewCount")
-    private Map<EnumEStoreId, Integer> informOrderModifyViewCount = new HashMap<EnumEStoreId, Integer>();
-	 
-    public String getRafClickId() {
-		return rafClickId;
-	}
- 
-	public void setRafClickId(String rafClickId) {
-		this.rafClickId = rafClickId;
-	}
-    
-	public String getRafPromoCode() {
-		return rafPromoCode;
-	}
- 
-	public void setRafPromoCode(String rafPromoCode) {
-		this.rafPromoCode = rafPromoCode;
-	}
 	
+	
+
 	public String getCrmStore() {
 		return crmStore;
 	}
@@ -110,6 +89,10 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		this.offersNotification = offersNotification;
 	}
 
+	
+
+	
+	
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
 	}
@@ -117,7 +100,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setMobileNumber(PhoneNumber mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
-
+	
 	public PhoneNumber getFdxMobileNumber() {
 		return fdxMobileNumber;
 	}
@@ -312,60 +295,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		this.fdxEmailOptIn = fdxEmailOptIn;
 	}
 
-	public Boolean getDpFreeTrialOptin() {
-		return dpFreeTrailOptin;
-	}
-
-	public void setDpFreeTrialOptin(Boolean dpFreeTrailOptin) {
-		this.dpFreeTrailOptin = dpFreeTrailOptin;
-	}
-
-	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
-
-		if (eStore == null) { /* default to current */
-			eStore = this.geteStoreId();
-		}
-		
-		int curVal = (this.informOrderModifyViewCount.containsKey(eStore)) ? this.informOrderModifyViewCount.get(eStore) : 0;
-		
-		if (increment) {
-			curVal++;
-		}
-		
-		this.setInformOrderModifyViewCount(eStore, curVal); //store always so unset values initialize and count (possibly first) view
-		
-		return curVal;
-	}
-
-	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
-
-		if (eStore == null) { /* default to current */
-			eStore = this.geteStoreId();
-		}
-		
-		this.informOrderModifyViewCount.put(eStore, informOrderModify);
-	}
 	
-	@Override
-	public void setId(String id) {
-		if (id != null) {
-			super.setId(id);
-		}
-	}
+	
 
-	public String getHasAutoRenewDP() {
-		return hasAutoRenewDP;
-	}
-
-	public String getAutoRenewDpType() {
-		return autoRenewDpType;
-	}
-
-	public void setHasAutoRenewDP(String hasAutoRenewDP) {
-		this.hasAutoRenewDP = hasAutoRenewDP;
-	}
-
-	public void setAutoRenewDpType(String autoRenewDpType) {
-		this.autoRenewDpType = autoRenewDpType;
-	}
 }

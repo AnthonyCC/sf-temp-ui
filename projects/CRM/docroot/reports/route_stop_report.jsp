@@ -35,7 +35,12 @@
 			SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
 			Date user_date1 = format1.parse(route_date1);
 			
-			
+			if(route != null) {
+				//routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
+				  routeStopLines = CallCenterServices.getRouteStopReport(user_date1, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
+			} else {
+				route_error = true;
+			}
     }
 if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getParameter("xPortVS")) && routeStopLines.size() > 0) { 
             response.addHeader ("Content-Disposition","attachment;filename=route_stop.txt");
@@ -56,7 +61,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			}
 
 } else {
-	List<CrmVSCampaignModel> campaigns = null;
+	List<CrmVSCampaignModel> campaigns = CallCenterServices.getVSCampaignList();
 %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
@@ -162,7 +167,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 
 		var thisyear=2005;
 
-        for (var y=0; y<15; y++){			
+        for (var y=0; y<11; y++){			
 			var cyear = <%= year %>;
 			if(cyear == thisyear)
 				yearfield.options[y]=new Option(thisyear, thisyear, true, true);			
@@ -343,7 +348,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				cModel.setPhonenumbers(phonenumbers);
 				cModel.setRouteList(vroutes);
 				cModel.setManual("true".equals(request.getParameter("manual"))?true:false);
-				String call_id = null;
+				String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
 				
 				StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 				originalXML.append(campaignMenuID);

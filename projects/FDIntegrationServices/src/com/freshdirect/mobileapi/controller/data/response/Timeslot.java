@@ -34,7 +34,6 @@ public class Timeslot implements DateFormat {
     
     private double premiumAmount;
     private boolean premiumSlot;
-    private boolean sameDaySlot;
     
     private String minOrderMsg;
     private double minOrderAmt;
@@ -48,8 +47,6 @@ public class Timeslot implements DateFormat {
 	
 	private Boolean isEarlyAM;
 	
-	private boolean isMidWeekDlvPassApplicable; // Added for Midweek DeliveryPass
-
 	
 	public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
         List<Timeslot> newInstances = new ArrayList<Timeslot>();
@@ -73,7 +70,6 @@ public class Timeslot implements DateFormat {
         this.alcoholRestricted = slot.isAlcoholRestricted();
         this.premiumAmount = slot.getPremiumAmount();
         this.premiumSlot = slot.isPremiumSlot();
-        this.sameDaySlot = slot.isSameDaySlot();
         this.unavailable = slot.isUnavailable();
         
         this.minOrderMsg = slot.getMinOrderMsg();
@@ -84,8 +80,6 @@ public class Timeslot implements DateFormat {
         
         this.deliveryFee = slot.getDeliveryFee();
         this.promoDeliveryFee = slot.getPromoDeliveryFee();
-        
-        this.isMidWeekDlvPassApplicable =slot.getMidWeekPassApplicable();
     
     }
 
@@ -200,9 +194,6 @@ public class Timeslot implements DateFormat {
 	public boolean isPremiumSlot() {
 		return premiumSlot;
 	}
-	public boolean isSameDaySlot() {
-		return sameDaySlot;
-	}
 	
 	public boolean isUnavailable() {
 		return unavailable;
@@ -246,14 +237,6 @@ public class Timeslot implements DateFormat {
 
 	public void setPromoDeliveryFee(double promoDeliveryFee) {
 		this.promoDeliveryFee = promoDeliveryFee;
-	}
-
-	public boolean isMidWeekDlvPassApplicable() {
-		return isMidWeekDlvPassApplicable;
-	}
-
-	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
-		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
 	}
 
 	

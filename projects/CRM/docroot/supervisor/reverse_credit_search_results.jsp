@@ -42,7 +42,7 @@
 
 <div class="list_content" style="height: 70%;">
 <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="list_content_text">
-
+<fd:ReverseCreditController result="result" saleId="<%=orderNumber%>" />
 		<fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">
 			<logic:iterate id="complaint" collection="<%=complaints%>" type="com.freshdirect.customer.ErpComplaintModel">
 				<tr>

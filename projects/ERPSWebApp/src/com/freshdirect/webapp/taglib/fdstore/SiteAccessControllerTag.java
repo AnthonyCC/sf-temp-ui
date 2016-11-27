@@ -2,7 +2,9 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,34 +15,37 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import utils.system;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
-import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-    private static final Category LOGGER = LoggerFactory.getInstance(SiteAccessControllerTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessControllerTag.class);
 	
 	private String action = null;
 	private String successPage = null;
@@ -53,8 +58,10 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String altDeliveryCorporatePage = "/site_access/site_access.jsp?ol=altCorp";
 	//private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
 	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
-    private String addressnotificationpage = "/social/address_notification.jsp";
+	private String deliveryaddrpage = "/social/DeliveryAddress.jsp";
+	private String addressnotificationpage = "/social/AddressNotification.jsp";
 	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
+	private String socialLoginAccountLinked ="/social/social_login_account_linked.jsp";
 	
 	private String failureCorporatePageCRM = null;
 	
@@ -141,12 +148,21 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.failureCorporatePageCRM = failureCorporatePageCRM;
 	}
 	
+	
+	private void newSession() {
+		HttpSession session = pageContext.getSession();
+		// clear session
+		// [segabor]: instead of wiping out all session entries delete just the 'customer'
+		session.removeAttribute(SessionName.USER);
+		// remove cookie
+		CookieMonster.clearCookie((HttpServletResponse)pageContext.getResponse());
+	}
+
 	/** keep in sync with CheckLoginStatusTag.createUser(String zipCode)*/
-	@Override
-    public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		String application = (String) request.getSession().getAttribute(SessionName.APPLICATION);
+		String application1 = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
 		
 		this.pageContext.getSession().removeAttribute("morepage");
 
@@ -171,7 +187,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					FDDeliveryServiceSelectionResult serviceResult = checkByZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
-										
+					
 					/* APPDEV-1888 - Check to see if email is present and validate	 */
 					boolean isReferralRegistration = "true".equals(request.getParameter("referralRegistration"))?true:false;
 					if(isReferralRegistration) {
@@ -190,19 +206,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 					
 					if (result.isSuccess()) {
-					    if (EnumTransactionSource.FOODKICK_WEBSITE.getCode().equals(application)){
-					        if (EnumDeliveryStatus.DELIVER == serviceResult.getServiceStatus(this.serviceType)){
-					            FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
-					            user.setAvailableServices(serviceResult.getAvailableServices());
-					        } else {
-					            result.addError(new ActionError(EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS));
-					        }
-					        pageContext.setAttribute(resultName, result);
-					        return EVAL_BODY_BUFFERED;
-					    }
-					    
-                        UserUtil.newSession(request.getSession(), (HttpServletResponse) pageContext.getResponse());
-												
+						newSession();
+						
 						if("WEB".equals(this.serviceType.getName())){
 							EnumDeliveryStatus homeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 							
@@ -248,11 +253,11 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 									// check home delivry is available
 									if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
-
-										return doRedirect(altDeliveryHomePage);
+										doRedirect(altDeliveryHomePage);
 									}
 									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										
+										String application = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
 										boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 										if(!inCallCenter) {
 											doRedirect(failureCorporatePage);
@@ -337,13 +342,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					checkByAddress(request, result, false);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
 					doPrereg(request, result);
-				} else if ("signupLite".equalsIgnoreCase(action)) {
+				} else if ("signupLite".equalsIgnoreCase(action)) { 
 					HttpSession session = this.pageContext.getSession();
 					FDDeliveryServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
 					if (result.isSuccess()) {
+						//newSession();
 						
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 							
@@ -444,47 +450,183 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					ra.validateSocialSignupEmail();
 
 					
-                    if (result.isSuccess()) {
+					if (result.isSuccess()) {
+						
+							// set default address for express registration user
+							if(this.address == null){
+								address = new AddressModel();  
+								/*address.setAddress1("23-30 borden ave");
+								address.setCity("Long Island City");
+								address.setState("NY");
+								address.setCountry("US");*/
+								address.setZipCode(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()));
+							}
+							this.serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
+						
+							// Create a user for express registration user
+							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+								this.createUser(this.serviceType, availableServices);
+							} else { 
+								this.createUser(((this.serviceType != null) ? this.serviceType : EnumServiceType.PICKUP), availableServices);
+							}		
+							
+														
+							// Delegate to RegistrationAction to register the new user						
+							try {							
+								String res = ra.executeEx();
+								if((Action.SUCCESS).equals(res)) {
+									// "EXPRESS_REGISTRATION_COMPLETE" is used in 'signup_lite.jsp' to return control back to original workflow
+									session.setAttribute("EXPRESS_REGISTRATION_COMPLETE", "true");     					
+								}
+							} catch (Exception ex) {
+								LOGGER.error("Error performing action expresssignup", ex);
+								result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+							}																		
+					}
+				}
+				else if ("signupSocialDlvAddr".equalsIgnoreCase(action)) { 
+					HttpSession session = this.pageContext.getSession();
+					
+					String companyname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();
+					System.out.println("companyname:"+companyname);
+					String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "").trim();
+					System.out.println("firstname:"+firstname);
+					String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "").trim();
+					System.out.println("lastname:"+lastname);
+					String streetaddr = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim();
+					System.out.println("streetaddr:"+streetaddr);
+					String suite = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim();
+					System.out.println("suite:"+suite);
+					String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim();
+					System.out.println("zipcode:"+zipcode);
+					String city = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim();
+					System.out.println("city:"+city);
+					String state = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim();
+					System.out.println("state:"+state);
+					String busphone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_WORK_PHONE.getCode()), "").trim();
+					System.out.println("busphone:"+busphone);
+					String mobilephno = NVL.apply(request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()), "").trim();
+					System.out.println("mobilephno:"+mobilephno);
+					String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
+					System.out.println("email:"+email);
+					
+					FDDeliveryServiceSelectionResult serviceResult = validateSocialDlvAddr(request, result);
+										
+					if(serviceResult!=null)
+						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+					
+					if (result.isSuccess()) {
+						//newSession();						
+						
+						String failedAddresspage = "/social/FailedAddrPage.jsp?successPage=index.jsp&referrer_page=slite&" +
+								"serviceType=" + this.serviceType +  
+								"&companyname="+ companyname +
+								"&firstname="+ firstname +
+								"&lastname="+ lastname +
+								"&streetaddr="+ streetaddr +
+								"&suite="+ suite +
+								"&zipcode="+ zipcode +
+								"&city="+ city +
+								"&state="+ state +
+								"&busphone="+ busphone +
+								"&mobilephno="+ mobilephno +
+								"&email="+ email;
+						
+																		
+						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 
-                        // set default address for express registration user
-                        if (this.address == null) {
-                            address = new AddressModel();
-                            /*
-                             * address.setAddress1("23-30 borden ave"); address.setCity("Long Island City"); address.setState("NY"); address.setCountry("US");
-                             */
-                            address.setZipCode(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()));
-                        }
-                        this.serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
+						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+							this.createUser(this.serviceType, serviceResult.getAvailableServices());
+						} else { 
+							this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
+						}						
+													
+						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+							//All set. The zipcode is good. Proceed to direct registration. No more info needed.
+							doRegistrationSocial(result);
+						}
+						else{
+							// Show do not deliver page
+							request.getSession().setAttribute("SocialDlvAddrFail", "true");
+							doRedirect(failedAddresspage);
+						}
+					}
+				}
+				else if ("addDeliveryAddress".equalsIgnoreCase(action)) { 
+					
+					
+					/*
+					 * 'addDeliveryAddress' is to add delivery address to user's profile.
+					 *  It's part of checking out.
+					 * 
+					 *  'addDeliveryAddress' uses the similar logic as 'signupSocialDlvAddr', 
+					 *  which was required part of account creation.
+					 */		
+					
+					
+					// retrieve parameters from request
+					String companyname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();					
+					String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "").trim();
+					String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "").trim();
+					String streetaddr = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim();
+					String suite = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim();
+					String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim();
+					String city = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim();
+					String state = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim();
+					String busphone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_WORK_PHONE.getCode()), "").trim();
+					String mobilephno = NVL.apply(request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()), "").trim();
+					String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
+					
+					System.out.println("companyname:"+companyname);
+					System.out.println("firstname:"+firstname);
+					System.out.println("lastname:"+lastname);
+					System.out.println("streetaddr:"+streetaddr);
+					System.out.println("suite:"+suite);
+					System.out.println("zipcode:"+zipcode);
+					System.out.println("city:"+city);
+					System.out.println("state:"+state);
+					System.out.println("busphone:"+busphone);
+					System.out.println("mobilephno:"+mobilephno);
+					System.out.println("email:"+email);
 
-                        // Create a user for express registration user
-                        if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-                            this.createUser(this.serviceType, availableServices);
-                        } else {
-                            this.createUser(((this.serviceType != null) ? this.serviceType : EnumServiceType.PICKUP), availableServices);
-                        }
+					
+					// Validate parts of delivery address										
+					FDDeliveryServiceSelectionResult serviceResult = validateSocialDlvAddr(request, result);
+										
+					if(serviceResult!=null)
+						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+					
+					
+					if (result.isSuccess()) {
+										
+							EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);				
+							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+							
+								addDeliveryAddress(result);								
 
-                        // Delegate to RegistrationAction to register the new user
-                        try {
-                            String res = ra.executeEx();
-                            if ((Action.SUCCESS).equals(res)) {
-                                // "EXPRESS_REGISTRATION_COMPLETE" is used in 'signup_lite.jsp' to return control back to original workflow
-                                session.setAttribute("EXPRESS_REGISTRATION_COMPLETE", "true");
-                                session.setAttribute(SessionName.SIGNUP_SUCCESS, true);
-                            } else if (Action.ERROR.equals(res)) {
-                                session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
-                            }
-                        } catch (Exception ex) {
-                            LOGGER.error("Error performing action expresssignup", ex);
-                            result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
-                            session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
-                        }
+							} else{						
 
-                    } else {
-                    	CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
-                        session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
-                    }
-
-				}	
+								String failedAddresspage = "/social/FailedAddrPage.jsp?successPage=index.jsp&referrer_page=slite&" +
+										"serviceType=" + this.serviceType +  
+										"&companyname="+ companyname +
+										"&firstname="+ firstname +
+										"&lastname="+ lastname +
+										"&streetaddr="+ streetaddr +
+										"&suite="+ suite +
+										"&zipcode="+ zipcode +
+										"&city="+ city +
+										"&state="+ state +
+										"&busphone="+ busphone +
+										"&mobilephno="+ mobilephno +
+										"&email="+ email;
+								
+								// Show do not deliver page
+								request.getSession().setAttribute("SocialDlvAddrFail", "true");   
+								
+								doRedirect(failedAddresspage);
+							}
+					}
+				}				
 			} catch (FDResourceException re) {
 				LOGGER.warn("FDResourceException occured", re);
 				result.addError(true, "technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
@@ -536,12 +678,93 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				if (user != null) {
 					user.setJustSignedUp(true);
 				}
+				CmRegistrationTag.setPendingRegistrationEvent(session);
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action signupLite", ex);
 			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}
 	}
+	
+	private void doRegistrationSocial(ActionResult result) {
+		int regType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
+			//This is a corp user
+			regType = AccountUtil.CORP_USER;
+		}
+		RegistrationAction ra = new RegistrationAction(regType);
+
+		HttpContext ctx =
+			new HttpContext(
+				this.pageContext.getSession(),
+				(HttpServletRequest) this.pageContext.getRequest(),
+				(HttpServletResponse) this.pageContext.getResponse());
+
+		ra.setHttpContext(ctx);
+		ra.setResult(result);
+		try {
+			String res = ra.executeEx();
+			if((Action.SUCCESS).equals(res)) {
+				this.setSuccessPage("/social/DeliveryAddress.jsp");										
+				HttpSession session = pageContext.getSession();
+				System.out.println("Before>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				session.setAttribute("DELIVERYADDRESS_COMPLETE", "true");
+				System.out.println("After>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				session.removeAttribute("SOCIALACCOUNTINFO");
+				session.removeAttribute("SOCIALCONTACTINFO");
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				if (user != null) {
+					user.setJustSignedUp(true);
+				}
+				CmRegistrationTag.setPendingRegistrationEvent(session);
+			}
+		} catch (Exception ex) {
+			LOGGER.error("Error performing action socialsignup", ex);
+			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+		}
+	}
+		
+	private void addDeliveryAddress(ActionResult result) {
+				
+		HttpSession session = this.pageContext.getSession();
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+		HttpContext ctx = new HttpContext( session, request, response);
+		
+		int regType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
+			regType = AccountUtil.CORP_USER;
+		}
+		
+		// Set address to SessionUser
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);	
+		user.setAddress(this.address);
+		user.setSelectedServiceType(serviceType);
+		user.setZPServiceType(serviceType);
+
+		//Store updated SessionUser
+		CookieMonster.storeCookie(user, response);
+		session.setAttribute(SessionName.USER, user);							
+		
+
+		// Invoke RegistrationAction to add delivery address to the user
+		RegistrationAction ra = new RegistrationAction(regType);
+		ra.setHttpContext(ctx);
+		ra.setResult(result);
+		
+		try {
+			String res = ra.addDeliverayAddress();
+			
+			if((Action.SUCCESS).equals(res)) {				
+				// attribute "DELIVERYADDRESS_COMPLETE" will be used in 'DeliveryAddress.jsp' to return control to main window
+				session.setAttribute("DELIVERYADDRESS_COMPLETE", "true"); 				
+			}
+			
+		} catch (Exception ex) {
+			LOGGER.error("Error performing action addDeliveryAddress", ex);
+			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+		}
+	}	
 	
 	private boolean validEmail(String email, ActionResult result) {		
 		
@@ -967,19 +1190,76 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 	}
 
-    private void createUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices) throws FDResourceException {
-        HttpSession session = pageContext.getSession();
-        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-        FDSessionUser user = UserUtil.createSessionUser(serviceType, availableServices, session, response, address);
+	private void createUser(EnumServiceType serviceType, Set availableServices) throws FDResourceException {
+		HttpSession session = pageContext.getSession();
+		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
-        if (this.address != null && user.getAddress() != null && "".equalsIgnoreCase(this.address.getState()) && this.address.getZipCode().equals(user.getAddress().getZipCode())) {
-            this.address.setState(user.getAddress().getState());
-        }
-        user.setAddress(this.address);
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
 
-        if (user != null) {
-            user.setNewUserWelcomePageShown(true); // do not redirect to welcome.jsp
-        }
-    }
+			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null) && (user.getIdentity() == null))) {
+				//
+				// if there is no user object or a dummy user object created in
+				// CallCenter, make a new using this zipcode
+				// make sure to hang on to the cart that might be in progress in
+				// CallCenter
+				//
+				FDCartModel oldCart = null;
+				if (user != null) {
+					oldCart = user.getShoppingCart();
+				}
+				StoreContext storeContext =StoreContextUtil.getStoreContext(session);
+				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType, storeContext.getEStoreId()), session);
+				user.setUserCreatedInThisSession(true);
+				
+				if(this.address!=null && user.getAddress()!=null && 
+						"".equalsIgnoreCase(this.address.getState())&& this.address.getZipCode().equals(user.getAddress().getZipCode())){
+					this.address.setState(user.getAddress().getState());
+				}
+				user.setAddress(this.address);
+				user.setSelectedServiceType(serviceType);
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(serviceType);
+				user.setAvailableServices(availableServices);			
+				
+				if (oldCart != null) {
+					user.setShoppingCart(oldCart);
+				}
+	
+				CookieMonster.storeCookie(user, response);
+				session.setAttribute(SessionName.USER, user);
+	
+			} else {	
+				//
+				// otherwise, just update the zipcode in their existing object if
+				// they haven't yet registered
+				//
+				if (user.getLevel() < FDUser.RECOGNIZED) {
+					user.setAddress(this.address);
+					user.setSelectedServiceType(serviceType);
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(serviceType);
+					user.setAvailableServices(availableServices);
+					//Need to reset the pricing context so the pricing context can be recalculated.
+					//user.resetPricingContext();
+					//user.setP
+					CookieMonster.storeCookie(user, response);
+					FDCustomerManager.storeUser(user.getUser());
+					session.setAttribute(SessionName.USER, user);
+				}
+							
+			}		
+			
+		//To fetch and set customer's coupons.
+		if(user != null){
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+			user.setNewUserWelcomePageShown(true); //do not redirect to welcome.jsp 
+		}
+		
+        //The previous recommendations of the current session need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		
+	}	
 
 }

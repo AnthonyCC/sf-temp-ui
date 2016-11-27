@@ -7,52 +7,14 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.common.pricing.EnumDiscountType' %>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
-<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
 
-<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='template' prefix='tmpl' %> 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%!
-    private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
-        StringBuffer sb = new StringBuffer();
-        int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-        sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
-        int startMin = startTimeCal.get(Calendar.MINUTE);
-        if(startMin != 0){
-            sb.append(":"+startMin);
-        }
-        int amPm = startTimeCal.get(Calendar.AM_PM);
-        if(amPm == 1){
-            sb.append(" pm");
-        }else{
-            sb.append(" am");
-        }
-        sb.append(" - ");
-        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
-        sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
-        int endMin = endTimeCal.get(Calendar.MINUTE);
-        if(endMin != 0){
-            sb.append(":"+endMin);
-        }
-        if(sb.toString().indexOf("noon") < 0){
-            amPm = endTimeCal.get(Calendar.AM_PM);
-            if(amPm == 1){
-                sb.append(" pm");
-            }else{
-                sb.append(" am");
-            }
-        }
-        return sb.toString();
-    }
-%>
 <% //expanded page dimensions
 final int W_YA_ORDER_DETAILS_TOTAL = 970;
 final int W_YA_ORDER_DETAILS_3C_GAP = 41;
@@ -60,32 +22,20 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%  String orderId = request.getParameter("orderId");
-	 boolean transException =Boolean.valueOf(request.getParameter("hasTransException"));
 if(orderId==null){
 	orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
-}
-
-if (orderId == null){
-    throw new FDNotFoundException("No orderId was provided");
 }
 %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Order Details"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put> --%>
-	<tmpl:put name='extraCss' direct='true'>
-		<jwr:style src="/your_account.css" media="all" />
-		<link rel="stylesheet" type="text/css" media="all" href="/assets/css/expressco/cartcontent.css" media="all" />
-	</tmpl:put>
-	<tmpl:put name='printdata' direct='true'>order_details</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
     <tmpl:put name='content' direct='true'>
+
 <%
     NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
     SimpleDateFormat dateOnlyFormatter = new SimpleDateFormat("MM/dd/yy");
     //String orderId = request.getParameter("orderId");
-
+    
     FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity identity  = user.getIdentity();
     ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -95,7 +45,16 @@ if (orderId == null){
 <%
     if (cart != null) {
         // !!! REFACTOR: duplicates code from checkout pages
-
+    
+        StringBuffer custName = new StringBuffer(50);
+        custName.append(customerModel.getFirstName());
+        if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
+            custName.append(" ");
+            custName.append(customerModel.getMiddleName());
+        }
+        custName.append(" ");
+        custName.append(customerModel.getLastName());
+        
         //
         // get delivery info
         //
@@ -108,8 +67,8 @@ if (orderId == null){
         Calendar dlvEnd =   Calendar.getInstance();
         dlvEnd.setTime(reservation.getEndTime());
         //int startHour =  dlvStart.get(Calendar.HOUR_OF_DAY);
-        //int endHour = dlvEnd.get(Calendar.HOUR_OF_DAY);
-
+        //int endHour = dlvEnd.get(Calendar.HOUR_OF_DAY); 
+        
         //String sStartHour = startHour==12? "noon" : (startHour>12 ? ""+(startHour-12) : ""+startHour);
         //String sEndHour = endHour==0 ? "12 am" : (endHour==12 ? "noon" : (endHour>12 ? (endHour-12)+" pm" : endHour+" am"));
         String deliveryTime = getTimeslotString(dlvStart, dlvEnd);
@@ -121,25 +80,22 @@ if (orderId == null){
         // get order line info
         //
         boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED) ||cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZATION_FAILED);
-
+    	
         boolean isFdxOrder = false;
     	EnumEStoreId EStoreIdEnum = null;
     	EStoreIdEnum = cart.getEStoreId();
-    	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; }
-
+    	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
+        
 	%>
 	<!-- error message handling here -->
 
-	<%
+	<% 
 	    String errorMsg="";
 	     if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
 	        errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
 	%>
 	<% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
 	        errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(cart.getAuthFailDescription());
-	%>
-	<% } if (cart.isMakeGood() && transException) {
-	        errorMsg=SystemMessageList.MSG_CANNOT_MODIFY_MAKE_GOOD_ORDER;
 	%>
 		<%@ include file="/includes/i_error_messages.jspf" %>
 	<% } %>
@@ -196,7 +152,7 @@ if (orderId == null){
 			ErpComplaintModel c = null;
 	        for (Iterator i=comp.iterator(); i.hasNext(); ) {
 	        	c = (ErpComplaintModel)i.next();
-
+	
 				if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
 	            	hasCredit = true;
 				}
@@ -205,71 +161,68 @@ if (orderId == null){
 	    boolean hasClientCodes = (user.isEligibleForClientCodes() && cart.hasClientCodes());
 	    boolean hasModify = allowModifyOrder.booleanValue();
 	    boolean hasCancel = allowCancelOrder.booleanValue();
-	    boolean isViewingCurrentModifyOrder = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
-	    boolean isModifyOrder_order_details = (user.getShoppingCart() instanceof FDModifyCartModel);
 	%>
-	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
+	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 		    <td class="text11">
-		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status:
+		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: 
 		       <% if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {%>
 		       <font color="#FF0000"><%=cart.getOrderStatus().getDisplayName()%></font>
 		       <%} else {%><%=cart.getOrderStatus().getDisplayName()%>
 		       <%}%>
-
+		       
 		       </font> &nbsp;&nbsp;&nbsp;<br>
 		        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
 		    </td>
-		    <td>
-		    	<% if (hasCredit) { %>
-					<i>Credit was issued for this order.</i>
-	    		<% } %>
+		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
+		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
+		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
+			    		<table class="fright">
+				    		<tr>
+					    		<% if (hasCredit) { %>
+									<td align="right" valign="middle" class="text11"><i>Credit was issued for this order.</i></td>
+					    		<% } %>
+							    <% if (hasClientCodes) { %>
+							    	<td nowrap="nowrap">
+										<a class="butCont butBlue fright" href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="margin-left: 10px;">
+											<span class="butLeft"><!-- --></span><span class="butMiddle butText">export&nbsp;client&nbsp;codes</span><span class="butRight"><!-- --></span>
+										</a>
+									</td>
+							    <% } %>
+				    			<% if (hasModify) { %>
+								    <td nowrap="nowrap">
+										<a class="imgButtonOrange fright" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify">modify order</a>
+								    </td>
+				    			<% } %>
+				    			<% if (hasCancel) { %>
+								    <td nowrap="nowrap">
+										<a class="imgButtonRed fright" style="margin-left: 10px;" href="/your_account/cancel_order.jsp?orderId=<%=orderId%>">cancel order</a>
+								    </td>
+							   <% } %>
+				    		</tr>
+				    	</table>
+		    		<% } %>
+		    	<% } else { %>
+		    		&nbsp;
+		    	<% } %>
+				<%  if (!cart.isPending()) { %>
+					<table class="fright">
+						<tr>
+						    <td>
+								<a class="imgButtonBlue fright" href="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>" title="Click here to reorder items from this order in Quickshop">shop from this order</a>
+							</td>
+						</tr>
+					</table>
+				<% } %>
 		    </td>
-		    
 		</tr>
 	</table>
-	
-	<div class="order-details noprint actions">
-		<%-- PRINT BUTTON --%>
-		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %>
-			<button onclick="window.print()" class="cssbutton medium green transparent" title="Click here to print invoice for this order">Print</button>
-		<% } %>
-		    
-		<%-- RE-ORDER BUTTON --%>
-		<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %>
-			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple transparent">Reorder</button>
-		<% } %>
-		
-		<%-- SHOP FROM ORDER BUTTON --%>
-		<%  if (!cart.isPending()) { %>
-				<button class="cssbutton medium green transparent" onclick="location.href='/quickshop/shop_from_order.jsp?orderId=<%= orderId %>'" title="Click here to reorder items from this order in Quickshop">Shop From Order</button>
-		<% } %>
-		
-		<%-- EXPORT CLIENT CODES BUTTON --%>
-		<% if (hasClientCodes) { %>
-			<button class="cssbutton medium green transparent" title="Click here to export client codes for this order" onclick="location.href='/api/clientCodeReport.jsp?sale=<%= orderId %>'">
-				Export Client Codes
-			</button>
-		<% } %>
-		<% if(isViewingCurrentModifyOrder) {%><%-- MODIFY - CANCEL CHANGES BUTTON --%>
-			<button class="cssbutton medium orange transparent cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
-	   	<% } else if (!isModifyOrder_order_details && hasModify) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
-			<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
-		<% } %>
-		
-  		<%-- CANCEL ORDER BUTTON - this button is right aligned --%>
-  		<% if (hasCancel) { %>
-			<button class="cssbutton medium red transparent cancel-order-btn" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>
-		<% } %>
-	</div>
-	
-	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0" alt="" /><br />
 	<%@ include file="/includes/your_account/i_order_detail_delivery_payment.jspf" %><br />
 	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" alt="" ><br /><span class="space4pix"><br /></span>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"><br /><span class="space4pix"><br /></span>
 	<%@ include file="/includes/your_account/i_order_detail_cart_details.jspf" %><br />
 <%  } %>
 <br />
@@ -277,7 +230,7 @@ if (orderId == null){
     double totalCredit = 0.0;
     int orderLine = 0;
     StringBuffer creditRow = new StringBuffer(2000);
-
+    
     Collection comp = cart.getComplaints();
     if (comp != null) {
         for (Iterator i=comp.iterator(); i.hasNext(); ) {
@@ -323,12 +276,12 @@ if (orderId == null){
                         creditRow.append("<td>"+ccc.getMethod().getName()+"</td>");
                         creditRow.append("<td align=\"right\"><font class=\"text10bold\">"+currencyFormatter.format(ccc.getAmount())+"</font></td>");
                         creditRow.append("<td>&nbsp;</td></tr>");
-                        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"3\"></td></tr>");
+                        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"3\"></td></tr>");
                     } // if ccc.getAmount() > 0.0
                 } //for cc
             } //c!=null
         } //for comp
-        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"3\"></td></tr>");
+        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"3\"></td></tr>");
 %>
 <table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
@@ -347,10 +300,10 @@ if (orderId == null){
 	    <td align="right"><b>Amount</b></td>
 	    <td>&nbsp;</td>
     </tr>
-    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
     <%=creditRow%>
-    <tr><td colspan="7" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+    <tr><td colspan="7" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
     <tr>
 	    <td colspan="5" align="right"><b>Total credit issued for this order:</b>&nbsp;&nbsp;</td>
 	    <td align="right"><font class="text10bold"><%=currencyFormatter.format(totalCredit)%></font></td>
@@ -365,3 +318,37 @@ if (orderId == null){
 </tmpl:put>
 </tmpl:insert>
 </fd:ModifyOrderController>
+
+<%!
+    private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
+        StringBuffer sb = new StringBuffer();
+        int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
+        sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
+        int startMin = startTimeCal.get(Calendar.MINUTE);
+        if(startMin != 0){
+            sb.append(":"+startMin);
+        }
+        int amPm = startTimeCal.get(Calendar.AM_PM);
+        if(amPm == 1){
+            sb.append(" pm");
+        }else{
+            sb.append(" am");
+        }
+        sb.append(" - ");
+        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY); 
+        sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
+        int endMin = endTimeCal.get(Calendar.MINUTE);
+        if(endMin != 0){
+            sb.append(":"+endMin);
+        }
+        if(sb.toString().indexOf("noon") < 0){
+            amPm = endTimeCal.get(Calendar.AM_PM);
+            if(amPm == 1){
+                sb.append(" pm");
+            }else{
+                sb.append(" am");
+            }
+        }
+        return sb.toString();
+    }
+%>

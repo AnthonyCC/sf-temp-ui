@@ -9,10 +9,7 @@ final int W_YA_ADD_CREDITCARD = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-  <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Your Account - Add EBT Card"/>
-  </tmpl:put>
-<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add EBT Card</tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add EBT Card</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 
@@ -34,11 +31,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</fd:ErrorHandler>
 
 <%} %>
-<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
-<table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 
+<table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
+<form method="post">
 <tr>
-<td><IMG src="/media_stat/images/snapIcon.jpg" alt="" WIDTH="29" HEIGHT="33" BORDER="0"></td>
+<td><IMG src="/media_stat/images/snapIcon.jpg" WIDTH="29" HEIGHT="33" BORDER="0"></td>
 <td>&nbsp;</td>
 <td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 <font class="title18">Add EBT Card</font><br>
@@ -50,9 +47,9 @@ Please enter new EBT card information.
 <%@ include file="/includes/ckt_acct/i_ebtcard_fields.jspf" %>
 <br><br>
 
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%= W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
-	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 		<TR VALIGN="BOTTOM">
@@ -62,7 +59,6 @@ Please enter new EBT card information.
 				</TD>
 </TR>
 </TABLE>
-</form>
 <br>
 <%--<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP"><TD WIDTH="640"><%@ include file="/includes/i_footer_account.jspf"%></TD></TR>

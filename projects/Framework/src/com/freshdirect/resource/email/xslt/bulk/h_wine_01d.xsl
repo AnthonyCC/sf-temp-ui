@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>Wine now available!</title>
@@ -83,26 +83,26 @@ http://www.freshdirect.com/help/faq_home.jsp
 		<td colspan="3"><a href="http://www.freshdirect.com?trk=wine_01d"><img src="http://www.freshdirect.com/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" alt="FreshDirect" border="0"/></a></td>
 		<td colspan="3" align="right" valign="bottom"><img src="http://www.freshdirect.com/media_stat/images/logos/fd_tag.gif" width="170" height="12" alt="It's All About The Food" border="0"/></td>
 	</tr>
-	<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"/></td></tr>
-	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1"/></td></tr>
+	<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" border="0"/></td></tr>
+	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1"/></td></tr>
 	<tr align="center"><td colspan="6"><a href="http://www.freshdirect.com/department.jsp?deptId=win&amp;trk=wine_01d"><img src="http://www.freshdirect.com/media/images/promotions/wine_01d.gif" width="619" height="128" border="0" vspace="14" alt="Best Cellars WINE NOW AVAILABLE! Just in time for the Holidays"/></a></td></tr>
 	<tr align="center">
 		<td colspan="6" class="fdEmail">
 		Now you can order a selection of great wines for everyday through Best Cellars at FreshDirect and have your wine delivered to your door along with the rest of your food order.
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>
 		<a href="http://www.freshdirect.com/department.jsp?deptId=win&amp;trk=wine_01d"><img src="http://www.freshdirect.com/media_stat/images/template/email/wine/wine_start_shopping.gif" width="352" height="27" border="0" vspace="10" alt="CLICK HERE TO START SHOPPING FOR WINE"/></a><br/>
 		<img src="http://www.freshdirect.com/media_stat/images/template/email/wine/wine_bottles.jpg" width="555" height="208" border="0" usemap="#wine_nav"/><br/><br/>
 		</td>
 	</tr>
 	<tr bgcolor="#CCCCCC">
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="68" height="1"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="70" height="1"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="171" height="1"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="172" height="1"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="70" height="1"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="68" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="68" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="70" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="171" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="172" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="70" height="1"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="68" height="1"/></td>
 	</tr>
-	<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18"/></td></tr>
+	<tr><td colspan="6"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18"/></td></tr>
 	<tr align="center">
 		<td align="right"><a href="http://www.freshdirect.com/category.jsp?catId=hmr_xmas&amp;trk=wine_01d"><img src="http://www.freshdirect.com/media_stat/images/template/email/holiday/turkey.jpg" width="62" height="49" border="0"/></a></td>
 		<td><a href="http://www.freshdirect.com/category.jsp?catId=hmr_xmas&amp;trk=wine_01d"><img src="http://www.freshdirect.com/media_stat/images/template/email/holiday/ham.jpg" width="62" height="49" border="0"/></a></td>
@@ -111,7 +111,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 		<td align="left"><a href="http://www.freshdirect.com/category.jsp?catId=hmr_xmas&amp;trk=wine_01d"><img src="http://www.freshdirect.com/media_stat/images/template/email/holiday/crudites.jpg" width="62" height="49" border="0"/></a></td>
 	</tr>
 	<tr align="center">
-		<td colspan="6" class="fdEmail"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
+		<td colspan="6" class="fdEmail"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
 		Celebrate the Holiday season in style and ease with our Chef's special menu,
 		featuring delicious, traditional appetizers, entr&#xE9;es, and more.<br/><br/>
 		<a href="http://www.freshdirect.com/category.jsp?catId=hmr_xmas&amp;trk=wine_01d"><font color="#336600"><u><b>Click here to shop from our Holiday Menu.</b></u></font></a><br/><br/>

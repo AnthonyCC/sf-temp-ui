@@ -16,7 +16,7 @@ public class NewGwtNodeCallback extends BaseCallback<GwtNodeData> {
     @Override
     public void onSuccess(final GwtNodeData result) {
         if (result == null) {
-            MessageBox.alert("Creating node failed", "A node with the given ID already exists", null);
+            MessageBox.alert("Creating node failed", "There is already exist a node with the given ID", null);
             return;
         }
         NewContentNodePopup window = new NewContentNodePopup (result, field); 

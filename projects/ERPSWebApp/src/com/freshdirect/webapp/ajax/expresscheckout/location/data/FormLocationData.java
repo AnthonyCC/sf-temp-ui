@@ -6,6 +6,7 @@ public class FormLocationData {
 
 	private String selected;
 	private List<LocationData> addresses;
+    private List<String> onOpenCoremetrics;
 
 	public String getSelected() {
 		return selected;
@@ -22,4 +23,13 @@ public class FormLocationData {
 	public void setAddresses(List<LocationData> addresses) {
 		this.addresses = addresses;
 	}
+
+    public List<String> getOnOpenCoremetrics() {
+        return onOpenCoremetrics;
+    }
+
+    public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
+        this.onOpenCoremetrics = onOpenCoremetrics;
+    }
+
 }

@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ZonePriceListing;
@@ -26,8 +24,7 @@ public class PricingContext implements Serializable {
 	@Deprecated
 	public static final PricingContext FDX_DEFAULT = new PricingContext(ZonePriceListing.DEFAULT_FDX_ZONE_INFO);
 
-	@JsonCreator
-	public PricingContext(@JsonProperty("zoneInfo") ZoneInfo pricingZone) {
+	public PricingContext(ZoneInfo pricingZone) {
 	    if (pricingZone == null) {
 	    	// using default if null, passing an exception to have a stacktrace
 	    	LOGGER.warn( "PricingContext initialized with null! Using default master zone instead.", new NullPointerException("pZoneId") );

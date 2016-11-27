@@ -1,29 +1,30 @@
 package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategorySectionModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductFilterGroupI;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategorySectionModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductFilterGroup;
-import com.freshdirect.storeapi.content.ProductItemFilterI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
 
 public class NavigationModel {
-
+	
 	/**
-	 * Current user navigating
+	 * Current user navigating	
 	 */
 	private FDUserI user;
 
@@ -31,70 +32,64 @@ public class NavigationModel {
 	 * Depth of the navigation (DEP, CAT, ...)
 	 */
 	private NavDepth navDepth;
-
+	
 	/**
 	 * Left side navigation (menu)
 	 */
 	private List<MenuBoxData> leftNav;
-
+	
 	/**
 	 * The actual product container
 	 */
 	private ContentNodeModel selectedContentNodeModel;
-
+	
 	/**
 	 * Breadcumb
 	 */
 	private List<ContentNodeModel> contentNodeModelPath;
-
+	
 	/**
 	 * Navigation tree, store contentNodeModel for each level
 	 */
 	private Map<NavDepth, ContentNodeModel> navigationHierarchy;
-
+	
 	/**
 	* The super department of the hierarchy if any
 	*/
 	private SuperDepartmentModel superDepartmentModel;
-
+	
 	/**
 	 * All filters
 	 */
-	private List<ProductFilterGroup> allFilters = new ArrayList<ProductFilterGroup>();
-
+	private List<ProductFilterGroupI> allFilters = new ArrayList<ProductFilterGroupI>();
+	
 	/**
 	 * Selected filters
 	 */
 	private Set<ProductItemFilterI> activelFilters = new HashSet<ProductItemFilterI>();
-
+	
 	/**
 	 * sort options associated with the actual department
 	 */
-
+	
 	private List<CategoryModel> regularCategories;
 	private List<CategoryModel> preferenceCategories;
 	private List<CategoryModel> popularCategories;
 	private List<CategorySectionModel> categorySections;
 	private List<FilteringSortingItem<ProductModel>> searchResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private List<Recipe> recipeResults = new ArrayList<Recipe>();
-    private Set<DepartmentModel> departmentsOfSearchResults = new HashSet<DepartmentModel>();
-    private Set<CategoryModel> categoriesOfSearchResults = new HashSet<CategoryModel>();
-    private Set<CategoryModel> subCategoriesOfSearchResults = new HashSet<CategoryModel>();
-    private Set<BrandModel> brandsOfSearchResults = new HashSet<BrandModel>();
-    private Set<String> showMeOnlyOfSearchResults = new HashSet<String>();
+	private Map<String, DepartmentModel> departmentsOfSearchResults = new HashMap<String, DepartmentModel>();
+	private Map<String, CategoryModel> categoriesOfSearchResults = new HashMap<String, CategoryModel>();
+	private Map<String, CategoryModel> subCategoriesOfSearchResults = new HashMap<String, CategoryModel>();
+	private Map<String, BrandModel> brandsOfSearchResults = new HashMap<String, BrandModel>();
+	private Set<String> showMeOnlyOfSearchResults = new HashSet<String>();
 	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
 	private boolean recipeListing;
 	private EnumBrandFilterLocation brandFilterLocation;
 	private String pageTitle;
 	private String metaDescription;
-
-	/**
-	 * This flag signals if browse request arrives via mobile API
-	 * Covers both inbound mobile and FK Web requests
-	 */
-	private boolean mobileNavigation = false;
-
+	
 	public NavDepth getNavDepth() {
 		return navDepth;
 	}
@@ -149,10 +144,10 @@ public class NavigationModel {
 	public void setUser(FDUserI user) {
 		this.user = user;
 	}
-	public List<ProductFilterGroup> getAllFilters() {
+	public List<ProductFilterGroupI> getAllFilters() {
 		return allFilters;
 	}
-	public void setAllFilters(List<ProductFilterGroup> allFilters) {
+	public void setAllFilters(List<ProductFilterGroupI> allFilters) {
 		this.allFilters = allFilters;
 	}
 	public boolean isProductListing() {
@@ -191,31 +186,31 @@ public class NavigationModel {
 	public List<FilteringSortingItem<ProductModel>> getSearchResults() {
 		return searchResults;
 	}
-	public void setSearchResults(List<FilteringSortingItem<ProductModel>> searchResults) {
-	    this.searchResults = searchResults;
-	}
-	public Set<DepartmentModel> getDepartmentsOfSearchResults() {
+	public Map<String, DepartmentModel> getDepartmentsOfSearchResults() {
 		return departmentsOfSearchResults;
 	}
-	public void setDepartmentsOfSearchResults(Set<DepartmentModel> departmentsOfSearchResults) {
+	public void setDepartmentsOfSearchResults(Map<String, DepartmentModel> departmentsOfSearchResults) {
 		this.departmentsOfSearchResults = departmentsOfSearchResults;
 	}
-	public Set<CategoryModel> getCategoriesOfSearchResults() {
+	public Map<String, CategoryModel> getCategoriesOfSearchResults() {
 		return categoriesOfSearchResults;
 	}
-	public void setCategoriesOfSearchResults(Set<CategoryModel> categoriesOfSearchResults) {
+	public void setCategoriesOfSearchResults(Map<String, CategoryModel> categoriesOfSearchResults) {
 		this.categoriesOfSearchResults = categoriesOfSearchResults;
 	}
-	public Set<CategoryModel> getSubCategoriesOfSearchResults() {
+	public Map<String, CategoryModel> getSubCategoriesOfSearchResults() {
 		return subCategoriesOfSearchResults;
 	}
-	public void setSubCategoriesOfSearchResults(Set<CategoryModel> subCategoriesOfSearchResults) {
+	public void setSubCategoriesOfSearchResults(Map<String, CategoryModel> subCategoriesOfSearchResults) {
 		this.subCategoriesOfSearchResults = subCategoriesOfSearchResults;
 	}
-	public Set<BrandModel> getBrandsOfSearchResults() {
+	public void setSearchResults(List<FilteringSortingItem<ProductModel>> searchResults) {
+		this.searchResults = searchResults;
+	}
+	public Map<String, BrandModel> getBrandsOfSearchResults() {
 		return brandsOfSearchResults;
 	}
-	public void setBrandsOfSearchResults(Set<BrandModel> brandsOfSearchResults) {
+	public void setBrandsOfSearchResults(Map<String, BrandModel> brandsOfSearchResults) {
 		this.brandsOfSearchResults = brandsOfSearchResults;
 	}
 	public Set<String> getShowMeOnlyOfSearchResults() {
@@ -224,11 +219,11 @@ public class NavigationModel {
 	public void setShowMeOnlyOfSearchResults(Set<String> showMeOnlyOfSearchResults) {
 		this.showMeOnlyOfSearchResults = showMeOnlyOfSearchResults;
 	}
-
+	
 	public boolean isRecipeListing() {
 		return recipeListing;
 	}
-
+	
 	public void setRecipeListing(boolean recipeListing) {
 		this.recipeListing = recipeListing;
 	}
@@ -255,13 +250,5 @@ public class NavigationModel {
 	}
 	public void setMetaDescription(String metaDescription) {
 		this.metaDescription = metaDescription;
-	}
-
-	public void setMobileNavigation(boolean mobileNavigation) {
-		this.mobileNavigation = mobileNavigation;
-	}
-
-	public boolean isMobileNavigation() {
-		return mobileNavigation;
 	}
 }

@@ -41,18 +41,18 @@ if (!isGroceryProdPage) {
             <BR>
             <%-- remove gray line APPDEV-222 --%>
             <!-- appdev 222 -->
-            <!-- img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
+            <!-- img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
             <BR> 
      
             <FONT CLASS="space4pix"><br><br></FONT>
             <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
                <tr valign="top">
                   <td align="center">
-					  <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+					  <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
 						<% if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
 									   if(indexNo.intValue()!=0){ %>
 											 <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-											 <img src="/media_stat/images/layout/cccccc.gif" alt="" width="295" HEIGHT="1" BORDER="0"><BR>
+											 <img src="/media_stat/images/layout/cccccc.gif" width="295" HEIGHT="1" BORDER="0"><BR>
 											 <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 									   <% } %>
 									<fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
@@ -81,7 +81,7 @@ if (!isGroceryProdPage) {
 					%>
 					
 						<BR>
-						<!-- img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
+						<!-- img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
             					<BR>
 						<FONT CLASS="space4pix"><br><br></FONT>
 						<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
@@ -102,18 +102,18 @@ if (!isGroceryProdPage) {
 								if (!showRatingLegend) {
 							%>
 									<a href="javascript:popup('<%=deptMngrLink%>','large')"><img src="<%=deptMngrImg.getPath()%>" border="0" alt="<%=cm_ForBottom.getFullName()%>: MANAGER"></a>
-										<br><img src="/media_stat/images/layout/clear.gif" alt="" width="110" HEIGHT="1" BORDER="0">    
+										<br><img src="/media_stat/images/layout/clear.gif" width="110" HEIGHT="1" BORDER="0">    
 									</td>
 									<td width="10"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td> 
 									<td>
 							<% } 
 							} // close dptBottAttrib !=null %>
 							 
-							<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
+							<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
 								<% if (((Html)mediaRef).getPath()!=null) { %>
 									<% if(indexNo.intValue()!=0){ %>
 										<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-										<img src="/media_stat/images/layout/cccccc.gif" alt="" width="295" HEIGHT="1" BORDER="0"><BR>
+										<img src="/media_stat/images/layout/cccccc.gif" width="295" HEIGHT="1" BORDER="0"><BR>
 										<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 									<% } %>
 									<fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
@@ -156,7 +156,7 @@ if (!isGroceryProdPage) {
     %>
 					<tr valign="top">
 					 <td width="<%=bottTblWidth%>">
-					  <img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=bottTblWidth%>" HEIGHT="1"><br>
+					  <img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1"><br>
 					  <br>
 					  <img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><img src="/media_stat/images/layout/featured_brands.gif" width="94" HEIGHT="8" border="0"><br>
 					  <br><br>

@@ -126,7 +126,6 @@ public class EnumClaimValue implements NutritionValueEnum {
 		types.add(new EnumClaimValue("GRASS_FED", "Grass-Fed", 1));
 		types.add(new EnumClaimValue("NOS",       "Naturally Occurring Sulfites", 1));
 		types.add(new EnumClaimValue("SOY",       "Soy Free", 1));
-		types.add(new EnumClaimValue("PA",        "Paleo", 1));
 		types.add(OAN_ORGANIC);
 		types.add(KOSHER_FOR_PASSOVER);
 		

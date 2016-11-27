@@ -15,6 +15,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
@@ -30,11 +32,10 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 
 	private String name = "singlePageCheckoutPotato";
 	private String standingOrder=null;
-	private String action;
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
-	private static  final String EWALLET_ERROR_CODE = "WALLET_ERROR";
+	private final String EWALLET_ERROR_CODE = "WALLET_ERROR";
 	
 	
 	
@@ -61,28 +62,91 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
-            StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
+	        StandingOrderHelper.clearSO3Context(user, request, standingOrder);
 
-			if (action != null && action.equals("resetContext")) {
-				SinglePageCheckoutFacade.defaultFacade().handleModifyCartPreSelections(user, request);
-				if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()) {
-					CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
-				}
-
-			} else {
-				SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-				if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()) {
-					CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
-				}
-
-				// Check whether EWallet Card used for order
-				checkEWalletCard(result.getPayment(), request);
-				removeOlderEwalletPaymentMethod(result.getPayment(), request);
-				Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
-				context.setAttribute(name, potato);
+			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
+			if(FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()){
+			CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
 			}
+			// Check whether EWallet Card used for order 
+			checkEWalletCard(result.getPayment(),request);
+			removeOlderEwalletPaymentMethod(result.getPayment(),request);
 			
-
+			// EWallet ExpressCheckout Code Starts
+			/* 
+			ErpCustEWalletModel erpCustEWalletModel = FDCustomerManager.findLongAccessTokenByCustID(user.getFDCustomer().getErpCustomerPK(),MASTERPASS_WALLET_TYPE_NAME);	
+			List<PaymentData> walletCards = new ArrayList<PaymentData>();
+			if (erpCustEWalletModel != null	&& erpCustEWalletModel.getLongAccessToken() != null
+					&& !erpCustEWalletModel.getLongAccessToken().isEmpty()) {
+				try {
+						request.setAttribute(EWALLET_REQ_ATTR_ACTION, EWALLET_REQ_ATTR_MP_ALL_PAYMENT);
+						request.setAttribute(EWALLET_REQ_ATTR_WALLET_TYPE_NAME,MASTERPASS_WALLET_TYPE_NAME);
+						request.getRequestDispatcher("/api/expresscheckout/addpayment/ewalletPayment").include(request, context.getResponse());
+						if (request.getSession().getAttribute(EWALLET_SESSION_ATTR_PAYMENTDATA) != null){
+						walletCards = (List<PaymentData>) request.getSession().getAttribute(EWALLET_SESSION_ATTR_PAYMENTDATA);
+						}
+//						
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			// If EWallet Card used for order 
+			checkEWalletCard(result.getPayment(),request);
+			
+			if (result.getPayment() != null) {
+				List<PaymentData> payments = result.getPayment().getPayments();
+				PaymentData mpPaymentMethod = null;
+				for (PaymentData data : payments) {
+					String actionCompleted = "";
+					if(request.getAttribute(EWALLET_REQ_ATTR_ACTION_COMPLETED) !=null ){
+						actionCompleted =request.getAttribute(EWALLET_REQ_ATTR_ACTION_COMPLETED).toString();
+					}
+					if( actionCompleted!= null && actionCompleted.equalsIgnoreCase(EWALLET_REQ_ATTR_PAIRING_END) || actionCompleted.equalsIgnoreCase(MP_REQ_ATTR_ACTION_COMPLETED_VALUE) ){
+						if(data.geteWalletID()!=null && data.geteWalletID().equals("1")){
+							data.setSelected(true);
+							result.getPayment().setSelected(data.getId());
+						}else{
+							data.setSelected(false);
+						}
+					}else{
+						if (data.isSelected() && data.geteWalletID()!=null && data.geteWalletID().equals("1")) {
+							request.setAttribute(EWALLET_REQ_ATTR_PAYMENT_DATA, data);
+							try {
+								if( actionCompleted!= null && !actionCompleted.equalsIgnoreCase(EWALLET_REQ_ATTR_PAIRING_END)){
+									request.setAttribute(EWALLET_REQ_ATTR_ACTION, EWALLET_REQ_ATTR_ACTION_EXP_CHECKOUT);
+									request.setAttribute(EWALLET_REQ_ATTR_WALLET_TYPE_NAME,MASTERPASS_WALLET_TYPE_NAME);
+									request.getRequestDispatcher("/api/expresscheckout/addpayment/ewalletPayment").include(request, context.getResponse());
+									if(request.getAttribute(EWALLET_REQ_ATTR_INVALID_PAYMENTMETHOD)!=null){
+										String paymentMethod = (String)request.getAttribute(EWALLET_REQ_ATTR_INVALID_PAYMENTMETHOD);
+										if(paymentMethod.equalsIgnoreCase(EWALLET_BOOLEAN_TRUE)){
+											HttpServletResponse  response = (HttpServletResponse) context.getResponse();
+											response.sendRedirect("/expressco/checkout.jsp");
+										}
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					if(data.geteWalletID()!=null && data.geteWalletID().equals("1")){
+						mpPaymentMethod = new PaymentData();
+						mpPaymentMethod = data;
+					}
+				}
+				// Add and Display EWallet Cards along with FD stored Payment Methods 
+				if (erpCustEWalletModel != null	&& erpCustEWalletModel.getLongAccessToken() != null
+						&& !erpCustEWalletModel.getLongAccessToken().isEmpty()) {
+					if(mpPaymentMethod !=null)
+    					addPaymentMethods(walletCards, mpPaymentMethod, payments);
+    				else
+    					payments.addAll(walletCards);
+				}
+			}
+			*/
+			
+			Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
+			context.setAttribute(name, potato);
 		} catch (FDResourceException e) {
 			throw new JspException(e);
 		} catch (TemplateException e) {
@@ -96,7 +160,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 * @param formpaymentData
 	 * @param request
 	 */
-	public static void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
+	private void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null && formpaymentData.getPayments()!=null) {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
@@ -139,7 +203,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 * @param formpaymentData
 	 * @param request
 	 */
-	public static void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
+	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
 			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
 				formpaymentData.setWalletErrorMsg(request.getSession().getAttribute(EWALLET_ERROR_CODE).toString());
@@ -220,14 +284,6 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 */
 	public void setStandingOrder(String standingOrder) {
 		this.standingOrder = standingOrder;
-	}
-
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
 	}
 	
 	

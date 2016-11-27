@@ -1,14 +1,18 @@
 package com.freshdirect.payment.gateway.impl;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
 
+import com.braintreegateway.PayPalAccount;
+import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
+import com.braintreegateway.TransactionRequest;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.customer.EnumCardType; 
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -17,17 +21,12 @@ import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpVoidCaptureModel;
-import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
-import com.freshdirect.payment.PayPalAccountModel;
-import com.freshdirect.payment.PayPalCaptureResponse;
-import com.freshdirect.payment.PayPalResponse;
 import com.freshdirect.payment.PaylinxResourceException;
-import com.freshdirect.payment.TransactionModel;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
@@ -37,7 +36,6 @@ import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
-import com.freshdirect.payment.service.FDPayPalService;
 
 /**
  * @author Aniwesh Vatsal
@@ -53,8 +51,6 @@ public class PayPal implements Gateway {
 	private static final String PAYPAL_VERIFY_VAULT_TOKEN_TXN="VerifyVaultToken";
 	private static final String PAYPAL_TXN_SUCCESS="SUCCESS";
 	private static final String PAYPAL_TXN_FAIL="FAIL";
-	private final static Category LOGGER = LoggerFactory.getInstance( PayPal.class );
-
 	
 	@Override
 	public GatewayType getType() {
@@ -84,12 +80,16 @@ public class PayPal implements Gateway {
 			if(isVaultTokenValid){
 				authModel = null;
 				
-
-				PayPalResponse payPalResponse = FDPayPalService.getInstance().authorize(paymentMethod,orderNumber, authorizationAmount, tax, merchantId, merchantEmailID);
-
+				TransactionRequest request = new TransactionRequest().
+						amount(BigDecimal.valueOf(authorizationAmount)).orderId(orderNumber). 
+			            paymentMethodToken(paymentMethod.getProfileID()).options().payeeEmail(merchantEmailID).done();
 				
-				if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
-					authModel = GatewayAdapter.getPPAuthResponse(payPalResponse,paymentMethod);
+				if(paymentMethod.getDeviceId() != null && !StringUtils.isEmpty(paymentMethod.getDeviceId())){
+					request.deviceData(paymentMethod.getDeviceId());
+				}
+				Result<Transaction> saleResult = PayPalData.getBraintreeGateway().transaction().sale(request);
+				if (saleResult!= null && saleResult.isSuccess()) {
+					authModel = GatewayAdapter.getPPAuthResponse(saleResult,paymentMethod);
 					if(authModel != null){
 						authModel.setMerchantId(merchantId);
 						authModel.setGatewayOrderID(orderNumber);
@@ -104,7 +104,7 @@ public class PayPal implements Gateway {
 					response.setRequestProcessed(true);
 					response.setApproved(true);
 					response.setAVSMatch(true);
-					response.setResponseCode(payPalResponse.getTransactionModel().getProcessorResponseCode());
+					response.setResponseCode(saleResult.getTarget().getProcessorResponseCode());
 					response.setStatusCode(EnumPaymentResponse.APPROVED.getName());
 					response.setStatusMessage(EnumPaymentResponse.APPROVED.getDescription());
 					response.setDeclined(false);
@@ -130,12 +130,12 @@ public class PayPal implements Gateway {
 					response.setDeclined(true);
 					response.setStatusCode(EnumPaymentResponse.DECLINED.getCode());
 					response.setStatusMessage(EnumPaymentResponse.DECLINED.getDescription());
-					if(payPalResponse != null && payPalResponse.getTransactionModel() != null){
-						authModel.setDescription(payPalResponse.getTransactionModel().getProcessorResponseText());
-						authModel.setEwalletTxId(payPalResponse.getTransactionModel().getId());
-						response.setResponseCode(payPalResponse.getTransactionModel().getProcessorResponseCode());
-						response.setStatusMessage(payPalResponse.getTransactionModel().getProcessorResponseText());
-						response.setEwalletTxId(payPalResponse.getTransactionModel().getId());
+					if(saleResult != null && saleResult.getTransaction() != null){
+						authModel.setDescription(saleResult.getTransaction().getProcessorResponseText());
+						authModel.setEwalletTxId(saleResult.getTransaction().getId());
+						response.setResponseCode(saleResult.getTransaction().getProcessorResponseCode());
+						response.setStatusMessage(saleResult.getTransaction().getProcessorResponseText());
+						response.setEwalletTxId(saleResult.getTransaction().getId());
 					}
 					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 				}
@@ -212,11 +212,16 @@ public class PayPal implements Gateway {
 			ErpPaymentMethodI paymentMethod, double amount, double tax,
 			String saleId) throws ErpTransactionException {
 		
-
+		Result<Transaction> result = null;
 		String txId = authorization.getEwalletTxId();
 
-		PayPalResponse payPalResponse = FDPayPalService.getInstance().capture(authorization, paymentMethod, amount, tax, saleId);
-
+		if (amount > 0) {
+			TransactionRequest txnRequest = new TransactionRequest().amount(BigDecimal.valueOf(amount));
+			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId, txnRequest);
+		}
+		else {
+			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId);
+		}
 		
 		saleId = authorization.getGatewayOrderID();
 		if (StringUtils.isEmpty(saleId)) {
@@ -229,34 +234,24 @@ public class PayPal implements Gateway {
 		response.setBillingInfo(request.getBillingInfo());
 		
 		ErpCaptureModel captureModel = new ErpCaptureModel();
-		if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
+		if (result.isSuccess()) {
 			try {
-				setSuccessResponse(response, payPalResponse);
+				setSuccessResponse(response, result);
 				captureModel = GatewayAdapter.getCaptureResponse(response, authorization);
 				captureModel.setCardType(EnumCardType.PAYPAL);
-				captureModel.setEwalletTxId(payPalResponse.getTransactionModel().getId());
+				captureModel.setEwalletTxId(result.getTarget().getId());
 				captureModel.setProfileID(authorization.getProfileID());
 				captureModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 			} catch (PaylinxResourceException e ) {
-				setFailureResponse(response, payPalResponse);
+				setFailureResponse(response, result);
 				GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 				throw new ErpTransactionException(e.getMessage());
 			}
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
-			// START APPDEV-5490
-			setFailureResponse(response, payPalResponse);
+			setFailureResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-
-			 if(PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().equals(response.getStatusCode())
-					 || PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().equals(response.getStatusCode())){
-				 captureModel.setCardType(EnumCardType.PAYPAL);
-				 captureModel.setSettlementResponseCode(response.getStatusCode()); 
-
-			 }else{
-					throw new ErpTransactionException(payPalResponse.getMessage());
-			 }
-			 //END APPDEV-5490
+			throw new ErpTransactionException(result.getMessage());
 		}
 		
 		return captureModel;
@@ -268,19 +263,17 @@ public class PayPal implements Gateway {
 			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
 		}
 		
-
-		PayPalResponse payPalResponse = FDPayPalService.getInstance().voidCapture(txId);
-						
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
 		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
-		if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
-			setSuccessResponse(response, payPalResponse);
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
-			setFailureResponse(response, payPalResponse);
+			setFailureResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
 		}
 		
 		return response;
@@ -300,18 +293,17 @@ public class PayPal implements Gateway {
 			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
 		}
 		
-
-		PayPalResponse payPalResponse = FDPayPalService.getInstance().reverseAuthorise(txId);
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
 		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
-		if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
-			setSuccessResponse(response, payPalResponse);
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
-			setFailureResponse(response, payPalResponse);
+			setFailureResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			//throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
 		}
 		
 		return response;
@@ -325,8 +317,7 @@ public class PayPal implements Gateway {
 		if (txId == null || txId.isEmpty()) {
 			throw new ErpTransactionException("Transaction Id is empty or null while issue cashback of PayPal order " + orderNumber);
 		}
-
-		PayPalResponse payPalResponse = FDPayPalService.getInstance().issueCashback(orderNumber, paymentMethod, amount, tax);
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().refund(txId, BigDecimal.valueOf(amount).setScale(2, BigDecimal.ROUND_FLOOR));
 		ErpCashbackModel cashback = null;
 		
 		Request request = GatewayAdapter.getCashbackRequest(paymentMethod, amount, tax, 
@@ -334,9 +325,9 @@ public class PayPal implements Gateway {
 		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
-		if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
-			setSuccessResponse(response, payPalResponse);
-			response.getBillingInfo().setTransactionRef(payPalResponse.getTransactionModel().getCaptureId());
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
+			response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getCaptureId());
 			cashback= GatewayAdapter.getCashbackResponse(response, paymentMethod);
 			cashback.setCustomerId(paymentMethod.getCustomerId());
 			cashback.setAmount(amount);
@@ -345,13 +336,13 @@ public class PayPal implements Gateway {
 			cashback.setCardType(EnumCardType.PAYPAL);
 			cashback.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 			cashback.setProfileID(txId);
-			cashback.setGatewayOrderID(payPalResponse.getTransactionModel().getOrderId());
-			cashback.setEwallet_tx_id(payPalResponse.getTransactionModel().getId());
+			cashback.setGatewayOrderID(result.getTarget().getOrderId());
+			cashback.setEwallet_tx_id(result.getTarget().getId());
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
-			setFailureResponse(response, payPalResponse);
+			setFailureResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
 		}
 
 		return cashback;
@@ -386,9 +377,7 @@ public class PayPal implements Gateway {
 	@Override
 	public boolean isValidToken(String token, String customerId){
 		try{
-
-			PayPalResponse payPalResponse = FDPayPalService.getInstance().findToken(token, customerId);
-			PayPalAccountModel paypalAccount=payPalResponse.getPayPalAccountModel();
+			PayPalAccount paypalAccount = PayPalData.getBraintreeGateway().paypalAccount().find(token);
 			if(paypalAccount != null && paypalAccount.getToken() != null){
 				logPPEwalletRequestResponse(PAYPAL_VERIFY_VAULT_TOKEN_TXN, PAYPAL_TXN_SUCCESS, customerId);
 				return true;
@@ -401,9 +390,6 @@ public class PayPal implements Gateway {
 			return false;
 		}catch(AuthenticationException authenticationException){// When not able to interact with PayPal
 			return true;
-		}catch(FDPayPalServiceException exception){
-			exception.printStackTrace();
-			return false;
 		}
 	}
 
@@ -450,48 +436,30 @@ public class PayPal implements Gateway {
 		}
 	}
 	
-	private void setSuccessResponse(ResponseImpl response, PayPalResponse payPalResponse) {
-		TransactionModel result = payPalResponse.getTransactionModel();
-		response.setResponseCode(result.getProcessorResponseCode());
+	private void setSuccessResponse(ResponseImpl response, Result<Transaction> result) {
+		response.setResponseCode(result.getTarget().getProcessorResponseCode());
 		response.setStatusMessage(result.getMessage());
 		response.setApproved(true);
 		response.setDeclined(false);
 		response.setError(false);
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
-		response.setEwalletTxId(result.getId());
+		response.setEwalletTxId(result.getTarget().getId());
 		response.setRequestProcessed(true);
 		
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
-		response.getBillingInfo().setTransactionRef(result.getAuthorizationId());
-		// Added settlement processor status code as part of APPDEV-5490
-		if(null==response.getStatusCode() && null!=result.getProcessorSettlementResponseCode()){
-			response.setStatusCode(result.getProcessorSettlementResponseCode());
-
-		}
-		
+		response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getAuthorizationId());
 	}
 	
-	private void setFailureResponse(ResponseImpl response, PayPalResponse payPalResponse) {
-		TransactionModel result = null;
-		if(null != payPalResponse)
-		result = payPalResponse.getTransactionModel();
+	private void setFailureResponse(ResponseImpl response, Result<Transaction> result) {
 		response.setError(true);
 		response.setApproved(false);
 		response.setRequestProcessed(true);
-//		Transaction trxn = result.getTransaction();
-		
-		
-		// Added settlement processor status code as part of APPDEV-5490
-		if(result!=null){
-			response.setStatusMessage(result.getMessage());
-			response.setStatusCode(result.getProcessorSettlementResponseCode());
-			response.setResponseCode(result.getProcessorResponseCode());
-		}
-
+		Transaction trxn = result.getTransaction();
+		response.setStatusMessage(result.getMessage());
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
-		if(result != null ){
-			response.setEwalletTxId(result.getId());
-			response.getBillingInfo().setTransactionRef(result.getAuthorizationId());
+		if(trxn != null && trxn.getPayPalDetails() != null){
+			response.setEwalletTxId(trxn.getId());
+			response.getBillingInfo().setTransactionRef(trxn.getPayPalDetails().getAuthorizationId());
 		}
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 	}

@@ -49,7 +49,6 @@
 				{call .standingOrderSettingsItem}
 					{param item: $item /}
 					{param softLimit : $soData.settingsData.soSettings.soSoftLimit /}
-					{param modifyingOrderId : $soData.settingsData.soSettings.modifyingOrderId /}
 				{/call}	
 			</div>
 			<div class="standing-orders-3-so-settings-drawer-cart">
@@ -64,7 +63,7 @@
 									<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 								{/if}
 							</div>
-							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if not $item.readyForActivation}disabled{/if} onclick="activateSo({$item.id});">
+							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
 								<span>Place Order</span>
 							</button>
 							<div class="clear"></div>
@@ -73,7 +72,7 @@
 					{/if}
 					<div class="standing-orders-3-so-settings-drawer-cart-container-wrap">
 					</div>
-					{if not $item.activated and $item.subtotal > 0}
+					{if not $item.activated and $item.amount > 0}
 					<div class="standing-orders-3-so-settings-activate standing-orders-3-so-settings-activate-bottom">
 						<div class="standing-orders-3-so-settings-activate-message">
 							<div class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</div>
@@ -81,7 +80,7 @@
 								<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 							{/if}
 						</div>
-						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if not $item.readyForActivation}disabled{/if} onclick="activateSo({$item.id});">
+						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
 							<span>Place Order</span>
 						</button>
 						<div class="clear"></div>
@@ -97,7 +96,6 @@
 /**
  * @param? item
  * @param? softLimit
- * @param? modifyingOrderId
  */
 {template .standingOrderSettingsItem}
 	<div class="standing-orders-3-so-settings-item-text-container">
@@ -106,8 +104,6 @@
 				<div class="standing-orders-3-so-settings-item-name-change-container">
 					<div class="standing-orders-3-so-settings-item-name-header">{$item.soName}</div>
 					<button class="standing-orders-3-so-settings-item-name-change" onclick="changeSOName({$item.id})">Rename</button>
-					<input type="hidden" class="standing-orders-3-so-settings-id-value" value="{$item.id}" />
-					<input type="hidden" class="standing-orders-3-so-settings-name-value" value="{$item.soName}" />
 				</div>
 				<div style="position: relative;">
 					<div class="standing-orders-3-so-settings-item-name-change-input-container">
@@ -118,26 +114,15 @@
 						</div>
 					</div>
 				</div>
-                <div class="accessibileStdgodr">
-				<a class="standing-orders-3-so-settings-help" href="/unsupported.jsp" onclick="return CCL.help_so(helpSoInfo, this);"">Need Help?</a>
 				<a href="javascript:opencloseSOSettings({$item.id})" class="standing-orders-3-so-settings-square-settings">
 					<div class="standing-orders-3-so-settings-square">
-						<div class="standing-orders-3-so-settings-square-line-1"><span class="standing-orders-3-so-settings-square-line-1-label offscreen">show details</span></div>
-						<div class="standing-orders-3-so-settings-square-line-2"><span class="standing-orders-3-so-settings-square-line-2-label offscreen">hide details</span></div>
+						<div class="standing-orders-3-so-settings-square-line-1"></div>
+						<div class="standing-orders-3-so-settings-square-line-2"></div>
 					</div>
 				</a>
-				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="standing-orders-3-so-settings-error-wrap-container">
-				{if $item.deleteDate}
-					<div class="standing-orders-3-so-settings-error">
-						<div class="standing-orders-3-error-ball">!</div>
-						<div class="standing-orders-3-so-settings-error-container">
-							<div class="standing-orders-3-error-place-order"data-minorderpopup="true">This Standing Order has been cancelled. Your last delivery is {$item.deleteDate}. If you have any questions, please contact Customer Service at (212)796-8002 for assistance.</div>
-						</div>
-					</div>
-				{/if}
 				{if $item.errorDetails}
 					{call .soSettingsErrors}
 						{param item: $item /}
@@ -158,7 +143,6 @@
 			<div class="standing-orders-3-so-settings-item-details">
 				{call .soSettingsDetails}
 					{param item: $item /}
-					{param modifyingOrderId: $modifyingOrderId /}
 				{/call}	
 			</div>		
 		</div>
@@ -170,24 +154,13 @@
 			{else}
 				<button class="standing-orders-3-so-button-settings cssbutton cssbutton-flat green" onclick="openSOSettings({$item.id})">Edit Settings</button>
 			{/if}
-			<button class="standing-orders-3-so-settings-view-details cssbutton cssbutton-flat green transparent" onclick="openSOSettings({$item.id})">View Product List</button>
+			<a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-so-settings-view-details">View Details</a>
 			<a href="javascript:openSettingsDelete({$item.id})" class="standing-orders-3-so-settings-delete">Delete Standing Order</a>
 			<div style="position:relative;">
 		    	<div class="so-delete-popup">
-		    		<div class="so-delete-popup-header">Delete <span class="so-delete-popup-name">{$item.soName}</span> Standing Order?</div>
-		    		{if $item.activated}<div class="so-delete-popup-message">Deliveries scheduled for the next 24 hours will still be processed.</div>{/if}
-		    		<div class="so-delete-popup-message-custom"><label for="last_del">Please select your last delivery:</label></div>
-		    		<div class="so-delete-popup-select">
-			    		<div class="select-wrapper">
-				    		<select id="last_del"> 
-					    		{foreach $deleteDate in $item.deleteDateRange}
-					    			<option>{$deleteDate}</option>
-					    		{/foreach}
-				    		</select>
-				    	</div>
-			    	</div>
+		    		Delete <span class="so-delete-popup-name">{$item.soName}</span> Standing Order?
 		    		<div class="so-delete-popup-buttons">
-		    			<a class="so-delete-popup-buttons-yes" href="javascript:deleteSO({$item.id}, {if $item.activated and not $item.lastError and $item.deliveryDate}true{else}false{/if})">Yes</a>
+		    			<a class="so-delete-popup-buttons-yes" href="javascript:deleteSO({$item.id})">Yes</a>
 		    			<a class="so-delete-popup-buttons-no" href="javascript:closeSettingsDelete({$item.id})">No</a>
 		    		</div>
 		    	</div>
@@ -214,10 +187,10 @@
 {template .errorSOAlert}
 	{if $soData.settingsData.soSettings.isEligibleForStandingOrders}
 		{foreach $item in $soData.settingsData.soData}
-			{if $item.errorDetails and $item.lastError!='MINORDER'}
+			{if $item.errorDetails}
 				<hr class="so-alert-line-separator">
 				<div class="so-error-alert">
-					<div class="so-error-alert-img">
+					<div class="so-error-alert-img">						
 					</div>
 					<div class="so-error-alert-message">
 						<div class="so-error-alert-message-bold">There's an issue with your {$item.soName}'s Standing Order.</div>
@@ -235,40 +208,17 @@
 /**
  * @param? soData
  */
-{template .minSOAlert}
-	{if $soData.settingsData.soSettings.isEligibleForStandingOrders}
-		{foreach $item in $soData.settingsData.soData}
-			{if $item.errorDetails and $item.lastError=='MINORDER'}
-				<hr class="so-alert-line-separator">
-				<div class="so-min-alert">
-					<div class="so-min-alert-img">
-					</div>
-					<div class="so-min-alert-message">
-						<div class="so-min-alert-message-bold">Standing Order "{$item.soName}" does not meet the minimum ${$soData.settingsData.soSettings.soSoftLimit} amount.</div>
-						<br>
-						Please add more items to your Standing Order Master List.
-					</div>
-					<div class="clear"></div>
-				</div>
-			{/if}
-		{/foreach}
-	{/if}
-{/template}
-
-/**
- * @param? soData
- */
 {template .activateSOAlert}
 	{foreach $item in $soData.settingsData.soData}
 		{if $item.readyForActivation and not $item.activated}
 			<hr class="so-alert-line-separator">
 			<div class="so-activate-alert">
-				<div class="so-activate-alert-img">
+				<div class="so-activate-alert-img">					
 				</div>
 				<div class="so-activate-alert-message">
-					<div class="so-activate-alert-message-bold">Standing Order "{$item.soName}" meets the minimum $ amount.</div>
+					<div class="so-activate-alert-message-bold">Congratulations! Your "{$item.soName}" Standing Order has met the order minimum and can now be placed.</div>
 					<br>
-					Place Order by {$item.cutOffDeliveryTime}, {$item.cutOffFormattedDeliveryDate} to reserve your delivery time.
+					Note: You must activate before {$item.cutOffFormattedDeliveryDate} @ {$item.cutOffDeliveryTime} or you will lose your delivery time.
 				</div>
 				<div class="so-activate-alert-button-container">
 					<button class="so-activate-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/quickshop/standing_orders.jsp?soid={$item.id}#soid_{$item.id}'">Review & Place Order</button>
@@ -281,65 +231,17 @@
 
 /**
  * @param? item
- * @param? modifyingOrderId
  */
 {template .soSettingsDetails}
-	{if $item.isEligileToShowModifyInfo}
-		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
-		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
-			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
-				{call .modifyNextDeliveryButton}
-					{param upComingOrderId: $item.upComingOrderId /}
-					{param modifyingOrderId: $modifyingOrderId /}
-				{/call}
-		</div>		
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
-		</div>		
-		<div class="standing-orders-3-so-settings-item-details-header">Deliveries Will Change:</div>
-		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
-			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.deliveryDate and $item.deliveryTime}{$item.dayOfWeek}, {$item.deliveryDate}, {$item.deliveryTime}{else}None{/if}</div>
-		</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
-		</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Delivery to:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.addressInfo}{$item.addressInfo}{/if}</div>
-		</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Pay with:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.paymentInfo}{$item.paymentInfo}{/if}</div>
-		</div>
-	{else}
-		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
-			{call .modifyNextDeliveryButton}
-				{param upComingOrderId: $item.upComingOrderId /}
-				{param modifyingOrderId: $modifyingOrderId /}
-			{/call}
-		</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
-		</div>
-		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
-		</div>
-	{/if}
-{/template}
-
-/**
- * @param? upComingOrderId
- * @param? modifyingOrderId
- */
-{template .modifyNextDeliveryButton}
-	{if not $upComingOrderId}
-	{elseif $upComingOrderId == $modifyingOrderId}
-		<button class="standing-orders-3-so-settings-item-details-modify-cancel cssbutton cssbutton-flat orange transparent" onclick="window.location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
-	{elseif $modifyingOrderId}
-		<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" disabled onclick="window.location.href='/your_account/modify_order.jsp?orderId={$upComingOrderId}&action=modify'">Modify Next Delivery</button>
-	{else}
-		<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$upComingOrderId}&action=modify'">Modify Next Delivery</button>
-	{/if}
+	<div class="standing-orders-3-so-settings-item-details-container">
+		<div class="standing-orders-3-so-settings-item-details-left">Next Delivery:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
+	</div>
+	<div class="standing-orders-3-so-settings-item-details-container">
+		<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
+	</div>
+	<div class="standing-orders-3-so-settings-item-details-container">
+		<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">${$item.amount}</div>
+	</div>
 {/template}
 
 /**
@@ -357,7 +259,7 @@
 			    	<div class="standing-orders-3-so-settings-error-steps">
 						<div class="standing-orders-3-so-settings-error-steps-header">
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Update your payment method.</button>
-						</div>
+						</div>											
 					</div>
 				{case 'ADDRESS'}
 					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
@@ -367,8 +269,8 @@
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Update your address information.</button>
 						</div>
 					</div>
-				{case 'MINORDER'}
-					<div class="standing-orders-3-error-place-order"{if not $item.activated and $item.lastError=='MINORDER'} data-minorderpopup="true"{/if}>Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the ${$softLimit} dollar minimum.</div>
+				{case 'MINORDER'}					
+					<div class="standing-orders-3-error-place-order">Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the $ dollar minimum.</div>
 				{case 'TIMESLOT_MINORDER'}
 					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
 			    	<div class="standing-orders-3-so-settings-error-header-bold">Your order has fallen below the ${$softLimit} minimum for delivery.</div>
@@ -421,14 +323,6 @@
 			    	<div class="standing-orders-3-so-settings-error-steps">
 						<div class="standing-orders-3-so-settings-error-steps-header">
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Select a new timeslot.</button>
-						</div>
-					</div>
-				{case 'PAYMENT_DEL'}
-					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
-					<div class="standing-orders-3-so-settings-error-header-bold">The payment method is no longer available in system.</div>
-					<div class="standing-orders-3-so-settings-error-steps">
-						<div class="standing-orders-3-so-settings-error-steps-header">
-							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Pick a payment method.</button>
 						</div>
 					</div>
 				{case 'TECHNICAL'}

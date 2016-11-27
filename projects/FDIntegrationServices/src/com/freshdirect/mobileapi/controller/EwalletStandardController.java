@@ -10,10 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.EwalletResponse;
 import com.freshdirect.mobileapi.controller.data.request.EwalletRequest;
@@ -104,13 +101,7 @@ public class EwalletStandardController extends BaseController{
         		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_EWALLET_GENERATE_CLIENT_TOKEN);
         		if(errorMsg !=null && errorMsg.isEmpty()){
 		        	EwalletService ewalletService = new EwalletService(); 
-		        	try{
-		        		requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	} catch(IllegalStateException ex){
-		        		res.addErrorMessage("User Identity is unknown");
-		        		setResponseMessage(model, res, user);
-		                return model;
-		        	}
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
 		        	res = ewalletService.generateClientToken(requestMessage);
         		}else{
         			res.addErrorMessages(errorMsg);
@@ -127,14 +118,7 @@ public class EwalletStandardController extends BaseController{
 		        	EwalletService ewalletService = new EwalletService(); 
 		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
         			requestMessage.setFdActionInfo(fdActionInfo);
-		        	//requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-        			try{
-		        		requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	} catch(IllegalStateException ex){
-		        		res.addErrorMessage("User Identity is unknown");
-		        		setResponseMessage(model, res, user);
-		                return model;
-		        	}
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
 		        	res = ewalletService.isPayPalWalletPaired(requestMessage,user);
         		}else{
         			res.addErrorMessages(errorMsg);
@@ -151,15 +135,8 @@ public class EwalletStandardController extends BaseController{
 		        	EwalletService ewalletService = new EwalletService(); 
 		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
         			requestMessage.setFdActionInfo(fdActionInfo);
-		        	//requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-        			try{
-		        		requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	} catch(IllegalStateException ex){
-		        		res.addErrorMessage("User Identity is unknown");
-		        		setResponseMessage(model, res, user);
-		                return model;
-		        	}
-		        	res = ewalletService.addPayPalWallet(requestMessage, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	res = ewalletService.addPayPalWallet(requestMessage);
         		}else{
         			res.addErrorMessages(errorMsg);
         		}
@@ -174,14 +151,7 @@ public class EwalletStandardController extends BaseController{
         		if(errorMsg !=null && errorMsg.isEmpty()){
         			FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
         			requestMessage.setFdActionInfo(fdActionInfo);
-        			//requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-        			try{
-		        		requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	} catch(IllegalStateException ex){
-		        		res.addErrorMessage("User Identity is unknown");
-		        		setResponseMessage(model, res, user);
-		                return model;
-		        	}
+        			requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
 		        	EwalletService ewalletService = new EwalletService(); 
 		        	res = ewalletService.disconnectWallet(requestMessage);
         		}else{

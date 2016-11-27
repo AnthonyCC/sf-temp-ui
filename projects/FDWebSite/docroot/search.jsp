@@ -5,18 +5,17 @@
 <%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper"%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.*"%>
-<%@ page import="com.freshdirect.storeapi.*"%>
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
-<%@ page import="com.freshdirect.storeapi.content.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
-<%@ page import='com.freshdirect.storeapi.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="java.util.*"%>
@@ -27,6 +26,7 @@
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
@@ -36,6 +36,7 @@
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -78,7 +79,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 		nav.setPageSize(defaultPageSize);
 	}
 	
-	String title = "FreshDirect - Search - " + nav.getSearchTerm();
 %>
 
 <fd:SimpleSearch id="search" nav="<%= nav %>"/>
@@ -98,16 +98,16 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>
 
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="<%= title %>"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name="title" direct="true"><%= title %></tmpl:put> --%>
+	<tmpl:put name="title" direct="true">FreshDirect - Search - <%= nav.getSearchTerm() %></tmpl:put>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage"><%= nav.getSearchTerm()==null || nav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
 
 	<tmpl:put name="content-header">
 		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" data-component="autocomplete" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
+		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="<%=search.getSearchTerm()%>" searchResultsSize="<%=search.getProducts().size()%>" suggestedTerm="<%=search.getSuggestedTerm()%>" recipeSearchResultsSize="<%=search.getRecipes().size()%>"/>
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_filter" searchNavigator="<%= nav %>" />
+		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_sort" searchNavigator="<%= nav %>" />
 	</tmpl:put>
 
 
@@ -215,11 +215,14 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<% if (rec != null) { %>
 				<div class="search-recommender">
 			<h3><%= rec.getVariant().getServiceConfig().getPresentationTitle() %></h3>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= rec.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" >
+			<script type="text/javascript">
+				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="<%= rec.getVariant().getSiteFeature().getName() %>" elementCategory="carousel"/>} 
+			</script>
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= rec.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-					<a href="<%=FDURLUtil.getProductURI(pi.getProductModel(), trk)%>" hidden style="display: none;" class="product-name-link"></a> 
+					<a href="<%=FDURLUtil.getProductURI(pi.getProductModel(), trk)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
 					<% pageContext.setAttribute("PRODUCT_BOX_VARIANT", rec.getVariant().getId()); %>
 					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
 					</display:GetContentNodeWebId>

@@ -10,20 +10,19 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.AbstractProductModelImpl;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.AbstractProductModelImpl;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumProductLayout;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleIncludeMealData;
@@ -75,29 +74,24 @@ public class ProductImageDataPopulator {
 
     // product images
     {
-    String fullName = productNode.getFullName().replace("\"", "").replace("'", ""); //escape double quotes
-      // PROD_IMAGE_ZOOM - PROD_IMAGE_JUMBO
+      // PROD_IMAGE_ZOOM
       if (productNode.getJumboImage() != null && !productNode.getJumboImage().isBlank()) {
-    	  /* PROD_IMAGE_ZOOM */
-        addImageWithLarge(productNode.getZoomImage(), productNode.getJumboImage(), fullName, imageList);
+        addImageWithLarge(productNode.getZoomImage(), productNode.getJumboImage(), productNode.getFullName(), imageList);
       } else {
-        addImage(productNode.getZoomImage(), fullName, imageList);
+        addImage(productNode.getZoomImage(), productNode.getFullName(), imageList);
       }
             
-      // ALTERNATE_IMAGE - ALTERNATE_IMAGE
-            addImage(productNode.getAlternateImage(), fullName, imageList);
+      // ALTERNATE_IMAGE
+            addImage(productNode.getAlternateImage(), productNode.getFullName(), imageList);
       
-      // DESCRIPTIVE_IMAGE (Wine Label) - DESCRIPTIVE_IMAGE
-            addImage(productNode.getDescriptiveImage(), fullName, imageList);
-
-		// PROD_IMAGE_DETAIL (Secondary / Category Image) - PROD_IMAGE_DETAIL
-		      //addImage( productNode.getDetailImage(), fullName, imageList );
-            
-      // PROD_IMAGE (Secondary / Category Image) - PROD_IMAGE
-            //addImage( productNode.getProdImage(), fullName, imageList );
+      // DESCRIPTIVE_IMAGE (Wine Label)
+            addImage(productNode.getDescriptiveImage(), productNode.getFullName(), imageList);
       
-      // PROD_IMAGE_PACKAGE - PROD_IMAGE_PACKAGE
-            addImage(productNode.getPackageImage(), fullName, imageList);
+      // PROD_IMAGE (Secondary / Category Image)
+      // addImage( productNode.getProdImage(), imageList );
+      
+      // PROD_IMAGE_PACKAGE
+            addImage(productNode.getPackageImage(), productNode.getFullName(), imageList);
       
     }
     
@@ -118,8 +112,7 @@ public class ProductImageDataPopulator {
        * According to ticket http://jira.freshdirect.com:8080/browse/APPDEV-2328
        */
       if(productInfo != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-        //EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
-    	  EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+        EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
         if ( enumRating != null) {
           if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
             ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");

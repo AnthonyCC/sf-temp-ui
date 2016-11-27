@@ -50,7 +50,6 @@ public interface FDCartI extends java.io.Serializable {
 	public boolean isPhoneChargeTaxable();
 
 	public boolean isChargeWaived(EnumChargeType chargeType);
-	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType);
 
 	public double getCustomerCreditsValue();
 
@@ -79,11 +78,7 @@ public interface FDCartI extends java.io.Serializable {
 	 * @return total price of orderlines in USD, with no taxes and promotions applied
 	 */
 	public double getSubTotal();
-
-	/**
-	 * @return the amount you have saved by item promotion value and coupon
-	 */
-	public double getSaveAmount(boolean includeDiscountSavings);
+	
 	/**
 	 * @return amount of tax USD
 	 */
@@ -99,8 +94,6 @@ public interface FDCartI extends java.io.Serializable {
 	 * @return total price of order in USD, with promotions, taxes, etc
 	 */
 	public double getTotal();
-	
-	public int getDeliveryPassCount();
 
 	public String getCustomerServiceMessage();
 
@@ -174,6 +167,5 @@ public interface FDCartI extends java.io.Serializable {
 	double getAvalaraTaxValue(AvalaraContext avalaraContext);
 	public EnumNotificationType getTaxationType();
 	public void setTaxationType(EnumNotificationType taxationType);
-	
-	public boolean containsDlvPassOnly();
+
 }

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import com.freshdirect.common.IConstants;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
@@ -17,9 +16,9 @@ import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.dataloader.autoorder.create.util.Card;
 import com.freshdirect.dataloader.autoorder.create.util.CardUtil;
+import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -126,10 +125,7 @@ public class CustomerConsumer implements IConsumer  {
             fdre.printStackTrace();	            
         } catch (ErpDuplicateUserIdException eduie) {
         	eduie.printStackTrace();	
-        } catch (ErpFraudException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+        } 
         
     }
 		

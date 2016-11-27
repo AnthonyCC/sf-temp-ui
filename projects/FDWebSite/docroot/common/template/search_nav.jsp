@@ -4,23 +4,22 @@
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_SEARCH_NAV_TOTAL = 970;
 final int W_SEARCH_NAV_LEFT = 150;
 final int W_SEARCH_NAV_RIGHT = 820;
 //EXPANDED_PAGE_VERIFY - adjust sizes 
 %>
-<html lang="en-US" xml:lang="en-US">  
+<html>  
 <head>
-<%--     <title><tmpl:get name='title'/></title> --%>
-     <tmpl:get name="seoMetaTag"/>
+    <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<jwr:style src="/ccl.css" media="all" />
+	<fd:css href="/assets/css/ccl.css"/>
 	<style type="text/css">
 	#OAS_CategoryNote {
 	text-align: center;
@@ -30,10 +29,11 @@ final int W_SEARCH_NAV_RIGHT = 820;
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 %>
-<jwr:script src="/roundedcorners.js" useRandomParam="false" />
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <%@ include file="/includes/search/autocomplete.jspf" %>
 <CENTER CLASS="text10">

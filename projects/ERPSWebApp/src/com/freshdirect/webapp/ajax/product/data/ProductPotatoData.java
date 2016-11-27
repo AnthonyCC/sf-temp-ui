@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.product.data;
 
+
 public class ProductPotatoData {
 
     private ProductData productData;
@@ -20,5 +21,4 @@ public class ProductPotatoData {
     public void setProductExtraData(ProductExtraData productExtraData) {
         this.productExtraData = productExtraData;
     }
-
 }

@@ -39,12 +39,7 @@ var FreshDirect = FreshDirect || {};
       value: expressco.eccenterpopup
     },
     bodyTemplate: {
-      value: function (data) {
-    	  if (data) {
-    		  data.isPaymentMethodVerificationEnabled = fd.properties && fd.properties.isPaymentMethodVerificationEnabled
-    	  }
-    	  return expressco.addpaymentmethodpopup(data);
-      }
+      value: expressco.addpaymentmethodpopup
     },
     popupId: {
       value: 'addpaymentmethodpopup'
@@ -60,60 +55,37 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         if (this.popup) { this.popup.hide(); }
-        if($('body').hasClass('was-hidden')){
-        	$('body').css('overflow', 'hidden').removeClass('was-hidden');
-        }
+
         return false;
       }
     },
     open: {
-      value: function (e, data, showCaptcha) {
+      value: function (e, data) {
         var $t = e && $(e.currentTarget) || $(document.body),
         	tabToShow = $t.attr('data-showechecktab');
         e && e.preventDefault();
 
         data = data || {};
         data.metadata = data.metadata || fd.metaData || fd.expressco.data.formMetaData;
-        if (showCaptcha != null) {
-        	fd.user = fd.user || {};
-        	fd.user.showCaptchaInPayment = showCaptcha;
-        } else {
-        	showCaptcha = fd.user && fd.user.showCaptchaInPayment;
-        }
-        data.showCaptcha = showCaptcha;
+
         this.refreshBody(data);
-        $('#'+this.popupId).attr('data-tabindex', 'manual');
         this.popup.show($t);
         this.popup.clicked = true;
         
         if(tabToShow) {
         	$('.formcontainer').attr('data-show', tabToShow);
-        	$('#'+tabToShow+'_selector').click();
         }
 
         this.noscroll(true);
 
         $('#'+this.popupId+' [fdform]').each(function (i, form) {
           fd.modules.common.forms.decorateFields(form);
-          var formId = $(form).attr('fdform');
-          if (showCaptcha && fd.forms && fd.forms[formId] && fd.forms[formId].displayCaptcha) {
-        	  fd.forms[formId].displayCaptcha();
-          }
         });
 
         try {
           fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['AddPaymentPromo'], OAS_query);
         } catch (e) {
           console.trace(e);
-        }
-        
-        this.syncCountryState();
-        //sync ui state selected to data state
-        if (data.hasOwnProperty('bil_state')) {
-            $('#CC_bil_state').val(data.bil_state);	
-        }
-        if($('body').css('overflow') == 'hidden'){
-        	$('body').css('overflow', 'auto').addClass('was-hidden');
         }
       }
     },
@@ -125,29 +97,7 @@ var FreshDirect = FreshDirect || {};
 
         $parent.attr('data-show', val);
       }
-    },
-    syncCountryState:{
-		value: function(e, data) {			
-			/* get new "states" for country, wrap in option tags and replace in existing select box */
-			$('#CC_bil_state, #EC_bil_state, #ET_bil_state').each(function(ii,ee) {
-				var curVal = $('#'+$(ee).attr('id').replace('state','country')).val();
-				var $zipField = $('#'+$(ee).attr('id').replace('state','zipcode'));
-	
-				if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
-					$(ee).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
-						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option value="">--</option>') 
-					);
-	
-				}
-				//remove/replace zip validation depending on country
-				$zipField.attr('fdform-v-zipcode', (curVal === 'US') ? '' : null);
-				//trigger revalidation, but only on visible elem
-				if ($zipField.val() !== '' && $zipField.is(':visible')) {
-					$zipField.change(); //trigger revalidation	
-				}
-			});
-		}
-	}
+    }
   });
 
   addpaymentmethodpopup.listen();
@@ -165,9 +115,6 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
-  /* bind country change -> state update */
-  $(document).on('change', '#CC_bil_country, #EC_bil_country, #ET_bil_country', addpaymentmethodpopup.syncCountryState.bind(addpaymentmethodpopup));
-	
   $(document).on('change', '#' + addpaymentmethodpopup.popupId + ' .formselector input',
     addpaymentmethodpopup.selectForm.bind(addpaymentmethodpopup));
 

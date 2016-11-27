@@ -4,8 +4,6 @@
  */
 package com.freshdirect.customer;
 
-import com.freshdirect.framework.core.PrimaryKey;
-
 public abstract class ErpAbstractSettlementModel extends ErpPaymentModel {
 	private String sequenceNumber;
 	private EnumPaymentResponse responseCode;
@@ -62,15 +60,5 @@ public abstract class ErpAbstractSettlementModel extends ErpPaymentModel {
 	public void setAuthCode(String authCode) {
 		this.authCode = authCode;
 	}
-	
-	public void setPK(PrimaryKey pk) {
-		if (pk != null ) {
-			super.setPK(pk);
-		}
-	}
-	public void setId(String id) {
-		if (id != null ) {
-			super.setId(id);
-		}
-	}
+
 }

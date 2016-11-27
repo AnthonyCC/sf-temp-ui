@@ -47,10 +47,30 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
-	<%--  <title>FreshDirect</title> --%>
-	 <fd:SEOMetaTag title="FreshDirect"/>
+	<title>FreshDirect</title>
+	<style>
+		.star {
+			color: #F99E40;
+		}
+		.bodyCopySUL {
+			font-size: 11px;
+			font-weight: bold;
+			padding-top: 4px;
+			padding-bottom: 4px;
+			
+		}
+		.bodyCopySULNote {
+			color: #808080;
+		}
+	</style>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js">
+	</script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js">
+     </script>
+      
 	<script type="text/javascript" async>
 		function asyncPixelWithTimeout() {
 			var img = new Image(1, 1);
@@ -59,16 +79,30 @@
 		};
 		asyncPixelWithTimeout();
 	</script>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
+
+  
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
 	
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %> 
+
+	
+	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 
     
 </head>
-<body>
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
+
+
+
 	<center>
 	<% if (tcAgree!=null){ %>
 		<script language="javascript">
@@ -88,7 +122,7 @@
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 		
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
 			if(typeof top.FreshDirect.terms !== "undefined"){
 					top.FreshDirect.terms=true;
@@ -120,7 +154,7 @@
 		} else if(session.getAttribute("TCAGREE_COMPLETE") != null){
 			
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
 			if(typeof top.FreshDirect.terms !== "undefined"){
 				top.FreshDirect.terms=true;
@@ -161,12 +195,27 @@
 				
 				<input type="hidden" name="litetcaccept" value="true" />
 				
-				<div class="bodyCopySUL">Hello <%=user.getFirstName()+" "+user.getLastName() %>, Our Customer Agreement & Privacy Policy have changed</div>
-				<div class="SystemMessage">By selecting "I Agree" you agree to the updates to our Customer Agreement and Privacy Policy. If you wish to view or print the new Customer Agreement or Privacy Policy, tap or click the "View Customer Agreement" or "View Privacy Policy" button below.</div>
-				<a class="cssbutton green transparent" href="#" onClick="popupOpener('/registration/user_agreement.jsp')">View Customer Agreement</a>
-				<a class="cssbutton green transparent" href="#" onClick="popupOpener('/registration/privacy_policy.jsp')">View Privacy Policy</a>
-				<a class="cssbutton green" href="#" onclick="document.litetcaccept.submit();">I Agree</a>
+				<table border="0" width="360" cellpadding="0" cellspacing="0">
+					<tr><td class="bodyCopySUL" style="padding-top: 10px;"><label >Hello <%=user.getFirstName()+" "+user.getLastName() %>, Our Customer Agreement & Privacy Policy have changed</label>  </td></tr>
+					<br/>
+					<tr><td class="SystemMessage" style="padding-top: 10px;" >By selecting "I Agree" you agree to the updates to our Customer Agreement and Privacy Policy. If you wish to view or print the new Customer Agreement or Privacy Policy, tap or click the "View Customer Agreement" or "View Privacy Policy" button below.
+					 </td></tr>
+					
+					<tr><td style="padding-top: 4px;"></td></tr>
+					<tr><td style="padding-top: 4px;"></td></tr>
+					<tr><td style="padding-top: 4px;"></td></tr>
+					<tr>
+					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener('/registration/user_agreement.jsp')" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; border:1px solid #009900; text-decoration: none; background-color: #ffffff; color: #009900; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>View Customer Agreement</b></a></td>
+					</tr>
+					<tr>
+					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener('/registration/privacy_policy.jsp')" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; border:1px solid #009900; text-decoration: none; background-color: #ffffff; color: #009900; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>View Privacy Policy</b></a></td>
+					</tr>
+					<tr>
+					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #009900; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>I Agree</b></a></td>
+					</tr>
+					
 
+				</table>
 			</form>
 		</div>
 	</div>
@@ -178,7 +227,7 @@
 		<% } %>
 	<% } %>
 	</center>
-<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
+
 </body>
 </html>
 

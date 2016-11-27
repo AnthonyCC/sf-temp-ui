@@ -9,21 +9,19 @@ import java.util.List;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
-import com.freshdirect.framework.marker.ThirdPartyIntegration;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 import com.freshdirect.webapp.autosuggest.unbxd.dto.UnbxdAutosuggestResponseRoot;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseRoot;
 
-/**
- * This is the service which communicates with the unbxd search and autossuggest endpoints
- *
- */
-public class UnbxdIntegrationService implements ThirdPartyIntegration {
+public class UnbxdIntegrationService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(UnbxdIntegrationService.class);
 
+    private static final String BASE_URL = FDStoreProperties.getUnbxdBaseUrl() + "/" + FDStoreProperties.getUnbxdApiKey() + "/" + FDStoreProperties.getUnbxdSiteKey();
+    private static final String SEARCH_ENDPOINT = BASE_URL + "/search?q=";
+    private static final String AUTOSUGGEST_ENDPOINT = BASE_URL + "/autosuggest?q=";
     private static final Integer SEARCH_ROW_SIZE = 1000;
     private static final Integer MAX_AUTOSUGGEST_NUMBER = 20;
 
@@ -35,29 +33,27 @@ public class UnbxdIntegrationService implements ThirdPartyIntegration {
         return INSTANCE;
     }
 
-    public UnbxdSearchResponseRoot searchProducts(String searchTerm, UnbxdSearchProperties searchProperties) throws IOException {
-        UnbxdSearchResponseRoot results = httpService.getData(buildSearchUri(searchTerm, 1, searchProperties), UnbxdSearchResponseRoot.class);
+    public UnbxdSearchResponseRoot searchProducts(String searchTerm) throws IOException {
+        UnbxdSearchResponseRoot results = httpService.getData(buildSearchUri(searchTerm, 1), UnbxdSearchResponseRoot.class);
         if ((results.getResponse().getNumberOfProducts() != null) && (results.getResponse().getNumberOfProducts().compareTo(SEARCH_ROW_SIZE) == 1)) {
-            UnbxdSearchResponseRoot resultsPageTwo = httpService.getData(buildSearchUri(searchTerm, 2, searchProperties), UnbxdSearchResponseRoot.class);
+            UnbxdSearchResponseRoot resultsPageTwo = httpService.getData(buildSearchUri(searchTerm, 2), UnbxdSearchResponseRoot.class);
             results.getResponse().getProducts().addAll(resultsPageTwo.getResponse().getProducts());
         }
 
         return results;
     }
 
-    public List<UnbxdAutosuggestResults> suggestProducts(String term, UnbxdSearchProperties searchProperties) throws IOException {
-        List<UnbxdAutosuggestResults> autosuggests = new ArrayList<UnbxdAutosuggestResults>();
-        UnbxdAutosuggestResponseRoot results = httpService.getData(UnbxdUrlFactory.getAutoSuggestUrl(searchProperties) + URLEncoder.encode(term, CharEncoding.UTF_8),
-                UnbxdAutosuggestResponseRoot.class);
+    public List<String> suggestProducts(String term) throws IOException {
+        List<String> autosuggests = new ArrayList<String>();
+        UnbxdAutosuggestResponseRoot results = httpService.getData(AUTOSUGGEST_ENDPOINT + URLEncoder.encode(term, CharEncoding.UTF_8), UnbxdAutosuggestResponseRoot.class);
         for (int i = 0; i < results.getResponse().getProducts().size() && i < MAX_AUTOSUGGEST_NUMBER; i++) {
-        	results.getResponse().getProducts().get(i).setInternalQuery(term); /* we are storing internalQuery to re-use for payload on next Unbxd API */
-            autosuggests.add(results.getResponse().getProducts().get(i));
+            autosuggests.add(results.getResponse().getProducts().get(i).getAutosuggest());
         }
         return autosuggests;
     }
 
-    private String buildSearchUri(String searchTerm, int page, UnbxdSearchProperties searchProperties) throws UnsupportedEncodingException {
-        StringBuilder stringBuilder = new StringBuilder(UnbxdUrlFactory.getSearchUrl(searchProperties));
+    private String buildSearchUri(String searchTerm, int page) throws UnsupportedEncodingException {
+        StringBuilder stringBuilder = new StringBuilder(SEARCH_ENDPOINT);
         stringBuilder.append(URLEncoder.encode(searchTerm, CharEncoding.UTF_8)).append("&rows=").append(SEARCH_ROW_SIZE).append("&page=").append(page).append("&fields=uniqueId");
         return stringBuilder.toString();
     }
