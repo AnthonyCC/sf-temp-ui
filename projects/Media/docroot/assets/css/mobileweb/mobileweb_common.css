@@ -1783,7 +1783,17 @@ footer .copyright {
 	.mm-page .prodMod-cont .qtyinput {
     	margin-bottom: 10px;
 	}
-	
+	.mm-page .ttBox1stClass .tooltip-inner{
+		left: -1px;
+		top: -2px;
+		bottom: auto;
+		min-width: 200px;
+		width: 200px;
+		box-sizing: border-box;
+	}
+	.mm-page .ttBox1stClass.optionalTipToolTip .tooltip-inner{
+		bottom: auto;
+	}
 	/* VIEW CART */
 	.mm-page .container.mobweb-checkout{
 		width: 100%;
