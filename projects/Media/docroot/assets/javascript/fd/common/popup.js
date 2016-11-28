@@ -129,6 +129,7 @@ var FreshDirect = FreshDirect || {};
                 }
 
             	if ($jq('.mm-page').length) {
+            		data = data || {};
             		data.mobWeb = true;
             	}
 

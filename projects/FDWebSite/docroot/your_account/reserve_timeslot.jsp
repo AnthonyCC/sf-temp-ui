@@ -96,7 +96,9 @@ if (mobWeb) {
 		<input type="hidden" name="actionName" value="">
 		
 		<%//Render the timeslots %>
-		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+		<div class="tsWrapper">
+			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+		</div>
 	
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 		<%//Reservation stuff%>

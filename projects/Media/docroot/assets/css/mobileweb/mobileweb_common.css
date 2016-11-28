@@ -15,6 +15,9 @@ img {
 img {
 	border: 0;
 }
+.invisible {
+	width: 0;
+}
 .backnav {
 	margin: 5px 0 0 10px;
 	padding: 7px;
@@ -1574,6 +1577,10 @@ footer .copyright {
 			.timeslot-error-messages,
 			.timeslot-holiday-warning,
 			.geowarn-table {
+			}
+			
+			.tsWrapper {
+				position: relative;
 			}
 		
 			.mm-page .address_finder td {
