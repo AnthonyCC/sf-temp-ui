@@ -88,14 +88,19 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork"}');
 
-  }else if(loaddata == "SignupFDX") {  	
+  }else if(loaddata == "SignupFDX") {
   	$("#url").val("/saptest12@freshdirect.com/registerfdx/");
   	$("#header").val('');
   	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test", "securityQuestion" : "new york", "firstName" : "Sairam", "lastName" : "Krishnasamy", "serviceType" : "HOME", "companyName" : "ABC Inc.", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "jersey city", "state" : "NJ", "zipCode" : "07306" , "mobile_number": "2035594465", "workPhone" : "2013345534" , "recieveSMSAlerts" : "true"}');
 
-  }else if(loaddata == "CheckByZip") {  	
+  }else if(loaddata == "CheckByZip") {
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
   	$("#header").val('');
+  	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME" }');
+
+  }else if(loaddata == "CheckByZipWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
+    $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME" }');
 
   }else if(loaddata == "globalalerts") {  	
@@ -413,6 +418,11 @@ function loadStuff() {
   	$("#url").val("/user/name/");
   	$("#header").val('');
   	$("#payload").val('');
+  	
+  }else if(loaddata == "UpdateUserEx") {
+  	$("#url").val("/user/updateex/");
+  	$("#header").val('');
+  	$("#payload").val('{ "zipCode" : "11101", "email" : "daltman@freshdirect.com"}');
 
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
@@ -638,10 +648,16 @@ function loadStuff() {
   	var postdata = '{"source" : "IPW"}';
   	$("#payload").val(postdata);
 
-  }else if (loaddata == "Acknowledge") {
+  } else if (loaddata == "Acknowledge") {
   	$("#url").val("/saptest12@freshdirect.com/acknowledge/");
   	$("#header").val('');
   	var postdata = '{ "ackType" : "TC","appSource":"FD", "acknowledge" : "true" }';
+  	$("#payload").val(postdata);
+
+  } else if (loaddata == "AcknowledgeWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/acknowledge/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO" }');
+  	var postdata = '{"appSource":"FDX", "acknowledge" : "true" }';
   	$("#payload").val(postdata);
 
   } else if (loaddata == "ForgotPassword") {
@@ -1475,6 +1491,7 @@ function doStuff() {
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
   <option value=""> ========== ZIP CHECK ========== </option>
   <option value="CheckByZip">CheckByZip</option>
+  <option value="CheckByZipWeb">CheckByZip Web</option>
   <option value="globalalerts">OAS Alerts</option>
   <option value="CheckByAddress">CheckByAddress</option>
   <option value="CheckByAddressEX">CheckByAddressEX</option>
@@ -1496,6 +1513,7 @@ function doStuff() {
   <option value="ChangePassword">Change Password</option>
   <option value="TransactionSource">Transaction Source</option>
   <option value="Acknowledge">Acknowledge</option>
+  <option value="AcknowledgeWeb">Acknowledge Web</option>
 
   <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
@@ -1662,6 +1680,7 @@ function doStuff() {
   <option value="updateUserAccountWeb">ACCOUNT - Update User Account-email and/or password Web</option>
   <option value="AccountSetUserNames">ACCOUNT - Set User Names (F&L)</option>
   <option value="AccountGetUserNames">ACCOUNT - Get User Names (F&L)</option>
+  <option value="UpdateUserEx">ACCOUNT - Update User Ex</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get Addresses</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get AddressesEX</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>

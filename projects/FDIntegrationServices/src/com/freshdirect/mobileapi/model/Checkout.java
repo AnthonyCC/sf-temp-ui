@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -52,7 +50,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.mobileapi.controller.data.AtpErrorData;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
@@ -63,7 +60,6 @@ import com.freshdirect.mobileapi.controller.data.response.AtpError.ItemAvailabil
 import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
 import com.freshdirect.mobileapi.controller.data.response.SpecialRestrictedItemsError;
-import com.freshdirect.mobileapi.exception.ValidationException;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.data.Unavailability;
@@ -78,34 +74,20 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class Checkout {
 
-    private static final String ERR_TSLOT_ALC_RESTRICTED = "This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.";
-
-    private static Category LOGGER = LoggerFactory.getInstance(Checkout.class);
-
+    private static final Category LOGGER = LoggerFactory.getInstance(Checkout.class);
 
     private final SessionUser sessionUser;
-
 
     public Checkout(SessionUser sessionUser) {
         this.sessionUser = sessionUser;
     }
 
-
-
-    /**
-     * @return
-     * @throws FDException
-     */
     public ResultBundle checkDeliveryPassAvailability() throws FDException {
         DlvPassAvailabilityControllerTagWrapper tagWrapper = new DlvPassAvailabilityControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.checkDeliveryPassAvailability();
         return result;
     }
 
-    /**
-     * @return
-     * @throws FDException
-     */
     public ResultBundle submitOrder() throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.submitOrder();
@@ -119,81 +101,30 @@ public class Checkout {
         return result;
     }
 
-    /**
-     * @param paymentMethodId
-     * @param billingReference
-     * @return
-     * @throws FDException
-     */
     public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
-        return result;
+        return tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
     }
 
-    /**
-     * @param paymentMethodId
-     * @param billingReference
-     * @return
-     * @throws FDException
-     */
     public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference) throws FDException {
-        boolean isCustomAdded = false;
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
         // if we have orderMinimum not met we are going to remove it and pass the result
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
         return result;
     }
 
     public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.addPaymentMethod(paymentMethod);
-        return result;
+        return tagWrapper.addPaymentMethod(paymentMethod);
     }
 
     public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod) throws FDException {
-        boolean isCustomAdded = false;
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addPaymentMethodEx(paymentMethod);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
@@ -225,32 +156,16 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        boolean isCustomAdded = false;
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
     public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addAndSetDeliveryAddress(deliveryAddress);
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
@@ -264,26 +179,8 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddressEx(deleteShipToAddressId);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        boolean isCustomAdded = false;
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
@@ -305,11 +202,6 @@ public class Checkout {
         return preselectedPaymethodMethodId;
     }
 
-    /**
-     * @param timeSlotResult
-     * @return
-     * @throws FDResourceException
-     */
     public String getPreselectedTimeslotId(TimeSlotCalculationResult timeSlotResult) throws FDResourceException {
         Timeslot foundTimeslot = null;
         String selectedTimeslotId = null;
@@ -335,10 +227,6 @@ public class Checkout {
         return selectedTimeslotId;
     }
 
-    /**
-     * @return
-     * @throws FDResourceException
-     */
     public String getPreselectedDeliveryAddressId() throws FDResourceException {
         String addressId = null;
 
@@ -364,9 +252,6 @@ public class Checkout {
      * @see com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag DUP: duplicated the age verification logic on the CheckoutControllerTag class. It was also updated to remove
      *      a reference about a page/HttpServletRequest. We also removed the logic about "app" == "CALLCENTER" check as that should controlled by the controller not model.
      *
-     * @param app
-     * @param request
-     * @return
      * @throws FDResourceException
      */
     public boolean isAgeVerificationNeeded() throws FDResourceException {
@@ -415,22 +300,9 @@ public class Checkout {
         return isDuplicateOrder;
     }
 
-    /**
-     * @param id
-     * @param type
-     * @param user
-     * @param request
-     * @param result
-     * @return
-     * @throws ValidationException
-     * @throws FDException
-     */
     public ResultBundle setCheckoutDeliveryAddress(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = null;
-        if ((result == null) || (result.getActionResult().isSuccess())) {
-            result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-        }
+        ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
         if ((result.getActionResult().isSuccess()) && sessionUser.getShoppingCart().isAgeVerified()) {
             AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(this.sessionUser);
             result = alcoholAddressCheckWrapper.verifyAddress(id, type);
@@ -448,63 +320,20 @@ public class Checkout {
      */
     public ResultBundle setCheckoutDeliveryAddressEx(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = null;
-        boolean isCustomAdded = false;
-        if ((result == null) || (result.getActionResult().isSuccess())) {
-            result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-        }
+        ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
     public ResultBundle setCheckoutOrderMobileNumberEx(String orderMobileNumber) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = null;
-        boolean isCustomAdded = false;
-
-        if ((result == null) || (result.getActionResult().isSuccess()))
-            result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
-
+        result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
-        }
-
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
@@ -512,21 +341,10 @@ public class Checkout {
         return sessionUser.getFDSessionUser().getUser();
     }
 
-    /**
-     * @return
-     * @throws FDException
-     */
     public Order getCurrentOrderDetails(EnumCouponContext ctx) throws FDException {
         return sessionUser.getShoppingCart().getCurrentOrderDetails(sessionUser, ctx);
     }
 
-    /**
-     * @param orderNumber
-     * @return
-     * @throws FDException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
     public OrderReceipt getOrderReceipt(String orderNumber) throws FDException, IllegalAccessException, InvocationTargetException {
         Order order = getCurrentOrderDetails(EnumCouponContext.VIEWORDER);
         OrderReceipt orderReceipt = new OrderReceipt();
@@ -629,7 +447,6 @@ public class Checkout {
                         Map.Entry<String,FDAvailabilityInfo> e = i.next();
                         String componentKey = e.getKey();
                         if (componentKey != null) {
-                            FDAvailabilityInfo componentInfo = e.getValue();
                             FDProduct fdp = cartLine.lookupFDProduct();
                             String matNo = StringUtils.right(componentKey, 9);
                             System.out.println(matNo);
@@ -639,7 +456,6 @@ public class Checkout {
                                 // Check to see if this option is the only option for the variation
                                 FDVariation[] vars = fdp.getVariations();
                                 for (int vi = 0; vi < vars.length; vi++) {
-                                    FDVariation aVar = vars[vi];
                                     if (vars[vi].getVariationOption(matNo) != null && vars[vi].getVariationOptions().length > 0) {
                                         singleOptionIsOut = true;
                                     }
@@ -656,7 +472,6 @@ public class Checkout {
                     String[] args = (String[]) ArrayUtils.add(unavailableOptions.toArray(new String[unavailableOptions.size()]), 0, Boolean.toString(singleOptionIsOut));
                     itemAvailabilityError.setArgs(args);
                 } else if (info instanceof FDMuniAvailabilityInfo) {
-                    MunicipalityInfo muni = ((FDMuniAvailabilityInfo) info).getMunicipalityInfo();
                     itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_MUNICIPAL_UNAVAILABILITY);
                     itemAvailabilityError.setMessage("FreshDirect does not deliver alcohol outside NY");
                 } else {
@@ -701,17 +516,11 @@ public class Checkout {
         return atpError;
     }
 
-    /**
-     * @param requestData
-     * @return
-     * @throws FDException
-     */
     public ResultBundle removeUnavailableItemsFromCart(RequestData requestData) throws FDException {
         AdjustAvailabilityTagWrapper wrapper = new AdjustAvailabilityTagWrapper(this.sessionUser);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
         cartEvent.setRequestData(requestData);
-        ResultBundle result = wrapper.removeUnavailableItemsFromCart(cartEvent);
-        return result;
+        return wrapper.removeUnavailableItemsFromCart(cartEvent);
     }
 
     // Code from checkout/step_3_unavail.jsp
@@ -932,9 +741,9 @@ public class Checkout {
         if (isTimeslotRestrictedForAlcohol) {
             
             if (isWebRequest) {
-                message.addErrorMessage("ERR_TSLOT_ALC_RESTRICTED", ERR_TSLOT_ALC_RESTRICTED);
+                message.addErrorMessage(MessageCodes.ERR_TSLOT_ALC_RESTRICTED, MessageCodes.ERR_TSLOT_ALC_RESTRICTED_MSG);
             } else {
-                message.addErrorMessage(ERR_TSLOT_ALC_RESTRICTED);
+                message.addErrorMessage(MessageCodes.ERR_TSLOT_ALC_RESTRICTED_MSG);
             }
             
             message.setStatus(Message.STATUS_FAILED);

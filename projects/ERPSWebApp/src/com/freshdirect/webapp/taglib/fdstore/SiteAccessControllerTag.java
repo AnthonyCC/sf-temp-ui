@@ -20,6 +20,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -162,7 +163,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		String application1 = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
+		String application = (String) request.getSession().getAttribute(SessionName.APPLICATION);
 		
 		this.pageContext.getSession().removeAttribute("morepage");
 
@@ -206,6 +207,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 					
 					if (result.isSuccess()) {
+					    if (EnumTransactionSource.FOODKICK_WEBSITE.getCode().equals(application)){
+					        FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
+					        user.setAvailableServices(serviceResult.getAvailableServices());
+					        return EVAL_BODY_BUFFERED;
+					    }
+					    
 						newSession();
 						
 						if("WEB".equals(this.serviceType.getName())){
@@ -257,7 +264,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 									}
 									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										
-										String application = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
 										boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 										if(!inCallCenter) {
 											doRedirect(failureCorporatePage);

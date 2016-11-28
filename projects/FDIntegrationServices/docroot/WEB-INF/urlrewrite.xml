@@ -113,6 +113,10 @@
 		<to last="true">/user.do?action=updateUser&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/user/updateex/$</from>
+		<to last="true">/user.do?action=updateUserEx&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/user/name/$</from>
 		<to last="true">/user.do?action=getUserName&amp;ver=$1</to>
 	</rule>
@@ -329,7 +333,7 @@
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddress/set/$</from>
-		<to last="true">/checkout.do?action=setdeliveryaddressex&amp;ver=$1</to>
+		<to last="true">/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/dpacceptterms/</from>

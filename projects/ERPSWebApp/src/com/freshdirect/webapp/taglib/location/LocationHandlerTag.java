@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.location;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,9 +30,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.logistics.controller.data.PickupData;
-import com.freshdirect.logistics.controller.data.PickupLocationData;
-import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -49,17 +45,16 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class LocationHandlerTag extends SimpleTagSupport {
 	
-	public static String SELECTED_ADDRESS_ATTR = "locationHandlerSelectedAddress";
-	public static String ALL_PICKUP_DEPOTS_ATTR =	"locationHandlerAllPickupDepots";
-	public static String SELECTED_PICKUP_DEPOT_ID_ATTR = "locationHandlerSelectedPickDepotId";
-	public static String ACTION_RESULT_ATTR = "locationHandlerActionResult";
-	public static String SERVER_ERROR_ATTR = "locationHandlerServerErrorResult";
-	public static String DISABLED_ATTR = "locationHandlerDisabled";
-	public static String SERVICE_TYPE_MODIFICATION_ENABLED = "locationHandlerServiceTypeModificationEnabled";
-	public static String FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER = "futureZoneNotificationEmail";
-	public static String ZIP_CODE_PARAMETER = "zipCode";
-	
-	public static String ZIP_CODE_PATTERN = "\\d{5}";
+	public static final String SELECTED_ADDRESS_ATTR = "locationHandlerSelectedAddress";
+	public static final String ALL_PICKUP_DEPOTS_ATTR =	"locationHandlerAllPickupDepots";
+	public static final String SELECTED_PICKUP_DEPOT_ID_ATTR = "locationHandlerSelectedPickDepotId";
+	public static final String ACTION_RESULT_ATTR = "locationHandlerActionResult";
+	public static final String SERVER_ERROR_ATTR = "locationHandlerServerErrorResult";
+	public static final String DISABLED_ATTR = "locationHandlerDisabled";
+	public static final String SERVICE_TYPE_MODIFICATION_ENABLED = "locationHandlerServiceTypeModificationEnabled";
+	public static final String FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER = "futureZoneNotificationEmail";
+	public static final String ZIP_CODE_PARAMETER = "zipCode";
+	public static final String ZIP_CODE_PATTERN = "\\d{5}";
 	
 	public static boolean isDeliveryZone = false;
 
@@ -272,13 +267,9 @@ public class LocationHandlerTag extends SimpleTagSupport {
 
 	/** based on SiteAccessControllerTag.saveEmail() */
 	private void doFutureZoneNotificationActionFdx() throws FDResourceException{
-		
-		//String email = request.getParameter(FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER);
 		String email = request.getParameter("email");
 		String zipCode = processZipCodeField();
 		
-		FDDeliveryServiceSelectionResult willThisWorkCode = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
-
 		if(EmailUtil.isValidEmailAddress(email) ){
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zipCode, user.getSelectedServiceType());
 			

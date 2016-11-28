@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +61,7 @@ import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.controller.data.response.PaymentResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.Checkout;
 import com.freshdirect.mobileapi.model.DeliveryAddress;
@@ -76,7 +76,6 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
-import com.freshdirect.mobileapi.model.data.Unavailability.Line;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -147,7 +146,7 @@ public class CheckoutController extends BaseController {
      */
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
-            SessionUser user) throws FDException, ServiceException, JsonException {
+            SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
 
         if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
             //Validate pre-req. If pass, go directly to get payment method
@@ -396,15 +395,19 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
+    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException, NoSessionException {
         final boolean isWebRequest = isCheckLoginStatusEnable(request);
 
         Checkout checkout = new Checkout(user);
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
 
-        ActionResult result = new ActionResult();
-        UserValidationUtil.validateOrderMinimum(request.getSession(), result);
-        if (result.isFailure() && isWebRequest) {
+        if (isWebRequest) {
+            if (!user.isLoggedIn()){
+                throw new NoSessionException("No session");
+            }
+
+            ActionResult result = new ActionResult();
+            UserValidationUtil.validateOrderMinimum(request.getSession(), result);
             responseMessage.addErrorMessages(result.getErrors(), user);
         }
         
@@ -1316,8 +1319,6 @@ public class CheckoutController extends BaseController {
     	return updatedPaymentMethodList;
     }
 
-
-
     private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
@@ -1337,13 +1338,12 @@ public class CheckoutController extends BaseController {
             result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
             // halt on any error
-            if (!result.isSuccess()) {
+            if (result.isFailure()) {
                 responseMessage = getErrorMessage(result, request);
             }
         }
         
         // === FKMW end ===
-        
         
         if (responseMessage == null) {
             ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(requestMessage);
@@ -1353,7 +1353,22 @@ public class CheckoutController extends BaseController {
             }
 
             if (result.isSuccess()) {
-                responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+                if (isCheckLoginStatusEnable(request)) {
+                    user.setUserContext();
+                    DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+                    TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
+                    com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
+                            timeSlotResult);
+                    slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
+                    CMSPageRequest pageRequest = new CMSPageRequest();
+                    pageRequest.setPlantId(BrowseUtil.getPlantId(user));
+                    DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
+                    populateHomePages(user, pageRequest, pageResponse, request);
+                    pageResponse.setDeliveryTimeslot(slotResponse);
+                    responseMessage = pageResponse;
+                } else {
+                    responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+                }
             } else {
                 responseMessage = getErrorMessage(result, request);
             }

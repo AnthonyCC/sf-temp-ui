@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.EmailCapture;
 import com.freshdirect.mobileapi.controller.data.request.UserAccountUpdateRequest;
 import com.freshdirect.mobileapi.controller.data.response.MessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse;
@@ -27,6 +28,7 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.tagwrapper.LocationHandlerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -36,10 +38,10 @@ import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 
 public class UserController extends BaseController {
 
-
     private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
 	private static final String ACTION_UPDATE_USER = "updateUser";
+	private static final String ACTION_UPDATE_USER_EX = "updateUserEx";
 	private static final String ACTION_UPDATE_USER_ACCOUNT = "updateUserAccount"; //FDIP-1062  modified to updateUserAccount from updateUser
 	private static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
 	private static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
@@ -55,29 +57,30 @@ public class UserController extends BaseController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
-	 * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see	 org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected ModelAndView processRequest(HttpServletRequest request,
-			HttpServletResponse response, ModelAndView model, String action,
-			SessionUser user) throws FDException, ServiceException,
-			NoSessionException, JsonException, FDResourceException {
+	protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
+			SessionUser user) throws FDException, ServiceException, NoSessionException, JsonException, FDResourceException {
 		
 		LOGGER.debug("Action to use: " + action);
 		
 		if (ACTION_UPDATE_USER.equals(action)) {
-//			RegisterMessage requestMessage = parseRequestObject(request,
-//					response, RegisterMessage.class);
-//			model = register(model, requestMessage, request, response,user);
-			
-//			LoggedIn userDataToUpdate = parseRequestObject( request, response, LoggedIn.class );
-			if( /*userDataToUpdate.isOnMailingList()*/ user.isFutureZoneNotificationEmailSentForCurrentAddress() )
+			if( user.isFutureZoneNotificationEmailSentForCurrentAddress() )
 			{
 				performUserUpdate( user, request );
 			}
-			
+		} else if (ACTION_UPDATE_USER_EX.equals(action)){
+		    EmailCapture requestMessage = parseRequestObject(request, response, EmailCapture.class);
+		    LocationHandlerTagWrapper tagWrapper = new LocationHandlerTagWrapper(user);
+	        ActionResult result = tagWrapper.setFutureZoneNotificationFdx(requestMessage);
+	        Message responseMessage = null;
+	        if (result.isSuccess()){
+	            responseMessage = Message.createSuccessMessage("User signs up successfully for future zone notification.");
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        setResponseMessage(model, responseMessage, user);
 		}
 		//JIRA FD-iPad FDIP-1062
         else if (ACTION_UPDATE_USER_ACCOUNT.equals(action)) {
@@ -195,6 +198,7 @@ public class UserController extends BaseController {
 		return model;
 	}
 
+	@Deprecated // Use LocationHandlerTagWrapper class instead
     private void performUserUpdate( SessionUser user, HttpServletRequest request )
     {
     	UserUpdater updater = new UserUpdater();

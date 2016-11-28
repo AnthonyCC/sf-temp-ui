@@ -454,18 +454,19 @@ public class NavigationUtil {
 		return 	!ContentFactory.getInstance().getPreviewMode() && (
 					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) || 
 					cat.isHidden() || 
-					!isCategoryDisplayableCached(cat)
+					!isCategoryDisplayableCached(user, cat)
 				);
 	}
 	
-	public static boolean isCategoryDisplayableCached(CategoryModel cat){
-		String key = cat.getContentName();
+	public static boolean isCategoryDisplayableCached(FDUserI user, CategoryModel cat){
+		String contentName = cat.getContentName();
+		String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
 		if (CmsManager.getInstance().isReadOnlyContent()){
-			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key);
+			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId);
 			
 			if (displayable == null) {
 				displayable = cat.isDisplayable(); //do the recursive check
-				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key, displayable);
+				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId, displayable);
 			}
 			
 			return displayable;

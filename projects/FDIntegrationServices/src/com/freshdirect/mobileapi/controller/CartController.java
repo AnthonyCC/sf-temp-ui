@@ -7,17 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
@@ -44,8 +43,6 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import freemarker.template.TemplateException;
 
 public class CartController extends BaseController {
-
-    private static Category LOGGER = LoggerFactory.getInstance(CartController.class);
 
     private static final String PARAM_PROMO_ID = "promoId";
     private static final String PARAM_COUPON_ID = "couponId";
@@ -83,11 +80,9 @@ public class CartController extends BaseController {
             AddItemToCart reqestMessage = parseRequestObject(request, response, AddItemToCart.class);
             model = addItemInCart(model, user, reqestMessage, request);
         } else if (ACTION_REMOVE_ITEM_FROM_CART.equals(action) || ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
-            SimpleRequest reqestMessage = null;
             String cartLineId = null;
             boolean isRemoveAll = false;
             if (ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
-                reqestMessage = new SimpleRequest();
                 isRemoveAll = true;
             } else {
                 //Simplify this logic to not have simple request object when fully converted.
@@ -176,21 +171,6 @@ public class CartController extends BaseController {
        return isValidPromoId;
     }
 
-	/**
-     * @param model
-     * @param request
-     * @param response
-     * @return
-     * @throws ServiceException 
-     * @throws IOException 
-     * @throws JsonMappingException 
-     * @throws JsonGenerationException 
-     * @throws FDException 
-     * @throws JsonException 
-     * @throws NoSessionException 
-     * @throws ModelException 
-     * @throws Exception
-     */
     private ModelAndView getCartLine(ModelAndView model, HttpServletRequest request, HttpServletResponse response, SessionUser user)
             throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
 
@@ -228,14 +208,6 @@ public class CartController extends BaseController {
 
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param request
-     * @return
-     * @throws JsonException
-     * @throws FDException 
-     */
     private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
         
@@ -260,14 +232,6 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView removeAlcohol(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
         Message responseMessage = null;
         Cart cart = user.getShoppingCart();
@@ -286,75 +250,60 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws ServiceException
-     * @throws JsonException
-     */
     private ModelAndView addItemInCart(ModelAndView model, SessionUser user, AddItemToCart reqestMessage, HttpServletRequest request)
             throws FDException, ServiceException, JsonException, NoSessionException {
         Message responseMessage = null;
 
-        if (isCheckLoginStatusEnable(request) && user != null && !user.isLoggedIn()) {
-            throw new NoSessionException("No session");
-        }
-        
-        Cart cart = user.getShoppingCart();
-        Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage
-                .getProductConfiguration().getCategoryId(), null, user);
-        if(product != null){
-	        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
-	            responseMessage = new Message();
-	            responseMessage.setStatus(Message.STATUS_FAILED);
-	            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
-	        } else {
-	            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user, request);
-	            ActionResult result = resultBundle.getActionResult();
-	            propogateSetSessionValues(request.getSession(), resultBundle);
-
-	            if (result.isSuccess()) {
-	                List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
-	
-	                CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
-	                responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-	                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-	                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
-	                
-	                if (isCheckLoginStatusEnable(request)) {
-	                    ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
-	                }
-	                
-	                responseMessage.setSuccessMessage("Item has been added to cart successfully.");
-	            } else {
-	                responseMessage = getErrorMessage(result, request);
-	            }
-	            responseMessage.addWarningMessages(result.getWarnings());
-	
-	        }
+        if (isZipCheck(user, request)) {
+            responseMessage = getErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG);
         } else {
-        	responseMessage = new Message();
-        	responseMessage.setStatus(Message.STATUS_FAILED);   
-        	responseMessage = Message.createFailureMessage("Products are not available.");
+            Cart cart = user.getShoppingCart();
+            Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage.getProductConfiguration().getCategoryId(), null, user);
+            if (product != null) {
+                if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+                    responseMessage = new Message();
+                    responseMessage.setStatus(Message.STATUS_FAILED);
+                    responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+                } else {
+                    ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user, request);
+                    ActionResult result = resultBundle.getActionResult();
+                    propogateSetSessionValues(request.getSession(), resultBundle);
+
+                    if (result.isSuccess()) {
+                        List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
+
+                        CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
+                        responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+                        ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+                        ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
+
+                        if (isCheckLoginStatusEnable(request)) {
+                            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
+                        }
+
+                        responseMessage.setSuccessMessage("Item has been added to cart successfully.");
+                    } else {
+                        responseMessage = getErrorMessage(result, request);
+                    }
+                    responseMessage.addWarningMessages(result.getWarnings());
+
+                }
+            } else {
+                responseMessage = new Message();
+                responseMessage.setStatus(Message.STATUS_FAILED);
+                responseMessage = Message.createFailureMessage("Products are not available.");
+            }
         }
         setResponseMessage(model, responseMessage, user);
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param isRemoveAll
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
+    private boolean isZipCheck(SessionUser user, HttpServletRequest request) {
+        boolean isLoggedOutUserZipCheck = !user.isLoggedIn() && !user.getAddress().isCustomerAnonymousAddress();
+        boolean isLoggedInUserZipCheck = user.isLoggedIn() && user.getShoppingCart().getDeliveryAddress() == null && !user.getAddress().isCustomerAnonymousAddress();
+        return isCheckLoginStatusEnable(request) && (isLoggedOutUserZipCheck || isLoggedInUserZipCheck);
+    }
+
     private ModelAndView removeItemInCart(ModelAndView model, SessionUser user, String cartLineId, boolean isRemoveAll,
             HttpServletRequest request) throws FDException, JsonException {
         //Only difference between "remove an item" vs. "remove all" is the parameter of "Cart Line ID" being passed in.
@@ -390,15 +339,6 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView updateItemInCart(ModelAndView model, SessionUser user, UpdateItemInCart reqestMessage, HttpServletRequest request)
             throws FDException, JsonException {
         Message responseMessage = null;
@@ -426,29 +366,11 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView removePromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
             throws FDException, JsonException {
         return removePromoCode(model, user, reqestMessage.getId(), request);
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param promoId
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView removePromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request)
             throws FDException, JsonException {
         Cart cart = user.getShoppingCart();
@@ -467,43 +389,16 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
             throws FDException, JsonException {
         return applyPromoCode(model, user, reqestMessage.getId(), request);
     }
     
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView applyCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
             throws FDException, JsonException {
         return applyCode(model, user, reqestMessage.getId(), request);
     }
     
-    /**
-     * @param model
-     * @param user
-     * @param promoId
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request)
             throws FDException, JsonException {
         Cart cart = user.getShoppingCart();
@@ -540,15 +435,6 @@ public class CartController extends BaseController {
         return model;
     }
     
-    /**
-     * @param model
-     * @param user
-     * @param promoId
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView applyCode(ModelAndView model, SessionUser user, String givexNum, HttpServletRequest request)
             throws FDException, JsonException {
         Cart cart = user.getShoppingCart();
@@ -571,15 +457,6 @@ public class CartController extends BaseController {
     }
 
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView addMultipleItemsInCart(ModelAndView model, SessionUser user, AddMultipleItemsToCart reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Message responseMessage = null;
@@ -611,15 +488,6 @@ public class CartController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param requestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView removeMultipleItemsInCart(ModelAndView model, SessionUser user, MultipleRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Message responseMessage = null;
@@ -646,15 +514,6 @@ public class CartController extends BaseController {
         return model;
     }
     
-    /**
-     * @param model
-     * @param user
-     * @param promoId
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView clipCoupon(ModelAndView model, SessionUser user, String couponId, HttpServletRequest request)
             throws FDException, JsonException {
        

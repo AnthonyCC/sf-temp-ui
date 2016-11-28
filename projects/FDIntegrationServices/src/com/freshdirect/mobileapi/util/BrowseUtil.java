@@ -27,14 +27,12 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
@@ -104,8 +102,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
-import com.freshdirect.webapp.ajax.browse.data.NavDepth;
-import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -1432,19 +1428,16 @@ public class BrowseUtil {
     }
 
     public static String getPlantId(SessionUser user) {
-        String plantid = null;
+        String plantId = null;
         if (user != null) {
             String zipcode = user.getZipCode();
-            UserContext userContext = user.getUserContext();
-            if (zipcode != null && zipcode.trim().length() > 0 && userContext != null && userContext.getFulfillmentContext() != null) {
-                ErpAddressModel address = new ErpAddressModel();
-                address.setZipCode(zipcode);
-                plantid = userContext.getFulfillmentContext().getPlantId();
+            if (zipcode != null && zipcode.trim().length() > 0) {
+                plantId = user.getUserContext().getFulfillmentContext().getPlantId();
             } else {
-                plantid = FDStoreProperties.getDefaultFdxPlantID();
+                plantId = FDStoreProperties.getDefaultFdxPlantID();
             }
         }
-        return plantid;
+        return plantId;
     }
 	    
 	    public static List<String> getAllFDXCatalogKeys(){
