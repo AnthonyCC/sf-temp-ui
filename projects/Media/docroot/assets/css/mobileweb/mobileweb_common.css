@@ -1820,6 +1820,9 @@ footer .copyright {
 	.mm-page .container #cartheader .cartheader{
 		padding: 20px 10px;
 	}
+	.mm-page .container.mobweb-checkout #cartheader .cartheader .cartheader__text{
+		width: auto;
+	}
 	.mm-page .container #questions{
 		padding: 0 10px;
 	}
