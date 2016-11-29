@@ -1614,7 +1614,7 @@ footer .copyright {
 				width: 100% !important;
 			}
 			.tsTable .ts_d {
-			    display: block;
+			    display: block !important;
 			    width: 100% !important;
 			}
 			
