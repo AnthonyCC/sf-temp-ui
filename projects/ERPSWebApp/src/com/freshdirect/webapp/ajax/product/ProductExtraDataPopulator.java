@@ -1000,10 +1000,10 @@ public class ProductExtraDataPopulator {
 			String familyID = productInfo.getFamilyID();
 			ErpProductFamilyModel products = null;
 			List<String> skuCodes = null;
-			if(familyID == null && productInfo.getMaterialIds()!=null){
+			if(familyID == null && productInfo.getMaterialNumber()!=null){
 				
 				try {
-					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialIds()[0]);
+					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
 				} catch (FDGroupNotFoundException e) {
 					
 					e.printStackTrace();
