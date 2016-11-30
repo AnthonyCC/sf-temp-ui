@@ -269,7 +269,7 @@ public class DbContentService extends AbstractContentService implements ContentS
             + " where r.parent_contentnode_id in (?)" + " order by r.parent_contentnode_id, r.def_name, r.ordinal";
 
     // [APPDEV-3423] fixed parent key getter
-    private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id " + "from  cms.navtree " + "where child_contentnode_id=?";
+    private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id " + "from  cms_navtree " + "where child_contentnode_id=?";
 
     @Override
     public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys, DraftContext draftContext) {
