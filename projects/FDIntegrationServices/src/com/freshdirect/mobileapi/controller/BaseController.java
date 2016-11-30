@@ -276,6 +276,9 @@ public abstract class BaseController extends AbstractController implements Messa
     private final ModelAndView handleRequestInterna(HttpServletRequest request, HttpServletResponse response) throws JsonException,
             FDException, ServiceException {
         response.setContentType("text/xml");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+		response.setHeader("Pragma", "no-cache"); 
+		response.setDateHeader("Expires", 0);
         ModelAndView model = getModelAndView(JSON_RENDERED);
         String action = request.getParameter("action");
         String version = request.getParameter("ver");
