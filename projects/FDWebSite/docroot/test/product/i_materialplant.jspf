@@ -1,0 +1,33 @@
+<%
+	out.println("<table>");
+	out.println("<caption>");out.println("Material Plant");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Plant ID</th>");
+	out.println("<th>ATP Rule</th>");
+	out.println("<th>Kosher Production</th>");
+	out.println("<th>Platter</th>");
+	out.println("<th>Blocked Days</th>");
+	out.println("<th>Lead Time</th>");
+	out.println("<th>Limited Qty</th>");
+	out.println("<th>Freshness</th>");
+	out.println("<th>Rating</th>");
+	out.println("<th>Sustainability Rating</th>");
+	out.println("</tr>");
+	
+	if(material.getMaterialPlants() != null) {
+		for (Map.Entry<String, FDPlantMaterial> entry : material.getMaterialPlants().entrySet()) {
+			out.println("<tr>");
+			out.println("<td>");out.println(entry.getValue().getPlantId());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getAtpRule());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().isKosherProduction());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().isPlatter());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getBlockedDays().isEmpty() ? "&nbsp;" : entry.getValue().getBlockedDays());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getLeadTime());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getFreshness());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getRating());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getSustainabilityRating());out.println("</td>");
+			out.println("<tr>");
+		}
+	}
+	out.println("</table>");
+%>

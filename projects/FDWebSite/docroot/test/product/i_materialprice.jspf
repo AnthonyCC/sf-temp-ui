@@ -1,0 +1,50 @@
+<%	
+	out.println("<table>");
+	out.println("<caption>");out.println("Material Price");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Zone ID</th>");
+	out.println("<th>Sales Org</th>");
+	out.println("<th>Dist Channel</th>");
+	out.println("<th>Pricing Indicator</th>");
+	out.println("<th>Parent Zone ID</th>");
+	out.println("<th>Parent Sales Org</th>");
+	out.println("<th>Parent Dist Channel</th>");
+	out.println("<th>Parent Pricing Indicator</th>");
+	out.println("<th>Price</th>");
+	out.println("<th>Pricing Unit</th>");
+	out.println("<th>Promo Price</th>");
+	out.println("<th>Scale Lower Bound</th>");
+	out.println("<th>Scale Upper Bound</th>");
+	out.println("<th>Scale Unit</th>");
+	
+	out.println("</tr>");
+	
+	if(product.getPricing() != null && product.getPricing().getZonePriceList() != null) {
+		for (ZonePriceModel entry : product.getPricing().getZonePriceList().getZonePrices()) {			
+			if(entry.getMaterialPrices() != null) {
+				for(MaterialPrice priceEntry : entry.getMaterialPrices()) {
+					out.println("<tr>");
+					out.println("<td>");out.println(entry.getPricingZone().getPricingZoneId());out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getSalesOrg());out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getDistributionChanel());out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getPricingIndicator());out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getParentZone() != null ? entry.getPricingZone().getParentZone().getPricingZoneId() : "&nbsp;");out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getParentZone() != null ? entry.getPricingZone().getParentZone().getSalesOrg() : "&nbsp;");out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getParentZone() != null ? entry.getPricingZone().getParentZone().getDistributionChanel() : "&nbsp;");out.println("</td>");
+					out.println("<td>");out.println(entry.getPricingZone().getParentZone() != null ? entry.getPricingZone().getParentZone().getPricingIndicator() : "&nbsp;");out.println("</td>");
+					
+					out.println("<td>");out.println(priceEntry.getPrice());out.println("</td>");
+					out.println("<td>");out.println(priceEntry.getPricingUnit());out.println("</td>");
+					out.println("<td>");out.println(priceEntry.getPromoPrice());out.println("</td>");
+					out.println("<td>");out.println(priceEntry.getScaleLowerBound());out.println("</td>");
+					out.println("<td>");out.println(priceEntry.getScaleUpperBound());out.println("</td>");
+					out.println("<td>");out.println(priceEntry.getScaleUnit());out.println("</td>");
+					out.println("<tr>");
+					
+				}
+			}
+		}
+	}
+	out.println("</table>");
+		
+ %>

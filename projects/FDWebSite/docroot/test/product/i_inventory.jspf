@@ -1,0 +1,24 @@
+<%	
+	out.println("<table>");
+	out.println("<caption>");out.println("Material Inventory");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Last Updated</th>");
+	out.println("<th>Start Date</th>");
+	out.println("<th>Entry Start Date</th>");
+	out.println("<th>Quantity</th>");
+	out.println("<th>Plant ID</th>");	
+	out.println("</tr>");
+	
+	if(productInfo.getInventory() != null && productInfo.getInventory().getEntries() != null) {
+		for (ErpInventoryEntryModel entry : productInfo.getInventory().getEntries()) {	
+			out.println("<tr>");
+			out.println("<td>");out.println(productInfo.getInventory().getLastUpdated());out.println("</td>");
+			out.println("<td>");out.println(productInfo.getInventory().getInventoryStartDate());out.println("</td>");
+			out.println("<td>");out.println(entry.getStartDate() );out.println("</td>");
+			out.println("<td>");out.println(entry.getQuantity());out.println("</td>");
+			out.println("<td>");out.println(entry.getPlantId());out.println("</td>");
+			out.println("<tr>");
+		}
+	}
+	out.println("</table>");
+%>
