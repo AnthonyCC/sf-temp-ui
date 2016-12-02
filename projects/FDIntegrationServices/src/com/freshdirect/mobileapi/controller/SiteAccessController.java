@@ -59,7 +59,8 @@ public class SiteAccessController extends BaseController {
         return model;
     }
 
-    private Message checkByZipcode(ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser sessionUser) throws FDException, NoSessionException {
+    private Message checkByZipcode(ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser sessionUser)
+            throws FDException, NoSessionException {
         FDUserI user = (sessionUser == null) ? null : sessionUser.getFDSessionUser();
         SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(user);
         ResultBundle resultBundle = tagWrapper.checkByZipcode(requestMessage);
@@ -68,18 +69,27 @@ public class SiteAccessController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         Message responseMessage = null;
-        if (result.isSuccess()) {
-            if (isCheckLoginStatusEnable(request)) {
+        if (isCheckLoginStatusEnable(request)) {
+            if (result.isSuccess()) {
                 AddressModel address = new AddressModel();
                 address.setZipCode(requestMessage.getZipCode());
                 address.setCustomerAnonymousAddress(true);
-                user.setAddress(address);
-                Visitor messageResponse = formatVisitorMessage(sessionUser, requestMessage, resultBundle);
+                sessionUser.setAddress(address);
+                EnumServiceType serviceType = EnumServiceType.getEnum(requestMessage.getServiceType());
+                Visitor messageResponse = formatVisitorMessage(requestMessage.getZipCode(), serviceType, requestMessage, resultBundle);
                 messageResponse.setLogin(createLoginResponseMessage(sessionUser));
                 messageResponse.setConfiguration(getConfiguration(sessionUser));
                 messageResponse.setStatus(Message.STATUS_SUCCESS);
                 responseMessage = messageResponse;
             } else {
+                EnumServiceType serviceType = EnumServiceType.getEnum(requestMessage.getServiceType());
+                Visitor messageResponse = formatVisitorMessage(requestMessage.getZipCode(), serviceType, requestMessage, resultBundle);
+                messageResponse.setStatus(Message.STATUS_FAILED);
+                messageResponse.addErrorMessages(result.getErrors(), sessionUser);
+                responseMessage = messageResponse;
+            }
+        } else {
+            if (result.isSuccess()) {
                 request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
                 sessionUser = getUserFromSession(request, response);
                 sessionUser.setUserContext();
@@ -87,9 +97,9 @@ public class SiteAccessController extends BaseController {
                 // Create a new Visitor object.
                 responseMessage = formatVisitorMessage(sessionUser, requestMessage, resultBundle);
                 resetMobileSessionData(request);
+            } else {
+                responseMessage = getErrorMessage(result, request);
             }
-        } else {
-            responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
 
@@ -151,9 +161,13 @@ public class SiteAccessController extends BaseController {
     }
     
     private Visitor formatVisitorMessage(SessionUser user, ZipCheck requestMessage, ResultBundle resultBundle) {
+        return formatVisitorMessage(user.getZipCode(), user.getServiceType(), requestMessage, resultBundle);
+    }
+
+    private Visitor formatVisitorMessage(String zipCode, EnumServiceType serviceType, ZipCheck requestMessage, ResultBundle resultBundle) {
         Visitor responseMessage = new Visitor();
-        responseMessage.setZipCode(user.getZipCode());
-        responseMessage.setServiceType(user.getServiceType());
+        responseMessage.setZipCode(zipCode);
+        responseMessage.setServiceType(serviceType);
         EnumDeliveryStatus dlvStatus = (EnumDeliveryStatus)resultBundle.getExtraData(
         					SiteAccessControllerTagWrapper.REQUESTED_SERVICE_TYPE_DLV_STATUS);
         responseMessage.setDeliveryStatus(dlvStatus != null ? dlvStatus.getName() : "");
