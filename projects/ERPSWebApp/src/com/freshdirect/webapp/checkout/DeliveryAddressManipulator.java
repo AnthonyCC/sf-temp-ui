@@ -1017,7 +1017,22 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			String customerId =cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
 			LOGGER.warn("DeliveryPlantInfo is not matching for customer: "+customerId +" and eStore :"+cart.getEStoreId());
 			LOGGER.warn("In FDUser:"+dpInfoModel);
-			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());			
+			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());
+			user.setAddress(address);
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
