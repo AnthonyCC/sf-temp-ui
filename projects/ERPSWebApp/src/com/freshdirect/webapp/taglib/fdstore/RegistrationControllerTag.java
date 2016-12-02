@@ -428,7 +428,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 
                 FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery, order_notices,
-                        order_exceptions, offers, partner_messages, fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
+                        order_exceptions, offers, partner_messages, user.getUserContext().getStoreContext().getEStoreId());
 
                 if (user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FD.name())) {
                     if (subscribedNow) {
@@ -958,7 +958,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                     ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
                     FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
                     FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, "N", "N", "Y", "Y", "Y", "Y",
-                            fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
+                            user.getUserContext().getStoreContext().getEStoreId());
                     FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
                     session.setAttribute("SMSAlert" + orderNumber, "done");
                 } catch (FDResourceException e) {
