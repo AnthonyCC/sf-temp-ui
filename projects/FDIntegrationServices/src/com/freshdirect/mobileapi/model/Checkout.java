@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.mobileapi.controller.data.AtpErrorData;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
@@ -302,9 +304,31 @@ public class Checkout {
 
     public ResultBundle setCheckoutDeliveryAddress(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        ResultBundle result = null;
+        boolean isCustomAdded = false;
+        if ((result == null) || (result.getActionResult().isSuccess())) {
+            result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
+        }
+        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
