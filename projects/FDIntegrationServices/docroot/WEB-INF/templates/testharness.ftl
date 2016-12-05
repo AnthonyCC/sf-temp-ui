@@ -741,12 +741,17 @@ function loadStuff() {
   } else if (loaddata == "QuickShopEveryItemEverOrdered") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
   	$("#header").val('');
-  	$("#payload").val('{"page" : "1"}');
+    $("#payload").val('{"page" : "1"}');
 
   } else if (loaddata == "QuickShopEveryItemEverOrderedEX") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverorderedEX/");
   	$("#header").val('');
   	$("#payload").val('{"page" : "1" , "max" : "20000"}');
+
+  } else if (loaddata == "QuickShopEveryItemEverOrderedWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
+  	$("#payload").val('{"timeFrame":"timeFrameAll","sortId":"freq","tabType":"TOP_ITEMS"}');
 
   } else if (loaddata == "RemoveMultipleItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
@@ -1653,7 +1658,8 @@ function doStuff() {
   <option value="QuickShopGetDeptsForEveryItemOrdered">QUICKSHOP - Get Department for Everything You've Ever Ordered!</option>
   <option value="QuickShopEveryItemOrderedByDept">QUICKSHOP - Everything You've Ever Ordered By Dept !</option>
   <option value="QuickShopEveryItemEverOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
-  <option value="QuickShopEveryItemEverOrderedEX">QUICKSHOP - Everything You've Ever Ordered! EX</option>	
+  <option value="QuickShopEveryItemEverOrderedEX">QUICKSHOP - Everything You've Ever Ordered! EX</option>
+  <option value="QuickShopEveryItemEverOrderedWeb">QUICKSHOP - Everything You've Ever Ordered! Web</option>
 
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>

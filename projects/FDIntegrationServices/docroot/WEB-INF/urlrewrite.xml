@@ -622,12 +622,6 @@
 		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
 	</rule>
 
-	<!-- Modify Check -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>
-		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
-	</rule>
-
 	<!-- Cancel Order Modify -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/cancelmodify/</from>

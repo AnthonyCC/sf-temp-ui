@@ -36,6 +36,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -208,8 +209,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					
 					if (result.isSuccess()) {
 					    if (EnumTransactionSource.FOODKICK_WEBSITE.getCode().equals(application)){
-					        FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
-					        user.setAvailableServices(serviceResult.getAvailableServices());
+					        if (EnumDeliveryStatus.DELIVER == serviceResult.getServiceStatus(this.serviceType)){
+					            FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
+					            user.setAvailableServices(serviceResult.getAvailableServices());
+					        } else {
+					            result.addError(new ActionError(EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS));
+					        }
+					        pageContext.setAttribute(resultName, result);
 					        return EVAL_BODY_BUFFERED;
 					    }
 					    
