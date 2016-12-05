@@ -303,10 +303,8 @@ public class Checkout {
     public ResultBundle setCheckoutDeliveryAddress(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-        if ((result.getActionResult().isSuccess()) && sessionUser.getShoppingCart().isAgeVerified()) {
-            AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(this.sessionUser);
-            result = alcoholAddressCheckWrapper.verifyAddress(id, type);
-        }
+        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
         return result;
     }
 
