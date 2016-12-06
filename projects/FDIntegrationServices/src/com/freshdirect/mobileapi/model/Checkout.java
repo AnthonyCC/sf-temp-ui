@@ -112,7 +112,26 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
         // if we have orderMinimum not met we are going to remove it and pass the result
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();  
+            for (ActionError error : errors) {  
+                if ("order_minimum".equals(error.getType())) {  
+                    continue;   
+                } else {    
+                    customActionResult.addError(error);
+                }   
+            }   
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();    
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }   
+            isCustomAdded = true;   
+        }   
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -125,8 +144,26 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addPaymentMethodEx(paymentMethod);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -158,16 +195,52 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
     public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addAndSetDeliveryAddress(deliveryAddress);
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -181,8 +254,26 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddressEx(deleteShipToAddressId);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -344,8 +435,26 @@ public class Checkout {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
@@ -354,8 +463,26 @@ public class Checkout {
         ResultBundle result = null;
         result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        result.getActionResult().removeError(MessageCodes.ORDER_MINIMUM);
-        result.getActionResult().removeError(MessageCodes.ERR_AGE_VERIFICATION);
+        boolean isCustomAdded = false;
+        ActionResult customActionResult = new ActionResult();
+        if (result.getActionResult().isFailure()) {
+            Collection<ActionError> errors = result.getActionResult().getErrors();
+            for (ActionError error : errors) {
+                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
+                    continue;
+                } else {
+                    customActionResult.addError(error);
+                }
+            }
+            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
+            for (ActionWarning warning : warnings) {
+                customActionResult.addWarning(warning);
+            }
+            isCustomAdded = true;
+        }
+        if (isCustomAdded) {
+            result.setActionResult(customActionResult);
+        }
         return result;
     }
 
