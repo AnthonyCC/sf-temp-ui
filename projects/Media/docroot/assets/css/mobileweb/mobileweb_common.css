@@ -196,6 +196,9 @@ body.no-scroll {
 	left: 5px;
 	color: #fff;
 }
+.locabar-cart-count-cont .locabar-circle-cont {
+	top: -6px;
+}
 #mobilehomeMainDiv {
 	min-height: 30vh;
 	margin-bottom: 20px;
@@ -257,7 +260,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 	width: 57%;
 }
 .navbar-header-left {
-	width: 55%;
+	width: 51%;
 }
 footer .anchors {
 	-webkit-column-count: 2;
