@@ -54,6 +54,11 @@ public class HomeController extends BaseController {
 	private static final Integer DEFAULT_MAX = 998;
 
 	@Override
+    protected boolean validateUser() {
+        return false;
+    }
+	
+	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws JsonException, FDException {

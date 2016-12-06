@@ -706,7 +706,7 @@ public abstract class BaseController extends AbstractController implements Messa
         return responseMessage;
     }
 
-    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) {
+    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
         FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
@@ -723,6 +723,9 @@ public abstract class BaseController extends AbstractController implements Messa
             fdSessionUser.getUser().setApplication(src);
             request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+        }
+        if (validateUser() && fdSessionUser.getIdentity() == null) {
+            throw new NoSessionException("No session");
         }
         ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
         return SessionUser.wrap(fdSessionUser);

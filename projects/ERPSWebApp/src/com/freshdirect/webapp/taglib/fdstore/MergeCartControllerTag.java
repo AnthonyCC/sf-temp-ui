@@ -78,6 +78,11 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
 		cartCurrent.setUserContextToOrderLines(user.getUserContext());
 		cartCurrent.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+		FDCartModel cartMerged = new FDCartModel( cartCurrent );
+		cartMerged.mergeCart( cartSaved );
+		cartMerged.sortOrderLines();
+		cartMerged.setUserContextToOrderLines(user.getUserContext());
+		cartMerged.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		if ("POST".equalsIgnoreCase(request.getMethod())) {
 			// figure out which option was selected
@@ -91,18 +96,12 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 					user.updateUserState();
                     session.setAttribute(USER, user);
 				} else if(opt.equalsIgnoreCase("merge")) {
-				    FDCartModel cartMerged = new FDCartModel( cartCurrent );
-				    cartMerged.mergeCart( cartSaved );
-				    cartMerged.sortOrderLines();
-				    cartMerged.setUserContextToOrderLines(user.getUserContext());
-				    cartMerged.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
 					user.setShoppingCart( cartMerged );
                     //Check for multiple savings. 
                     checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
 					// invalidate promotion and recalc
                     user.updateUserState();
                     session.setAttribute(USER, user);
-                    pageContext.setAttribute("cartMerged", cartMerged );
 				}
 //				else {
 //					this.successPage="/login/index.jsp";
@@ -132,6 +131,7 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 	
 		pageContext.setAttribute("cartCurrent", cartCurrent );
 		pageContext.setAttribute("cartSaved", cartSaved );
+		pageContext.setAttribute("cartMerged", cartMerged );
 
 	
 		return EVAL_BODY_BUFFERED;
