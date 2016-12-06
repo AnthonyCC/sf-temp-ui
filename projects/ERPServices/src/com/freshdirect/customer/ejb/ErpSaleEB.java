@@ -286,4 +286,7 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	
 	public void markAsSettlementToSAPPending() throws ErpTransactionException, RemoteException;
 	
+	public void markAsPaypalSettlementFailed() throws ErpTransactionException, RemoteException;
+
+	
 }

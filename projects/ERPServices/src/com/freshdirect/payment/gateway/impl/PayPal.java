@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Category;
 
 import com.braintreegateway.PayPalAccount;
 import com.braintreegateway.Result;
@@ -24,9 +25,13 @@ import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.PaylinxResourceException;
+import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
+import com.freshdirect.payment.ejb.PaymentSessionBean;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
@@ -51,6 +56,8 @@ public class PayPal implements Gateway {
 	private static final String PAYPAL_VERIFY_VAULT_TOKEN_TXN="VerifyVaultToken";
 	private static final String PAYPAL_TXN_SUCCESS="SUCCESS";
 	private static final String PAYPAL_TXN_FAIL="FAIL";
+	private final static Category LOGGER = LoggerFactory.getInstance( PayPal.class );
+
 	
 	@Override
 	public GatewayType getType() {
@@ -236,6 +243,7 @@ public class PayPal implements Gateway {
 		ErpCaptureModel captureModel = new ErpCaptureModel();
 		if (result.isSuccess()) {
 			try {
+				
 				setSuccessResponse(response, result);
 				captureModel = GatewayAdapter.getCaptureResponse(response, authorization);
 				captureModel.setCardType(EnumCardType.PAYPAL);
@@ -249,9 +257,19 @@ public class PayPal implements Gateway {
 			}
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
+			// START APPDEV-5490
 			setFailureResponse(response, result);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException(result.getMessage());
+
+			 if(PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().equals(response.getStatusCode())
+					 || PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().equals(response.getStatusCode())){
+				 captureModel.setCardType(EnumCardType.PAYPAL);
+				 captureModel.setSettlementResponseCode(response.getStatusCode()); 
+
+			 }else{
+					throw new ErpTransactionException(result.getMessage());
+			 }
+			 //END APPDEV-5490
 		}
 		
 		return captureModel;
@@ -448,6 +466,12 @@ public class PayPal implements Gateway {
 		
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getAuthorizationId());
+		// Added settlement processor status code as part of APPDEV-5490
+		if(null==response.getStatusCode() && null!=result.getTarget().getProcessorSettlementResponseCode()){
+			response.setStatusCode(result.getTarget().getProcessorSettlementResponseCode());
+
+		}
+		
 	}
 	
 	private void setFailureResponse(ResponseImpl response, Result<Transaction> result) {
@@ -456,6 +480,13 @@ public class PayPal implements Gateway {
 		response.setRequestProcessed(true);
 		Transaction trxn = result.getTransaction();
 		response.setStatusMessage(result.getMessage());
+		
+		// Added settlement processor status code as part of APPDEV-5490
+		if(result.getTransaction()!=null){
+			response.setStatusCode(result.getTransaction().getProcessorSettlementResponseCode());
+			response.setResponseCode(result.getTransaction().getProcessorResponseCode());
+		}
+
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
 		if(trxn != null && trxn.getPayPalDetails() != null){
 			response.setEwalletTxId(trxn.getId());
