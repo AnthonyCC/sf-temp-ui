@@ -555,7 +555,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         }
 
         String shipToAddressId = request.getParameter("updateShipToAddressId");
-        boolean foundFraud = AddressUtil.updateShipToAddress(request, actionResult, user, shipToAddressId, erpAddress);
+//        boolean foundFraud = AddressUtil.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
+        boolean foundFraud = DeliveryAddressManipulator.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
         if (foundFraud) {
             /*
              * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] {user.getCustomerServiceContact()}));
