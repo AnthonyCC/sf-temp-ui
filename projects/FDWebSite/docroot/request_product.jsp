@@ -57,7 +57,7 @@
 
 	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 				<script type="text/javascript">
-				tcAgreewindow=doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+				tcAgreewindow=doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 				</script>
 	<%}%>
 

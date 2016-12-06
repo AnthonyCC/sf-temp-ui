@@ -80,10 +80,10 @@ sessionuser.setGcFraudReason("");
 			<script type="text/javascript">
 			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
 				
-				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); 
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 320, height: 400, opacity: .5}); 
 				} else {
 					
-				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 			}
 			
 			</script>

@@ -254,7 +254,7 @@
 	    		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
 	    			if (data.success) {
 	    				if(data.message =="TcAgreeFail"){
-	    					 FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 400, height: 400});
+	    					 FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 320, height: 400});
 	    				}else{
 							if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
 								window.location = data.successPage;

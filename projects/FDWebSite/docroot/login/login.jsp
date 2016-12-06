@@ -49,7 +49,7 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
 		var nextpage = '<%=nextSuccesspage %>';
-		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>");
+		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>");
 		</script>
 	<%}%>
 	
