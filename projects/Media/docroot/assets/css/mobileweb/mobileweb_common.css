@@ -1947,3 +1947,13 @@ footer .copyright {
 	.mm-page .browse-media img{
 		max-width: 100%;
 	}
+	
+	/* Delivery Info Nav */
+	.mm-page .delivery_info_nav_header{
+		font-size: 22px;
+		font-weight: bold;
+		padding: 10px;
+	}
+	.mm-page .delivery_info_nav_select{
+		margin: 5px 10px 20px;
+	}
