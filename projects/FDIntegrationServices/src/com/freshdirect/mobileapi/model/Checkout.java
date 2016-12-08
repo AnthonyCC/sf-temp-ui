@@ -395,30 +395,10 @@ public class Checkout {
 
     public ResultBundle setCheckoutDeliveryAddress(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = null;
-        boolean isCustomAdded = false;
-        if ((result == null) || (result.getActionResult().isSuccess())) {
-            result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
-        }
-        // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
-        ActionResult customActionResult = new ActionResult();
-        if (result.getActionResult().isFailure()) {
-            Collection<ActionError> errors = result.getActionResult().getErrors();
-            for (ActionError error : errors) {
-                if ("order_minimum".equals(error.getType()) || "ERR_AGE_VERIFICATION".equals(error.getType())) {
-                    continue;
-                } else {
-                    customActionResult.addError(error);
-                }
-            }
-            Collection<ActionWarning> warnings = result.getActionResult().getWarnings();
-            for (ActionWarning warning : warnings) {
-                customActionResult.addWarning(warning);
-            }
-            isCustomAdded = true;
-        }
-        if (isCustomAdded) {
-            result.setActionResult(customActionResult);
+        ResultBundle result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
+        if ((result.getActionResult().isSuccess()) && sessionUser.getShoppingCart().isAgeVerified()) {
+            AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(this.sessionUser);
+            result = alcoholAddressCheckWrapper.verifyAddress(id, type);
         }
         return result;
     }
