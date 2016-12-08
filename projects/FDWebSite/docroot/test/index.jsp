@@ -980,6 +980,18 @@
 		<div class="pageDesc">Lists/filters all FD Store properties set up in your machine. Also it can force a full refresh.</div>
 	</div>
 	
+	<div class="tag mobile mobileWeb">
+		<div class="pageName"><span>Testing mobileWeb</span></div>
+		<div class="link"><a href="/test/mobileWeb.jsp">/test/mobileWeb.jsp</a></div>
+		<div class="pageDesc">Show media in the mobileWeb layout for testing.</div>
+	</div>
+	
+	<div class="tag mobile mobileWeb layouts">
+		<div class="pageName"><span>Layout Info</span></div>
+		<div class="link"><a href="/test/layoutInfo.jsp">/test/layoutInfo.jsp</a></div>
+		<div class="pageDesc">Show layout setup for every dept and cat.</div>
+	</div>
+	
 	<hr />
 </div>
 
