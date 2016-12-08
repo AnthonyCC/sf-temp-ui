@@ -1337,22 +1337,6 @@
   </attribute>
  </tag>
  <tag>
-  <name>FeaturedProductsHelper</name>
-  <tagclass>com.freshdirect.webapp.taglib.fdstore.layout.FeaturedProductsHelperTag</tagclass>
-  <teiclass>com.freshdirect.webapp.taglib.fdstore.layout.FeaturedProductsHelperTag$TagEI</teiclass>
-  <bodycontent>JSP</bodycontent>
-  <attribute>
-   <name>currentFolder</name>
-   <required>true</required>
-   <rtexprvalue>true</rtexprvalue>
-  </attribute>
-  <attribute>
-   <name>maxFavsToShow</name>
-   <required>true</required>
-   <rtexprvalue>true</rtexprvalue>
-  </attribute>
- </tag>
- <tag>
   <name>ProductContainerLink</name>
   <tagclass>com.freshdirect.webapp.taglib.menu.ProductContainerLinkTag</tagclass>
   <bodycontent>JSP</bodycontent>

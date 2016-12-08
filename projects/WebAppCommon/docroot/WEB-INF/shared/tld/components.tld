@@ -3,46 +3,47 @@
                         "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
 <taglib>
 	<tlibversion>1.0</tlibversion>
+ 	<jspversion>1.1</jspversion>
 	<shortname>component</shortname>
 	<info>FreshDirect display components</info>
 	<tag-file>
 		<name>recommenderCarousel</name>
-		<path>/WEB-INF/shared/tags/recommenderCarousel.tag</path>
+		<path>/WEB-INF/tags/recommenderCarousel.tag</path>
 	</tag-file>
 	<tag-file>
 		<name>recommenderCarouselLight</name>
-		<path>/WEB-INF/shared/tags/soyRecommenderCarousel.tag</path>
+		<path>/WEB-INF/tags/soyRecommenderCarousel.tag</path>
 	</tag-file>
 	<tag-file>
 		<name>gridCarousel</name>
-		<path>/WEB-INF/shared/tags/gridCarousel.tag</path>
+		<path>/WEB-INF/tags/gridCarousel.tag</path>
 	</tag-file>
 	<tag-file>
 		<name>recommenderBox</name>
-		<path>/WEB-INF/shared/tags/smartstore/recommenderbox.tag</path>
+		<path>/WEB-INF/tags/smartstore/recommenderbox.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>welcomeMessage</name>
-	 	<path>/WEB-INF/shared/tags/home/welcomeMessage.tag</path>
+	 	<path>/WEB-INF/tags/home/welcomeMessage.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>modifyOrderBar</name>
-	 	<path>/WEB-INF/shared/tags/home/modifyOrderBar.tag</path>
+	 	<path>/WEB-INF/tags/home/modifyOrderBar.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>OASFeature</name>
-	 	<path>/WEB-INF/shared/tags/home/OASFeature.tag</path>
+	 	<path>/WEB-INF/tags/home/OASFeature.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>homePageLetter</name>
-	 	<path>/WEB-INF/shared/tags/home/homePageLetter.tag</path>
+	 	<path>/WEB-INF/tags/home/homePageLetter.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>location2Media</name>
-	 	<path>/WEB-INF/shared/tags/home/location2Media.tag</path>
+	 	<path>/WEB-INF/tags/home/location2Media.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>deliverySlotReserved</name>
-	 	<path>/WEB-INF/shared/tags/home/deliverySlotReserved.tag</path>
+	 	<path>/WEB-INF/tags/home/deliverySlotReserved.tag</path>
 	</tag-file>
 </taglib>

@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -17,9 +15,6 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.commons.lang.StringUtils;
-
-import weblogic.security.SimpleCallbackHandler;
-import weblogic.security.services.Authentication;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmAgentModel;
@@ -94,7 +89,7 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 		}
 		try {
 //			CrmManager.getInstance().loginAgent(agent.getUserId(), password);
-			Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
+			//Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
 			FDOrderI order = FDCustomerManager.getOrderForCRM(this.orderId);
 			List ccList = new ArrayList();
 			ErpPaymentMethodI pm=order.getPaymentMethod();
@@ -122,7 +117,7 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 			
  		} catch (FDResourceException e) {
 			actionResult.addError(true, "technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
-		} catch (LoginException e) {
+		} catch (Exception e) {
 			actionResult.addError(true, "authentication", "Password is wrong");
 		}
 		return true;

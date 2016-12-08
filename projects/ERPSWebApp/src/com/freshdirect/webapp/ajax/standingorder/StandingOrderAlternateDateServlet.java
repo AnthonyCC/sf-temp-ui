@@ -26,8 +26,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
+import org.apache.poi.util.IOUtils;
 
-import com.bea.core.repackaged.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.freshdirect.crm.CrmAgentModel;
@@ -96,7 +96,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Content-Disposition", "attachment; filename="+outputFile.getName());
 		response.setCharacterEncoding("utf-8");
-		FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
+		IOUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
 		response.getOutputStream().close();
 	}
 

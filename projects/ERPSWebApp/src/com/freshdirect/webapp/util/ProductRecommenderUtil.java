@@ -189,8 +189,7 @@ public class ProductRecommenderUtil {
 				if (outVariant != null) {
 					getUserVariant(user, siteFeat, outVariant);
 				}
-			}
-			
+			}			
 		} else {
 			products = sourceCat.getAllChildProductsAsList();
 			cleanUpProducts(products, deptModel.isFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
@@ -391,6 +390,25 @@ public class ProductRecommenderUtil {
 		    	keptItemCount++;
 		    }
 		}
+	}
+	
+	public static List<ProductModel> getCMSRecommendedAlternatives (ProductModel originalProduct, Set<ContentKey> excludedProductKeys){
+		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();
+		if (originalProduct!=null && !originalProduct.isDisableAtpFailureRecommendation()) {
+
+			//based on QuickShopHelper.populateReplacements()
+			for (ContentNodeModel node : originalProduct.getRecommendedAlternatives()) {
+				if (node instanceof ProductModel) {
+					replacementProducts.add((ProductModel)node);				
+				} else if (node instanceof SkuModel) {			
+					replacementProducts.add(((SkuModel)node).getProductModel());
+				}
+			}
+			removeProductsByKeys(replacementProducts, excludedProductKeys);
+			cleanUpProducts(replacementProducts, false, MAX_UNAVAILABLE_REPLACEMENTS_COUNT);
+			
+		}
+		return replacementProducts;
 	}
 	
 

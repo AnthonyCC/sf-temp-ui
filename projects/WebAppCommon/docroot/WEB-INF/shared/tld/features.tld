@@ -12,10 +12,12 @@
 	<tag>
 		<name>potato</name>
 		<tagclass>com.freshdirect.webapp.features.tags.FeaturesPotatoTag</tagclass>
+		<body-content>empty</body-content>
 	</tag>
 	<tag>
 		<name>allFeaturesPotato</name>
 		<tagclass>com.freshdirect.webapp.features.tags.AllFeaturesPotatoTag</tagclass>
+		<body-content>empty</body-content>
 	</tag>
 	<tag>
 		<name>isActive</name>

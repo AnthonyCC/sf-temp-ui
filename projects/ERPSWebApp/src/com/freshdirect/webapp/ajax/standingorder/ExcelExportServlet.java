@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.poi.util.IOUtils;
 
 public class ExcelExportServlet extends HttpServlet {
 
@@ -54,7 +54,7 @@ public class ExcelExportServlet extends HttpServlet {
 		response.setContentLength((int) outputFile.length());
 		
 		FileInputStream is = new FileInputStream(outputFile);
-		IOUtils.copyLarge(is, response.getOutputStream());
+		IOUtils.copy(is, response.getOutputStream());
 		is.close();
 		response.getOutputStream().close();
 	}

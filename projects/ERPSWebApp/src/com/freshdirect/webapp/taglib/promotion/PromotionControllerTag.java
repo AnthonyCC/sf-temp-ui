@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import javax.ejb.FinderException;
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -24,7 +23,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
@@ -136,11 +134,11 @@ public class PromotionControllerTag extends AbstractControllerTag {
 			try{
 				ErpMailSender mailer = new ErpMailSender();
 			
-				mailer.sendMail(FDStoreProperties.getPromotionEmail(), 
+				/*mailer.sendMail(FDStoreProperties.getPromotionEmail(), 
 								FDStoreProperties.getPromotionEmail(), 
 								"", 
-								subject, body, true, "");
-			} catch (MessagingException e) {
+								subject, body, true, "");*/
+			} catch (Exception e) {
 				LOGGER.warn("Error Sending Promotion Change email: ", e);
 			}
 		}
