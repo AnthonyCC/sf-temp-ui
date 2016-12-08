@@ -546,7 +546,9 @@ public class CheckoutController extends BaseController {
     	    	
     	Checkout checkout = new Checkout(user);
     	ResultBundle resultBundle = null;
-    	 if (isCheckLoginStatusEnable(request)) {
+    	EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
+                : EnumEStoreId.FD;
+    	 if (isCheckLoginStatusEnable(request) || EnumEStoreId.FDX.equals(eStore)) {
     	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
     	 } else {
     	     resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
