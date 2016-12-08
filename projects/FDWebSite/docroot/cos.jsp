@@ -6,7 +6,9 @@
 		import="com.freshdirect.fdlogistics.model.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
 		import="com.freshdirect.fdlogistics.model.FDTimeslot"
-		import="com.freshdirect.webapp.util.FDURLUtil"%><%@ taglib uri='logic' prefix='logic' %>
+		import="com.freshdirect.webapp.util.FDURLUtil"
+		import="java.util.*"%>
+		<%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -114,14 +116,14 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			<h2 class="homepage-categories-header">
 				<span>food, drinks & supplies for your office</span>
 			</h2>
-			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
+			<logic:iterate collection="<%= dept!= null ? dept.getDeptNav() : new ArrayList() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >
 				<span class="category figure"><a class="category-name caption" href="<%= FDURLUtil.getCategoryURI(cat,trkCode) %>"><fd:IncludeImage image="<%= cat.getCategoryPhoto() %>" alt="<%= cat.getFullName() %>" /><br><%= cat.getFullName() %></a></span>
 			</logic:equal>
 			</logic:iterate>	   			
 		</div>
 		<div id="editorial"><logic:iterate 
-			collection="<%= dept.getDepartmentBottom() %>" 
+			collection="<%= dept!= null ? dept.getDepartmentBottom() : new ArrayList() %>" 
 			id="media" 
 			type="com.freshdirect.fdstore.content.Html" ><fd:IncludeHtml html="<%= media %>"></fd:IncludeHtml>
 		</logic:iterate></div>

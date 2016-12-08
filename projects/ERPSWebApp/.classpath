@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.8.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-latest.jar" sourcepath="/SOY_SRC"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper-el.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/FDClient.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/wlthint3client.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/poi-3.5-FINAL-20090928.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/httpclient-4.5.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/httpcore-4.4.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/httpmime-4.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -224,6 +224,7 @@
 	<tag>
 		<name>browse</name>
 		<tagclass>com.freshdirect.webapp.ajax.browse.BrowsePotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>name</name>
@@ -249,6 +250,7 @@
 	<tag>
 		<name>globalnav</name>
 		<tagclass>com.freshdirect.webapp.globalnav.GlobalNavTag</tagclass>
+		<body-content>empty</body-content>
 		<info> </info>
 		<attribute>
 			<name>name</name>
@@ -269,6 +271,7 @@
 		<name>navigationhighlight</name>
 		<tagclass>com.freshdirect.webapp.globalnav.NavigationHighlightTag</tagclass>
 		<info> </info>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>name</name>
 			<required>false</required>

@@ -5,11 +5,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.customer.EnumExternalLoginSource;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;

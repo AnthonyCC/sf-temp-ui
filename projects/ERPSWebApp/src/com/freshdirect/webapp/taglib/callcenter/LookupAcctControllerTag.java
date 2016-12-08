@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.callcenter;
 
 import java.util.List;
 
-import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,11 +11,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import weblogic.security.SimpleCallbackHandler;
-import weblogic.security.services.Authentication;
-
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAuthenticationException;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.NVL;
@@ -74,7 +69,7 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 						return true;
 					}else{
 //						CrmManager.getInstance().loginAgent(agent.getUserId(), password);
-						Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
+						//Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
 						if(lookupLoc.equals("1")){
 							//Lookup Customer's Account.
 							String userId = CrmManager.getInstance().lookupAccount(acctNumber);
@@ -97,10 +92,10 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 		} catch(FDResourceException e){
 			LOGGER.error("System Error ooccurred while performing the Account Lookup.", e);
 			actionResult.addError(true, "lookupfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
-		} catch (LoginException e) {
+		}/* catch (LoginException e) {
 			LOGGER.error("Authentication Failure.", e);
 			actionResult.addError(true, "authentication", "Password is wrong");
-		}catch(Exception e){
+		}*/ catch(Exception e){
 			LOGGER.error("Unknown Error occurred while performing the Account Lookup." ,e);
 			actionResult.addError(true, "lookupfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
 		}

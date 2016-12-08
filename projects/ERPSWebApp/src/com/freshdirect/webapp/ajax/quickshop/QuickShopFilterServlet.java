@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -18,7 +17,6 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
-import com.rsa.cryptoj.c.rQ;
 
 /**
  * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet}

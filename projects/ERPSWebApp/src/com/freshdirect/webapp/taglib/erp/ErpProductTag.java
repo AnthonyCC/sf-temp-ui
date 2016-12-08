@@ -13,7 +13,6 @@ package com.freshdirect.webapp.taglib.erp;
  */
 
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,9 +119,9 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 			}
             prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
         }
-        Map<Object,Object> m=request.getParameterMap();
+        Map<String,String[]> m=request.getParameterMap();
         boolean saveNewness=false;
-        for (Map.Entry<Object, Object> entry : m.entrySet())
+        for (Map.Entry<String,String[]> entry : m.entrySet())
         {
             if(entry.getKey().toString().indexOf(EnumAttributeName.NEW_PRODUCT_DATE.getName())!=-1) {
             	saveNewness=true;

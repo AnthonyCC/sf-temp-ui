@@ -4,8 +4,8 @@
         "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
 
 <taglib>
-	<tlibversion>1.0</tlibversion>
-	<jspversion>1.1</jspversion>
+	<tlibversion>1.2</tlibversion>
+	<jspversion>2.1</jspversion>
 	<shortname>freshdirect</shortname>
 	<info>
 	</info>
@@ -204,34 +204,6 @@
 		<name>DepotLoginController</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.depot.DepotLoginControllerTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.depot.DepotLoginControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>depotCode</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>CorpLoginController</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.depot.CorpLoginControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.depot.CorpLoginControllerTag$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
@@ -4955,6 +4927,7 @@
 	<tag>
 		<name>CmInit</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmInitTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>returnAsJson</name>
 			<required>false</required>
@@ -4965,6 +4938,7 @@
 	<tag>
 		<name>CmPageView</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmPageViewTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5046,6 +5020,7 @@
 	<tag>
 		<name>CmShop5</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5080,6 +5055,7 @@
 	<tag>
 		<name>CmShop9</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5114,6 +5090,7 @@
 	<tag>
 		<name>CmProductView</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmProductViewTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5148,6 +5125,7 @@
 	<tag>
 		<name>CmOrder</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmOrderTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5177,6 +5155,7 @@
 	<tag>
 		<name>CmRegistration</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5275,6 +5254,7 @@
 	<tag>
 		<name>CmElement</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmElementTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5364,6 +5344,7 @@
 	<tag>
 		<name>CmFieldDecorator</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmFieldDecoratorTag</tagclass>
+		<body-content>empty</body-content>
 	</tag>
 	<tag>
 		<name>YoutubeVideoTag</name>
@@ -5444,6 +5425,7 @@
 	<tag>
 		<name>LocationHandler</name>
 		<tagclass>com.freshdirect.webapp.taglib.location.LocationHandlerTag</tagclass>
+		<body-content>tagdependent</body-content>
 		<attribute>
 			<name>action</name>
 			<required>false</required>
@@ -5617,6 +5599,7 @@
 	<tag>
 		<name>QuickShopRedirector</name>
 		<tagclass>com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>user</name>
@@ -5632,6 +5615,7 @@
 	<tag>
 		<name>PDPRedirector</name>
 		<tagclass>com.freshdirect.webapp.ajax.PDPRedirector</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>user</name>
@@ -5642,6 +5626,7 @@
 	<tag>
 		<name>BrowsePartialRolloutRedirector</name>
 		<tagclass>com.freshdirect.webapp.ajax.browse.BrowsePartialRolloutRedirectorTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>user</name>
 			<required>true</required>
@@ -5661,6 +5646,7 @@
 	<tag>
 		<name>SearchRedesignRedirector</name>
 		<tagclass>com.freshdirect.webapp.search.SearchRedesignRedirectorTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>user</name>
 			<required>true</required>
@@ -5737,30 +5723,30 @@
  	</tag>
 	<tag-file>
        <name>SEOMetaTag</name>
-       <path>/WEB-INF/shared/tags/common/metatags.tag</path>
+       <path>/WEB-INF/tags/common/metatags.tag</path>
 	</tag-file>
 	<tag-file>
        <name>GreetingPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/greeting.tag</path>
+       <path>/WEB-INF/tags/cmspreview/greeting.tag</path>
 	</tag-file>
 	<tag-file>
        <name>PeekAheadPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/peekahead.tag</path>
+       <path>/WEB-INF/tags/cmspreview/peekahead.tag</path>
 	</tag-file>
 	<tag-file>
        <name>TrendingPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/trending.tag</path>
+       <path>/WEB-INF/tags/cmspreview/trending.tag</path>
 	</tag-file>
 	<tag-file>
        <name>EssentialsPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/essentials.tag</path>
+       <path>/WEB-INF/tags/cmspreview/essentials.tag</path>
 	</tag-file>
 	<tag-file>
        <name>FeaturedProductPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/featuredproduct.tag</path>
+       <path>/WEB-INF/tags/cmspreview/featuredproduct.tag</path>
 	</tag-file>
 	<tag-file>
        <name>FeaturedCategoryPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/featuredcategory.tag</path>
+       <path>/WEB-INF/tags/cmspreview/featuredcategory.tag</path>
 	</tag-file>
 </taglib>

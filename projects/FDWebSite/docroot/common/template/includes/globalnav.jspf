@@ -1,4 +1,3 @@
-<%@page import="com.bea.wls.ejbgen.template.Context"%>
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>

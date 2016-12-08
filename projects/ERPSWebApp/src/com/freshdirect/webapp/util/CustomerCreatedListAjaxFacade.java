@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.LogManager;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
@@ -36,7 +35,6 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
@@ -305,9 +303,9 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 				StringUtil.escapeHTML(custPhone), 
 				StringUtil.escapeHTML(custIssue));
 			
-			new ErpMailSender().sendMail(FDStoreProperties.getStandingOrderCsEmail(), FDStoreProperties.getStandingOrderCsEmail(), "", "Need Help Form - "+ userId, message, true, "");
+			//new ErpMailSender().sendMail(FDStoreProperties.getStandingOrderCsEmail(), FDStoreProperties.getStandingOrderCsEmail(), "", "Need Help Form - "+ userId, message, true, "");
 
-		}catch (MessagingException e) {
+		}catch (Exception e) {
 			LOGGER.warn("Error Sending Need Help Standing Order Email: ", e);
 		}
 	}
