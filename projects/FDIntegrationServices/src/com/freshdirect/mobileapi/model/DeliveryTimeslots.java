@@ -45,6 +45,9 @@ public class DeliveryTimeslots {
     public ResultBundle reserveSlot(String deliveryTimeslotId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(user);
         ResultBundle result = tagWrapper.reserveDeliveryTimeslot(deliveryTimeslotId);
+        if(tagWrapper.getWrapTarget().getSuccessPage() != null && tagWrapper.getWrapTarget().getSuccessPage().contains("step_2_verify_age")){
+        	result.setActionResult(new ActionResult());
+        }
         tagWrapper.setParams(result);
         return result;
     }
