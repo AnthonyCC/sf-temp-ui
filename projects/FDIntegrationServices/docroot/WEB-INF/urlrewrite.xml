@@ -333,7 +333,7 @@
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddress/set/$</from>
-		<to last="true">/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
+		<to last="true">/checkout.do?action=setdeliveryaddressex&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/dpacceptterms/</from>
