@@ -65,7 +65,7 @@ if("slite".equals(request.getParameter("referrer_page"))) {
 	<div align="center">
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<%-- 1 --%>
-	    <tr>
+	    <tr class="NOMOBWEB">
 	        <td><img src="/media_stat/images/layout/clear.gif" width="140" height="1" border="0"></td>
 	        <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8" border="0"></td>
 	        <td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" border="0"></td>

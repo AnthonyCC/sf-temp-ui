@@ -1957,3 +1957,7 @@ footer .copyright {
 	.mm-page .delivery_info_nav_select{
 		margin: 5px 10px 20px;
 	}
+	.mm-page #corporateServiceSurvey td label{
+		word-wrap: break-word;
+		word-break: break-word;
+	}
