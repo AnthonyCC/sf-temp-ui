@@ -471,6 +471,14 @@
 	   <servlet-name>StandingOrderCartServlet</servlet-name>
 	   <url-pattern>/api/standingOrderCartServlet</url-pattern>
 	</servlet-mapping>
+	<servlet>
+    	<servlet-name>StandingorderCronServlet</servlet-name>
+   		<servlet-class>com.freshdirect.fdstore.standingorders.service.StandingOrderCronServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StandingorderCronServlet</servlet-name>
+    <url-pattern>/standigorder_cron</url-pattern>
+  </servlet-mapping>
   <servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
 		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
