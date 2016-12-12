@@ -6,6 +6,9 @@
 %><%@ page import='java.net.URLEncoder'
 %><%@ page import="com.freshdirect.fdstore.util.RatingUtil" 
 %><%@ page import="com.freshdirect.fdstore.rollout.*" 
+%><%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'
+%><%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'
+%><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ taglib uri='template' prefix='tmpl' 
 %><%@ taglib uri='logic' prefix='logic' 
 %><%@ taglib uri='freshdirect' prefix='fd' 
@@ -182,12 +185,22 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 				jspTemplate = "/common/template/both_dnav.jsp";
 			}
 	    }
-	}	
+	}
+
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = jspTemplate;
+	if (isIncludeMediaLayout && mobWeb) { //limit to media include pages
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = request.getAttribute("sitePage").toString();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
 	request.setAttribute("layoutType", layoutType); //make layoutType available in jspTemplate
 	request.setAttribute("noLeftNav",noLeftNav);
 	request.setAttribute("jspTemplate",jspTemplate);
 	String folderFullName = currentFolder.getFullName().replaceAll("<[^>]*>", "");
-	%><tmpl:insert template='<%=jspTemplate%>'><%
+	%><tmpl:insert template='<%= pageTemplate %>'><%
 		if (!noLeftNav) {
 			%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
 		} 
@@ -305,7 +318,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 								OAS_AD('CategoryNote');
 							</script> <%
 						}
-					} 				
+					}			
 	
 					if ( !noCache 
 						|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
