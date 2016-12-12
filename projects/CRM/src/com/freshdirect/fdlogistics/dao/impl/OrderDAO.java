@@ -633,7 +633,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 						address.setUnattendedInstructions(rs.getString("UNATTENDED_INSTR"));
 						result.setCardType(rs.getString("CARD_TYPE"));
 						result.setAlcohol(rs.getInt("NUM_ALCOHOL_CARTONS")>0?true:false);
-						result.setETip(rs.getInt("TIP"));
+						result.setETip(rs.getDouble("TIP"));
 						String altDest=(rs.getString("ALT_DEST")!=null)?EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")).getName():null;
 						if(altDest!=null)
 						{
