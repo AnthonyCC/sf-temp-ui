@@ -788,6 +788,11 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>cleanupCart</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -5195,6 +5200,7 @@
 	<tag>
 		<name>CmConversionEvent</name>
 		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag</tagclass>
+		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>wrapIntoScriptTag</name>
 			<required>false</required>
@@ -5296,7 +5302,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>timeSlot</name>
+			<name>timeslot</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
