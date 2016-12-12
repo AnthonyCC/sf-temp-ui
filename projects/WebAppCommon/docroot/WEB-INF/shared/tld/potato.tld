@@ -281,6 +281,7 @@
 	<tag>
 		<name>pendingExternalAtcItem</name>
 		<tagclass>com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemPotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>name</name>
 			<required>false</required>
@@ -295,6 +296,7 @@
     <tag>
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
+        <body-content>empty</body-content>
     </tag>
 
 	<!-- APPDEV-3901 -->
@@ -305,6 +307,7 @@
     <tag>
         <name>singlePageCheckout</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
@@ -319,6 +322,7 @@
     <tag>
         <name>singlePageCheckoutSuccess</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutSuccessPotatoTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
@@ -328,6 +332,7 @@
     <tag>
         <name>cartData</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.cart.tag.CartDataPotatoTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
