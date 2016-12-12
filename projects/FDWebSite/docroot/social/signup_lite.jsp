@@ -53,7 +53,7 @@
 	// determine the preSuccessPage from previous workflow
 	String preSuccessPage = (String)request.getParameter("preSuccessPage");
 	if(preSuccessPage != null && preSuccessPage.length()>0 )
-		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage); 
+		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
 
 	String template = "/common/template/no_nav_html5.jsp";
 
@@ -444,7 +444,7 @@
 					%>
 						<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
 						<script language="javascript">
-							window.top.location = '<%= preSuccessPageFromSession %>';   // close popup and return to  preSuccessPageFromSession 
+							window.top.location = '<%= preSuccessPageFromSession %>'+window.top.location.hash;  // close popup and return to  preSuccessPageFromSession
 						</script>				
 					<% }
 				} %>
