@@ -25,8 +25,8 @@
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
-<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
-<%@ page import='com.freshdirect.payment.EnumPaymentMethodType';%>
+<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo'%>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
