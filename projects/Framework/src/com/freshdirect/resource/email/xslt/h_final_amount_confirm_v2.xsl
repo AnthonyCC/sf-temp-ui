@@ -372,7 +372,7 @@
 		
 				<p><xsl:call-template name="h_invoice_info_v1"/></p>
 		
-				<p>NOTE: If this email does not print out clearly, please go to <a href="https://www.freshdirect.com/your_account/order_history.jsp">https://www.freshdirect.com/your_account/order_history.jsp</a> for a printer-friendly version of your order details.</p>
+				<p>NOTE: If this email does not print out clearly, please go to <a href="https://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/>">https://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></a> for a printer-friendly version of your order details.</p>
 	
 				<p><xsl:call-template name="h_footer_v1"/></p>
 			</td>
