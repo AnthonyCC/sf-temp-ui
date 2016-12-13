@@ -174,7 +174,7 @@ if (timeslots.size() > 0) {
 		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeContext() != null) { 
 			/* do nothing */
 		} else { %>
-			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">timeslotChooserFunctions['<%= slot.getId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" /></logic:iterate>
+			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">timeslotChooserFunctions['<%= slot.getId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeslot="<%= slot %>" /></logic:iterate>
 		<% } %>
 		var timeslot_info = <%=isStaticSlot%>;
 		var dayIndex = 0;
