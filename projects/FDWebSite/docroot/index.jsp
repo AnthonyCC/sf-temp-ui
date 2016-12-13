@@ -130,9 +130,13 @@ request.setAttribute("noyui", true);
 				List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
 				
 				for (CategoryModel curCat: catModels) {
+					String curCatLink = "/browse.jsp?id="+curCat;
 					//skip if cat has no prod(s) and is not redirecting
 					if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
 						continue;
+					}
+					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
+						curCatLink = "https://www.foodkick.com";
 					}
 					String bannerText = curCat.getPrimaryText();
 					if ("".equals(bannerText)) {
@@ -141,7 +145,7 @@ request.setAttribute("noyui", true);
 					
 					 %>
 					 
-					<a href="/browse.jsp?id=<%= curCat %>">
+					<a href="<%= curCatLink %>">
 					    <div class="home-page-banner">
 						    <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
 							<div class="home-page-banner-subtext-cont">
