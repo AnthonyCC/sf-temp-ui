@@ -4211,8 +4211,7 @@ public class FDCustomerManager {
 				FDDeliveryManager.getInstance().addSubscriptions(customerId, smsPreferenceModel.getMobileNumber() != null ? smsPreferenceModel.getMobileNumber().getPhone():"",
 								textOffers,	textDelivery, (EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderNotices())) ? EnumSMSAlertStatus.SUBSCRIBED
 								.value() : EnumSMSAlertStatus.NONE.value(),	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderExceptions())) ? EnumSMSAlertStatus.SUBSCRIBED
-								.value() : EnumSMSAlertStatus.NONE.value(),	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOffers())) ? EnumSMSAlertStatus.SUBSCRIBED
-								.value() : EnumSMSAlertStatus.NONE.value(),	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getPartnerMessages())) ? EnumSMSAlertStatus.SUBSCRIBED
+								.value() : EnumSMSAlertStatus.NONE.value(),	null,	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getPartnerMessages())) ? EnumSMSAlertStatus.SUBSCRIBED
 								.value() : EnumSMSAlertStatus.NONE.value(), new Date(),	eStoreId.toString());
 				}
 			else{
