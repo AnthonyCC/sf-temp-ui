@@ -5375,6 +5375,7 @@
 	<tag>
 		<name>PendingOrderChecker</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.PendingOrderCheckerTag</tagclass>
+		<bodycontent>empty</bodycontent>
 		<info></info>
 	</tag>
 	<tag>
