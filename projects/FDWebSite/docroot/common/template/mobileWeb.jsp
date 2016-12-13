@@ -217,5 +217,13 @@
 	    
 	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
+
+	<% if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ %>
+		<script>
+			$jq(document).on('ready',  function() {
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 320, height: 400});
+			});
+		</script>
+	<% } %>
   </body>
 </html>
