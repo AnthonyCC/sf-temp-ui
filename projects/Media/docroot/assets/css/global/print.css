@@ -20,4 +20,22 @@
 			height: 100%;
 			margin: 0px auto;
 		}
+	.noprint { /* generic class to hide from print view */
+		display: none !important;
+	}
+	/* order details */
+		[data-printdata="order_details"] .globalnav_top .nav *,
+		[data-printdata="order_details"] .nav-container,
+		[data-printdata="order_details"] .deptnav-cont,
+		[data-printdata="order_details"] #toptoolbar,
+		[data-printdata="order_details"] [data-component="footer-cont"],
+		[data-printdata="order_details"] #cta2 /* extole */
+		{
+			display: none;
+		}
+		
+		[data-printdata="order_details"] .globalnav_top .nav .logo,
+		[data-printdata="order_details"] .globalnav_top .nav .logo * {
+			display: block;
+		}
 }
