@@ -16,19 +16,21 @@
 			<%
 				final Logger LOGGER_BOTNAV = LoggerFactory.getInstance("globalnav_mobileWeb_bottom.jspf");
 				try {
-				if(!FDStoreProperties.isExtoleRafEnabled() && user !=null && user.isReferralProgramAvailable()) {
-					FDIdentity customerIdentity = null;
-					if (user!=null && user.getLevel() == 2){
-						customerIdentity = user.getIdentity();
+					if (user != null && user.getLevel() != FDUserI.GUEST) {
+						if(!FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) {
+							FDIdentity customerIdentity = null;
+							if (user.getLevel() == 2){
+								customerIdentity = user.getIdentity();
+							}
+							ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
+							if(rpModel != null) {
+								%><a href="/your_account/brownie_points.jsp">Refer&nbsp;a&nbsp;Friend</a><%
+							}
+						}else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
+							//This is the default microsite url for RAF-- under My Account Refer a Friend Link
+							%><a href="<%=FDStoreProperties.getPropExtoleMicrositeSubUrl()%>">Refer&nbsp;a&nbsp;Friend</a><%
+						}
 					}
-					ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
-					if(rpModel != null) {
-						%><a href="/your_account/brownie_points.jsp">Refer&nbsp;a&nbsp;Friend</a><%
-					}
-				}else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
-					//This is the default microsite url for RAF-- under My Account Refer a Friend Link
-					%><a href="<%=FDStoreProperties.getPropExtoleMicrositeSubUrl()%>">Refer&nbsp;a&nbsp;Friend</a><%
-				}
 				} catch (Exception e) {
 					LOGGER_BOTNAV.debug("Error in getting RAF link");
 					e.printStackTrace();
