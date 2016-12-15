@@ -190,6 +190,26 @@ var API;
 			}
 			
 		});
+		
+		/* hooklogic */
+			/* fix click beacon */
+				/* hooklogic click event */
+				$('[data-hooklogic-beacon-click]').find('a,button,.portrait-item-productimage_wrapper').each(function(i,e) {
+					if (!$(e).data('hooklogic-beacon-click')) {
+						/* exclusion elems */
+						if (
+							$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
+						) { return; 
+						} else {
+							$(e).data('hooklogic-beacon-click', 'true');
+							$(e).on('click', function(event) {
+								var $parent = $(e).closest('[data-hooklogic-beacon-click]');
+								var url = $parent.data('hooklogic-beacon-click');
+								$parent.append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'&platform=mobile" style="display: none;" />');
+							});
+						}
+					}
+				});
 	});
 	
 }(jQuery));
