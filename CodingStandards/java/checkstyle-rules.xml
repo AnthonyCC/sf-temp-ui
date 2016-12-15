@@ -348,7 +348,7 @@
     </module>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="${samedir}/suppressions.xml"/>
+    <property name="file" value="${samedir}/checkstyle-suppressions.xml"/>
   </module>
   <module name="SuppressionCommentFilter">
     <property name="offCommentFormat" value="Generated code begins here"/>
