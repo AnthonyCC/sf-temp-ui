@@ -151,6 +151,32 @@ public class ErpCartonDetails implements Serializable {
 			this.shortShipped = shortShipped;
 	}
 
+	public ErpCartonDetails(ErpCartonInfo cartonInfo, String orderLineNumber, String materialNumber,
+			String barcode, double packedQuantity,
+			double netWeight, String weightUnit, String skuCode,
+			String materialDesc, 
+			boolean shortShipped, String childOrderLineNo,
+			Double actual_quantity, String packed_uom, String shipping_status,
+			String sub_material_number) {
+		super();
+		this.cartonInfo = cartonInfo;
+		this.orderLineNumber = orderLineNumber;
+		this.materialNumber = materialNumber;
+		this.barcode = barcode;
+		this.packedQuantity = packedQuantity;
+		this.netWeight = netWeight;
+		this.weightUnit = weightUnit;
+		this.skuCode = skuCode;
+		this.materialDesc = materialDesc;
+		this.components = new ArrayList<ErpCartonDetails>();
+		this.shortShipped = shortShipped;
+		this.childOrderLineNo = childOrderLineNo;
+		this.actual_quantity = actual_quantity;
+		this.packed_uom = packed_uom;
+		this.shipping_status = shipping_status;
+		this.sub_material_number = sub_material_number;
+	}
+	
 	public ErpCartonDetails() {
 	}
 	public String toString() {
@@ -179,11 +205,57 @@ public class ErpCartonDetails implements Serializable {
 	private String materialDesc;
 	private List<ErpCartonDetails> components = new ArrayList<ErpCartonDetails>();
 	private boolean shortShipped;
+	
+	private String childOrderLineNo;
+	
+	private Double actual_quantity;
+	private String packed_uom;
+	private String shipping_status;
+	private String sub_material_number;
+	private boolean first_carton_orln;
+	
 	public boolean isShortShipped() {
 		return shortShipped;
 	}
 	public void setShortShipped(boolean shortShipped) {
 		this.shortShipped = shortShipped;
+	}
+	
+	public Double getActual_quantity() {
+		return actual_quantity;
+	}
+	public void setActual_quantity(Double actual_quantity) {
+		this.actual_quantity = actual_quantity;
+	}
+	public String getPacked_uom() {
+		return packed_uom;
+	}
+	public void setPacked_uom(String packed_uom) {
+		this.packed_uom = packed_uom;
+	}
+	public String getShipping_status() {
+		return shipping_status;
+	}
+	public void setShipping_status(String shipping_status) {
+		this.shipping_status = shipping_status;
+	}
+	public String getSub_material_number() {
+		return sub_material_number;
+	}
+	public void setSub_material_number(String sub_material_number) {
+		this.sub_material_number = sub_material_number;
+	}
+	public String getChildOrderLineNo() {
+		return childOrderLineNo;
+	}
+	public void setChildOrderLineNo(String childOrderLineNo) {
+		this.childOrderLineNo = childOrderLineNo;
+	}
+	public void setFirstCartonWithORLN(boolean first_carton_orln) {
+		this.first_carton_orln = first_carton_orln;
+	}
+	public boolean isFirstCartonWithORLN() {
+		return first_carton_orln;
 	}
 
 }

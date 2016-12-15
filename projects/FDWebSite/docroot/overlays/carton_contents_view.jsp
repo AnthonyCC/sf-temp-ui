@@ -1,8 +1,9 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@ page import="com.freshdirect.customer.ErpCartonDetails"%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
-
+<link rel="stylesheet" type="text/css" href="/ccassets/css/crm.css" />
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -122,6 +123,37 @@
 									<%= cartonDetail.getCartLine().getUnitPrice() %>
 								</td>
 							</tr>
+							
+							<% 
+								if(cartonDetail.getCartonDetail().getComponents().size() > 0 ) { 
+									for (int j = 0; j < cartonDetail.getCartonDetail().getComponents().size(); j++) {
+										ErpCartonDetails component = cartonDetail.getCartonDetail().getComponents().get(j);
+							
+							%>
+								
+								<tr valign="top" class="list_component_row">
+									<td width="150px">										
+										<%= component.getPackedQuantity() %>&nbsp;
+									</td>
+									<td>
+										<span style="margin-left: 20px;"><%= component.getMaterialDesc() %>
+										(<%= component.getSkuCode() %>)</span>
+									</td>
+									<td width="90px"> 
+										<%= component.getNetWeight() %>
+										<% if(component.getWeightUnit() != null) { %>
+											<%= component.getWeightUnit().toLowerCase() %>
+										<% } %>
+									</td>
+									<td width="75px">
+										
+									</td>
+								</tr>							
+							
+							<% 		}
+								} 
+							%>
+							
 							<%
 
 							idx++;

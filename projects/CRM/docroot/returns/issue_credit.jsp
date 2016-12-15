@@ -374,9 +374,8 @@ var OL_PRICES = {};
 
 			for (Iterator it2=cInfo.getCartonDetails().iterator(); it2.hasNext(); ) {
 	    		FDCartonDetail cDetail = (FDCartonDetail) it2.next();
-	    		
 	    		FDCartLineI orderLine = cDetail.getCartLine();
-	
+				
 		        // bind variables
 		        request.setAttribute("__issue_credit_orderline", orderLine);
 		        request.setAttribute("__issue_credit_lineComplaints", lineComplaints);
@@ -384,10 +383,29 @@ var OL_PRICES = {};
 		        request.setAttribute("__issue_credit_cartonNumber", cartNum);
 		        request.setAttribute("__issue_credit_paramIndex", new Integer(i));
 		        request.setAttribute("__issue_credits_cartonDetail", cDetail);
-%>
-<%@ include file="/returns/issue_credits_line.jspf" %>
-<%
-				i++;
+		        request.setAttribute("__issue_credits_hasComponents", cDetail.getCartonDetail() != null && 
+	    				cDetail.getCartonDetail().getComponents() != null && 
+	    				cDetail.getCartonDetail().getComponents().size() > 0);
+	    		
+		    	/* if((cDetail.getCartonDetail().getComponents() == null || cDetail.getCartonDetail().getComponents().size() == 0) 
+		    				|| (cDetail != null && 
+		    				cDetail.getCartonDetail() != null && 
+		    				cDetail.getCartonDetail().getComponents() != null && 
+		    				cDetail.getCartonDetail().getComponents().size() > 0 && cDetail.getCartonDetail().isFirstCartonWithORLN())){ */
+			    		
+							%>
+							<%@ include file="/returns/issue_credits_line.jspf" %>
+							<%
+						i++;
+				/* }
+		    	if(cDetail != null && 
+		    				cDetail.getCartonDetail() != null && 
+		    				cDetail.getCartonDetail().getComponents() != null && 
+		    				cDetail.getCartonDetail().getComponents().size() > 0 && !cDetail.getCartonDetail().isFirstCartonWithORLN()){*/
+		    			
+		    		// <%@ include file="/returns/issue_credits_line_components.jspf" %> 
+						<%
+		    	//} 
 	    	} // orderLines per carton
 	    } // cartons
     }

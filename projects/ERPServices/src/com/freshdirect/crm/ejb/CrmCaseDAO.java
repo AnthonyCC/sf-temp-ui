@@ -377,13 +377,13 @@ public class CrmCaseDAO implements EntityDAOI {
 
 
 	// [APPREQ-478]
-	private List loadCartons(Connection conn, PrimaryKey casePK, PrimaryKey salePK) {
+	private List<String> loadCartons(Connection conn, PrimaryKey casePK, PrimaryKey salePK) {
 		if (salePK == null)
 			return null;
 		
-		List cartonNumbers = null;
+		List<String> cartonNumbers = null;
 		try {
-			final List orderCartons = ErpCartonsDAO.getCartonInfo(conn, salePK);
+			final List<String> orderCartons = ErpCartonsDAO.getCartonNumbers(conn, salePK);
 			cartonNumbers = new ArrayList(orderCartons.size());
 			
 			PreparedStatement ps = conn.prepareStatement("SELECT CARTON_NUMBER FROM CUST.CASE_CARTONS WHERE CASE_ID = ?");
@@ -392,9 +392,9 @@ public class CrmCaseDAO implements EntityDAOI {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				String cartonNumber = rs.getString("CARTON_NUMBER");
-				for (Iterator it=orderCartons.iterator(); it.hasNext();) {
-					ErpCartonInfo ct = (ErpCartonInfo) it.next();
-					if (ct.getCartonNumber().equalsIgnoreCase(cartonNumber)) {
+				for (Iterator<String> it=orderCartons.iterator(); it.hasNext();) {
+					String ct = it.next();
+					if (ct.equalsIgnoreCase(cartonNumber)) {
 						cartonNumbers.add(cartonNumber);
 					}
 				}

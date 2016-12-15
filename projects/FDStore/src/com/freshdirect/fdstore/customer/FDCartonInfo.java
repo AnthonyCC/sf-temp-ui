@@ -9,6 +9,7 @@ package com.freshdirect.fdstore.customer;
 import java.io.Serializable;
 import java.util.List;
 
+import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
 
 /**
@@ -44,6 +45,16 @@ public class FDCartonInfo implements Serializable {
 		}
 		return null;
 
+	}
+	
+	public boolean hasComponents(){
+		
+		for(FDCartonDetail d : cartonDetails){
+			if(d.getCartonDetail()!=null && 
+					d.getCartonDetail().getComponents().size()>0)
+				return true;
+		}
+		return false;
 	}
 
 }

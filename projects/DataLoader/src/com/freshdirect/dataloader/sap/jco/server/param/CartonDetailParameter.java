@@ -14,7 +14,15 @@ public class CartonDetailParameter implements java.io.Serializable
 	private String cartonNumber;
 	private String sapOrderNo;
 	private String orderLineNo;
+	private String childOrderLineNo;
 		
+	private String material_description;
+	private Double actual_quantity;
+	private String packed_uom;
+	private String shipping_status;
+	private String sub_material_number;
+	private String skuCode;
+	
 	public CartonDetailParameter()
 	{
 		// default constructor
@@ -142,5 +150,73 @@ public class CartonDetailParameter implements java.io.Serializable
 	 */
 	public void setOrderLineNo(String orderLineNo) {
 		this.orderLineNo = orderLineNo;
+	}
+
+	public String getMaterial_description() {
+		return material_description;
+	}
+
+
+	public void setMaterial_description(String material_description) {
+		this.material_description = material_description;
+	}
+
+	public Double getActual_quantity() {
+		return actual_quantity;
+	}
+
+
+	public void setActual_quantity(Double actual_quantity) {
+		this.actual_quantity = actual_quantity;
+	}
+
+
+	public String getPacked_uom() {
+		return packed_uom;
+	}
+
+
+	public void setPacked_uom(String packed_uom) {
+		this.packed_uom = packed_uom;
+	}
+
+
+	public String getShipping_status() {
+		return shipping_status;
+	}
+
+
+	public void setShipping_status(String shipping_status) {
+		this.shipping_status = shipping_status;
+	}
+
+
+	public String getSub_material_number() {
+		return sub_material_number;
+	}
+
+
+	public void setSub_material_number(String sub_material_number) {
+		this.sub_material_number = sub_material_number;
+	}
+
+
+	public String getSkuCode() {
+		return skuCode;
+	}
+
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+
+
+	public String getChildOrderLineNo() {
+		return childOrderLineNo;
+	}
+
+
+	public void setChildOrderLineNo(String childOrderLineNo) {
+		this.childOrderLineNo = childOrderLineNo;
 	}	
 }
