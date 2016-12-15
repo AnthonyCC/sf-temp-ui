@@ -18,7 +18,7 @@ public class WLSSapCartonServer2 extends ApplicationLifecycleListener {
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 
-		if (ErpServicesProperties.getJcoClientListenersEnabled() && ErpServicesProperties.isNewCartonExportEnabled()) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)
