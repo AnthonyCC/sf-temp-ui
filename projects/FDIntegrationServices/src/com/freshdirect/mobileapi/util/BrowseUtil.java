@@ -1447,7 +1447,8 @@ public class BrowseUtil {
 	    	
 	    	try {
 				List<String> zoneIds = new ArrayList<String>(FDZoneInfoManager.loadAllZoneInfoMaster());
-				ZoneInfo plant1k;
+				ZoneInfo plantlic;
+				ZoneInfo plantwdc;
 				ZoneInfo plant1300;
 				ZoneInfo plant1310;
 				CatalogKey tmp;
@@ -1455,14 +1456,21 @@ public class BrowseUtil {
 				for(String zoneId : zoneIds){
 					//TODO: replace stubs with something else
 					//Currently using stubs for sales and distribution
-					plant1k = new ZoneInfo(zoneId, "0001", "01");
+					plantlic = new ZoneInfo(zoneId, "0001", "01");
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1000);
-					tmp.setPricingZone(plant1k);
+					tmp.setPricingZone(plantlic);
 					keyList.add(tmp);
 					//Currently using stubs for sales and distribution
-					plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plant1k);
+					plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.SALE, plantlic);
+					tmp = new CatalogKey();
+					tmp.seteStore(eStore);
+					tmp.setPlantId(2000);
+					tmp.setPricingZone(plantwdc);
+					keyList.add(tmp);
+					//Currently using stubs for sales and distribution
+					plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1300);
@@ -1470,7 +1478,7 @@ public class BrowseUtil {
 					keyList.add(tmp);
 					
 					//Currently using stubs for sales and distribution
-					plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plant1k);
+					plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1310);
