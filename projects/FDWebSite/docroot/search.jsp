@@ -114,7 +114,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="didyoumean"><%@ include file="/includes/search/didyoumean.jspf"%></tmpl:put>
 	
 <fd:ProductsFilter results="<%= search %>" nav="<%= nav %>" domainsId="menus" itemsId="items" filteredItemCountId="itemCount">
-<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= nav %>">
+<fd:ProductsGroupingAndPaging items="<%= items %>" itemsId="products" nav="<%= nav %>" groupingsId="groups">
 <tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
 <logic:equal name="activeTabVal" value="products">
 	<% ArrayList selection = new ArrayList();  %>
