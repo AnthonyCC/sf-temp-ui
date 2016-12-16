@@ -160,6 +160,8 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	displayedRows += appendElement(buf, breakDepths, (NavigationElement) i.next(), false);
 }
 
+leftNavItemsList.clear();
+
 if (unavailableNavItems.size()>0) {
 	displayedRows++;
 	buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\">");
@@ -169,6 +171,7 @@ if (unavailableNavItems.size()>0) {
 	for (Iterator i = unavailableNavItems.iterator(); i.hasNext(); ) {
 		displayedRows += appendElement(buf, breakDepths, (NavigationElement) i.next(), true);
 	}
+	unavailableNavItems.clear();
 }
 
 if (displayedRows > 0) {
