@@ -186,7 +186,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
     <%-- ~~~~~~~~~  Order Line row  ~~~~~~~~~ --%>
     <tr valign="TOP">
 <% if (olit.isCartonized()) { %>
-        <td width="2%" align="center"><%= olit.getLastCartonDetail().getCartonDetail().getPackedQuantity() %></td>
+        <td width="2%" align="center"><%= olit.getLastCartonDetail().getCartonDetail().getActualQuantity() %></td>
 <% } else { %>
         <td width="2%" align="center"><%= invoiceLine != null ? invoiceLine.getQuantity() : orderLine.getQuantity() %></td>
 <% } %>
@@ -218,7 +218,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 									<tr valign="top" class="list_component_row">
 									<td>&nbsp;</td>
 									<td width="15px">										
-										<%= component.getPackedQuantity() %>
+										<%= component.getActualQuantity() %>
 									</td>
 									<td width="350px" colspan="2">
 										<span><%= component.getMaterialDesc() %>

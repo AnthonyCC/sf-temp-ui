@@ -55,7 +55,7 @@ public class ErpCartonsDAO {
 				conn.prepareStatement(
 						"INSERT INTO CUST.CARTON_DETAIL(" +
 								"SALE_ID, CARTON_NUMBER, ORDERLINE_NUMBER, " +
-								"MATERIAL_NUMBER, BARCODE, ACTUAL_QUANTITY, ACTUAL_WEIGHT, SALES_UNIT, PACK_QTY, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, SKU_CODE" +
+								"MATERIAL_NUMBER, BARCODE, ACTUAL_QUANTITY, ACTUAL_WEIGHT, SALES_UNIT, ORDERED_QTY, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, SKU_CODE" +
 								") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			for ( ErpCartonDetails details : cartonInfo.getDetails() ) {
 				psDetails.setString(1, cartonInfo.getOrderNumber());
@@ -64,11 +64,11 @@ public class ErpCartonsDAO {
 				psDetails.setString(4, details.getMaterialNumber());
 				psDetails.setString(5, details.getBarcode());
 				//psDetails.setDouble(6, details.getPackedQuantity());
-				psDetails.setBigDecimal(6, new java.math.BigDecimal(details.getActual_quantity()));
+				psDetails.setBigDecimal(6, new java.math.BigDecimal(details.getActualQuantity()));
 				//psDetails.setDouble(7, details.getNetWeight());
 				psDetails.setBigDecimal(7, new java.math.BigDecimal(details.getNetWeight()));
 				psDetails.setString(8, details.getWeightUnit());
-				psDetails.setBigDecimal(9, new java.math.BigDecimal(details.getPackedQuantity()));
+				psDetails.setBigDecimal(9, new java.math.BigDecimal(details.getOrdered_quantity()));
 				psDetails.setString(10, details.getChildOrderLineNo());
 				psDetails.setString(11, details.getMaterialDesc());
 				psDetails.setString(12, details.getPacked_uom());
@@ -107,7 +107,7 @@ public class ErpCartonsDAO {
 		if(EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId())){
 			ps = conn.prepareStatement(
 					"SELECT CD.SALE_ID, CI.SAP_NUMBER, CD.CARTON_NUMBER, CI.CARTON_TYPE, " +
-					"	CD.ORDERLINE_NUMBER, CD.MATERIAL_NUMBER, CD.BARCODE, CD.ACTUAL_QUANTITY, CD.ACTUAL_WEIGHT, CD.SALES_UNIT, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, PACK_QTY, SKU_CODE " +
+					"	CD.ORDERLINE_NUMBER, CD.MATERIAL_NUMBER, CD.BARCODE, CD.ACTUAL_QUANTITY, CD.ACTUAL_WEIGHT, CD.SALES_UNIT, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, ORDERED_QTY, SKU_CODE " +
 					"FROM CUST.CARTON_INFO CI, CUST.CARTON_DETAIL CD " +
 					"WHERE CI.SALE_ID(+) = CD.SALE_ID " +
 					"  AND CI.CARTON_NUMBER(+) = CD.CARTON_NUMBER " +
@@ -116,7 +116,7 @@ public class ErpCartonsDAO {
 		}else{
 			ps = conn.prepareStatement(
 				"SELECT CI.SALE_ID, CI.SAP_NUMBER, CI.CARTON_NUMBER, CI.CARTON_TYPE, " +
-				"	CD.ORDERLINE_NUMBER, CD.MATERIAL_NUMBER, CD.BARCODE, CD.ACTUAL_QUANTITY, CD.ACTUAL_WEIGHT, CD.SALES_UNIT, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, PACK_QTY, SKU_CODE " +
+				"	CD.ORDERLINE_NUMBER, CD.MATERIAL_NUMBER, CD.BARCODE, CD.ACTUAL_QUANTITY, CD.ACTUAL_WEIGHT, CD.SALES_UNIT, CHILD_ORLN, MAT_DESC, PACK_UOM, SHIP_STAT, SUB_MATNR, ORDERED_QTY, SKU_CODE " +
 				"FROM CUST.CARTON_INFO CI, CUST.CARTON_DETAIL CD " +
 				"WHERE CI.SALE_ID = CD.SALE_ID(+) " +
 				"  AND CI.CARTON_NUMBER = CD.CARTON_NUMBER(+) " +
@@ -153,12 +153,12 @@ public class ErpCartonsDAO {
 			String ship_stat =  rs.getString("SHIP_STAT");
 			String sub_matnr =  rs.getString("SUB_MATNR");
 			String sku_code =  rs.getString("SKU_CODE");
-			double packQuantity = rs.getDouble("PACK_QTY");
+			double orderedQuantity = rs.getDouble("ORDERED_QTY");
 			boolean short_ship = EnumCartonShipStatus.SHORTSHIP.equals(ship_stat);
 			//System.err.println(cartonNumber + "-" + sku_code + " -" + orderlineNumber + "-" + child_orln);
 			if("0000000000".equalsIgnoreCase(cartonNumber) && !short_ship) { // This is a header item and will have components
 				headerLineItemToCartonDetails.put(orderlineNumber, new ErpCartonDetails(null, orderlineNumber, materialNumber, barCode
-						, packQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, actualQuantity, pack_uom, ship_stat, sub_matnr));
+						, actualQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, orderedQuantity, pack_uom, ship_stat, sub_matnr));
 			} else {
 				if(!cartonNoToCartonInfo.containsKey(cartonNumber)) {
 					cartonNoToCartonInfo.put(cartonNumber, new ErpCartonInfo(saleId, sapNumber, cartonNumber, cartonType));
@@ -166,7 +166,7 @@ public class ErpCartonsDAO {
 				currentCartonInfo = cartonNoToCartonInfo.get(cartonNumber);
 				if("000000".equalsIgnoreCase(child_orln)) { // This is a normal line item so don't expect components
 					currentCartonInfo.getDetails().add(new ErpCartonDetails(currentCartonInfo, orderlineNumber, materialNumber, barCode
-							, packQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, actualQuantity, pack_uom, ship_stat, sub_matnr));
+							, actualQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, orderedQuantity, pack_uom, ship_stat, sub_matnr));
 				} else {
 					if(!cartonNoToHeaderLineToComponent.containsKey(cartonNumber)) {
 						cartonNoToHeaderLineToComponent.put(cartonNumber, new HashMap<String, List<ErpCartonDetails>>());
@@ -176,7 +176,7 @@ public class ErpCartonsDAO {
 					}
 					cartonNoToHeaderLineToComponent.get(cartonNumber).get(orderlineNumber)
 					.add(new ErpCartonDetails(currentCartonInfo, child_orln, materialNumber, barCode
-																	, packQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, actualQuantity, pack_uom, ship_stat, sub_matnr));
+																	, actualQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, orderedQuantity, pack_uom, ship_stat, sub_matnr));
 				}
 			}		
 			
@@ -189,7 +189,7 @@ public class ErpCartonsDAO {
 			}
 			
 			ErpCartonDetails cd = 
-					new ErpCartonDetails(ci, materialNumber, orderlineNumber, barCode, packQuantity, actualWeight, salesUnit, 
+					new ErpCartonDetails(ci, materialNumber, orderlineNumber, barCode, orderedQuantity, actualWeight, salesUnit, 
 							sku_code, mat_desc, new ArrayList<ErpCartonDetails>(), EnumCartonShipStatus.SHORTSHIP.equals(ship_stat) , parent_orln, actualQuantity, pack_uom, ship_stat, sub_matnr); 
 			cartonDetailList.add(cd);*/
 		}
@@ -218,7 +218,7 @@ public class ErpCartonsDAO {
 					currentCartonDetail.setMaterialNumber(tempCartonDetail.getMaterialNumber());
 					currentCartonDetail.setBarcode(tempCartonDetail.getBarcode());
 					currentCartonDetail.setMaterialDesc(tempCartonDetail.getMaterialDesc());
-					currentCartonDetail.setPackedQuantity(tempCartonDetail.getPackedQuantity());
+					currentCartonDetail.setActualQuantity(tempCartonDetail.getActualQuantity());
 					currentCartonDetail.setWeightUnit(tempCartonDetail.getWeightUnit());				
 					currentCartonDetail.setNetWeight(tempCartonDetail.getNetWeight());	
 					currentCartonDetail.setCartonInfo(currentCartonInfo); // Initial data from SAP will not have correct carton no, so updating it back

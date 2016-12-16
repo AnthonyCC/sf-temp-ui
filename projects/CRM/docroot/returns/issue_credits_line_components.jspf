@@ -47,7 +47,7 @@ if (_is_index == 0) // reset at first time
 	_is_lastdept = null;
 
 ErpInvoiceLineI _is_invoiceline	= 	_is_orderline.hasInvoiceLine() ? _is_orderline.getInvoiceLine() : null;
-double _is_the_quantity = _is_detail != null ? _is_detail.getCartonDetail().getPackedQuantity() : (_is_invoiceline != null ? _is_invoiceline.getQuantity() : _is_orderline.getQuantity() );
+double _is_the_quantity = _is_detail != null ? _is_detail.getCartonDetail().getActualQuantity() : (_is_invoiceline != null ? _is_invoiceline.getQuantity() : _is_orderline.getQuantity() );
 
 		String ___curDeptDesc =  _is_orderline.getDepartmentDesc();
 		if (___curDeptDesc.startsWith("Recipe:")) {  // get the dept of the primary home of this item
@@ -98,7 +98,7 @@ double _is_the_quantity = _is_detail != null ? _is_detail.getCartonDetail().getP
 							<table border="0" cellspacing="0">	
 								<tr valign="top" class="list_component_row">
 									<td width="15px">										
-										<%= component.getPackedQuantity() %>
+										<%= component.getActualQuantity() %>
 									</td>
 									<td width="350px">
 										<span style="margin-left: 20px;"><%= component.getMaterialDesc() %>

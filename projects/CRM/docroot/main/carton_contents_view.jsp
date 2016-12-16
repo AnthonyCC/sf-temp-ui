@@ -122,7 +122,7 @@
 							<tr valign="top">
 								<td width="150px"> 
 									<input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
+									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getActualQuantity() %>">
 									<input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 									<input type="hidden" name="estPrice_<%=idx%>" value="">
 									<input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
@@ -131,7 +131,7 @@
 										<input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
 									</logic:iterate>
 
-									<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
+									<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
 									<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 										<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 									<% } %>
@@ -157,7 +157,7 @@
 								
 								<tr valign="top" class="list_component_row">
 									<td width="150px">										
-										<%= component.getPackedQuantity() %>&nbsp;
+										<%= component.getActualQuantity() %>&nbsp;
 									</td>
 									<td>
 										<span style="margin-left: 20px;"><%= component.getMaterialDesc() %>
@@ -237,7 +237,7 @@ Short shipped items:
 							<tr valign="top">
 								<td width="150px"> 
 									<input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
+									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getActualQuantity() %>">
 									<input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 									<input type="hidden" name="estPrice_<%=idx%>" value="">
 									<input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
@@ -246,7 +246,7 @@ Short shipped items:
 										<input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
 									</logic:iterate>
 
-									<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
+									<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
 									<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 										<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 									<% } %>
@@ -272,7 +272,7 @@ Short shipped items:
 								
 								<tr valign="top" class="list_component_row">
 									<td width="150px">										
-										<%= component.getPackedQuantity() %>&nbsp;
+										<%= component.getActualQuantity() %>&nbsp;
 										<% if(component.getWeightUnit() != null) { %>
 											<%= component.getWeightUnit().toLowerCase() %>
 										<% } %>

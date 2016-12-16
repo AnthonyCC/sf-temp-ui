@@ -168,14 +168,14 @@ public class FDCartonDetailJcoServer2 extends FdSapServer
 						cartonDetailModel.setOrderLineNumber(param.getOrderLineNo());
 						cartonDetailModel.setChildOrderLineNo(param.getChildOrderLineNo());
 						cartonDetailModel.setMaterialDesc(param.getMaterial_description());
-						cartonDetailModel.setActual_quantity(param.getActual_quantity());
+						cartonDetailModel.setActualQuantity(param.getActual_quantity());
 						cartonDetailModel.setPacked_uom(param.getPacked_uom());
 						cartonDetailModel.setShipping_status(param.getShipping_status());
 						cartonDetailModel.setSub_material_number(param.getSub_material_number());
 						
 						cartonDetailModel.setMaterialNumber(param.getMaterialNumber());
 						cartonDetailModel.setBarcode(param.getBarcode());
-						cartonDetailModel.setPackedQuantity(param.getPackedQuantity());
+						cartonDetailModel.setOrdered_quantity(param.getOrdered_quantity());
 						cartonDetailModel.setNetWeight(param.getNetWeight());
 						cartonDetailModel.setWeightUnit(param.getSalesUnitCode());
 						cartonDetailModel.setSkuCode(param.getSkuCode());
@@ -274,8 +274,8 @@ public class FDCartonDetailJcoServer2 extends FdSapServer
 			param.setMaterialNumber(FDSapHelperUtils.getString(cartonTable.getString("MATNR")));
 			param.setMaterial_description(FDSapHelperUtils.getString(cartonTable.getString("MAKTX")));
 			param.setBarcode(FDSapHelperUtils.getString(cartonTable.getString("BARCODE")));
-			param.setActual_quantity(Double.parseDouble(cartonTable.getString("ACT_QTY")));
-			param.setPackedQuantity(Double.parseDouble(cartonTable.getString("PACK_QTY")));
+			param.setOrdered_quantity(Double.parseDouble(cartonTable.getString("ACT_QTY")));
+			param.setActual_quantity(Double.parseDouble(cartonTable.getString("PACK_QTY")));
 			param.setPacked_uom(FDSapHelperUtils.getString(cartonTable.getString("PACK_UOM")));
 			
 			param.setNetWeight(Double.parseDouble(StringUtils.isNotBlank(cartonTable.getString("NTGEW")) ? cartonTable.getString("NTGEW") : "0.0"));
@@ -310,7 +310,7 @@ public class FDCartonDetailJcoServer2 extends FdSapServer
 				LOG.debug("Got Carton detail record for Order No:" + param.getOrderNo() + "\t SAP Order No:"
 						+ param.getSapOrderNo() + "\t Carton No:" + param.getCartonNumber() + "\t Material No:"
 						+ param.getMaterialNumber() + "\t Carton Type:" + param.getCartonType() + "\t Barcode:"
-						+ param.getBarcode() + "\t PackedQuantity:" + param.getPackedQuantity() + "\t NetWeight:"
+						+ param.getBarcode() + "\t PackedQuantity:" + param.getActual_quantity() + "\t NetWeight:"
 						+ param.getNetWeight());
 			}
 			return param;

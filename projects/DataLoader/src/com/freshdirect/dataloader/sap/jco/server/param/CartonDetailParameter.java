@@ -8,7 +8,7 @@ public class CartonDetailParameter implements java.io.Serializable
 	private String materialNumber;
 	private String cartonType;
 	private String salesUnitCode;
-	private Double packedQuantity;
+	private Double actual_quantity;
 	private String orderNo;
 	private String barcode;
 	private String cartonNumber;
@@ -17,7 +17,7 @@ public class CartonDetailParameter implements java.io.Serializable
 	private String childOrderLineNo;
 		
 	private String material_description;
-	private Double actual_quantity;
+	private Double ordered_quantity;
 	private String packed_uom;
 	private String shipping_status;
 	private String sub_material_number;
@@ -75,19 +75,6 @@ public class CartonDetailParameter implements java.io.Serializable
 	{
 		return salesUnitCode;
 	}
-		
-		
-	public void setPackedQuantity(final Double packedQuantity)
-	{
-		this.packedQuantity = packedQuantity;
-	}
-	
-		
-	public Double getPackedQuantity() 
-	{
-		return packedQuantity;
-	}
-		
 		
 	public void setOrderNo(final String orderNo)
 	{
@@ -161,13 +148,13 @@ public class CartonDetailParameter implements java.io.Serializable
 		this.material_description = material_description;
 	}
 
-	public Double getActual_quantity() {
-		return actual_quantity;
+	public Double getOrdered_quantity() {
+		return ordered_quantity;
 	}
 
 
-	public void setActual_quantity(Double actual_quantity) {
-		this.actual_quantity = actual_quantity;
+	public void setOrdered_quantity(Double ordered_quantity) {
+		this.ordered_quantity = ordered_quantity;
 	}
 
 
@@ -218,5 +205,15 @@ public class CartonDetailParameter implements java.io.Serializable
 
 	public void setChildOrderLineNo(String childOrderLineNo) {
 		this.childOrderLineNo = childOrderLineNo;
+	}
+
+
+	public Double getActual_quantity() {
+		return actual_quantity;
+	}
+
+
+	public void setActual_quantity(Double actual_quantity) {
+		this.actual_quantity = actual_quantity;
 	}	
 }
