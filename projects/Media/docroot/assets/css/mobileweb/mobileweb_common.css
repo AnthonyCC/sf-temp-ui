@@ -1399,6 +1399,15 @@ footer .copyright {
 		text-align: center;
 		padding: 0 0 15px;
 	}
+	.mm-page #shoppinglists{
+		margin: 0 0 30px;
+	}
+	.mm-page #shoppinglists .shoppinglists .shoppinglists-manage{
+		display: none;
+	}
+	.mm-page #shoppinglists .shoppinglists .checkboxlist.shoppinglists-list{
+		max-height: 80px;
+	}
 
 /* modify order bar */
 	.modify-order-alert-table {
