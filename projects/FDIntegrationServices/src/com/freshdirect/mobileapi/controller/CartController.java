@@ -304,8 +304,9 @@ public class CartController extends BaseController {
     }
 
     private boolean isZipCheck(SessionUser user, HttpServletRequest request) {
-        boolean isLoggedOutUserZipCheck = !user.isLoggedIn() && !user.getAddress().isCustomerAnonymousAddress();
-        boolean isLoggedInUserZipCheck = user.isLoggedIn() && user.getShoppingCart().getDeliveryAddress() == null && !user.getAddress().isCustomerAnonymousAddress();
+        boolean isLoggedOutUserZipCheck = !user.isLoggedIn() && user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress();
+        boolean isLoggedInUserZipCheck = user.isLoggedIn() && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() == null 
+        								  && user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress();
         return isCheckLoginStatusEnable(request) && (isLoggedOutUserZipCheck || isLoggedInUserZipCheck);
     }
 
