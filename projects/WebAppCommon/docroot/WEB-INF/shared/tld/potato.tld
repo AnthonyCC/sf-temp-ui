@@ -303,6 +303,7 @@
     <tag>
         <name>qsRecommender</name>
         <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
+        <body-content>empty</body-content>
     </tag>
     <tag>
         <name>singlePageCheckout</name>
