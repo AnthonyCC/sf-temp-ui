@@ -22,6 +22,7 @@
 	<tag>
 		<name>isActive</name>
 		<tagclass>com.freshdirect.webapp.features.tags.FeatureIsActiveTag</tagclass>
+		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>name</name>
 			<required>true</required>
