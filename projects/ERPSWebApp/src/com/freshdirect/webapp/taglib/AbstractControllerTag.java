@@ -129,7 +129,7 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		try {
 			response.sendRedirect(response.encodeRedirectURL(destination));
 			JspWriter writer = pageContext.getOut();
-			writer.close();
+			//writer.close();
 		} catch (IOException ioe) {
 			throw new JspException(ioe.getMessage());
 		}
