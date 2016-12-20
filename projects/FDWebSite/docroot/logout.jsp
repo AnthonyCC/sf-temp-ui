@@ -56,7 +56,7 @@ response.sendRedirect("/index.jsp");
 %>
 
 
-<tmpl:insert template='/common/template/no_site_nav.jsp'>
+<%-- <tmpl:insert template='/common/template/no_site_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
@@ -100,4 +100,4 @@ response.sendRedirect("/index.jsp");
 </TR>
 </TABLE><BR><BR><BR>
 </tmpl:put>
-</tmpl:insert>
+</tmpl:insert> --%>
