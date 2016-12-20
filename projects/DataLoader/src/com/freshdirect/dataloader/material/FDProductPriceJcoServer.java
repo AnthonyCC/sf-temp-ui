@@ -29,6 +29,7 @@ import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -378,7 +379,10 @@ public class FDProductPriceJcoServer extends FdSapServer {
 					.entrySet()) {
 				boolean isDefaultZoneExists = false;
 				for (ErpMaterialPriceModel priceRowEntry : salesAreaPriceMapEntry.getValue()) {
-					if (ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(priceRowEntry.getSapZoneId())) {
+//					if (ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(priceRowEntry.getSapZoneId()) 
+					if (ZonePriceListing.MASTER_DEFAULT_ZONE.equalsIgnoreCase(priceRowEntry.getSapZoneId()) 
+							&& ZonePriceListing.DEFAULT_SALES_ORG.equalsIgnoreCase(priceRowEntry.getSalesOrg())
+							&& ZonePriceListing.DEFAULT_DIST_CHANNEL.equalsIgnoreCase(priceRowEntry.getDistChannel())) {
 						isDefaultZoneExists = true;
 					}
 				}
