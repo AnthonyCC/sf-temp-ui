@@ -6,6 +6,7 @@
 		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil" 
 		import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"
 		import="java.util.Collections"
+		import="java.util.List"
 		import="com.freshdirect.webapp.util.TransactionalProductImpression"
 		import="com.freshdirect.webapp.util.ProductImpression"
 		import="com.freshdirect.fdstore.content.EnumBurstType"
@@ -73,7 +74,7 @@
 			<% ProductImpression pi = confStrat.configure(pm, confContext); %>
 			<% if(recommendations != null) { %>
 				<a href="<%= FDURLUtil.getProductURI(pm, trkCode)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
-				<%pageContext.setAttribute("PRODUCT_BOX_VARIANT",recommendations.getVariant().getId());
+				<%jspContext.setAttribute("PRODUCT_BOX_VARIANT",recommendations.getVariant().getId());
 			} %>
 			<div class="grid-item-container featurebox">
 <%
@@ -100,7 +101,7 @@
        } catch (Exception fdsnf){
        }
 %>
-<span class="burst <%= burstClass %>" style="<%= pageContext.getAttribute("burstStyleString") %>"></span><fd:USQProductBurst product="<%= pm %>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
+<span class="burst <%= burstClass %>" style="<%= jspContext.getAttribute("burstStyleString") %>"></span><fd:USQProductBurst product="<%= pm %>"/><display:SimpleProductImage product="<%= pm %>" size="<%= imageSize %>"/></display:ProductLink>
 </div>
 </display:ProductBurstClass>
 <div class="grid-item-controls">
@@ -126,8 +127,8 @@
 <div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>
 <div><button class="addtocart" id='<%= "instantATC" + formName %>' onclick="<%= namespaceName %>.instantATC();"></button></div>
 <fd:PopupHandler id="<%= formName %>" event="onclick" elementId='<%= "instantATC" + formName %>' instant='<%="window.parent." + namespaceName + ".instantATC()" %>' skuCode="<%=((TransactionalProductImpression) pi).getSku().getSkuCode()%>" action="addMultipleToCart" rebindSubmit="true" />
-<input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM_SEARCH%>" value="<%=pageContext.getAttribute("ISONSEARCHPAGE") != null ? "true":"false" %>">
-<%Object variant = pageContext.getAttribute("PRODUCT_BOX_VARIANT");
+<input type="hidden" name="<%=FDShoppingCartControllerTag.PARAM_ADDED_FROM_SEARCH%>" value="<%=jspContext.getAttribute("ISONSEARCHPAGE") != null ? "true":"false" %>">
+<%Object variant = jspContext.getAttribute("PRODUCT_BOX_VARIANT");
 if (variant!=null){%>
 <input type="hidden" name="variant_0" value="<%=variant%>">
 <%}%>
