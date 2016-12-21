@@ -351,6 +351,7 @@ var OL_PRICES = {};
 		for (Iterator it1=order.getCartonContents().iterator(); it1.hasNext(); ) {
 	    	FDCartonInfo cInfo = (FDCartonInfo) it1.next();
 	    	final String cartNum = cInfo.getCartonInfo().getCartonNumber();
+	    	if(!"0000000000".equalsIgnoreCase(cartNum)){ 
 	    	
 	        // collect orderlines from cartons
 	        Set orderLines = new HashSet();
@@ -407,6 +408,7 @@ var OL_PRICES = {};
 						<%
 		    	//} 
 	    	} // orderLines per carton
+	    	}
 	    } // cartons
     }
 %>

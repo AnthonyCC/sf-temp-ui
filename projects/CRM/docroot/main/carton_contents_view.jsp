@@ -66,7 +66,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr valign="top">
   <% if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
-  <% if( EnumEStoreId.FDX != order.getEStoreId() ) {%>
+  <% if( EnumEStoreId.FDX != order.getEStoreId() ) { %>
 	  <th align="left" width="150px">Quantity</th>
 	  <th align="left">Product</th>
 	  <th align="left" width="90px">Final Weight</th>
@@ -182,12 +182,7 @@
 						} // cartonDetail.getCartLine() != null %>
 					</logic:iterate>
 				</table>
-				<% } else{ %>
-					
-					<tr valign="top">
-					  No cartons found!
-					</tr>
-			<% 	}
+				<% } 
 				} %>
 				<% if(bShowForm) { %>
 					</FORM>

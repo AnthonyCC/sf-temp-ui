@@ -2,7 +2,7 @@ package com.freshdirect.customer;
 
 public enum EnumCartonShipStatus {
 
-	SHORTSHIP ("SS", "Short Ship"), SUBSTITUTE("SB", "Substituted"), SUBSHORT("SH", "Short Shipped & Substituted");
+	SHORTSHIP ("SH", "Short Ship"), SUBSTITUTE("SB", "Substituted"), SUBSHORT("SS", "Short Shipped & Substituted");
 	
 	EnumCartonShipStatus(String code, String description){
 		this.code = code;

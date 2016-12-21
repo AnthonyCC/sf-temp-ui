@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.customer.EnumCartonShipStatus;
 import com.freshdirect.customer.ErpCartonDetails;
@@ -154,7 +155,7 @@ public class ErpCartonsDAO {
 			String sub_matnr =  rs.getString("SUB_MATNR");
 			String sku_code =  rs.getString("SKU_CODE");
 			double orderedQuantity = rs.getDouble("ORDERED_QTY");
-			boolean short_ship = EnumCartonShipStatus.SHORTSHIP.equals(ship_stat);
+			boolean short_ship = EnumCartonShipStatus.SHORTSHIP.getCode().equalsIgnoreCase(ship_stat);
 			//System.err.println(cartonNumber + "-" + sku_code + " -" + orderlineNumber + "-" + child_orln);
 			if("0000000000".equalsIgnoreCase(cartonNumber) && !short_ship) { // This is a header item and will have components
 				headerLineItemToCartonDetails.put(orderlineNumber, new ErpCartonDetails(null, orderlineNumber, materialNumber, barCode
@@ -164,7 +165,7 @@ public class ErpCartonsDAO {
 					cartonNoToCartonInfo.put(cartonNumber, new ErpCartonInfo(saleId, sapNumber, cartonNumber, cartonType));
 				}
 				currentCartonInfo = cartonNoToCartonInfo.get(cartonNumber);
-				if("000000".equalsIgnoreCase(child_orln)) { // This is a normal line item so don't expect components
+				if(StringUtils.isEmpty(child_orln) || "000000".equalsIgnoreCase(child_orln)) { // This is a normal line item so don't expect components
 					currentCartonInfo.getDetails().add(new ErpCartonDetails(currentCartonInfo, orderlineNumber, materialNumber, barCode
 							, actualQuantity, actualWeight, salesUnit, sku_code, mat_desc, short_ship, child_orln, orderedQuantity, pack_uom, ship_stat, sub_matnr));
 				} else {
@@ -223,6 +224,8 @@ public class ErpCartonsDAO {
 					currentCartonDetail.setNetWeight(tempCartonDetail.getNetWeight());	
 					currentCartonDetail.setCartonInfo(currentCartonInfo); // Initial data from SAP will not have correct carton no, so updating it back
 					currentCartonDetail.getComponents().addAll(headerEntrySet.getValue());
+					currentCartonDetail.setShortShipped(tempCartonDetail.isShortShipped());
+					currentCartonDetail.setShipping_status(tempCartonDetail.getShipping_status());
 					
 					if(CollectionUtils.isNotEmpty(headerEntrySet.getValue()) && !firstCartonWithHLine.get(tempCartonDetail.getOrderLineNumber())){
 						 currentCartonDetail.setFirstCartonWithORLN(true);

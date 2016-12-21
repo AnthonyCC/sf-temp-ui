@@ -71,7 +71,8 @@
 	<tr>
 		<td colspan="4">
 			<logic:iterate id="carton" collection="<%= cartonInfo %>" type="com.freshdirect.fdstore.customer.FDCartonInfo" indexId="counter"> 
-			<% if(bShowForm) { %>
+			<% if(!"0000000000".equalsIgnoreCase(carton.getCartonInfo().getCartonNumber())){
+			 if(bShowForm) { %>
 				<FORM ACTION="<%= successPage %>&cartonNumber=<%=carton.getCartonInfo().getCartonNumber()%>" METHOD="POST" NAME="carton_<%= counter %>">
 			<% } //bShowForm%>
 				<table width="100%" class="order" cellspacing="0" cellpadding="0">
@@ -158,12 +159,14 @@
 
 							idx++;
 						} // cartonDetail.getCartLine() != null %>
+						
 					</logic:iterate>
 				</table>
 
 				<% if(bShowForm) { %>
 					</FORM>
 				<% } //bShowForm%>
+				<% } %>
 			</logic:iterate>
 		</td>
 	</tr>
