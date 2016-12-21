@@ -62,7 +62,6 @@ import com.freshdirect.webapp.ajax.reorder.QuickShopMenuOrderUtil;
 import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopPastOrdersCustomMenu;
-import com.freshdirect.webapp.ajax.reorder.data.QuickShopReturnValue;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
@@ -175,23 +174,22 @@ public class OrderController extends BaseController {
                         requestMessage = new QuickShopListRequestObject();
                     }
                     requestMessage.setUserId(fdUser.getUserId());
-                    requestMessage.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, fdUser, QuickShopServlet.DEFAULT_PAGE_SIZE));
+                    int pageSize = CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, fdUser, requestMessage.getPageSize());
+                    requestMessage.setPageSize(pageSize);
 
                     FilteringNavigator nav = requestMessage.convertToFilteringNavigator();
+                    nav.setPageSize(pageSize);
                     FilteringFlowResult<QuickShopLineItemWrapper> result = collectQuickShopLineItemForTopItems(fdUser, request, nav);
 
-                    QuickShopReturnValue quickShop = new QuickShopReturnValue(
+                    QuickShopResponse quickShopResponse = new QuickShopResponse(
                             QuickShopServlet.unwrapResult(QuickShopServlet.createPage(fdUser, request, requestMessage, result.getItems())), result.getMenu(),
                             new QuickShopPagerValues(requestMessage.getPageSize(), result.getItems().size(), requestMessage.getActivePage()), QuickShopServlet.generateSorter(nav),
                             nav.getSearchTerm(), null);
-                    QuickShopMenuOrderUtil.sortMenuItems(quickShop.getMenu());
-                    QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService().transformMenuIntoPastOrdersCustom(quickShop.getMenu(),
-                            requestMessage.getYourLastOrderId());
-                    quickShop.setOrders(transformMenuIntoPastOrdersCustom);
-
-                    QuickShopResponse quickShopResponse = new QuickShopResponse();
+                    QuickShopMenuOrderUtil.sortMenuItems(quickShopResponse.getMenu());
+                    QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService()
+                            .transformMenuIntoPastOrdersCustom(quickShopResponse.getMenu(), requestMessage.getYourLastOrderId());
+                    quickShopResponse.setOrders(transformMenuIntoPastOrdersCustom);
                     quickShopResponse.setStatus(Message.STATUS_SUCCESS);
-                    quickShopResponse.setQuickShop(quickShop);
                     responseMessage = quickShopResponse;
                 } catch (ModelException e) {
                     throw new FDException(e);

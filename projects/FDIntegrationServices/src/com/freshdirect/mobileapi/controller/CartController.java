@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -352,19 +351,25 @@ public class CartController extends BaseController {
         ResultBundle resultBundle = cart.updateItemInCart(reqestMessage, qetRequestData(request), user);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
+        CartDetail cartDetail = cart.getCartDetail(user, null);
+        responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+        ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+        boolean checkLoginStatusEnable = isCheckLoginStatusEnable(request);
+        if (checkLoginStatusEnable) {
+            ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
+        }
 
         if (result.isSuccess()) {
-            CartDetail cartDetail = cart.getCartDetail(user, null);
-            responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-            ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-            
-            if (isCheckLoginStatusEnable(request)) {
-                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
-            }
-
             responseMessage.setSuccessMessage("Cart line item has been updated successfully.");
         } else {
-            responseMessage = getErrorMessage(result, request);
+            if (checkLoginStatusEnable && result.hasError(SYSTEM) && SystemMessageList.MSG_IDENTIFY_CARTLINE.equals(result.getError(SYSTEM).getDescription())) {
+                result.removeError(SYSTEM);
+                result.addError(true, ERR_IDENTIFY_CARTLINE, SystemMessageList.MSG_IDENTIFY_CARTLINE);
+                responseMessage.setStatus(Message.STATUS_FAILED);
+                responseMessage.addErrorMessages(result.getErrors(), user);
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
         }
         responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
@@ -506,15 +511,22 @@ public class CartController extends BaseController {
         CartDetail cartDetail = cart.getCartDetail(user, null);
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-        if (isCheckLoginStatusEnable(request)) {
+        boolean checkLoginStatusEnable = isCheckLoginStatusEnable(request);
+        if (checkLoginStatusEnable) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
 
         if (result.isSuccess()) {
             responseMessage.setSuccessMessage("Items has been removed from cart successfully.");
-
         } else {
-            responseMessage = getErrorMessage(result, request);
+            if (checkLoginStatusEnable && result.hasError(SYSTEM) && SystemMessageList.MSG_IDENTIFY_CARTLINE.equals(result.getError(SYSTEM).getDescription())) {
+                result.removeError(SYSTEM);
+                result.addError(true, ERR_IDENTIFY_CARTLINE, SystemMessageList.MSG_IDENTIFY_CARTLINE);
+                responseMessage.setStatus(Message.STATUS_FAILED);
+                responseMessage.addErrorMessages(result.getErrors(), user);
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
         }
         setResponseMessage(model, responseMessage, user);
         return model;

@@ -26,6 +26,8 @@ public interface MessageCodes {
 
     public static final String ERR_INCOMPATIBLE_CLIENT = "ERR_INCOMPATIBLE_CLIENT";
 
+    public static final String ERR_IDENTIFY_CARTLINE = "ERR_IDENTIFY_CARTLINE";
+
     public static final String ERR_SYSTEM = "ERR_SYSTEM";
 
     public static final String ERR_SYSTEM_MESSAGE = "System error was encountered while processing request.";
@@ -262,6 +264,7 @@ public interface MessageCodes {
     public static final String ERR_TSLOT_ALC_RESTRICTED_MSG = "This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.";
     
     public static final String ORDER_MINIMUM = "order_minimum";
+    public static final String SYSTEM = "system";
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
@@ -339,7 +342,7 @@ public interface MessageCodes {
                     			minimumOrder }));
                     }
                 }
-            } else if ("system".equals(key)) {
+            } else if (SYSTEM.equals(key)) {
                 //Generic system error. Pass description through
                 returnValue = new ErrorMessage(ERR_SYSTEM, desc);
             } else if ("cardNum".equals(key) && desc.contains("invalid")) {

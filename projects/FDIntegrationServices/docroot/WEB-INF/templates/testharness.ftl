@@ -751,7 +751,7 @@ function loadStuff() {
   } else if (loaddata == "QuickShopEveryItemEverOrderedWeb") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
-  	$("#payload").val('{"timeFrame":"timeFrameAll","sortId":"freq","tabType":"TOP_ITEMS"}');
+  	$("#payload").val('{"timeFrame":"timeFrameAll","sortId":"freq", "orderAsc" : false, "tabType":"TOP_ITEMS", "pageSize" : "50", "deptIdList" : ["bev"], "filterIdList" : ["glutenFree", "kosher", "local", "organic", "onSale"] }');
 
   } else if (loaddata == "RemoveMultipleItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
