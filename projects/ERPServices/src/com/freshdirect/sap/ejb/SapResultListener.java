@@ -95,7 +95,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	
 	static {
 		try {
-			Context ctx = FDStoreProperties.getRoutingInitialContext();
+			Context ctx = FDStoreProperties.getInitialContext();
 			if(ctx != null) {
 				ROUTING_LOCATOR = new ServiceLocator(ctx);
 			}
