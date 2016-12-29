@@ -199,7 +199,7 @@ public class CartDetail {
      */
     public static class RedemptionPromotion {
 
-        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
+        public RedemptionPromotion(String code, String redemptionCode, RedemptionPromotionType type, String description
         		, boolean automatic, boolean applied, String warningMessage) {
             this.code = code;
             this.type = type;
@@ -207,12 +207,13 @@ public class CartDetail {
             this.automatic = automatic;
             this.applied = applied;
             this.warningMessage = warningMessage;
+            this.redemptionCode = redemptionCode;
         }
         
-        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
+        public RedemptionPromotion(String code, String redemptionCode, RedemptionPromotionType type, String description
         		, boolean automatic, boolean applied, String warningMessage, boolean displayAmount, String label) {
             
-            this(code, type, description, automatic, applied, warningMessage);
+            this(code, redemptionCode, type, description, automatic, applied, warningMessage);
             this.displayAmount = displayAmount;
             this.label = label;
         }
@@ -235,6 +236,8 @@ public class CartDetail {
         private boolean applied;
         
         private String warningMessage;
+        
+        private String redemptionCode;
 
         private String code;
 
@@ -299,6 +302,14 @@ public class CartDetail {
 		public void setWarningMessage(String warningMessage) {
 			this.warningMessage = warningMessage;
 		}
+		
+		public String getredemptionCode() {
+			return redemptionCode;
+		}
+
+		public void setredemptionCode(String redemptionCode) {
+			this.redemptionCode = redemptionCode;
+		}
         
     }
 
@@ -319,16 +330,17 @@ public class CartDetail {
      */
     public static class Discount {
 
-        public Discount(String code, DiscountType type, double amount, boolean automatic, String description) {
-            this(code, type, amount, automatic);
+        public Discount(String code, String redemptionCode, DiscountType type, double amount, boolean automatic, String description) {
+            this(code, redemptionCode, type, amount, automatic);
             this.description = description;
         }
 
-        public Discount(String code, DiscountType type, double amount, boolean automatic) {
+        public Discount(String code, String redemptionCode, DiscountType type, double amount, boolean automatic) {
             this.code = code;
             this.type = type;
             this.amount = amount;
             this.automatic = automatic;
+            this.redemptionCode = redemptionCode;
         }
 
         public enum DiscountType {
@@ -344,6 +356,8 @@ public class CartDetail {
         private String description;
 
         private String code;
+        
+        private String redemptionCode;
 
         private DiscountType type;
 
@@ -357,6 +371,14 @@ public class CartDetail {
             this.description = description;
         }
 
+        public String getRedemptionCode() {
+            return redemptionCode;
+        }
+
+        public void setRedemptionCode(String redemptionCode) {
+            this.redemptionCode = redemptionCode;
+        }
+        
         public String getCode() {
             return code;
         }
