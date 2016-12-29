@@ -622,7 +622,17 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val('');
 
-  }   else if (loaddata == "ModifyOrder") {
+  } else if(loaddata == "GetMobileGoGreenPreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/getmobilegogreenpreferences/");
+  	$("#header").val('');
+  	$("#payload").val('');
+
+  } else if(loaddata == "SetMobileGoGreenPreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/setmobilegogreenpreferences/");
+    $("#header").val('');
+  	$("#payload").val('{"go_green" : "true" }');
+  	
+  }  else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#header").val('');
   	$("#payload").val('');
@@ -1712,6 +1722,8 @@ function doStuff() {
   <option value="GetMobilePreferences">ACCOUNT - Get Mobile Preferences</option>
   <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
   <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
+  <option value="GetMobileGoGreenPreferences">ACCOUNT - Get GoGreen Preferences</option>
+  <option value="SetMobileGoGreenPreferences">ACCOUNT - Set GoGreen Preferences</option>
   <option value="AddProfile">ACCOUNT - Add Profile</option>
 
   <option value=""> ========== MISC ========== </option>

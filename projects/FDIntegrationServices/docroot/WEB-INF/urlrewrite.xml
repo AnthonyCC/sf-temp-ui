@@ -372,6 +372,15 @@
         <to last="true">/register.do?action=getemailpreferences&amp;ver=$1</to>
     </rule>
     
+    	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/getmobilegogreenpreferences/</from>
+        <to last="true">/register.do?action=getmobilegogreenpreferences&amp;ver=$1</to>
+    </rule>
+    	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/setmobilegogreenpreferences/</from>
+        <to last="true">/register.do?action=setmobilegogreenpreferences&amp;ver=$1</to>
+    </rule>
+    
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
 		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>

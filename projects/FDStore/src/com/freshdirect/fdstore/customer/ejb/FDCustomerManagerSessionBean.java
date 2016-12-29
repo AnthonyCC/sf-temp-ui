@@ -7436,6 +7436,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDUserDAO.overLayGoGreenPreferences(conn, customerId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException {
 		Connection conn = null;
 		try {

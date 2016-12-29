@@ -29,6 +29,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EmailPreferencesResult;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
+import com.freshdirect.mobileapi.controller.data.GoGreenPreferencesResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.MobilePreferencesResult;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
@@ -54,6 +55,7 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.sms.EnumSMSAlertStatus;
+import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -78,6 +80,8 @@ public class RegistrationController extends BaseController implements SystemMess
     private final static String ACTION_GET_MOBILE_PREFERENCES = "getmobilepreferences";
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER = "setmobilepreferencesfirstorder";
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD = "setmobilepreferencesfirstorderfd";
+    private final static String ACTION_SET_MOBILE_GO_GREEN_PREFERENCE = "setmobilegogreenpreferences";
+    private final static String ACTION_GET_MOBILE_GO_GREEN_PREFERENCE = "getmobilegogreenpreferences";
 
 	@Override
     protected boolean validateUser() {
@@ -140,6 +144,18 @@ public class RegistrationController extends BaseController implements SystemMess
 		else if(ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD.equals(action)){
 			MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
 			 model = setMobilePreferencesFirstOrderFD(model, user, requestMessage, request );
+		}
+		
+		else if(ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER.equals(action)){
+			OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
+			 model = setMobilePreferencesFirstOrder(model, user, requestMessage, request );
+		}
+		else if(ACTION_SET_MOBILE_GO_GREEN_PREFERENCE.equals(action)){
+			GoGreenPreferencesResult reqestMessage = parseRequestObject(request, response, GoGreenPreferencesResult.class);
+			 model = setMobileGoGreenPreference(model, user, reqestMessage, request );
+		}
+		else if(ACTION_GET_MOBILE_GO_GREEN_PREFERENCE.equals(action)){
+			 model = getMobileGoGreenPreference(model, user, request );
 		}
 		return model;
 	}
@@ -678,7 +694,7 @@ public class RegistrationController extends BaseController implements SystemMess
     
     private ModelAndView setMobilePreferencesFirstOrderFD(ModelAndView model, SessionUser user, MobilePreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	Message responseMessage = null;   
+    	Message responseMessage = null; 
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
@@ -776,4 +792,37 @@ public class RegistrationController extends BaseController implements SystemMess
     	return model;
     
     }
+    
+    private ModelAndView setMobileGoGreenPreference(ModelAndView model, SessionUser user, GoGreenPreferencesResult reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+    	Message responseMessage = null; 
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+        ResultBundle resultBundle = tagWrapper.setMobileGoGreenPreference(reqestMessage, fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+       
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("GoGreen flag has been updated successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());   
+    	
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView getMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+	        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+    		
+    		GoGreenPreferencesResult goGreenPreferencesResult = new GoGreenPreferencesResult();
+    		
+    		if(EnumEStoreId.FD.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
+    			goGreenPreferencesResult.setGo_green(GoGreenService.defaultService().overLayGoGreenPreferences(fduser));
+    		
+    			setResponseMessage(model, goGreenPreferencesResult, user);
+    			
+        	return model;
+        }
 }

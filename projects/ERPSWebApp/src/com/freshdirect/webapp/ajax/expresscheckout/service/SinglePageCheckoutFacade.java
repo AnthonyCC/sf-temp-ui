@@ -50,6 +50,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.SinglePageCheckoutHeaderService;
 import com.freshdirect.webapp.ajax.expresscheckout.drawer.service.DrawerService;
+import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
@@ -357,6 +358,7 @@ public class SinglePageCheckoutFacade {
         result.setSuccessPageData(loadSuccessPageData(order, requestURI, user));
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
+        result.setGoGreenShow(GoGreenService.defaultService().overLayGoGreenPreferences(user));
         return result;
     }
 
