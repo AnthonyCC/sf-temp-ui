@@ -21,6 +21,8 @@
 	boolean isReorderLists = (mobweb_uri.indexOf("/qs_shop_from_list.jsp") != -1) ? true : false;
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
+	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
+	
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	
@@ -197,13 +199,13 @@
 	                <%
 				}
 			%>
+			<%-- container with qs-container is required --%>
+			<div class="qs-container"><tmpl:get name="menu" /></div>
 			<tmpl:get name="content" />
-		    <%
-				if (isReorder) { %>
-					<tmpl:get name="pagination" />
-					</div>
-				<%}
-			%>
+		    <% if (isReorder) { %>
+				<tmpl:get name="pagination" />
+				</div>
+			<% } %>
 	    </div><!-- content ends above here-->
 	    
 	    <!-- bottom nav s -->

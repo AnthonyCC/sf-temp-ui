@@ -204,7 +204,9 @@ body.no-scroll {
 	margin-bottom: 20px;
 	width: 99%;
 }
-#topSearchField {
+#topSearchField, /* id is an override */
+#search-faq, /* id is an override */
+.search-field {
 	margin: 0px 0 0 0;
 	height: 40px;
 	padding: 3px 35px;
@@ -215,17 +217,23 @@ body.no-scroll {
 	border-radius: 0;
 	font-size: 18px;
 }
-#search {
+#search, /* id is an override */
+.search-cont {
 	width: 95%;
 	margin: 10px auto 10px auto;
 	position: relative;
 }
-#search span {
+#search span, /* id is an override */
+.search-cont span {
 	color: #6AAA6D;
 	position: absolute;
 	font-size: 20px;
 	left: 10px;
 	top: 6px;
+}
+.search-cont #search-faq {
+	height: 32px;
+	font-weight: bold;
 }
 input[type="text"], input[type="email"], input[type="password"] {
 	border-top: 2px solid #ffffff;
@@ -559,6 +567,35 @@ footer .copyright {
 }
 .no-divider:after {
 	border-bottom-width: 0;
+}
+
+/* clean li display */
+ul.cleanli {
+	border-color: #c0bebd;
+}
+.cleanli.mm-listview>li:not(.mm-divider):after {
+	left: 0;
+	border-bottom-width: 1px;
+}
+ul.cleanli > li, li.cleanli {
+	background-color: #f1f1f1;
+    list-style: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+    font-size: 1em;
+    position: relative;
+    font-weight: bold;
+}
+ul.cleanli ul.cleanli > li {
+	font-weight: normal;
+}
+
+li.cleanli .gen-arrow {
+	top: 4px;
+}
+.cleanli li > a, li.cleanli > a {
+	/*padding-left: 0;*/
 }
 
 .NOMOBWEB { /* generic hidden class */
@@ -978,13 +1015,20 @@ footer .copyright {
 	.mm-page .products .portrait-item-coupon .fdCoupon_cont.isClipped .fdCoupon_applied:after{
 		top: -3px;
 	}
-	
+	.gen-arrow {
+		position: absolute;
+	    display: inline;
+	    right: 20px;
+	    left: auto;
+	    background-color: transparent;
+	}
 	.pdp-ecoupon .fdCoupon_arrow,
 	.mm-page .products .portrait-item-coupon .fdCoupon_arrow{
 		position: relative;
 	}
-	.pdp-ecoupon .fdCoupon_arrow:after,
-	.mm-page .products .portrait-item-coupon .fdCoupon_arrow:after{ /* south, default */
+	.pdp-ecoupon .fdCoupon_arrow:after, /* south, default */
+	.mm-page .products .portrait-item-coupon .fdCoupon_arrow:after,
+	.gen-arrow:after {
 		content: "";
 		background-color: transparent;
 		position: absolute;
@@ -1003,21 +1047,28 @@ footer .copyright {
 		-ms-transform: rotate(45deg);
 		-webkit-transform: rotate(45deg);
 	}
-	.pdp-ecoupon .fdCoupon_arrow_s:after,
+	.gen-arrow:after,
+	.gen-accord-toggler-gray .gen-accord-toggler-arrow:after
+	{
+		border-bottom: 2px solid #c0bebd;
+		border-right: 2px solid #c0bebd;
+	    background-color: transparent;
+	}
+	.pdp-ecoupon .fdCoupon_arrow_s:after, .gen-arrow-s:after,
 	.mm-page .products .portrait-item-coupon .fdCoupon_arrow_s:after{
 		transform: rotate(45deg);
 		-o-transform: rotate(45deg);
 		-ms-transform: rotate(45deg);
 		-webkit-transform: rotate(45deg);
 	}
-	.pdp-ecoupon .fdCoupon_arrow_e:after,
+	.pdp-ecoupon .fdCoupon_arrow_e:after, .gen-arrow-e:after,
 	.mm-page .products .portrait-item-coupon .fdCoupon_arrow_e:after{
 		transform: rotate(-45deg);
 		-o-transform: rotate(-45deg);
 		-ms-transform: rotate(-45deg);
 		-webkit-transform: rotate(-45deg);
 	}
-	.pdp-ecoupon .fdCoupon_arrow_w:after,
+	.pdp-ecoupon .fdCoupon_arrow_w:after, .gen-arrow-w:after,
 	.mm-page .products .portrait-item-coupon .fdCoupon_arrow_w:after{
 		transform: rotate(135deg);
 		-o-transform: rotate(135deg);
@@ -1025,7 +1076,7 @@ footer .copyright {
 		-webkit-transform: rotate(135deg);
 		left: 4px;
 	}
-	.pdp-ecoupon .fdCoupon_arrow_n:after,
+	.pdp-ecoupon .fdCoupon_arrow_n:after, .gen-arrow-n:after,
 	.mm-page .products .portrait-item-coupon .fdCoupon_arrow_n:after{
 		transform: rotate(-135deg);
 		-o-transform: rotate(-135deg);
@@ -1408,6 +1459,17 @@ footer .copyright {
 	.mm-page #shoppinglists .shoppinglists .checkboxlist.shoppinglists-list{
 		max-height: 80px;
 	}
+	/* reorder past orders */
+		#moreorderspopup {
+		    max-width: 360px;
+		    left: 0 !important;
+		    max-height: 320px;
+		    overflow-x: auto;
+    		top: 600px !important;
+		}
+		.qs-container:before {
+			display: none;
+		}
 
 /* modify order bar */
 	.modify-order-alert-table {
