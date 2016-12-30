@@ -58,9 +58,10 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         if (this.popup) { this.popup.hide(); 
-        gogreenpopup.open(null, fd.expressco.data.goGreenShow);
+        if(fd.expressco && fd.expressco.data && fd.expressco.data.goGreenShow){
+        	gogreenpopup.open(null, fd.expressco.data.goGreenShow);
+         }
         }
-
         return false;
       }
     },
@@ -162,10 +163,8 @@ var FreshDirect = FreshDirect || {};
   
   function openAfterPageRender(){
 	  var ex = fd.expressco;
-	  //if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show){
-	  if(true){  
-	  textalertpopup.open(null, ex.data.textMessageAlertData);
-        	
+	  if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show){
+		  textalertpopup.open(null, ex.data.textMessageAlertData);
       }else{
     	  if(ex && ex.data && ex.data.goGreenShow){
 	    	gogreenpopup.open(null, ex.data.goGreenShow);
@@ -221,9 +220,9 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         if (this.popup) { this.popup.hide();
-        //if(ex && ex.data && ex.data.goGreenShow){
+        if(fd.expressco && fd.expressco.data && fd.expressco.data.goGreenShow){
 	    	gogreenpopup.open(null, fd.expressco.data.goGreenShow);
-    	 // }
+    	  }
         
         }
         
