@@ -653,6 +653,10 @@ li.cleanli .gen-arrow {
 		height: 75%;
 		overflow: auto;
 	}
+/* help/FAQ */
+	.pager.faqsearch .pager-content {
+		margin: 0;
+	}
 
 /* thanksgiving meal kits */
 	.mm-page .product-large {
