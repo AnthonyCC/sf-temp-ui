@@ -665,6 +665,11 @@ li.cleanli .gen-arrow {
 	}
 
 /* generic accord */
+	.mm-listview.cleanli>li>a {
+		padding-top: 21px;
+		padding-bottom: 19px;
+    	height: 28px;
+	}
 	.gen-accord-toggler-arrow {
 		position: absolute;
 	    display: inline;
@@ -718,9 +723,25 @@ li.cleanli .gen-arrow {
 	}
 	.gen-accord-toggler {
     	border-bottom: 1px solid #c0bebd !important;
+    	height: 28px;
 	}
 	.gen-accord-toggler.open {
-		/* border-bottom: none !important; */
+		color: #4fa157;
+	}
+	.gen-accord-toggler.open,
+	.gen-accord-toggler.open + .gen-accord-content>li
+	{
+		background-color: #fff !important;
+	}
+	.gen-accord-content>li {
+		/*height: 30px;*/
+	}
+	.mm-listview.cleanli a.gen-accord-toggler  {
+		padding: 21px 19px 19px;
+	}
+	.mm-listview.cleanli.gen-accord-content li > a {
+		padding: 15px 22px;
+		height: 20px;
 	}
 
 /* pdp */
@@ -2035,4 +2056,8 @@ li.cleanli .gen-arrow {
 	.mm-page #corporateServiceSurvey td label{
 		word-wrap: break-word;
 		word-break: break-word;
+	}
+/* fix smart banner */
+	#smartbanner.android {
+		background: #3d3d3d url('/assets/css/common/jquery-ui_base/images/ui-bg_diagonals-thick_20_666666_40x40.png');
 	}

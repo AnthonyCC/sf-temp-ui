@@ -128,18 +128,20 @@
 			<%-- MAIN CONTENT --%>
 			<div>
 				<ul class="mm-listview cleanli">
-					<li><a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/help/contact_fd.jsp?overlay=true', width: 320, height: 400});">Contact Us (overlay)</a></li>
-					<li><a href="/help/contact_fd.jsp">Contact Us (page)<div class="gen-arrow gen-arrow-e"></div></a></li>
-					<li>
-						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noCLickThrough">Contact Us (inline)</a>
-						<div class="gen-accord-content" style="display: none;">
-							<div style="background-color: #fff;">
-								<%@ include file="/help/i_contact_us.jspf" %>
+					<%-- <li><a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/help/contact_fd.jsp?overlay=true', width: 320, height: 400});">Contact Us (overlay)</a></li> --%>
+					<li><a href="/help/contact_fd.jsp">Contact Us</a></li>
+					<%--
+						<li>
+							<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noClickThrough">Contact Us (inline)</a>
+							<div class="gen-accord-content" style="display: none;">
+								<div style="background-color: #fff;">
+									<%@ include file="/help/i_contact_us.jspf" %>
+								</div>
 							</div>
-						</div>
-					</li>
+						</li>
+					--%>
 					<li>
-						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noCLickThrough">FAQ</a>
+						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noClickThrough">FAQ</a>
 						
 						<% if (null != faqSections) { 
 							%><ul class="mm-listview cleanli gen-accord-content" style="display: none;"><%
@@ -149,23 +151,23 @@
 							while (st.hasMoreTokens()) {
 								ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
 								if (null != contentNode) { 
-									%><li>
-										<a class="" href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %><div class="gen-arrow gen-arrow-e"></div></a>
+									%><li class="">
+										<a class="" href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a>
 									</li><% 
 								}
 							}
 							%></ul><%
 						} %>
 					</li>
-					<li><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585);" class="">Freshness Guarantee<div class="gen-arrow gen-arrow-e"></div></a></li>
+					<li><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585);" class="">Freshness Guarantee</a></li>
 					<li>
-						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noCLickThrough">Food Safety</a>
+						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noClickThrough">Food Safety</a>
 						<%
 							CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode("food_safety_freshdirect");
 							if (cat != null && !cat.getSubcategories().isEmpty()) {
 								%><ul class="mm-listview cleanli gen-accord-content" style="display: none;"><%
 								for (CategoryModel subcat : cat.getSubcategories()) {
-									%><li><a href="/browse.jsp?id=<%= subcat %>"><%= subcat.getFullName() %><div class="gen-arrow gen-arrow-e"></div></a></li><%
+									%><li><a href="/browse.jsp?id=<%= subcat %>"><%= subcat.getFullName() %></a></li><%
 								}
 								%></ul><%
 							}

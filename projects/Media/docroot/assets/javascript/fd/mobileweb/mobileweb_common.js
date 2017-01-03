@@ -212,7 +212,7 @@ var API;
 				});
 				
 		/* prevent li empty links from doing anything except open their submenu */
-		$('.noCLickThrough').on('click', function(e) {
+		$('.noClickThrough').on('click', function(e) {
 			return false;
 		});
 	});
