@@ -8,7 +8,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ include file="/includes/i_globalcontext.jspf" %>
-<%@ include file="/common/template/includes/i_stylesheets.jspf" %>
+<style>
+.list_component_row {
+    background-color: lightblue;
+    text-align: center;
+}
+</style>
 
 <%	String orderId = request.getParameter("orderId"); %>
 <%	List cartonInfo = null; %>
