@@ -20,7 +20,7 @@
 <%
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	String pageTemplate = "/quickshop/includes/qs_template.jsp";
-	if (mobWeb) {
+	if (mobWeb && false /* REMOVE FROM JAN_R1 */) {
 		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 		String oasSitePage = request.getAttribute("sitePage").toString();
 		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
