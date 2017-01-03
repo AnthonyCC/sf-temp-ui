@@ -8,7 +8,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ include file="/includes/i_globalcontext.jspf" %>
-<style>
+<style type="text/css">
 .list_component_row {
     background-color: lightblue;
     text-align: center;
