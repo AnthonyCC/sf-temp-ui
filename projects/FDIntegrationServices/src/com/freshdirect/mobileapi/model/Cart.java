@@ -888,53 +888,22 @@ public class Cart {
          */
 
         //Promotions
-        //double maxPromotion = user.getMaxSignupPromotion();
         PromotionI redemptionPromo = user.getRedeemedPromotion();
-        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(
-                redemptionPromo.getPromotionCode()));
+        String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
+        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(promoCode));
 
-        List discounts = cart.getDiscounts();
-        for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-            ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+        for (ErpDiscountLineModel discountLine : cart.getDiscounts()) {
             Discount discount = discountLine.getDiscount();
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), redemptionPromo.getRedemptionCode(), DiscountType.SIGNUP, discount.getAmount(), true));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
-                //                                <td colspan="1" align="right">-<%=CCFormatter.formatCurrency(discount.getAmount())%></td>
-                //                                <td colspan="3"></td>      
-                //                        </tr>      
-                //                        <%
-            } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) {
-
+                        .getPromotionCode(), promoCode, DiscountType.SIGNUP, discount.getAmount(), true));
+            } else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), redemptionPromo.getRedemptionCode(), DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
-                //                                <td colspan="1" align="right">
-                //                                        <%="-" + CCFormatter.formatCurrency(discount.getAmount()) %>
-                //                                </td>
-                //                                <td colspan="1"></td>
-                //                                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-                //                        </tr>      
-                //        <%
+                        .getPromotionCode(), promoCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), redemptionPromo.getRedemptionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promotion.getPromotionCode()%>','small')"><%= promotion.getDescription()%></a></b>:</td>
-                //                                <td colspan="1" align="right">
-                //                                        <%="-" + CCFormatter.formatCurrency(discount.getAmount()) %>
-                //                                </td>
-                //                                <td colspan="3"></td>
-                //                        </tr>      
-                //                        
-                //    <%          
+                        .getPromotionCode(), promoCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
             }
         }
         
