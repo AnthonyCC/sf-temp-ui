@@ -3,10 +3,15 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
 <%@ page import="com.freshdirect.customer.ErpCartonDetails"%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
-<link rel="stylesheet" type="text/css" href="/ccassets/css/crm.css" />
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<style type="text/css">
+.list_component_row {
+    background-color: lightblue;
+    text-align: center;
+}
+</style>
 
 <%	String orderId = request.getParameter("orderId"); %>
 <%	List cartonInfo = null; %>
