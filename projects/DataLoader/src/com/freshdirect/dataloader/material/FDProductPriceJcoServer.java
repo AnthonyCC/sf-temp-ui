@@ -375,22 +375,27 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				salesAreaPriceMap.get(salesArea).add(priceRowModel);
 			}
 
+			boolean isDefaultPriceExists = false;
 			for (final Map.Entry<String, List<ErpMaterialPriceModel>> salesAreaPriceMapEntry : salesAreaPriceMap
 					.entrySet()) {
-				boolean isDefaultZoneExists = false;
+//				boolean isDefaultZoneExists = false;
 				for (ErpMaterialPriceModel priceRowEntry : salesAreaPriceMapEntry.getValue()) {
 //					if (ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(priceRowEntry.getSapZoneId()) 
 					if (ZonePriceListing.MASTER_DEFAULT_ZONE.equalsIgnoreCase(priceRowEntry.getSapZoneId()) 
 							&& ZonePriceListing.DEFAULT_SALES_ORG.equalsIgnoreCase(priceRowEntry.getSalesOrg())
 							&& ZonePriceListing.DEFAULT_DIST_CHANNEL.equalsIgnoreCase(priceRowEntry.getDistChannel())) {
-						isDefaultZoneExists = true;
+//						isDefaultZoneExists = true;
+						isDefaultPriceExists = true;
 					}
 				}
-				if (!isDefaultZoneExists) {
+				/*if (!isDefaultZoneExists) {
 					bufferStr.append(salesAreaPriceMapEntry.getKey() + ", ");
-				}
+				}*/
 			}
 
+			if(!isDefaultPriceExists){
+				throw new LoaderException("No master default price row exported for the material.");
+			}
 			/*
 			 * if(!StringUtils.isEmpty(bufferStr.toString())) { throw new
 			 * LoaderException
