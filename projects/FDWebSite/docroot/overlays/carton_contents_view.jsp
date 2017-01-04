@@ -1,17 +1,11 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
-<%@ page import="com.freshdirect.customer.ErpCartonDetails"%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<style type="text/css">
-.list_component_row {
-    background-color: lightblue;
-    text-align: center;
-}
-</style>
 
 <%	String orderId = request.getParameter("orderId"); %>
 <%	List cartonInfo = null; %>
@@ -76,8 +70,7 @@
 	<tr>
 		<td colspan="4">
 			<logic:iterate id="carton" collection="<%= cartonInfo %>" type="com.freshdirect.fdstore.customer.FDCartonInfo" indexId="counter"> 
-			<% if(!"0000000000".equalsIgnoreCase(carton.getCartonInfo().getCartonNumber())){
-			 if(bShowForm) { %>
+			<% if(bShowForm) { %>
 				<FORM ACTION="<%= successPage %>&cartonNumber=<%=carton.getCartonInfo().getCartonNumber()%>" METHOD="POST" NAME="carton_<%= counter %>">
 			<% } //bShowForm%>
 				<table width="100%" class="order" cellspacing="0" cellpadding="0">
@@ -104,7 +97,7 @@
 							<tr valign="top">
 								<td width="150px"> 
 									<input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getActualQuantity() %>">
+									<input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
 									<input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 									<input type="hidden" name="estPrice_<%=idx%>" value="">
 									<input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
@@ -113,7 +106,7 @@
 										<input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
 									</logic:iterate>
 
-									<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
+									<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 									<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 										<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 									<% } %>
@@ -129,49 +122,16 @@
 									<%= cartonDetail.getCartLine().getUnitPrice() %>
 								</td>
 							</tr>
-							
-							<% 
-								if(cartonDetail.getCartonDetail().getComponents().size() > 0 ) { 
-									for (int j = 0; j < cartonDetail.getCartonDetail().getComponents().size(); j++) {
-										ErpCartonDetails component = cartonDetail.getCartonDetail().getComponents().get(j);
-							
-							%>
-								
-								<tr valign="top" class="list_component_row">
-									<td width="150px">										
-										<%= component.getActualQuantity() %>&nbsp;
-									</td>
-									<td>
-										<span style="margin-left: 20px;"><%= component.getMaterialDesc() %>
-										(<%= component.getSkuCode() %>)</span>
-									</td>
-									<td width="90px"> 
-										<%= component.getNetWeight() %>
-										<% if(component.getWeightUnit() != null) { %>
-											<%= component.getWeightUnit().toLowerCase() %>
-										<% } %>
-									</td>
-									<td width="75px">
-										
-									</td>
-								</tr>							
-							
-							<% 		}
-								} 
-							%>
-							
 							<%
 
 							idx++;
 						} // cartonDetail.getCartLine() != null %>
-						
 					</logic:iterate>
 				</table>
 
 				<% if(bShowForm) { %>
 					</FORM>
 				<% } //bShowForm%>
-				<% } %>
 			</logic:iterate>
 		</td>
 	</tr>

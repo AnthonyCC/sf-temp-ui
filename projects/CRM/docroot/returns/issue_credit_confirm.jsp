@@ -11,9 +11,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-
 <%FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);%>
-
 
 <tmpl:insert template='/template/top_nav.jsp'>
 <%

@@ -164,7 +164,7 @@ public class FDCartonDetailJcoServer extends FdSapServer
 						cartonDetailModel.setOrderLineNumber(param.getOrderLineNo());
 						cartonDetailModel.setMaterialNumber(param.getMaterialNumber());
 						cartonDetailModel.setBarcode(param.getBarcode());
-						cartonDetailModel.setActualQuantity(param.getActual_quantity());
+						cartonDetailModel.setPackedQuantity(param.getPackedQuantity());
 						cartonDetailModel.setNetWeight(param.getNetWeight());
 						cartonDetailModel.setWeightUnit(param.getSalesUnitCode());
 						
@@ -262,7 +262,7 @@ public class FDCartonDetailJcoServer extends FdSapServer
 			param.setBarcode(FDSapHelperUtils.getString(cartonTable.getString("ZZBARCODE")));
 			double packedQty = Double.parseDouble(cartonTable.getString("ZZPCKQTY"));
 			double netWeight = Double.parseDouble(cartonTable.getString("NTGEW") != null ? cartonTable.getString("NTGEW") : "0.0");
-			param.setActual_quantity(packedQty);
+			param.setPackedQuantity(packedQty);
 			param.setNetWeight(netWeight);
 			param.setSalesUnitCode(FDSapHelperUtils.getString(cartonTable.getString("GEWEI")));
 
@@ -296,7 +296,7 @@ public class FDCartonDetailJcoServer extends FdSapServer
 				LOG.debug("Got Carton detail record for Order No:" + param.getOrderNo() + "\t SAP Order No:"
 						+ param.getSapOrderNo() + "\t Carton No:" + param.getCartonNumber() + "\t Material No:"
 						+ param.getMaterialNumber() + "\t Carton Type:" + param.getCartonType() + "\t Barcode:"
-						+ param.getBarcode() + "\t PackedQuantity:" + param.getActual_quantity() + "\t NetWeight:"
+						+ param.getBarcode() + "\t PackedQuantity:" + param.getPackedQuantity() + "\t NetWeight:"
 						+ param.getNetWeight());
 			}
 			return param;

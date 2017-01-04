@@ -351,7 +351,6 @@ var OL_PRICES = {};
 		for (Iterator it1=order.getCartonContents().iterator(); it1.hasNext(); ) {
 	    	FDCartonInfo cInfo = (FDCartonInfo) it1.next();
 	    	final String cartNum = cInfo.getCartonInfo().getCartonNumber();
-	    	if(!"0000000000".equalsIgnoreCase(cartNum)){ 
 	    	
 	        // collect orderlines from cartons
 	        Set orderLines = new HashSet();
@@ -375,8 +374,9 @@ var OL_PRICES = {};
 
 			for (Iterator it2=cInfo.getCartonDetails().iterator(); it2.hasNext(); ) {
 	    		FDCartonDetail cDetail = (FDCartonDetail) it2.next();
+	    		
 	    		FDCartLineI orderLine = cDetail.getCartLine();
-				
+	
 		        // bind variables
 		        request.setAttribute("__issue_credit_orderline", orderLine);
 		        request.setAttribute("__issue_credit_lineComplaints", lineComplaints);
@@ -384,31 +384,11 @@ var OL_PRICES = {};
 		        request.setAttribute("__issue_credit_cartonNumber", cartNum);
 		        request.setAttribute("__issue_credit_paramIndex", new Integer(i));
 		        request.setAttribute("__issue_credits_cartonDetail", cDetail);
-		        request.setAttribute("__issue_credits_hasComponents", cDetail.getCartonDetail() != null && 
-	    				cDetail.getCartonDetail().getComponents() != null && 
-	    				cDetail.getCartonDetail().getComponents().size() > 0);
-	    		
-		    	/* if((cDetail.getCartonDetail().getComponents() == null || cDetail.getCartonDetail().getComponents().size() == 0) 
-		    				|| (cDetail != null && 
-		    				cDetail.getCartonDetail() != null && 
-		    				cDetail.getCartonDetail().getComponents() != null && 
-		    				cDetail.getCartonDetail().getComponents().size() > 0 && cDetail.getCartonDetail().isFirstCartonWithORLN())){ */
-			    		
-							%>
-							<%@ include file="/returns/issue_credits_line.jspf" %>
-							<%
-						i++;
-				/* }
-		    	if(cDetail != null && 
-		    				cDetail.getCartonDetail() != null && 
-		    				cDetail.getCartonDetail().getComponents() != null && 
-		    				cDetail.getCartonDetail().getComponents().size() > 0 && !cDetail.getCartonDetail().isFirstCartonWithORLN()){*/
-		    			
-		    		// <%@ include file="/returns/issue_credits_line_components.jspf" %> 
-						<%
-		    	//} 
+%>
+<%@ include file="/returns/issue_credits_line.jspf" %>
+<%
+				i++;
 	    	} // orderLines per carton
-	    	}
 	    } // cartons
     }
 %>
