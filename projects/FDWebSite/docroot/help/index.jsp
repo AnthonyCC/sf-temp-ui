@@ -120,10 +120,12 @@
 			
 			<%-- SEARCH --%>
 			<div class="search-cont">
-				<form method="post" name="contact_fd" id="contact_fd_faq">
-					<span class="icon-search"></span>
-					<input type="text" id="search-faq" class="search-field fnt-18" value="" maxlength="100" name="searchFAQ" placeholder="Search" autocomplete="off" />
-				</form>
+				<fd:ContactFdController result="result" successPage=''>
+					<form method="post" name="contact_fd" id="contact_fd_faq">
+						<span class="icon-search"></span>
+						<input type="text" id="search-faq" class="search-field fnt-18" value="" maxlength="100" name="searchFAQ" placeholder="Search" autocomplete="off" />
+					</form>
+				</fd:ContactFdController>
 			</div>
 			<%-- MAIN CONTENT --%>
 			<div>
@@ -159,7 +161,7 @@
 							%></ul><%
 						} %>
 					</li>
-					<li><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585);" class="">Freshness Guarantee</a></li>
+					<li><a href="/help/freshness.jsp">Freshness Guarantee</a></li>
 					<li>
 						<a href="#" class="gen-accord-toggler gen-accord-toggler-gray noClickThrough">Food Safety</a>
 						<%
@@ -173,7 +175,7 @@
 							}
 						%>
 					</li>
-					<li><a href="#">Legal</a></li>
+					<%-- NO TARGET, comment out for now <li><a href="#">Legal</a></li> --%>
 				</ul>
 			</div>
 			

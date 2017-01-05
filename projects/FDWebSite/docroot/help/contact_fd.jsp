@@ -138,7 +138,7 @@ if ("true".equalsIgnoreCase(overlay)) {
     <tmpl:put name='title' direct='true'>FreshDirect - Help - Contact Us</tmpl:put>
     <tmpl:put name='content' direct='true'>
     	<% if (mobWeb) { %>
-			<%@ include file="/help/i_contact_us.jspf" %>
+			<div class="contact_fd-cont"><%@ include file="/help/i_contact_us.jspf" %></div>
     	<% } else { %>
 	    	
 			<fd:ErrorHandler result='<%=result%>' name='kana' id='errorMsg'>

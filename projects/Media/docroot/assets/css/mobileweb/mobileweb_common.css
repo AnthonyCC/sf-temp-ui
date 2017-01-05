@@ -657,6 +657,9 @@ li.cleanli .gen-arrow {
 	.pager.faqsearch .pager-content {
 		margin: 0;
 	}
+	.contact_fd-cont { /* container for contact form */
+		padding: 10px;
+	}
 
 /* thanksgiving meal kits */
 	.mm-page .product-large {
