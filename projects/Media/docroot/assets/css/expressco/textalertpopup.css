@@ -12,7 +12,9 @@
   font-family:Verdana,Genava,sans-serif;
   font-size:12px;
 }
-
+#gogreenpopup .close {
+	display: none;
+}
 .ec-popup.gogreenpopup {
   position: relative;
   display: inline-block;
