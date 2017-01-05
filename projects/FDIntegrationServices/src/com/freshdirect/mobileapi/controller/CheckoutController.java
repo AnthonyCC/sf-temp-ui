@@ -20,9 +20,11 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1473,6 +1475,14 @@ public class CheckoutController extends BaseController {
                     if (isSuccess(message.getStatus())) {
                         // Timeslot Alcohol Check
                         message = checkout.alcoholTimeSlotCheck(message, user, isWebRequest);
+                    }
+                }
+                // Fraud Address Check
+                if (isSuccess(message.getStatus()) && user.getShoppingCart().getDeliveryAddress() != null){
+                    EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( user.getShoppingCart().getDeliveryAddress() );
+            		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
+            			message.addErrorMessage("Unable to place order contact customer service");
+                        message.setStatus(Message.STATUS_FAILED);
                     }
                 }
                 // Atp Check
