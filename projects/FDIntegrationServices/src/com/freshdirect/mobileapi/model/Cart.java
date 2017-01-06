@@ -29,6 +29,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
@@ -915,8 +916,16 @@ public class Cart {
   		
   		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
               redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
-  			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+              String esid = (null !=user && null != user.getUserContext() ? user.getUserContext().getStoreContext().getEStoreId().getContentId() : null);
+  			  if(esid != null && "FDX".equals(esid)){
+  				  warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET_FDX
   														, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+  			  }
+  			  else
+  			  {
+  				warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+							, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+  			  }
   			
   		} else if (redemptionPromo.isLineItemDiscount()) {
               int errorCode = user.getPromoErrorCode(redemptionPromo.getPromotionCode());
