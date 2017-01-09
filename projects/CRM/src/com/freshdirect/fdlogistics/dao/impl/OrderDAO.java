@@ -60,8 +60,9 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 
 	private static String GET_ORDER_BYID = " SELECT S.ID, S.SAP_NUMBER, SA.REQUESTED_DATE, S.STATUS, SA.AMOUNT, DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME, DI.ZONE ZONE, DI.ADDRESS1, DI.ADDRESS2, " +
 			"DI.APARTMENT, DI.CITY, DI.STATE, DI.ZIP, DI.COUNTRY, DI.DELIVERY_TYPE, DI.RESERVATION_ID, S.CUSTOMER_ID CUSTOMER_ID, DI.FIRST_NAME, DI.LAST_NAME, DI.PHONE HOME_PHONE, " +
-			"DI.DELIVERY_INSTRUCTIONS, SA.SOURCE,P.CARD_TYPE,P.EWALLET_ID,DI.UNATTENDED_INSTR,DI.ALT_DEST,DI.ALT_FIRST_NAME ,DI.ALT_LAST_NAME,DI.ALT_APARTMENT,DI.ALT_PHONE,S.NUM_ALCOHOL_CARTONS,  " +
-			"(select  cl.amount from cust.chargeline cl where CL.SALESACTION_ID = sa.id and cl.type='TIP' ) TIP FROM CUST.SALE S, CUST.SALESACTION SA" +
+			"DI.DELIVERY_INSTRUCTIONS, SA.SOURCE,P.CARD_TYPE,P.EWALLET_ID,DI.UNATTENDED_INSTR,DI.ALT_DEST,DI.ALT_FIRST_NAME ,DI.ALT_LAST_NAME,DI.ALT_APARTMENT,DI.ALT_PHONE,  " +
+			"(select  cl.amount from cust.chargeline cl where CL.SALESACTION_ID = sa.id and cl.type='TIP' ) TIP, (select count(1) from CUST.ORDERLINE ol where OL.SALESACTION_ID = sa.id and OL.ALCOHOL = 'X') ALCOHOL" +
+			" FROM CUST.SALE S, CUST.SALESACTION SA" +
 			" , CUST.DELIVERYINFO DI,CUST.PAYMENTINFO P WHERE S.ID = SA.SALE_ID  AND SA.CUSTOMER_ID = S.CUSTOMER_ID AND S.CROMOD_DATE=SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO', 'MOD') "+
 			"  AND S.TYPE ='REG' AND SA.ID = DI.SALESACTION_ID AND S.ID =? AND SA.ID = P.SALESACTION_ID";
 
@@ -633,7 +634,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 						address.setUnattendedInstructions(rs.getString("UNATTENDED_INSTR"));
 						result.setCardType(rs.getString("CARD_TYPE"));
 						result.setEwalletID(rs.getString("EWALLET_ID"));
-						result.setAlcohol(rs.getInt("NUM_ALCOHOL_CARTONS")>0?true:false);
+						result.setAlcohol(rs.getInt("ALCOHOL")>0?true:false);
 						result.setETip(rs.getDouble("TIP"));
 						String altDest=(rs.getString("ALT_DEST")!=null)?EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")).getName():null;
 						if(altDest!=null)
