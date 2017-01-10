@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -890,21 +889,21 @@ public class Cart {
 
         //Promotions
         PromotionI redemptionPromo = user.getRedeemedPromotion();
-        String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
-        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(promoCode));
+        String redemptionCode = redemptionPromo != null ? redemptionPromo.getRedemptionCode() : "";
+        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
 
         for (ErpDiscountLineModel discountLine : cart.getDiscounts()) {
             Discount discount = discountLine.getDiscount();
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), promoCode, DiscountType.SIGNUP, discount.getAmount(), true));
-            } else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) {
+                        .getPromotionCode(), redemptionCode, DiscountType.SIGNUP, discount.getAmount(), true));
+            } else if (isRedemptionApplied && redemptionCode.equalsIgnoreCase(discount.getPromotionCode())) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), promoCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
+                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), promoCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
+                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
             }
         }
         
