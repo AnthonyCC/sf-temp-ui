@@ -897,7 +897,7 @@ public class Cart {
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
                         .getPromotionCode(), redemptionCode, DiscountType.SIGNUP, discount.getAmount(), true));
-            } else if (isRedemptionApplied && redemptionCode.equalsIgnoreCase(discount.getPromotionCode())) {
+            } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
                         .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
