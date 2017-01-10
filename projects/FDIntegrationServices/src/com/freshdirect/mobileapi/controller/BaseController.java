@@ -758,7 +758,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    private CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
+    protected CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
         CMSImageBannerModel cmsImageBanner = null;
         if (imageBanner != null){
             cmsImageBanner = new CMSImageBannerModel();
