@@ -655,10 +655,40 @@ li.cleanli .gen-arrow {
 	}
 /* help/FAQ */
 	.pager.faqsearch .pager-content {
-		margin: 0;
+		position: absolute;
+    	right: 0;
+    	left: auto;
+    	top: 0;
+    	margin: 0;
 	}
 	.contact_fd-cont { /* container for contact form */
 		padding: 10px;
+	}
+	.mm-page .faq-header-img {
+		margin-left: 10px;
+	}
+	.mm-page .pager {
+		
+	}
+	.mm-page .pager .results {
+	}
+	.mm-page .pager .pager-content .pager-item,
+	.mm-page .pager .pager-content .pager-separator
+	{
+		display: none;
+	}
+	.mm-page .pager .pager-content .pager-item.pager-current {
+		display: inline-block;
+	}
+	.mm-page .pager .pager-content .pager-prev a,
+	.mm-page .pager .pager-content .pager-next a
+	{
+		background-color: #458b4c;
+		color: #fff;
+		border-radius: 3px;
+		font-weight: bold;
+		margin: 0 12px;
+		min-width: 43px;
 	}
 
 /* thanksgiving meal kits */

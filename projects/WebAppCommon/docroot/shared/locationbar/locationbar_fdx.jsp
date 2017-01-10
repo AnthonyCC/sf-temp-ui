@@ -522,6 +522,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel) %>';
 					FreshDirect.locabar.reservation.time = '<%= (reservationDate+" @ "+reservationTime).toUpperCase() %>';
 				<% } %>
+				FreshDirect.locabar.zipcode = '<%= user_locationbar_fdx.getZipCode() %>';
 			</script></tmpl:put>
 	
 <%-- SIGN IN area --%>

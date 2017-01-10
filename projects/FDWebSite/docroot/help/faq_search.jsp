@@ -1,7 +1,3 @@
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -16,6 +12,11 @@
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='bean' prefix='bean' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <fd:CheckLoginStatus id="user" />
 <% 
@@ -24,6 +25,7 @@
 	
 	FilteringNavigator nav = new FilteringNavigator(request,8);
 	nav.setFaq(true);
+	
 	final int defaultPageSize = nav.getDefaultPageSize();
 	QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 	if ( qc.getParameter("pageSize") == null ) {
@@ -43,15 +45,17 @@
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
-	<tmpl:put name='leftnav' direct='true'>	</tmpl:put>	
+	<tmpl:put name='leftnav' direct='true'>	</tmpl:put>
+	<tmpl:put name='extraCss' direct='true'>
+		<%-- don't use jawr here, it'll change the order that search.css is used --%>
+		<fd:css href="/assets/css/search.css" />
+	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	
-		<fd:css href="/assets/css/search.css"></fd:css>
 		
 		<fd:SearchFaq id="result" nav="<%= nav %>">
 			<table border="0" cellpadding="0" cellspacing="0" style="width: <%=((mobWeb)?"100%":W_FAQ_SEARCH_TOTAL+"px") %>">
 				<% if (mobWeb) { %>
-					<img src="/media_stat/images/template/help/faq_hdr.gif" height="16" width="318" alt="Frequently Asked Questions" border="0" /><br />
+					<img src="/media_stat/images/template/help/faq_hdr.gif" class="faq-header-img" height="16" width="318" alt="Frequently Asked Questions" border="0" /><br />
 					<div class="search-cont">
 						<form name="contact_fd">
 							<span class="icon-search"></span>
@@ -123,7 +127,7 @@
 				<% } %>
 			
 				<% if(null !=result && !result.isEmpty() && result.size()!=0) { %>
-					<div class="pager faqsearch" style="<%= (mobWeb) ? "" : "margin-top: 50px; margin-left: 14px;" %>">
+					<div class="pager faqsearch <%= (mobWeb) ? "mobWeb" : "" %>" style="<%= (mobWeb) ? "" : "margin-top: 50px; margin-left: 14px;" %>">
 						<div class="results">
 							<span>Results: </span>
 							<span class="results-current"><%= ((nav.getPageNumber())*nav.getPageSize())+1  %>-<%= nav.getPageSize()==0 ? 
@@ -132,7 +136,7 @@
 							<span class="results-all"><%= itemCount %></span>
 						</div>
 						<div class="pager-content">
-							<display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>"/>
+							<display:Pager productsSize="<%= itemCount %>" nav="<%= nav %>" />
 						</div>
 					</div>
 				<% } %>
