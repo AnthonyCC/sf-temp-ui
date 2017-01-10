@@ -1373,6 +1373,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
+  } else if (loaddata == "pickListGetAllIphoneImageBanners") {
+  	$("#url").val("/pickslistiPhoneImageBanners/getall/");
+  	$("#header").val('');
+  	$("#payload").val("");
+
   } else if (loaddata == "pickListGetDetail") {
   	$("#url").val("/pickslist/getdetail/PickList_fdx");
   	$("#header").val('');
@@ -1647,6 +1652,7 @@ function doStuff() {
   <option value=""> ========== Pick List ========== </option>
   <option value="pickListGetAll">PickList - Get All</option> 
   <option value="pickListGetAllIphone">PickList - Get All Iphone</option>
+  <option value="pickListGetAllIphoneImageBanners">PickList - Get All Iphone Image Banners</option>
   <option value="pickListGetDetail">PickList - Get Detail</option>
 
   <option value=""> ========== ORDERS ========== </option>

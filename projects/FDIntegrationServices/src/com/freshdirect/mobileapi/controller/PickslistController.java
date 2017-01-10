@@ -34,6 +34,7 @@ public class PickslistController extends BaseController {
 
 	private static final String ACTION_GET_ALL = "getAll";
 	private static final String ACTION_GET_ALL_IPHONE = "getAlliPhone";
+	private static final String ACTION_GET_ALL_IPHONE_IMAGE_BANNERS = "getAlliPhoneImageBanners";
 	private static final String ACTION_GET_DETAIL = "getDetail";
 
 	@Override
@@ -47,6 +48,9 @@ public class PickslistController extends BaseController {
 			return getAlliPhone(model, user);
 		}else if (ACTION_GET_DETAIL.equals(action)) {
 			return getDetail(request, model, user);
+		}
+		else if (ACTION_GET_ALL_IPHONE_IMAGE_BANNERS.equals(action)) {
+			return getAlliPhoneImageBanners(model, user);
 		}
 		throw new UnsupportedOperationException();
 	}
