@@ -48,7 +48,9 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 				if (cookies != null) {
 					for(Cookie cookie : cookies) {
 						if (cookie.getName().equals("freshdirect.healthwarning")) {
-							if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {
+							//In tomcat, It is removing the value from '@'  up to the session id, So we are commenting the below line and checking against string '1'
+							/*if (normalizeSessionId(cookie.getValue()).equals("1@" + normalizeSessionId(request.getSession().getId()))) {*/
+							if(cookie.getValue().equals("1")){
 								return SKIP_BODY;
 							}
 						}
@@ -59,7 +61,7 @@ public class IsAlcoholicTag extends BodyTagSupportEx {
 					return SKIP_BODY;
 				}
 			} else {
-				if("true".equalsIgnoreCase(noProduct) && yser != null 
+				if("true".equalsIgnoreCase(noProduct) && yser != null  
 						&& !yser.isHealthWarningAcknowledged()) {
 					return EVAL_BODY_INCLUDE;
 				} else {
