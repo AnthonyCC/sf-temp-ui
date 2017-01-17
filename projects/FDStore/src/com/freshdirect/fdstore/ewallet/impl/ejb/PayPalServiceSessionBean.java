@@ -1,10 +1,7 @@
 package com.freshdirect.fdstore.ewallet.impl.ejb;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -13,10 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.braintreegateway.Customer;
-import com.braintreegateway.CustomerRequest;
 import com.braintreegateway.PaymentMethod;
-import com.braintreegateway.PaymentMethodRequest;
 import com.braintreegateway.Result;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.freshdirect.common.customer.EnumCardType;
@@ -25,10 +19,8 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
@@ -47,20 +39,6 @@ import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
 import com.freshdirect.payment.service.FDPayPalService;
 import com.freshdirect.payment.service.IPayPalService;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * @author Aniwesh Vatsal
