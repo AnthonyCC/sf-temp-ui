@@ -85,7 +85,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 		<c:if test="${isSpecialLayout}"><fd:GetCart id='cart'><fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/></fd:GetCart></c:if>
 		<jsp:include page="/includes/product/cartConfirm.jsp" >
 			<jsp:param name="catId" value="${ param.catId }"/>
-<%-- 			<jsp:param name="productId" value="${ param.productId }"/> --%>
 			<jsp:param name="cartlineId" value="${ param.cartlineId }"/>
 		</jsp:include>
 	</tmpl:put>
