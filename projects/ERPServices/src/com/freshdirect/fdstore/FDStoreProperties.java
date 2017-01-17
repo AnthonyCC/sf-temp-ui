@@ -750,6 +750,7 @@ public class FDStoreProperties {
 
     private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
+    private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
     private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
@@ -1572,6 +1573,7 @@ public class FDStoreProperties {
         // Product Family
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
+        defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1api.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
         defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.nj01/givex/giftcard/");
@@ -3849,6 +3851,9 @@ public class FDStoreProperties {
 
     public static String getLogisticsAPIUrl() {
         return get(PROP_LOGISTICS_API_URL);
+    }
+    public static String getPayPalAPIUrl() {
+        return get(PROP_PAYPAL_API_URL);
     }
 
     public static String getOMSAPIUrl() {

@@ -1,7 +1,10 @@
 package com.freshdirect.fdstore.ewallet.impl.ejb;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -20,10 +23,12 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
@@ -36,9 +41,26 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PayPalResponse;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
+import com.freshdirect.payment.service.FDPayPalService;
+import com.freshdirect.payment.service.IPayPalService;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * @author Aniwesh Vatsal
@@ -90,8 +112,15 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	private String clientToken() {
 		String requestToken="";
 		try{
-			requestToken = PayPalData.getBraintreeGateway().clientToken().generate();
+			
+			
+//			requestToken = PayPalData.getBraintreeGateway().clientToken().generate();
+			// JJ service integration with services.
+			requestToken=FDPayPalService.getInstance().generateToken();
+		
 		}catch(AuthenticationException authenticationException){
+			throw new EWalletRuntimeException("Can not connect to PayPal.");
+		}catch(FDPayPalServiceException fDPayPalServiceException){
 			throw new EWalletRuntimeException("Can not connect to PayPal.");
 		}
 		return requestToken;
@@ -269,27 +298,32 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
 			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
 		}
-		CustomerRequest request = new CustomerRequest();
+/*		CustomerRequest request = new CustomerRequest();
 		request.customerId(ewalletRequestData.getCustomerId());
 		request.firstName(fName);
-		request.lastName(lName);
+		request.lastName(lName);*/
 		try{
 			Result<? extends PaymentMethod> vaultResult = null;
-			
-		    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+			IPayPalService payPalService = FDPayPalService.getInstance();
+			PayPalResponse payPalResponse = null;
+//		    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+			 payPalResponse = payPalService.createCustomer(ewalletRequestData.getCustomerId(),fName,lName);
+//		    Result<Customer> customerResult=payPalResponse.getCustomerResults();
 	//	    customerResult.getTransaction(); Verify this one 
 		    // Check customer record created successfully or not
-		    if(customerResult.isSuccess()){
+		    if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){
 		    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-				PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
+				/*PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
 					    .paymentMethodNonce(paymentMethodNonce)
-					    .deviceData(deviceId);
-				vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
+					    .deviceData(deviceId);*/
+//				vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
+				payPalResponse = payPalService.createPaymentMethod(payPalResponse.getCustomerId(),paymentMethodNonce,deviceId);
+				vaultResult = payPalResponse.getPamentMethodResults();
 	//			PAYPAL_GET_VAULT_TOKEN_TXN
-				if(vaultResult != null){
-					if(vaultResult.isSuccess()){
+				if(payPalResponse != null){
+					if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){
 						logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-						return vaultResult.getTarget().getToken();
+						return payPalResponse.getToken();
 					}else{
 						//fail
 						return null;
@@ -303,6 +337,10 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		    	return null;
 		    }
 		}catch(AuthenticationException exception){
+			throw new EWalletRuntimeException("Cannot connect to PayPal.");
+		}catch(FDPayPalServiceException ex){
+			throw new EWalletRuntimeException("Cannot connect to PayPal.");
+		}catch(Exception ex){
 			throw new EWalletRuntimeException("Cannot connect to PayPal.");
 		}
 	}
