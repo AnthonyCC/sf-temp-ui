@@ -109,8 +109,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                 HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 try {
                     response.sendRedirect(response.encodeRedirectURL(successPage));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
+                    //JspWriter writer = pageContext.getOut();
+                    //writer.close();
                     return SKIP_BODY;
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
@@ -121,8 +121,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 try {
                     response.sendRedirect(response.encodeRedirectURL("/logout.jsp"));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
+                    //JspWriter writer = pageContext.getOut();
+                    //writer.close();
                     return SKIP_BODY;
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
