@@ -631,7 +631,12 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilegogreenpreferences/");
     $("#header").val('');
   	$("#payload").val('{"go_green" : "true" }');
-  	
+ 
+   }  else if (loaddata == "GetModifiableOrders") {
+  	$("#url").val("/saptest12@freshdirect.com/order/modifiable");
+  	$("#header").val('');
+  	$("#payload").val('');
+
   }  else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#header").val('');
@@ -1660,6 +1665,7 @@ function doStuff() {
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>
   <option value="GetExistingOrders">ORDERS - List Of Existing Orders Detail</option>
   <option value="CancelExistingOrder">ORDERS - Cancel Existing Order</option>
+  <option value="GetModifiableOrders">ORDERS - Get Modifiable Orders</option>
   <option value="ModifyOrder">ORDERS - Modify Order</option>
   <option value="CheckModify">ORDERS - Check Modify</option>
   <option value="CancelOrderModify">ORDERS - Cancel Order Modify</option>

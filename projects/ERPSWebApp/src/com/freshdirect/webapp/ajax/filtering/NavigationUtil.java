@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -82,21 +83,16 @@ public class NavigationUtil {
 				break;
 			}
 		}
-		
-		if(node instanceof CategoryModel){
-			model.setPageTitle(((CategoryModel) node).getPageTitle());
-			model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof SuperDepartmentModel){
-			model.setPageTitle(((SuperDepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((SuperDepartmentModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof DepartmentModel){
-			model.setPageTitle(((DepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((DepartmentModel) node).getSEOMetaDescription());
-		}
+
+        if (node instanceof CategoryModel || node instanceof SuperDepartmentModel || node instanceof DepartmentModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+                model.setPageTitle(((CategoryModel) node).getFdxPageTitle());
+                model.setMetaDescription(((CategoryModel) node).getFdxSEOMetaDescription());
+            } else {
+                model.setPageTitle(((CategoryModel) node).getPageTitle());
+                model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
+            }
+        }
 		
 		String id = navigator.getId();
 		

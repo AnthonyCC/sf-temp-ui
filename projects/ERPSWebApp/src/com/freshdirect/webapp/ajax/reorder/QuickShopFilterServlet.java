@@ -39,6 +39,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.LOCAL);
 		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.ORGANIC);
 		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.ON_SALE);
+		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.BRAND);
 	}
 	
 	public static final Set<FilteringValue> PAST_ORDERS_FILTERS = new HashSet<FilteringValue>();

@@ -16,8 +16,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -39,16 +37,12 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	private static final long serialVersionUID = 2103318183933323914L;
 
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getInstance( ProductModelImpl.class ); 
-	
 	private static ThreadLocal<Map<String, YmalSet>> activeYmalSets = new ThreadLocal<Map<String, YmalSet>>() {
 		@Override
         protected Map<String, YmalSet> initialValue() {
@@ -2136,9 +2130,19 @@ inner:
 		return getAttribute("PAGE_TITLE", "");
 	}
 
+    @Override
+    public String getFdxPageTitle() {
+        return getAttribute("PAGE_TITLE_FDX", "");
+    }
+
 	@Override
 	public String getSEOMetaDescription() {
 		return getAttribute("SEO_META_DESC", "");
+	}
+	
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return getAttribute("SEO_META_DESC_FDX", "");
 	}
 	
 	@Override

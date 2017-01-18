@@ -1,23 +1,37 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.model.data.Unavailability;
 
 public class CartDetail {
+
+    private final SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
+
     private List<AffiliateCartDetail> affiliates = new ArrayList<AffiliateCartDetail>();
 
     private List<SummaryLineCharge> summaryLineCharges = new ArrayList<SummaryLineCharge>();
 
-    private String platterCutoffTime;
+    private Date platterCutoffTime;
 
     public String getPlatterCutoffTime() {
+        if (platterCutoffTime != null){
+            return formatter.format(platterCutoffTime);
+        } else {
+            return null;
+        }
+    }
+    
+    public Date getPlatterCutoffTimeMs() {
         return platterCutoffTime;
     }
-
-    public void setPlatterCutoffTime(String platterCutoffTime) {
+    
+    public void setPlatterCutoffTime(Date platterCutoffTime) {
         this.platterCutoffTime = platterCutoffTime;
     }
 

@@ -636,6 +636,12 @@
 		<from>^/v/([0-9]+)/(.*)/order/cancelmodify/</from>
 		<to last="true">/order.do?action=cancelmodify&amp;ver=$1</to>
 	</rule>
+	
+	<!-- Get Modify Orders -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/order/modifiable$</from>
+		<to last="true">/order.do?action=getmodifiableorders&amp;ver=$1</to>
+	</rule>
 
 	<!-- Logout -->
 	<rule>

@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -34,6 +36,7 @@ import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrder;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrders;
 import com.freshdirect.mobileapi.controller.data.response.ModifiedOrder;
+import com.freshdirect.mobileapi.controller.data.response.ModifiedOrders;
 import com.freshdirect.mobileapi.controller.data.response.Orders;
 import com.freshdirect.mobileapi.controller.data.response.QuickShop;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
@@ -74,6 +77,7 @@ public class OrderController extends BaseController {
     private static final String ACTION_CANCEL_ORDER = "cancelorder";
     private static final String ACTION_LOAD_ORDER_TO_CART = "modifyorder";
     private static final String ACTION_CANCEL_ORDER_MODIFY = "cancelmodify";
+    private static final String ACTION_GET_MODIFIABLE_ORDER_LIST = "getmodifiableorders";
     private static final String ACTION_QUICK_SHOP = "quickshop";
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEM = "geteveryitemfordept";
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT = "getdeptsforeveryitem";
@@ -126,6 +130,8 @@ public class OrderController extends BaseController {
             responseMessage = getProductsFromOrder(user, orderId);
         } else if (ACTION_CANCEL_ORDER_MODIFY.equals(action)) {
             responseMessage = cancelOrderModify(user, request);
+        } else if (ACTION_GET_MODIFIABLE_ORDER_LIST.equals(action)) {
+            responseMessage = getModifiableOrders(user, request);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM.equals(action)) {  
         	String orderId = request.getParameter("orderId");
         	String deptId = request.getParameter("qsDeptId");
@@ -249,6 +255,27 @@ public class OrderController extends BaseController {
 		}
         return responseMessage;
     }
+    
+    private Message getModifiableOrders(SessionUser user, HttpServletRequest request) throws FDException {
+        OrderHistory history = user.getOrderHistory();
+        Cart cart = user.getShoppingCart();
+
+        List<ModifiedOrders.ModifiedOrder> modifiedOrders = new ArrayList<ModifiedOrders.ModifiedOrder>();
+        for (OrderInfo modifiableOrder : history.getModifiableOrders(new Date())) {
+            ModifiedOrders.ModifiedOrder modifiedOrder = new ModifiedOrders.ModifiedOrder();
+            modifiedOrder.setOrderId(modifiableOrder.getId());
+            modifiedOrder.setModificationCutoffTime(modifiableOrder.getDeliveryCutoffTime());
+            modifiedOrder.setDeliveryStartTime(modifiableOrder.getDeliveryStartTime());
+            modifiedOrder.setDeliveryEndTime(modifiableOrder.getDeliveryEndTime());
+            modifiedOrders.add(modifiedOrder);
+        }
+
+        ModifiedOrders responseMessage = new ModifiedOrders();
+        responseMessage.setReservationCutoff(cart.getModificationCutoffTime());
+        responseMessage.setModifiedOrders(modifiedOrders);
+        responseMessage.setStatus(Message.STATUS_SUCCESS);
+        return responseMessage;
+    }
 
     private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
@@ -269,7 +296,7 @@ public class OrderController extends BaseController {
             ((ModifiedOrder) responseMessage).setModificationCutoffTime(cart.getModificationCutoffTime());
             ((ModifiedOrder) responseMessage).setDeliveryAddress(order.getDeliveryAddress());
             ((ModifiedOrder) responseMessage).setPaymentMethod(order.getPaymentMethod());
-            ((ModifiedOrder) responseMessage).setReservationDateTime(order.getReservationDateTime());
+            ((ModifiedOrder) responseMessage).setReservationTime(order.getReservationDate());
             ((ModifiedOrder) responseMessage).setReservationTimeRange(order.getReservationTimeRange());
         } else {
             responseMessage = getErrorMessage(result, request);

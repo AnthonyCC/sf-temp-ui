@@ -462,8 +462,9 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView getDeliveryAddresses(ModelAndView model, SessionUser user) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
         List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
-        DeliveryAddresses responseMessage = new DeliveryAddresses((new Checkout(user)).getPreselectedDeliveryAddressId(), ShipToAddress
+        DeliveryAddresses responseMessage = new DeliveryAddresses(checkout.getPreselectedDeliveryAddressId(), checkout.getSelectedDeliveryAddressId(), ShipToAddress
                 .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.CORP), Depot.getPickupDepots());
         

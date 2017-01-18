@@ -3,18 +3,18 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.text.ParseException;
 import java.util.Date;
 
-/**
- * @author Rob
- *
- */
 public class ModifiedOrder extends Cart {
 
     private Date modificationCutoffTime;
     private PaymentMethod paymentMethod;
     private DeliveryAddress deliveryAddress;
-    private String reservationDateTime;
+    private Date reservationTime;
     private String reservationTimeRange;
 
+    public Date getModificationCutoffTimeMs() {
+        return modificationCutoffTime;
+    }
+    
     public String getModificationCutoffTime() {
         try {
 			return formatter.format(this.modificationCutoffTime);
@@ -52,12 +52,20 @@ public class ModifiedOrder extends Cart {
 		this.deliveryAddress = deliveryAddress;
 	}
 
-	public String getReservationDateTime() {
-		return reservationDateTime;
+	public Date getReservationTimeMs() {
+	    return reservationTime;
+	}
+	
+	public void setReservationTime(Date reservationTime) {
+	    this.reservationTime = reservationTime;
 	}
 
-	public void setReservationDateTime(String reservationDateTime) {
-		this.reservationDateTime = reservationDateTime;
+	public String getReservationDateTime() {
+		return (reservationTime != null ? formatter.format(reservationTime) : null);
+	}
+
+	public void setReservationDateTime(String reservationDateTime) throws ParseException {
+	    this.reservationTime = (reservationDateTime != null ? formatter.parse(reservationDateTime) : null);
 	}
 
 	public String getReservationTimeRange() {

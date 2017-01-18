@@ -2,11 +2,11 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
@@ -14,18 +14,12 @@ import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 
-/**
- * 
- * @author fgarcia
- *
- */
 public class OrderHistory extends Message {
 
     private List<Order> orders;
     
-    private Integer totalResultCount = 0;    
+    private Integer totalResultCount = 0;
     
     public List<Order> getOrders() {
         return orders;
@@ -61,12 +55,20 @@ public class OrderHistory extends Message {
 
         private boolean modifiable;
 
+        private boolean fdxModifiable;
+
+        private EnumDeliveryType deliveryType;
+
         public boolean isShoppable() {
             return shoppable;
         }
 
         public boolean isModifiable() {
             return modifiable;
+        }
+
+        public boolean isFdxModifiable() {
+            return fdxModifiable;
         }
 
         public boolean isPendingDeliveryOrder() {
@@ -81,16 +83,10 @@ public class OrderHistory extends Message {
 
 		private DeliveryAddress deliveryAddress;
 
-        /**
-         * @param orderInfo
-         * @param user 
-         * @throws PricingException
-         * @throws FDException 
-         */
         public Order(OrderInfo orderInfo, SessionUser user) throws PricingException, FDException {
             this.id = orderInfo.getId();
             this.orderDate = orderInfo.getRequestedDate();
-            this.status = orderInfo.getOrderStatus();
+            this.status = orderInfo.getOrderStatusName();
             this.amount = orderInfo.getTotal();
             this.deliveryTimeslot = new Timeslot(orderInfo.getDeliveryStartTime(), orderInfo.getDeliveryEndTime(), orderInfo
                     .getDeliveryCutoffTime());
@@ -98,14 +94,10 @@ public class OrderHistory extends Message {
             this.refused = orderInfo.isRefused();
             this.shoppable = orderInfo.isShoppable();
             this.modifiable = orderInfo.isModifiable();
+            this.fdxModifiable = orderInfo.isFdxModifiable();
+            this.deliveryType = orderInfo.getDeliveryType();
             }
 
-        /**
-         * @param orderInfos
-         * @param user 
-         * @return
-         * @throws PricingException
-         */
         public static List<Order> createOrderList(List<OrderInfo> orderInfos, SessionUser user) {
             List<Order> infos = new ArrayList<Order>();
             Date currentDate = new Date();
@@ -124,8 +116,6 @@ public class OrderHistory extends Message {
             }
             return infos;
         }
-        
-        
 
         public String getId() {
             return id;
@@ -181,8 +171,14 @@ public class OrderHistory extends Message {
 			this.deliveryAddress = deliveryAddress;
 		}
 
+        public EnumDeliveryType getDeliveryType() {
+            return deliveryType;
+        }
+
+        public void setDeliveryType(EnumDeliveryType deliveryType) {
+            this.deliveryType = deliveryType;
+        }
+
     }
-	
-	
 
 }

@@ -341,6 +341,10 @@ public class Checkout {
         return addressId;
     }
 
+    public String getSelectedDeliveryAddressId() throws FDResourceException {
+        return sessionUser.getDefaultShipToAddress();
+    }
+
     /**
      * @see com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag DUP: duplicated the age verification logic on the CheckoutControllerTag class. It was also updated to remove
      *      a reference about a page/HttpServletRequest. We also removed the logic about "app" == "CALLCENTER" check as that should controlled by the controller not model.

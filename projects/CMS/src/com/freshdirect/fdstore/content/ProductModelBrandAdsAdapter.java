@@ -22,10 +22,8 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 
 public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, Cloneable, PrioritizedI {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5808179393810418009L;
+
 	private final ProductModel productModel;
 	private String clickBeacon;
 	private String impBeacon;	
@@ -42,9 +40,6 @@ public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, 
 		return productModel;
 	}
 
-	
-		
-	
 	@Override
     public boolean enforceQuantityMax() {
 		 return productModel.enforceQuantityMax();
@@ -1402,8 +1397,6 @@ public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, 
 		return productModel.hasActiveYmalSets();
 	}
 
-	
-
 	@Override
     public Object clone() {		
 		try {
@@ -1531,10 +1524,20 @@ public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, 
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}
+    
+    @Override
+    public String getFdxPageTitle() {
+        return productModel.getFdxPageTitle();
+    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
+	}
+	
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return productModel.getFdxSEOMetaDescription();
 	}
 
 	@Override

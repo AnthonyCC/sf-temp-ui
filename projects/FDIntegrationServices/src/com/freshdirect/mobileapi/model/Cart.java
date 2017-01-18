@@ -1046,7 +1046,7 @@ public class Cart {
 
         // platterCutoffTime if set.
         if (null != platterCutoffTime) {
-            cartDetail.setPlatterCutoffTime(new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT).format(platterCutoffTime));
+            cartDetail.setPlatterCutoffTime(platterCutoffTime);
         }
         if(cart instanceof FDCartModel){
         	cartDetail.setExpCouponDeliveryDate(((FDCartModel)cart).getExpCouponDeliveryDate());
