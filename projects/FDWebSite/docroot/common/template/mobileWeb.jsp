@@ -171,7 +171,7 @@
 		                <div class="header">
 		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
 		                </div>
-		                <% if(true){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
+		                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
 		                <div id="mm-reorder-nav">
 							<ul>
 								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
@@ -184,18 +184,17 @@
 				    	</div>
 				    	<%} %>
 				    		                
-	                <tmpl:get name="pagination" />
+	               
 	                <% if (isReorderItems) { %>
-	                	<h2>Items</h2>
+	                	<h2>Your Top Items</h2>
 	                <% } %>
 	               <% if (isReorderLists) { %>
-	               		<h2>Lists</h2>
+	               		<h2>Your Shopping Lists</h2>
 	               <% } %>
 	               <% if (isReorderOrders) { %>
-	               		<h2>Orders</h2>
+	               		<h2>Your Past Orders</h2>
 	               <% } %>
-	                
-	                
+	                 <tmpl:get name="pagination" />
 	                <%
 				}
 			%>

@@ -1459,9 +1459,21 @@ li.cleanli .gen-arrow {
 		width: auto;
 	}
 	.mm-page #quickshop .header{
+		display: none;
 		float: none;
 		text-align: center;
 		margin: auto;
+	}
+	.mm-page #quickshop #departments,
+	.mm-page #quickshop #orders{
+		display: none;
+	}
+	
+	.mm-page #quickshop #preferences{
+		display: none !important;
+	}
+	.mm-page #quickshop .qs-container{
+		margin-bottom: 0;
 	}
 	.mm-page #quickshop .qs-subtitle{
 		display: block;
@@ -1473,7 +1485,7 @@ li.cleanli .gen-arrow {
 		line-height: 1.1em;
 		color: #333;
 		margin-bottom: 10px;
-		padding-bottom: 10px;
+		padding: 10px;
 	}
 	.mm-page #quickshop #productlist{
 		clear: both;
@@ -2094,3 +2106,4 @@ li.cleanli .gen-arrow {
 	#smartbanner.android {
 		background: #3d3d3d url('/assets/css/common/jquery-ui_base/images/ui-bg_diagonals-thick_20_666666_40x40.png');
 	}
+	
