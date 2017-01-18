@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.PayPalAccountModel;
 import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.PayPalResponse;
 import com.freshdirect.payment.PaylinxResourceException;
@@ -99,7 +100,7 @@ public class PayPal implements Gateway {
 				}*/
 //				Result<Transaction> saleResult = PayPalData.getBraintreeGateway().transaction().sale(request);
 				PayPalResponse payPalResponse = FDPayPalService.getInstance().authorize(paymentMethod,orderNumber, authorizationAmount, tax, merchantId, merchantEmailID);
-//				Result<Transaction> saleResult = null;
+//				Result<Transaction> saleResult = null; 
 				
 				if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
 					authModel = GatewayAdapter.getPPAuthResponse(payPalResponse,paymentMethod);
@@ -408,7 +409,7 @@ public class PayPal implements Gateway {
 		try{
 //			PayPalAccount paypalAccount = PayPalData.getBraintreeGateway().paypalAccount().find(token);
 			PayPalResponse payPalResponse = FDPayPalService.getInstance().findToken(token, customerId);
-			PayPalAccount paypalAccount=payPalResponse.getPayPalAccount();
+			PayPalAccountModel paypalAccount=payPalResponse.getPayPalAccountModel();
 			if(paypalAccount != null && paypalAccount.getToken() != null){
 				logPPEwalletRequestResponse(PAYPAL_VERIFY_VAULT_TOKEN_TXN, PAYPAL_TXN_SUCCESS, customerId);
 				return true;
