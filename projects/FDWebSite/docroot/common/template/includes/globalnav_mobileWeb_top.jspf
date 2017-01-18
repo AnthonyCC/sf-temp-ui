@@ -169,9 +169,11 @@
 				<li>
 					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
 				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
-				</li>
+				<!-- 
+					<li>
+						<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
+					</li>
+				 -->
 			</ul>
 		</li>
 		
