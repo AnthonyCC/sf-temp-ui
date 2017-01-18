@@ -193,7 +193,8 @@ var API;
 		
 		/* hooklogic */
 			/* fix click beacon */
-				/* hooklogic click event */
+			/* hooklogic click event */
+			window['hlClickHandler'] = function () {
 				$('[data-hooklogic-beacon-click]').find('a,button,.portrait-item-productimage_wrapper').each(function(i,e) {
 					if (!$(e).data('hooklogic-beacon-click')) {
 						/* exclusion elems */
@@ -212,6 +213,8 @@ var API;
 						}
 					}
 				});
+			}
+			window['hlClickHandler'](); /* initial page load */
 				
 		/* prevent li empty links from doing anything except open their submenu */
 		$('.noClickThrough').on('click', function(e) {

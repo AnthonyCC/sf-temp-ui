@@ -134,6 +134,11 @@ var FreshDirect = FreshDirect || {};
 				}
 			}
 		}
+		
+		/* every ajax load, defined in mobileweb_common.js */
+		if (FreshDirect && FreshDirect.mobWeb && window['hlClickHandler']) {
+			window['hlClickHandler']();
+		}
 	}//end adProductSection.fixThoseHooklogicDisplayHeights
 	
 	if(window.srch){
