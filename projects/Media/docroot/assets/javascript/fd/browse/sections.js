@@ -85,7 +85,7 @@ var FreshDirect = FreshDirect || {};
 		
 		//fetch all skus for page beacons
 		var activePage = (FreshDirect.browse.data.pager && FreshDirect.browse.data.pager.activePage) ? FreshDirect.browse.data.pager.activePage : 1
-		var platform = (FreshDirect.mobWeb) ? '&platform=mobileweb' : ''; // check for mobileWeb
+		var platform = (FreshDirect.mobWeb) ? '&platform=mobile' : ''; // check for mobileWeb
 		if ($('.searchinput').length) { //look for search input box
 			//prob search
 			
