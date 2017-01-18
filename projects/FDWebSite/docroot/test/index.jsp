@@ -466,6 +466,12 @@
 		<div class="link"><a href="/test/graphics_testing/generateImage.jsp">/test/graphics_testing/generateImage.jsp</a></div>
 		<div class="pageDesc">Generates images used in dynamic graphics pages (see index file for info).</div>
 	</div>
+	
+	<div class="tag dynamicImages akami">
+		<div class="pageName"><span>Graphics Testing - Akami Image Converter</span></div>
+		<div class="link"><a href="/test/graphics_testing/akami_imgcon_test.jsp">/test/graphics_testing/akami_imgcon_test.jsp</a></div>
+		<div class="pageDesc">Test dynamic image conversion (Akami side). See page tooltips for specifics.</div>
+	</div>
 
 	<div class="tag grid">
 		<div class="pageName"><span>Grid Prototype - JSP</span></div>
