@@ -53,6 +53,8 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	public static final String DISABLED_ATTR = "locationHandlerDisabled";
 	public static final String SERVICE_TYPE_MODIFICATION_ENABLED = "locationHandlerServiceTypeModificationEnabled";
 	public static final String FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER = "futureZoneNotificationEmail";
+	public static final String FUTURE_ZONE_NOTIFICATION_DLVTYPE_PARAMETER = "futureZoneNotificationDlvType";
+	public static final String FUTURE_ZONE_NOTIFICATION_ZIPCODE_PARAMETER = "futureZoneNotificationZipCode";
 	public static final String ZIP_CODE_PARAMETER = "zipCode";
 	public static final String ZIP_CODE_PATTERN = "\\d{5}";
 	
@@ -256,9 +258,24 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	private void doFutureZoneNotificationAction() throws FDResourceException{
 		
 		String email = request.getParameter(FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER);
+		EnumServiceType dlvType = EnumServiceType.getEnum(request.getParameter(FUTURE_ZONE_NOTIFICATION_DLVTYPE_PARAMETER));
+		String zipCode = request.getParameter(FUTURE_ZONE_NOTIFICATION_ZIPCODE_PARAMETER);
 		
-		if(EmailUtil.isValidEmailAddress(email)){
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),user.getSelectedServiceType());
+		if (dlvType == null) {
+			//fall back to auto
+			dlvType = user.getSelectedServiceType();
+		}
+		if (zipCode == null) {
+			//fall back to auto
+			zipCode = user.getZipCode();
+		}
+		
+		if (!zipCode.matches(ZIP_CODE_PATTERN) || zipCode.equals("00000")){
+			result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+		}
+		
+		if(!result.isFailure() && EmailUtil.isValidEmailAddress(email)){
+			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zipCode, dlvType);
 			user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
 		} else {
 			result.addError(true, FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER, SystemMessageList.MSG_EMAIL_FORMAT);
