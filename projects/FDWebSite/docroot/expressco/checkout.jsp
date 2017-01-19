@@ -14,7 +14,7 @@
   request.setAttribute("listPos", "SystemMessage"); // TODO
   Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
-<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/expressco/checkout.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
