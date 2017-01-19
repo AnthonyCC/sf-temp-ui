@@ -83,7 +83,7 @@ public abstract class AbstractService {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
 			LOGGER.info("input json:"+inputJson);
-			throw new FDPayPalServiceException("API connection failure");
+			throw new FDPayPalServiceException("PayPal API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);

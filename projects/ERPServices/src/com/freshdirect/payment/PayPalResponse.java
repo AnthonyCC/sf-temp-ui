@@ -14,9 +14,6 @@ public class PayPalResponse extends Result{
    private  PayPalAccount payPalAccount;
    private  Customer customer;
    private  PaymentMethod paymentResult;
-   private  Transaction  transactions;
-   private  com.braintreegateway.Result<Customer> customerResults;
-   private  com.braintreegateway.Result<PaymentMethod> pamentMethodResults;
    private TransactionModel TransactionModel;
    private PayPalAccountModel payPalAccountModel;
    
@@ -31,6 +28,7 @@ public class PayPalResponse extends Result{
 	private String paymentMethodNonce;
 	private String deviceId;
 	private String profileId;
+	private String message;
     
 	
 	public String getOrderNumber() {
@@ -101,13 +99,6 @@ public class PayPalResponse extends Result{
 	}
 
 
-	public com.braintreegateway.Result<PaymentMethod> getPamentMethodResults() {
-	return pamentMethodResults;
-}
-public void setPamentMethodResults(
-		com.braintreegateway.Result<PaymentMethod> pamentMethodResults) {
-	this.pamentMethodResults = pamentMethodResults;
-}
 	public FDPayPalServiceException getException() {
 		return exception;
 	}
@@ -132,19 +123,7 @@ public void setPamentMethodResults(
 	public void setPaymentResult( PaymentMethod paymentResult) {
 		this.paymentResult = paymentResult;
 	}
-	public Transaction getTransactions() {
-	return transactions;
-	}
-	public void setTransactions(
-			Transaction transactions) {
-		this.transactions = transactions;
-	}
-	public com.braintreegateway.Result<Customer> getCustomerResults() {
-		return customerResults;
-	}
-	public void setCustomerResults(com.braintreegateway.Result<Customer> customerResults) {
-		this.customerResults = customerResults;
-	}
+	
 	public TransactionModel getTransactionModel() {
 		return TransactionModel;
 	}
@@ -156,6 +135,12 @@ public void setPamentMethodResults(
 	}
 	public void setPayPalAccountModel(PayPalAccountModel payPalAccountModel) {
 		this.payPalAccountModel = payPalAccountModel;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

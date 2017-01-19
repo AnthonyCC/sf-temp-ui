@@ -511,7 +511,7 @@ public class GatewayAdapter {
 					
 		ErpAuthorizationModel model = new ErpAuthorizationModel();
 		model.setTransactionSource(EnumTransactionSource.SYSTEM);
-		System.out.println(" hhhhhh"+saleResult.getStatus().equals(Transaction.Status.AUTHORIZED.name()));
+		
 		if(saleResult.getStatus().equals(Transaction.Status.AUTHORIZED.name())) {
 			model.setResponseCode(EnumPaymentResponse.APPROVED); //hack for AVS bypass	
 			model.setAvs("Y");

@@ -140,10 +140,9 @@ public class FDPayPalService extends AbstractService implements IPayPalService {
 			String saleId)  {
 		
 		PayPalRequest paypalRequest = new PayPalRequest();
-//		paypalRequest.setAuthorization(authorization);
+		paypalRequest.setTaxId(authorization.getEwalletTxId());
 		paypalRequest.setAuthorizationAmount(String.valueOf(amount));
 		paypalRequest.setTax(String.valueOf(tax));
-		Result<Transaction>  transactions =null;
 		PayPalResponse payPalResponse = null;
 		String inputJson;
 		try {
@@ -165,7 +164,6 @@ public class FDPayPalService extends AbstractService implements IPayPalService {
 		
 		PayPalRequest paypalRequest = new PayPalRequest();
 		paypalRequest.setTaxId(String.valueOf(taxId));
-		Result<Transaction>  transactions =null;
 		PayPalResponse payPalResponse = null;
 		String inputJson;
 		try {
@@ -179,14 +177,24 @@ public class FDPayPalService extends AbstractService implements IPayPalService {
 		
 		return payPalResponse;
 	}
-
-
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public com.braintreegateway.Result<Transaction> reverseAuthorize(
-			Request request) {
-		// TODO Auto-generated method stub
-		return null;
+	public PayPalResponse reverseAuthorise(String taxId) {
+		
+		PayPalRequest paypalRequest = new PayPalRequest();
+		paypalRequest.setTaxId(String.valueOf(taxId));
+		PayPalResponse payPalResponse = null;
+		String inputJson;
+		try {
+			inputJson = buildRequest(paypalRequest);
+			payPalResponse =  getData(inputJson, getEndPoint(REVERSE_AUTHORIZE), PayPalResponse.class);
+		} catch (FDPayPalServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return payPalResponse;
+		}
+		
+		return payPalResponse;
 	}
 
 

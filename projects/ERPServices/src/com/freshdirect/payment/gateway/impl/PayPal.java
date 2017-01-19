@@ -91,16 +91,9 @@ public class PayPal implements Gateway {
 			if(isVaultTokenValid){
 				authModel = null;
 				
-/*				TransactionRequest request = new TransactionRequest().
-						amount(BigDecimal.valueOf(authorizationAmount)).orderId(orderNumber). 
-			            paymentMethodToken(paymentMethod.getProfileID()).options().payeeEmail(merchantEmailID).done();
-				
-				if(paymentMethod.getDeviceId() != null && !StringUtils.isEmpty(paymentMethod.getDeviceId())){
-					request.deviceData(paymentMethod.getDeviceId());
-				}*/
-//				Result<Transaction> saleResult = PayPalData.getBraintreeGateway().transaction().sale(request);
+
 				PayPalResponse payPalResponse = FDPayPalService.getInstance().authorize(paymentMethod,orderNumber, authorizationAmount, tax, merchantId, merchantEmailID);
-//				Result<Transaction> saleResult = null; 
+
 				
 				if (payPalResponse!= null && payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)) {
 					authModel = GatewayAdapter.getPPAuthResponse(payPalResponse,paymentMethod);
@@ -226,17 +219,11 @@ public class PayPal implements Gateway {
 			ErpPaymentMethodI paymentMethod, double amount, double tax,
 			String saleId) throws ErpTransactionException {
 		
-//		Result<Transaction> result = null;
+
 		String txId = authorization.getEwalletTxId();
 
 		PayPalResponse payPalResponse = FDPayPalService.getInstance().capture(authorization, paymentMethod, amount, tax, saleId);
-/*		if (amount > 0) {
-			TransactionRequest txnRequest = new TransactionRequest().amount(BigDecimal.valueOf(amount));
-			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId, txnRequest);
-		}
-		else {
-			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId);
-		}*/
+
 		
 		saleId = authorization.getGatewayOrderID();
 		if (StringUtils.isEmpty(saleId)) {
@@ -274,7 +261,7 @@ public class PayPal implements Gateway {
 				 captureModel.setSettlementResponseCode(response.getStatusCode()); 
 
 			 }else{
-					throw new ErpTransactionException(payPalResponse.getTransactionModel().getMessage());
+					throw new ErpTransactionException(payPalResponse.getMessage());
 			 }
 			 //END APPDEV-5490
 		}
@@ -288,10 +275,9 @@ public class PayPal implements Gateway {
 			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
 		}
 		
-//		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
+
 		PayPalResponse payPalResponse = FDPayPalService.getInstance().voidCapture(txId);
-		Result<Transaction> result = null;//FDPayPalService.getInstance().voidCapture(txId);
-				
+						
 		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
@@ -301,7 +287,7 @@ public class PayPal implements Gateway {
 		} else {
 			setFailureResponse(response, payPalResponse);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + result.getMessage());
+			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
 		}
 		
 		return response;
@@ -321,8 +307,8 @@ public class PayPal implements Gateway {
 			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
 		}
 		
-//		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
-		PayPalResponse payPalResponse = FDPayPalService.getInstance().voidCapture(txId);
+
+		PayPalResponse payPalResponse = FDPayPalService.getInstance().reverseAuthorise(txId);
 		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
@@ -332,7 +318,7 @@ public class PayPal implements Gateway {
 		} else {
 			setFailureResponse(response, payPalResponse);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + payPalResponse.getTransactionModel().getMessage());
+			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
 		}
 		
 		return response;
@@ -346,7 +332,7 @@ public class PayPal implements Gateway {
 		if (txId == null || txId.isEmpty()) {
 			throw new ErpTransactionException("Transaction Id is empty or null while issue cashback of PayPal order " + orderNumber);
 		}
-//		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().refund(txId, BigDecimal.valueOf(amount).setScale(2, BigDecimal.ROUND_FLOOR));
+
 		PayPalResponse payPalResponse = FDPayPalService.getInstance().issueCashback(orderNumber, paymentMethod, amount, tax);
 		ErpCashbackModel cashback = null;
 		
@@ -372,7 +358,7 @@ public class PayPal implements Gateway {
 		} else {
 			setFailureResponse(response, payPalResponse);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + payPalResponse.getTransactionModel().getMessage());
+			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
 		}
 
 		return cashback;
@@ -407,7 +393,7 @@ public class PayPal implements Gateway {
 	@Override
 	public boolean isValidToken(String token, String customerId){
 		try{
-//			PayPalAccount paypalAccount = PayPalData.getBraintreeGateway().paypalAccount().find(token);
+
 			PayPalResponse payPalResponse = FDPayPalService.getInstance().findToken(token, customerId);
 			PayPalAccountModel paypalAccount=payPalResponse.getPayPalAccountModel();
 			if(paypalAccount != null && paypalAccount.getToken() != null){

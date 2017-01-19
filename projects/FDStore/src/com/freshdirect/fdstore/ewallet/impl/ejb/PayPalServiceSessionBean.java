@@ -92,8 +92,6 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		try{
 			
 			
-//			requestToken = PayPalData.getBraintreeGateway().clientToken().generate();
-			// JJ service integration with services.
 			requestToken=FDPayPalService.getInstance().generateToken();
 		
 		}catch(AuthenticationException authenticationException){
@@ -276,27 +274,19 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
 			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
 		}
-/*		CustomerRequest request = new CustomerRequest();
-		request.customerId(ewalletRequestData.getCustomerId());
-		request.firstName(fName);
-		request.lastName(lName);*/
+
 		try{
 			Result<? extends PaymentMethod> vaultResult = null;
 			IPayPalService payPalService = FDPayPalService.getInstance();
 			PayPalResponse payPalResponse = null;
-//		    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+
 			 payPalResponse = payPalService.createCustomer(ewalletRequestData.getCustomerId(),fName,lName);
-//		    Result<Customer> customerResult=payPalResponse.getCustomerResults();
-	//	    customerResult.getTransaction(); Verify this one 
 		    // Check customer record created successfully or not
 		    if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){
 		    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-				/*PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
-					    .paymentMethodNonce(paymentMethodNonce)
-					    .deviceData(deviceId);*/
-//				vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
+
 				payPalResponse = payPalService.createPaymentMethod(payPalResponse.getCustomerId(),paymentMethodNonce,deviceId);
-				vaultResult = payPalResponse.getPamentMethodResults();
+				
 	//			PAYPAL_GET_VAULT_TOKEN_TXN
 				if(payPalResponse != null){
 					if(payPalResponse.getStatus().equalsIgnoreCase(com.freshdirect.payment.Result.STATUS_SUCCESS)){

@@ -23,7 +23,6 @@ public interface IPayPalService {
 	public PayPalResponse capture(ErpAuthorizationModel authorization, ErpPaymentMethodI paymentMethod, 
 			double amount, double tax, String saleId)  ;
 	public PayPalResponse voidCapture(String txId) ;
-	public Result<Transaction> reverseAuthorize(Request request) ;
 	public PayPalResponse issueCashback(String orderNumber,ErpPaymentMethodI paymentMethod, double amount, double tax) ;
 	public Response addProfile(Request request) ;
 	public Response updateProfile(Request request) ;
@@ -34,5 +33,6 @@ public interface IPayPalService {
 	public PayPalResponse createCustomer(String customerId, String fName, String lName) throws FDPayPalServiceException;
 	public String generateToken() throws FDPayPalServiceException;
 	public PayPalResponse createPaymentMethod(String customerId,String paymentMethodNonce,String deviceId) throws FDPayPalServiceException;
+	public PayPalResponse reverseAuthorise(String taxId);
 
 }
