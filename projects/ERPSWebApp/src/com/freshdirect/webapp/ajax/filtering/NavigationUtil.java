@@ -83,37 +83,37 @@ public class NavigationUtil {
 				break;
 			}
 		}
-		
-		if(node instanceof CategoryModel){
-			if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+
+        if (node instanceof CategoryModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
                 model.setPageTitle(((CategoryModel) node).getFdxPageTitle());
                 model.setMetaDescription(((CategoryModel) node).getFdxSEOMetaDescription());
             } else {
                 model.setPageTitle(((CategoryModel) node).getPageTitle());
                 model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
             }
-		}
-		
-		if(node instanceof SuperDepartmentModel){
-			if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+        }
+
+        if (node instanceof SuperDepartmentModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
                 model.setPageTitle(((SuperDepartmentModel) node).getFdxPageTitle());
                 model.setMetaDescription(((SuperDepartmentModel) node).getFdxSEOMetaDescription());
             } else {
                 model.setPageTitle(((SuperDepartmentModel) node).getPageTitle());
                 model.setMetaDescription(((SuperDepartmentModel) node).getSEOMetaDescription());
             }
-		}
-		
-		if(node instanceof DepartmentModel){
-			if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+        }
+
+        if (node instanceof DepartmentModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
                 model.setPageTitle(((DepartmentModel) node).getFdxPageTitle());
                 model.setMetaDescription(((DepartmentModel) node).getFdxSEOMetaDescription());
             } else {
                 model.setPageTitle(((DepartmentModel) node).getPageTitle());
                 model.setMetaDescription(((DepartmentModel) node).getSEOMetaDescription());
             }
-		}
-		
+        }
+
 		String id = navigator.getId();
 		
 		// validation for orphan categories
