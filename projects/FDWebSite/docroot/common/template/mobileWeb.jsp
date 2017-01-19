@@ -192,7 +192,7 @@
 	               		<h2>Your Shopping Lists</h2>
 	               <% } %>
 	               <% if (isReorderOrders) { %>
-	               		<h2>Your Past Orders</h2>
+	               		<h2>Your Last Order</h2>
 	               <% } %>
 	                 <tmpl:get name="pagination" />
 	                <%

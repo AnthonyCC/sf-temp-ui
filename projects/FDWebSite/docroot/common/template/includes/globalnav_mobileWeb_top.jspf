@@ -167,7 +167,7 @@
 					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
 				</li>
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Last Order</a></span>
 				</li>
 				<!-- 
 					<li>
