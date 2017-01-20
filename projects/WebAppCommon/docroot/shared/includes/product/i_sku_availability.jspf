@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.fdstore.atp.*';%>
+<%@ page import='com.freshdirect.fdstore.atp.*'%>
 <%
     boolean displayLimitedAvailability = false;
     SkuModel a_sku = __prd.getSku(product.getSkuCode());
