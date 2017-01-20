@@ -1479,6 +1479,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>quickCart</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -5398,6 +5403,7 @@
 	<tag>
 		<name>BvHelper</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.BvHelperTag</tagclass>
+		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>prod</name>
 			<required>true</required>
@@ -5471,7 +5477,7 @@
     <tag>
 		<name>PopupHandler</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.PopupHandlerTag</tagclass>
-		<bodycontent>JSP</bodycontent>
+		<bodycontent>empty</bodycontent>
 		<info></info>
 		<attribute>
 			<name>id</name>
@@ -5541,6 +5547,12 @@
 
 		<attribute>
 			<name>hasPendingOrder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>tagCounter</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
