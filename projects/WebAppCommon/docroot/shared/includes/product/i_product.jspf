@@ -34,7 +34,7 @@ This include expects the following:
 <%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>
-<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%-- ========================================================= INITIALZE ========================================================================= --%>
