@@ -107,7 +107,7 @@
 		<name>coupon</name>
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
-	</attribute>
+	</attribute>	
  </tag>
  <tag>
   <name>SimpleProductImage</name>
@@ -392,6 +392,10 @@
    		<required>false</required>
    		<rtexprvalue>true</rtexprvalue>
    </attribute>
+   <attribute>
+   <name>useTarget</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
  </tag>
  <tag>
  	<name>ProductSaving</name>
