@@ -1096,15 +1096,19 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
     public List<ProductModel> getIncludeProducts();
 
 	public String getPageTitle();
-	
+
+	public String getFdxPageTitle();
+
 	public String getSEOMetaDescription();
-	
+
+	public String getFdxSEOMetaDescription();
+
 	public String getPairItHeading();
-	
+
 	public String getPairItText();
-	
+
 	public void setParentNode(ContentNodeModel parentNode);
-	
+
 	/* Time to Complete value for MealKit items */
 	public int getTimeToComplete();
 }

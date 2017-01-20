@@ -1,0 +1,29 @@
+<%
+	out.println("<table>");
+	out.println("<caption>");out.println("Material SalesArea");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Sales Org</th>");
+	out.println("<th>Distribution Channel</th>");
+	out.println("<th>Unav Status</th>");
+	out.println("<th>Unav Date</th>");
+	out.println("<th>Unav Reason</th>");
+	out.println("<th>Day Part</th>");
+	out.println("<th>Picking Plant</th>");
+	out.println("</tr>");
+	
+	if(material.getMaterialSalesAreas() != null) {
+		for (Map.Entry<SalesAreaInfo, FDMaterialSalesArea> entry : material.getMaterialSalesAreas().entrySet()) {
+			out.println("<tr>");
+			out.println("<td>");out.println(entry.getValue().getSalesAreaInfo().getSalesOrg());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getSalesAreaInfo().getDistChannel());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getUnavailabilityStatus());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getUnavailabilityDate());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getUnavailabilityReason());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getDayPartValueType());out.println("</td>");
+			out.println("<td>");out.println(entry.getValue().getPickingPlantId());out.println("</td>");
+			out.println("<tr>");
+		}
+	}
+	out.println("</table>");
+
+%>

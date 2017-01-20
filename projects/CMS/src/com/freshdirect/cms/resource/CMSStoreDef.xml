@@ -193,6 +193,9 @@
 			<RelationshipDef name="iPhoneHomePagePicksLists" label="iPhone Home Page Picks Lists" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
+			<RelationshipDef name="iPhoneHomePageImageBanners" label="iPhone Homepage Image Banners" cardinality="Many">
+                <DestinationDef contentType="ImageBanner" />
+            </RelationshipDef>
 			<RelationshipDef name="tabletIdeasRecipeTags" label="Tablet Ideas Recipe Tags (Theme Page)" cardinality="Many">
 				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>

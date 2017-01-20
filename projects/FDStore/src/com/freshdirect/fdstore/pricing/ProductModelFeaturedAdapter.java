@@ -1363,10 +1363,20 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}
+    
+    @Override
+    public String getFdxPageTitle() {
+        return productModel.getFdxPageTitle();
+    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
+	}
+
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return productModel.getSEOMetaDescription();
 	}
 
 	@Override

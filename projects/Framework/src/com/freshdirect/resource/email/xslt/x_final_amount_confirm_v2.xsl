@@ -105,7 +105,7 @@ FreshDirect
 <xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose>
 <xsl:call-template name="x_invoice_info_v1"/>
 
-NOTE: If this email does not print out clearly, please go to https://www.freshdirect.com/your_account/order_history.jsp for a printer-friendly version of your order details.
+NOTE: If this email does not print out clearly, please go to https://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/> for a printer-friendly version of your order details.
 
 <xsl:call-template name="x_footer_v1"/>
 

@@ -2,12 +2,15 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.List;
 
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class PicksListResponse extends Message {
 	private Image bannerImage;
 	private List<Idea> picksList;
+	private List<CMSImageBannerModel> iPhoneHomePageImageBanners;
+	 
 	public Image getBannerImage() {
 		return bannerImage;
 	}
@@ -20,4 +23,12 @@ public class PicksListResponse extends Message {
 	public void setPicksList(List<Idea> picksList) {
 		this.picksList = picksList;
 	}
+	
+	public List<CMSImageBannerModel> getiPhoneHomePageImageBanners() {
+        return iPhoneHomePageImageBanners;
+    }
+
+    public void setiPhoneHomePageImageBanners(List<CMSImageBannerModel> iPhoneHomePageImageBanners) {
+        this.iPhoneHomePageImageBanners = iPhoneHomePageImageBanners;
+    }
 }

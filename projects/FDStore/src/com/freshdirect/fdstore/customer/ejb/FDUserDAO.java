@@ -877,6 +877,34 @@ public class FDUserDAO {
 		return goGreen;
 	}
 	
+	public static boolean overLayGoGreenPreferences(Connection conn, String customerId) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean goGreen = false;
+		try {
+			ps = conn.prepareStatement("select go_green from CUST.CUSTOMERINFO where customer_id=?");
+			ps.setString(1, customerId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				goGreen = "I".equals(rs.getString(1));
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (Exception e1) {}
+			try {
+				if(ps != null) {
+					ps.close();
+				}
+			} catch (Exception e1) {}
+		}
+		return goGreen;
+	}
+	
 	public static void storeMobilePreferencesNoThanks(Connection conn, String customerId) {
 		PreparedStatement ps = null;
 		try {

@@ -14,7 +14,9 @@
 			</div>
 			<div class="pull-right rightSide">
 				<div class="navbar-ecomvalue">
-					<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); return false;"><span class="offscreen">Toggle Search Display</span></a>
+					<% if (!isHelp) { %>
+						<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); return false;"><span class="offscreen">Toggle Search Display</span></a>
+					<% } %>
 				</div>
 				<div class="navbar-ecomvalue">
 				
@@ -47,12 +49,49 @@
 				</div>
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">
-					<a href="/view_cart.jsp" class="icon-shopbag">
-						<i class="icon-cart"></i>
-						<%-- Cart count requires the popupcart.js (which is not loaded)							
-							<div class="locabar-circle-cont locabar-popupcart-count">0</div>
-						 --%>
-					</a>
+					<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
+						<div class="bold cursor-pointer locabar_triggers_menuitem">
+		          			<a href="/view_cart.jsp">
+								<span class="offscreen">View Cart</span>
+								<div style="display: inline-block;">
+									<div class="locabar-cart-count-cont">
+										<div class="locabar-cart"></div>
+										<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+									</div>
+								</div>
+							</a>
+						</div>
+						<%-- GetCart is required for cart count, but no popup cart in mobweb. set display: none --%>
+						<div id="locabar_popupcart" class="locabar_triggers_menu posAbs" style="display:none;">
+							<div class="ui-arrow-buffer"></div>
+							<div class="ui-arrow ui-top"></div>
+							<fd:GetCart id="cart">
+								<div id="sidecartbuttons">
+									<div class="buttons">
+										<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+									</div>
+									<div class="summary">
+										<span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
+									</div>
+								</div>
+								<div id="popupcart">
+								   	<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
+								   	<div class="header"><span class="quantity">Quantity</span><span class="price">Price</span></div>
+								   	<div class="body">
+								       	<table class="content"></table>
+								       	<p class="emptymsg">Your cart is empty.</p>
+								       	<p class="spinner">Loading cart...</p>
+								   	</div>
+								   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
+								   	<div class="footer-buttons">
+										<span class="close"></span><br />
+										<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
+										<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
+									</div>
+					    		</div>
+							</fd:GetCart>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -128,11 +167,13 @@
 					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
 				</li>
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Past Orders</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Last Order</a></span>
 				</li>
-				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
-				</li>
+				<!-- 
+					<li>
+						<span class="glBreadcrumblink"><a href="/quickshop/all_lists.jsp">Your Shopping Lists</a></span>
+					</li>
+				 -->
 			</ul>
 		</li>
 		

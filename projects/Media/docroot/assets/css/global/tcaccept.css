@@ -1,0 +1,19 @@
+#litetcaccept{
+	
+}
+#litetcaccept .bodyCopySUL {
+	padding: 5px 10px 10px;
+    text-align: left;
+    font-size: 12px;
+	font-weight: bold;
+	
+}
+#litetcaccept .SystemMessage{
+	padding: 5px 10px 10px;
+	text-align: left;
+	font-size: 12px;
+}
+#litetcaccept a.cssbutton{
+	margin: 10px 0 0 0;
+	width: 280px;
+}

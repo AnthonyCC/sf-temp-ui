@@ -65,3 +65,22 @@
 </div>
 </div>
 {/template}
+
+
+/**
+ * @param? data
+ */
+{template .gogreenpopup autoescape="false"}
+<div data-show="gogreen_formbody">
+<form id="gogreen" fdform="gogreen" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/gogreen">
+<input type="hidden" value="Y" name="goGreen"/>
+  <div id="gogreen_formbody">
+    {if $data.header}{$data.header}{/if}
+  <p class="title">Hey, we&rsquo;ve gone paperless!</p>
+    <p class="choices-title">We&rsquo;re now 100% paperless on all orders. Your statement was sent to the email address we have on file. All receipts and invoices can be found in <a href="/your_account/order_history.jsp">Your Orders</a> section.</p>
+    <div class="actions" align="center" >
+    <button class="cssbutton black" type="submit">OK</button>
+    </form>
+</div>
+{/template}
+

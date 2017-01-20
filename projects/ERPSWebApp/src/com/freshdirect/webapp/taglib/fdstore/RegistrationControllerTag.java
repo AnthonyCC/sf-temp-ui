@@ -428,7 +428,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 
                 FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery, order_notices,
-                        order_exceptions, offers, partner_messages, fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
+                        order_exceptions, offers, partner_messages, user.getUserContext().getStoreContext().getEStoreId());
 
                 if (user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FD.name())) {
                     if (subscribedNow) {
@@ -555,7 +555,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         }
 
         String shipToAddressId = request.getParameter("updateShipToAddressId");
-        boolean foundFraud = AddressUtil.updateShipToAddress(request, actionResult, user, shipToAddressId, erpAddress);
+//        boolean foundFraud = AddressUtil.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
+        boolean foundFraud = DeliveryAddressManipulator.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
         if (foundFraud) {
             /*
              * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] {user.getCustomerServiceContact()}));
@@ -958,7 +959,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                     ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
                     FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
                     FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, "N", "N", "Y", "Y", "Y", "Y",
-                            fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
+                            user.getUserContext().getStoreContext().getEStoreId());
                     FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
                     session.setAttribute("SMSAlert" + orderNumber, "done");
                 } catch (FDResourceException e) {

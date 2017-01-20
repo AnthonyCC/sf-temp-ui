@@ -1,0 +1,32 @@
+<%
+	out.println("<table>");
+	out.println("<caption>");out.println("Material SalesUnit");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Name</th>");
+	out.println("<th>Description</th>");
+	out.println("<th>Numerator</th>");
+	out.println("<th>Denominator</th>");
+	out.println("<th>Base Unit</th>");
+	out.println("<th>UP Numerator</th>");
+	out.println("<th>UP Denominator</th>");
+	out.println("<th>UP UOM</th>");
+	out.println("<th>UP Desc</th>");
+	out.println("</tr>");
+	
+	if(product.getSalesUnits() != null) {
+		for (FDSalesUnit entry : product.getSalesUnits()) {
+			out.println("<tr>");
+			out.println("<td>");out.println(entry.getName());out.println("</td>");
+			out.println("<td>");out.println(entry.getDescription());out.println("</td>");
+			out.println("<td>");out.println(entry.getNumerator());out.println("</td>");
+			out.println("<td>");out.println(entry.getDenominator());out.println("</td>");
+			out.println("<td>");out.println(entry.getBaseUnit());out.println("</td>");
+			out.println("<td>");out.println(entry.getUnitPriceNumerator());out.println("</td>");
+			out.println("<td>");out.println(entry.getUnitPriceDenominator());out.println("</td>");
+			out.println("<td>");out.println(entry.getUnitPriceUOM());out.println("</td>");
+			out.println("<td>");out.println(entry.getUnitPriceDescription());out.println("</td>");
+			out.println("<tr>");
+		}
+	}
+	out.println("</table>");
+%>

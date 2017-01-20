@@ -326,16 +326,19 @@ font-size: 14px;
 	border-bottom: 1px solid #996;
 	margin-bottom: 8px;
 }
-.orderSummary {
+.orderSummary td {
 	background-color: #e0e3d0;
 	line-height: 20px;
 }
+td.transparentBG {
+	background-color: transparent;
+}
 .orderTotal {
-	background-color: #969;
 	color: white;
 	line-height: 20px;
 }
 .orderTotal td {
+	background-color: #969;
 	font-size: 13px;
 }
 

@@ -466,6 +466,12 @@
 		<div class="link"><a href="/test/graphics_testing/generateImage.jsp">/test/graphics_testing/generateImage.jsp</a></div>
 		<div class="pageDesc">Generates images used in dynamic graphics pages (see index file for info).</div>
 	</div>
+	
+	<div class="tag dynamicImages akami">
+		<div class="pageName"><span>Graphics Testing - Akami Image Converter</span></div>
+		<div class="link"><a href="/test/graphics_testing/akami_imgcon_test.jsp">/test/graphics_testing/akami_imgcon_test.jsp</a></div>
+		<div class="pageDesc">Test dynamic image conversion (Akami side). See page tooltips for specifics.</div>
+	</div>
 
 	<div class="tag grid">
 		<div class="pageName"><span>Grid Prototype - JSP</span></div>
@@ -978,6 +984,18 @@
 		<div class="pageName"><span>FD Store Properties Live!</span></div>
 		<div class="link"><a href="/test/smartstore/storeproperties.jsp">/test/smartstore/storeproperties.jsp</a></div>
 		<div class="pageDesc">Lists/filters all FD Store properties set up in your machine. Also it can force a full refresh.</div>
+	</div>
+	
+	<div class="tag mobile mobileWeb">
+		<div class="pageName"><span>Testing mobileWeb</span></div>
+		<div class="link"><a href="/test/mobileWeb.jsp">/test/mobileWeb.jsp</a></div>
+		<div class="pageDesc">Show media in the mobileWeb layout for testing.</div>
+	</div>
+	
+	<div class="tag mobile mobileWeb layouts">
+		<div class="pageName"><span>Layout Info</span></div>
+		<div class="link"><a href="/test/layoutInfo.jsp">/test/layoutInfo.jsp</a></div>
+		<div class="pageDesc">Show layout setup for every dept and cat.</div>
 	</div>
 	
 	<hr />

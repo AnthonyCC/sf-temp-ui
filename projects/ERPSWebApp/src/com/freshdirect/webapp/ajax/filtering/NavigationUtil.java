@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -82,22 +83,37 @@ public class NavigationUtil {
 				break;
 			}
 		}
-		
-		if(node instanceof CategoryModel){
-			model.setPageTitle(((CategoryModel) node).getPageTitle());
-			model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof SuperDepartmentModel){
-			model.setPageTitle(((SuperDepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((SuperDepartmentModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof DepartmentModel){
-			model.setPageTitle(((DepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((DepartmentModel) node).getSEOMetaDescription());
-		}
-		
+
+        if (node instanceof CategoryModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+                model.setPageTitle(((CategoryModel) node).getFdxPageTitle());
+                model.setMetaDescription(((CategoryModel) node).getFdxSEOMetaDescription());
+            } else {
+                model.setPageTitle(((CategoryModel) node).getPageTitle());
+                model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
+            }
+        }
+
+        if (node instanceof SuperDepartmentModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+                model.setPageTitle(((SuperDepartmentModel) node).getFdxPageTitle());
+                model.setMetaDescription(((SuperDepartmentModel) node).getFdxSEOMetaDescription());
+            } else {
+                model.setPageTitle(((SuperDepartmentModel) node).getPageTitle());
+                model.setMetaDescription(((SuperDepartmentModel) node).getSEOMetaDescription());
+            }
+        }
+
+        if (node instanceof DepartmentModel) {
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+                model.setPageTitle(((DepartmentModel) node).getFdxPageTitle());
+                model.setMetaDescription(((DepartmentModel) node).getFdxSEOMetaDescription());
+            } else {
+                model.setPageTitle(((DepartmentModel) node).getPageTitle());
+                model.setMetaDescription(((DepartmentModel) node).getSEOMetaDescription());
+            }
+        }
+
 		String id = navigator.getId();
 		
 		// validation for orphan categories
@@ -454,18 +470,19 @@ public class NavigationUtil {
 		return 	!ContentFactory.getInstance().getPreviewMode() && (
 					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) || 
 					cat.isHidden() || 
-					!isCategoryDisplayableCached(cat)
+					!isCategoryDisplayableCached(user, cat)
 				);
 	}
 	
-	public static boolean isCategoryDisplayableCached(CategoryModel cat){
-		String key = cat.getContentName();
+	public static boolean isCategoryDisplayableCached(FDUserI user, CategoryModel cat){
+		String contentName = cat.getContentName();
+		String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
 		if (CmsManager.getInstance().isReadOnlyContent()){
-			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key);
+			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId);
 			
 			if (displayable == null) {
 				displayable = cat.isDisplayable(); //do the recursive check
-				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, key, displayable);
+				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId, displayable);
 			}
 			
 			return displayable;

@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
 public class OrderInfo {
 
     private FDOrderInfoI target;
 
-    /**
-     * @param info
-     * @return
-     */
     public static OrderInfo wrap(FDOrderInfoI info) {
         OrderInfo newInstance = new OrderInfo();
         newInstance.target = info;
@@ -40,7 +38,7 @@ public class OrderInfo {
         return target.getRequestedDate();
     }
 
-    public String getOrderStatus() {
+    public String getOrderStatusName() {
 
         String status = "";
         if (target.getSaleType().equals(EnumSaleType.GIFTCARD) || target.getSaleType().equals(EnumSaleType.DONATION)) {
@@ -49,6 +47,10 @@ public class OrderInfo {
             status = target.getOrderStatus().getDisplayName();
         }
         return status;
+    }
+
+    public EnumSaleStatus getOrderStatus() {
+        return target.getOrderStatus();
     }
 
     public double getTotal() throws PricingException {
@@ -119,6 +121,10 @@ public class OrderInfo {
     	if(target.isMakeGood()) return false;
         return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType(), target.isMakeGood()) ;
     }
+    
+    public boolean isFdxModifiable(){
+        return OrderUtil.isModifiable(CmsManager.getInstance().getEStoreEnum(), target.getOrderStatus(), target.getDeliveryCutoffTime());
+    }
 
     public boolean isShoppable() {
         return (!target.isPending() && !target.getSaleType().equals(EnumSaleType.GIFTCARD) && !target.getSaleType().equals(
@@ -134,12 +140,16 @@ public class OrderInfo {
     }
 
 	public String getDisplayStatus() {
-		String status = getOrderStatus();
+		String status = getOrderStatusName();
 		if("Cancelled".equals(status) || "Processing".equals(status)){
 			return status;
 		}else if("Submitted".equals(status)){
 			return "Pending";
 		}
 		return "";
+	}
+	
+	public EnumDeliveryType getDeliveryType(){
+	    return target.getDeliveryType();
 	}
 }

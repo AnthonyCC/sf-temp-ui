@@ -33,6 +33,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
@@ -204,9 +205,14 @@ public class CMSContentFactory {
 	public final CMSWebPageModel getCMSPage(ContentNodeI contentNode, CMSPageRequest request){
 		CMSWebPageModel webPage = null;
 		if(contentNode != null){
-			webPage = new CMSWebPageModel();
-			webPage.setTitle((String)contentNode.getAttributeValue("PAGE_TITLE"));
-			webPage.setSeoMetaDescription((String)contentNode.getAttributeValue("SEO_META_DESCRIPTION"));
+		    webPage = new CMSWebPageModel();
+            if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+                webPage.setTitle((String) contentNode.getAttributeValue("PAGE_TITLE_FDX"));
+                webPage.setSeoMetaDescription((String) contentNode.getAttributeValue("SEO_META_DESC_FDX"));
+            } else {
+                webPage.setTitle((String) contentNode.getAttributeValue("PAGE_TITLE"));
+                webPage.setSeoMetaDescription((String) contentNode.getAttributeValue("SEO_META_DESC"));
+            }
 			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
 			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule", request);
 			webPage.setSchedule(schedules);

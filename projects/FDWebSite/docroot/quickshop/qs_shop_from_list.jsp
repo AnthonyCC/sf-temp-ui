@@ -1,4 +1,7 @@
 <%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -15,7 +18,18 @@
         request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
         request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
 %>
-<tmpl:insert template='/quickshop/includes/qs_template.jsp'>
+<%
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = "/quickshop/includes/qs_template.jsp";
+	if (mobWeb) {
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = request.getAttribute("sitePage").toString();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
+%>
+<tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qsshopfromlist.js" useRandomParam="false" /></tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Reorder from Your Lists</tmpl:put>
@@ -89,5 +103,15 @@
         </div>
     </tmpl:put>
 
-    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-cmeventsource="qs_customerLists"></div><div id="productlistHeader" class=""></div></tmpl:put>
+    <tmpl:put name='content' direct='true'>
+    
+    	<% if (mobWeb) { /* edit the cookie, which resets the view, there's prob a better way */ %>    		
+    		<script>
+    			FreshDirect.modules.common.utils.createCookie('viewtype', 'grid');
+    		</script>
+    		<div id="shoppinglists" class=""></div>
+    	<% } %>
+    	<div id="productlist" class="" data-cmeventsource="qs_customerLists"></div>
+    	<div id="productlistHeader" class=""></div>
+    </tmpl:put>
 </tmpl:insert>

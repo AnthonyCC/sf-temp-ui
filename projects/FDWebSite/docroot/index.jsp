@@ -130,46 +130,28 @@ request.setAttribute("noyui", true);
 				List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
 				
 				for (CategoryModel curCat: catModels) {
-					//skip if cat has no prod(s)
-					if (!hasProduct(curCat)) {
+					String curCatLink = "/browse.jsp?id="+curCat;
+					//skip if cat has no prod(s) and is not redirecting
+					if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
 						continue;
+					}
+					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
+						curCatLink = "https://www.foodkick.com";
+					}
+					String bannerText = curCat.getPrimaryText();
+					if ("".equals(bannerText)) {
+						bannerText = curCat.getFullName();
 					}
 					
 					 %>
 					 
-					<a href="/browse.jsp?id=<%= curCat %>">
-				    <div class="home-page-banner">
-					    <%
-					    	boolean bannerFound = false;
-					        Set<ContentKey> banners = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
-					        for (ContentKey key : banners) {
-					            BannerModel curBanner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);
-	
-				            	if (curBanner != null && curBanner.getLink() != null && curBanner.getImage() != null && StringUtils.equals(curBanner.getLink().getContentName(), curCat.getContentName())) {
-					      			%><img src="<%= curBanner.getImage().getPathWithPublishId() %>" alt=""><%
-					      			bannerFound = true;
-					      			break;
-				            	}
-	
-					        }
-					        if (!bannerFound) {
-					        	%><img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt=""><%
-					        }
-						%>
-				        <%-- one of these two are correct, but until we have the business rule(s)... 
-							<span class="span-left"><%= curCat.getFullName() %></span>
-							<span class="span-right"><%= curCat.getPrimaryText() %></span>
-						--%>
-						<% 
-							String bannerText = curCat.getPrimaryText();
-							if ("".equals(bannerText)) {
-								bannerText = curCat.getFullName();
-							}
-						%>
-						<div class="home-page-banner-subtext-cont">
-							<div class="home-page-banner-subtext"><%= bannerText %></div>
+					<a href="<%= curCatLink %>">
+					    <div class="home-page-banner">
+						    <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
+							<div class="home-page-banner-subtext-cont">
+								<div class="home-page-banner-subtext"><%= bannerText %></div>
+							</div>
 						</div>
-					</div>
 				    </a>
 				<% } %>
 			</div>

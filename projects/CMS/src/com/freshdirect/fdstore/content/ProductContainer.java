@@ -17,7 +17,9 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
  */
 public abstract class ProductContainer extends ContentNodeModelImpl implements HasRedirectUrl, HasTemplateType, YmalSetSource {
 
-	public final static Comparator<ProductContainer> NAME_COMPARATOR = new Comparator<ProductContainer>() {
+    private static final long serialVersionUID = 227049481546107864L;
+
+    public final static Comparator<ProductContainer> NAME_COMPARATOR = new Comparator<ProductContainer>() {
 		@Override
 		public int compare(ProductContainer p1, ProductContainer p2) {
 
@@ -34,8 +36,6 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		}
 	};
 
-	
-	
 	private List<Domain> rating = new ArrayList<Domain>();
 
 	private Map<String, List<Domain>> ratingDomains = new HashMap<String, List<Domain>>();
@@ -382,8 +382,17 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public String getSEOMetaDescription() {
 		return getAttribute("SEO_META_DESC", "");
 	}
-	
+
+    public String getFdxSEOMetaDescription() {
+        return getAttribute("SEO_META_DESC_FDX", "");
+    }
+
 	public String getPageTitle() {
 		return getAttribute("PAGE_TITLE", "");
 	}
+
+    public String getFdxPageTitle() {
+        return getAttribute("PAGE_TITLE_FDX", "");
+    }
+
 }

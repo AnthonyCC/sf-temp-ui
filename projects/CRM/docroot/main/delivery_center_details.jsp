@@ -64,7 +64,7 @@
 <script type="text/javascript" >
 
 	var orderNo = '<%= order.getErpSalesId() %>';
-	var estoreId = '<%= order.getEStoreId().getContentId() %>';
+	var estoreId = '<%= order.getEStoreId().toString() %>';
 	var routeNo = '<%= shippingInfo.getTruckNumber() %>';
 	var date =  '<%= CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>';
 	var hasSignature = <%= FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature() %>;

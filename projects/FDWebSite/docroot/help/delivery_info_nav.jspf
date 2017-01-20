@@ -1,0 +1,80 @@
+<%
+String delivery_info_uri = request.getRequestURI();
+
+Map<String, String> folderMap=new LinkedHashMap<String, String>();
+
+/* this nav is generated down (so per column) instead of deptnav, which generates ACROSS */
+
+//first column (always nothing in the last spot)
+	folderMap.put("Home Delivery","/help/delivery_info.jsp");
+	folderMap.put("Corporate Delivery","/help/delivery_info_cos.jsp");
+	/* if(user.isDepotUser()){ folderMap.put("Depot Delivery","/help/delivery_info_depot.jsp"); } */
+	folderMap.put("","");
+	
+//second column onward (fills based on maxRows)
+	folderMap.put("Pickup at FreshDirect","/help/delivery_lic_pickup.jsp");
+	if (user.getLevel() >= FDUserI.RECOGNIZED) {
+		if (user.getLevel() >= FDUserI.RECOGNIZED) {
+			folderMap.put("Available Delivery Slots","/your_account/delivery_info_avail_slots.jsp");
+		} else {
+			folderMap.put("Available Delivery Slots","/your_account/delivery_info_check_slots.jsp");
+		}
+	} else {
+		folderMap.put("Available Delivery Slots","/help/delivery_info_check_slots.jsp");
+	}
+	if (user.isEligibleForPreReservation()) {
+		folderMap.put("Reserve Delivery (in Your Account)","/your_account/reserve_timeslot.jsp");
+	}
+	if (FDStoreProperties.isSummerServiceEnabled()) {
+		folderMap.put("Summer Delivery","/help/delivery_summer_service.jsp");
+	}
+
+	//get ref to dlv pass category
+	String dpCatId = "gro_gear_dlvpass";
+	CategoryModel dpCatRef = null;
+	dpCatRef = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", dpCatId);
+	//FDStoreProperties.doDpDeliveryInfoLink()
+	
+	if (FDStoreProperties.doDpDeliveryInfoLink() && dpCatRef != null) {
+		folderMap.put(dpCatRef.getFullName(),"/category.jsp?catId="+dpCatId);
+	}
+
+int maxItems = folderMap.size();
+Iterator<String> itr=folderMap.keySet().iterator();
+
+boolean isCorporate = user.getSelectedServiceType().equals(EnumServiceType.CORPORATE);
+%>
+
+<div class="delivery_info_nav_header">Delivery & Pickup info</div>
+<div class="delivery_info_nav_select">
+<select name="delivery_info_nav" id="delivery_info_nav" onchange="select_delivery_info_nav()"  style="width: 100%">
+	<option  value="0"></option>
+	<% for ( int i = 0; i < maxItems; i++ ) { %>
+		<%
+			if(itr.hasNext()){
+				String str=itr.next();
+		%>
+				<% if (str == "Reserve Delivery (in Your Account)") { %>
+					<% if (user != null && !(EnumServiceType.HOME).equals(user.getSelectedServiceType())) { %>
+					<% } else { %>
+						<% if (!str.trim().equals("")) { %>
+							<option value="<%= i+1 %>" <%= delivery_info_uri.equals(folderMap.get(str)) ? "selected" : "" %> data-href="<%= folderMap.get(str)%>"><%= str %></option>
+						<% } %>
+					<% } %>
+				<% } else { %>
+					<% if (!str.trim().equals("")) { %>
+						<option value="<%= i+1 %>" <%= delivery_info_uri.equals(folderMap.get(str)) ? "selected" : "" %> data-href="<%= folderMap.get(str)%>"><%= str %></option>
+					<% } %>
+				<% } %>
+			<% } %>
+	<% } %>
+</select>
+</div>
+<script>
+	$jq("#delivery_info_nav").select2({
+		minimumResultsForSearch: Infinity
+	});
+	function select_delivery_info_nav(){
+		window.location.href = $jq("#delivery_info_nav option:selected").data("href");
+	}
+</script>

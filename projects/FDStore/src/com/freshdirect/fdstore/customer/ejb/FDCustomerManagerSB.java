@@ -882,6 +882,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public int[] updateShippingInfoTruckDetails() throws FDResourceException,RemoteException;
 	
 	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
+	
+	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
+	
 
 }
 

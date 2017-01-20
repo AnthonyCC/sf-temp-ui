@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.productpromotion;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,9 @@ public class FDProductAssortmentPromotionFactory {
 		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> promoInfos = this.productsAssortmentPromotion.get();
 		if(null !=promoInfos && !promoInfos.isEmpty()){
 			Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> lPromos =this.promotionMap.get(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
+			if(null ==lPromos){
+				lPromos = new HashMap<String, Map<ZoneInfo,List<FDProductPromotionInfo>>>();
+			}
 			lPromos.putAll(promoInfos);
 			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),lPromos);
 		}

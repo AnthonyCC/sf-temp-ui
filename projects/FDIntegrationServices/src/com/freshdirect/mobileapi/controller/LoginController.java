@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
@@ -159,7 +156,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		}else if (ACTION_ACK.equals(action)) {
 			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class); 
 			responseMessage = updateAck(request, response, user, requestMessage);
-			user.setTcAcknowledge(true);
 		}  else if (ACTION_SESSION_ADD_ANONYMOUS_ADDRESS.equals(action)) {
 			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class); 
 			try {
@@ -267,23 +263,29 @@ public class LoginController extends BaseController  implements SystemMessageLis
         return passwordResponse;
     }
 
-	private Message updateAck(HttpServletRequest request, HttpServletResponse response, SessionUser user, AckRequest requestMessage)
-	        throws NoSessionException, FDException {
-		Message responseMessage=null;
-		if (null == user) {
+    private Message updateAck(HttpServletRequest request, HttpServletResponse response, SessionUser user, AckRequest requestMessage) throws NoSessionException, FDException {
+        Message responseMessage = null;
+        if (null == user) {
             throw new NoSessionException("No session");
         }
-       boolean success= FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),requestMessage.isAcknowledge(), EnumEStoreId.valueOfContentId("FD".equalsIgnoreCase(requestMessage.getAppSource())?"FreshDirect":requestMessage.getAppSource()).getContentId());
-		
-       if(!success){
-		 responseMessage = getErrorMessage(ERR_AUTHENTICATION,MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
-       }else {
-    	   responseMessage = Message.createSuccessMessage(MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS);
-    	   
-       }
 
-		return responseMessage;
-	}
+        String contentId = EnumEStoreId.valueOfContentId("FD".equalsIgnoreCase(requestMessage.getAppSource()) ? "FreshDirect" : requestMessage.getAppSource()).getContentId();
+        boolean success = FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(), requestMessage.isAcknowledge(), contentId);
+
+        if (!success) {
+            responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
+        } else {
+            user.setTcAcknowledge(true);
+            if (isCheckLoginStatusEnable(request)) {
+                MessageResponse messageResponse = new MessageResponse();
+                populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
+                responseMessage = messageResponse;
+            } else {
+                responseMessage = Message.createSuccessMessage(MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS);
+            }
+        }
+        return responseMessage;
+    }
 
 	private boolean isAddressSet(SessionUser user, AddressModel address) {
 		return user.getAddress().isSameLocation(address);

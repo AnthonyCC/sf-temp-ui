@@ -14,6 +14,8 @@
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
@@ -81,6 +83,11 @@ if (mobWeb) {
 		<fd:SEOMetaTag pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		
+		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
+			<%@ include file="/help/delivery_info_nav.jspf" %>
+		</div>
+		
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 	

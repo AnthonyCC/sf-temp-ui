@@ -26,7 +26,9 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 
-	private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
+    private static final long serialVersionUID = 7188118020157672951L;
+
+    private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 
 	private final List<ProductModel> relatedProducts = new ArrayList<ProductModel>();
 	
@@ -563,6 +565,11 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	@Override
 	public String getSEOMetaDescription() {
 		return getProduct().getSEOMetaDescription();
+	}
+
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return getProduct().getFdxSEOMetaDescription();
 	}
 
 	@Override

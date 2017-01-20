@@ -13,8 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -355,7 +353,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 
     private DeliveryAddresses getDeliveryAddresses(SessionUser user) throws FDException, ServiceException, JsonException {
         List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
-        DeliveryAddresses responseMessage = new DeliveryAddresses(null, ShipToAddress.filter(deliveryAddresses,
+        DeliveryAddresses responseMessage = new DeliveryAddresses(null, null, ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses, DeliveryAddressType.CORP), null);
         
         responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());

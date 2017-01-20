@@ -116,7 +116,12 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 		
 		LOGGER.debug(">>>Sent Contact Service Email from: " + customer.getEmailAddress());
 		
-		this.setSuccessPage(this.getSuccessPage() + "?msg=" + form.confirmMessage);
+		String successPage = this.getSuccessPage();
+		if (successPage != null) {
+			this.setSuccessPage(successPage + ((successPage).contains("?") ? "&" : "?") + "msg=" + form.confirmMessage);
+		} else {
+			this.setSuccessPage(successPage + "?msg=" + form.confirmMessage);
+		}
 	}
 	
 	

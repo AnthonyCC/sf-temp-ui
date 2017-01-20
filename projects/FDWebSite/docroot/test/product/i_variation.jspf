@@ -1,0 +1,40 @@
+<%	
+	out.println("<table>");
+	out.println("<caption>");out.println("Material Variation");out.println("</caption>");
+	out.println("<tr>");
+	out.println("<th>Name</th>");
+	out.println("<th>Description</th>");
+	out.println("<th>Display Format</th>");
+	out.println("<th>Optional</th>");
+	
+	out.println("<th>Option Name</th>");
+	out.println("<th>Option Desc</th>");
+	
+	out.println("<th>Selected</th>");
+	out.println("<th>Label Value</th>");
+	
+	out.println("</tr>");
+	
+	if(product.getVariations() != null) {
+		for (FDVariation entry : product.getVariations()) {	
+			if(entry.getVariationOptions() != null) {
+				for (FDVariationOption optionEntry : entry.getVariationOptions()) {	
+					out.println("<tr>");
+					out.println("<td>");out.println(entry.getName());out.println("</td>");
+					out.println("<td>");out.println(entry.getDescription());out.println("</td>");
+					out.println("<td>");out.println(entry.getDisplayFormat());out.println("</td>");
+					out.println("<td>");out.println(entry.isOptional());out.println("</td>");
+					
+					out.println("<td>");out.println(optionEntry.getName());out.println("</td>");
+					out.println("<td>");out.println(optionEntry.getDescription());out.println("</td>");
+					out.println("<td>");out.println(optionEntry.isSelected());out.println("</td>");
+					out.println("<td>");out.println(optionEntry.isLabelValue());out.println("</td>");
+					
+					out.println("<tr>");
+				}
+			}
+		}
+	}
+	out.println("</table>");
+		
+ %>

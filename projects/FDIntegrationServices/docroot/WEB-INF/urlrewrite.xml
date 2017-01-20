@@ -113,6 +113,10 @@
 		<to last="true">/user.do?action=updateUser&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/user/updateex/$</from>
+		<to last="true">/user.do?action=updateUserEx&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/user/name/$</from>
 		<to last="true">/user.do?action=getUserName&amp;ver=$1</to>
 	</rule>
@@ -368,6 +372,15 @@
         <to last="true">/register.do?action=getemailpreferences&amp;ver=$1</to>
     </rule>
     
+    	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/getmobilegogreenpreferences/</from>
+        <to last="true">/register.do?action=getmobilegogreenpreferences&amp;ver=$1</to>
+    </rule>
+    	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/setmobilegogreenpreferences/</from>
+        <to last="true">/register.do?action=setmobilegogreenpreferences&amp;ver=$1</to>
+    </rule>
+    
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
 		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>
@@ -618,16 +631,16 @@
 		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
 	</rule>
 
-	<!-- Modify Check -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>
-		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
-	</rule>
-
 	<!-- Cancel Order Modify -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/cancelmodify/</from>
 		<to last="true">/order.do?action=cancelmodify&amp;ver=$1</to>
+	</rule>
+	
+	<!-- Get Modify Orders -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/order/modifiable$</from>
+		<to last="true">/order.do?action=getmodifiableorders&amp;ver=$1</to>
 	</rule>
 
 	<!-- Logout -->
@@ -1035,6 +1048,10 @@
 	<rule>
 		<from>^/v/([0-9]+)/pickslistiPhone/getall/(.*)</from>
 		<to last="true">/pickslist.do?action=getAlliPhone&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/pickslistiPhoneImageBanners/getall/(.*)</from>
+		<to last="true">/pickslist.do?action=getAlliPhoneImageBanners&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/pickslist/getdetail/(.*)</from>

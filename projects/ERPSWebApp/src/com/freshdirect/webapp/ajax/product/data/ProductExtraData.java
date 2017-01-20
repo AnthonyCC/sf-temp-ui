@@ -46,7 +46,6 @@ public class ProductExtraData implements Serializable {
 		public String version;
 	}
 	
-	
 	public static class LabelAndLink implements Serializable {
 		private static final long serialVersionUID = 7701246849203062432L;
 
@@ -180,153 +179,151 @@ public class ProductExtraData implements Serializable {
 	 * List of allergens  (Nutrition)
 	 * @see allergens.jspf
 	 */
-	protected List<String> allergens;
+	private List<String> allergens;
 	
 	/**
 	 * Brands 
 	 */
-	protected List<BrandInfo> brands;
+	private List<BrandInfo> brands;
 	
 	/**
 	 * Deli Buyer Guide data.
 	 * @see i_buy_guide.jspf
 	 */
-	protected Map<String, Double> buyerGuide;
+	private Map<String, Double> buyerGuide;
 	
 	/**
 	 * Storage Guide (inline media)
 	 */
 	@Deprecated
-	protected String categoryStorageGuide;
+	private String categoryStorageGuide;
 	
-	protected String categoryStorageGuideLabel;
+	private String categoryStorageGuideLabel;
 
-	protected String categoryStorageGuideLink;
+	private String categoryStorageGuideLink;
 
 	@Deprecated
-	protected String cheesePopupPath;
+	private String cheesePopupPath;
 	
 	@Deprecated
-	protected String cheeseText;
+	private String cheeseText;
 	
 	/**
 	 * List of claims (Nutrition)
 	 * @see claims.jspf
 	 */
-	protected List<String> claims;
-	 private String customerServiceContact;
+	private List<String> claims;
+	private String customerServiceContact;
 	
 	/**
 	 * List of links to Doneness Guide popup contents (inline media)
 	 * @see i_doneness_guide.jspf
 	 */
 	// 
-	protected List<LabelAndLink> donenessGuideList;
+	 private List<LabelAndLink> donenessGuideList;
 
-	protected List<ProductData> familyProducts;
+	private List<ProductData> familyProducts;
 	/**
 	 * Guaranteed Freshness (Perishable Product only)
 	 * Number of days of guaranteed freshness (if value > 0)
 	 * 
 	 * Zero or negative value is considered to be disregarded.
 	 */
-	protected int freshness = 0;
+	private int freshness = 0;
 	/**
 	 * Fresh Tips
 	 */
-	protected LabelAndLink freshTips;
+	private LabelAndLink freshTips;
 
-	protected GroupScaleData groupScaleData;
+	private GroupScaleData groupScaleData;
 	
 	/**
 	 * Heating instructions (Nutrition)
 	 * @see i_heating_instructions.jspf
 	 */
-	protected String heatingInstructions;
+	private String heatingInstructions;
 	
 	/**
 	 * 
 	 * @see i_how_to_cook.jspf
 	 */
 	// ?? TBD INLINE MEDIA HERE
-	protected List<WebHowToCookIt> howToCookItList;
+	private List<WebHowToCookIt> howToCookItList;
 	
 	/**
 	 * Ingredients description
 	 * NOTE: this might be part of {@link ProductExtraData#nutritions} data
 	 */
-	protected String ingredients;
-
+	private String ingredients;
 	
 	/**
 	 * Show Cheese 101 popup if true
 	 * @see i_cheese_101.jspf
 	 */
-	protected boolean isCheese101;
+	private boolean isCheese101;
 	 /**
 	 * New generic attribute for anything with a frozen media due to APPBUG-1705
 	 */
-	protected boolean isFrozen;
+	private boolean isFrozen;
 	 /**
 	 * Partially frozen meal - bakery  
 	 * Mutually exclusive with {@link ProductExtraData#isFrozenSeafood}
 	 */
-	protected boolean isFrozenBakery;
+	private boolean isFrozenBakery;
 	
 	/**
 	 * Partially frozen meal - seafood
 	 * Mutually exclusive with {@link ProductExtraData#isFrozenBakery}
 	 */
-	protected boolean isFrozenSeafood;
+	private boolean isFrozenSeafood;
 
-	protected String kosherIconPath;
+	private String kosherIconPath;
 
-	protected String kosherPopupPath;
+	private String kosherPopupPath;
 
 	/**
 	 * Kosher symbol
 	 * @see kosher.jspf
 	 */
-	protected String kosherSymbol;
-	
+	private String kosherSymbol;
 
 	/**
 	 * Kosher type
 	 * @see kosher.jspf
 	 */
-	protected String kosherType;
+	private String kosherType;
 	
 	/**
 	 * Collection of SKU nutrition info
 	 * A.k.a new-style nutrition panel
 	 */
-	protected NutritionPanel nutritionPanel;
+	private NutritionPanel nutritionPanel;
 	
 	/**
 	 * Old-style nutrition panel (partial content)
 	 */
-	protected String oldNutritionPanel;
+	private String oldNutritionPanel;
 	
 	/**
 	 * List of organic claims (Nutrition)
 	 * @see organic_claims.jspf
 	 */
-	protected List<String> organicClaims;
+	private List<String> organicClaims;
 
 	
-	protected String origin;
+	private String origin;
 	
 	/**
 	 * Origin aka COOL (USA, Ireland, USA, Chile and/or Argentina, etc.)
 	 */
-	 protected String originTitle;
+	private String originTitle;
 	
-	protected String partiallyFrozenMedia;
+	private String partiallyFrozenMedia;
 
 	/**
 	 * Path to product about box media asset (inline media)
 	 */
-	protected String productAboutMedia;
+	private String productAboutMedia;
 	
 	private String productAboutMediaPath;
 
@@ -334,13 +331,13 @@ public class ProductExtraData implements Serializable {
 	/**
 	 * Product description
 	 */
-	protected String productDescription;
+	private String productDescription;
 
 
 	/**
 	 * Path to product description note media asset (inline media)
 	 */
-	protected String productDescriptionNote;
+	private String productDescriptionNote;
 
 	
 	/**
@@ -352,36 +349,33 @@ public class ProductExtraData implements Serializable {
 	 * List of Related Recipes
 	 * @see i_related_recipes.jspf
 	 */
-	protected List<RecipeData> relatedRecipes;
+    private List<RecipeData> relatedRecipes;
 	
 	/**
 	 * Season Text
 	 * May contain escaped HTML tags!
 	 */
-	protected String seasonText;
+	private String seasonText;
 
 	/**
 	 * Serving Suggestions
 	 * @see i_serving_suggestions.jspf
 	 */
-	protected String servingSuggestions;
-	
+	private String servingSuggestions;
 
 	/**
 	 * Source map
 	 */
-	protected Map<String,SourceData> source;
-
+	private Map<String,SourceData> source;
 
 	/**
 	 * Storage Guide popup media - department and category level
 	 */
-	 protected String storageGuideCat;
+	private String storageGuideCat;
 	
-	protected String storageGuideDept;
+	private String storageGuideDept;
 
-
-	protected String storageGuideTitle;
+	private String storageGuideTitle;
 	
 	
 	/* placeholder for product family products */
@@ -390,22 +384,26 @@ public class ProductExtraData implements Serializable {
 	 * Usage List
 	 * 
 	 */
-	protected List<String> usageList;
+	private List<String> usageList;
 
 	/**
 	 * Product Rating
 	 * @see i_product_methods.jsp#getProdPageRatings()
 	 */
-	protected WebProductRating webRating;
+	private WebProductRating webRating;
 
 	/**
 	 * Wine details
 	 */
-	protected WineData wineData;
+	private WineData wineData;
 	
 	/* component group meal, optional products */
 	
-	protected List<ProductData> optionalProducts;
+	private List<ProductData> optionalProducts;
+	
+	private String pageTitle;
+	
+	private String seoMetaDescription;
 	
 	public List<ProductData> getOptionalProducts() {
 		return optionalProducts;
@@ -800,5 +798,21 @@ public class ProductExtraData implements Serializable {
     public void setWineData(WineData wineData) {
 		this.wineData = wineData;
 	}
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    public String getSeoMetaDescription() {
+        return seoMetaDescription;
+    }
+
+    public void setSeoMetaDescription(String seoMetaDescription) {
+        this.seoMetaDescription = seoMetaDescription;
+    }
 
 }

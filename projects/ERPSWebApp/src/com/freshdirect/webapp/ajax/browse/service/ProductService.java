@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 
 public class ProductService {
 
@@ -20,22 +20,19 @@ public class ProductService {
         return INSTANCE;
     }
 
-    public void removeSkuDuplicates(List<FilteringProductItem> products) {
-        Set<String> skuCodes = new HashSet<String>();
+    public void removeContentKeyDuplicates(List<FilteringProductItem> products) {
+        Set<ContentKey> contentKeys = new HashSet<ContentKey>();
         Iterator<FilteringProductItem> productIterator = products.iterator();
         while (productIterator.hasNext()) {
             FilteringProductItem productItem = productIterator.next();
             if (productItem != null) {
                 ProductModel productModel = productItem.getProductModel();
                 if (productModel != null) {
-                    SkuModel skuModel = productModel.getDefaultSku();
-                    if (skuModel != null) {
-                        String skuCode = skuModel.getSkuCode();
-                        if (skuCodes.contains(skuCode)) {
-                            productIterator.remove();
-                        } else {
-                            skuCodes.add(skuCode);
-                        }
+                    ContentKey contentKey = productModel.getContentKey();
+                    if (contentKeys.contains(contentKey)) {
+                        productIterator.remove();
+                    } else {
+                        contentKeys.add(contentKey);
                     }
                 }
             }

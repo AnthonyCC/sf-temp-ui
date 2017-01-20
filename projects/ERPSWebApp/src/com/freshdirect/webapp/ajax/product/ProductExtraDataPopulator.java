@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
@@ -26,6 +27,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.erp.ErpFactory;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDFactory;
@@ -1000,10 +1002,10 @@ public class ProductExtraDataPopulator {
 			String familyID = productInfo.getFamilyID();
 			ErpProductFamilyModel products = null;
 			List<String> skuCodes = null;
-			if(familyID == null && productInfo.getMaterialIds()!=null){
+			if(familyID == null && productInfo.getMaterialNumber()!=null){
 				
 				try {
-					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialIds()[0]);
+					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
 				} catch (FDGroupNotFoundException e) {
 					
 					e.printStackTrace();
@@ -1109,6 +1111,15 @@ public class ProductExtraDataPopulator {
 		}
 		
         data.setCustomerServiceContact(user.getCustomerServiceContact());
+
+        if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+            data.setPageTitle(productNode.getFdxPageTitle());
+            data.setSeoMetaDescription(productNode.getFdxSEOMetaDescription());
+        } else {
+            data.setPageTitle(productNode.getPageTitle());
+            data.setSeoMetaDescription(productNode.getSEOMetaDescription());
+        }
+
 	}
 
     private static String populateProductDescription(FDUserI user, MediaI media) {

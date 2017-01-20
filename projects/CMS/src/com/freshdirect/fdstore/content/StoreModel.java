@@ -31,6 +31,7 @@ public class StoreModel extends ContentNodeModelImpl {
     private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
     private List<ContentNodeModel> tabletIdeasRecipes = new ArrayList<ContentNodeModel>();
     private List<ImageBanner> welcomeCarouselImageBanners = new ArrayList<ImageBanner>();
+    private List<ImageBanner> iPhoneHomePageImageBanners = new ArrayList<ImageBanner>();
 
     public StoreModel(com.freshdirect.cms.ContentKey cKey) {
         super(cKey);
@@ -192,5 +193,10 @@ public class StoreModel extends ContentNodeModelImpl {
     public List<ImageBanner> getWelcomeCarouselImageBanners() {
         ContentNodeModelUtil.refreshModels(this, "welcomeCarouselImageBanners", welcomeCarouselImageBanners, false);
         return new ArrayList<ImageBanner>(welcomeCarouselImageBanners);
+    }
+    
+    public List<ImageBanner> getiPhoneHomePageImageBanners() {
+        ContentNodeModelUtil.refreshModels(this, "iPhoneHomePageImageBanners", iPhoneHomePageImageBanners, false);
+        return new ArrayList<ImageBanner>(iPhoneHomePageImageBanners);
     }
 }

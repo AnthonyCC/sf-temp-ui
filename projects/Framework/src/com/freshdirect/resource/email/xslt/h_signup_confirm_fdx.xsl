@@ -9,8 +9,8 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 
-	<!--<xsl:variable name="site" select="'https://www.freshdirect.com'" />-->
-	<xsl:variable name="site" select="'https://foodkick.freshdirect.com'" />
+	<xsl:variable name="site" select="'https://www.freshdirect.com'" />
+<!-- 	<xsl:variable name="site" select="'https://foodkick.freshdirect.com'" /> -->
 	<xsl:variable name="editorial_dir" select="concat($site, '/media/editorial/foodkick')" />
 	<xsl:variable name="img_dir" select="concat($site, '/media/images/email/foodkick')" />
 	<xsl:variable name="purple" select="'#732484'" />

@@ -7,6 +7,8 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.common.pricing.EnumDiscountType' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
@@ -29,8 +31,8 @@ if(orderId==null){
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
+	<tmpl:put name='printdata' direct='true'>order_details</tmpl:put>
     <tmpl:put name='content' direct='true'>
-
 <%
     NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
     SimpleDateFormat dateOnlyFormatter = new SimpleDateFormat("MM/dd/yy");
@@ -175,28 +177,29 @@ if(orderId==null){
 		        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
 		    </td>
 		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
+		    	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><a href="javascript:window.print()" class="cssbutton small khaki noprint" style="margin-right: 10px;" title="Click here to print invoice for this order">print</a><% } %>
 		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
 		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
 			    		<table class="fright">
 				    		<tr>
 					    		<% if (hasCredit) { %>
-									<td align="right" valign="middle" class="text11"><i>Credit was issued for this order.</i></td>
+									<td align="right" valign="middle" class="text11" style="padding: 0 10px;"><i>Credit was issued for this order.</i></td>
 					    		<% } %>
 							    <% if (hasClientCodes) { %>
-							    	<td nowrap="nowrap">
-										<a class="butCont butBlue fright" href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="margin-left: 10px;">
-											<span class="butLeft"><!-- --></span><span class="butMiddle butText">export&nbsp;client&nbsp;codes</span><span class="butRight"><!-- --></span>
+							    	<td nowrap="nowrap" class="noprint">
+										<a class="cssbutton small blue fright" title="Click here to export client codes for this order" href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="margin-left: 10px;">
+											<span class="butMiddle butText">export&nbsp;client&nbsp;codes</span>
 										</a>
 									</td>
 							    <% } %>
 				    			<% if (hasModify) { %>
-								    <td nowrap="nowrap">
-										<a class="imgButtonOrange fright" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify">modify order</a>
+								    <td nowrap="nowrap" class="noprint">
+										<a class="cssbutton small orange fright" title="Click here to modify this order" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify">modify order</a>
 								    </td>
 				    			<% } %>
 				    			<% if (hasCancel) { %>
-								    <td nowrap="nowrap">
-										<a class="imgButtonRed fright" style="margin-left: 10px;" href="/your_account/cancel_order.jsp?orderId=<%=orderId%>">cancel order</a>
+								    <td nowrap="nowrap" class="noprint">
+										<a class="cssbutton small red transparent fright" title="Click here to cancel this order" style="margin-left: 10px;" href="/your_account/cancel_order.jsp?orderId=<%=orderId%>">cancel order</a>
 								    </td>
 							   <% } %>
 				    		</tr>
@@ -208,8 +211,8 @@ if(orderId==null){
 				<%  if (!cart.isPending()) { %>
 					<table class="fright">
 						<tr>
-						    <td>
-								<a class="imgButtonBlue fright" href="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>" title="Click here to reorder items from this order in Quickshop">shop from this order</a>
+						    <td class="noprint">
+								<a class="cssbutton small blue fright" href="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>" title="Click here to reorder items from this order in Quickshop">shop from this order</a>
 							</td>
 						</tr>
 					</table>

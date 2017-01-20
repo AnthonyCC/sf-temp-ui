@@ -12,6 +12,7 @@ import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -29,6 +30,7 @@ import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -374,6 +376,7 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				salesAreaPriceMap.get(salesArea).add(priceRowModel);
 			}
 
+			boolean isDefaultPriceExists = false;
 			for (final Map.Entry<String, List<ErpMaterialPriceModel>> salesAreaPriceMapEntry : salesAreaPriceMap
 					.entrySet()) {
 				boolean isDefaultZoneExists = false;
@@ -381,18 +384,27 @@ public class FDProductPriceJcoServer extends FdSapServer {
 					if (ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(priceRowEntry.getSapZoneId())) {
 						isDefaultZoneExists = true;
 					}
+					if(!isDefaultPriceExists){
+						if (ZonePriceListing.MASTER_DEFAULT_ZONE.equalsIgnoreCase(priceRowEntry.getSapZoneId()) 
+								&& ZonePriceListing.DEFAULT_SALES_ORG.equalsIgnoreCase(priceRowEntry.getSalesOrg())
+								&& ZonePriceListing.DEFAULT_DIST_CHANNEL.equalsIgnoreCase(priceRowEntry.getDistChannel())) {						
+							isDefaultPriceExists = true;
+						}
+					}
 				}
 				if (!isDefaultZoneExists) {
 					bufferStr.append(salesAreaPriceMapEntry.getKey() + ", ");
 				}
 			}
 
-			/*
-			 * if(!StringUtils.isEmpty(bufferStr.toString())) { throw new
-			 * LoaderException
-			 * ("No master default price row exported for salesarea: " +
-			 * bufferStr.toString()); }
-			 */
+			if(!isDefaultPriceExists){
+				throw new LoaderException("No master default sales area price row exported for the material.");
+			}
+			
+			 if(!StringUtils.isEmpty(bufferStr.toString())) {
+				 throw new LoaderException ("No master default price row exported for salesarea: " + bufferStr.toString());
+			 }
+			 
 		}
 
 		/**

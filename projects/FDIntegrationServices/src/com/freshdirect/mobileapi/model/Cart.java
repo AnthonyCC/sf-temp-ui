@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
@@ -888,53 +888,22 @@ public class Cart {
          */
 
         //Promotions
-        //double maxPromotion = user.getMaxSignupPromotion();
         PromotionI redemptionPromo = user.getRedeemedPromotion();
-        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(
-                redemptionPromo.getPromotionCode()));
+        String redemptionCode = redemptionPromo != null ? redemptionPromo.getRedemptionCode() : "";
+        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
 
-        List discounts = cart.getDiscounts();
-        for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-            ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+        for (ErpDiscountLineModel discountLine : cart.getDiscounts()) {
             Discount discount = discountLine.getDiscount();
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.SIGNUP, discount.getAmount(), true));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
-                //                                <td colspan="1" align="right">-<%=CCFormatter.formatCurrency(discount.getAmount())%></td>
-                //                                <td colspan="3"></td>      
-                //                        </tr>      
-                //                        <%
+                        .getPromotionCode(), redemptionCode, DiscountType.SIGNUP, discount.getAmount(), true));
             } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) {
-
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
-                //                                <td colspan="1" align="right">
-                //                                        <%="-" + CCFormatter.formatCurrency(discount.getAmount()) %>
-                //                                </td>
-                //                                <td colspan="1"></td>
-                //                                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-                //                        </tr>      
-                //        <%
+                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
-                //                        %>
-                //                        <tr valign="top" class="orderSummary">
-                //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promotion.getPromotionCode()%>','small')"><%= promotion.getDescription()%></a></b>:</td>
-                //                                <td colspan="1" align="right">
-                //                                        <%="-" + CCFormatter.formatCurrency(discount.getAmount()) %>
-                //                                </td>
-                //                                <td colspan="3"></td>
-                //                        </tr>      
-                //                        
-                //    <%          
+                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
             }
         }
         
@@ -946,8 +915,16 @@ public class Cart {
   		
   		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
               redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
-  			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+              String esid = (null !=user && null != user.getUserContext() ? user.getUserContext().getStoreContext().getEStoreId().getContentId() : null);
+  			  if(esid != null && "FDX".equals(esid)){
+  				  warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET_FDX
   														, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+  			  }
+  			  else
+  			  {
+  				warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+							, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+  			  }
   			
   		} else if (redemptionPromo.isLineItemDiscount()) {
               int errorCode = user.getPromoErrorCode(redemptionPromo.getPromotionCode());
@@ -963,7 +940,7 @@ public class Cart {
         //if (isRedemptionApplied) { // Commented Out to show remove redemption promo feature in IPhone regardless of applied or not
         	
             if (redemptionPromo.isSampleItem()) {
-                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(), redemptionPromo.getRedemptionCode(),
                         RedemptionPromotionType.SAMPLE, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
                 //        %>
                 //        <tr valign="top" class="orderSummary">
@@ -974,7 +951,7 @@ public class Cart {
                 //        </tr>
                 //        <%
             } else if (redemptionPromo.isWaiveCharge()) {
-                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(), redemptionPromo.getRedemptionCode(),
                         RedemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
                 //        %>
                 //            <tr valign="top" class="orderSummary">
@@ -985,12 +962,12 @@ public class Cart {
                 //            </tr>
                 //        <%
             } else if(redemptionPromo.isExtendDeliveryPass()) {
-            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(), redemptionPromo.getRedemptionCode(),
                         RedemptionPromotionType.EXTEND_DELIVERY_PASS, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage, false, "Pass Extended"));
             }
             else {
             	if (!isRedemptionApplied){
-            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(), redemptionPromo.getRedemptionCode(),
                         RedemptionPromotionType.DOLLAR_VALUE_DISCOUNT, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
             	}
             }           
@@ -1069,7 +1046,7 @@ public class Cart {
 
         // platterCutoffTime if set.
         if (null != platterCutoffTime) {
-            cartDetail.setPlatterCutoffTime(new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT).format(platterCutoffTime));
+            cartDetail.setPlatterCutoffTime(platterCutoffTime);
         }
         if(cart instanceof FDCartModel){
         	cartDetail.setExpCouponDeliveryDate(((FDCartModel)cart).getExpCouponDeliveryDate());

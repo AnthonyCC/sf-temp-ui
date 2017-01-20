@@ -64,7 +64,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	// Common utility methods
 	// ========================
 	
-	protected static List<QuickShopLineItem> unwrapResult(List<FilteringSortingItem<QuickShopLineItemWrapper>> result){
+	public static List<QuickShopLineItem> unwrapResult(List<FilteringSortingItem<QuickShopLineItemWrapper>> result){
 		
 		List<QuickShopLineItem> unwrapped = new ArrayList<QuickShopLineItem>();
 		
@@ -75,7 +75,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		return unwrapped;
 	}
 	
-	protected static List<QuickShopSorterValues> generateSorter(FilteringNavigator nav){
+	public static List<QuickShopSorterValues> generateSorter(FilteringNavigator nav){
 		
 		List<QuickShopSorterValues> sorter = new ArrayList<QuickShopSorterValues>();
 		
@@ -94,7 +94,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	public static final int DEFAULT_PAGE_NUMBER = 0;
 	public static final int DEFAULT_PAGE_SIZE = FDStoreProperties.getQuickShopPageSize();
 	
-	protected static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(FDUserI user, HttpServletRequest request, QuickShopListRequestObject reqObj,
+	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(FDUserI user, HttpServletRequest request, QuickShopListRequestObject reqObj,
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 
 		int pageSize = CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, DEFAULT_PAGE_SIZE);
@@ -120,7 +120,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		return pagedItems;
 	}
 
-	protected static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
+	public static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
 		for ( Map<String, FilteringMenuItem> f : menu.values() ) {
 			for( FilteringMenuItem i : f.values() ) {
 				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {

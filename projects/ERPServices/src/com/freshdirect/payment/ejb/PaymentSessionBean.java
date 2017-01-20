@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -54,6 +55,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
@@ -185,8 +187,32 @@ public class PaymentSessionBean extends SessionBeanSupport{
 						}else{
 							
 							String orderNumber = saleId + "X" + captureCount;
-							capture = gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
 							
+							capture = capturePayment(paymentMethod, gateway, auth, captureAmount,orderNumber,false);
+							 
+							// START APPDEV-5490 
+							boolean isRejected=false;
+							if(EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().
+									equalsIgnoreCase(capture.getSettlementResponseCode())){
+								LOGGER.info("Paypal capture is declined . Retry with new auth sale id : "+saleId );
+								// Write Logic to authorize amount 
+								ErpAuthorizationModel newAuth = gateway.authorize(paymentMethod, orderNumber,auth.getAmount(),auth.getTax(),auth.getMerchantId());
+								
+								if(newAuth.isApproved()){
+									capture = capturePayment(paymentMethod, gateway, newAuth,captureAmount, orderNumber,true);
+								}else if(isNotCaptureApproved(capture, newAuth)){
+									isRejected=true;
+								}
+
+							} if(EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && (PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().
+									equalsIgnoreCase(capture.getSettlementResponseCode()) || isRejected)){
+								LOGGER.info("Paypal capture is rejected after retry. Mark settlement failure  sale id ."+ saleId );
+
+								forceSettlementFailure(saleId);
+								utx.commit();
+								continue;
+							}
+							// END APPDEV-5490 
 						}
 						
 						eb.addCapture(capture);
@@ -261,6 +287,56 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}catch(SystemException se){
 				LOGGER.warn("Error rolling back transaction", se);
 			}
+			throw new EJBException(e);
+		}
+	}
+
+	/**
+	 * @param saleId
+	 * @throws FinderException
+	 * @throws RemoteException
+	 * @throws ErpTransactionException
+	 */
+	private void forceSettlementFailure(String saleId) throws FinderException, RemoteException,
+			ErpTransactionException {
+		ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+		
+		saleEB.markAsPaypalSettlementFailed();
+	}
+
+	/**
+	 * @param capture
+	 * @param newAuth
+	 * @return
+	 */
+	private boolean isNotCaptureApproved(ErpCaptureModel capture, ErpAuthorizationModel newAuth) {
+		return !newAuth.isApproved() || PayPalCaptureResponse.Processor.RISK_REJECTED.
+				getResponseCode().equals(capture.getSettlementResponseCode())
+				|| PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.
+				getResponseCode().equals(capture.getSettlementResponseCode());
+	}
+
+	/**
+	 * @param paymentMethod
+	 * @param gateway
+	 * @param auth
+	 * @param captureAmount
+	 * @param orderNumber
+	 * @param isReAuth 
+	 * @return
+	 * @throws ErpTransactionException
+	 */
+	private ErpCaptureModel capturePayment(ErpPaymentMethodI paymentMethod, Gateway gateway,
+			ErpAuthorizationModel auth, Double captureAmount, String orderNumber, boolean isReAuth)
+			throws ErpTransactionException {
+		
+		return gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
+	}
+	
+	private ErpSaleHome getErpSaleHome() {
+		try {
+			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale");
+		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
 	}

@@ -68,7 +68,6 @@ public class FDStoreProperties {
     private final static String PROP_ERPCUSTOMER_HOME = "fdstore.erpcustomer.home";
     private final static String PROP_CONTFACTORY_HOME = "fdstore.contentFactory.home";
     private final static String PROP_FDORDER_HOME = "fdstore.fdorder.home";
-    private final static String PROP_ROUTINGGATEWAY_HOME = "fdstore.routingGateway.home"; // freshdirect.routing.Gateway
     private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR = "fdstore.address.validation";
     private final static String PROP_PREVIEW_MODE = "fdstore.preview";
     private final static String PROP_FLUSH_OSCACHE = "fdstore.flushOscache";
@@ -236,11 +235,6 @@ public class FDStoreProperties {
     // Refresh delay in seconds for Runtime Promotion cache.
     private final static String PROP_PROMOTION_RT_REFRESH_PERIOD = "promotion.rt.refresh.period";
 
-    // Alternate zipcode to handle new zipcodes which are split from old zipcodes.
-    private final static String PROP_GEOCODE_ALTZIPCODE = "fdstore.geocode.alternateZipcode";
-
-    // Alternate zipcode to handle new zipcodes which are split from old zipcodes.
-    private final static String PROP_GEOCODE_ISNEWFORMAT = "fdstore.geocode.isNewFormat";
 
     // Handle Advanced Order date
     private final static String ADVANCE_ORDER_START = "fdstore.advance.order.start";
@@ -327,7 +321,6 @@ public class FDStoreProperties {
 
     // Smart Savings
     private static final String SMART_SAVINGS_FEATURE_ENABLED = "fdstore.smartsavings.enabled";
-    private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
 
     // iPhone non-customer email media path
     private final static String PROP_MEDIA_IPHONE_TEMPLATE_PATH = "fdstore.media.iphone.template.path"; // Location of different ftl template of iphone.
@@ -355,11 +348,6 @@ public class FDStoreProperties {
     private static final String ROBIN_HOOD_LANDING_URL = "fdstore.robinHoodLandingUrl";
     private static final String PROP_ROBIN_HOOD_SKU_CODE = "fdstore.robinhood.skucode";
     private static final String ROBIN_HOOD_STATUS = "fdstore.robinhood.status";
-    private static final String PROP_ROUTING_PROVIDER_URL = "fdstore.routing.providerURL";
-
-    // CT & PR1
-    private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";
-    private static final String PR1_DELIVERY_CAPACITY_FILE_NAME = "fdstore.pr1.filename";
 
     // MEAT DEALS and EDLP
     private final static String DEPT_MEAT_DEALS = "fdstore.department.meatdeals.isEnabled";
@@ -440,7 +428,6 @@ public class FDStoreProperties {
 
     // 4mm department internal cache refresh interval - in minutes
     private final static String PROP_4MM_REFRESH_INTERVAL = "fdstore.4mm.cache.refresh.interval";
-    private static final String PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT = "fdstore.routing.unassignedprocesinglimit";
 
     // Brand media replacement (APPDEV-1308)
     private final static String PROP_BRAND_MEDIA_IDS = "fdstore.brand.media.ids";
@@ -523,7 +510,6 @@ public class FDStoreProperties {
 
     // APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
-    private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
 
     // APPDEV-1920 Remove the "new feature" alert on quickbuy
     private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
@@ -764,6 +750,7 @@ public class FDStoreProperties {
 
     private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
+    private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
     private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
@@ -908,7 +895,6 @@ public class FDStoreProperties {
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
     
     static {
-        defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -943,7 +929,6 @@ public class FDStoreProperties {
         defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
         defaults.put(PROP_CONTFACTORY_HOME, "freshdirect.content.ContentFactory");
         defaults.put(PROP_FDORDER_HOME, "freshdirect.fdstore.Order");
-        defaults.put(PROP_ROUTINGGATEWAY_HOME, "freshdirect.routing.Gateway");
         // checks for all special characters
         defaults.put(PROP_DLV_INSTRUCTION_SPECIAL_CHAR, "[~ | \\` | \" | \\! | \\@ | \\# | \\ $ | \\% | \\^ | \\& | \\* | \\( | \\) | \\- | _ | + | \\= | \\n | \\r]");
 
@@ -1109,8 +1094,6 @@ public class FDStoreProperties {
         defaults.put(PROP_NUTRITION_REFRESH_PERIOD, "10");
         defaults.put(PROP_PROMOTION_RT_REFRESH_PERIOD, "1200");
 
-        defaults.put(PROP_GEOCODE_ISNEWFORMAT, "true");
-
         defaults.put(ADVANCE_ORDER_START, "2004-01-01");
         defaults.put(ADVANCE_ORDER_END, "2004-01-02");
         // Advance Order Gap
@@ -1183,8 +1166,6 @@ public class FDStoreProperties {
 
         defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 
-        defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
-
         // iphone
         defaults.put(PROP_MEDIA_IPHONE_TEMPLATE_PATH, "media/mobile/iphone/");
         defaults.put(IPHONE_EMAIL_SUBJECT, "FreshDirect SmartPhone Shopping");
@@ -1211,9 +1192,6 @@ public class FDStoreProperties {
         defaults.put(ROBIN_HOOD_LANDING_URL, "/robin_hood/landing.jsp");
         defaults.put(PROP_ROBIN_HOOD_SKU_CODE, "MKT0075239");
         defaults.put(ROBIN_HOOD_STATUS, "BUY");
-
-        defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");
-        defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");
 
         // Meat Deals and EDLP
         defaults.put(DEPT_MEAT_DEALS, "true");
@@ -1287,7 +1265,6 @@ public class FDStoreProperties {
         defaults.put(PROP_DP_CART_ENABLED, "false");
 
         defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");
-        defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "8");
 
         // Brand media replacement (APPDEV-1308)
         defaults.put(PROP_BRAND_MEDIA_IDS, "none");
@@ -1363,8 +1340,6 @@ public class FDStoreProperties {
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
 
         defaults.put(BUILDVER_ENABLE, "true");
-
-        defaults.put(EVENTLOGGING_ENABLED, "true");
 
         defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
 
@@ -1598,6 +1573,7 @@ public class FDStoreProperties {
         // Product Family
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
+        defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
         defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.nj01/givex/giftcard/");
@@ -2099,14 +2075,6 @@ public class FDStoreProperties {
         return new InitialContext(env);
     }
 
-    public static Context getRoutingInitialContext() throws NamingException {
-        Hashtable<String, String> env = new Hashtable<String, String>();
-        env.put(Context.PROVIDER_URL, getRoutingProviderURL());
-        env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory());
-
-        return new InitialContext(env);
-    }
-
     public static boolean isSummerServiceEnabled() {
         return (Boolean.valueOf(get(PROP_SUMMERSERVICE))).booleanValue();
     }
@@ -2280,10 +2248,6 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_PROMOTION_RT_REFRESH_PERIOD));
     }
 
-    public static String getAlternateZipcodeForGeocode(String srcZipcode) {
-        return get(PROP_GEOCODE_ALTZIPCODE + "." + srcZipcode);
-    }
-
     // cut off time
     public static String getCutOffTimeRange(int day) {
         return get("fdstore.cut_off_day_" + day);
@@ -2297,10 +2261,6 @@ public class FDStoreProperties {
     // customer service hours
     public static String getCustServHoursRange(int day) {
         return get("fdstore.cust_serv_day_" + day);
-    }
-
-    public static boolean isNewGeocodeFormat() {
-        return (Boolean.valueOf(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
     }
 
     public static boolean isDCPDAliasHandlingEnabled() {
@@ -2675,36 +2635,12 @@ public class FDStoreProperties {
         return new DateRange(DateUtil.truncate(dStart), DateUtil.truncate(dEnd));
     }
 
-    public static String getRoutingGatewayHome() {
-        return get(PROP_ROUTINGGATEWAY_HOME);
-    }
-
-    public static boolean isDynamicRoutingEnabled() {
-        return (Boolean.valueOf(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
-    }
-
-    public static boolean isEventLoggingEnabled() {
-        return (Boolean.valueOf(get(EVENTLOGGING_ENABLED))).booleanValue();
-    }
-
     public static boolean isGivexBlackHoleEnabled() {
         return (Boolean.valueOf(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
     }
 
     public static boolean isGivexSecurityFixEnabled() {
         return (Boolean.valueOf(get(GIVEX_SECURITY_FIX_ENABLED))).booleanValue();
-    }
-
-    public static String getRoutingProviderURL() {
-        return get(PROP_ROUTING_PROVIDER_URL);
-    }
-
-    public static String getCTCapacityFileName() {
-        return get(CT_DELIVERY_CAPACITY_FILE_NAME);
-    }
-
-    public static String getPR1CapacityFileName() {
-        return get(PR1_DELIVERY_CAPACITY_FILE_NAME);
     }
 
     public static String getGCTemplateBaseUrl() {
@@ -2978,10 +2914,6 @@ public class FDStoreProperties {
 
     public static int get4mmRefreshInterval() {
         return Integer.parseInt(get(PROP_4MM_REFRESH_INTERVAL));
-    }
-
-    public static int getUnassignedProcessingLimit() {
-        return Integer.parseInt(get(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT));
     }
 
     public static String getWSDiscountAmountList() {
@@ -3302,22 +3234,7 @@ public class FDStoreProperties {
     public static boolean isSessionLoggingEnabled() {
         return (Boolean.valueOf(get(SESSION_LOGGING_ENABLED))).booleanValue();
     }
-
-    public static boolean isRealTimeAnalysisEnabled() {
-        return (new Boolean(get(REAL_TIME_EVENT_ANALYSIS))).booleanValue();
-    }
-
-    public static String getKbSource() {
-        return get(EVENT_KB_SOURCE);
-    }
-
-    public static String getRuleRepository() {
-        return get(RULES_REPOSITORY);
-    }
-
-    public static boolean isDebugEventAnalysis() {
-        return (new Boolean(get(DEBUG_EVENT_ANALYSIS))).booleanValue();
-    }
+    
 
     public static int getCountryInfoRefreshInterval() {
         return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
@@ -3934,6 +3851,9 @@ public class FDStoreProperties {
 
     public static String getLogisticsAPIUrl() {
         return get(PROP_LOGISTICS_API_URL);
+    }
+    public static String getPayPalAPIUrl() {
+        return get(PROP_PAYPAL_API_URL);
     }
 
     public static String getOMSAPIUrl() {

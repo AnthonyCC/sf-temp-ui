@@ -16,15 +16,20 @@
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String mobweb_uri = request.getRequestURI();
-	boolean isQS = (mobweb_uri.indexOf("/quickshop/") != -1) ? true : false;
+	boolean isReorder = (mobweb_uri.indexOf("/quickshop/") != -1) ? true : false;
+	boolean isReorderItems = (mobweb_uri.indexOf("/qs_top_items.jsp") != -1) ? true : false;
+	boolean isReorderLists = (mobweb_uri.indexOf("/qs_shop_from_list.jsp") != -1) ? true : false;
+	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
+	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
+	
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	
 	request.setAttribute("inMobWebTemplate", true);
 %>
 <%
-	if (isQS) {
+	if (isReorder) {
 		%><features:isActive name="isQS20" featureName="quickshop2_0" /><%
 	}
 
@@ -70,7 +75,7 @@
     <jwr:style src="/global.css" media="all" />
 	<fd:css href="/assets/css/common/locationbar_fdx.css" />
     <%
-		if (isQS) {
+		if (isReorder) {
 			%><jwr:style src="/quickshop.css" media="all" /><%
 		}
 	%>
@@ -87,7 +92,7 @@
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
     
     <%
-		if (isQS) {
+		if (isReorder) {
 			%><script type="text/javascript">
 	        	function showStandardAds(){		
 	        		$jq('#QSTop').show();
@@ -96,9 +101,9 @@
 		}
 	%>
   </head>
-<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
-<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isQS) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
+<!--[if lt IE 9]><body class="ie8" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if gt IE 8]><body data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if !IE]><!--><body data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <div class="container-fluid" id="page-content"><!-- body cont s -->
 		
@@ -160,18 +165,18 @@
 		      <!-- end : leftnav -->    
 		    </nav>
 		    <%
-				if (isQS) {
+				if (isReorder) {
 					%>
 					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
 		                <div class="header">
 		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
 		                </div>
-		                <% if(false){ %>
+		                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
 		                <div id="mm-reorder-nav">
 							<ul>
-								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Items</a></li>
-								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Orders</a></li>
-								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(true){ %>non<% }%>transparent">Lists</a></li>					
+								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
+								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(isReorderOrders){ %>non<% }%>transparent">Orders</a></li>
+								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>					
 							</ul>
 							<% if (user.isEligibleForStandingOrders()) { %>
 								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>                     
@@ -179,19 +184,27 @@
 				    	</div>
 				    	<%} %>
 				    		                
-	                <tmpl:get name="pagination" />
-	                
-	                <h2>Items</h2>
+	               
+	                <% if (isReorderItems) { %>
+	                	<h2>Your Top Items</h2>
+	                <% } %>
+	               <% if (isReorderLists) { %>
+	               		<h2>Your Shopping Lists</h2>
+	               <% } %>
+	               <% if (isReorderOrders) { %>
+	               		<h2>Your Last Order</h2>
+	               <% } %>
+	                 <tmpl:get name="pagination" />
 	                <%
 				}
 			%>
+			<%-- container with qs-container is required --%>
+			<div class="qs-container"><tmpl:get name="menu" /></div>
 			<tmpl:get name="content" />
-		    <%
-				if (isQS) { %>
-					<tmpl:get name="pagination" />
-					</div>
-				<%}
-			%>
+		    <% if (isReorder) { %>
+				<tmpl:get name="pagination" />
+				</div>
+			<% } %>
 	    </div><!-- content ends above here-->
 	    
 	    <!-- bottom nav s -->
@@ -205,16 +218,25 @@
 	<tmpl:get name='soypackage'/>
 	
 	<%
-		if (isQS) { /* right place for this? */
+		if (isReorder) { /* right place for this? */
 			%><div id="ModifyBRDContainer"></div><%
 		}
 	%>
     
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 	
     <tmpl:get name="jsmodules" />
 	<tmpl:get name='extraJsModules'/>
 	    
 	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
+
+	<% if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ %>
+		<script>
+			$jq(document).on('ready',  function() {
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 320, height: 400});
+			});
+		</script>
+	<% } %>
   </body>
 </html>

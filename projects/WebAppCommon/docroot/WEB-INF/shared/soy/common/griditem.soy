@@ -133,6 +133,7 @@
   {param pricePerDefaultSalesUnit:$item.pricePerDefaultSalesUnit /}
   {param dispDefaultSalesUnit:$item.dispDefaultSalesUnit /}
   {param mobWeb:$mobWeb /}
+  {param timeToComplete:$item.timeToComplete /}
 {/call}
 {/template}
 
@@ -142,7 +143,7 @@
  * @param skuCode
  * @param catId
  * @param variantId
- * @param pageType 
+ * @param pageType
  * @param available
  * @param productImage
  * @param badge
@@ -184,14 +185,14 @@
 <li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
     <a href="{$productPageUrl}" class="portrait-item-image-link">
-      <div class="portrait-item-burst_wrapper">      
+      <div class="portrait-item-burst_wrapper">
         <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
-        {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}      
+        {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
       </div>
     </a>
-    
-    
-    
+
+
+
     {call common.potatoGridItemControls}
       {param customizePopup:$customizePopup /}
       {param hasTerms:$hasTerms /}
@@ -314,6 +315,7 @@
  * @param? pricePerDefaultSalesUnit
  * @param? dispDefaultSalesUnit
  * @param? mobWeb
+ * @param? timeToComplete
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -321,9 +323,9 @@
 	{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}" 
-	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" 
-	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''} 
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
+	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
@@ -333,7 +335,12 @@
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
 		</div>
-	  </a>
+		</a>
+		{if $timeToComplete and $timeToComplete>0}
+			<div class="portrait-product-list-time">
+				<span class="icon-clock2-before"><span>{$timeToComplete} minutes</span>
+			</div>
+		{/if}
 	</div>
 	<div class="portrait-item-header">
 	{if $brandName and $productNameNoBrand}
@@ -396,10 +403,10 @@
 				{/if}
 				{if $utPrice}
 					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-				{/if}				
+				{/if}
 			</div>
 		{else}
-			<div class="portrait-item-price">			
+			<div class="portrait-item-price">
 				{call common.price}
 					{param wasPrice:$wasPrice /}
 					{param price:$price /}
@@ -425,7 +432,7 @@
 				{/if}
 				{if $mixNMatch}{/if}
 			</div>
-		{/if}		
+		{/if}
 	{/if}
 	{if $showConfig}
 		<div class="portrait-item-configuration">
@@ -532,7 +539,7 @@
 			{/if}
 		{/foreach}
 	{/if}
-	
+
 	{if $isEligibleForStandingOrders}
 		{if length($soData.settingsData.soData) == 0}
 			<div class="portrait-item-so-container">
@@ -717,7 +724,7 @@
 {/template}
 
 /**
- * @param item product 
+ * @param item product
  */
 {template .availabilityMessage autoescape="false"}
     {if $item.msgCutoffHeader}
@@ -754,7 +761,7 @@
       {$item.msgLeadTimeHeader}
     </div>
     {/if}
-    
+
     {if $item.msgLeadTime}
     <div class="am-leadtime">
       {$item.msgLeadTime}
@@ -769,4 +776,3 @@
 		</div>
     {/if}
 {/template}
-

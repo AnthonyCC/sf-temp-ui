@@ -14,10 +14,6 @@ public abstract class TagWrapper extends HttpContextWrapper {
 
     protected static final String[] EMPTY_ARRAY = new String[0];
 
-    public static final String GET_RESULT = "getResult";
-
-    private final static Category LOGGER = LoggerFactory.getInstance(TagWrapper.class);
-
     protected TagSupport wrapTarget;
 
     protected abstract Object getResult() throws FDException;

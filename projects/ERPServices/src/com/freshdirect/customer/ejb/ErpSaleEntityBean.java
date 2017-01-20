@@ -1866,5 +1866,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			throw e;
 		}
 	}
+
+	public void markAsPaypalSettlementFailed() throws ErpTransactionException {
+		try{
+			model.markAsPaypalSettlementFailed();
+			setModified();
+		}catch(ErpTransactionException e){
+			getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
 	
 }

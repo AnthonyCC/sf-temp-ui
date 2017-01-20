@@ -3,12 +3,19 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ taglib uri='template' prefix='tmpl' 
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='bean' prefix='bean'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><fd:CheckLoginStatus /><%
 
-<% //expanded page dimensions
-final int W_HELP_FAQ_HOME_TOTAL = 806;
-%>
+	//expanded page dimensions
+	final int W_HELP_FAQ_HOME_TOTAL = 806;
 
-<%
 	String faqPage = FDFaqUtil.getFaqHomeId();
 	Map params = new HashMap();
 	params.put("baseUrl", "");
@@ -22,12 +29,6 @@ final int W_HELP_FAQ_HOME_TOTAL = 806;
 	params.put("isPage", Boolean.valueOf(
 			request.getParameter("page") != null));
 	params.put("isPopup", false);
-%><%@ taglib uri='template' prefix='tmpl' 
-%><%@ taglib uri='logic' prefix='logic'
-%><%@ taglib uri='bean' prefix='bean'
-%><%@ taglib uri='freshdirect' prefix='fd'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
-%><fd:CheckLoginStatus /><%
 	FDUserI user2 = (FDUserI) session.getAttribute(SessionName.USER);
 	if (user2 != null) {
 		params.put("fd_user", user2);
@@ -96,7 +97,20 @@ final int W_HELP_FAQ_HOME_TOTAL = 806;
 	}
 	String ftl="/media/editorial/faq/"+faqPage+".ftl";
 	String defaultFtl="/media/editorial/faq/intro.ftl";
-%><tmpl:insert template='/common/template/faq_help.jsp'>
+
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user2) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String pageTemplate = "/common/template/faq_help.jsp";
+	String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/help/faq_home.jsp" : request.getAttribute("sitePage").toString();
+	params.put("mobWeb", mobWeb); /* put this in the params for FTL usage */
+
+	if (mobWeb) {
+		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		}
+	}
+%>
+<tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
     	<fd:SEOMetaTag pageId="FAQHome"></fd:SEOMetaTag>
@@ -104,18 +118,18 @@ final int W_HELP_FAQ_HOME_TOTAL = 806;
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
-		<table border="0" cellpadding="0" cellspacing="0" width="<%=W_HELP_FAQ_HOME_TOTAL%>">
+		<table border="0" cellpadding="0" cellspacing="0" style="width: <%=((mobWeb)?"100%":W_HELP_FAQ_HOME_TOTAL+"px") %>">
 		<tr>
 			<td valign="top">
-				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
+				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0" />
 			</td>
 			<td>
-			<% if(!isDefaultFtl){ %>
-			<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
-			<% } else { %>
-			<fd:IncludeMedia name="<%= defaultFtl%>" parameters="<%=params%>" withErrorReport="true"/>
-			<% } %>
-						</td>
+				<% if(!isDefaultFtl){ %>
+					<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
+				<% } else { %>
+					<fd:IncludeMedia name="<%= defaultFtl%>" parameters="<%=params%>" withErrorReport="true"/>
+				<% } %>
+			</td>
 		</tr>
 		</table>
 	</tmpl:put>

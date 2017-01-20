@@ -351,4 +351,6 @@ public interface RequestParamName {
     public static final String TAXATION_TYPE = "TAXATION_TYPE";
     
     public static final String REQ_PARAM_CARTLINE = "cartLine";
+    
+    public static final String REQ_PARAM_GO_GREEN = "go_green";
 }
