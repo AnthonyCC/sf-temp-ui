@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -22,6 +21,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -36,9 +36,11 @@ import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrder;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrders;
 import com.freshdirect.mobileapi.controller.data.response.ModifiedOrder;
+import com.freshdirect.mobileapi.controller.data.response.ModifiedOrders;
 import com.freshdirect.mobileapi.controller.data.response.Orders;
 import com.freshdirect.mobileapi.controller.data.response.QuickShop;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
+import com.freshdirect.mobileapi.controller.data.response.QuickShopResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Cart;
@@ -57,43 +59,31 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
 import com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet;
+import com.freshdirect.webapp.ajax.reorder.QuickShopMenuOrderUtil;
 import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
+import com.freshdirect.webapp.ajax.reorder.data.QuickShopPastOrdersCustomMenu;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
-/**
- * @author Rob
- *
- */
 public class OrderController extends BaseController {
     private static final Category LOGGER = LoggerFactory.getInstance(OrderController.class);
 
     private static final String PARAM_ORDER_ID = "orderId";
-
     private static final String ACTION_GET_ORDER = "getorderdetail";
-
     private static final String ACTION_GET_QUICK_SHOP_ORDER_LIST = "getquickshoporders";
-
     private static final String ACTION_CANCEL_ORDER = "cancelorder";
-
     private static final String ACTION_LOAD_ORDER_TO_CART = "modifyorder";
-
     private static final String ACTION_CANCEL_ORDER_MODIFY = "cancelmodify";
-
+    private static final String ACTION_GET_MODIFIABLE_ORDER_LIST = "getmodifiableorders";
     private static final String ACTION_QUICK_SHOP = "quickshop";
-    
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEM = "geteveryitemfordept";
-    
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT = "getdeptsforeveryitem";
-    
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED = "geteveryitemeverordered";
-    
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDEREDEX = "geteveryitemeverorderedEX";
-    
     private static final String ACTION_GET_ORDERS = "getExistingOrders";
-    
     private static final String ACTION_CHECK_MODIFY = "checkmodify";
     
     /* (non-Javadoc)
@@ -102,6 +92,7 @@ public class OrderController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
+        Message responseMessage = null;
 
         if (ACTION_GET_ORDER.equals(action)) {
             String orderId = request.getParameter(PARAM_ORDER_ID);
@@ -109,38 +100,38 @@ public class OrderController extends BaseController {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            model = getOrderDetail(model, user, orderId, request);
+            responseMessage = getOrderDetail(user, orderId, request);
         } else if(ACTION_GET_ORDERS.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
-        	model = getDetailsForOrders(model, user, orderIds, request);
-        	
+        	responseMessage = getDetailsForOrders(user, orderIds, request);
         }else if (ACTION_GET_QUICK_SHOP_ORDER_LIST.equals(action)) {
-            model = getQuickshopOrders(model, user, request, response);
+            responseMessage = getQuickshopOrders(user, request, response);
         } else if (ACTION_CANCEL_ORDER.equals(action)) {
             String orderId = request.getParameter(PARAM_ORDER_ID);
             if (orderId == null) {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            model = cancelOrder(model, user, orderId, request);
+            responseMessage = cancelOrder(user, orderId, request);
         } else if (ACTION_LOAD_ORDER_TO_CART.equals(action)) {
             String orderId = request.getParameter(PARAM_ORDER_ID);
             if (orderId == null) {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            model = loadOrder(model, user, orderId, request);
+            responseMessage = loadOrder(user, orderId, request);
         }  else if(ACTION_CHECK_MODIFY.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
-        	model = checkModifyForOrders(model, user, orderIds);
-        	
+        	responseMessage = checkModifyForOrders(user, orderIds);
         } else if (ACTION_QUICK_SHOP.equals(action)) {
             String orderId = request.getParameter("orderId");
-            model = getProductsFromOrder(model, user, orderId);
+            responseMessage = getProductsFromOrder(user, orderId);
         } else if (ACTION_CANCEL_ORDER_MODIFY.equals(action)) {
-            model = cancelOrderModify(model, user, request);
+            responseMessage = cancelOrderModify(user, request);
+        } else if (ACTION_GET_MODIFIABLE_ORDER_LIST.equals(action)) {
+            responseMessage = getModifiableOrders(user, request);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM.equals(action)) {  
         	String orderId = request.getParameter("orderId");
         	String deptId = request.getParameter("qsDeptId");
@@ -161,7 +152,7 @@ public class OrderController extends BaseController {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
             requestMessage.setMax(500);
-            model = getProductsFromOrderDept(model, user, orderId
+            responseMessage = getProductsFromOrderDept(user, orderId
             										, (deptId != null && deptId.trim().length() > 0 
             												&& !"all".equalsIgnoreCase(deptId)) ? deptId : null
             												, noOfOrderFilterDays
@@ -175,36 +166,63 @@ public class OrderController extends BaseController {
         			&& !"none".equalsIgnoreCase(noOfOrderDays)) {
         		noOfOrderFilterDays =  new Integer(noOfOrderDays);
         	}
-        	model = getDeptForQuickshopEveryItem(model, user, orderId, noOfOrderFilterDays);
-        }  else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED.equals(action)) {  
-        	//Every item ever ordered similar to storefront quickshop every item ever ordered
-        	// Retrieving any possible payload
-            String postData = getPostData(request, response);
-            
-        	
-        	SearchQuery requestMessage = new SearchQuery();
-            if (StringUtils.isNotEmpty(postData)) {
-                requestMessage = parseRequestObject(request, response, SearchQuery.class);
+        	responseMessage = getDeptForQuickshopEveryItem(user, orderId, noOfOrderFilterDays);
+        } else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED.equals(action)) {
+            // Every item ever ordered similar to storefront quickshop every item ever ordered
+            // Retrieving any possible payload
+            if (isCheckLoginStatusEnable(request)) {
+                try {
+                    FDUserI fdUser = user.getFDSessionUser();
+                    QuickShopListRequestObject requestMessage;
+                    if (StringUtils.isNotEmpty(getPostData(request, response))) {
+                        requestMessage = parseRequestObject(request, response, QuickShopListRequestObject.class);
+                    } else {
+                        requestMessage = new QuickShopListRequestObject();
+                    }
+                    requestMessage.setUserId(fdUser.getUserId());
+                    int pageSize = CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, fdUser, requestMessage.getPageSize());
+                    requestMessage.setPageSize(pageSize);
+
+                    FilteringNavigator nav = requestMessage.convertToFilteringNavigator();
+                    nav.setPageSize(pageSize);
+                    FilteringFlowResult<QuickShopLineItemWrapper> result = collectQuickShopLineItemForTopItems(fdUser, request, nav);
+
+                    QuickShopResponse quickShopResponse = new QuickShopResponse(
+                            QuickShopServlet.unwrapResult(QuickShopServlet.createPage(fdUser, request, requestMessage, result.getItems())), result.getMenu(),
+                            new QuickShopPagerValues(requestMessage.getPageSize(), result.getItems().size(), requestMessage.getActivePage()), QuickShopServlet.generateSorter(nav),
+                            nav.getSearchTerm(), null);
+                    QuickShopMenuOrderUtil.sortMenuItems(quickShopResponse.getMenu());
+                    QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService()
+                            .transformMenuIntoPastOrdersCustom(quickShopResponse.getMenu(), requestMessage.getYourLastOrderId());
+                    quickShopResponse.setOrders(transformMenuIntoPastOrdersCustom);
+                    quickShopResponse.setStatus(Message.STATUS_SUCCESS);
+                    responseMessage = quickShopResponse;
+                } catch (ModelException e) {
+                    throw new FDException(e);
+                }
+            } else {
+                String postData = getPostData(request, response);
+                SearchQuery requestMessage = new SearchQuery();
+                if (StringUtils.isNotEmpty(postData)) {
+                    requestMessage = parseRequestObject(request, response, SearchQuery.class);
+                }
+                responseMessage = getEveryItemEverOrdered(user, requestMessage, request);
             }
-            model = getEveryItemEverOrdered(model, user, requestMessage, request);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDEREDEX.equals(action)){
         	String postData = getPostData(request, response);
-            
-        	
         	SearchQuery requestMessage = new SearchQuery();
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
             requestMessage.setMax(500);
-            model = getEveryItemEverOrderedEX(model, user, requestMessage, request);
+            responseMessage = getEveryItemEverOrderedEX(user, requestMessage, request);
         }
 
+        setResponseMessage(model, responseMessage, user);
         return model;
     }
 
-    private ModelAndView checkModifyForOrders(ModelAndView model,
-			SessionUser user, List<String> orderIds) throws FDException, JsonException {
-
+    private Message checkModifyForOrders(SessionUser user, List<String> orderIds) throws FDException, JsonException {
     	ModifiableOrders orders = new ModifiableOrders();
     	ActionResult result = new ActionResult();
     	for(String orderId : orderIds){
@@ -212,23 +230,10 @@ public class OrderController extends BaseController {
     		ModifiableOrder order = new ModifiableOrder(orderId, isModifiable);
     		orders.addOrder(order);
     	}
-    	setResponseMessage(model, orders, user);
-    	return model;
-    
+    	return orders;
     }
 
-	/**
-     * 
-     * @param user
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException 
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    private ModelAndView cancelOrderModify(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException,
+    private Message cancelOrderModify(SessionUser user, HttpServletRequest request) throws FDException,
             JsonException {
         Message responseMessage;
 		try {
@@ -248,22 +253,31 @@ public class OrderController extends BaseController {
 			responseMessage.addErrorMessage(traceFor(e));
 //			responseMessage.setStatus(ERR_SYSTEM);
 		}
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        return responseMessage;
+    }
+    
+    private Message getModifiableOrders(SessionUser user, HttpServletRequest request) throws FDException {
+        OrderHistory history = user.getOrderHistory();
+        Cart cart = user.getShoppingCart();
+
+        List<ModifiedOrders.ModifiedOrder> modifiedOrders = new ArrayList<ModifiedOrders.ModifiedOrder>();
+        for (OrderInfo modifiableOrder : history.getModifiableOrders(new Date())) {
+            ModifiedOrders.ModifiedOrder modifiedOrder = new ModifiedOrders.ModifiedOrder();
+            modifiedOrder.setOrderId(modifiableOrder.getId());
+            modifiedOrder.setModificationCutoffTime(modifiableOrder.getDeliveryCutoffTime());
+            modifiedOrder.setDeliveryStartTime(modifiableOrder.getDeliveryStartTime());
+            modifiedOrder.setDeliveryEndTime(modifiableOrder.getDeliveryEndTime());
+            modifiedOrders.add(modifiedOrder);
+        }
+
+        ModifiedOrders responseMessage = new ModifiedOrders();
+        responseMessage.setReservationCutoff(cart.getModificationCutoffTime());
+        responseMessage.setModifiedOrders(modifiedOrders);
+        responseMessage.setStatus(Message.STATUS_SUCCESS);
+        return responseMessage;
     }
 
-    /**
-     * @param user
-     * @param requestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException 
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    private ModelAndView loadOrder(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException,
+    private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
     	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
         if (isCheckLoginStatusEnable(request)) {
@@ -282,28 +296,16 @@ public class OrderController extends BaseController {
             ((ModifiedOrder) responseMessage).setModificationCutoffTime(cart.getModificationCutoffTime());
             ((ModifiedOrder) responseMessage).setDeliveryAddress(order.getDeliveryAddress());
             ((ModifiedOrder) responseMessage).setPaymentMethod(order.getPaymentMethod());
-            ((ModifiedOrder) responseMessage).setReservationDateTime(order.getReservationDateTime());
+            ((ModifiedOrder) responseMessage).setReservationTime(order.getReservationDate());
             ((ModifiedOrder) responseMessage).setReservationTimeRange(order.getReservationTimeRange());
         } else {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        return responseMessage;
     }
 
-    /**
-     * @param user
-     * @param requestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException 
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    private ModelAndView cancelOrder(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException,
+    private Message cancelOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
         ResultBundle resultBundle = Order.cancelOrder(orderId, user);
         ActionResult result = resultBundle.getActionResult();
@@ -316,41 +318,19 @@ public class OrderController extends BaseController {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        return responseMessage;
     }
 
-    /**
-     * @param user
-     * @param requestMessage
-     * @return
-     * @throws FDException
-     * @throws JsonException 
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    private ModelAndView getOrderDetail(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException, JsonException {
+    private Message getOrderDetail(SessionUser user, String orderId, HttpServletRequest request) throws FDException, JsonException {
         Order order = user.getOrder(orderId);
         com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
         if (isCheckLoginStatusEnable(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
         }
-
-        setResponseMessage(model, orderDetail, user);
-        return model;
+        return orderDetail;
     }
 
-    /**
-     * @param user
-     * @return
-     * @throws FDException
-     * @throws JsonException  
-     * @throws JsonGenerationException
-     * @throws JsonMappingException
-     * @throws IOException
-     */
-    private ModelAndView getQuickshopOrders(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response)
+    private Message getQuickshopOrders(SessionUser user, HttpServletRequest request, HttpServletResponse response)
             throws FDException, JsonException {
         List<OrderInfo> infos = OrderHistory.getCompletedOrderInfos(user.getCompleteOrderHistory());
 
@@ -366,11 +346,10 @@ public class OrderController extends BaseController {
         ListPaginator<OrderInfo> paginator = new ListPaginator<OrderInfo>(infos, resultMax);
         QuickShopLists responseMessage = QuickShopLists.initWithOrder(paginator.getPage(page));
         responseMessage.setTotalResultCount(infos.size());
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        return responseMessage;
     }
 
-    private ModelAndView getProductsFromOrder(ModelAndView model, SessionUser user, String orderId) throws FDException, JsonException {
+    private Message getProductsFromOrder(SessionUser user, String orderId) throws FDException, JsonException {
         Order order = user.getOrder(orderId);
 
         List<ProductConfiguration> products;
@@ -381,21 +360,20 @@ public class OrderController extends BaseController {
         }
         QuickShop quickShop = new QuickShop();
         quickShop.setProducts(products);
-        setResponseMessage(model, quickShop, user);
-        return model;
+        return quickShop;
     }
     
-    private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user
-    													, String orderId, String deptId
-    													, Integer filterOrderDays, String sortBy
-    													, SearchQuery query, HttpServletRequest request) throws FDException, JsonException {
+    private Message getProductsFromOrderDept(SessionUser user, String orderId, String deptId, Integer filterOrderDays, String sortBy, SearchQuery query, HttpServletRequest request)
+            throws FDException, JsonException {
         List<ProductConfiguration> products;
         List<ProductConfiguration> productPage = null;
         List<ProductConfiguration> deptProducts = new ArrayList<ProductConfiguration>();
         try {
-            //products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);  
-        	//products = loadProductsWithQuickShopFilter(user, session, query);
-        	products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
+            FDUserI fdUser = user.getFDSessionUser();
+            QuickShopListRequestObject requestData = createDefaultQuickShopRequest(fdUser, request, query);
+            FilteringNavigator nav = requestData.convertToFilteringNavigator();
+            FilteringFlowResult<QuickShopLineItemWrapper> result = collectQuickShopLineItemForTopItems(fdUser, request, nav);
+        	products = convertToSkuList(result, fdUser);
         	//Add All products in given dept id.
         	
         	for(ProductConfiguration product : products){
@@ -417,19 +395,19 @@ public class OrderController extends BaseController {
         QuickShop quickShop = new QuickShop();
         quickShop.setProducts(productPage);
         quickShop.setTotalResultCount(deptProducts != null ? deptProducts.size() : 0);
-        setResponseMessage(model, quickShop, user);
-        return model;
+        return quickShop;
     }
     
-	private ModelAndView getEveryItemEverOrdered(ModelAndView model, SessionUser user, SearchQuery query,
-	        HttpServletRequest request) throws FDException, JsonException {
-		
+	private Message getEveryItemEverOrdered(SessionUser user, SearchQuery query, HttpServletRequest request) throws FDException, JsonException {
 		List<ProductConfiguration> products;
 		List<ProductConfiguration> productPage = null;
 
 		try {
-			//products = loadProductsWithQuickShopFilter(user, session, query);
-			products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
+		    FDUserI fdUser = user.getFDSessionUser();
+            QuickShopListRequestObject requestData = createDefaultQuickShopRequest(fdUser, request, query);
+            FilteringNavigator nav = requestData.convertToFilteringNavigator();
+            FilteringFlowResult<QuickShopLineItemWrapper> result = collectQuickShopLineItemForTopItems(fdUser, request, nav);
+            products = convertToSkuList(result, fdUser);
 			if (products != null) {
 				if(query.getPage() > 0) {
 					int start = (query.getPage() - 1) * query.getMax();
@@ -448,19 +426,19 @@ public class OrderController extends BaseController {
 		QuickShop quickShop = new QuickShop();
 		quickShop.setProducts(productPage);
 		quickShop.setTotalResultCount(products != null ? products.size() : 0);
-		setResponseMessage(model, quickShop, user);
-		return model;
+		return quickShop;
 	}
 	
-	private ModelAndView getEveryItemEverOrderedEX(ModelAndView model, SessionUser user, SearchQuery query,
-	        HttpServletRequest request) throws FDException, JsonException {
-		
+	private Message getEveryItemEverOrderedEX(SessionUser user, SearchQuery query, HttpServletRequest request) throws FDException, JsonException {
 		List<ProductConfiguration> products;
 		List<ProductConfiguration> productPage = null;
 
 		try {
-			//products = loadProductsWithQuickShopFilter(user, session, query);
-			products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
+		    FDUserI fdUser = user.getFDSessionUser();
+            QuickShopListRequestObject requestData = createDefaultQuickShopRequest(fdUser, request, query);
+            FilteringNavigator nav = requestData.convertToFilteringNavigator();
+            FilteringFlowResult<QuickShopLineItemWrapper> result = collectQuickShopLineItemForTopItems(fdUser, request, nav);
+            products = convertToSkuList(result, fdUser);
 			if (products != null) {
 				if(query.getPage() > 0) {
 					int start = (query.getPage() - 1) * query.getMax();
@@ -486,32 +464,33 @@ public class OrderController extends BaseController {
 		}
 		quickShop.setProductIds(productIds);
 		quickShop.setTotalResultCount(products != null ? products.size() : 0);
-		setResponseMessage(model, quickShop, user);
-		return model;
+		return quickShop;
 	}
     
-    //Load products for New quickshop - this will get the top Items
-    private List<ProductConfiguration> loadProductsWithQuickShopTopItemsFilter(SessionUser user, HttpServletRequest request, SearchQuery query)throws ModelException{
-    	FDUserI fdUser = user.getFDSessionUser();//.getUser();
-    	QuickShopListRequestObject requestData = new QuickShopListRequestObject();
-    	requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user.getFDSessionUser(), QuickShopServlet.DEFAULT_PAGE_SIZE));
+    // Load products for New quickshop - this will get the top Items
+    private FilteringFlowResult<QuickShopLineItemWrapper> collectQuickShopLineItemForTopItems(FDUserI user, HttpServletRequest request, FilteringNavigator nav)
+            throws ModelException {
+        try {
+            return QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(request, user, request.getSession(),
+                    nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
+        } catch (FDResourceException e) {
+            throw new ModelException(e);
+        }
+    }
+    
+    private QuickShopListRequestObject createDefaultQuickShopRequest(FDUserI user, HttpServletRequest request, SearchQuery query) {
+        QuickShopListRequestObject requestData = new QuickShopListRequestObject();
     	requestData.setTimeFrame("timeFrameAll");
         requestData.setSortId("freq");
+        requestData.setUserId(user.getUserId());
+        requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
         if(query.getDepartment() != null && query.getDepartment().trim().length() > 0) {
         	List<Object> depts = new ArrayList<Object>();
         	depts.add(query.getDepartment());
         	requestData.setDeptIdList(depts);
         }        
         requestData.setSearchTerm(query.getQuery());
-        try {
-			FilteringNavigator nav = requestData.convertToFilteringNavigator();
-            FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(request, fdUser,
-                    request.getSession(), nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
-			return convertToSkuList(result, fdUser);
-        } catch (FDResourceException e) {
-			throw new ModelException(e);
-		}
-   
+        return requestData;
     }
 
     private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result, FDUserI fdUser) throws ModelException {
@@ -532,7 +511,7 @@ public class OrderController extends BaseController {
         return productsWithSkus;
     }
     
-    private ModelAndView getDeptForQuickshopEveryItem(ModelAndView model, SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
+    private Message getDeptForQuickshopEveryItem(SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
     	Order order = new Order();
 
     	List<Department> departments;
@@ -572,11 +551,10 @@ public class OrderController extends BaseController {
 
     	QuickShop quickShop = new QuickShop();
     	quickShop.setDepartments(qCartDepartments);
-    	setResponseMessage(model, quickShop, user);
-    	return model;
+    	return quickShop;
     }
 
-    private ModelAndView getDetailsForOrders(ModelAndView model, SessionUser user, List<String> orderIds, HttpServletRequest request) throws FDException, JsonException{
+    private Message getDetailsForOrders(SessionUser user, List<String> orderIds, HttpServletRequest request) throws FDException, JsonException{
     	
     	//Response Object with list of orders
     	Orders orders = new Orders();
@@ -598,8 +576,7 @@ public class OrderController extends BaseController {
 			}
     		 
     	}
-    	setResponseMessage(model, orders, user);
-    	return model;
+    	return orders;
     }
     
 

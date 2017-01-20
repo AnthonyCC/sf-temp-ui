@@ -542,11 +542,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					null, pMessage.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : pMessage,
 							receivedDate, EnumEStoreId.FD.toString());
 			
-			 if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
-					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE, eStoreId.getContentId());
-				else
-					 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTIN_CONFIRMATION_SUCCESS_MESSAGE, eStoreId.getContentId());	
-			
+			smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE, eStoreId.getContentId());
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTIN_ALERT_TYPE, customerId);
 

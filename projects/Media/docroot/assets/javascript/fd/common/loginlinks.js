@@ -36,13 +36,16 @@ var FreshDirect = FreshDirect || {};
     // signup handler
     $(document).on('click', '[data-component="signup"]', function (e) {
       var isMouseEvent = e.x || e.clientX || e.y || e.clientY;
+      
+      //sort of need target here
+      var target = encodeURI($jq.QueryString["successPage"] + window.top.location.hash);
 
       if (isMouseEvent && fd.properties && fd.properties.isLightSignupEnabled) {
         e.preventDefault();
         if (fd.properties.isSocialLoginEnabled) {
-          socialSignup();
+          socialSignup(target);
         } else {
-          lightSignup();
+          lightSignup(target);
         }
       }
     });

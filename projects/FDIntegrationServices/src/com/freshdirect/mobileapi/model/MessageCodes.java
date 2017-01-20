@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public interface MessageCodes {
@@ -26,6 +25,8 @@ public interface MessageCodes {
     public static final String ERR_CART_EXPIRED = "ERR_CART_EXPIRED";
 
     public static final String ERR_INCOMPATIBLE_CLIENT = "ERR_INCOMPATIBLE_CLIENT";
+
+    public static final String ERR_IDENTIFY_CARTLINE = "ERR_IDENTIFY_CARTLINE";
 
     public static final String ERR_SYSTEM = "ERR_SYSTEM";
 
@@ -259,7 +260,11 @@ public interface MessageCodes {
     public static final String MSG_CHANGE_PASSWORD_TOKEN_EXPIRED = "Sorry, the reset password link has expired, please request a new link.";
     public static final String MSG_USER_NOT_FOUND = "Sorry, the username has not been found.";
     
+    public static final String ERR_TSLOT_ALC_RESTRICTED = "ERR_TSLOT_ALC_RESTRICTED";
+    public static final String ERR_TSLOT_ALC_RESTRICTED_MSG = "This timeslot is restricted for alcohol delivery. The hours of sale are regulated on a state and county level.";
     
+    public static final String ORDER_MINIMUM = "order_minimum";
+    public static final String SYSTEM = "system";
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
@@ -320,7 +325,7 @@ public interface MessageCodes {
 
         public static ErrorMessage translate(String key, String desc, SessionUser user) {
             ErrorMessage returnValue = null;
-            if ("order_minimum".equals(key)) {
+            if (ORDER_MINIMUM.equals(key)) {
                 if (user != null) {
                     Double subTotal = new Double(user.getShoppingCart().getSubTotal());
                     Double minimumOrder = new Double(user.getMinimumOrderAmount());
@@ -337,7 +342,7 @@ public interface MessageCodes {
                     			minimumOrder }));
                     }
                 }
-            } else if ("system".equals(key)) {
+            } else if (SYSTEM.equals(key)) {
                 //Generic system error. Pass description through
                 returnValue = new ErrorMessage(ERR_SYSTEM, desc);
             } else if ("cardNum".equals(key) && desc.contains("invalid")) {

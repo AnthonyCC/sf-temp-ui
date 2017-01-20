@@ -990,7 +990,7 @@ public class CmsFilteringFlow {
                 subSectionContexts.clear();
                 subSectionContexts.add(mergedSectionContext);
             }
-            ProductService.defaultService().removeSkuDuplicates(productItems);
+            ProductService.defaultService().removeContentKeyDuplicates(productItems);
         }
     }
 

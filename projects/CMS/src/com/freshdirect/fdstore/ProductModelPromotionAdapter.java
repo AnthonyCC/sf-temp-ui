@@ -38,10 +38,8 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		Cloneable, PrioritizedI {
 	
-    /**
-     * 
-     */
 	private static final long serialVersionUID = 8599871079838576468L;
+
 	private ProductModel productModel;
 	private boolean isFeatured;
 	private String featuredHeader;
@@ -51,7 +49,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	private FDProduct fdProduct;
 	private String erpCategory;
 	private int erpCatPosition;
-
 	
 	public ProductModel getProductModel() {
 		return productModel;
@@ -521,8 +518,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 
 	@Override
 	public UserContext getUserContext() {	
-		
-			return productModel.getUserContext();
+		return productModel.getUserContext();
 	}
 
 	@Override
@@ -1151,8 +1147,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.getEarliestAvailability();
 	}
 
-	
-
 	@Override
 	public boolean isAvailableWithin(int days) {		 
 		return getDefaultSku().isAvailableWithin(days);
@@ -1376,11 +1370,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.getAllTags();
 	}
 
-	
 	@Override
 	public Set<DomainValue> getAllDomainValues() {
 		return productModel.getAllDomainValues();
 	}
+
 	/**
 	 * @see {@link ProductModel#getUpSellProducts()}
 	 */
@@ -1464,10 +1458,20 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}
+	
+    @Override
+    public String getFdxPageTitle() {
+        return productModel.getFdxPageTitle();
+    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
+	}
+	
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return productModel.getFdxSEOMetaDescription();
 	}
 
 	@Override

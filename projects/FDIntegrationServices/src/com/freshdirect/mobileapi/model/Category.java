@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -37,9 +39,13 @@ public class Category extends ProductContainer {
     
     private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
     
-    List<Category> categories = new ArrayList<Category>();
+    private List<Category> categories = new ArrayList<Category>();
     
     private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
+
+    private String pageTitle;
+
+    private String seoMetaDescription;
 
     public static Category wrap(CategoryModel model) {
         return wrapCategory(model, 0);
@@ -132,6 +138,13 @@ public class Category extends ProductContainer {
  		
         }
 
+        if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+            result.setPageTitle(model.getFdxPageTitle());
+            result.setSeoMetaDescription(model.getFdxSEOMetaDescription());
+        } else {
+            result.setPageTitle(model.getPageTitle());
+            result.setSeoMetaDescription(model.getSEOMetaDescription());
+        }
 
         return result;
     }
@@ -227,7 +240,21 @@ public class Category extends ProductContainer {
 	public void setHeroCarousel(List<ImageBanner> heroCarousel) {
 		this.heroCarousel = heroCarousel;
 	}
-    
-    
-    
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    public String getSeoMetaDescription() {
+        return seoMetaDescription;
+    }
+
+    public void setSeoMetaDescription(String seoMetaDescription) {
+        this.seoMetaDescription = seoMetaDescription;
+    }
+
 }

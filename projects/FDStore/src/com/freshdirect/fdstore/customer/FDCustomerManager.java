@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
@@ -4197,23 +4198,30 @@ public class FDCustomerManager {
 	}
 
 	public static void storeMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery,
-			String orderNotices, String orderExceptions, String offers, String partnerMessages, FDCustomerEStoreModel customerSmsPreferenceModel, EnumEStoreId eStoreId) throws FDResourceException {
+			String orderNotices, String orderExceptions, String offers, String partnerMessages,  EnumEStoreId eStoreId) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
 			sb.storeMobilePreferences(fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, eStoreId );
-			if(EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId()))
-				{
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, 
-							new Date(), eStoreId.toString());
+			FDCustomerEStoreModel smsPreferenceModel=FDCustomerFactory.getFDCustomer(fdCustomerId).getCustomerSmsPreferenceModel();
+			
+			if(EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId()) && smsPreferenceModel!=null)
+			  { 
+				FDDeliveryManager.getInstance().addSubscriptions(customerId, smsPreferenceModel.getMobileNumber() != null ? smsPreferenceModel.getMobileNumber().getPhone():"",
+								textOffers,	textDelivery, (EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderNotices())) ? EnumSMSAlertStatus.SUBSCRIBED
+								.value() : EnumSMSAlertStatus.NONE.value(),	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderExceptions())) ? EnumSMSAlertStatus.SUBSCRIBED
+								.value() : EnumSMSAlertStatus.NONE.value(),	null,	(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getPartnerMessages())) ? EnumSMSAlertStatus.SUBSCRIBED
+								.value() : EnumSMSAlertStatus.NONE.value(), new Date(),	eStoreId.toString());
 				}
 			else{
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,mobileNumber, textOffers, textDelivery, "Y".equalsIgnoreCase(orderNotices)?"S":"N", "Y".equalsIgnoreCase(orderExceptions)?"S":"N", "Y".equalsIgnoreCase(offers)?"S":"N", "Y".equalsIgnoreCase(partnerMessages)?"S":"N", 
+				PhoneNumber phoneNumber=new PhoneNumber(mobileNumber);
+					FDDeliveryManager.getInstance().addSubscriptions(customerId,phoneNumber!=null?phoneNumber.getPhone():"", textOffers, textDelivery, 
+							"Y".equalsIgnoreCase(orderNotices)?"S":"N", "Y".equalsIgnoreCase(orderExceptions)?"S":"N", "Y".equalsIgnoreCase(offers)?"S":"N", "Y".equalsIgnoreCase(partnerMessages)?"S":"N", 
 							new Date(), eStoreId.toString());
 				
 			}
-			logSmsActivity(customerId, orderNotices, orderExceptions, offers, customerSmsPreferenceModel, eStoreId.getContentId());
+			logSmsActivity(customerId, orderNotices, orderExceptions, offers, smsPreferenceModel, eStoreId.getContentId());
 	
 		
 		} catch (RemoteException e) {
@@ -4235,7 +4243,7 @@ public class FDCustomerManager {
 		String _orderExceptions;
 		String _offers; 
 		
-		if(EnumEStoreId.FD.getContentId().equals(eStore)){
+		if(EnumEStoreId.FD.getContentId().equals(eStore) && customerSmsPreferenceModel!=null){
 			
 			_orderNotices = customerSmsPreferenceModel.getOrderNotices()!=null?customerSmsPreferenceModel.getOrderNotices():EnumSMSAlertStatus.NONE.value();
 			 _orderExceptions = customerSmsPreferenceModel.getOrderExceptions()!=null?customerSmsPreferenceModel.getOrderExceptions():EnumSMSAlertStatus.NONE.value();
@@ -4307,6 +4315,20 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.loadGoGreenPreference(customerId);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static boolean overLayGoGreenPreferences(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.overLayGoGreenPreferences(customerId);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

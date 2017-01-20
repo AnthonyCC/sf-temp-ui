@@ -52,6 +52,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.AuthorizationCommand;
 import com.freshdirect.payment.AuthorizationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
@@ -143,10 +144,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
-			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
+			AuthorizationStrategy strategy =  new AuthorizationStrategy(sale);
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
 			
-
+			
 			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 			List<ErpPaymentMethodI> paymentList=customerEB.getPaymentMethods();
@@ -180,6 +181,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());									
 			cmd.execute();						
 			List<ErpAuthorizationModel> auths = cmd.getAuthorizations();						
+			
 			
 			
 			for ( ErpAuthorizationModel auth : auths ) {	
@@ -526,6 +528,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
 			Gateway gateway = GatewayFactory.getGateway(context);	
 			capture=gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
+			 if(PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().equals(capture.getSettlementResponseCode())
+					 || PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().equals(capture.getSettlementResponseCode())){
+				 throw new ErpTransactionException(" Payment Declined ");
+			 }
 			saleEB.addCapture(capture);
 			return capture;
 		} catch (Exception e) {

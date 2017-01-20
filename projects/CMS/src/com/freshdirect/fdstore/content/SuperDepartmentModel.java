@@ -91,8 +91,16 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
     public String getPageTitle() {
 		return getAttribute("PAGE_TITLE", "");
 	}
-    
+
+    public String getFdxPageTitle() {
+        return getAttribute("PAGE_TITLE_FDX", "");
+    }
+
     public String getSEOMetaDescription() {
 		return getAttribute("SEO_META_DESC", "");
 	}
+
+    public String getFdxSEOMetaDescription() {
+        return getAttribute("SEO_META_DESC_FDX", "");
+    }
 }

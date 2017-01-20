@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.GoGreenPreferencesResult;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
@@ -49,6 +50,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     public static final String ACTION_CHANGE_CONTACT_NAMES = "changeContactNames";
     
     public static final String KEY_RETURNED_SAVED_ADDRESS = "KEY_SAVED_ADDRESS";
+    
+    public static final String ACTION_OTHER_PREFERENCES ="otherpreferences";
     
     public RegistrationControllerTagWrapper(FDUserI user) {
         super(new RegistrationControllerTag(), user);
@@ -450,6 +453,22 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
 	  	
+    }
+    
+    
+ public ResultBundle setMobileGoGreenPreference(GoGreenPreferencesResult reqestMessage, String eStoreId) throws FDException {
+    	
+		
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER, CLICK_ID, COUPON_CODE },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_GO_GREEN }, new String[] {});
+     
+        addRequestValue(REQ_PARAM_GO_GREEN, reqestMessage.isGo_green()?"Y":"N");
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+        getWrapTarget().setActionName(ACTION_OTHER_PREFERENCES);
+        
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
     }
     
 

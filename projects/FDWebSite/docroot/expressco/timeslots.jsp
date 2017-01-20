@@ -18,7 +18,7 @@
 	<%
 	    //Render the timeslots
 	%>
-	<%@ include file="/expressco/includes/i_delivery_timeslots.jspf"%>
+	<div class="tsWrapper"><%@ include file="/expressco/includes/i_delivery_timeslots.jspf"%></div>
 	<c:if test="${advancedTimeslotMediaEnabled}">
     <div class="timeslot-note">
       <div class="note-message">

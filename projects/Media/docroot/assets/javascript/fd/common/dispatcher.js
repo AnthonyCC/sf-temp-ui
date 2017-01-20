@@ -5,6 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var DECORATE_BODY = true;
+  var $ = fd.libs.$;
 
   var bus = new Bacon.Bus();
 
@@ -32,6 +33,44 @@ var FreshDirect = FreshDirect || {};
     signal: signal,
     value: bus.toProperty()
   };
+
+  // common way to send signal with any element
+  $(document).on('click', '[fd-signal]', function (e) {
+    var el = $(e.target).closest('[fd-signal]')[0],
+        signalName = el && el.getAttribute('fd-signal'),
+        params = el && el.getAttribute('fd-signal-params'),
+        paramEl = el && el.querySelector('[fd-signal-json-params]'),
+        preventDefault = el && el.hasAttribute('fd-signal-prevent-default');
+
+    if (!el) {
+      return;
+    }
+
+    if (preventDefault) {
+      e.preventDefault();
+    }
+
+    if (params) {
+      params = params.split(';').reduce(function (p, c) {
+        var kv = (""+c || "dummy").split(':');
+
+        p[kv[0]] = kv[1] || true;
+
+        return p;
+      }, {});
+    }
+
+    if (paramEl) {
+      try {
+        params = JSON.parse(paramEl.textContent);
+      } catch (e) {}
+    }
+
+    params = params || {};
+
+    // send signal
+    signal(signalName, params);
+  });
 
   fd.modules.common.utils.register("common", "dispatcher", dispatcher, fd);
 }(FreshDirect));

@@ -139,7 +139,10 @@ public class StandingOrdersServiceCmd {
 	public static void runManualJob( String orders, boolean sendReportEmail, boolean sendReminderNotificationEmail, ServletContext context) {	
 		
 		// At the beginning, set "IS_SO_JOB_RUNNING" to "true" to avoid "Simultaneous executions of the Standing Order Job"
-		context.setAttribute("IS_SO_JOB_RUNNING", "true");
+		
+		if(context!=null){
+			context.setAttribute("IS_SO_JOB_RUNNING", "true");
+		}
 		
 		StandingOrdersJobConfig jobConfig = new StandingOrdersJobConfig();
 	
@@ -169,8 +172,10 @@ public class StandingOrdersServiceCmd {
 				sendReportMail(result);
 			}
 			
+			if(context!=null){
 			// At the end, remove "IS_SO_JOB_RUNNING" to make "Manual Standing Order Job" available
 			context.removeAttribute("IS_SO_JOB_RUNNING");
+			}
 			
 
 		} catch (Exception e) {

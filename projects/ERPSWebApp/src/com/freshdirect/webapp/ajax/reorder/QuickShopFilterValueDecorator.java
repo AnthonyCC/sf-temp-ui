@@ -19,6 +19,7 @@ import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
@@ -344,6 +345,19 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 						item.putFilteringValue(YOUR_LISTS, item.getNode().getCclId());
 					}
 				}
+				
+                    case BRAND: {
+                        for (BrandModel brand : product.getBrands()) {
+                            menu.setName(brand.getFullName());
+                            menu.setFilteringUrlValue(brand.getContentKey().getId());
+                            menu.setFilter(filter);
+                            menus.add(menu);
+                            menu = new FilteringMenuItem();
+                        }
+                        item.putMenuValue(BRAND, menus);
+                        item.putFilteringValue(BRAND, BRAND.getName());
+                        break;
+                    }
 				}
 			} catch (FDResourceException e) {
 				LOG.error("Error while decorating product", e);
@@ -354,8 +368,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 	}
 
-	private static List<ProductModel> collectParents(ProductModelPricingAdapter node) {
-
+	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
 		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
 		Collection<ContentKey> parents = node.getParentKeys();

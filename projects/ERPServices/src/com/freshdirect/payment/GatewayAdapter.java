@@ -504,26 +504,26 @@ public class GatewayAdapter {
 	 * @return
 	 */
 	public static ErpAuthorizationModel getPPAuthResponse(
-			Result<Transaction> saleResult, ErpPaymentMethodI paymentMethod) {
-		
+			PayPalResponse payPalResponse, ErpPaymentMethodI paymentMethod) {
+		TransactionModel saleResult = payPalResponse.getTransactionModel();
 		if(saleResult==null) 
 			return null;
 					
 		ErpAuthorizationModel model = new ErpAuthorizationModel();
 		model.setTransactionSource(EnumTransactionSource.SYSTEM);
 		
-		if(saleResult.isSuccess() && saleResult.getTarget().getStatus().equals(Transaction.Status.AUTHORIZED)) {
+		if(saleResult.getStatus().equals(Transaction.Status.AUTHORIZED.name())) {
 			model.setResponseCode(EnumPaymentResponse.APPROVED); //hack for AVS bypass	
 			model.setAvs("Y");
-			model.setSequenceNumber(saleResult.getTarget().getPayPalDetails().getAuthorizationId());	
-			model.setEwalletTxId(saleResult.getTarget().getId());
+			model.setSequenceNumber(saleResult.getAuthorizationId());	
+			model.setEwalletTxId(saleResult.getId());
 			
-			model.setAmount(saleResult.getTarget().getAmount().doubleValue());
+			model.setAmount(saleResult.getAmount().doubleValue());
 			model.setCustomerId(paymentMethod.getCustomerId());
 			
-			model.setGatewayOrderID(saleResult.getTarget().getOrderId());
-			model.setProfileID(saleResult.getTarget().getPayPalDetails().getToken());
-			model.setMerchantId(saleResult.getTarget().getMerchantAccountId());
+			model.setGatewayOrderID(saleResult.getOrderId());
+			model.setProfileID(saleResult.getToken());
+			model.setMerchantId(saleResult.getMerchantAccountId());
 			model.setDescription(PP_DECRIPTION_AUTH);
 			// Payment Method 
 			model.setCardType(EnumCardType.PAYPAL);

@@ -5,7 +5,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
-
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <% //expanded page dimensions
 final int W_REGISTRATION_SIGNUP_TOTAL = 970;
 %>
@@ -341,8 +341,9 @@ if(user.isDepotUser()){
 	</tr>
 </table><br />
 <textarea cols="90" rows="7" readonly xname="tos">
-	<%@ include file="/includes/registration/i_user_agreement.txt" %>
-	<%@ include file="/includes/registration/i_user_agreement_espanol.txt" %>
+
+<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/i_user_agreement.txt"></fd:IncludeMedia>
+<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/i_user_agreement_espanol.txt"></fd:IncludeMedia>
 </textarea>
 
 <br /><br />

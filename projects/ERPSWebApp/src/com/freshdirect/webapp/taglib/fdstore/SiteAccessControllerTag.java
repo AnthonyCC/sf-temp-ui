@@ -17,6 +17,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -33,6 +34,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -159,7 +161,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		String application1 = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
+		String application = (String) request.getSession().getAttribute(SessionName.APPLICATION);
 		
 		this.pageContext.getSession().removeAttribute("morepage");
 
@@ -203,6 +205,17 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 					
 					if (result.isSuccess()) {
+					    if (EnumTransactionSource.FOODKICK_WEBSITE.getCode().equals(application)){
+					        if (EnumDeliveryStatus.DELIVER == serviceResult.getServiceStatus(this.serviceType)){
+					            FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
+					            user.setAvailableServices(serviceResult.getAvailableServices());
+					        } else {
+					            result.addError(new ActionError(EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS));
+					        }
+					        pageContext.setAttribute(resultName, result);
+					        return EVAL_BODY_BUFFERED;
+					    }
+					    
 						newSession();
 						
 						if("WEB".equals(this.serviceType.getName())){
@@ -254,7 +267,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 									}
 									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										
-										String application = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
 										boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 										if(!inCallCenter) {
 											doRedirect(failureCorporatePage);

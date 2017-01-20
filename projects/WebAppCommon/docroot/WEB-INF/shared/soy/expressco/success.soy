@@ -179,7 +179,7 @@
   {if $soActivate}
      <h2 class="orderid">{$soName}</h2>
   {else}
-  <h2 class="orderid">Order #{$orderId}
+  <h2 class="orderid">Order #<a href="/your_account/order_details.jsp?orderId={$orderId}" title="Click here to view this order in your order history">{$orderId}</a>
   	{if $soName}
   		<div class="standing-order-3-receiptBox">{$soName}, {$soOrderDate} Delivery</div>
   	{/if}

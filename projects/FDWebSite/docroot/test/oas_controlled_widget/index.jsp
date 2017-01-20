@@ -11,14 +11,14 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <%-- OAS variables --%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>OAS controlled widget demo</title>
     <jwr:style src="/global.css" media="all" />
@@ -45,7 +45,7 @@
       <h2>OAS slot</h2>
       <p>[HPFeature]</p>
       <div class="oas-top">
-        <div class="oas-cnt" id="oas_HPFeature"><script type="text/javascript">OAS_AD('HPFeature');</script></div>
+        <div class="oas-cnt" id="oas_b_HPFeature"><script type="text/javascript">OAS_AD('HPFeature');</script></div>
       </div>
 
       <h2>Demo widget below</h2>
@@ -65,7 +65,7 @@
     callback: {
       value: function (params) {
         var $el = $("#OAS-demo");
-
+        
         console.log('demo signal fired with the following params:', params);
         if (params.clear) {
           $el.html('');
@@ -84,4 +84,4 @@
 }(FreshDirect));
 </script>
 	</body>
-</html>
+</html> 

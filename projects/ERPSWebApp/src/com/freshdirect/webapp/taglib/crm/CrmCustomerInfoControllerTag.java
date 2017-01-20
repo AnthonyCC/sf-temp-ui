@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -23,8 +25,10 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSessionBean;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -34,6 +38,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
+	
+	private final static Category LOGGER = LoggerFactory.getInstance(CrmCustomerInfoControllerTag.class);
 	
 	private CrmCustomerInfoI customerInfo;
 	private String password;
@@ -409,7 +415,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					}
 			}
 			if(!isSent){
-				throw new FDResourceException();
+				LOGGER.info("not able to reach the sms due to SMS Gateway has some exception");
 			}
 		}
 		if (customerInfo.isRecieveFdNews() != fdCustomerEStoreModel.getEmailOptIn()//info.isReceiveNewsletter()
@@ -501,8 +507,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					}
 			}
 			if(!isSent){
-				throw new FDResourceException();
-			}
+				LOGGER.info("not able to reach the sms due to SMS Gateway has some exception");			}
 		}
 		if (customerInfo.isReceiveFdxNews() != fdCustomerEStoreModel.getFdxEmailOptIn()//info.isReceiveNewsletter()
 				|| customerInfo.isTextOnlyEmail() != info.isEmailPlaintext()

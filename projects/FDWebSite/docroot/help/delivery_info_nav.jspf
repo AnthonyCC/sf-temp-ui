@@ -12,6 +12,7 @@ Map<String, String> folderMap=new LinkedHashMap<String, String>();
 	folderMap.put("","");
 	
 //second column onward (fills based on maxRows)
+	folderMap.put("Pickup at FreshDirect","/help/delivery_lic_pickup.jsp");
 	if (user.getLevel() >= FDUserI.RECOGNIZED) {
 		if (user.getLevel() >= FDUserI.RECOGNIZED) {
 			folderMap.put("Available Delivery Slots","/your_account/delivery_info_avail_slots.jsp");
@@ -44,9 +45,9 @@ Iterator<String> itr=folderMap.keySet().iterator();
 boolean isCorporate = user.getSelectedServiceType().equals(EnumServiceType.CORPORATE);
 %>
 
-<div class="delivery_info_nav_header">Delivery info</div>
+<div class="delivery_info_nav_header">Delivery & Pickup info</div>
 <div class="delivery_info_nav_select">
-<select name="delivery_info_nav" title="Delivery info" id="delivery_info_nav" onchange="select_delivery_info_nav()"  style="width: 100%">
+<select name="delivery_info_nav" id="delivery_info_nav" onchange="select_delivery_info_nav()"  style="width: 100%">
 	<option  value="0"></option>
 	<% for ( int i = 0; i < maxItems; i++ ) { %>
 		<%

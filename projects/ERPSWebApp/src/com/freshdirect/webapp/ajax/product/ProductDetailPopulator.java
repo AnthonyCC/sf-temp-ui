@@ -55,6 +55,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -1492,8 +1493,8 @@ public class ProductDetailPopulator {
 		List<ComponentGroupModel> componentGroups = product.getComponentGroups();
 		
 		if (!componentGroups.isEmpty()) {
-			for (ComponentGroupModel curCompModel : componentGroups) {
-				List<String> chars = curCompModel.getCharacteristicNames();
+			for (ComponentGroupModel componentGroup : componentGroups) {
+				List<String> chars = componentGroup.getCharacteristicNames();
 				
 				for (String curChar : chars) {
 					FDVariation tempVar = fdProd.getVariation(curChar);
@@ -1506,6 +1507,7 @@ public class ProductDetailPopulator {
 				orderedVariationsList.add(fdVar);
 			}
 		}
+		
 		
 		for ( FDVariation fdVar : orderedVariationsList ) {
 			String varName = fdVar.getName();
@@ -1535,22 +1537,29 @@ public class ProductDetailPopulator {
 					
 					var.setDescrPopup( popupUrl.toString() );
 				}
-			} catch ( Exception ex ) { } 
+			} catch ( Exception ex ) {}
 
 
-			List<FDVariationOption> availableFDVarOptions = collectAvailableVariations(fdVar);
+			Map<FDVariationOption, ProductModel> varOptProductModels = collectAvailableVariations(fdVar, ContentFactory.getInstance());
 
 			List<VarItem> varOpts = new ArrayList<VarItem>();
-			for ( FDVariationOption varOpt : availableFDVarOptions ) {
-				VarItem v = new VarItem();
+			for ( FDVariationOption varOpt : varOptProductModels.keySet()) {
+				VarItem varItem = new VarItem();
 				String vName = varOpt.getName();
-				v.setLabelValue( varOpt.isLabelValue() );
-				v.setName( vName );
-				v.setLabel( varOpt.getDescription() );	        			
-				v.setSelected( currentConfig == null ? false : vName.equals( currentConfig.get( varName ) ) );
+				varItem.setLabelValue( varOpt.isLabelValue() );
+				varItem.setName( vName );
+				varItem.setLabel( varOpt.getDescription() );
+				varItem.setSelected( currentConfig == null ? false : vName.equals( currentConfig.get( varName ) ) );
 				CharacteristicValuePrice cvp = fdProd.getPricing().findCharacteristicValuePrice(varName, vName,pCtx);
-				v.setCvp(cvp == null ? "0" : JspMethods.formatPrice( cvp.getPrice() ) );
-				varOpts.add( v );
+				varItem.setCvp(cvp == null ? "0" : JspMethods.formatPrice( cvp.getPrice() ) );
+				ProductModel productModel = varOptProductModels.get(varOpt);
+                if (productModel != null) {
+                    Image featureImage = varOptProductModels.get(varOpt).getDetailImage();
+                    if (featureImage != null) {
+                        varItem.setImagePath(featureImage.getPath());
+                    }
+                }
+				varOpts.add( varItem );
 			}
 			var.setValues( varOpts );
 			varList.add( var );
@@ -1558,51 +1567,41 @@ public class ProductDetailPopulator {
 		return varList;
 	}
 
+    private static Map<FDVariationOption, ProductModel> collectAvailableVariations(FDVariation fdVar, ContentFactory contentFactory) {
+        Map<FDVariationOption, ProductModel> availableProductModels = new HashMap<FDVariationOption, ProductModel>();
+        FDVariationOption[] varOpts = fdVar.getVariationOptions();
+        for (FDVariationOption varOpt : varOpts) {
+            String optSkuCode = varOpt.getSkuCode();
 
+            // sometimes skucode attrib in erps may be missing..so handle
+            // it, so we don't get SkuNotFoundException
+            if (optSkuCode != null && !"".equals(optSkuCode.trim())) {
+                ProductModel productModel = null;
+                try {
+                    productModel = contentFactory.getProduct(optSkuCode);
+                } catch (FDSkuNotFoundException e) {
+                    LOG.error(e);
+                }
+                if (productModel == null) {
+                    LOG.debug("Variation has orphan sku with no ProductModel): " + varOpt + " (Sku: " + optSkuCode + ")");
+                } else {
+                    SkuModel sku = productModel.getSku(optSkuCode);
+                    if (sku != null && !sku.isUnavailable()) {
+                        availableProductModels.put(varOpt, productModel);
+                    } else {
+                        if (sku.isUnavailable()) {
+                            LOG.debug("Skipping as unavailable: " + varOpt + " (Sku: " + optSkuCode + ")");
+                        }
+                    }
+                }
+            } else {
+                // not a product, add to list
+                availableProductModels.put(varOpt, null);
+            }
+        }
 
-	private static List<FDVariationOption> collectAvailableVariations(
-			FDVariation fdVar) {
-		// collect all available variation options
-		List<FDVariationOption> availableFDVarOptions = new ArrayList<FDVariationOption>();
-
-		final ContentFactory cf = ContentFactory.getInstance();
-
-		FDVariationOption[] varOpts = fdVar.getVariationOptions();
-
-		for (int optIdx = 0; optIdx < varOpts.length; optIdx++) {
-			String optSkuCode = varOpts[optIdx].getSkuCode();
-
-			// sometimes skucode attrib in erps may be missing..so handle
-			// it, so we don't get SkuNotFoundException
-			if (optSkuCode == null || "".equals(optSkuCode.trim())) {
-				 // not a product, add to list
-				availableFDVarOptions.add(varOpts[optIdx]);
-			} else {
-				ProductModel pm = null;
-				try {
-					pm = cf.getProduct(optSkuCode);
-				} catch (FDSkuNotFoundException e) {
-					LOG.error(e);
-				}
-
-				if (pm == null) {
-					LOG.debug("Variation has orphan sku with no ProductModel): " + varOpts[optIdx] + " (Sku: " + optSkuCode + ")");
-				} else {
-					SkuModel sku = pm.getSku(optSkuCode);
-
-					if (sku != null && !sku.isUnavailable()) {
-						availableFDVarOptions.add(varOpts[optIdx]);
-					} else {
-						if (sku.isUnavailable()) {
-							LOG.debug("Skipping as unavailable: " + varOpts[optIdx] + " (Sku: " + optSkuCode + ")");
-						}
-					}
-				}
-			}
-		}
-
-		return availableFDVarOptions;
-	}
+        return availableProductModels;
+    }
 
 
 	/**

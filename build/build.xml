@@ -1532,6 +1532,9 @@
 			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
 			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
+			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+			
 		</path>
 
 		<makeEjbProject

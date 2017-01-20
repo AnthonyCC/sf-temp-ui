@@ -15,8 +15,8 @@ public abstract class HttpContextWrapper {
     protected PageContext pageContext = new PageContextWrapper();
 
     public static final String REQUEST = "request";
-
     public static final String SESSION = "session";
+    public static final String GET_RESULT = "getResult";
 
     /**
      * Used to pass session and request object to controller so that any values set in the tag 

@@ -655,7 +655,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.smsNoThanksflag=rs.getString("SMS_PREFERENCE_FLAG");
 			this.smsOptinDate=rs.getTimestamp("SMS_OPTIN_DATE");
 			
-			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
+			this.goGreen = ("Y".equals(rs.getString("go_green"))|| "I".equals(rs.getString("go_green"))) ?true:false;
 			this.displayName = rs.getString("display_name");
 			
 			/* APPDEV-2475 DP T&C */

@@ -95,16 +95,14 @@ public class OMSController extends BaseController  {
 	OrdersDTO getOrderById(@PathVariable("orderId") String orderId) {
 
 		OrdersDTO orders = new OrdersDTO();
-		FDOrderI fdorder = null;
-		try {
-			fdorder = FDCustomerManager.getOrder(orderId);
-		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		OrderDTO order = convertToOrderDTOModel(fdorder);
-		//order = orderService.getOrderById(orderId);
-		orders.getOrders().add(order);
+			try {
+				OrderDTO order =orderService.getOrderById(orderId);
+				orders.getOrders().add(order);
+			} catch (FDLogisticsServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		orders.setSuccessMessage("orders retrieved successfully"); 
 	
 		return orders;
@@ -259,6 +257,9 @@ public class OMSController extends BaseController  {
 		custModel.setHomePhone((f.getDeliveryInfo().getDeliveryAddress().getPhone()!=null)?f.getDeliveryInfo().getDeliveryAddress().getPhone().toString():"");
 		order.setOrderNumber(f.getErpSalesId());
 		order.setErpOrderNumber(f.getSapOrderId());
+		if(f.getPaymentMethod()!=null && f.getPaymentMethod().getCardType()!=null)
+		order.setCardType(f.getPaymentMethod().getCardType().getName());
+		
 		if(f.getDeliveryInfo()!=null)
 		{
 		order.setArea(f.getDeliveryInfo().getDeliveryZone());

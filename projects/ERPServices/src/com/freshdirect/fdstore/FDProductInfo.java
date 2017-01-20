@@ -31,7 +31,7 @@ public class FDProductInfo extends FDSku  {
 
 	private static final long	serialVersionUID	= 308857606199221581L;
 
-	private final String[] materialNumbers;
+    private final String materialNumber;
 
 	private final static Category LOGGER = LoggerFactory.getInstance(FDProductInfo.class);
 
@@ -75,8 +75,8 @@ public class FDProductInfo extends FDSku  {
     	super(skuCode, version);
     	this.zonePriceInfoList=zonePriceInfoList;
     	this.inventory=inventory;
-    	this.materialNumbers=materials;
-    	this.groups=null;
+    	this.materialNumber = materials != null && materials.length > 0 ? materials[0] : null;
+	this.groups=null;
     	this.plantMaterialInfo=plantMaterialInfo;
     	this.materialAvailability=materialAvailability;
     	this.isAlcohol=isAlcohol;
@@ -89,7 +89,7 @@ public class FDProductInfo extends FDSku  {
 
 		super(skuCode, version);
 
-		this.materialNumbers = materialNumbers;
+        this.materialNumber = materialNumbers != null && materialNumbers.length > 0 ? materialNumbers[0] : null;
 
 		for(FDMaterialSalesArea msa:materialSalesArea.values()) {
 			msa.setUnavailabilityDate(availDate);
@@ -125,9 +125,9 @@ public class FDProductInfo extends FDSku  {
      		FDInventoryCacheI inventory,ZonePriceInfoListing zonePriceInfoList, Map<String,FDGroup> groups,
      		String upc,String familyID, Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea,boolean isAlcohol) {
 
- 		super(skuCode, version);
- 		this.isAlcohol=isAlcohol;
- 		this.materialNumbers = materialNumbers;
+        super(skuCode, version);
+        this.isAlcohol = isAlcohol;
+        this.materialNumber = materialNumbers != null && materialNumbers.length > 0 ? materialNumbers[0] : null;
 
  		for(FDMaterialSalesArea msa:materialSalesArea.values()) {
  			msa.setUnavailabilityDate(availDate);
@@ -163,7 +163,7 @@ public class FDProductInfo extends FDSku  {
 			FDInventoryCacheI inventory,Map<String,FDGroup> groups, String upc, List<FDPlantMaterial> plantMaterialInfo,ZonePriceInfoListing zonePriceInfoList,
 			Map<String, FDMaterialSalesArea> materialAvailability,boolean isAlcohol) {
     	super(skuCode, version);
-		this.materialNumbers = materialNumbers;
+		this.materialNumber = materialNumbers != null && materialNumbers.length > 0 ? materialNumbers[0] : null;
 		this.inventory = inventory;
 
 		this.groups = groups;
@@ -174,55 +174,52 @@ public class FDProductInfo extends FDSku  {
         this.isAlcohol=isAlcohol;
 	}
 
-
-	/**
-	 * Get inventory (short term availability) information.
-	 */
-	public ErpInventoryModel getInventory() {
-		if(this.inventory != null){
-			return this.inventory.getInventory(materialNumbers[0]);
-		}
-		return FDInventoryCache.getInstance().getInventory(materialNumbers[0]);
-	}
+    /**
+     * Get inventory (short term availability) information.
+     */
+    public ErpInventoryModel getInventory() {
+        if (this.inventory != null) {
+            return this.inventory.getInventory(materialNumber);
+        }
+        return FDInventoryCache.getInstance().getInventory(materialNumber);
+    }
 
 	/**
 	 * Get inventory (short term availability) information.
 	 */
 	public ErpInventoryModel getInventory(String plantId) {
 
-		if(null ==materialNumbers || materialNumbers.length == 0){//To prevent NPEs
-			return null;
-		}
-		if(this.inventory != null){
+        if (null == materialNumber) {// To prevent NPEs
+            return null;
+        }
+        if (this.inventory != null) {
 
-			return this.inventory.getInventory(materialNumbers[0]);
-		}
-		ErpInventoryModel inventoryModel= FDInventoryCache.getInstance().getInventory(materialNumbers[0]);
-		if(StringUtil.isEmpty(plantId)||inventoryModel==null) {
-			return inventoryModel;
-		}
-		List<ErpInventoryEntryModel> invEntries=inventoryModel.getEntries();
-		List<ErpInventoryEntryModel> plantEntries=new ArrayList<ErpInventoryEntryModel>(invEntries.size());
-		for(ErpInventoryEntryModel entry:invEntries) {
-			if(plantId.equals(entry.getPlantId()))
-				plantEntries.add(entry);
-		}
+            return this.inventory.getInventory(materialNumber);
+        }
+        ErpInventoryModel inventoryModel = FDInventoryCache.getInstance().getInventory(materialNumber);
+        if (StringUtil.isEmpty(plantId) || inventoryModel == null) {
+            return inventoryModel;
+        }
+        List<ErpInventoryEntryModel> invEntries = inventoryModel.getEntries();
+        List<ErpInventoryEntryModel> plantEntries = new ArrayList<ErpInventoryEntryModel>(invEntries.size());
+        for (ErpInventoryEntryModel entry : invEntries) {
+            if (plantId.equals(entry.getPlantId()))
+                plantEntries.add(entry);
+        }
 
-        return (plantEntries.size()==0)? null: new ErpInventoryModel(inventoryModel.getSapId(),inventoryModel.getLastUpdated(),plantEntries);
-		//return new ErpInventoryModel(inventoryModel.getSapId(),inventoryModel.getLastUpdated(),plantEntries);
-	}
+        return (plantEntries.size() == 0) ? null : new ErpInventoryModel(inventoryModel.getSapId(), inventoryModel.getLastUpdated(), plantEntries);
+    }
 
 
 	public EnumATPRule getATPRule(String plantID) {
 
 		if(!StringUtils.isEmpty(plantID)) {
 
-			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
-			if(pm!=null)
-			     return pm.getAtpRule();
-		}
-		//throw new FDRuntimeException("No plant ("+plantID+") specific information set up for SKU: "+getSkuCode());
-		return null;
+            FDPlantMaterial pm = plantMaterialInfo.get(plantID);
+            if (pm != null)
+                return pm.getAtpRule();
+        }
+        return null;
 
 	}
 
@@ -287,13 +284,12 @@ public class FDProductInfo extends FDSku  {
 
     public EnumOrderLineRating getRating(String plantID) {
 
-		if(!StringUtils.isEmpty(plantID)) {
-			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
-			if(pm!=null)
-				return pm.getRating();
-		}
-		return EnumOrderLineRating.NEVER_RATED;
-		//throw new FDRuntimeException("No plant ("+plantID+") specific information setup for SKU: "+getSkuCode());
+        if (!StringUtils.isEmpty(plantID)) {
+            FDPlantMaterial pm = plantMaterialInfo.get(plantID);
+            if (pm != null)
+                return pm.getRating();
+        }
+        return EnumOrderLineRating.NEVER_RATED;
     }
 
 	/**
@@ -351,16 +347,15 @@ public class FDProductInfo extends FDSku  {
 
     public String toString() {
         return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:"
-                + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null)
-                + "\n\tUPC:" + this.upc
-                + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit()
-                + "\n\t" + this.zonePriceInfoList +"\n\t"+this.groups + "\n\tinventory:" +this.getInventory()+ "\n]";
+                + this.materialNumber + "\n\tUPC:" + this.upc + "\n\tfreshness:" + this.freshness
+                + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit() + "\n\t" + this.zonePriceInfoList + "\n\t" + this.groups + "\n\tinventory:" + this.getInventory() + "\n]";
     }
-    	public List<String> getCountryOfOrigin(String plantID) {
-		if(materialNumbers==null)
-			return null;
-		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0],plantID);
-	}
+
+    public List<String> getCountryOfOrigin(String plantID) {
+        if (materialNumber == null)
+            return null;
+        return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumber, plantID);
+    }
 
     	public ZonePriceInfoModel getZonePriceInfo(ZoneInfo pricingZoneInfo) {
 
@@ -406,18 +401,9 @@ public class FDProductInfo extends FDSku  {
 		return this.zonePriceInfoList;
 	}
 
-	//public FDProductInfo copy(int version, EnumAvailabilityStatus availability, EnumOrderLineRating newRating, String newFreshness) {
-	    //return new FDProductInfo (getSkuCode(), version, materialNumbers, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group,  upc, availabilityDates);
-		/*return new FDProductInfo(getSkuCode(), version, materialNumbers,null,
-				FDInventoryCacheI inventory, Date[] availabilityDates,
-				FDGroup group, String upc, List<FDPlantMaterial> plantMaterialInfo,ZonePriceInfoListing zonePriceInfoList)
-		*/
-
-	//}
-
-	public  Map<String,FDGroup> getGroups() {
-		return groups;
-	}
+    public Map<String, FDGroup> getGroups() {
+        return groups;
+    }
 
 	public FDGroup getGroup(String salesOrg, String distributionChannel) {
 		if(groups==null)
@@ -444,12 +430,11 @@ public class FDProductInfo extends FDSku  {
 
     	if(!StringUtils.isEmpty(plantID)) {
 
-			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
-			if(pm!=null)
-			     return pm.getSustainabilityRating();
-		}
-    	return EnumSustainabilityRating.NEVER_RATED;
-		//throw new FDRuntimeException("No plant ("+plantID+") specific information set up for SKU: "+getSkuCode());
+            FDPlantMaterial pm = plantMaterialInfo.get(plantID);
+            if (pm != null)
+                return pm.getSustainabilityRating();
+        }
+        return EnumSustainabilityRating.NEVER_RATED;
     }
 
     public String getUpc() {
@@ -460,21 +445,20 @@ public class FDProductInfo extends FDSku  {
 		return FDCouponFactory.getInstance().getCouponByUpc(upc);
 	}
 
-	public String getFamilyID() {
-		// TODO Auto-generated method stub
-		return familyID;
-	}
-	public String[] getMaterialIds() {
-		// TODO Auto-generated method stub
-		return materialNumbers;
-	}
+    public String getFamilyID() {
+        return familyID;
+    }
 
-	/**
-	 * @return the plantMaterialInfo
-	 */
-	public Map<String,FDPlantMaterial> getPlantMaterialInfo() {
-		return plantMaterialInfo;
-	}
+    public String getMaterialNumber() {
+        return materialNumber;
+    }
+    
+    /**
+     * @return the plantMaterialInfo
+     */
+    public Map<String, FDPlantMaterial> getPlantMaterialInfo() {
+        return plantMaterialInfo;
+    }
 
 	/**
 	 * @param plantMaterialInfo the plantMaterialInfo to set
@@ -510,37 +494,24 @@ public class FDProductInfo extends FDSku  {
 		return materialAvailability;
 	}
 
-	//TODO: Remove this method.
-	public boolean isLimitedQuantity(String salesOrg, String distributionChannel) {
-		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
-		if(sa!=null) {
-			if(this.getSkuCode().startsWith("VI"))
-				return true;
-		}
-		return false;
+    public boolean isLimitedQuantity(String plantID) {
+        if (!StringUtils.isEmpty(plantID)) {
+            FDPlantMaterial pm = plantMaterialInfo.get(plantID);
+            if (pm != null)
+                return pm.isLimitedQuantity();
+        }
+        return false;
 
 	}
 
-	public boolean isLimitedQuantity(String plantID) {
-		if(!StringUtils.isEmpty(plantID)) {
-			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
-			if(pm!=null)
-				return pm.isLimitedQuantity();
-		}
-		return false;
+    public EnumDayPartValueType getDayPartValueType(String salesOrg, String distributionChannel) {
+        FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel).intern());
+        if (sa != null)
+            return sa.getDayPartValueType();
+        return null;
+    }
 
-	}
-
-	public EnumDayPartValueType getDayPartValueType(String salesOrg, String distributionChannel) {
-		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
-		if(sa!=null)
-			return sa.getDayPartValueType();
-		return null;
-	}
-	
-	public boolean isAlcohol() {
-		/*if(this.getSkuCode().startsWith("VI")||this.getSkuCode().startsWith("SPE"))
-			isAlcohol=true;*/
-		return isAlcohol;
-	}
+    public boolean isAlcohol() {
+        return isAlcohol;
+    }
 }

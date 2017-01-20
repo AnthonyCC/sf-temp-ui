@@ -23,6 +23,7 @@ public class PopulatorUtil {
 			return ContentFactory.getInstance().getProductByName( categoryId, productId );
 		}		
 	}
+
 	public static final ProductModel getProduct( String skuCode ) throws FDSkuNotFoundException {
 		if ( skuCode != null ) {
 			return ContentFactory.getInstance().getProduct(skuCode);
@@ -35,8 +36,6 @@ public class PopulatorUtil {
 			LOGGER.error("getDefSku(): No input product!");
 			return null;
 		}
-		final ContentKey ck = product.getContentKey();
-
 		SkuModel sku = product.getDefaultSku();
 		if ( sku == null ) {
 			//LOGGER.debug("getDefSku(): ... fall back to default temporary unavailable sku");
@@ -50,9 +49,6 @@ public class PopulatorUtil {
 		}
 		return sku;
 	}
-
-
-
 
 	/**
 	 * Check if a product is newly created in CMS
@@ -69,7 +65,7 @@ public class PopulatorUtil {
 			return false;
 		}
 
-		if (prd.getSkus().size() == 0) {
+		if (null == prd.getSkus() || prd.getSkus().isEmpty()) {
 			// No SKUs found. This is really bad.
 			// Let the execution go and break somewhere else
 			throw new FDSkuNotFoundException("Product " + prd.getContentName() + " contains NO SKUs!");
@@ -90,11 +86,8 @@ public class PopulatorUtil {
 			return true;
 		}
 
-		// LOGGER.debug("SKU Version" + pInfo.getVersion());
-		
 		return pInfo == null || pInfo.getVersion() == 0;
 	}
-	
 	
 	/** originally in GetPeakProduceTag.isProduce() **/
 	public static boolean isShowRatings(String skuCode) {

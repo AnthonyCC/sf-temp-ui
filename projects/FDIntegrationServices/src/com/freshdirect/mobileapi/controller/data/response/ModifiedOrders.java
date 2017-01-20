@@ -32,8 +32,6 @@ public class ModifiedOrders extends Message {
         private Date modificationCutoffTime;
         private Date deliveryStartTime;
         private Date deliveryEndTime;
-        private String start;
-		private String end;
 
         public String getOrderId() {
             return orderId;
@@ -66,22 +64,6 @@ public class ModifiedOrders extends Message {
         public void setDeliveryEndTime(Date deliveryEndTime) {
             this.deliveryEndTime = deliveryEndTime;
         }
-        
-        public String getStart() {
-			return start;
-		}
-
-		public void setStart(String start) {
-			this.start = start;
-		}
-
-        public String getEnd() {
-			return end;
-		}
-
-		public void setEnd(String end) {
-			this.end = end;
-		}
 
     }
 }

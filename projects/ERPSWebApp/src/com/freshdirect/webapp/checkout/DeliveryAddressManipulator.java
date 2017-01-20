@@ -337,7 +337,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			return;
 		}
 		
-		boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
+		/*boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
 		
 		//[APPDEV-5568]- Reset the usercontext, as the address is updated.
 		user.resetUserContext();
@@ -352,7 +352,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			cart.refreshAll(true);
 		} catch (FDInvalidConfigurationException e) {
 			LOGGER.warn(e);
-		}
+		}*/
+		boolean foundFraud = updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
 		
 		if(foundFraud){
 			/*
@@ -554,7 +555,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		 * EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED ); return; }
 		*/
 		
-		final boolean foundFraud = AddressUtil.updateShipToAddress( request, result, this.getUser(), addressId, erpAddress );
+		//final boolean foundFraud = AddressUtil.updateShipToAddress( request.getSession(), result, this.getUser(), addressId, erpAddress );
+		final boolean foundFraud = updateShipToAddress( request.getSession(), result, this.getUser(), addressId, erpAddress );
 
 		if ( !result.isSuccess() )
 			return;
@@ -744,7 +746,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					shippingAddress.setUnattendedDeliveryFlag( EnumUnattendedDeliveryFlag.OPT_OUT );
 					shippingAddress.setUnattendedDeliveryInstructions( null );
 				}
-				AddressUtil.updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
+//				AddressUtil.updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
+				updateShipToAddress(session, result, user, shippingAddress.getPK().getId(), shippingAddress);
 
 			}
 
@@ -1017,7 +1020,22 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			String customerId =cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
 			LOGGER.warn("DeliveryPlantInfo is not matching for customer: "+customerId +" and eStore :"+cart.getEStoreId());
 			LOGGER.warn("In FDUser:"+dpInfoModel);
-			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());			
+			LOGGER.warn("In Cart:"+cart.getDeliveryPlantInfo());
+			user.setAddress(address);
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
@@ -1074,7 +1092,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		
 		String shipToAddressId = request.getParameter("updateShipToAddressId");
-		boolean foundFraud = AddressUtil.updateShipToAddress(request, result, user, shipToAddressId, erpAddress);
+//		boolean foundFraud = AddressUtil.updateShipToAddress(request.getSession(), result, user, shipToAddressId, erpAddress);
+		boolean foundFraud = updateShipToAddress(request.getSession(), result, user, shipToAddressId, erpAddress);
 		LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> foundFraud"+foundFraud);
 		return foundFraud;
 		
@@ -1084,5 +1103,27 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		boolean isChanged=false;
 		return isChanged;
 		
+	}
+	
+	public static boolean updateShipToAddress(HttpSession session, ActionResult result, FDUserI user, String shipToAddressId, ErpAddressModel address) throws FDResourceException {
+		boolean foundFraud = AddressUtil.updateShipToAddress(session, result, user, shipToAddressId, address);
+		FDCartModel cart =user.getShoppingCart();
+		if(null !=cart){
+			//[APPDEV-5568]- Reset the usercontext, as the address is updated.
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				LOGGER.warn(e);
+			}
+		}
+		return foundFraud;
 	}
 }

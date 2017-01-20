@@ -3,6 +3,7 @@ package com.freshdirect.payment;
 import com.braintreegateway.Customer;
 import com.braintreegateway.PayPalAccount;
 import com.braintreegateway.PaymentMethod;
+import com.braintreegateway.Transaction;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 
 public class PayPalResponse extends Result{

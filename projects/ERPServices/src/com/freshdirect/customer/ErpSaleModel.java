@@ -1937,4 +1937,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.lock_timestamp = lock_timestamp;
 	}
 	
+	public void markAsPaypalSettlementFailed() throws ErpTransactionException {
+
+		status = EnumSaleStatus.SETTLEMENT_FAILED;
+	}
 }

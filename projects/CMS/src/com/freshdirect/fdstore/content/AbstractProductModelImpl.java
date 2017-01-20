@@ -20,7 +20,9 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
-	private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
+    private static final long serialVersionUID = -5952286320303107200L;
+
+    private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsList = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsRefs = new ArrayList<ProductModel>();
 	private List<TagModel> tags = new ArrayList<TagModel>();
@@ -52,7 +54,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 ALSO_SOLD_AS
 
 	 */
-
 
 	private Image getImage(String key) {
             return FDAttributeFactory.constructImage(this, key, Image.BLANK_IMAGE);
@@ -356,7 +357,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    return getPriceCalculator(skuCode).getDealPercentage();
 	}
 
-
     /**
      * use priceCalculator which can be cached for a request. 
      * @return
@@ -417,7 +417,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
     }
 
-
     /**
      * use priceCalculator which can be cached for a request. 
      * @return
@@ -439,7 +438,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     }
 
     /* end of the price calculator calls */
-
 
 	public String getYmalHeader() {
 		final YmalSet activeYmalSet = getActiveYmalSet();
@@ -624,7 +622,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return group;
 	}
 	
-	
 	@Override
 	public boolean isRetainOriginalSkuOrder() {
 		return getAttribute("retainOriginalSkuOrder", false);
@@ -648,9 +645,19 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public String getPageTitle(){
 		return getAttribute("PAGE_TITLE", "FreshDirect");
 	}
-	
+
+    @Override
+    public String getFdxPageTitle(){
+        return getAttribute("PAGE_TITLE_FDX", "Foodkick");
+    }
+
 	@Override
 	public String getSEOMetaDescription(){
-		return getAttribute("SEO_META_DESC", "Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area.");
+		return getAttribute("SEO_META_DESC", "Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.");
+	}
+
+	@Override
+	public String getFdxSEOMetaDescription(){
+	    return getAttribute("SEO_META_DESC_FDX", "FoodKick has just what you need for today and tomorrow. Order now for same-day delivery!");
 	}
 }

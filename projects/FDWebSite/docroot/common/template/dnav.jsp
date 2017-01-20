@@ -38,7 +38,7 @@ final int W_DNAV_TOTAL = 970;
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
+<BODY data-printdata="<tmpl:get name='printdata'/>" BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER class="text10">
@@ -48,7 +48,7 @@ final int W_DNAV_TOTAL = 970;
 </TR>
 
 <TR>
-<TD WIDTH="<%=W_DNAV_TOTAL%>">
+<TD WIDTH="<%=W_DNAV_TOTAL%>" class="deptnav-cont">
 <%@ include file="/common/template/includes/deptnav.jspf" %></TD>
 </TR>
 <TR>

@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,7 +58,6 @@ import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -70,10 +68,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
-import com.freshdirect.mobileapi.controller.data.CMSSectionProductModel;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
@@ -276,6 +272,9 @@ public abstract class BaseController extends AbstractController implements Messa
     private final ModelAndView handleRequestInterna(HttpServletRequest request, HttpServletResponse response) throws JsonException,
             FDException, ServiceException {
         response.setContentType("text/xml");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+		response.setHeader("Pragma", "no-cache"); 
+		response.setDateHeader("Expires", 0);
         ModelAndView model = getModelAndView(JSON_RENDERED);
         String action = request.getParameter("action");
         String version = request.getParameter("ver");
@@ -703,7 +702,7 @@ public abstract class BaseController extends AbstractController implements Messa
         return responseMessage;
     }
 
-    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) {
+    protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
         FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
@@ -716,8 +715,14 @@ public abstract class BaseController extends AbstractController implements Messa
             } else {
                 fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
             }
-            request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
+            EnumTransactionSource src = getTransactionSourceEnum(request, null);
+            fdSessionUser.getUser().setApplication(src);
+            fdSessionUser.isLoggedIn(true);
+            request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+        }
+        if (validateUser() && fdSessionUser.getIdentity() == null) {
+            throw new NoSessionException("No session");
         }
         ContentFactory.getInstance().setCurrentUserContext(fdSessionUser.getUserContext());
         return SessionUser.wrap(fdSessionUser);
@@ -727,26 +732,18 @@ public abstract class BaseController extends AbstractController implements Messa
     protected void populateHomePages(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
         populateResponseWithEnabledAdditionsForWebClient(user, pageResponse, request, null);
 
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
-        
         if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_FEEDS)) {
-            List<String> errorProductKeys = new ArrayList<String>();
-
-            for (CMSWebPageModel page : getPages(user, pageRequest, errorProductKeys, isWebRequest)) {
+            for (CMSWebPageModel page : getPages(user, pageRequest)) {
                 if (TODAYS_PICK_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
                     pageResponse.setPick(page);
                 } else if (FEED_PAGE_TYPE.equalsIgnoreCase(page.getType())) {
                     pageResponse.setPage(page);
                 }
             }
-
-            for (String errorProductKey : errorProductKeys) {
-                pageResponse.addErrorMessage(errorProductKey);
-            }
         }
         
         // populate welcome carousel image banners
-        if (isWebRequest) {
+        if (isCheckLoginStatusEnable(request)) {
             final StoreModel store = ContentFactory.getInstance().getStore();
             List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
             List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
@@ -762,7 +759,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    private CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
+    protected CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
         CMSImageBannerModel cmsImageBanner = null;
         if (imageBanner != null){
             cmsImageBanner = new CMSImageBannerModel();
@@ -826,7 +823,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest, List<String> errors, final boolean webRequest) {
+    protected List<CMSWebPageModel> getPages(SessionUser user, CMSPageRequest pageRequest) {
         List<CMSWebPageModel> pages = null;
         if (pageRequest.isPreview()) {
             pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
@@ -838,7 +835,7 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         for (CMSWebPageModel page : pages) {
-            addProductsToSection(user, page, errors, webRequest);
+            addProductsToSection(user, page);
         }
         return pages;
     }
@@ -868,70 +865,49 @@ public abstract class BaseController extends AbstractController implements Messa
         return pages;
     }
 
-    private void addProductsToSection(SessionUser user, CMSWebPageModel page, List<String> errors, final boolean usePotatoes) {
+    private void addProductsToSection(SessionUser user, CMSWebPageModel page) {
         if (page != null) {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
-            
-            if (usePotatoes) {
-                final FDUserI uzer = user.getFDSessionUser();
-                
-                // populate lightweight product potatoes
-                for (final CMSSectionModel section : page.getSections()) {
-
-                    final CMSPotatoSectionModel pSection = CMSPotatoSectionModel.withSection(section);
-                    List<String> productKeys = section.getProductList();
-                    if (productKeys == null)
-                        productKeys = Collections.emptyList();
-                    
-                    // collect potatoes in this collection
-                    final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>(productKeys.size());
-
-                    // turn product IDs to product potatoes
-                    for ( final String prodKey : productKeys ) {
-                        // extract CMS id
-                        final String prodId = prodKey.substring(FDContentTypes.PRODUCT.getName().length()+1);
-
-                        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, uzer, false);
-                        if (data != null) {
-                            potatoes.add(data);
-                        }
-                    }
-
-                    // populate section
-                    pSection.setProducts(potatoes);
-                    
-                    // insert new section
-                    sectionWithProducts.add(pSection);
+            List<String> errorProductKeys = new ArrayList<String>();
+            for (final CMSSectionModel section : page.getSections()) {
+                final CMSPotatoSectionModel potatoSection = CMSPotatoSectionModel.withSection(section);
+                potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys));
+                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys)) {
+                    sectionWithProducts.add(potatoSection);
                 }
-            } else {
-                // populate legacy mobile product models
-                for (CMSSectionModel section : page.getSections()) {
-                    CMSSectionProductModel sectionWithProduct = new CMSSectionProductModel(section);
-                    sectionWithProduct.setProducts(getProducts(user, section.getProductList(), errors));
-                    
-                    sectionWithProducts.add(sectionWithProduct);
-                }
+                errorProductKeys.clear();
             }
             page.setSections(sectionWithProducts);
-            
         }
     }
 
-    private List<com.freshdirect.mobileapi.controller.data.Product> getProducts(SessionUser user, List<String> productKeys, List<String> errors) {
-        List<com.freshdirect.mobileapi.controller.data.Product> products = new ArrayList<com.freshdirect.mobileapi.controller.data.Product>();
-        if (productKeys != null) {
-            for (String productKey : productKeys) {
-                try {
-                    com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(ContentKey.decode(productKey).getId(), null, null, user);
-                    if (product != null) {
-                        products.add(new Product(product));
-                    }
-                } catch (Exception e) {
-                    errors.add(productKey);
-                    LOGGER.error("Could not get product model.", e);
+    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys) {
+        boolean allMustHaveProductsAreAvailable = true;
+        if (mustHaveProductkeys != null && productKeys != null) {
+            for (String mustHaveProductId : mustHaveProductkeys) {
+                if (!productKeys.contains(mustHaveProductId) || errorProductKeys.contains(mustHaveProductId)) {
+                    allMustHaveProductsAreAvailable = false;
+                    break;
                 }
             }
         }
-        return products;
+        return allMustHaveProductsAreAvailable;
+    }
+
+    private List<ProductPotatoData> collectProductPotatos(SessionUser user, List<String> productKeys, List<String> errorProductKeys) {
+        final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
+        if (productKeys != null) {
+            for (final String productKey : productKeys) {
+                // extract CMS id
+                final String prodId = productKey.substring(FDContentTypes.PRODUCT.getName().length() + 1);
+                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
+                if (data != null) {
+                    potatoes.add(data);
+                } else {
+                    errorProductKeys.add(productKey);
+                }
+            }
+        }
+        return potatoes;
     }
 }

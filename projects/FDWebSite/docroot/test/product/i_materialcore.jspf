@@ -1,6 +1,6 @@
 <%
 	out.println("<table>");
-	out.println("<caption>");out.println("Material Core Attributes");out.println("</caption>");
+	out.println("<caption>");out.println("Material Core Attirbutes");out.println("</caption>");
 	out.println("<tr>");out.println("<th>Name</th>");out.println("<th>Value</th>");out.println("</tr>");
 	
 	out.println("<tr>");out.println("<td>Material Number</td>");out.println("<td>");out.println(material.getMaterialNumber());out.println("</td>");out.println("</tr>");

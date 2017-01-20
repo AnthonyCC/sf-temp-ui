@@ -17,7 +17,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
     boolean isEBTPayment1 = (null !=((FDOrderI)cart).getPaymentMethod() &&EnumPaymentMethodType.EBT.equals(((FDOrderI)cart).getPaymentMethod().getPaymentMethodType()));
     
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_OD_DELIVERY_PAYMENT_TOTAL %>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_OD_DELIVERY_PAYMENT_TOTAL %>" style="word-break: break-word;">
 <TR VALIGN="TOP">
   <TD WIDTH="<%= W_YA_OD_DELIVERY_PAYMENT_HALF %>">
     <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%= W_YA_OD_DELIVERY_PAYMENT_HALF %>">

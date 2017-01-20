@@ -1,5 +1,5 @@
 .ec-popup.textalertpopup,
-.ec-popup.textalertconfirmpopup {
+.ec-popup.textalertconfirmpopup{
   position: relative;
   display: inline-block;
   vertical-align: middle;
@@ -8,7 +8,23 @@
   width:780px;
   max-width:780px;
   box-sizing:border-box;
-  padding:50px;
+ padding:50px;
+  font-family:Verdana,Genava,sans-serif;
+  font-size:12px;
+}
+#gogreenpopup .close {
+	display: none;
+}
+.ec-popup.gogreenpopup {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+  width:600px;
+  max-width:450px;
+  box-sizing:border-box;
+  padding:20px;
   font-family:Verdana,Genava,sans-serif;
   font-size:12px;
 }
@@ -26,6 +42,18 @@
 .textalertpopup .subtitle{
   text-align:center;
   margin:0.5em 0;
+}
+
+.gogreenpopup .subtitle{
+  font-size:12px;
+  font-weight:bold;
+}
+
+.gogreenpopup .title{
+  font-size:15px;
+  font-weight:bold;
+  line-height:20px;
+  text-align:left;
 }
 
 .textalertpopup .mobile{

@@ -16,7 +16,7 @@ Frequently Asked Questions
 http://www.freshdirect.com/help/faq_home.jsp
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-(c) 2002 - 2014 Fresh Direct, LLC. All Rights Reserved.
+(c) 2002 - <xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.
 
 	</xsl:template>
 </xsl:stylesheet>

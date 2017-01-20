@@ -18,7 +18,7 @@
 		</xsl:otherwise>
 	</xsl:choose>
 	<br/><br/><img src="http://www.freshdirect.com/media_stat/images/template/freshness/fresh_guar_photos.jpg" alt=""/><br/>
-	<!-- &#169; --> &#169; 2002 - 2014 Fresh Direct, LLC. All Rights Reserved.
+	<!-- &#169; --> &#169; 2002 - <xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.
 </center>
 	</xsl:template>
 </xsl:stylesheet>

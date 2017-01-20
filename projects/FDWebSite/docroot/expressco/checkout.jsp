@@ -14,7 +14,7 @@
   request.setAttribute("listPos", "SystemMessage"); // TODO
   Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
-<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/expressco/checkout.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
@@ -65,7 +65,7 @@ if (mobWeb) {
  	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
 		FreshDirect.terms=<%=fdTcAgree.booleanValue()%>;
-		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 		</script>
 	<%}%>
   </tmpl:put>
@@ -148,10 +148,10 @@ if (mobWeb) {
     </script>
   </tmpl:put>
   
-<!-- This change is for Voucher Redemption. We are hiding the change control for these particular voucher users -->
   <tmpl:put name="extraCss">
     <jwr:style src="/expressco.css" media="all" />
   	<% if (user.isVoucherHolder() && null == masqueradeContext) { %>
+	<!-- This change is for Voucher Redemption. We are hiding the change control for these particular voucher users -->
 	  	<style>
 	  		[data-drawer-id="address"]>button {
 		    	display: none !important;
@@ -163,86 +163,86 @@ if (mobWeb) {
 
   <tmpl:put name="extraJs">
     <fd:javascript src="/assets/javascript/timeslots.js" />
+	
+	<script>
+	var checkout;
+		//While loading the screen get the Device ID from braintress
+		jQuery(document).ready(function($){
+			var $ = jQuery;
+			 $("#isPayPalDown").val("false");
+		       $.ajax({
+			  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+		          type: 'post',
+		          contentType: "application/json; charset=utf-8",
+		          dataType: "json",
+		          success: function(result){
+		        	  if(result.submitForm.success && result.submitForm.result.eWalletResponseData.token != null){
+		        		  $('#PP_ERROR').css("display", "none");
+		                  $("#isPayPalDown").val("false");
+			          	var deviceObj = "";
+			  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+			 	    		  dataCollector: {
+			 	    			    paypal: true
+			 	    			  },
+			 	    		  onReady: function (integration) {
+			 	    			 checkout = integration;
+			 	    		    deviceObj = JSON.parse(integration.deviceData);
+			 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
+			 	    		  },
+			 	    		 onPaymentMethodReceived: function (payload) {
+			 	    		    $.ajax({
+			 	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
+			 	                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+			 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+			 	                      type: 'post',
+			 	                      success: function(id, result){
+			 	                    	 //location.reload(true);
+			 	                    	 window.location.assign("/expressco/checkout.jsp");
+			 	                      }
+			 	    	        });
+			 	    		  },
+			 	    		  paypal: {
+			 	    		    singleUse: false,
+			 	    		    headless: true
+			 	    		  }
+			  	    	});
+		        	  }else {
+		              	$("#isPayPalDown").val("true");
+		              }
+		          },
+		        failure:function (id, result) {
+		  			$("#isPayPalDown").val("true");
+		  		},
+		  		error:function (id, result) {
+		  			$("#isPayPalDown").val("true");
+		  		},
+		  		fail:function (id, result) {
+		  			$("#isPayPalDown").val("true");
+		  		}
+			 });
+		       
+		       if (document.querySelector('#PP_button') != null) {
+		           document.querySelector('#PP_button').addEventListener('click', function(event) {
+		               if (event.preventDefault) {
+		                   event.preventDefault();
+		               } else {
+		                   event.returnValue = false;
+		               }
+		               console.log("-- Connect With Paypal click handler  --");
+		               if (checkout != null) {
+		                   checkout.paypal.initAuthFlow();
+		               }
+		               
+		               var isPayPalDown = $('#isPayPalDown').val();
+		               if (isPayPalDown == 'true') {
+		               	$('#PP_ERROR').css("display", "inline-block");
+		               }else{
+		               	$('#PP_ERROR').css("display", "none");
+		               }
+		           });
+		       }
+	
+		});
+	</script>
   </tmpl:put>
-
-<script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
-<script>
-var checkout;
-	//While loading the screen get the Device ID from braintress
-	jQuery(document).ready(function($){
-		 $("#isPayPalDown").val("false");
-	       $.ajax({
-		  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
-	          type: 'post',
-	          contentType: "application/json; charset=utf-8",
-	          dataType: "json",
-	          success: function(result){
-	        	  if(result.submitForm.success && result.submitForm.result.eWalletResponseData.token != null){
-	        		  $('#PP_ERROR').css("display", "none");
-	                  $("#isPayPalDown").val("false");
-		          	var deviceObj = "";
-		  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-		 	    		  dataCollector: {
-		 	    			    paypal: true
-		 	    			  },
-		 	    		  onReady: function (integration) {
-		 	    			 checkout = integration;
-		 	    		    deviceObj = JSON.parse(integration.deviceData);
-		 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
-		 	    		  },
-		 	    		 onPaymentMethodReceived: function (payload) {
-		 	    		    $.ajax({
-		 	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
-		 	                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
-		 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
-		 	                      type: 'post',
-		 	                      success: function(id, result){
-		 	                    	 //location.reload(true);
-		 	                    	 window.location.assign("/expressco/checkout.jsp");
-		 	                      }
-		 	    	        });
-		 	    		  },
-		 	    		  paypal: {
-		 	    		    singleUse: false,
-		 	    		    headless: true
-		 	    		  }
-		  	    	});
-	        	  }else {
-	              	$("#isPayPalDown").val("true");
-	              }
-	          },
-	        failure:function (id, result) {
-	  			$("#isPayPalDown").val("true");
-	  		},
-	  		error:function (id, result) {
-	  			$("#isPayPalDown").val("true");
-	  		},
-	  		fail:function (id, result) {
-	  			$("#isPayPalDown").val("true");
-	  		}
-		 });
-	       
-	       if (document.querySelector('#PP_button') != null) {
-	           document.querySelector('#PP_button').addEventListener('click', function(event) {
-	               if (event.preventDefault) {
-	                   event.preventDefault();
-	               } else {
-	                   event.returnValue = false;
-	               }
-	               console.log("-- Connect With Paypal click handler  --");
-	               if (checkout != null) {
-	                   checkout.paypal.initAuthFlow();
-	               }
-	               
-	               var isPayPalDown = $('#isPayPalDown').val();
-	               if (isPayPalDown == 'true') {
-	               	$('#PP_ERROR').css("display", "inline-block");
-	               }else{
-	               	$('#PP_ERROR').css("display", "none");
-	               }
-	           });
-	       }
-
-	});
-</script>
 </tmpl:insert>

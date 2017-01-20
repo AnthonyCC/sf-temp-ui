@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
@@ -30,7 +31,8 @@ public class DraftChange {
     private String contentKey;
     @Column(/* name="attribute", */ length = 40)
     private String attributeName;
-    @Column(length = 4000)
+    @Column(name="value", columnDefinition="CLOB")
+    @Lob
     private String value;
 
     public Long getId() {

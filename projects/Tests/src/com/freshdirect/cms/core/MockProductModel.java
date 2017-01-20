@@ -47,19 +47,14 @@ import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
-/**
- * @author zsombor
- * 
- */
 public class MockProductModel extends MockContentNodeModel implements
 		ProductModel, Cloneable {
 
-	private List<SkuModel> skuModels;
+    private static final long serialVersionUID = 8059062882580615207L;
+
+    private List<SkuModel> skuModels;
 	private List<BrandModel> brands = new ArrayList<BrandModel>();
 
-	/**
-     * 
-     */
 	public MockProductModel() {
 	}
 
@@ -2100,16 +2095,27 @@ public class MockProductModel extends MockContentNodeModel implements
 
 	@Override
 	public UserContext getUserContext() {
-		return UserContext.createDefault(EnumEStoreId.FD);
+		return UserContext.createUserContext(EnumEStoreId.FD);
 	}
+
 	@Override
 	public String getPageTitle() {
 		return null;
 	}
+	
+    @Override
+    public String getFdxPageTitle() {
+        return null;
+    }
 
 	@Override
 	public String getSEOMetaDescription() {
 		return null;
+	}
+	
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return null;
 	}
 
 	@Override

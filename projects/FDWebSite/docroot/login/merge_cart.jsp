@@ -41,7 +41,7 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ System.out.println("555555555555"+fdTcAgree);%>
 			<script type="text/javascript">
 			
-			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>')
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>')
 
 			</script>
 <%}%>

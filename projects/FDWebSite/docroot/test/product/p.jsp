@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.erp.*"%>
 <%@page import="com.freshdirect.erp.model.*"%>
 <%@page import="com.freshdirect.common.pricing.*"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="java.util.*"%>
 
 <%
@@ -43,7 +43,7 @@
          }
      }
 %>
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 	<style>
 		<style type="text/css">
@@ -217,17 +217,15 @@
 <title>Product Information</title>
 </head>
 <body>	
-
-<h2 align="center">Product Information</h2>
+	<h2 align="center">Product Information</h2>
 	<form method="get">
 		<div align="center">
 			<label for="sku">SKU Code:</label> <input id="sku" type="text" name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>" />&nbsp;&nbsp;&nbsp;
 			<label for="version">Version:</label> <input id="version" type="text" name="version" maxlength="10" value="<%=version != null ? version.toString() : ""%>" />&nbsp;&nbsp;&nbsp; 
 			<input type="submit" value="Check" />
 		</div>	
-		
 	</form>
-	</br>
+	<br/>
 	<% if(productInfo != null) { %>
 		<% out.println("<div style=\"display: inline-flex;\">"); %>	
 			<%@include file="i_materialcore.jspf" %>

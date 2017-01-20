@@ -3,14 +3,16 @@ package com.freshdirect.mobileapi.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 import com.freshdirect.mobileapi.controller.data.ImageBanner;
-import com.freshdirect.mobileapi.util.BrowseUtil;
 
 public class Department extends ProductContainer {
+
     private String name;
 
     private String id;
@@ -24,7 +26,11 @@ public class Department extends ProductContainer {
     private List<DepartmentSection> sections = new ArrayList<DepartmentSection>();
     
     private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
-    
+
+    private String pageTitle;
+
+    private String seoMetaDescription;
+
     public static Department wrap(DepartmentModel model) {
     	return wrapDepartment(model, 0);
     }
@@ -121,14 +127,19 @@ public class Department extends ProductContainer {
 		if(heroCarouselImgBannerList!=null && heroCarouselImgBannerList.size()!= 0) {
 		result.setHeroCarousel(heroCarouselImgBannerList);
 		}
-		
+
        }
-		
+
+        if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+            result.setPageTitle(model.getFdxPageTitle());
+            result.setSeoMetaDescription(model.getFdxSEOMetaDescription());
+        } else {
+            result.setPageTitle(model.getPageTitle());
+            result.setSeoMetaDescription(model.getSEOMetaDescription());
+        }
+
         return result;
     }
-    
-   
-    
 
     public String getName() {
         return name;
@@ -185,6 +196,21 @@ public class Department extends ProductContainer {
 	public void setHeroCarousel(List<ImageBanner> heroCarousel) {
 		this.heroCarousel = heroCarousel;
 	}
-	
-	
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    public String getSeoMetaDescription() {
+        return seoMetaDescription;
+    }
+
+    public void setSeoMetaDescription(String seoMetaDescription) {
+        this.seoMetaDescription = seoMetaDescription;
+    }
+
 }

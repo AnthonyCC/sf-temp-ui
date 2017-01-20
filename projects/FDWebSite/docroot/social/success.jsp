@@ -20,7 +20,7 @@
 	<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
 </div>
 			<script language="javascript">
-				window.top.location='/<%=successPage%>';
+				window.top.location='/<%=successPage%>'+window.top.location.hash;
 			</script>
 		
 		<% 

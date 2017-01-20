@@ -84,7 +84,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	}
 	
 	protected void doCmTag(StringBuilder sb) throws JspException, IOException{
-		if (FDStoreProperties.isCoremetricsEnabled()){
+		if (true){
 			try {
 				checkContext();
 				String tagOut = getTagJs();

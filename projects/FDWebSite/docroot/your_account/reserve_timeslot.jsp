@@ -18,6 +18,8 @@
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
@@ -77,6 +79,11 @@ if (mobWeb) {
 	</tmpl:put>
 	
     <tmpl:put name='content' direct='true'>
+    
+    	<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
+			<%@ include file="/help/delivery_info_nav.jspf" %>
+		</div>
+    
 	<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
 	
 	<%	
@@ -96,7 +103,9 @@ if (mobWeb) {
 		<input type="hidden" name="actionName" value="">
 		
 		<%//Render the timeslots %>
-		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+		<div class="tsWrapper">
+			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+		</div>
 	
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 		<%//Reservation stuff%>

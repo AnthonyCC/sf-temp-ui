@@ -17,6 +17,6 @@ http://www.freshdirect.com/help/faq_home.jsp
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 23-30 Borden Ave. Long Island City, NY 11101 
-(c) 2002 - 2014 FRESHDIRECT. All Rights Reserved. 
+(c) 2002 - <xsl:value-of select="substring(//curYear,1,4)" /> FRESHDIRECT. All Rights Reserved. 
 	</xsl:template>
 </xsl:stylesheet>

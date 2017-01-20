@@ -552,6 +552,22 @@ a.portrait-item-header-name:link {
   width: 100%;
 }
 
+.portrait-product-list-time{
+  background: #F0F5E1;
+  line-height: 20px;
+  height: 20px;
+  padding: 4px
+}
+
+.portrait-product-list-time span{
+  padding-left: 4px;
+  font-size: 14px;
+}
+
+.portrait-product-list-time.icon-clock2-before{
+  vertical-align: top;
+}
+
 /* transactional popup */
 #transactionalPopup {
   top:-40px;
@@ -743,7 +759,7 @@ a.portrait-item-header-name:link {
 	right:8px;
 	width:28px;
 	height:24px;
-	background-position:-122px -202px; 
+	background-position:-122px -202px;
 }
 
 #transactionalPopup .portrait-item-controls {

@@ -138,10 +138,10 @@ public class ExternalInterfaceController extends BaseController {
 	  	        	responseMessage.addErrorMessage("T002 Failed.");
 	     	    }   
     		} else if(ACTION_GET_SMS_MESSAGE_RELAY.equals(action)){
-    			
+    			String mobileNumber=null;
     			try{
     				// Call SmsAlertsManager with the parameters of the request.
-    				String mobileNumber=request.getParameter("sender");
+    				mobileNumber=request.getParameter("sender");
     				String shortCode= request.getParameter("code");
     				String carrierName=request.getParameter("carrier");
     				String receivedDate=request.getParameter("received");
@@ -150,7 +150,7 @@ public class ExternalInterfaceController extends BaseController {
     				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FD);
     				responseMessage = Message.createSuccessMessage("T003 Successfull.");
     			} catch(Exception e) {
-	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received ");
+	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received for this Mobile number"+mobileNumber);
 	        	}
     			if(responseMessage == null) {
 	  	        	LOGGER.info("T003: Failed SMS Message Relay ");
@@ -162,10 +162,10 @@ public class ExternalInterfaceController extends BaseController {
     		//Start::Added by Sathishkumar Merugu for FDX SMS Alert
     		
     		else if(ACTION_GET_SMS_FDX_MESSAGE_RELAY.equals(action)){
-    			
+    			String mobileNumber=null;
     			try{
     				// Call SmsAlertsManager with the parameters of the request.
-    				String mobileNumber=request.getParameter("sender");
+    				mobileNumber=request.getParameter("sender");
     				String shortCode= request.getParameter("code");
     				String carrierName=request.getParameter("carrier");
     				String receivedDate=request.getParameter("received");
@@ -175,7 +175,7 @@ public class ExternalInterfaceController extends BaseController {
     				responseMessage = Message.createSuccessMessage("T004 Successfull.");
     			} catch(Exception e) {
 	        		responseMessage=Message.createFailureMessage("T004 Failed.");
-	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received ");
+	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received for this Mobile number"+mobileNumber);
 	  	        }  
 			if(responseMessage == null) {
 	  	        	LOGGER.info("T004: Failed FDX SMS Message Relay ");

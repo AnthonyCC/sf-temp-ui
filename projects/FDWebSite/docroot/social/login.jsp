@@ -43,8 +43,8 @@
 		// disable the submit button on page load
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
-		$jq('#fd_login').bind('change keyup', function() {
-		    if($jq(this).validate().checkForm()) { // form is valid
+		$jq('#fd_login input').on('change keyup', function() {
+		    if($jq('#fd_login').validate().checkForm()) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
 		    } else { // form is invalid
@@ -193,7 +193,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 			             customemail:true
 			            },		            
 		            password:{
-		            	required:true,
+		            	required: false, /* don't try to validate password, autofill will foil it. */
 		            	//password:true,
 		            }
 		 		},

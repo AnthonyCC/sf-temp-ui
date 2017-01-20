@@ -204,7 +204,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 			<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 				<tr>
-					<td  colspan="3"><img src="/media_stat/images/layout/clear.gif" width="430" height="15"></td>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" style="width: <%= (mobWeb_address_finder) ? "100%": "430px" %>; height: 15px"></td>
 				</tr>
 				<tr>
 					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>

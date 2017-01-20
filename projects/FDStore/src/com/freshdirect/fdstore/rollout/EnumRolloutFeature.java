@@ -20,7 +20,8 @@ public enum EnumRolloutFeature {
     priceconfigdisplay2016("priceconfigdisplay", "2016"),
     unbxdintegrationblackhole2016("unbxdintegrationblackhole", "2016"),
     unbxdanalytics2016("unbxdanalytics", "2016"),
-    mobweb("mobweb","2016")
+    mobweb("mobweb","2016"),
+    printinvoice("printinvoice","2016") //has print invoice button
     ;
 
     private final EnumRolloutFeature child;

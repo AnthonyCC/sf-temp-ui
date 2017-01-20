@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,24 +24,19 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.braintreegateway.exceptions.AuthenticationException;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class AbstractService {
 	
-	
-	private static final String ORBITAL_API_CONTEXT = "/payment/v/1";
 	private static final String PAYPAL_API_CONTEXT = "/payPal/v/1";
-	private static final String MASTERPASS_API_CONTEXT = "/masterpass/v/1";
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
-	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
-
 	
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractService.class);
@@ -96,7 +90,6 @@ public abstract class AbstractService {
 			throw new FDPayPalServiceException("API syntax error");
 		}
 	}
-	
 	
 	/**
 	 *  This method implementation is to get data for the HTTP GET
@@ -160,17 +153,5 @@ public abstract class AbstractService {
 		return FDStoreProperties.getPayPalAPIUrl()	+ PAYPAL_API_CONTEXT 
 														+ path;
 	}
-	public String getFdCommerceEndPoint(String path){
-		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
-												 path;
-	}
-	public String getOrbitalEndPoint(String path){
-		return FDStoreProperties.getOrbitalAPIUrl()	+ ORBITAL_API_CONTEXT 
-														+ path;
-	}
-	public String getMasterPassEndPoint(String path){
-		return FDStoreProperties.getMasterPassAPIUrl()+ MASTERPASS_API_CONTEXT 
-														+ path;
-	}
-	
+
 }

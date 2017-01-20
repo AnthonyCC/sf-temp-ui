@@ -1535,9 +1535,19 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getPageTitle();
 	}
 
+    @Override
+    public String getFdxPageTitle() {
+        return prodModel.getFdxPageTitle();
+    }
+
 	@Override
 	public String getSEOMetaDescription() {
 		return prodModel.getSEOMetaDescription();
+	}
+
+	@Override
+	public String getFdxSEOMetaDescription() {
+	    return prodModel.getFdxSEOMetaDescription();
 	}
 
 	@Override
