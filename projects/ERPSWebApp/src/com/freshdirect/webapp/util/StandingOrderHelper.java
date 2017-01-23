@@ -826,7 +826,7 @@ public class StandingOrderHelper {
 		for(Map<String,Object> soDataMap:soData){
 			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
 				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
-					if(!i.getStatus().isCanceled() || !new Date().after(i.getRequestedDate())){
+					if(!i.getStatus().isCanceled() && !new Date().after(i.getRequestedDate())){
 						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
 						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
 						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
@@ -842,7 +842,7 @@ public class StandingOrderHelper {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
 			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
 				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
-					if(!i.getStatus().isCanceled() || !new Date().after(i.getRequestedDate())){
+					if(!i.getStatus().isCanceled() && !new Date().after(i.getRequestedDate())){
 						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
 						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
 						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
