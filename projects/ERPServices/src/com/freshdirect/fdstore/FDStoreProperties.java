@@ -894,6 +894,9 @@ public class FDStoreProperties {
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
     
+    // APPDEV-5893
+    private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
+    
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1691,6 +1694,8 @@ public class FDStoreProperties {
         // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
+        
+        defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         refresh();
     }
@@ -4349,6 +4354,10 @@ public class FDStoreProperties {
 	public static String getPropDonationProductSamplesId() {
 		return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
 	}
+	
+	public static int getUserCartSaveInterval() {
+        return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
+    }
 	
 	public static List<String> getMealKitMaterialGroup(){
 		String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);

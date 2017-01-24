@@ -93,7 +93,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private long lastCartSaveTime;
 
-    private final static long SAVE_PERIOD = 2 * 60 * 1000; // 2 minutes
+    private final static long SAVE_PERIOD = FDStoreProperties.getUserCartSaveInterval(); // 0 minutes
 
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
