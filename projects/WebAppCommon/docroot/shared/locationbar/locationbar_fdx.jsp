@@ -52,7 +52,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 %>
 
 <!-- Adding Skip to Navigation : Start-->
-	<a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+	<a href="#skip_to_content" class="skipnav">Skip to Content</a>
 <!-- Adding Skip to Navigation : End-->
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
@@ -548,7 +548,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 		        <% if (!signedIn) { %>
-					<a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+					<a href="/login/login.jsp"  <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
 		        <% } %>
 					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
