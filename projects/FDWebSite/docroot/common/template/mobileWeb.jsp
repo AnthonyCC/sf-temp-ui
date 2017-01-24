@@ -154,7 +154,7 @@
 		   	</div>
 		   	<!-- modorder e -->
 		
-			<section class="tabs" style="display: none;">
+			<section class="tabs">
     			<!-- start : tabs -->
     			<tmpl:get name='tabs'/>
     			<!-- end : tabs -->      
@@ -198,8 +198,10 @@
 	                <%
 				}
 			%>
-			<%-- container with qs-container is required --%>
-			<div class="qs-container"><tmpl:get name="menu" /></div>
+			<% if (isReorder) { %>
+				<%-- container with qs-container is required --%>
+				<div class="qs-container"><tmpl:get name="menu" /></div>
+			<% } %>
 			<tmpl:get name="content" />
 		    <% if (isReorder) { %>
 				<tmpl:get name="pagination" />
