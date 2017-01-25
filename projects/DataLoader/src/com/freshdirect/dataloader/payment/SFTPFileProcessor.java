@@ -129,6 +129,30 @@ public class SFTPFileProcessor {
 	    return  downloadedFiles;
 	}
 	
+	
+	/**
+	 *  This method is just for testing purpose 
+	 *  keep extracted zip file in work location to process settlement files
+	 * @return
+	 * @throws IOException
+	 */
+	
+	public List<String> getLocalFiles() throws IOException{
+		
+		File fileDir=new File(context.getLocalHost());
+
+        List<String> downloadedFiles=new ArrayList<String>(fileDir.listFiles().length);
+
+        for(File f:fileDir.listFiles()){
+        	
+        	if(f.getName().indexOf("A")>0|| f.getName().indexOf("B")>0 && !f.isDirectory()){
+        		
+			  downloadedFiles.add(f.getName());
+        }}
+
+        return downloadedFiles;
+	}
+	
 	public List<String> getFiles() throws IOException {
 		
 		
