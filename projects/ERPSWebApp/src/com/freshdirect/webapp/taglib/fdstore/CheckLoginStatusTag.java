@@ -314,8 +314,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         try {
             response.sendRedirect(response.encodeRedirectURL(this.getRedirectURL(firstRequest)));
 
-            JspWriter writer = pageContext.getOut();
-            writer.close();
+            //JspWriter writer = pageContext.getOut();
+           // writer.close();
             this.redirected = true;
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
