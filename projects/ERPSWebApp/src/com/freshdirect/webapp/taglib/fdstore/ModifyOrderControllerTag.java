@@ -232,8 +232,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 			try {
 				response.sendRedirect(response.encodeRedirectURL(successPage));
-				JspWriter writer = pageContext.getOut();
-				writer.close();
+				//JspWriter writer = pageContext.getOut();
+				//writer.close();
 			} catch (IOException ioe) {
 				throw new JspException(ioe.getMessage());
 			}
