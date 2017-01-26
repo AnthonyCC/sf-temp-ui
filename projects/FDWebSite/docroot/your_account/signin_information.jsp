@@ -1089,7 +1089,7 @@ else{  %>
 	</tr>	
 	</form>
 	
-	<form name="go_green" method="post">
+	<%-- <form name="go_green" method="post">
 	<input type="hidden" name="actionName" value="otherpreferences">	
 	<tr>
 		<td colspan="6"><br><br>
@@ -1114,7 +1114,7 @@ else{  %>
 		</td>
 		<td></td>
 	</tr>
-	</form>
+	</form> --%>
 
 </table>
 
