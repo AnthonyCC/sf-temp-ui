@@ -145,7 +145,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					});
 				</script>
 				
-			 --%>
+			--%>
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
@@ -659,7 +659,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<fd:GetCart id="cart">
 						<div id="sidecartbuttons">
 							<div class="buttons">
-								<a class="cart" href="/expressco/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" fd-login-required fd-login-successpage="/expressco/checkout.jsp" href="/expressco/checkout.jsp"><div class="vahidden">checkout</div></a>
+								<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
 							</div>
 							<div class="summary">
 								<span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
@@ -676,8 +676,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
 						   	<div class="footer-buttons">
 								<span class="close"></span><br />
-								<a class="cart cssbutton cssbutton-flat" href="/expressco/view_cart.jsp">View Cart</a>
-								<a class="checkout cssbutton orange cssbutton-flat" fd-login-required fd-login-successpage="/expressco/checkout.jsp" href="/expressco/checkout.jsp">Checkout</a>
+								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
 							</div>
 			    		</div>
 					</fd:GetCart>
