@@ -1,10 +1,9 @@
 package com.freshdirect.fdstore;
 
-import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
@@ -12,7 +11,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -33,7 +31,7 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 	}
 	
 	protected Map<String,ErpNutritionModel> loadData(Date since){
-		try{
+		/*try{
 			LOGGER.info("REFRESHING");
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
 			Map<String,ErpNutritionModel> data = sb.loadNutrition(since);
@@ -45,7 +43,8 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			throw new FDRuntimeException(e);
-		}
+		}*/
+		return new HashMap<String,ErpNutritionModel>();
 	}
 	
 	public ErpNutritionModel getNutrition(String skuCode) {
