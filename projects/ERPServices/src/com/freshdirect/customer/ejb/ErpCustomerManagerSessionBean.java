@@ -1752,15 +1752,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			// START Pass the authorized amount for cash back with it's affiliates
 			
-			if (departmentLevel) {
+			if (departmentLevel && EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+					EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
 
 				Map<ErpAffiliate, Double> cashBackMap = getAuthorizedAffiliateAmount(fdAmount,
 						auths);
 				fdAmount = null != cashBackMap.get(FD) ? cashBackMap.get(FD) : 0.0;
-				fdxAmount = null != cashBackMap.get(FDX) ? cashBackMap.get(FDX) : 0.0;
-				fdwAmount = null != cashBackMap.get(FDW) ? cashBackMap.get(FDW) : 0.0;
-				usqAmount = null != cashBackMap.get(USQ) ? cashBackMap.get(USQ) : 0.0;
-				bcAmount = null != cashBackMap.get(BC) ? cashBackMap.get(BC) : 0.0;
+				fdwAmount = null != cashBackMap.get(FDW) ? cashBackMap.get(FDW) + fdwAmount : fdwAmount>0.0?fdwAmount:0.0;
+				fdxAmount = null != cashBackMap.get(FDX) ? cashBackMap.get(FDX) : fdxAmount;
+				usqAmount = null != cashBackMap.get(USQ) ? cashBackMap.get(USQ) : usqAmount;
+				bcAmount = null != cashBackMap.get(BC) ? cashBackMap.get(BC) : bcAmount;
 
 			}
 			// END Pass the authorized amount for cash back with it's affiliates
