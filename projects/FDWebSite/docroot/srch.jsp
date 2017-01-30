@@ -104,48 +104,27 @@
   <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
 
   <tmpl:put name='deptnav' direct='true'>
-    <div class="srch-header NOMOBWEB">
+    <div class="srch-header">
       <soy:render template="srch.header" data="${browsePotato.searchParams}" />
     </div>
   </tmpl:put>
 
   <tmpl:put name='tabs' direct='true'>
-    <div id="listsearch" class="NOMOBWEB">
+    <div id="listsearch">
         <soy:render template="srch.listSearch" data="${browsePotato.searchParams}" />
     </div>
-    <section class="page-type NOMOBWEB">
+    <section class="page-type">
         <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
     </section>
     <section class="srch-ddpp"><%-- this does the featured items --%>
-    	<% if (mobWeb) { %>
-    		<div class="isHookLogic-false">
-				<div class="browse-sections transactional">
-					<div class="browseContent">
-						<section class="">
-							<div class="sectionContent">
-								<soy:render template="common.simpleFixedProductList" data="${browsePotato.ddppproducts}" />
-							
-								<div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
-								  <script type="text/javascript">
-								      OAS_AD('PPSuperBuy');
-								  </script>
-								</div>
-								
-							</div>
-						</section>
-					</div>
-				</div>
-			</div>
-    	<% } else { %>
-        	<soy:render template="srch.ddppWrapper" data="${browsePotato.ddppproducts}" />
-        <% } %>
+        <soy:render template="srch.ddppWrapper" data="${browsePotato.ddppproducts}" />
     </section>
 	<c:choose>
 		<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}"><%-- DEBUG: this should switch to new type --%>
 			<%--do nothing --%>
 		</c:when>
 		<c:otherwise>
-			<section class="ddpp-oas NOMOBWEB">
+			<section class="ddpp-oas">
 			  <div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
 			    <script type="text/javascript">
 			        OAS_AD('PPSuperBuy');
@@ -154,13 +133,13 @@
 			</section>
 		</c:otherwise>
     </c:choose>
-    <nav class="tabs NOMOBWEB" role="tablist">
+    <nav class="tabs" role="tablist">
       <soy:render template="srch.searchTabs" data="${browsePotato.searchParams}" />
     </nav>
-    <section class="itemcount NOMOBWEB">
+    <section class="itemcount">
       <soy:render template="srch.searchSuggestions" data="${browsePotato.searchParams}" />
     </section>
-    <div class="search-input NOMOBWEB">
+    <div class="search-input">
       <soy:render template="srch.searchParams" data="${browsePotato.searchParams}" />
     </div>
   </tmpl:put>
@@ -173,68 +152,72 @@
 
   <tmpl:put name='content' direct='true'>
     <div id="searchPanel" role="tabpanel" tabindex="0">
-	    <div class="oas-cnt PPSearchContent" id="oas_b_PPSearchContent">
-	     <script type="text/javascript">
-	       OAS_AD('PPSearchContent');
-	     </script>
-	    </div>
+    <div class="oas-cnt PPSearchContent" id="oas_b_PPSearchContent">
+     <script type="text/javascript">
+       OAS_AD('PPSearchContent');
+     </script>
+    </div>
 
-	    <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
-	
-	    <div class="pager-holder top">
-	      <c:if test="${not empty browsePotato.pager}">
-	        <soy:render template="browse.pager" data="${browsePotato.pager}" />
-	      </c:if>
-	    </div>
-	
-	    <div id="sorter">
-	      <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
-	    </div>
-	
-	    <div class="browse-filtertags">
-	      <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
-	    </div>
-	   
-		<div class="isHookLogic-false">
-		    <c:choose>
-		      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
-		        <div class="browse-sections-top transactional">
-		          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
-		        </div>
-				<% if (!mobWeb) { %>
-		        <div class="srch-carousel">
-		          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
-		        </div>
-		        
-		        <div class="browse-sections-bottom transactional">
-		          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
-		        </div>
-		        <% } %>
-		      </c:when>
-		      <c:otherwise>
-		          <div class="browse-sections transactional"><%-- this does the main prod grid --%>
-					<soy:render template="browse.content" data="${browsePotato.sections}" />
-					<%--soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}" / --%>
-	        		</div>
-		      </c:otherwise>
-		    </c:choose>
-	    </div>
-	
-	    <div class="pager-holder bottom">
-	      <c:if test="${not empty browsePotato.pager}">
-	        <soy:render template="browse.pager" data="${browsePotato.pager}" />
-	      </c:if>
-	    </div>
-	    
-	    <script>
-	      window.FreshDirect = window.FreshDirect || {};
-	      window.FreshDirect.browse = window.FreshDirect.browse || {};
-	      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
-	
-	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
-	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
-	    </script>
+    <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
+
+    <div class="pager-holder top">
+      <c:if test="${not empty browsePotato.pager}">
+        <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      </c:if>
+    </div>
+
+    <div id="sorter">
+      <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
+    </div>
+
+    <div class="browse-filtertags">
+      <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
+    </div>
+   
+	<div class="isHookLogic-false">
+	    <c:choose>
+	      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
+	        <div class="browse-sections-top transactional">
+	          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
+	        </div>
+			<% if (!mobWeb) { %>
+	        <div class="srch-carousel">
+	          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+	        </div>
+	        
+	        <div class="browse-sections-bottom transactional">
+	          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
+	        </div>
+	        <% } %>
+	      </c:when>
+	      <c:otherwise>
+	      <c:choose>
+	      <c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
+	          <div class="browse-sections transactional"><%-- this does the main prod grid --%>
+				 <%-- <soy:render template="browse.content" data="${browsePotato.sections}" /> --%>
+				<soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}"/> 
+        		</div>
+        	</c:when>
+        	</c:choose>	
+	      </c:otherwise>
+	    </c:choose>
+    </div>
+
+    <div class="pager-holder bottom">
+      <c:if test="${not empty browsePotato.pager}">
+        <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      </c:if>
+    </div>
+    
+    <script>
+      window.FreshDirect = window.FreshDirect || {};
+      window.FreshDirect.browse = window.FreshDirect.browse || {};
+      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
+
+      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
+      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
+    </script>
     </div>
   </tmpl:put>
 

@@ -685,6 +685,7 @@ public class FDStoreProperties {
     private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
     private static final String PROP_PRES_PICKS_PAGESIZE = "fdstore.prespicks.pagesize";
     private static final String PROP_STAFF_PICKS_PAGESIZE = "fdstore.staffpicks.pagesize";
+    private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid";
     private static final String PROP_STAFF_PICKS_FEATLIMIT = "fdstore.staffpicks.featlimit";
     private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
@@ -1512,6 +1513,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
         defaults.put(PROP_PRES_PICKS_PAGESIZE, "30");
         defaults.put(PROP_STAFF_PICKS_PAGESIZE, "30");
+        defaults.put(PROP_STAFF_PICKS_PICKID,"3000000060");
         defaults.put(PROP_STAFF_PICKS_FEATLIMIT, "4");
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
@@ -3714,6 +3716,10 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_STAFF_PICKS_PAGESIZE));
     }
 
+    public static String getStaffPicksPickId() {
+        return get(PROP_STAFF_PICKS_PICKID);
+    }
+    
     public static int getStaffPicksPageFeatLimit() {
         return Integer.parseInt(get(PROP_STAFF_PICKS_FEATLIMIT));
     }

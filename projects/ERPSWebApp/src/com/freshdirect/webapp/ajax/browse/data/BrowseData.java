@@ -315,9 +315,18 @@ public class BrowseData implements Serializable {
 		}
 
 		public void addProdDataToCat(String curCat, ProductData productData) {
-			List<ProductData> temp = this.getProducts(curCat);
+			/*List<ProductData> temp = this.getProducts(curCat);
 			temp.add(productData);
-			this.getCats().put(curCat, temp);
+			this.getCats().put(curCat, temp);*/
+			if(this.cats.containsKey(curCat)){
+            	List<ProductData> productDataList=this.cats.get(curCat);
+            	productDataList.add(productData);
+            	this.cats.put(curCat, productDataList);
+            } else {
+            	List<ProductData> productDataList=new ArrayList<ProductData>();
+            	productDataList.add(productData);
+            	this.cats.put(curCat, productDataList);
+            }
 		}
 	}
 	public static class HLBrandAdProducts implements Serializable {
