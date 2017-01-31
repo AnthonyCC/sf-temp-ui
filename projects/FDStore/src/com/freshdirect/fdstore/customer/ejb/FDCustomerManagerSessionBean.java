@@ -8519,4 +8519,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return erpShippingMap;
 	}
+	
+	public List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException{
+		Connection conn = null;
+		List<FDCartLineI> mCartlines = new ArrayList<FDCartLineI>();
+		try {
+			conn = getConnection();
+			mCartlines = FDCartLineDAO.getModifiedCartlines(conn, user);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+		return mCartlines;		
+	}
 }

@@ -29,11 +29,14 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -200,7 +203,7 @@ public class FDUserDAO {
 	private static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
 		FDCartModel cart = new FDCartModel();
 
-		List<ErpOrderLineModel> loadCartLines = FDCartLineDAO.loadCartLines(conn, user.getPK(), user.getUserContext().getStoreContext().getEStoreId());
+		List<ErpOrderLineModel> loadCartLines = FDCartLineDAO.loadCartLines(conn, user, user.getUserContext().getStoreContext().getEStoreId());
 		cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
 
 		cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
@@ -560,14 +563,38 @@ public class FDUserDAO {
 			createFDUserEStore(conn, user.getZipCode(),user.getSelectedServiceType(),user.getUserContext().getStoreContext().getEStoreId(),user.getId());
 		}
 		
+		FDCartI cart = user.getShoppingCart();
 		// store children
-
-		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?");
+		
+		//if(user.getShoppingCart() instanceof FDModifyCartModel)
+		if(cart instanceof FDModifyCartModel){
+			FDModifyCartModel mcart = (FDModifyCartModel) cart;
+			ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID=?");
+			ps.setString(1, user.getPK().getId());
+			ps.setString(2, user.getUserContext().getStoreContext().getEStoreId().getContentId());
+			ps.setString(3, mcart.getOriginalOrder().getSale().getId());
+			ps.executeUpdate();
+			ps.close();
+			List<ErpOrderLineModel> erpOrderLine;
+			try {
+				erpOrderLine = convertToErpOrderlines(user.getShoppingCart().getOrderLines());
+			} catch (FDResourceException e) {
+				// !!! fix exception handling
+				throw new FDRuntimeException(e);
+			}
+			
+			FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine,user.getUserContext().getStoreContext(), mcart.getOriginalOrder().getSale().getId(), true);
+			//Store GC Recipient List if any.
+			if(user.getRecipientList() != null){
+				SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipientList().getRecipients());
+			}
+		}
+		else{
+		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID is null");
 		ps.setString(1, user.getPK().getId());
 		ps.setString(2, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 		ps.executeUpdate();
 		ps.close();
-
 		List<ErpOrderLineModel> erpOrderLine;
 		try {
 			erpOrderLine = convertToErpOrderlines(user.getShoppingCart().getOrderLines());
@@ -576,11 +603,12 @@ public class FDUserDAO {
 			throw new FDRuntimeException(e);
 		}
 		
-		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine,user.getUserContext().getStoreContext());
+		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine,user.getUserContext().getStoreContext(), null, false);
 		//Store GC Recipient List if any.
 		if(user.getRecipientList() != null){
 			SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipientList().getRecipients());
 		}
+		}		
 	}
 
 		

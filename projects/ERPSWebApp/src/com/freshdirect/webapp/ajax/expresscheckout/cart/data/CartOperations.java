@@ -519,7 +519,7 @@ public class CartOperations {
 			cart.sortOrderLines();		
 			user.updateUserState();
 			
-			if(!(cart instanceof FDModifyCartModel)){
+			//if(!(cart instanceof FDModifyCartModel)){
 				try {
 					if ( user instanceof FDUser ) {
 						FDCustomerManager.storeUser( (FDUser)user );
@@ -529,7 +529,7 @@ public class CartOperations {
 				} catch (FDResourceException e) {
 					LOG.error( "Store user (save cart) failed", e );
 				}				
-			}
+			//}
 		}
 	}
 

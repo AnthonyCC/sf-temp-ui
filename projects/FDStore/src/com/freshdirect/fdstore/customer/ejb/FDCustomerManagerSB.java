@@ -67,6 +67,7 @@ import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -884,6 +885,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
 	
 	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
+
+	public List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException, RemoteException;
 	
 
 }
