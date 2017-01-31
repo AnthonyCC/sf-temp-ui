@@ -133,11 +133,7 @@ public class FDCartLineDAO {
 		ps.close();
 
 		if(erpOrderlines.size()==0){
-			ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID is not null");
-			ps.setString(1, fdUserPk.getId());
-			ps.setString(2, storeContext.getEStoreId().getContentId());
-			ps.executeUpdate();
-			ps.close();
+			
 			return;			
 		}
 		ps =
@@ -293,4 +289,11 @@ public class FDCartLineDAO {
 		
 		return convertToCartLines(lst, false);		
 	}			
+	
+	public static void clearModifyCartlines(Connection conn, String mod_order_id)  throws SQLException{
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?");
+		ps.setString(1, mod_order_id);
+		ps.executeUpdate();
+		ps.close();
+	}
 }

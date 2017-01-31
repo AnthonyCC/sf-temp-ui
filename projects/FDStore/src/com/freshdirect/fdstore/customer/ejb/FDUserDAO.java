@@ -567,7 +567,7 @@ public class FDUserDAO {
 		// store children
 		
 		//if(user.getShoppingCart() instanceof FDModifyCartModel)
-		if(cart instanceof FDModifyCartModel){
+		if(cart instanceof FDModifyCartModel && null == user.getMasqueradeContext()){
 			FDModifyCartModel mcart = (FDModifyCartModel) cart;
 			ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID=?");
 			ps.setString(1, user.getPK().getId());

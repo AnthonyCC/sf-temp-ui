@@ -2815,6 +2815,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *            the customer's identity reference
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
+	 * @throws  
 	 */
 	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> usedPromotionCodes,
@@ -2911,6 +2912,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					true);
+			try {
+				FDCartLineDAO.clearModifyCartlines(this.getConnection(), saleId);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			//APPDEV-5587 When the DP is applied on the order, set the charge line with DELIVERYPASS promotion information, if it's not already available
 			if(order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
