@@ -1,10 +1,6 @@
-
-
 	<script type="text/javascript">
 		jQuery.noConflict();
-		
-
-				
+			
 		jQuery(document).ready(function() {			
 						
 			jQuery("#actionName").val(""); 
@@ -39,35 +35,18 @@
 					
 		});
 	</script>
-		
-
-				
-
-	
-
+<div class="youraccount_user_social">
 	<form name="social_accounts" method="post">
 	
+		<div class="youraccount_social">
 		<!-- hidden fields used to pass value to RegistrationControllerTag -->
 		<input type="hidden" id="actionName" name="actionName" value="">   
 		<input type="hidden" id="userToken" name="userToken" value="">   
 		<input type="hidden" id="socialEmail" name="socialEmail" value="">   
 		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">   
 		
-		<tr>
-			<td colspan="6"><br><br>
-				<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
-				<span class="SocialAccount">Social Accounts</span>
-				<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>								
-			</td>
-		</tr>
-		
-		
-		<%		
-			
-		%>
-				
-		
-		
+		<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
+		<h2 class="SocialAccount">Social Accounts</h2>
 		
 		<%		
 			List<ErpCustomerSocialLoginModel> socialLoginInfo = cm.getSocialLoginInfo();
@@ -126,10 +105,8 @@
 	
 			
 			if(connectedWithFacebook){			
-		%>		
-				<tr>
-					<td colspan="6">
-						<img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook. 
+		%>
+						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook.</div>
 						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
 								(!isPasswordAddedForSocialUser && "google".equalsIgnoreCase(newlyLinkedSocialNetworkProvider)) || 
 								(erpCustomer.isSocialLoginOnly()
@@ -138,30 +115,16 @@
 										&& connectedWithGoogle 
 										&& (!currentProviderName.equalsIgnoreCase("facebook")))){	
 						%>						
-						<input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
-						<%	} %>
-					</td>									
-				</tr>				
-		<%	} else { %>		
-				<tr>
-					<td colspan="6">													
-						<img src="/media_stat/images/navigation/social_accounts/ConnectFacebook.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK"
-								onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" >							 							 
-					</td>
-				</tr>			
-		<%	} %>	
-		
-		
-		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="40" height="8" border="0" alt=""></td>
-		</tr>			
-		
-		<%	
+						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
+						<%	} %>		
+		<%	} else { %>														
+						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/ConnectFacebook.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK"
+								onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" ></div>	
+		<%	} 
+			
 			if(connectedWithGoogle){			
-		%>		
-				<tr>
-					<td colspan="6">
-						<img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google. 
+		%>
+						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google.</div>
 						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
 								(!isPasswordAddedForSocialUser && "facebook".equalsIgnoreCase(newlyLinkedSocialNetworkProvider)) 
 								|| (erpCustomer.isSocialLoginOnly() 
@@ -170,17 +133,11 @@
 										&& connectedWithGoogle 
 										&& (!currentProviderName.equalsIgnoreCase("google")))){	
 						%>	
-						<input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
-						<%	} %>						
-					</td>
-				</tr>				
-		<%	} else { %>		
-				<tr>
-					<td colspan="6">													 
-						<img src="/media_stat/images/navigation/social_accounts/ConnectGoogle.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE"
-								onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" >
-					</td>
-				</tr>			
+						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
+						<%	} %>
+		<%	} else { %>												 
+						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/ConnectGoogle.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE"
+								onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" ></div>
 		<%	} %>		
 		
 		
@@ -189,16 +146,7 @@
 		<input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">   		
 		<input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">   
 		<input type="hidden" id="socialEmail_google" name="socialEmail_google" value="<%=socialEmail_google%>">
-
-
-	</form>	
-	
-
-<br>
-<br>
-<br>
-<br>
-
-
-
-	
+		<div class="clear"></div>
+		</div>
+	</form>
+</div>

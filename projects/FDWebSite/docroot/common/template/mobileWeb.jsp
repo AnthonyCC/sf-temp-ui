@@ -74,6 +74,15 @@
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
 	<fd:css href="/assets/css/common/locationbar_fdx.css" />
+	<% if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
+			<jwr:style src="/assets/css/common/styles.css" media="all" />
+			<jwr:style src="/assets/css/alerts_examples.css" media="all" />
+			<jwr:script src="/assets/javascript/scripts.js" useRandomParam="false" />
+			<jwr:script src="/assets/javascript/jquery.hint.js" useRandomParam="false" />
+			<jwr:script src="/assets/javascript/jquery.pwstrength.js" useRandomParam="false" />
+			<script>jQuery(function($jq) { $jq('#password1').pwstrength(); });</script>
+	<% } %>
+	
     <%
 		if (isReorder) {
 			%><jwr:style src="/quickshop.css" media="all" /><%
@@ -89,6 +98,14 @@
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
+        
+    <%
+		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
+			//do nothing
+		} else if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
+			<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<% } %>
+    
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
     
     <%
