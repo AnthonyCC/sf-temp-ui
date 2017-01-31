@@ -2272,3 +2272,30 @@ li.cleanli .gen-arrow {
 	.mm-page .youraccount .youraccount_continue{
 		display: none;
 	}
+	.mm-page table.order_history_table tr td{
+		padding: 10px 0;
+		text-align: left;
+		font-size: 12px;
+	}
+	.mm-page .order_history_table .order_history_table_id{
+		padding: 0 0 0 10px;
+	}
+	.mm-page .order_history_table .order_history_table_id_header{
+		padding: 0 0 0 10px;
+	}
+	.mm-page .order_history_table .order_history_table_date .order_history_table_date_display{
+		max-width: 65px;
+	    height: 17px;
+	    overflow: hidden;
+	    text-align: left;
+    }
+	.mm-page .order_history_header{
+		padding: 15px 10px 5px;
+		box-sizing: border-box;
+	}
+	.mm-page .order_history_header_h{
+		font-size: 22px;
+	}
+	.mm-page .order_history_header_desc{
+		font-size: 12px;
+	}

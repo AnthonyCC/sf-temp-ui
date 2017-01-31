@@ -10,13 +10,28 @@
 <%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='java.text.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<% //expanded page dimensions
-final int W_YA_ORDER_HISTORY_TOTAL = 970;
+
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
+
+<%
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String template = "/common/template/dnav.jsp";
+	if (mobWeb) {
+		template = "/common/template/mobileWeb.jsp"; //mobWeb template
+	}
 %>
+
+<% //expanded page dimensions
+	final int W_YA_ORDER_HISTORY_TOTAL = 970;
+%>
+
 <%!
 private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		StringBuffer sb = new StringBuffer();
@@ -40,7 +55,6 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		return sb.toString();
 	}
 %>
-<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <%
 Date ccrNow = new Date();
 if (user.isEligibleForClientCodes()) {
@@ -49,7 +63,7 @@ if (user.isEligibleForClientCodes()) {
 	request.setAttribute("__fd_cc_report_now__", ccrNow);
 }
 %>
-<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:insert template='<%= template %>'>
 
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Orders</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
@@ -79,7 +93,7 @@ if (user.isEligibleForClientCodes()) {
 			String errorMsg= "We were unable to deliver your order (#"+firstOrderInfo.getErpSalesId()+") scheduled for between "+deliveryTime+" on "+dateFormatter.format( firstOrderInfo.getRequestedDate() )+". Please contact us as soon as possible at "+user.getCustomerServiceContact()+" to reschedule delivery.";
 			ActionResult result = new ActionResult();
 %>
-<TABLE WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 	<tr>
 		<td><%@ include file="/includes/i_error_messages.jspf"%></td>
 	</tr>
@@ -88,11 +102,11 @@ if (user.isEligibleForClientCodes()) {
 		}
 %>
 <%-- Order Info --%>
-<div class="text11" style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: left;">
-	<font class="title18">Your Orders</font><br>
-	Please review your orders. To check the status of an order, click on the order number.<BR>
+<div class="text11 order_history_header" style="width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; text-align: left;">
+	<div class="order_history_header_h"><font class="title18">Your Orders</font></div>
+	<div class="order_history_header_desc">Please review your orders. To check the status of an order, click on the order number.</div>
 </div>
-<div style="height: 1px; width: <%= W_YA_ORDER_HISTORY_TOTAL %>; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<div class="NOMOBWEB" style="height: 1px; width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
 <!-- client codes begin -->
 <% if (user.isEligibleForClientCodes()) { 
 	DateFormat usDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -104,7 +118,7 @@ if (user.isEligibleForClientCodes()) {
 	String ccrFirstDate = usDateFormat.format(ccrCal.getTime());
 	String ccrFirstIso = isoDateFormat.format(ccrCal.getTime());
 %>
-<div style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: right; overflow: hidden;">
+<div style="width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; text-align: right; overflow: hidden;">
 <table border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
 	<tr>
 		<td class="text11" style="text-align: right; vertical-align: middle; font-weight: bold;">
@@ -120,19 +134,19 @@ if (user.isEligibleForClientCodes()) {
 	</tr>
 </table>
 </div>
-<div style="height: 1px; width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<div style="height: 1px; width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
 <!-- client codes end -->
 <% } %>
 <br>
-<TABLE WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
+<TABLE WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0" class="order_history_table">
 	<tr>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="125">Order #</td>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="175">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
-        <td class="text10bold" bgcolor="#DDDDDD" WIDTH="140">Delivery Type</td>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75" align="right">Order Total</td>
-		<td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="90">Order Status</td>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="250">Details</td>
+		<td class="text10bold order_history_table_id_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='125'" %>>Order #</td>
+		<td class="text10bold order_history_table_date_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='175'" %>><%= (mobWeb)? "" : "&nbsp;&nbsp;&nbsp;&nbsp;" %>Delivery<%= (mobWeb)? "" : " Date" %></td>
+		<% if(!mobWeb){ %><td class="text10bold" bgcolor="#DDDDDD" WIDTH="<%= (mobWeb)? "0" : "140" %>">Delivery Type</td><% } %>
+		<td class="text10bold order_history_table_total_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='75'" %> align="right"><%= (mobWeb)? "" : "Order " %>Total</td>
+		<% if(!mobWeb){ %><td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td> <% } %>
+		<td class="text10bold order_history_table_status_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='90'" %>><%= (mobWeb)? "" : "Order " %>Status</td>
+		<% if(!mobWeb){ %><td class="text10bold" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='250'" %>>Details</td><% } %>
 	</tr>
 	
 <%
@@ -156,8 +170,8 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
     } else {
 		orderDetailsUrl = "/your_account/order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
     }
-%>	    <td WIDTH="125"><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
-		<td class="text10"><%= dateFormatter.format( orderInfo.getRequestedDate() ) %></td>
+%>	    <td class="order_history_table_id"><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
+		<td class="text10 order_history_table_date"><div class="order_history_table_date_display"><%= dateFormatter.format( orderInfo.getRequestedDate() ) %></div></td>
 <%
 	String deliveryType = "";
 	if (orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) {
@@ -168,9 +182,10 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 		deliveryType = orderInfo.getDeliveryType().getName();
 	}
 %>
-        <td class="text10"><%= deliveryType %></td>
-		<td class="text10" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-		<td></td>
+        <% if(!mobWeb){ %><td class="text10"><%= deliveryType %></td><% } %>
+		<td class="text10 order_history_table_total" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %><%= (mobWeb)? "" : "&nbsp;&nbsp;&nbsp;&nbsp;" %></td>
+		
+		<% if(!mobWeb){ %><td></td><% } %>
 <%
 	String status = "";
 	if (orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD) || orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
@@ -179,30 +194,32 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 		status = orderInfo.getOrderStatus().getDisplayName();
 	}
       if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(orderInfo.getOrderStatus())) {%>
-<td><font color="#FF0000"><%= status %></font></td>
+<td class="order_history_table_status"><font color="#FF0000"><%= status %></font></td>
    <%} else {%>
-<td><%= status %></td>
+<td class="order_history_table_status"><%= status %></td>
    <%}%>
+		<% if(!mobWeb){ %>
 		<td>
 			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %></a>
             <% if (orderInfo.isShopFromThisOrder()) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order</a>
             <% } %>
 		</td>
+		<% } %>
 	</tr>
 <%
 } // orderInfo : orderHistoryInfo
 %>
 </TABLE>
 <% 	} else { %>
-<div style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: center; font-weight: bold;">You have not yet placed an order with us.</div>
+<div style="width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; text-align: center; font-weight: bold;">You have not yet placed an order with us.</div>
 <% 	} // end if-else orderHistory > 0%>
 </fd:OrderHistoryInfo>
-<br>
-<br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-<FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>">
+<br class="NOMOBWEB">
+<br class="NOMOBWEB">
+<IMG class="NOMOBWEB" src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" HEIGHT="1" BORDER="0"><BR class="NOMOBWEB">
+<FONT CLASS="space4pix NOMOBWEB"><BR><BR></FONT>
+<TABLE class="NOMOBWEB" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>">
 	<tr VALIGN="TOP">
 		<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
     <td WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a><BR>
