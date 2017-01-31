@@ -1463,7 +1463,7 @@ public class BrowseUtil {
 					tmp.setPricingZone(plantlic);
 					keyList.add(tmp);
 					//Currently using stubs for sales and distribution
-					plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.SALE, plantlic);
+					plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.BASE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(2000);
