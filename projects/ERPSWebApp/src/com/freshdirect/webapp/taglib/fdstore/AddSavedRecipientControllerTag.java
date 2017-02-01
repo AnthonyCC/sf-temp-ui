@@ -207,8 +207,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                 		successPage = successPage+"?gcDonId="+request.getParameter("gcDonId");
                 	}
                     response.sendRedirect(response.encodeRedirectURL(successPage));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
+                    //JspWriter writer = pageContext.getOut();
+                    //writer.close();
                 } catch (IOException ioe) {
                     //
                     // if there was a problem redirecting, continue and evaluate/skip tag body as usual
@@ -259,8 +259,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                 LOGGER.debug("Success GET, redirecting to: "+successPage);                
                 try {
                     response.sendRedirect(response.encodeRedirectURL(successPage));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
+                    //JspWriter writer = pageContext.getOut();
+                    //writer.close();
                 } catch (IOException ioe) {
                     //
                     // if there was a problem redirecting, continue and evaluate/skip tag body as usual
