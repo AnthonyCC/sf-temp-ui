@@ -1350,15 +1350,16 @@ public class BrowseUtil {
 	    	if(!isFDX)
 	    		isFDX = sm.getContentName().contains("FDX");
 	    	
-	    	if(!isFDX){
-		    	for(DepartmentModel d:depts) {
-		    		List<CategoryModel> cm=d.getCategories();
-		    		for(CategoryModel c:cm) {
-		    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
-		    		}
-		    		
-		    	}
-	    	} else {
+//	    	if(!isFDX){
+//		    	for(DepartmentModel d:depts) {
+//		    		List<CategoryModel> cm=d.getCategories();
+//		    		for(CategoryModel c:cm) {
+//		    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
+//		    		}
+//		    		
+//		    	}
+//	    	} else {
+	    	
 	    		ContentFactory.getInstance().setCurrentUserContext(user.getFDSessionUser().getUserContext());
 		    	for(DepartmentModel d:depts) {
 		    		
@@ -1379,7 +1380,8 @@ public class BrowseUtil {
 		    		}
 		    		
 		    	}
-	    	}
+	    	//}
+		    	
 	    	String val=requestMessage.getProductCount();
 	    	
 	    	try {
