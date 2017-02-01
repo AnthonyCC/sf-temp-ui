@@ -1327,9 +1327,9 @@ public class BrowseUtil {
 	    	CatalogInfo catalogInfo;
 	    	String plantId;
 	    	PricingContext pc;
-	    	boolean isFDX = false;
+	    	//boolean isFDX = false;
 	    	if(requestMessage.getCatalogKey() != null){
-	    		isFDX = requestMessage.getCatalogKey().geteStore().contains("FDX");
+	    		//isFDX = requestMessage.getCatalogKey().geteStore().contains("FDX");
 	    		catalogInfo = getCatalogInfo(requestMessage.getCatalogKey());
 	    		plantId = catalogInfo.getKey().getPlantId();
 	    		pc = new PricingContext(catalogInfo.getKey().getPricingZone());
@@ -1347,8 +1347,8 @@ public class BrowseUtil {
 	    	List<DepartmentModel> depts=sm.getDepartments();
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	Set<String> productSet=new HashSet<String>();
-	    	if(!isFDX)
-	    		isFDX = sm.getContentName().contains("FDX");
+	    	//if(!isFDX)
+	    		//isFDX = sm.getContentName().contains("FDX");
 	    	
 //	    	if(!isFDX){
 //		    	for(DepartmentModel d:depts) {
