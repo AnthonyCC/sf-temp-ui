@@ -5,10 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -578,8 +582,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				psSummByAff.setString(2, affiliateAccountId);
 				rs = psSummByAff.executeQuery();
 			} else {
-				psSummAll = conn.prepareStatement(ppAllSummaryQuery);
 				psSummAll.setDate(1, new java.sql.Date(date.getTime()));
+				psSummAll = conn.prepareStatement(ppAllSummaryQuery);
 				rs = psSummAll.executeQuery();
 			}
 			
@@ -621,5 +625,32 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			LOGGER.warn("[PayPal Batch]", e);
 		}
 		//conn = this.getConnection();
+	}
+	
+	DateFormat sd=new SimpleDateFormat("EEE, MMM d, yyyy");
+	
+	public Map<String,String> getPPSettlementNotProcessed() {
+		
+		Map<String,String> ppNotProcessed=new HashMap<String,String>();
+		Connection conn = null;
+		PreparedStatement psStlmnt= null;
+		ResultSet rs = null;
+
+		try{
+			LOGGER.debug(" START getPPSettlementNotProcessed.");
+			  conn = this.getConnection();
+			  psStlmnt=conn.prepareStatement(" SELECT BATCH_DATE FROM CUST.SETTLEMENT WHERE SETTLEMENT_SOURCE='PP' AND TRUNC(BATCH_DATE) >=TRUNC(SYSDATE)-6  ORDER BY BATCH_DATE DESC");
+			  rs = psStlmnt.executeQuery();
+			  while(rs.next()){
+					ppNotProcessed.put(sd.format(rs.getDate("BATCH_DATE")), sd.format(rs.getDate("BATCH_DATE")));
+			}
+
+		  }	catch(SQLException e){
+			LOGGER.debug("[getPPSettlementNotProcessed] SQLException: ", e);
+			throw new EJBException("[getPPSettlementNotProcessed] SQLException: ", e);
+		  }finally{
+			resetConnection(psStlmnt, rs, conn);
+		  }
+		return ppNotProcessed;
 	}
 }
