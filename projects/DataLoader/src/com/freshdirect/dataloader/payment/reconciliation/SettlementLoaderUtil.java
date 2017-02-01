@@ -415,5 +415,26 @@ public class SettlementLoaderUtil {
 		return false;
 	}
 
-	
+	public static void sendEmailNotification(String subject, String message, Exception e) {
+		
+		StringWriter sw = new StringWriter();
+		
+		sw.write("---------------------------------------------\n");
+		sw.write(message);
+		sw.write("---------------------------------------------\n");
+		
+		if(null!=e){
+			sw.write(e.getMessage() + "\n");
+			e.printStackTrace(new PrintWriter(sw));
+		}
+		
+		ErpMailSender mailer = new ErpMailSender();
+		
+		try {
+			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), subject, sw.getBuffer().toString());
+		} catch (MessagingException me) {
+			LOGGER.fatal("Could not send a email notifiation ", me);
+		}
+		
+	}
 }
