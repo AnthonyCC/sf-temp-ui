@@ -1,5 +1,5 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Iterator"%>
