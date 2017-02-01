@@ -162,7 +162,8 @@ public class BrowseController extends BaseController {
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
                 return model;
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
-	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
+	            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user, isWebRequest);
 	        	result.setProductsFromModel(products);
 	        }else if(ACTION_GET_CATALOG_FOR_ADDRESS.equals(action)){
 	        	

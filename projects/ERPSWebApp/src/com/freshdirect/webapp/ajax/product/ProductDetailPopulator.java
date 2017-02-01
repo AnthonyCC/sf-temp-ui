@@ -633,6 +633,7 @@ public class ProductDetailPopulator {
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
+		item.setOutOfSeason(productModel.isOutOfSeason());
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
 			item.setSoData(StandingOrderHelper.getAllSoData(user,true));
 		}
@@ -1319,6 +1320,8 @@ public class ProductDetailPopulator {
 			item.setGrpLongDesc( grpPricing.getLongDesc() );
 			//change url for APPDEV-4060
 			item.setGrpLink( item.getProductPageUrl().replace("&amp;", "&")+"&grpId="+grpPricing.getGroupId()+"&version="+grpPricing.getVersion() );
+			item.setGrpId(grpPricing.getGroupId());
+			item.setGrpVersion(grpPricing.getVersion());
 			
 			// Group Scale Pricing - price string
 			StringBuilder priceStr = new StringBuilder();
