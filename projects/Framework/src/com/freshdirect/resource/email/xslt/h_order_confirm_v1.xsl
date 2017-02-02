@@ -10,7 +10,7 @@
 <xsl:template match="fdemail">
 <html>
 <head>
-	<title>Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
+	<title>Your receipt from FreshDirect-Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
 </head>
 <body bgcolor="#FFFFFF">
@@ -49,7 +49,7 @@
 									</xsl:if>
 									</p>
 
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
+									<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
 
 									<xsl:choose>
 										<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">
@@ -93,7 +93,7 @@
 									</p>
 
 
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
+									<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
                                                                         
                                     <xsl:choose>
                                         <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>

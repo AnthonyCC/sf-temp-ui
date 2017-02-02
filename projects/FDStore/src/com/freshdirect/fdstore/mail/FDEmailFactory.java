@@ -97,7 +97,7 @@ public class FDEmailFactory {
 			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
-			email.setSubject("Order Up! We're Coming At Ya");
+			email.setSubject("Your receipt from FoodKick-Order Up! We're Coming At Ya");
 		} else {
 			email = new FDTransactionalEmail(customer, order);
 			email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
@@ -106,13 +106,13 @@ public class FDEmailFactory {
 			 
 			if(order.getShortedItems().size() > 0 || order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0) {
 				if(order.getShortedItems().size() == 1)
-					email.setSubject("Service Alert: Your Order is Missing 1 Item");
+					email.setSubject("Your Receipt from FreshDirect | Order Is Missing Item(s)");	
 				else
 					if(order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0){
-						email.setSubject("Service Alert: Your Order is Missing Bundle or Bundle Items");
+						email.setSubject("Your Receipt from FreshDirect | Order Is Missing Bundle Item(s)");
 					}
 					else
-					email.setSubject("Service Alert: Your Order is Missing " + order.getShortedItems().size() + " Items");
+						email.setSubject("Your Receipt from FreshDirect | Order Is Missing" + order.getShortedItems().size() + " Item(s)");
 			} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
 			} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
@@ -121,7 +121,7 @@ public class FDEmailFactory {
 				email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
 						+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
 			} else {
-				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is on its way");
+				email.setSubject("Your receipt from FreshDirect-Your order for " + df.format(order.getRequestedDate()) + " is on its way");
 			}
 		}
 
