@@ -39,6 +39,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
@@ -8540,5 +8541,44 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 		return mCartlines;		
+	}
+	
+	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.saveModifiedCartlines(conn, userpk, storeContext, newLine, orderId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.removeModifiedCartline(conn, cartLine);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDCartline");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.updateModifiedCartlineQuantity(conn, cartLine);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to update FDCartline");
+		} finally {
+			close(conn);
+		}
 	}
 }

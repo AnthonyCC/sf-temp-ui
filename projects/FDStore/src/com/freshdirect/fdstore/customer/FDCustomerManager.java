@@ -4956,5 +4956,53 @@ public class FDCustomerManager {
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
 		}
+
+		public static void storeModifiedCartline(FDUserI user, FDCartLineI newLine, String orderId)  throws FDResourceException {
+			lookupManagerHome();
+			
+			try{
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.saveModifiedCartline(((FDUser)user).getPK(), user.getUserContext().getStoreContext(), newLine, orderId);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+
+		public static void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException {
+			lookupManagerHome();
+			
+			try{
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.removeModifiedCartline(cartLine);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+
+		public static void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException {
+			lookupManagerHome();
+			
+			try{
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateModifiedCartlineQuantity(cartLine);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+		}
 		
 }

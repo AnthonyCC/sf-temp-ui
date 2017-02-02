@@ -13,6 +13,8 @@ import java.util.SortedSet;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
@@ -887,7 +889,12 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
 
 	public List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException, RemoteException;
-	
+
+	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;
+
+	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException, RemoteException;
+
+	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException, RemoteException;
 
 }
 

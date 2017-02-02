@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
@@ -37,14 +38,14 @@ public class FDCartLineDAO {
 
 	private final static String QUERY_CARTLINES =
 		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
-			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID is null";
+			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
 		"SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.FDCARTLINE_CLIENTCODE WHERE FDUSER_ID = ? ORDER BY CARTLINE_ID, ORDINAL";
 
-	public static List<ErpOrderLineModel> loadCartLines(Connection conn, FDUser user, EnumEStoreId eStoreId) throws SQLException {
+	public static List<ErpOrderLineModel> loadCartLines(Connection conn, PrimaryKey fdUserPk, EnumEStoreId eStoreId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_CARTLINE_CLIENTCODES);
-		ps.setString(1, user.getPK().getId());
+		ps.setString(1, fdUserPk.getId());
 		ResultSet rs = ps.executeQuery();
 		Map<String,List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
 		while (rs.next()) {
@@ -61,7 +62,7 @@ public class FDCartLineDAO {
 
 		List<ErpOrderLineModel> lst = new LinkedList<ErpOrderLineModel>();
 		ps = conn.prepareStatement(QUERY_CARTLINES);
-		ps.setString(1, user.getPK().getId());
+		ps.setString(1, fdUserPk.getId());
 		ps.setString(2, eStoreId.getContentId());
 		rs = ps.executeQuery();
 		while (rs.next()) {
@@ -94,7 +95,6 @@ public class FDCartLineDAO {
 			line.setEStoreId(EnumEStoreId.valueOfContentId(rs.getString("E_STORE")));
 			String source = rs.getString("SOURCE");
 			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source):null);
-					
 			lst.add(line);
 		}
 		rs.close();
@@ -107,7 +107,7 @@ public class FDCartLineDAO {
 
 	}
 
-	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List<ErpOrderLineModel> erpOrderlines,StoreContext storeContext, String orderId, boolean isModify) throws SQLException {
+	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List<ErpOrderLineModel> erpOrderlines,StoreContext storeContext) throws SQLException {
 		Map<String,List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
 		for (ErpOrderLineModel item : erpOrderlines) {
 			// basic error resolution
@@ -121,24 +121,22 @@ public class FDCartLineDAO {
 			clientCodes.put(item.getCartlineId(), ccList);
 		}
 		
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE_CLIENTCODE WHERE FDUSER_ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE_CLIENTCODE WHERE FDUSER_ID = ?");
 		ps.setString(1, fdUserPk.getId());
 		ps.executeUpdate();
 		ps.close();
 
-		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID is null");
+		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? AND MOD_ORDER_ID IS NULL");
 		ps.setString(1, fdUserPk.getId());
 		ps.setString(2, storeContext.getEStoreId().getContentId());
 		int c=ps.executeUpdate();
 		ps.close();
 
-		if(erpOrderlines.size()==0){
-			
-			return;			
-		}
+		if(erpOrderlines.size()==0)
+			return;
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE, MOD_ORDER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -164,7 +162,6 @@ public class FDCartLineDAO {
 			ps.setString(21, null !=line.getEStoreId()? line.getEStoreId().getContentId():
 				(null!=storeContext && null !=storeContext.getEStoreId() ? storeContext.getEStoreId().getContentId():EnumEStoreId.FD.getContentId()));
 			ps.setString(22, (line.getSource()!=null? line.getSource().toString():null));
-			ps.setString(23, orderId);
 			
 			ps.addBatch();
 		}
@@ -206,21 +203,6 @@ public class FDCartLineDAO {
 		return ret;
 
 	}
-	
-	private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines, final boolean lazy) {
-
-		List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
-		for (int i = 0; i < erplines.size(); i++) {
-			ErpOrderLineModel ol = erplines.get(i);
-
-			FDCartLineI cartLine;
-			cartLine = new FDCartLineModel(ol, lazy);
-
-			cartlines.add(cartLine);
-		}
-
-		return cartlines;
-	}
 
 	private static String convertHashMapToString(Map<String,String> map) {
 		StringBuffer ret = new StringBuffer();
@@ -235,11 +217,18 @@ public class FDCartLineDAO {
 		}
 		return ret.toString();
 	}
-	
+
+	public static void clearModifyCartlines(Connection conn, String mod_order_id) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?");
+		ps.setString(1, mod_order_id);
+		ps.executeUpdate();
+		ps.close();
+	}
+		
 	private final static String MODIFY_QUERY_CARTLINES =
 			"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
 				+ " FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?";
-				
+	
 	public static List<FDCartLineI> getModifiedCartlines(Connection conn, FDUser user) throws SQLException {
 		if(!(user.getShoppingCart() instanceof FDModifyCartModel)){
 			return new ArrayList<FDCartLineI>();
@@ -288,12 +277,67 @@ public class FDCartLineDAO {
 
 		
 		return convertToCartLines(lst, false);		
-	}			
+	}
 	
-	public static void clearModifyCartlines(Connection conn, String mod_order_id)  throws SQLException{
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?");
-		ps.setString(1, mod_order_id);
+	private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines, final boolean lazy) {
+
+		List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
+		for (int i = 0; i < erplines.size(); i++) {
+			ErpOrderLineModel ol = erplines.get(i);
+
+			FDCartLineI cartLine;
+			cartLine = new FDCartLineModel(ol, lazy);
+
+			cartlines.add(cartLine);
+		}
+
+		return cartlines;
+	}
+
+	public static void saveModifiedCartlines(Connection conn, PrimaryKey  userpk, StoreContext storeContext, FDCartLineI line, String orderId) throws SQLException {
+		PreparedStatement ps =
+				conn.prepareStatement(
+					"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE, MOD_ORDER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		
+		ps.setString(1, line.getCartlineId());
+		ps.setString(2, userpk.getId());
+		ps.setString(3, line.getSku().getSkuCode());
+		ps.setInt(4, line.getSku().getVersion());
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(line.getQuantity())));
+		ps.setString(6, line.getSalesUnit());
+		ps.setString(7, convertHashMapToString(line.getOptions()));
+		ps.setString(8, line.getRecipeSourceId());
+		ps.setString(9, line.isRequestNotification() ? "X" : "");
+		ps.setString(10, line.getVariantId());
+		ps.setString(11, line.isDiscountFlag()? "X" : "");			
+		ps.setString(12, line.getSavingsId());
+		ps.setString(13, line.isAddedFromSearch()? "X" : "");
+		ps.setString(14, line.getCoremetricsPageId());
+		ps.setString(15, line.getCoremetricsPageContentHierarchy());
+		ps.setString(16, null !=line.getAddedFrom()?line.getAddedFrom().getName():null);
+		ps.setString(17, line.getCoremetricsVirtualCategory());
+		ps.setString(18, StringUtil.crop(line.getExternalAgency(), 30));
+		ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
+		ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
+		ps.setString(21, null !=line.getEStoreId()? line.getEStoreId().getContentId():(null!=storeContext && null !=storeContext.getEStoreId() ? storeContext.getEStoreId().getContentId():EnumEStoreId.FD.getContentId()));
+		ps.setString(22, (line.getSource()!=null? line.getSource().toString():null));
+		ps.setString(23, orderId);		
 		ps.executeUpdate();
 		ps.close();
+	}
+
+	public static void removeModifiedCartline(Connection conn, FDCartLineI cartLine) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE ID =? and MOD_ORDER_ID IS NOT NULL");
+		ps.setString(1, cartLine.getCartlineId());
+		ps.executeUpdate();
+		ps.close();		
+	}
+	
+	public static void updateModifiedCartlineQuantity(Connection conn, FDCartLineI cartLine) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCARTLINE SET QUANTITY=? WHERE ID =? and MOD_ORDER_ID IS NOT NULL");
+		ps.setDouble(1, cartLine.getQuantity());
+		ps.setString(2, cartLine.getCartlineId());
+		ps.executeUpdate();
+		ps.close();		
 	}
 }
