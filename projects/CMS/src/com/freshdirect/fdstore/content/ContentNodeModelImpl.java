@@ -3,12 +3,14 @@ package com.freshdirect.fdstore.content;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 
 public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneable {
 
@@ -28,7 +30,6 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     }
 
     private final ContentKey key;
-
     private boolean fresh = true;
     private ContentNodeModel parentNode;
     private int priority = 1;
@@ -47,7 +48,18 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     //
 
     protected ContentNodeI getCMSNode() {
-        return ContentFactory.getInstance().getContentNode(key);
+    	ContentNodeI node = null;
+    	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(key.getId());
+    	if (!cacheKey.isEmpty()){
+    		node = EhCacheUtil.getObjectFromCache(EhCacheUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey);
+    	}
+    	if (node == null){
+    		node = ContentFactory.getInstance().getContentNode(key);
+    		if (!cacheKey.isEmpty()){
+    			EhCacheUtil.putObjectToCache(EhCacheUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey, node);
+    		}
+    	}
+        return node;
     }
 
     @Override
@@ -179,7 +191,18 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
 
     @Override
     public Collection<ContentKey> getParentKeys() {
-        return ContentFactory.getInstance().getParentKeys(key);
+    	Set<ContentKey> parentKeys = null;
+    	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(key.getId());
+    	if (!cacheKey.isEmpty()){
+    		parentKeys = EhCacheUtil.getObjectFromCache(EhCacheUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey);
+    	}
+    	if (parentKeys == null){
+    		parentKeys = ContentFactory.getInstance().getParentKeys(key);
+    		if (!cacheKey.isEmpty()){
+    			EhCacheUtil.putObjectToCache(EhCacheUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey, parentKeys);
+    		}
+    	}
+        return parentKeys;
     }
 
     @Override
@@ -365,8 +388,8 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
         return null;
     }
 
-    private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
-    private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
+    private final static ContentKey RECIPE_ROOT_FOLDER = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "recipes");
+    private final static ContentKey FAQ_ROOT_FOLDER = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ");
 
     // FIXME orphan handling is inelegant
     @Override

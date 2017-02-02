@@ -127,10 +127,8 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT,
 												    predicate, DraftContext.MAIN); 
 
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_required")));
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_required")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
 	}
 
 	/**
@@ -146,17 +144,13 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		cpDef           = typeService.getContentTypeDefinition(
 									FDContentTypes.CONFIGURED_PRODUCT);
 		skuRelDef       = (RelationshipDefI) cpDef.getAttributeDef("SKU");
-		predicate       = new AttributeEqualsPredicate(skuRelDef,
-							new ContentKey(FDContentTypes.SKU, "MEA0004568"));
-		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT,
-												    predicate, DraftContext.MAIN); 
+		predicate       = new AttributeEqualsPredicate(skuRelDef, ContentKey.getContentKey(FDContentTypes.SKU, "MEA0004568"));
+		results         = service.queryContentNodes(FDContentTypes.CONFIGURED_PRODUCT, predicate, DraftContext.MAIN); 
 
 		// this product contains the above SKU
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_after_horizon")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_after_horizon")));
 		// this product does not contain the above SKU
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
 	}
 
 	/**
@@ -177,8 +171,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 									FDContentTypes.CONFIGURED_PRODUCT);
 		
 		skuRelDef       = (RelationshipDefI) cpDef.getAttributeDef("SKU");
-		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,
-							new ContentKey(FDContentTypes.SKU, "MEA0004562"));
+		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,ContentKey.getContentKey(FDContentTypes.SKU, "MEA0004562"));
 
 		requiredAttrDef   = cpDef.getAttributeDef("REQUIRED");
 		requiredPredicate = new AttributeEqualsPredicate(requiredAttrDef, Boolean.TRUE);
@@ -189,14 +182,11 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 												    predicate, DraftContext.MAIN); 
 
 		// a required configured product with the specified sku
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_required")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_required")));
 		// a not required configured product with the specified sku
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "cp_not_required")));
 		// a required configured product with a different sku
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, "chckn_brsts_sb_2whl")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, "chckn_brsts_sb_2whl")));
 	}
 
 	/**
@@ -237,8 +227,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		
 		
 		skuRelDef       = (RelationshipDefI) cpDef.getAttributeDef("SKU");
-		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,
-							new ContentKey(FDContentTypes.SKU, "MEA0004562"));
+		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,ContentKey.getContentKey(FDContentTypes.SKU, "MEA0004562"));
 
 		itemsRelDef     = (RelationshipDefI) cpgDef.getAttributeDef("items");
 		itemsPredicate  = new RelationshipAnyPredicate(itemsRelDef, skuPredicate);
@@ -252,14 +241,11 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 												    predicate, DraftContext.MAIN); 
 
 		// a required configured product with the specified sku
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_required")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_required")));
 		// a not required configured product with the specified sku
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_not_required")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_not_required")));
 		// a required configured product with a different sku
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_not_required_4569")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT_GROUP, "cpg_not_required_4569")));
 	}
 
 	/**
@@ -294,8 +280,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 
 		// basically all recipes contain a variant named 'main'
 		// just check for one of them as a sanity-check
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_available")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_available")));
 	}
 
 	/**
@@ -351,11 +336,9 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 												    variantPredicate, DraftContext.MAIN); 
 
 		// check that the recipe with a required ingredient shows up
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_with_required_ingredient")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient")));
 		// check that the recipe with no required ingredients does not show up
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_with_no_required_ingredient")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient")));
 	}
 
 	/**
@@ -395,8 +378,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 
 		// the predicate to check on concifgured products if they have a specific SKU
 		skuRelDef       = (RelationshipDefI) configuredProductDef.getAttributeDef("SKU");
-		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,
-							new ContentKey(FDContentTypes.SKU, "MEA0004562"));
+		skuPredicate    = new AttributeEqualsPredicate(skuRelDef,ContentKey.getContentKey(FDContentTypes.SKU, "MEA0004562"));
 		
 		// the predicate to combine all predicates related to configured products
 		configuredProductPredicate = new AndPredicate(requiredPredicate, skuPredicate);
@@ -424,15 +406,12 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 
 		// check that the recipe with a required ingredient and the
 		// specified SKU shows up
-		assertTrue(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_with_required_ingredient")));
+		assertTrue(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient")));
 		// check that the recipe with no required ingredients does not show up
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_with_no_required_ingredient")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient")));
 		// check that the recipe with required ingredients but with not
 		// the specified SKU does not show up
-		assertFalse(results.containsKey(new ContentKey(
-				FDContentTypes.RECIPE, "rec_with_required_ingredient_4569")));
+		assertFalse(results.containsKey(ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_4569")));
 	}
 
 	/**
@@ -454,20 +433,20 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		
 		// check that the recipe with a required ingredient and the
 		// specified SKU shows up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertTrue(recipes.contains(recipe));
 
 		// check that the recipe with no required ingredients does not show up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertFalse(recipes.contains(recipe));
 
 		// check that the recipe with required ingredients but with not
 		// the specified SKU does not show up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_4569");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_4569");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertFalse(recipes.contains(recipe));
@@ -492,20 +471,20 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		
 		// check that the recipe with a required ingredient and the
 		// specified SKU shows up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_cpg");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_cpg");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertTrue(recipes.contains(recipe));
 
 		// check that the recipe with no required ingredients does not show up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient_cpg");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_no_required_ingredient_cpg");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertFalse(recipes.contains(recipe));
 
 		// check that the recipe with required ingredients but with not
 		// the specified SKU does not show up
-		key    = new ContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_cpg_4569");
+		key    = ContentKey.getContentKey(FDContentTypes.RECIPE, "rec_with_required_ingredient_cpg_4569");
 		recipe = (Recipe) contentFactory.getContentNode(key.getId());
 		assertNotNull(recipe);
 		assertFalse(recipes.contains(recipe));

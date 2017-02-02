@@ -27,6 +27,12 @@
 		<filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
 	</filter>
 	<filter>
+		<description>This filter creates random request id to identify requests and store as threadlocal</description>
+		<display-name>RequestIdFilter</display-name>
+		<filter-name>RequestIdFilter</filter-name>
+		<filter-class>com.freshdirect.webapp.filters.RequestIdFilter</filter-class>
+	</filter>
+	<filter>
 		<description>This filter adds the "Access-Control-Allow-Origin" header to the response, enabling CORS</description>
 		<display-name>CORSFilter</display-name>
 		<filter-name>CORSFilter</filter-name>
@@ -46,6 +52,10 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>OncePerRequestDateFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>RequestIdFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>

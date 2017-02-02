@@ -79,7 +79,7 @@ public class ProductPromotionUtil {
 								}
 								if(null == productModel){
 									try {
-										productModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, skuCode))).getProductModel();
+										productModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, skuCode))).getProductModel();
 										skuProductMap.put(skuCode,productModel);
 									} catch (Exception e){
 										LOGGER.warn("Failed to get the product for sku: " + skuCode +" in promo products", e);
@@ -179,8 +179,8 @@ public class ProductPromotionUtil {
 			String p1Dept = "";
 			String p2Dept = "";
 			
-			ProductModel prodModel1 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, p1.getDefaultSkuCode()))).getProductModel();
-			ProductModel prodModel2 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, p2.getDefaultSkuCode()))).getProductModel();
+			ProductModel prodModel1 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, p1.getDefaultSkuCode()))).getProductModel();
+			ProductModel prodModel2 = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, p2.getDefaultSkuCode()))).getProductModel();
 			//check that getDepartment != null (fix for new prods in cmsTest)
 			p1Dept = (prodModel1.getDepartment() != null) ? NVL.apply(prodModel1.getDepartment().getFullName(), "") : "";
 			p2Dept = (prodModel2.getDepartment() != null) ? NVL.apply(prodModel2.getDepartment().getFullName(), "") : "";

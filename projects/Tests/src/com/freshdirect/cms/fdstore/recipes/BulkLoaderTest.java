@@ -3,16 +3,13 @@ package com.freshdirect.cms.fdstore.recipes;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.ContentServiceI;
@@ -20,6 +17,8 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.conf.ResourceUtil;
+
+import junit.framework.TestCase;
 
 /**
  * Test case for the RecipeChildNodeValidator class.
@@ -827,7 +826,7 @@ public class BulkLoaderTest extends TestCase {
 		List				newbornChildren;
 		
 		request         = new CmsRequest(user);
-		newbornKey      = new ContentKey(FDContentTypes.FDFOLDER, "NewbornRecipes");
+		newbornKey      = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "NewbornRecipes");
 		newbornFolder   = service.createPrototypeContentNode(newbornKey, DraftContext.MAIN);
 		
 		request.addNode(newbornFolder);

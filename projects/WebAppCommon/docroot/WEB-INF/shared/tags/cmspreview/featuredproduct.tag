@@ -35,7 +35,7 @@
   				<% 
 				String item = (String) pageContext.getAttribute("item"); 
   				ProductModel productModel = (ProductModel) ContentFactory
-						.getInstance().getContentNodeByKey(new ContentKey(ContentType.get(item.split(":")[0]), item.split(":")[1]));
+						.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get(item.split(":")[0]), item.split(":")[1]));
 				pageContext.setAttribute("product", productModel);
 			%>
 			<li class="portrait-item carouselTransactionalItem"> <img src="${product.categoryImage.path}">   <br/>  ${product.fullName}</li>
@@ -46,7 +46,7 @@
   				<% 
 				String item1 = (String) pageContext.getAttribute("item1"); 
   				CategoryModel categoryModel = (CategoryModel) ContentFactory
-						.getInstance().getContentNodeByKey(new ContentKey(ContentType.get(item1.split(":")[0]), item1.split(":")[1]));
+						.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get(item1.split(":")[0]), item1.split(":")[1]));
 				pageContext.setAttribute("category", categoryModel);
 			%>
 			<li class="portrait-item carouselTransactionalItem"> <img src="${category.photo.path}">   <br/>  ${category.fullName}</li>

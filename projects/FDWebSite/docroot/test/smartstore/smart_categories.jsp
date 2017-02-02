@@ -25,7 +25,7 @@
 		<div style="width: auto; float: left;">
 			<%
 				String catId = request.getParameter( "catId" );
-				ContentKey catKey = catId == null ? null : new ContentKey( ContentType.get("Category"), catId );
+				ContentKey catKey = catId == null ? null : ContentKey.getContentKey( ContentType.get("Category"), catId );
 				CategoryModel category = catKey == null ? null : (CategoryModel)ContentFactory.getInstance().getContentNodeByKey( catKey );
 			%>				
 		

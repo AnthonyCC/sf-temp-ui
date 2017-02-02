@@ -17,7 +17,7 @@ public class FDFaqUtil {
 	
 	public static List<ContentNodeI> getFaqsByCategory(String categoryId){
 		CmsManager          manager     = CmsManager.getInstance();				
-		ContentKey 			key 		= new ContentKey(FDContentTypes.FDFOLDER, categoryId);
+		ContentKey 			key 		= ContentKey.getContentKey(FDContentTypes.FDFOLDER, categoryId);
 		ContentNodeI 		contentNode = manager.getContentNode(key);
 		
 		List<ContentNodeI> faqSubFolders = new LinkedList<ContentNodeI>();

@@ -182,8 +182,8 @@ public class DbContentService extends AbstractContentService implements ContentS
                 ResultSet resultSet = ps.executeQuery();
 
                 while (resultSet.next()) {
-                    ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
-                    ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
+                    ContentKey sourceKey = ContentKey.getContentKey(resultSet.getString("parent_contentnode_id"));
+                    ContentKey destKey = ContentKey.getContentKey(resultSet.getString("child_contentnode_id"));
                     handler.addRelation(sourceKey, destKey);
                 }
                 resultSet.close();
@@ -227,8 +227,7 @@ public class DbContentService extends AbstractContentService implements ContentS
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                // returnSet.add(new ContentKey(new ContentType(rs.getString("contenttype_id")), rs.getString("id")));
-                returnSet.add(ContentKey.decode(rs.getString("id")));
+                returnSet.add(ContentKey.getContentKey(rs.getString("id")));
             }
             rs.close();
             ps.close();
@@ -309,7 +308,7 @@ public class DbContentService extends AbstractContentService implements ContentS
             ps.setString(1, key.getEncoded());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ContentKey parentKey = ContentKey.decode(rs.getString(1));
+                ContentKey parentKey = ContentKey.getContentKey(rs.getString(1));
                 set.add(parentKey);
             }
             rs.close();
@@ -562,7 +561,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     private void processNodesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap, DraftContext draftContext) throws SQLException {
         while (rs.next()) {
-            ContentKey key = ContentKey.decode(rs.getString("id"));
+            ContentKey key = ContentKey.getContentKey(rs.getString("id"));
             ContentNodeI node = createContentNode(key, draftContext);
             
             if (node != null) {
@@ -585,7 +584,7 @@ public class DbContentService extends AbstractContentService implements ContentS
         List<String> currValue = new ArrayList<String>();
 
         while (rs.next()) {
-            ContentKey key = ContentKey.decode(rs.getString(1));
+            ContentKey key = ContentKey.getContentKey(rs.getString(1));
             String attrName = rs.getString(2);
 
             if (!key.equals(currKey) || !attrName.equals(currAttrName)) {

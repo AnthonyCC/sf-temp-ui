@@ -185,7 +185,7 @@ public class PublishMessage implements Serializable {
 	 */
 	public ContentKey getContentKey() {
 		return contentType != null && contentId != null
-		                    ? new ContentKey(ContentType.get(contentType), contentId)
+		                    ? ContentKey.getContentKey(ContentType.get(contentType), contentId)
 		                    : null;
 	}
 	

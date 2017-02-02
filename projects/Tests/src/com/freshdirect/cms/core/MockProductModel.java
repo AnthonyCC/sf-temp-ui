@@ -66,8 +66,8 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	public MockProductModel(String catId, String productId) {
-		super(new ContentKey(FDContentTypes.PRODUCT, productId));
-		setParentKeys(Collections.singleton(new ContentKey(FDContentTypes.CATEGORY,
+		super(ContentKey.getContentKey(FDContentTypes.PRODUCT, productId));
+		setParentKeys(Collections.singleton(ContentKey.getContentKey(FDContentTypes.CATEGORY,
 				catId)));
 	}
 

@@ -228,7 +228,7 @@ public class ContentNodeUtil {
 		}
 		ContentType t = (ContentType) relDef.getContentTypes().iterator().next();
 
-		ContentKey key = new ContentKey(t, value);
+		ContentKey key = ContentKey.getContentKey(t, value);
 		if (r.getDefinition().getCardinality().equals(EnumCardinality.MANY)) {
 			List<ContentKey> list = new ArrayList<ContentKey>();
 			list.add(key);

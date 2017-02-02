@@ -110,7 +110,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
     @Override
     public String getPreviewUrl(String nodeKey, String storeId) {
-        ContentKey key = ContentKey.decode(nodeKey);
+        ContentKey key = ContentKey.getContentKey(nodeKey);
 
         ContentKey storeKey = null;
         if (storeId != null) {
@@ -195,7 +195,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
                 return children;
             }
 
-            ContentNodeI root = contentService.getContentNode(ContentKey.decode(parentNode.getKey()), draftContext);
+            ContentNodeI root = contentService.getContentNode(ContentKey.getContentKey(parentNode.getKey()), draftContext);
             if (root != null) {
                 List<ContentKey> childKeys = new ArrayList<ContentKey>(root.getChildKeys());
                 TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys, draftContext);
@@ -225,7 +225,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
     @Override
     public GwtNodeData loadNodeData(String nodeKey) throws ServerException {
         try {
-            final ContentKey ncKey = ContentKey.decode(nodeKey);
+            final ContentKey ncKey = ContentKey.getContentKey(nodeKey);
 
             final CmsUser permission = getCmsUser();
             DraftContext draftContext = getDraftContext();
@@ -473,7 +473,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             if (query.isChangeSetQuery()) {
                 ContentKey key;
                 try {
-                    key = ContentKey.decode(query.getContentKey());
+                    key = ContentKey.getContentKey(query.getContentKey());
                 } catch (IllegalArgumentException ex) {
                     key = null;
                 }
@@ -487,7 +487,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
                 response.setLabel("Changes in publish #" + query.getPublishId());
 
             } else if (query.getContentKey() != null) {
-                ContentKey key = ContentKey.decode(query.getContentKey());
+                ContentKey key = ContentKey.getContentKey(query.getContentKey());
                 List<GwtChangeSet> changeHistory = TranslatorToGwt.getGwtChangeSets(chgService.getChangeHistory(key), query, contentService, draftContext);
                 response = createResponse(changeHistory, query, null);
                 response.setLabel("History of " + contentService.getContentNode(key, draftContext).getLabel());
@@ -851,7 +851,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
     @Override
     public ProductConfigParams getProductConfigParams(String skuKey) throws ServerException {
         try {
-            return TranslatorToGwt.getProductConfigParams(ContentKey.decode(skuKey), contentService, getDraftContext());
+            return TranslatorToGwt.getProductConfigParams(ContentKey.getContentKey(skuKey), contentService, getDraftContext());
         } catch (Throwable e) {
             LOG.error("RuntimeException in getProductConfigParams", e);
             throw TranslatorToGwt.wrap(e);

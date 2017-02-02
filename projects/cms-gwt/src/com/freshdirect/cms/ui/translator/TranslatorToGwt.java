@@ -540,7 +540,7 @@ public class TranslatorToGwt {
                         if (rowValue[i] instanceof String) {
                             String[] tokens = ((String) rowValue[i]).split(":");
                             if (tokens.length == 3) {
-                                ContentKey key = new ContentKey(ContentType.get(tokens[0]), tokens[1]);
+                                ContentKey key = ContentKey.getContentKey(ContentType.get(tokens[0]), tokens[1]);
                                 ContentNodeI node = contentService.getContentNode(key, draftContext);
                                 if (node != null) {
                                     Object attributeValue = node.getAttributeValue(tokens[2]);
@@ -553,7 +553,7 @@ public class TranslatorToGwt {
                         break;
                     case KEY:
                         if (rowValue[i] instanceof String) {
-                            ContentKey ck = ContentKey.decode((String) rowValue[i]);
+                            ContentKey ck = ContentKey.getContentKey((String) rowValue[i]);
                             rowValue[i] = toContentNodeModel(ck, contentService, draftContext);
                         }
                         break;
@@ -609,9 +609,9 @@ public class TranslatorToGwt {
     }
 
     public static ContentNodeModel toContentNodeModel(ContentNodeI node) {
-        if (node == null)
+        if (node == null){
             return null;
-
+        }
         ContentKey key = node.getKey();
         ContentNodeModel result = new ContentNodeModel(key.getType().getName(), node.getLabel(), key.getEncoded());
         prepareModel(node, result);
@@ -619,8 +619,11 @@ public class TranslatorToGwt {
     }
 
     private static OneToManyModel toOneToManyModel(ContentNodeI node, int idx) {
+    	if (node == null){
+            return null;
+    	}
         ContentKey key = node.getKey();
-        OneToManyModel result = new OneToManyModel(key.getType().getName(), key.getEncoded(), node != null ? node.getLabel() : key.getId(), idx);
+        OneToManyModel result = new OneToManyModel(key.getType().getName(), key.getEncoded(), node.getLabel(), idx);
         prepareModel(node, result);
         return result;
     }
@@ -658,22 +661,26 @@ public class TranslatorToGwt {
         return d;
     }
 
-    public static GwtPublishMessage getPublishMessage(PublishMessage pm) {
-
-        String contentKey = pm.getContentKey() == null ? null : pm.getContentKey().getEncoded();
-        GwtPublishMessage g = new GwtPublishMessage(pm.getContentType(), contentKey);
-        g.setMessage(pm.getMessage());
-        g.setTimestamp(pm.getTimestamp());
-        g.setSeverity(pm.getSeverity());
-        return g;
+    public static GwtPublishMessage getPublishMessage(PublishMessage publishMessage) {
+    	if (publishMessage == null || publishMessage.getContentKey() == null){
+    		return null;
+    	}
+        GwtPublishMessage gwtPublishMessage = new GwtPublishMessage(publishMessage.getContentType(), publishMessage.getContentKey().getEncoded());
+        gwtPublishMessage.setMessage(publishMessage.getMessage());
+        gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
+        gwtPublishMessage.setSeverity(publishMessage.getSeverity());
+        return gwtPublishMessage;
     }
 
-    public static List<GwtPublishMessage> getPublishMessages(List<PublishMessage> list, int start, int end) {
+    public static List<GwtPublishMessage> getPublishMessages(List<PublishMessage> publishMessages, int start, int end) {
         start = Math.max(start, 0);
-        end = Math.min(end, list.size());
+        end = Math.min(end, publishMessages.size());
         List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(end - start);
         for (int i = start; i < end; i++) {
-            result.add(getPublishMessage(list.get(i)));
+            GwtPublishMessage gwtPublishMessage = getPublishMessage(publishMessages.get(i));
+            if (gwtPublishMessage != null){
+			    result.add(gwtPublishMessage);
+            }
         }
         return result;
     }
@@ -886,7 +893,7 @@ public class TranslatorToGwt {
     }
 
     private static GwtNodeChange getGwtContentNodeChange(DraftChange draftChange, ContentServiceI contentService, DraftContext draftContext) {
-        ContentKey key = ContentKey.decode(draftChange.getContentKey());
+        ContentKey key = ContentKey.getContentKey(draftChange.getContentKey());
         ContentNodeI node = contentService.getContentNode(key, draftContext);
 
         GwtNodeChange gwtNodeChange = new GwtNodeChange(key.getType().getName(), node == null ? "" : node.getLabel() == null ? "" : node.getLabel(), key.getEncoded(), null, null);

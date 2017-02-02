@@ -38,7 +38,7 @@ public class XmlContentServiceTest extends TestCase {
 		assertEquals("barValue", barNode.getAttributeValue("BAR"));
 		assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
 
-		assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent"), DraftContext.MAIN));
+		assertNull(service.getContentNode(ContentKey.getContentKey(FOO_TYPE, "nonexistent"), DraftContext.MAIN));
 	}
 
 	private final static ContentType FOO_TYPE             = ContentType.get("Foo");
@@ -46,9 +46,9 @@ public class XmlContentServiceTest extends TestCase {
 	private final static ContentType FOO_DEFAULT_TYPE     = ContentType.get("FooDefault");
 	private final static ContentType FOO_GENERATE_ID_TYPE = ContentType.get("FooGenerateId");
 
-	private final static ContentKey FOO_KEY         = new ContentKey(FOO_TYPE, "fooNode");
-	private final static ContentKey BAR_KEY         = new ContentKey(BAR_TYPE, "barNode");
-	private final static ContentKey FOO_DEFAULT_KEY = new ContentKey(FOO_DEFAULT_TYPE, "fooNode");
+	private final static ContentKey FOO_KEY         = ContentKey.getContentKey(FOO_TYPE, "fooNode");
+	private final static ContentKey BAR_KEY         = ContentKey.getContentKey(BAR_TYPE, "barNode");
+	private final static ContentKey FOO_DEFAULT_KEY = ContentKey.getContentKey(FOO_DEFAULT_TYPE, "fooNode");
 	
 	public void testGenerateUniqueId() {
 

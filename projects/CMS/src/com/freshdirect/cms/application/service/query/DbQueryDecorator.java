@@ -183,7 +183,7 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
-					ContentKey k = ContentKey.decode(rs.getString(1));
+					ContentKey k = ContentKey.getContentKey(rs.getString(1));
 					l.add(k);
 				}
 				rs.close();

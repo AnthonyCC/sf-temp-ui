@@ -80,7 +80,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 			String               attr     = request.getParameter(id);
 
 			if (attr != null && attr.length() > 0) {
-				ContentKey dvKey = new ContentKey(FDContentTypes.DOMAINVALUE, attr);
+				ContentKey dvKey = ContentKey.getContentKey(FDContentTypes.DOMAINVALUE, attr);
 				DomainValue dv = cf.getDomainValueById(attr);
 				if (dv != null) {
 					andKeys.add(dvKey);
@@ -104,7 +104,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 				Set<ContentKey> orKeys = andOp ? null : new HashSet<ContentKey>();
 				for (int i = 0; i < attr.length; ++i) {
 					if (attr[i].length() > 0) {
-						ContentKey domainValue = new ContentKey(FDContentTypes.DOMAINVALUE, attr[i]);
+						ContentKey domainValue = ContentKey.getContentKey(FDContentTypes.DOMAINVALUE, attr[i]);
 						DomainValue dv = cf.getDomainValueById(attr[i]);
 						if (dv != null) {
 							if (andOp) {
@@ -132,7 +132,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 		//
 		String recipeSource = NVL.apply(request.getParameter("recipeSource"), "");
 		if (!"".equals(recipeSource)) {
-			ContentKey key = new ContentKey(FDContentTypes.RECIPE_SOURCE, recipeSource);
+			ContentKey key = ContentKey.getContentKey(FDContentTypes.RECIPE_SOURCE, recipeSource);
 			AttributeDefI atrDef = recipeDef.getAttributeDef("source");
 			Predicate p = new AttributeEqualsPredicate(atrDef, key);
 			predicates.add(p);
@@ -143,7 +143,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 		//
 		String recipeAuthor = NVL.apply(request.getParameter("recipeAuthor"), "");
 		if (!"".equals(recipeAuthor)) {
-			ContentKey key = new ContentKey(FDContentTypes.RECIPE_AUTHOR, recipeAuthor);
+			ContentKey key = ContentKey.getContentKey(FDContentTypes.RECIPE_AUTHOR, recipeAuthor);
 			Set<ContentKey> s = Collections.singleton(key);
 			// predicate for recipe.author
 			RelationshipDefI relDef = (RelationshipDefI) recipeDef.getAttributeDef("authors");

@@ -49,7 +49,7 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
     	if (favoriteListId == null)
     		return favoriteNodes;
     	
-    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(new ContentKey(FDContentTypes.FAVORITE_LIST, favoriteListId));
+    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.FAVORITE_LIST, favoriteListId));
     	if (fl != null) {
     	    favoriteNodes = fl.getFavoriteItems();
     	    

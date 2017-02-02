@@ -655,7 +655,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		for (int i = 0; i < max; i++) {
 			Document doc = searcher.doc(hits.scoreDocs[i].doc);
 
-			ContentKey key = ContentKey.decode(doc.get(FIELD_CONTENT_KEY));
+			ContentKey key = ContentKey.getContentKey(doc.get(FIELD_CONTENT_KEY));
 
 			h.add(new SearchHit(key, hits.scoreDocs[i].score, approximationLevel));
 		}

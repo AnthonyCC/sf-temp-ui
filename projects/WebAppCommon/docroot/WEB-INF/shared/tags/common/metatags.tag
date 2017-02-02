@@ -24,7 +24,7 @@
 	<c:set var="metaDescription" value="FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!"/>
 	<c:if test="${not empty pageId}">
 	<%
-		ContentKey key = new ContentKey(FDContentTypes.WEBPAGE, pageId); 
+		ContentKey key = ContentKey.getContentKey(FDContentTypes.WEBPAGE, pageId); 
 		ContentNodeI webPage = CmsManager.getInstance().getContentNode(key);
 		if(webPage != null){ 
 			String metaDescription = (String) webPage.getAttributeValue("SEO_META_DESC");

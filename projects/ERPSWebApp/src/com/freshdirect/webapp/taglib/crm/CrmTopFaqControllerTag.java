@@ -75,7 +75,7 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 				Map<ContentNodeI,List<ContentNodeI>> subNodesMap = new LinkedHashMap<ContentNodeI,List<ContentNodeI>>();
 				while(st.hasMoreTokens()){
 					String nextToken=st.nextToken().trim();
-					ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER,nextToken);
+					ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.FDFOLDER,nextToken);
 					ContentNodeI contentNode = manager.getContentNode(contentKey);
 					if(null !=contentNode){
 						Set<ContentKey> subNodes = contentNode.getChildKeys();	

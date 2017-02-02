@@ -26,7 +26,7 @@ public class GlobalMenuTag extends SimpleTagSupport {
 
 		ContentNodeModel model = ContentFactory.getInstance()
 				.getContentNodeByKey(ContentKey
-						.decode(GlobalMenuItemModel.DEFAULT_MENU_FOLDER));
+						.getContentKey(GlobalMenuItemModel.DEFAULT_MENU_FOLDER));
 
 		if (model instanceof FDFolder) {
 			FDFolder folder = (FDFolder) model;

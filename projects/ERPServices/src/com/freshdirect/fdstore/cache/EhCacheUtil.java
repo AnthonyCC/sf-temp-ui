@@ -1,11 +1,15 @@
 package com.freshdirect.fdstore.cache;
 
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.List;
+
+import javax.management.MBeanServer;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.RequestIdCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import net.sf.ehcache.Cache;
@@ -13,6 +17,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.management.ManagementService;
 
 public class EhCacheUtil {
 
@@ -36,6 +41,12 @@ public class EhCacheUtil {
 
     // Product Family Cache
     public static final String FD_FAMILY_PRODUCT_CACHE_NAME = "familyProductCache";
+    
+    // Model Request Cache
+    public static final String CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME = "cmsContentNodeAttributeCache";
+    public static final String CMS_CONTENT_NODE_CACHE_NAME = "cmsContentNodeCache";
+    public static final String CMS_PARENT_KEY_CACHE_NAME = "cmsParentKeyCache";
+    public static final String CMS_STORE_KEY_CACHE_NAME = "cmsStoreKeyCache";
 
     private static final Logger LOG = LoggerFactory.getInstance(EhCacheUtil.class);
 
@@ -50,6 +61,10 @@ public class EhCacheUtil {
 
             } else {
                 manager = CacheManager.create(ehcacheConfig);
+				if (FDStoreProperties.isEhCacheManagementEnabled()) {
+					MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+					ManagementService.registerMBeans(manager, mBeanServer, false, false, false, true);
+				}
             }
         }
     }
@@ -151,4 +166,17 @@ public class EhCacheUtil {
     public static void clearCache(String cacheName) {
         getCache(cacheName).removeAll();
     }
+    
+	public static String getRequestIdCacheKey(String... ids) {
+		StringBuffer cacheKey = new StringBuffer();
+		String requestId = RequestIdCache.getRequestId();
+		if (requestId != null) {
+			for (String id : ids) {
+				cacheKey.append(id).append('_');
+			}
+			cacheKey.append(requestId);
+		}
+		return cacheKey.toString();
+	}
+    
 }

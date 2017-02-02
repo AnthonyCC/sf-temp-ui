@@ -22,7 +22,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 public class TranslatorFromGwt {
 
     public static ContentNodeI getContentNode(GwtContentNode clientNode, DraftContext draftContext) {
-        ContentKey key = ContentKey.decode(clientNode.getKey());
+        ContentKey key = ContentKey.getContentKey(clientNode.getKey());
         ContentNodeI node = CmsManager.getInstance().getContentNode(key, draftContext);
         if (node == null) {
             // new node creation
@@ -35,7 +35,7 @@ public class TranslatorFromGwt {
     @SuppressWarnings("unchecked")
     public static Object getServerValue(Serializable value) {
         if (value instanceof ContentNodeModel) {
-            return ContentKey.decode(((ContentNodeModel) value).getKey());
+            return ContentKey.getContentKey(((ContentNodeModel) value).getKey());
         }
         if (value instanceof EnumModel) {
             return ((EnumModel) value).getKey();

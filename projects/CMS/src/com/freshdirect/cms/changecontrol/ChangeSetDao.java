@@ -143,7 +143,7 @@ class ChangeSetDao {
 
 			if ( !rs.getString("CHANGENODE_ID").equals(prevNodeId) && cs != null ) {
 				cnc = new ContentNodeChange();
-				cnc.setContentKey(new ContentKey(ContentType.get(rs.getString("CONTENTTYPE")), rs.getString("CONTENTNODE_ID")));
+				cnc.setContentKey(ContentKey.getContentKey(ContentType.get(rs.getString("CONTENTTYPE")), rs.getString("CONTENTNODE_ID")));
 				cnc.setChangeType(EnumContentNodeChangeType.getType(rs.getString("CHANGETYPE")));
 				cnc.setChangeSet(cs);
 				cs.addChange(cnc);

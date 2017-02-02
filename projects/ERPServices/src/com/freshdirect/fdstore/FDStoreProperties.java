@@ -658,6 +658,7 @@ public class FDStoreProperties {
     private final static String PROP_SOY_DEBUG = "soy.debug";
 
     private final static String PROP_EH_CACHE_ENABLED = "ehcache.enabled";
+    private final static String PROP_EH_CACHE_MANAGEMENT_ENABLED = "ehcache.management.enabled";
     private final static String PROP_FD_TC_ENABLED = "terms.condition.enabled";
 
     private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
@@ -1469,6 +1470,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 
         defaults.put(PROP_EH_CACHE_ENABLED, "true");
+        defaults.put(PROP_EH_CACHE_MANAGEMENT_ENABLED, "false");
 
         defaults.put(PROP_FD_TC_ENABLED, "false");
         defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");
@@ -3650,6 +3652,10 @@ public class FDStoreProperties {
 
     public static boolean isEhCacheEnabled() {
         return (Boolean.valueOf(get(PROP_EH_CACHE_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isEhCacheManagementEnabled() {
+        return (Boolean.valueOf(get(PROP_EH_CACHE_MANAGEMENT_ENABLED))).booleanValue();
     }
 
     public static boolean isQuickshopIgnorePartialRollout() {

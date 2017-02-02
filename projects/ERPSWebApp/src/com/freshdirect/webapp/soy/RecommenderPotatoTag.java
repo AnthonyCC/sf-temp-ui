@@ -96,7 +96,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 			
 			ContentNodeModel currentNode = null;
 			if( currentNodeKey != null && currentNodeKey.length()!=0) {
-				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode( currentNodeKey ));
+				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey( currentNodeKey ));
 			}
 			
 			results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), user, ProductRecommenderUtil.createSessionInput( session, user, maxItems, currentNode , null ) );

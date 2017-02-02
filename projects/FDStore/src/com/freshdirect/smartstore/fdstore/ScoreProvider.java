@@ -793,7 +793,7 @@ public class ScoreProvider implements DataAccess {
 		Map<ContentKey, double[]> result = new HashMap<ContentKey, double[]>(5*products.size()/3+1,0.75f);
 		
 		for(Iterator<String> i = products.iterator(); i.hasNext();) {
-			result.put(new ContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[globalIndexes.size()]);
+			result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[globalIndexes.size()]);
 		}
 		
 		for (Iterator<Map.Entry<String, Integer>> i = globalIndexes.entrySet().iterator(); i.hasNext();) {
@@ -819,7 +819,7 @@ public class ScoreProvider implements DataAccess {
 			Map<ContentKey,double[]> result = new HashMap<ContentKey,double[]>(5*products.size()/3+1,0.75f);
 			
 			for(Iterator<String> i = products.iterator(); i.hasNext();) {
-				result.put(new ContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
 			}
 			
 			for (Iterator<Map.Entry<String, Integer>> i = personalizedIndexes.entrySet().iterator(); i.hasNext();) {
@@ -841,7 +841,7 @@ public class ScoreProvider implements DataAccess {
         		"Product list length and range values size differ: " + values.length + " and " + products.size());
         }
         for(int j=0; j< values.length; ++j) {
-        	double[] productScores = result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString()));
+        	double[] productScores = result.get(ContentKey.getContentKey(FDContentTypes.PRODUCT,products.get(j).toString()));
         	productScores[((Number)entry.getValue()).intValue()] = values[j];
         }
     }
@@ -889,7 +889,7 @@ public class ScoreProvider implements DataAccess {
 					row.add(userId);
 					row.add(productId);
 					
-					double[] scores = getVariables(userId, pricingCtx, new ContentKey(FDContentTypes.PRODUCT, productId), factors);
+					double[] scores = getVariables(userId, pricingCtx, ContentKey.getContentKey(FDContentTypes.PRODUCT, productId), factors);
 					for(int s = 0; s < scores.length; ++s) {
 						row.add(new Double(scores[s]));
 					}
@@ -942,7 +942,7 @@ public class ScoreProvider implements DataAccess {
 				List<Comparable> row = new ArrayList<Comparable>(factors.length + 1);
 				row.add(productId);
 				
-				double[] scores = getVariables(null, pricingCtx, new ContentKey(FDContentTypes.PRODUCT, productId), factors);
+				double[] scores = getVariables(null, pricingCtx, ContentKey.getContentKey(FDContentTypes.PRODUCT, productId), factors);
 				for(int s = 0; s < scores.length; ++s) {
 					row.add(new Double(scores[s]));
 				}

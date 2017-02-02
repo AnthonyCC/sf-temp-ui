@@ -44,6 +44,6 @@ public class UnbxdSearchResponseProduct {
     }
 
     public ContentKey getContentKey() {
-        return new ContentKey(ContentType.get("Product"), productId);
+        return ContentKey.getContentKey(ContentType.get("Product"), productId);
     }
 }

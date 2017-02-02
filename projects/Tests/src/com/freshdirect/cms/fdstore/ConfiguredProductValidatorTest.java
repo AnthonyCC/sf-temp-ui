@@ -88,8 +88,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 	}
 
 	private ContentNodeI findProduct(String id) {
-		return service.getContentNode(new ContentKey(
-				FDContentTypes.CONFIGURED_PRODUCT, id), DraftContext.MAIN);
+		return service.getContentNode(ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, id), DraftContext.MAIN);
 	}
 
 }

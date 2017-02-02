@@ -79,13 +79,13 @@ public class ClassGeneratorTool {
 
         int M = 10;
         
-        benchmark(s1, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
-        benchmark(s3, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
+        benchmark(s1, 100000*M, ContentKey.getContentKey(ContentType.get("Foo"), "fooNode"));
+        benchmark(s3, 100000*M, ContentKey.getContentKey(ContentType.get("Foo"), "fooNode"));
 
         long a = 0,b=0;
         for (int i=0;i<M;i++) {
-            a+= benchmark(service, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
-            b+= benchmark(service2, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
+            a+= benchmark(service, 100000, ContentKey.getContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
+            b+= benchmark(service2, 100000, ContentKey.getContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
         }
         System.out.println("AVER:"+ (a/M)+"\t"+service.getClass().getName() + " -> 100");
         double rate = ((double)b/(double)a)*100;
@@ -100,7 +100,7 @@ public class ClassGeneratorTool {
         ContentNodeGenerator c = new ContentNodeGenerator(contentService);
 
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -141,7 +141,7 @@ public class ClassGeneratorTool {
             
         }
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.IMAGE, "image"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.IMAGE, "image"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());
@@ -158,7 +158,7 @@ public class ClassGeneratorTool {
              */
         }
         {
-            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.DEPARTMENT, "depart"), DraftContext.MAIN);
+            ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.DEPARTMENT, "depart"), DraftContext.MAIN);
             LOG.info("node created:" + node);
             LOG.info("definition: " + node.getDefinition());
             LOG.info("key: " + node.getKey());

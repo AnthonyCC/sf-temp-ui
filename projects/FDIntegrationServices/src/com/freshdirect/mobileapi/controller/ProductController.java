@@ -147,7 +147,7 @@ public class ProductController extends BaseController {
          com.freshdirect.mobileapi.controller.data.PairItProductModel result = new com.freshdirect.mobileapi.controller.data.PairItProductModel();
          ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
          if (product == null) {
-             product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
+             product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + productId));
          }
          if(product!=null){
         	 com.freshdirect.mobileapi.model.PairItProductModel p = new PairItProductModel();

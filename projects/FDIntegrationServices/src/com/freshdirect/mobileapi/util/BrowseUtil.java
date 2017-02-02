@@ -1234,7 +1234,7 @@ public class BrowseUtil {
 	        if (productIds != null) {
 	            for (String productId : productIds) {
 	                try {
-	                    ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
+	                    ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + productId));
 	                    if (productModel != null && productModel.isTemporaryUnavailableOrAvailable()) {
 	                        com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder productBuilder = new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(
 	                                productModel.getContentName(), productModel.getFullName());
