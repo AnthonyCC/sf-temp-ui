@@ -82,7 +82,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
-</xsl:choose> <xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods.</xsl:if>
 
 <xsl:text>View order details online: </xsl:text>
 
