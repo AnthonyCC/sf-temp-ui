@@ -187,9 +187,13 @@
 	      </c:if>
 	    </div>
 	
-	    <div id="sorter">
-	      <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
-	    </div>
+		<c:choose>
+			<c:when test="${browsePotato.searchParams.pageType != 'STAFF_PICKS'}">
+				<div id="sorter">
+		     		 <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
+		    	</div>
+			</c:when> 
+		</c:choose>
 	
 	    <div class="browse-filtertags">
 	      <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
@@ -211,11 +215,19 @@
 		        </div>
 		        <% } %>
 		      </c:when>
-		      <c:otherwise>
-		          <div class="browse-sections transactional"><%-- this does the main prod grid --%>
-					<soy:render template="browse.content" data="${browsePotato.sections}" />
-					<%--soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}" / --%>
+		      <c:otherwise>        		
+	           <c:choose>
+	     		 <c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
+	          		<div class="browse-sections transactional"><%-- this does the main prod grid --%>
+					<soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}"/> 
+        			</div>
+        		</c:when>       	
+	        	<c:otherwise>
+	        		<div class="browse-sections transactional"><%-- this does the main prod grid --%>
+	        		<soy:render template="browse.content" data="${browsePotato.sections}" />
 	        		</div>
+	        	</c:otherwise>	
+	        	</c:choose>	
 		      </c:otherwise>
 		    </c:choose>
 	    </div>
