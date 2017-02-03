@@ -165,10 +165,16 @@
         <soy:render template="browse.pager" data="${browsePotato.pager}" />
       </c:if>
     </div>
-
-    <div id="sorter">
+    
+<c:choose>
+<c:when test="${browsePotato.searchParams.pageType != 'STAFF_PICKS'}">
+<div id="sorter">
       <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
     </div>
+
+</c:when>
+   
+</c:choose>
 
     <div class="browse-filtertags">
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
