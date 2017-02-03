@@ -82,7 +82,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
-
+</xsl:choose>
 <xsl:text>View order details online: </xsl:text>
 
 <xsl:text>http://www.freshdirect.com/your_account/order_history.jsp
