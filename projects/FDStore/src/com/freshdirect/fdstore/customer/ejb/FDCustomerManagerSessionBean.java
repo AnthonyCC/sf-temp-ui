@@ -2913,12 +2913,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					true);
-			try {
-				FDCartLineDAO.clearModifyCartlines(this.getConnection(), saleId);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			this.clearModifyCartlines(saleId);
 			
 			//APPDEV-5587 When the DP is applied on the order, set the charge line with DELIVERYPASS promotion information, if it's not already available
 			if(order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
@@ -8577,6 +8572,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to update FDCartline");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void clearModifyCartlines(String currentOrderId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.clearModifyCartlines(conn, currentOrderId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to clear modified FDCartlines");
 		} finally {
 			close(conn);
 		}

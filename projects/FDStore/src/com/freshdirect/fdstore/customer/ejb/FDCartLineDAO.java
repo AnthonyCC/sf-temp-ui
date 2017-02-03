@@ -38,7 +38,7 @@ public class FDCartLineDAO {
 
 	private final static String QUERY_CARTLINES =
 		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
-			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?";
+			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID IS NULL";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
 		"SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.FDCARTLINE_CLIENTCODE WHERE FDUSER_ID = ? ORDER BY CARTLINE_ID, ORDINAL";
@@ -334,9 +334,10 @@ public class FDCartLineDAO {
 	}
 	
 	public static void updateModifiedCartlineQuantity(Connection conn, FDCartLineI cartLine) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCARTLINE SET QUANTITY=? WHERE ID =? and MOD_ORDER_ID IS NOT NULL");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCARTLINE SET QUANTITY=? WHERE ID =? and MOD_ORDER_ID=?");
 		ps.setDouble(1, cartLine.getQuantity());
 		ps.setString(2, cartLine.getCartlineId());
+		ps.setString(3, cartLine.getOrderId());
 		ps.executeUpdate();
 		ps.close();		
 	}

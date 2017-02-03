@@ -358,7 +358,8 @@ public class CartOperations {
 				// Normal cart
 				
 				cartLine.setQuantity( newQ );
-				if(null == user.getMasqueradeContext()){
+				if(null == user.getMasqueradeContext() && (cart instanceof FDModifyCartModel)){
+				cartLine.setOrderId(((FDModifyCartModel)cart).getOriginalOrder().getSale().getId());
 				updateModifiedCartlineQuantity(cartLine);
 				}
 				logEditCart( user, cartLine, product, serverName );

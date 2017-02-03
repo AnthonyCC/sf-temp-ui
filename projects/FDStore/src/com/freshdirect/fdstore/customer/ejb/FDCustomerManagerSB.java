@@ -896,5 +896,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException, RemoteException;
 
+	public void clearModifyCartlines(String currentOrderId) throws FDResourceException, RemoteException;
+
 }
 

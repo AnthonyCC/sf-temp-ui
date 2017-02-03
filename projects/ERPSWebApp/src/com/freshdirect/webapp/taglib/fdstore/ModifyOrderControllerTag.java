@@ -411,8 +411,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.info("Unable to release the in_modify lock for orderId"+currentOrderId);
 		}
 		
+		FDCustomerManager.clearModifyCartlines(currentOrderId);
 		ShoppingCartUtil.restoreCart(session);
-	
+			
 		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
 		//Clear any hold amounts.
 		gcList.clearAllHoldAmount();
