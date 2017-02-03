@@ -109,6 +109,16 @@
 		<servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
+		<servlet-name>BackOfficeServlet</servlet-name>
+		<url-pattern>/api/backoffice/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>BackOfficeServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.backoffice.servlet.BackOfficeServicesServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
 		<servlet-name>CartDataServlet</servlet-name>
 		<url-pattern>/api/cartdata/*</url-pattern>
 	</servlet-mapping>
