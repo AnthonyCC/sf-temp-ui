@@ -888,7 +888,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
 
-	public List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException, RemoteException;
+	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException, RemoteException;
 
 	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;
 

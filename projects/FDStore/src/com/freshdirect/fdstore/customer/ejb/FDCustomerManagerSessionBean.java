@@ -40,6 +40,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
@@ -8523,12 +8524,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return erpShippingMap;
 	}
 	
-	public List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException{
+	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException{
 		Connection conn = null;
 		List<FDCartLineI> mCartlines = new ArrayList<FDCartLineI>();
 		try {
 			conn = getConnection();
-			mCartlines = FDCartLineDAO.getModifiedCartlines(conn, user);
+			mCartlines = FDCartLineDAO.getModifiedCartlines(conn, orderId, userContext);
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store FDUser");

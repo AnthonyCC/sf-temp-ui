@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -229,14 +230,10 @@ public class FDCartLineDAO {
 			"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
 				+ " FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?";
 	
-	public static List<FDCartLineI> getModifiedCartlines(Connection conn, FDUser user) throws SQLException {
-		if(!(user.getShoppingCart() instanceof FDModifyCartModel)){
-			return new ArrayList<FDCartLineI>();
-		}
-		FDModifyCartModel mcart = ((FDModifyCartModel)user.getShoppingCart());
+	public static List<FDCartLineI> getModifiedCartlines(Connection conn, String orderId, UserContext userContext) throws SQLException {
 		List<ErpOrderLineModel> lst = new LinkedList<ErpOrderLineModel>();
 		PreparedStatement ps = conn.prepareStatement(MODIFY_QUERY_CARTLINES);
-		ps.setString(1, mcart.getOriginalOrder().getSale().getId());
+		ps.setString(1, orderId);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 
@@ -267,8 +264,8 @@ public class FDCartLineDAO {
 			line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
 			line.setEStoreId(EnumEStoreId.valueOfContentId(rs.getString("E_STORE")));
 			String source = rs.getString("SOURCE");
-			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source):null);
-			line.setUserContext(user.getUserContext());
+			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source.toUpperCase()):null);
+			line.setUserContext(userContext);
 					
 			lst.add(line);
 		}

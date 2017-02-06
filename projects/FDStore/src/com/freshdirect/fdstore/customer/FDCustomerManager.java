@@ -27,6 +27,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -4941,12 +4942,12 @@ public class FDCustomerManager {
 			}
 		}
 
-		public static List<FDCartLineI> getModifiedCartlines(FDUser user) throws FDResourceException {
+		public static List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException {
 			lookupManagerHome();
 
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getModifiedCartlines(user);
+				return sb.getModifiedCartlines(orderId, userContext);
 
 			} catch (CreateException ce) {
 				invalidateManagerHome();

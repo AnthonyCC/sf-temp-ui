@@ -500,7 +500,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
 		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
 		
-		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(fdUser);
+		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(cart.getOriginalOrder().getSale().getId(), fdUser.getUserContext());
 		
 		if(fdUser.getMasqueradeContext() == null && (null != modifiedCartlines && modifiedCartlines.size() > 0)){
 			cart.addOrderLines(modifiedCartlines);
