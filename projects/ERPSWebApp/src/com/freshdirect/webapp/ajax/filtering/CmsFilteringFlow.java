@@ -974,6 +974,12 @@ public class CmsFilteringFlow {
         hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCustomerId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCategoryId(catId);
+      
+        if(user.isMobilePlatForm())
+			hLBrandProductAdRequest.setPlatformSource("mobile");	
+	 	  else
+		 	 hLBrandProductAdRequest.setPlatformSource("web");
+        
         try {
             HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
             List<HLBrandProductAdInfo> hlBrandAdProductsMeta = hlBrandProductAdResponse.getProductAd();

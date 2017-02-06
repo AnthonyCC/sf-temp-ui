@@ -739,4 +739,12 @@ public class SessionUser {
 	public UserContext getUserContext() {
         return sessionUser.getUserContext();
     }
+	
+	public boolean isMobilePlatForm(){
+		return this.sessionUser.isMobilePlatForm();
+	}
+	
+	public void setIsMobilePlatForm(boolean isMobilePlatForm){
+		this.sessionUser.setMobilePlatForm(isMobilePlatForm);
+	}
 }

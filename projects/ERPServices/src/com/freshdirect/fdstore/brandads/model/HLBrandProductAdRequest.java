@@ -12,6 +12,9 @@ public class HLBrandProductAdRequest implements Serializable {
     private String userId;
     private String categoryId;
     private String customerId;
+    private String platformSource;
+    
+    
     
    
 
@@ -45,6 +48,14 @@ public class HLBrandProductAdRequest implements Serializable {
 
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	public String getPlatformSource() {
+		return platformSource;
+	}
+
+	public void setPlatformSource(String platformSource) {
+		this.platformSource = platformSource;
 	}
 
 	
