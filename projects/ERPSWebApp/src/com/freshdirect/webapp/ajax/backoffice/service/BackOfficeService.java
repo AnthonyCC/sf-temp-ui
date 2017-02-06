@@ -27,6 +27,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -172,9 +173,12 @@ public class BackOfficeService {
     
     private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";
     private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) {
-    	String basePath = request.getScheme()+"://"+request.getServerName()
-				+":"+request.getServerPort()+ request.getContextPath();
-	
+    	String basePath = request.getScheme()+"://"+request.getServerName();
+		 if(FDStoreProperties.isLocalDeployment()){
+			 basePath = basePath + ":" + request.getServerPort();
+		 }
+		 basePath=basePath + request.getContextPath();
+	LOGGER.info("The BasePath : "+basePath);
 	StringBuffer sb = null;
 		try {
 			URL url = new URL(basePath+PATH + skuCodeDetails);
