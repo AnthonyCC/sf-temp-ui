@@ -119,4 +119,19 @@
            timeToLiveSeconds="60"
            memoryStoreEvictionPolicy="LFU">
     </cache>
+    
+    <cache name="categoryTopItemCache"
+                    maxEntriesLocalHeap="10000"
+                    eternal="true"
+                    memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <cache name="familyProductCache"
+	    maxEntriesLocalHeap="10000"
+	    eternal="false"
+	    timeToIdleSeconds="300"
+	    timeToLiveSeconds="3600"
+	    memoryStoreEvictionPolicy="LFU"
+	    transactionalMode="off">
+     </cache>
 </ehcache>
