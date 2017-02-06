@@ -899,6 +899,11 @@ public class FDStoreProperties {
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
     
+    // APPDEV-5927
+    private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
+    private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
+    private static final String PROP_PLANTWDC_PRICE_INDICATOR =  "fdstore.plantwdc.price.indicator";
+    
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1700,6 +1705,10 @@ public class FDStoreProperties {
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
         
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
+        
+        defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
+        defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
+        defaults.put(PROP_PLANTWDC_PRICE_INDICATOR,  "BASE");
 
         refresh();
     }
@@ -4370,6 +4379,18 @@ public class FDStoreProperties {
 	public static int getUserCartSaveInterval() {
         return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
     }
+	
+	public static String getPropPlant1300PlantIndicator() {
+		return get(PROP_PLANT1300_PRICE_INDICATOR);
+	}
+	
+	public static String getPropPlant1310PlantIndicator() {
+		return get(PROP_PLANT1310_PRICE_INDICATOR);
+	}
+	
+	public static String getPropPlantWDCPlantIndicator() {
+		return get(PROP_PLANTWDC_PRICE_INDICATOR);
+	}
 	
 	public static List<String> getMealKitMaterialGroup(){
 		String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);

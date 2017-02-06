@@ -1464,15 +1464,23 @@ public class BrowseUtil {
 					tmp.setPlantId(1000);
 					tmp.setPricingZone(plantlic);
 					keyList.add(tmp);
+					
 					//Currently using stubs for sales and distribution
-					plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.BASE, plantlic);
+					if(FDStoreProperties.getPropPlantWDCPlantIndicator().equals("BASE"))
+						plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.BASE, plantlic);
+					else
+						plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(2000);
 					tmp.setPricingZone(plantwdc);
 					keyList.add(tmp);
+					
 					//Currently using stubs for sales and distribution
-					plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plantlic);
+					if(FDStoreProperties.getPropPlant1300PlantIndicator().equals("BASE"))
+						plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plantlic);
+					else
+						plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1300);
@@ -1480,13 +1488,15 @@ public class BrowseUtil {
 					keyList.add(tmp);
 					
 					//Currently using stubs for sales and distribution
-					plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plantlic);
+					if(FDStoreProperties.getPropPlant1310PlantIndicator().equals("BASE"))
+						plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plantlic);
+					else
+						plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1310);
 					tmp.setPricingZone(plant1310);
 					keyList.add(tmp);
-					
 				}
 				
 			} catch (FDResourceException e) {
