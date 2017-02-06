@@ -84,10 +84,10 @@ public class BackOfficeServicesServlet extends HttpServlet /* BaseJsonServlet*/ 
         	returnHttpError(500, exception.getMessage(), exception);
 		}  catch (JspException e) {
 			LOG.error("Failed to in JspException ", e);
-			returnHttpError(500, "Failed to get data for   user .");
+			returnHttpError(500, "Failed to get data for the request  .");
 		} catch (Exception e) {
 			LOG.error("Failed to in Exception ", e);
-			returnHttpError(500,"Failed to get data for   user .");
+			returnHttpError(500,"Failed to get data for the request  .");
 		}
 	}
 	public final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {

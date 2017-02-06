@@ -172,16 +172,19 @@ public class BackOfficeService {
     }
     
     private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";
-    private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) {
-    	String basePath = request.getScheme()+"://"+request.getServerName();
+    private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) throws FDResourceException {
+    	String basePath = "";//request.getScheme()+"://"+request.getServerName();
 		 if(FDStoreProperties.isLocalDeployment()){
-			 basePath = basePath + ":" + request.getServerPort();
+			 basePath = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+		 }else{
+			 basePath = "https" + "://" + request.getServerName();
 		 }
 		 basePath=basePath + request.getContextPath();
 	LOGGER.info("The BasePath : "+basePath);
 	StringBuffer sb = null;
 		try {
 			URL url = new URL(basePath+PATH + skuCodeDetails);
+			LOGGER.info("The BasePath url : "+url);
 			URLConnection conn = url.openConnection();
 
 			conn.setDoInput(true);
@@ -198,8 +201,10 @@ public class BackOfficeService {
 			br.close();
 		} catch (MalformedURLException me) {
 			LOGGER.error(me);
+			throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
 		} catch (IOException ie) {
 			LOGGER.error(ie);
+			throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
 		}
         
         return sb.toString();}
