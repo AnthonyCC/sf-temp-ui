@@ -49,7 +49,6 @@ request.setAttribute("noyui", true);
 	int validOrderCount = user.getAdjustedValidOrderCount();
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));        
-	sessionUser.setMobilePlatForm(mobWeb);
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
         
 	String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
