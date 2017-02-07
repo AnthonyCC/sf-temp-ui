@@ -85,7 +85,6 @@ var FreshDirect = FreshDirect || {};
 		
 		//fetch all skus for page beacons
 		var activePage = (FreshDirect.browse.data.pager && FreshDirect.browse.data.pager.activePage) ? FreshDirect.browse.data.pager.activePage : 1
-		var platform = (FreshDirect.mobWeb) ? '&platform=mobile' : ''; // check for mobileWeb
 		if ($('.searchinput').length) { //look for search input box
 			//prob search
 			
@@ -97,7 +96,7 @@ var FreshDirect = FreshDirect || {};
 				hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 				//fire impression
 				if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + platform+'" />');
+					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 				}
 			});
 			
@@ -106,7 +105,7 @@ var FreshDirect = FreshDirect || {};
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(activePage == 1){
 				if ($(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
-					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + platform+'" />');
+					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		} else {
@@ -123,14 +122,14 @@ var FreshDirect = FreshDirect || {};
 					hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 					//fire impression
 					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + platform+'" />');
+						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 					}
 				});
 				
 				//now, page beacon
 				hlSkusStr = hlSkus.join(',');
 				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
-					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + platform+'" />');
+					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
 			}
 		}
