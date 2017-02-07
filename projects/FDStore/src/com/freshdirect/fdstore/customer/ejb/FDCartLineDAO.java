@@ -266,6 +266,7 @@ public class FDCartLineDAO {
 			String source = rs.getString("SOURCE");
 			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source.toUpperCase()):null);
 			line.setUserContext(userContext);
+			line.setPlantID(userContext.getFulfillmentContext().getPlantId());
 					
 			lst.add(line);
 		}
