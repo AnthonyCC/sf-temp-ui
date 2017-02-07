@@ -182,6 +182,7 @@ public class BackOfficeService {
 		 basePath=basePath + request.getContextPath();
 	LOGGER.info("The BasePath : "+basePath);
 	StringBuffer sb = null;
+	BufferedReader br = null;
 		try {
 			URL url = new URL(basePath+PATH + skuCodeDetails);
 			LOGGER.info("The BasePath url : "+url);
@@ -190,7 +191,7 @@ public class BackOfficeService {
 			conn.setDoInput(true);
 			conn.setDoOutput(false);
 			                                    
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			sb = new StringBuffer();
 			                                    
 			String inputLine;
@@ -204,7 +205,15 @@ public class BackOfficeService {
 			throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
 		} catch (IOException ie) {
 			LOGGER.error(ie);
-			throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
+			throw new FDResourceException("Not able to Process Requrest at this time, please try again");
+		}finally {
+			if(br!=null){
+				try {
+					br.close();
+				} catch (IOException e) {
+					LOGGER.error(e);
+				}
+			}
 		}
         
         return sb.toString();}
