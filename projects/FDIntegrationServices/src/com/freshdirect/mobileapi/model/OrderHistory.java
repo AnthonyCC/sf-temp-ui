@@ -103,7 +103,7 @@ public class OrderHistory {
             OrderInfo orderInfo = OrderInfo.wrap(info);
             if (orderInfo.isInPast(date)) {
                 break;
-            } else if (orderInfo.isFdxModifiable()) {
+            } else if (orderInfo.isModifiable()) {
                 orderInfos.add(orderInfo);
             }
         }

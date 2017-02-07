@@ -3,7 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.Date;
 
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -13,15 +13,17 @@ public class OrderUtil {
 
     public static boolean isModifiable(String orderId, ActionResult results) throws FDResourceException {
         FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(orderId);
-        return isModifiable(order.getEStoreId(), order.getSaleStatus(), order.getDeliveryInfo().getDeliveryCutoffTime());
+        return isModifiable(order.getDeliveryInfo().getDeliveryCutoffTime(), order.getSaleStatus(), order.getOrderType(), order.isMakeGood());
     }
 
-    public static boolean isModifiable(EnumEStoreId eStore, EnumSaleStatus orderStatus, Date deliveryCutoffTime) {
-        if (EnumEStoreId.FDX == eStore) {
-            if (EnumSaleStatus.INPROCESS.equals(orderStatus) || new Date().after(deliveryCutoffTime)) {
-                return false;
-            }
+    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
+        if (isMakeGood){
+            return false;
         }
-        return true;
+        Date now = new Date(); // now
+        boolean beforeCutoffTime = now.before(deliveryCutoffTime);
+
+        return (EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION.equals(orderStatus))
+                && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
     }
 }
