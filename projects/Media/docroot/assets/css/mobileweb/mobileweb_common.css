@@ -2119,6 +2119,9 @@ li.cleanli .gen-arrow {
 		padding: 22px 10px;
 		margin: 0 0 4px;
 	}
+	.mm-page .manage_account a .text13bold{
+		font-weight: normal;
+	}
 	.mm-page .manage_account font:last-child a{
 		margin: 0 0 24px;
 	}
@@ -2129,13 +2132,20 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page .manage_account .manage_account_desc,
 	.mm-page .manage_account br,
-	.mm-page .manage_account #yourAccount_reorder,
 	.mm-page .manage-account-heading p,
 	.mm-page .manage_account .selectedAddressIsHome-false,
 	.mm-page .manage-account-container .continue-shopping,
+	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style #reorder-icon-big,
 	.mm-page .youraccount .youraccount_right a,
 	.mm-page .youraccount .youraccount_user_name{
 		display: none;
+	}
+	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style{
+		padding: 0;
+		margin: 0;
+		border: 0;
+		background: none;
+		color: #575860;
 	}
 	.mm-page .youraccount .youraccount_header{
 		padding: 25px 20px 0;

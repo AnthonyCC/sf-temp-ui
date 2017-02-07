@@ -145,11 +145,11 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	<% } %>
     </td></tr><tr>
 	<td valign="top" class="text13 manage_account"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
-		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br><span class="manage_account_desc">Check your order status and update open orders.</span><br>
-		<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><b>Reorder</b> from Past Orders</div></a>
+		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>"><%= mobWeb ? "Order History" : "Your Orders" %></a></font><br><span class="manage_account_desc">Check your order status and update open orders.</span><br>
+		<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><%= mobWeb ? "Last Order" : "<b>Reorder</b> from Past Orders" %></div></a>
 		<br>
 		
-		<% if ( user.isEligibleForStandingOrders() ) { %>					
+		<% if ( user.isEligibleForStandingOrders() &&  !mobWeb) { %>
 			<font class="text13bold">
 			<a href="<%=response.encodeURL("/quickshop/standing_orders.jsp")%>">Standing Orders</a>
 			</font><br><span class="manage_account_desc">Review your recurring orders and make changes.</span>
@@ -163,7 +163,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 			</div>
 			<br />
 		<%}%>
-		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())){%>
+		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId()) && !mobWeb){%>
 			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">				
 				<% if (selectedAddressIsHome) { %><a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>"><% } %><span class="text13bold">FreshDirect DeliveryPass</span><% if (selectedAddressIsHome) { %></a><% } %>
 				<% if (!selectedAddressIsHome) { %><span class="manage_account_desc">(Only available for Home Delivery)</span><% } %>
@@ -183,7 +183,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		<span class="manage_account_desc">Update your payment information or add a new payment option.</span>
 		<br><br>
 		<font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">Your Account Preferences</a>
+		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>"><%= mobWeb ? "" : "Your " %>Account Preferences</a>
 		</font><br>
 		<span class="manage_account_desc">Change your user name, password, and other account preferences.</span>
 		<br><br>
@@ -196,6 +196,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		</font><br>
 		<span class="manage_account_desc">Change your e-mail reminder preferences.</span>
 		<br><br>
+		<% if (!mobWeb){ %>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>
 		<br>
@@ -206,12 +207,13 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		<br>
 		<span class="manage_account_desc">Tell us your food preferences.</span>
 		<br><br>
+		<% } %>
 		<% 
 			/*
 				Changing to site feature
 				if(FDStoreProperties.isGiftCardEnabled()) { 
 			*/
-			if(user.isGiftCardsEnabled()) {
+			if(user.isGiftCardsEnabled() && !mobWeb) {
 		%>
 				<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>" class="text13bold">Gift Cards</a>
 				<br>
