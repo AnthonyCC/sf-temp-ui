@@ -413,7 +413,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 			info = addFailedSettlement((ErpFailedSettlementModel)model, saleId, affiliate);			
 		}
 
-		updateBadCustomerPaymentMethod(saleId, EnumPaymentMethodType.ECHECK, model.getResponseCode(), accountNumber);
+		updateBadCustomerPaymentMethod(saleId, EnumPaymentMethodType.ECHECK, model.getResponseCode(), model.getCcNumLast4());
 		
 		return info;
 		

@@ -2670,15 +2670,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	public void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String accountNumber) {
-
-			EnumRestrictionReason restrictionReason = PaymentFraudManager.translateRestrictionReason(paymentResponse);
-			String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription();		
-			ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
-			if (paymentMethod != null) { 
-				PaymentFraudManager.addRestrictedPaymentMethod(paymentMethod, restrictionReason, note);
-				updateECheckAlertForSale(saleId);
-			}
+		
+		LOGGER.info("Marking payment method as BAD for sale : "+saleId+" for payment method type  of "+paymentMethodType);
+		EnumRestrictionReason restrictionReason = PaymentFraudManager.translateRestrictionReason(paymentResponse);
+		String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription()+" for order "+saleId;		
+		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
+		if (paymentMethod != null) { 
+			LOGGER.info("Found matching payment method to be marked as BAD for sale : "+saleId+" . The payment method id is "+paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"" );
+			PaymentFraudManager.addRestrictedPaymentMethod(paymentMethod, restrictionReason, note);
+			updateECheckAlertForSale(saleId);
 			
+		}
 	}
 	
 	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
@@ -2733,7 +2735,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					ErpCustomerAlertModel customerAlert = new ErpCustomerAlertModel();
 					if (setOnAlert) {
 						activityType = EnumAccountActivityType.PLACE_ALERT;
-						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure.";							
+						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure on order "+saleId;							
 						customerAlert.setCustomerId(pk.getId());
 						customerAlert.setAlertType(EnumAlertType.ECHECK.getName());
 						customerAlert.setCreateDate(new Date());
