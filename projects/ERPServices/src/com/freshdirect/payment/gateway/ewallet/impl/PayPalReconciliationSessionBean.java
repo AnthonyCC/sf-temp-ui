@@ -377,7 +377,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	"TX_EVENT_CODE, TX_INITIATION_DATE, TX_COMPLETION_DATE, TX_DEBIT_CREDIT, TX_GROSS_AMOUNT, " +
 	"TX_GROSS_CURRENCY, FEE_DEBIT_CREDIT, FEE_AMOUNT, FEE_CURRENCY, CUSTOM_FIELD, CONSUMER_ID, PAYMENT_TRACKING_ID," +
 	" BANK_REF_ID, STATUS " +
-	"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? AND STATUS = 'P'";
+	"FROM CUST.SETTLEMENT_TRANSACTION where SETTLEMENT_ID = ? ";
 	
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) {
 		
@@ -439,6 +439,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					trxn.setFeeCurrency(rs.getString("FEE_CURRENCY"));
 					trxn.setConsumerId(rs.getString("CONSUMER_ID"));
 					trxn.setPaymentTrackingId(rs.getString("PAYMENT_TRACKING_ID"));
+					trxn.setStatus(rs.getString("STATUS"));
 					ppStlmntTrxns.add(trxn);
 				}
 				stlmntSummary.setSettlementTrxns(ppStlmntTrxns);
