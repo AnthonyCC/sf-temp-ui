@@ -7,17 +7,29 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.framework.webapp.ActionResult;
 
 public class OrderUtil {
 
-    public static boolean isModifiable(String orderId, ActionResult results) throws FDResourceException {
-        FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(orderId);
-        return isModifiable(order.getDeliveryInfo().getDeliveryCutoffTime(), order.getSaleStatus(), order.getOrderType(), order.isMakeGood());
+    // TODO: refreshed order within cutofftime because order history cache provide stale order data sometimes 
+    // (order state is set SUBmitted from NEW state when order is confirmed by SAP in DB).
+    public static boolean isModifiable(String orderId, Date deliveryCutoffTime) {
+        boolean modifiable = false;
+        
+        if (new Date().before(deliveryCutoffTime)) {
+            try {
+                FDOrderAdapter updatedOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId);
+                modifiable = isModifiable(updatedOrder.getDeliveryInfo().getDeliveryCutoffTime(), updatedOrder.getSaleStatus(), updatedOrder.getOrderType(),
+                        updatedOrder.isMakeGood());
+            } catch (FDResourceException e) {
+                modifiable = false;
+            }
+        }
+
+        return modifiable;
     }
 
-    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
-        if (isMakeGood){
+    private static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
+        if (isMakeGood) {
             return false;
         }
         Date now = new Date(); // now

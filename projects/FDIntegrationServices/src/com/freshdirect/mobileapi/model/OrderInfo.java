@@ -106,7 +106,7 @@ public class OrderInfo {
     }
 
     public boolean isModifiable() {
-        return OrderUtil.isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType(), target.isMakeGood());
+        return OrderUtil.isModifiable(target.getErpSalesId(), target.getDeliveryCutoffTime());
     }
 
     public boolean isShoppable() {

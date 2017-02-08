@@ -118,10 +118,10 @@ public class Order {
             //Set modification cutoff time
             if(EnumEStoreId.FDX.name().equalsIgnoreCase(target.getEStoreId().name())){
             	orderDetail.setModificationCutoffTime(target.getDeliveryInfo().getDeliveryCutoffTime());
-            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), new ActionResult()));
+            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), target.getDeliveryInfo().getDeliveryCutoffTime()));
             }else{
             	orderDetail.setModificationCutoffTime(reservation.getCutoffTime());
-            	orderDetail.setModifiable(OrderUtil.isModifiable(reservation.getCutoffTime(), target.getOrderStatus(), target.getOrderType(), target.isMakeGood()));
+            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), reservation.getCutoffTime()));
             }
             
         }
