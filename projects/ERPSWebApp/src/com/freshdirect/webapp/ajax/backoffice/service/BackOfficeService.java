@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,8 +29,10 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -173,50 +176,79 @@ public class BackOfficeService {
     
     private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";
     private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) throws FDResourceException {
-    	String basePath = "";//request.getScheme()+"://"+request.getServerName();
-		 if(FDStoreProperties.isLocalDeployment()){
-			 basePath = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
-		 }else{
-			 basePath = "https" + "://" + request.getServerName();
-		 }
-		 basePath=basePath + request.getContextPath();
-	LOGGER.info("The BasePath : "+basePath);
-	StringBuffer sb = null;
-	BufferedReader br = null;
-		try {
-			URL url = new URL(basePath+PATH + skuCodeDetails);
-			LOGGER.info("The BasePath url : "+url);
-			URLConnection conn = url.openConnection();
 
-			conn.setDoInput(true);
-			conn.setDoOutput(false);
-			                                    
-			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			sb = new StringBuffer();
-			                                    
-			String inputLine;
-			                                    
-			while ((inputLine = br.readLine()) != null)
-			    sb.append(inputLine);
-			                                                    
-			br.close();
-		} catch (MalformedURLException me) {
-			LOGGER.error(me);
-			throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
-		} catch (IOException ie) {
-			LOGGER.error(ie);
-			throw new FDResourceException("Not able to Process Requrest at this time, please try again");
-		}finally {
-			if(br!=null){
-				try {
-					br.close();
-				} catch (IOException e) {
-					LOGGER.error(e);
-				}
-			}
+	StringBuffer resultJsonString = new StringBuffer();
+	
+	final SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCodeDetails);
+	final ProductModel prodModel = (ProductModel) ContentFactory.getInstance().getContentNode(FDContentTypes.PRODUCT, skuModel.getProductModel().getContentName());
+	Collection<ContentKey> parentKeys = prodModel.getParentKeys();
+	resultJsonString.append("{ \"productModels\":{");
+	for (ContentKey parentElement : parentKeys) {
+		String  catID = parentElement.getId();
+		final CategoryModel catModel = (CategoryModel) 	ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, catID);
+		final ProductModel pro = catModel.getProductByName(prodModel.getContentName());
+		resultJsonString.append("\""+pro +"@"+catModel+"\":{");
+		resultJsonString.append("\"isGrocery \":\""+pro.isGrocery()+"\",");
+		resultJsonString.append("\"isPrimary \":\""+prodModel.getParentNode().getContentName().equalsIgnoreCase(catID)+"\",");
+		resultJsonString.append("\"defSku \":\""+pro.isGrocery()+"\",");
+		resultJsonString.append("\"prefSku \":\""+prodModel.getDefaultSku()+"\",");
+		resultJsonString.append("\"isOrphan \":\""+pro.isOrphan()+"\",");
+		
+	
+		for (String skucodes : pro.getSkuCodes()){
+			final SkuModel skuMo = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skucodes);
+			resultJsonString.append("\"skuCodes\":[");
+			resultJsonString.append("\""+skucodes+"\",");
+			if(skuMo.isTempUnavailable()){
+				resultJsonString.append("\"TEMP UNAV\"");}
+			else if(skuMo.isUnavailable()){
+				resultJsonString.append("\"UNAV\"");}
+			else if(skuMo.isOutOfSeason()){
+				resultJsonString.append("\"SEAS\"");}
+			else if(skuMo.isDiscontinued()){
+				resultJsonString.append("\"DISC\"");}
+			else {resultJsonString.append("\"AVAIL\"");}
+			resultJsonString.append("]");
 		}
+		resultJsonString.append("},");
+		
+	}
+	resultJsonString.deleteCharAt(resultJsonString.length()-1);
+	resultJsonString.append("}");
+	
+	if(prodModel.getComponentGroups()!=null&&!prodModel.getComponentGroups().isEmpty()){
+		resultJsonString.append(" \"componentGroups\":{");
+	for(ComponentGroupModel groupModel : prodModel.getComponentGroups()){
+		resultJsonString.append(" \"compGroup\":{");
+		for (String key : groupModel.getVariationOptions().keySet()) {
+			resultJsonString.append("\""+key+"\"{");
+			FDVariationOption[] variation = groupModel.getVariationOptions().get(key);
+			for (FDVariationOption varOpt : variation) {
+				System.out.println("-----------"+varOpt.getSkuCode());
+				final SkuModel getSkugroupCode = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, varOpt.getSkuCode());
+				resultJsonString.append("\"skuCodes\":[");
+				resultJsonString.append("\""+varOpt.getSkuCode()+"\",");
+				if(getSkugroupCode.isTempUnavailable()){
+					resultJsonString.append("\"TEMP UNAV\"");}
+				else if(getSkugroupCode.isUnavailable()){
+					resultJsonString.append("\"UNAV\"");}
+				else if(getSkugroupCode.isOutOfSeason()){
+					resultJsonString.append("\"SEAS\"");}
+				else if(getSkugroupCode.isDiscontinued()){
+					resultJsonString.append("\"DISC\"");}
+				else {resultJsonString.append("\"AVAIL\"");}
+				resultJsonString.append("]");
+			}
+			resultJsonString.append("}");
+			}
+		resultJsonString.append("}");
+	}
+	resultJsonString.append("}");
+	}
+	resultJsonString.append("}");
+        return resultJsonString.toString();
         
-        return sb.toString();}
+    }
 
 
 	private DomainValueModelResponse buildDomainValueModel(
