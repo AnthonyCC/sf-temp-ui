@@ -368,7 +368,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setDistChannel(distrChannel);
         this.model.setScaleQuantity(rs.getDouble("SCALE_QTY"));
         String source = rs.getString("SOURCE");
-        this.model.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source):null);
+        this.model.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source.toUpperCase()):null);
         this.model.setTaxCode(rs.getString("TAX_CODE"));
         this.model.setMaterialGroup(rs.getString("MATERIAL_GROUP"));
         ZoneInfo pricingZone=null;
