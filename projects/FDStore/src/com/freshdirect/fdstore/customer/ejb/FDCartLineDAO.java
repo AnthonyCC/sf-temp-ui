@@ -264,7 +264,7 @@ public class FDCartLineDAO {
 			line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
 			line.setEStoreId(EnumEStoreId.valueOfContentId(rs.getString("E_STORE")));
 			String source = rs.getString("SOURCE");
-			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source.toUpperCase()):null);
+			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source):null);
 			line.setUserContext(userContext);
 			line.setPlantID(userContext.getFulfillmentContext().getPlantId());
 					
@@ -318,7 +318,7 @@ public class FDCartLineDAO {
 		ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
 		ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
 		ps.setString(21, null !=line.getEStoreId()? line.getEStoreId().getContentId():(null!=storeContext && null !=storeContext.getEStoreId() ? storeContext.getEStoreId().getContentId():EnumEStoreId.FD.getContentId()));
-		ps.setString(22, (line.getSource()!=null? line.getSource().toString():null));
+		ps.setString(22, null /*(line.getSource()!=null? line.getSource().toString():null)*/);
 		ps.setString(23, orderId);		
 		ps.executeUpdate();
 		ps.close();
