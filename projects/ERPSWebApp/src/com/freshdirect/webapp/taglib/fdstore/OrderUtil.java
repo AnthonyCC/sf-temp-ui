@@ -20,7 +20,7 @@ public class OrderUtil {
             try {
                 FDOrderAdapter updatedOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId);
                 modifiable = isModifiable(updatedOrder.getDeliveryInfo().getDeliveryCutoffTime(), updatedOrder.getSaleStatus(), updatedOrder.getOrderType(),
-                        updatedOrder.isMakeGood(),orderId);
+                        updatedOrder.isMakeGood());
             } catch (FDResourceException e) {
                 modifiable = false;
             }
