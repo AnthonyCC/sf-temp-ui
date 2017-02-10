@@ -29,18 +29,18 @@ public class OrderUtil {
         return modifiable;
     }
 
-/*    private static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
+    private static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
         if (isMakeGood) {
             return false;
         }
         Date now = new Date(); // now
         boolean beforeCutoffTime = now.before(deliveryCutoffTime);
 
-        return (EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION.equals(orderStatus))
+        return (EnumSaleStatus.NEW.equals(orderStatus) || EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION.equals(orderStatus))
                 && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
-    }*/
+    }
     
-    private static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood, String orderId) {
+    /*private static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood, String orderId) {
         if (isMakeGood) {
             return false;
         }
@@ -63,5 +63,5 @@ public class OrderUtil {
 
 		return true;
 
-	}
+	}*/
 }
