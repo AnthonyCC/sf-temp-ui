@@ -2461,7 +2461,8 @@
 				<EnumValue value="E_COUPON_POPULARITY" label="e-Coupon Popularity"/>
 				<EnumValue value="E_COUPON_START_DATE" label="e-Coupon Start Date"/>
 				<EnumValue value="RECENCY" label="Recency"/>
-				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>				
+				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>
+				<EnumValue value="FAVS_FIRST" label="Favs First"/>	
 			</EnumDef>
 		</AttributeDefs>
 	</ContentTypeDef>
