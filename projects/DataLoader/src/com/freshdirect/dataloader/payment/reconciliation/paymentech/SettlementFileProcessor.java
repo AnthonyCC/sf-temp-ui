@@ -74,7 +74,7 @@ public class SettlementFileProcessor {
 		} else if (files.size() == 1) {
 			//If file size is one then try to find ot's alternative file from local repository 
 			// if it exists then process settlement else throw exception
-			tempFileName = isAlternateFileExists(files.get(0));
+			tempFileName = retreiveAlternateFile(files.get(0));
 			if (null == tempFileName) {
 				throw new FDRuntimeException(
 						"Paymentech Reconciliation returned only one file. Please re run the job after two hours");
@@ -92,7 +92,7 @@ public class SettlementFileProcessor {
 		for (String file : files) {
 			// Check whether the file is processed or not
 			if (null != fileProcessors.get(file) && !fileProcessors.get(file).booleanValue()) {
-				tempFileName = isAlternateFileExists(file);
+				tempFileName = retreiveAlternateFile(file);
 				if (null != tempFileName) {
 					String timestamp = SF.format(new Date());
 					// make the dfr file
@@ -150,7 +150,7 @@ public class SettlementFileProcessor {
 		//Format 232318.0000080782.012016.d.A225.dfr 
 		if("true".equalsIgnoreCase(DataLoaderProperties.isProcessLocalSettlementFiles())){
 			 files = fp.getLocalFiles();	
-		}else{
+		}else{ //download it from SFTP 
 			 files = fp.getFiles();
 		}
 		return files;
@@ -255,20 +255,25 @@ public class SettlementFileProcessor {
 	 * @param fileName
 	 * @return
 	 */
-	private static String isAlternateFileExists(String fileName) {
+	private static String retreiveAlternateFile(String fileName) {
 		StringBuffer downloadedFileName = new StringBuffer(fileName);
-
+		String subFile=null;
 		if (fileName.indexOf(FILE_NAME_A) > 0) {
 			downloadedFileName.setCharAt(fileName.indexOf(FILE_NAME_A), 'B');
+			 subFile=downloadedFileName.substring(0, fileName.indexOf(FILE_NAME_A)+1);
 		} else if (fileName.indexOf(FILE_NAME_B) > 0) {
 			downloadedFileName.setCharAt(fileName.indexOf(FILE_NAME_B), 'A');
+			 subFile=downloadedFileName.substring(0, fileName.indexOf(FILE_NAME_B)+1);
 
 		}
-		File file = new File(DataLoaderProperties.getWorkingDir() + downloadedFileName.toString());
+		File file = new File(DataLoaderProperties.getWorkingDir());
+        for(File f: file.listFiles()){
+        	 if(!f.getName().contains(".zip") && !f.getName().contains("_resp")&& f.getName().contains(".dfr") && f.getName().contains(subFile)){
+        		 return f.getName();
+        	 }
+        }
+		
 
-		if (file.exists()) {
-			return file.getName();
-		}
 
 		return null;
 	}

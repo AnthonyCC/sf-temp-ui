@@ -583,8 +583,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				psSummByAff.setString(2, affiliateAccountId);
 				rs = psSummByAff.executeQuery();
 			} else {
-				psSummAll.setDate(1, new java.sql.Date(date.getTime()));
 				psSummAll = conn.prepareStatement(ppAllSummaryQuery);
+				psSummAll.setDate(1, new java.sql.Date(date.getTime()));
 				rs = psSummAll.executeQuery();
 			}
 			
