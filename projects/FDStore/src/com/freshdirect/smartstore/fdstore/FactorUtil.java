@@ -692,7 +692,7 @@ public class FactorUtil {
 				try {
 					ProductModel productNode = 
 						(ProductModel)ContentFactory.getInstance().getContentNodeByKey(
-								new ContentKey(FDContentTypes.PRODUCT,products.get(i).toString()));
+						        ContentKey.getContentKey(FDContentTypes.PRODUCT,products.get(i).toString()));
 					dept = productNode.getDepartment().getContentKey().getId();
 				} catch (Exception e) {
 				}

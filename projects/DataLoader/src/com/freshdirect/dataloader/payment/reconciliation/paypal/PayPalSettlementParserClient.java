@@ -282,6 +282,11 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 				settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
+				StringBuilder msg= new StringBuilder(300);
+				msg.append("Error Processing PayPal Reconciliation file .\n");
+				msg.append(e.toString());
+				throw new FDRuntimeException(msg.toString());
+				
 			}
 				
 			// END APPDEV-5531 

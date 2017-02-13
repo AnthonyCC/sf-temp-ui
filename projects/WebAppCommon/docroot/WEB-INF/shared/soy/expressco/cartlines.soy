@@ -869,7 +869,6 @@
  * @param cartlineType Cartsection type
  * @param subTotalBox subtotal
  * @param? additionalInfo Promotion info
- * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
  * @param? userCorporate
  * @param? deliveryPassTrialExpired
@@ -934,16 +933,7 @@
 			</div>
 		{/if} /*end if $userRecognized and $deliveryPassTrialExpired */
 		{if $userRecognized}
-			<div class='total__gogreen'>
-				<form fdform="gogreen" action="#">
-					<p class="gogreen-text">
-						<label for="gogreen">
-							<input class="customcheckbox" id="gogreen" fdform-button="submitgogreen" fdform-prevent="manual" name="goGreen" type="checkbox" value="Y" {if $goGreen}checked{/if} />
-							<strong>Go Green. Go Paperless.</strong> Get email receipts and save a tree.
-						</label>
-					</p>
-				</form>
-			</div>
+			
 			{if $customerServiceRepresentative}
 				<div class="total-masq">
 					<form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" fdform-success="FreshDirect.utils.reloadOnSuccess"  action="#">

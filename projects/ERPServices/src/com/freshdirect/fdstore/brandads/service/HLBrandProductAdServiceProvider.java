@@ -68,7 +68,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
 		urlParameters.put(HOOKLOGIC_KEYWORD, hLRequestData.getSearchKeyWord());
 		urlParameters.put(HOOKLOGIC_TAXONOMY, "");
-		urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
+		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
+		//urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
 		urlParameters.put(HOOKLOGIC_IC, hlAdConfigProvider.getBrandProductAdProviderIc());
 		urlParameters.put(HOOKLOGIC_CULTURE, hlAdConfigProvider.getBrandProductAdProviderCulture());
 		urlParameters.put(HOOKLOGIC_MEDIASOURCE, hlAdConfigProvider.getBrandProductAdProviderMediaSource());
@@ -91,7 +92,8 @@ public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRe
 		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
 		urlParameters.put(HOOKLOGIC_CUSERID, hLRequestData.getCustomerId()==null?"":hLRequestData.getCustomerId());
 		urlParameters.put(HOOKLOGIC_TAXONOMY, hLRequestData.getCategoryId());
-		urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
+		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
+		//urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
 		urlParameters.put(HOOKLOGIC_ALLOWMARKETPLACE, hlAdConfigProvider.getBrandProductAdProviderAallowMarketplace());
 		urlParameters.put(HOOKLOGIC_MINMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());
 		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());

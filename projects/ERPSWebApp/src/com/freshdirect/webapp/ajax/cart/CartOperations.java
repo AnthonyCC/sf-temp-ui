@@ -206,6 +206,12 @@ public class CartOperations {
                     
                     EventLoggerService.getInstance().log(event);
                 }
+                
+                if(cart instanceof FDModifyCartModel){
+                	FDModifyCartModel mOrder = (FDModifyCartModel)cart;
+                	cartLine.setOrderId(mOrder.getOriginalOrder().getSale().getId());
+                	saveNewCartline(user, cartLine, cartLine.getQuantity(), mOrder.getOriginalOrder().getSale().getId());
+                }
 			}
 								
 			// add collected cartlines to cart
@@ -849,6 +855,7 @@ public class CartOperations {
 		//add Avalara taxcode to cartItem
 		theCartLine.setTaxCode(product.getTaxCode());
 		
+		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									RECIPE SOURCE
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1128,5 +1135,18 @@ public class CartOperations {
         }
         return maximumQuantity;
     }
+    
+    private static void saveNewCartline(FDUserI user, FDCartLineI newLine, double deltaQty, String orderId) {
+    	if(null == user.getMasqueradeContext()){
+		synchronized(newLine){
+			try {
+				newLine.setQuantity(deltaQty);
+				FDCustomerManager.storeModifiedCartline(((FDSessionUser)user).getUser(), newLine, orderId);
+			} catch (FDResourceException e) {
+				LOG.error( "could not save Modified", e );
+			}
+		}
+	  }	
+	}
 
 }

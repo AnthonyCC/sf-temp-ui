@@ -107,7 +107,7 @@ public class DraftService {
     public Set<ContentKey> getAllChangedContentKeys(Long draftId) {
         final Set<ContentKey> keySet = new HashSet<ContentKey>();
         for (final DraftChange change : getDraftChanges(draftId)) {
-            keySet.add(ContentKey.decode(change.getContentKey()));
+            keySet.add(ContentKey.getContentKey(change.getContentKey()));
         }
         return keySet;
     }
@@ -141,7 +141,7 @@ public class DraftService {
     public boolean isContentKeyChanged(Long draftId, String nodeId) {
         boolean isKeyChangedOnDraft = false;
         for (final DraftChange change : getDraftChanges(draftId)) {
-            if (nodeId.equals(ContentKey.decode(change.getContentKey()).getId())) {
+            if (nodeId.equals(ContentKey.getContentKey(change.getContentKey()).getId())) {
                 isKeyChangedOnDraft = true;
                 break;
             }

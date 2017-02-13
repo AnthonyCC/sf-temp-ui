@@ -60,7 +60,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				// put Product Key -> Score couples into results set
-				result.put(new ContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
 			}
 
 			// free resources
@@ -99,7 +99,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				result.add(new ContentKey(FDContentTypes.PRODUCT, rs.getString(1)));
+				result.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)));
 			}
 
 			// free resources
@@ -131,7 +131,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				// put Product Key -> Score couples into results set
-				result.put(new ContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
 			}
 
 			// free resources

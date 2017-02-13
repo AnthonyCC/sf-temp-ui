@@ -45,7 +45,7 @@ public class DataLoaderProperties {
 	private final static String PROP_PAYMENTECH_STF_SFTP_HOST = "dataloader.paymentech.stf.sftp.host";
 	private final static String PROP_PAYMENTECH_STF_SFTP_USER = "dataloader.paymentech.stf.sftp.user";
 	private final static String PROP_PAYMENTECH_STF_SFTP_PASSWORD = "dataloader.paymentech.stf.sftp.password";
-
+	private final static String PROP_PAYMENT_LOCAL_FILE_PROCESS="dataloader.paymenttech.local.file.process";
 	//PayPal settlement related properties - Start
 	private final static String PROP_PP_FTP_IP = "dataloader.pp.ftp.ip";
 	private final static String PROP_PP_FTP_USER = "dataloader.pp.ftp.user";
@@ -92,15 +92,16 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PAYMENTECH_BIN_PORT, "8522");
 		
 		defaults.put(PROP_PAYMENTECH_SFTP_HOST, "netconnectbatchvar1.chasepaymentech.net");
-		defaults.put(PROP_PAYMENTECH_SFTP_USER, "SVSMVJK7");
-		defaults.put(PROP_PAYMENTECH_SFTP_PASSWORD, "D77BSZYG");
+		defaults.put(PROP_PAYMENTECH_SFTP_USER, "SP5Z7BQH");  //,SVSMVJK7
+		defaults.put(PROP_PAYMENTECH_SFTP_PASSWORD, "J73F3MRP");//D77BSZYG
 		defaults.put(PROP_PAYMENTECH_SFTP_PRIVATE_KEY,"id_rsa_2048_testing_storefront_paymentech");
 		defaults.put(PROP_PAYMENTECH_SFTP_ENABLED,"true");
 		defaults.put(PROP_PAYMENTECH_SFTP_DELETE_FILES, "false");
 		defaults.put(PROP_SETTLEMENT_FAILURE_FILE_NAME,"RejectedDetailRpt");
 		defaults.put(PROP_PAYMENTECH_STF_SFTP_HOST, "netconnectbatchvar1.chasepaymentech.net");
-		defaults.put(PROP_PAYMENTECH_STF_SFTP_USER, "SVSMVJK7");
-		defaults.put(PROP_PAYMENTECH_STF_SFTP_PASSWORD, "D77BSZYG");
+		defaults.put(PROP_PAYMENTECH_STF_SFTP_USER, "SP5Z7BQH");
+		defaults.put(PROP_PAYMENTECH_STF_SFTP_PASSWORD, "J73F3MRP");
+		defaults.put(PROP_PAYMENT_LOCAL_FILE_PROCESS, "false");
 
 		//PayPal settlement related properties - Start
 		defaults.put(PROP_PP_FTP_IP, "reports.sandbox.paypal.com");
@@ -313,4 +314,8 @@ public class DataLoaderProperties {
 	public static String getPPIgnorableEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_IGNORABLE_EVENTCODES);
 	}*/
+	
+	public static String isProcessLocalSettlementFiles(){
+		return config.getProperty(PROP_PAYMENT_LOCAL_FILE_PROCESS);
+	}
 }

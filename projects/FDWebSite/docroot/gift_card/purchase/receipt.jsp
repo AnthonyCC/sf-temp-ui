@@ -75,7 +75,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
 		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
 		CmsManager manager = CmsManager.getInstance();	
-		ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
+		ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
 		ContentNodeI contentNode = manager.getContentNode(contentKey);
 
 		if(null != contentNode){

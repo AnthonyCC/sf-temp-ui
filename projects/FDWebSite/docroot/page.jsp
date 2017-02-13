@@ -23,7 +23,7 @@
 	
 	String layout = "/common/template/page_template.jsp";
 	
-	PageModel pageModel = (PageModel)ContentFactory.getInstance().getContentNodeByKey( new ContentKey(ContentType.get("Page"), pageId) );
+	PageModel pageModel = (PageModel)ContentFactory.getInstance().getContentNodeByKey( ContentKey.getContentKey(ContentType.get("Page"), pageId) );
 	
 	if ( pageModel == null ) {
 		throw new JspException("No page found with id: " + pageId );

@@ -39,7 +39,7 @@ public class ErpProductPromotionUtil {
 		List departments = new ArrayList();
         if(store != null) {
      	   List<DepartmentModel> storeDepartments = store.getDepartments();
-	       ContentKey contentKey = new ContentKey(FDContentTypes.DEPARTMENT,"wgd");
+	       ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.DEPARTMENT,"wgd");
 	       if(storeDepartments != null) {
 	      	   for(DepartmentModel storeDepartment : storeDepartments) {
 	      		   if(storeDepartment.getContentKey() != null		        				   
@@ -55,9 +55,9 @@ public class ErpProductPromotionUtil {
 		Set<ContentKey> contentKeys =manager.getContentKeysByType(FDContentTypes.DEPARTMENT);
 		Map<ContentKey, ContentNodeI> contentNodes =manager.getContentNodes(contentKeys);
 		//return ProductPromotionManager.getAllDepartments();
-		ContentKey contentKey = new ContentKey(FDContentTypes.DEPARTMENT,"wgd");
+		ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.DEPARTMENT,"wgd");
 		contentNodes.remove(contentKey);//Excluding 'what's good' department.
-		contentKey = new ContentKey(FDContentTypes.DEPARTMENT,"our_picks");
+		contentKey = ContentKey.getContentKey(FDContentTypes.DEPARTMENT,"our_picks");
 		contentNodes.remove(contentKey);*/
         Collections.sort(departments,new DepartmentIdComparator());
 		return departments;
@@ -108,7 +108,7 @@ public class ErpProductPromotionUtil {
 	
 	public static String getDepartmentNameById(String deptId){
 		CmsManager          manager     = CmsManager.getInstance();	
-		ContentKey contentKey = new ContentKey(FDContentTypes.DEPARTMENT,deptId);
+		ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.DEPARTMENT,deptId);
 		ContentNodeI contentNode = manager.getContentNode(contentKey);
 		if(null != contentNode){
 			return (String)contentNode.getAttribute("FULL_NAME").getValue();

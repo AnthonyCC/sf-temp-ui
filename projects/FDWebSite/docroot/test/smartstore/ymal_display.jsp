@@ -37,7 +37,7 @@
 	
 	LinkedList s = new LinkedList();
 	s.add(mgr.getContentNode(ContentFactory.getInstance().getStoreKey())); // store
-	s.add(mgr.getContentNode(ContentKey.decode("FDFolder:recipes"))); // recipes
+	s.add(mgr.getContentNode(ContentKey.getContentKey("FDFolder:recipes"))); // recipes
 %>
 <html>
 <head>

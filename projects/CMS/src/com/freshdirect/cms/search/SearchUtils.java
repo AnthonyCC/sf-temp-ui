@@ -17,8 +17,8 @@ import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class SearchUtils {
-	private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
-	private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
+	private final static ContentKey RECIPE_ROOT_FOLDER = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "recipes");
+	private final static ContentKey FAQ_ROOT_FOLDER = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ");
 
 	public static List<Term> collectValues(ContentNodeI node, AttributeIndex index, boolean keywordsEnabled,
 			boolean primaryHomeKeywordsEnabled, boolean parentRecursionEnabled) {

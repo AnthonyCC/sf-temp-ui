@@ -94,7 +94,7 @@ public class ProductConfigServlet extends BaseJsonServlet {
 		String categoryId = reqData.getCategoryId();
 		if ( categoryId == null ) {
 			// get product in its primary home
-			product = (ProductModel)ContentFactory.getInstance().getContentNodeByKey( new ContentKey(ContentType.get( "Product" ), productId) );
+			product = (ProductModel)ContentFactory.getInstance().getContentNodeByKey( ContentKey.getContentKey(ContentType.get( "Product" ), productId) );
 		} else {
 			// get product in specified category context
 			product = ContentFactory.getInstance().getProductByName( categoryId, productId );

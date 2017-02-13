@@ -55,8 +55,6 @@ public class OrderHistory extends Message {
 
         private boolean modifiable;
 
-        private boolean fdxModifiable;
-
         private EnumDeliveryType deliveryType;
 
         public boolean isShoppable() {
@@ -65,10 +63,6 @@ public class OrderHistory extends Message {
 
         public boolean isModifiable() {
             return modifiable;
-        }
-
-        public boolean isFdxModifiable() {
-            return fdxModifiable;
         }
 
         public boolean isPendingDeliveryOrder() {
@@ -94,7 +88,6 @@ public class OrderHistory extends Message {
             this.refused = orderInfo.isRefused();
             this.shoppable = orderInfo.isShoppable();
             this.modifiable = orderInfo.isModifiable();
-            this.fdxModifiable = orderInfo.isFdxModifiable();
             this.deliveryType = orderInfo.getDeliveryType();
             }
 

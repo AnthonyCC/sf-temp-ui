@@ -205,7 +205,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 * @return
 	 */
 	public boolean isTemporaryUnavailable() {
-		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
+		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible() && !isOutOfSeason();
 	}
 
 	/**
@@ -213,7 +213,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 * @return
 	 */
 	public boolean isTemporaryUnavailableOrAvailable() {
-	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued());
+	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued() || isOutOfSeason());
 	}
 
 

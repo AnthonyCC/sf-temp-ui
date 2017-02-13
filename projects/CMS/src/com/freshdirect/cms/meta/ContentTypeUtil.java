@@ -114,7 +114,7 @@ public class ContentTypeUtil {
 			} else if (EnumAttributeType.DOUBLE.equals(type)) {
 				return Double.valueOf(str);
 			} else if (EnumAttributeType.RELATIONSHIP.equals(type)) {
-				return ContentKey.decode(str);
+				return ContentKey.getContentKey(str);
 			} else if (EnumAttributeType.DATE.equals(type)) {
 				try {
 					DateFormat	dateFormat = new SimpleDateFormat(dateFormatStr);

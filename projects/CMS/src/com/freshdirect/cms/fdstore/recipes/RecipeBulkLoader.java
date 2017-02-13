@@ -408,7 +408,7 @@ public class RecipeBulkLoader {
 	private ContentNodeI processConfiguredProduct(String line) {
 		StringTokenizer tokenizer = new StringTokenizer(line, DELIMITERS, true);
 
-		ContentKey		key       = new ContentKey(FDContentTypes.CONFIGURED_PRODUCT, generateId());
+		ContentKey		key       = ContentKey.getContentKey(FDContentTypes.CONFIGURED_PRODUCT, generateId());
 		ContentNodeI    node      = service.createPrototypeContentNode(key, draftContext);
 		String			token;
 		Boolean			bool;
@@ -429,7 +429,7 @@ public class RecipeBulkLoader {
 		
 		// SKU_CODE	
 		token = nextToken(tokenizer, DELIMITERS);
-	    kkey  = new ContentKey(FDContentTypes.SKU, token);
+	    kkey  = ContentKey.getContentKey(FDContentTypes.SKU, token);
 		node.getAttribute("SKU").setValue(kkey);
 		
 		// QUANTITY

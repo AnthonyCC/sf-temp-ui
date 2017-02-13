@@ -107,17 +107,16 @@ public class DraftChangeExtractorServiceTest extends TestCase {
         ContentNodeI testCat = createTestNode("Category:cat1");
         assertNotNull(testCat);
         
-        assertRelationshipChange(testCat, "products", null, null );
         assertRelationshipChange(testCat, "products", Collections.<ContentKey>emptyList(), null );
 
         assertRelationshipChange(testCat, "products",
-                Arrays.asList(ContentKey.decode("Product:prd1")),
+                Arrays.asList(ContentKey.getContentKey("Product:prd1")),
                 "Product:prd1" );
         assertRelationshipChange(testCat, "products",
-                Arrays.asList(ContentKey.decode("Product:prd1"), ContentKey.decode("Product:prd2")),
+                Arrays.asList(ContentKey.getContentKey("Product:prd1"), ContentKey.getContentKey("Product:prd2")),
                 "Product:prd1|Product:prd2" );
         assertRelationshipChange(testCat, "products",
-                Arrays.asList(ContentKey.decode("Product:prd1"), ContentKey.decode("Product:prd2"), ContentKey.decode("Product:prd3")),
+                Arrays.asList(ContentKey.getContentKey("Product:prd1"), ContentKey.getContentKey("Product:prd2"), ContentKey.getContentKey("Product:prd3")),
                 "Product:prd1|Product:prd2|Product:prd3" );
 
     }
@@ -158,7 +157,7 @@ public class DraftChangeExtractorServiceTest extends TestCase {
     
     
     private ContentNodeI createTestNode(String contentKey) {
-        return contentService.createPrototypeContentNode(ContentKey.decode(contentKey), draftContext);
+        return contentService.createPrototypeContentNode(ContentKey.getContentKey(contentKey), draftContext);
     }
     
     

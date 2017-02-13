@@ -25,7 +25,7 @@
 	params.put("baseUrl", baseUrl);
 %>
 <!doctype html>
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
 	<title>Mass Credits Helper Test Page</title>
 	

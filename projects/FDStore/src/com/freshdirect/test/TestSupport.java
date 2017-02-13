@@ -206,7 +206,7 @@ public class TestSupport {
 			return Collections.emptyList();
 
 		// may throw IllegalArgumentException !
-		ContentKey tKey = ContentKey.decode(tagKey);
+		ContentKey tKey = ContentKey.getContentKey(tagKey);
 		
 		List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
 		

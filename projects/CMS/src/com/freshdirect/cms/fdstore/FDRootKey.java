@@ -34,7 +34,7 @@ public enum FDRootKey {
     final ContentKey contentKey;
 
     FDRootKey(String key) {
-        this.contentKey = ContentKey.decode(key);
+        this.contentKey = ContentKey.getContentKey(key);
     };
 
     public ContentKey getContentKey() {

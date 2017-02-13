@@ -44,8 +44,7 @@ public class ValidationTaskTest extends TestCase {
 		// generate some random nodes
 		CmsRequest req = new CmsRequest(new CmsUser("test"));
 		for (int i = 0; i < NODE_COUNT; i++) {
-			ContentKey k = new ContentKey(ContentType.get("Foo"), String
-					.valueOf(i));
+			ContentKey k = ContentKey.getContentKey(ContentType.get("Foo"), String.valueOf(i));
 			req.addNode(service.createPrototypeContentNode(k, DraftContext.MAIN));
 		}
 		service.handle(req);

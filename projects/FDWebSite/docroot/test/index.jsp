@@ -998,6 +998,12 @@
 		<div class="pageDesc">Show layout setup for every dept and cat.</div>
 	</div>
 	
+	<div class="tag credits masscredits">
+		<div class="pageName"><span>Mass Credit Helper</span></div>
+		<div class="link"><a href="/test/credits/credits_helper.jsp">/test/credits/credits_helper.jsp</a></div>
+		<div class="pageDesc">Generate SQL needed for mass credits</div>
+	</div>
+	
 	<hr />
 </div>
 

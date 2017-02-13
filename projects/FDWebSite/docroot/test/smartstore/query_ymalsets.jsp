@@ -20,7 +20,7 @@
 <%
     final String nodeKey = "CmsReport:ymalSets";
     final CmsManager contentService = CmsManager.getInstance();
-    if ( contentService.getContentNode( ContentKey.decode( nodeKey ) ) == null ) {
+    if ( contentService.getContentNode( ContentKey.getContentKey( nodeKey ) ) == null ) {
         response.sendRedirect("test_notavail.jsp");
     }
 %>
@@ -35,7 +35,7 @@
 	<body>
 		<%
 		
-			ITable attribute = (ITable)contentService.getContentNode( ContentKey.decode( nodeKey ) ).getAttributeValue( "results" );
+			ITable attribute = (ITable)contentService.getContentNode( ContentKey.getContentKey( nodeKey ) ).getAttributeValue( "results" );
 			
 			AttributeDefI[] columnDefs = attribute.getColumnDefinitions();
 			List<ITable.Row> rows = attribute.getRows();
@@ -60,7 +60,7 @@
 				%>
 				<tr style="border: 1px solid; border-collapse: collapse;">
 					<% for( Object o : values ) { 
-						ContentKey key = ContentKey.decode( (String)o );
+						ContentKey key = ContentKey.getContentKey( (String)o );
 						ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey( key );
 						%>
 						<td style="border: 1px solid; border-collapse: collapse; padding: 5px; vertical-align: bottom;">						

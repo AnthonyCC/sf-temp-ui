@@ -17,7 +17,7 @@ This is just a friendly reminder that <xsl:choose><xsl:when test="order/delivery
 <xsl:if test="order/paymentMethod/paymentType != 'M'">
 If you would like to make updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.
 </xsl:if>
-As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
+As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery. We'll also include an itemized, printed receipt with your delivery.
 
 We hope you enjoy everything in your order. Please shop again soon.
 

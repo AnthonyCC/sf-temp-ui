@@ -112,7 +112,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 			ContentType type = parseType(localName);
 			String ref = atts.getValue("ref");
 			if (ref != null) {
-				ContentKey key = new ContentKey(type, ref);
+				ContentKey key = ContentKey.getContentKey(type, ref);
 				stack.push(key);
 			} else {
 				ContentNodeI node = parseNode(localName, atts);
@@ -146,7 +146,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 		if (id == null) {
 			id = "flex_" + ID_GENERATOR++;
 		}
-		ContentKey key = new ContentKey(type, id);
+		ContentKey key = ContentKey.getContentKey(type, id);
 		ContentNodeI contentNode = createNode(key);
 		//in case of real time publish we need to clear the attributes value for setting up the new values
 		if (isRealTimePublish && contentNode!=null && contentNode.getAttributes()!=null) {			

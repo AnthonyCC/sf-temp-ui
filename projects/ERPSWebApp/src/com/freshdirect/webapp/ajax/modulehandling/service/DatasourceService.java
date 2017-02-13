@@ -7,41 +7,37 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentTypes;
-import com.freshdirect.fdstore.FDNotFoundException;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
-import com.freshdirect.storeapi.node.ContentNodeUtil;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.DatasourceType;
 import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
+import com.freshdirect.webapp.ajax.modulehandling.data.ImageGridData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
-import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
-import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class DatasourceService {
 
+    private static DatasourceService INSTANCE = new DatasourceService();
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceService.class);
-    private static final DatasourceService INSTANCE = new DatasourceService();
 
-    private static final String INDEX_EVENT_SOURCE = "BROWSE";
+    private static final int MAX_ITEMS = 12;;
+
+    private static final String INDEX_CM_EVENT_SOURCE = "BROWSE";
+
     private static final String TOP_ITEMS_SITE_FEATURE = "TOP_ITEMS_QS";
     private static final String MOST_POPULAR_PRODUCTS_SITE_FEATURE = "FAVORITES";
-    private static final String MODULE_GROUP_SOURCE_TYPE = "MODULE_GROUP";
 
     public static DatasourceService getDefaultService() {
         return INSTANCE;
@@ -50,119 +46,43 @@ public class DatasourceService {
     private DatasourceService() {
     }
 
-    private List<ProductData> generateBrandFeaturedProducts(ContentNodeI module, FDUserI user) {
-        ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-        return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
+    public ModuleConfig loadModuleConfiguration(ContentNodeI moduleInstance, FDUserI user) {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI module = CmsManager.getInstance().getContentNode((ContentKey) moduleInstance.getAttributeValue("module"), currentDraftContext);
+        return populateModuleConfig(module, moduleInstance.getKey().getId(), user);
     }
 
-    private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user)
-            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
-        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-        String categoryId = null;
-        if (category != null && category.getKey() != null)
-            categoryId = category.getKey().getId();
-        return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
+    public ModuleData loadModuleData(ContentNodeI moduleInstance, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI module = CmsManager.getInstance().getContentNode((ContentKey) moduleInstance.getAttributeValue("module"), currentDraftContext);
+        ContentNodeI datasource = CmsManager.getInstance().getContentNode((ContentKey) moduleInstance.getAttributeValue("datasource"), currentDraftContext);
+
+        return populateModuleData(datasource, module, user, session);
     }
 
-    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
-        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-        String categoryId = null;
-        if (category != null && category.getKey() != null)
-            categoryId = category.getKey().getId();
-        return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
-    }
-
-    private List<ProductData> generateFeaturedRecommenderProducts(ContentNodeI module, FDUserI user) {
-        List<ProductData> products = new ArrayList<ProductData>();
-        try {
-            ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-            String departmentId = department.getKey().getId();
-            products = ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId);
-        } catch (NullPointerException e) {
-            LOGGER.error("Datasource sourceNode is not set for Module:" + module.getKey().getId());
-        } catch (ClassCastException e) {
-            LOGGER.error("Datasource sourceNode is not a department for Module:" + module.getKey().getId());
-        }
-        return products;
-    }
-
-    private List<IconData> loadIconData(ContentNodeI module) {
-        List<IconData> icons = new ArrayList<IconData>();
-        List<ContentKey> iconContentKeys = (List<ContentKey>) module.getAttributeValue("iconList");
-
-        icons = processImageBannerList(iconContentKeys, icons);
-
-        return icons;
-    }
-
-    private List<IconData> loadImageGridData(ContentNodeI module) {
-        List<IconData> imageGridData = new ArrayList<IconData>();
-        List<ContentKey> imageGridContentKeys = (List<ContentKey>) module.getAttributeValue("imageGrid");
-
-        imageGridData = processImageBannerList(imageGridContentKeys, imageGridData);
-
-        if (imageGridData.size() > 6) {
-            imageGridData = imageGridData.subList(0, 6);
-        }
-
-        return imageGridData;
-    }
-
-    public ModuleConfig loadModuleConfiguration(ContentNodeI module, FDUserI user) {
-        return populateModuleConfig(module, user);
-    }
-
-    public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts)
-            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
-        return populateModuleData(module, user, session, showAllProducts);
-    }
-
-    public ModuleConfig loadModuleGroupConfiguration(ContentNodeI moduleGroup, FDUserI user) {
-        return populateModuleGroupConfig(moduleGroup);
-    }
-
-    private ModuleConfig populateModuleConfig(ContentNodeI module, FDUserI user) {
+    private ModuleConfig populateModuleConfig(ContentNodeI module, String moduleInstanceId, FDUserI user) {
         ModuleConfig config = new ModuleConfig();
-        String sourceType = ContentNodeUtil.getStringAttribute(module, "displayType");
+        FDSessionUser sessionUser = (FDSessionUser) user;
 
-        config.setEventSource(INDEX_EVENT_SOURCE);
-        config.setSourceType(sourceType);
+        String sourceType = ContentNodeUtil.getStringAttribute(module, "sourceType");
 
         // General Module Config Data
-        config.setModuleId(module.getKey().getId());
+        config.setContentTitle(ContentNodeUtil.getStringAttribute(module, "contentTitle"));
+        config.setModuleInstanceId(moduleInstanceId);
         config.setModuleTitle(ContentNodeUtil.getStringAttribute(module, "moduleTitle"));
         config.setModuleTitleTextBanner(ContentNodeUtil.getStringAttribute(module, "moduleTitleTextBanner"));
-        config.setContentTitle(ContentNodeUtil.getStringAttribute(module, "contentTitle"));
-        config.setContentTitleTextBanner(ContentNodeUtil.getStringAttribute(module, "contentTitleTextBanner"));
-
-        config.setHideViewAllButton(ContentNodeUtil.getBooleanAttribute(module, "hideViewAllButton"));
+        config.setViewAllButtonLink(ContentNodeUtil.getStringAttribute(module, "viewAllButtonLink"));
+        config.setShowContentTitle(ContentNodeUtil.getBooleanAttribute(module, "showContentTitle"));
+        config.setShowModuleTitle(ContentNodeUtil.getBooleanAttribute(module, "showModuleTitle"));
+        config.setShowModuleTitleTextBanner(ContentNodeUtil.getBooleanAttribute(module, "showModuleTitleTextBanner"));
+        config.setShowViewAllButton(ContentNodeUtil.getBooleanAttribute(module, "showViewAllButton"));
+        config.setSourceType(sourceType);
         config.setHideProductBadge(ContentNodeUtil.getBooleanAttribute(module, "hideProductBadge"));
         config.setHideProductName(ContentNodeUtil.getBooleanAttribute(module, "hideProductName"));
         config.setHideProductPrice(ContentNodeUtil.getBooleanAttribute(module, "hideProductPrice"));
-        config.setUseViewAllPopup(ContentNodeUtil.getBooleanAttribute(module, "useViewAllPopup"));
-        config.setShowViewAllOverlayOnImages(ContentNodeUtil.getBooleanAttribute(module, "showViewAllOverlayOnImages"));
-        
-        config.setLazyloadImages(FDStoreProperties.isLazyloadingModulesEnabled());
+        config.setCmEventSource(INDEX_CM_EVENT_SOURCE);
 
-        String viewAllUrl = ContentNodeUtil.getStringAttribute(module, "viewAllButtonLink");
-
-        if (viewAllUrl == null) {
-            ContentKey viewAllSourceContentKey = (ContentKey) module.getAttributeValue("sourceNode");
-
-            if (viewAllSourceContentKey != null) {
-                if (FDContentTypes.DEPARTMENT.equals(viewAllSourceContentKey.getType()) || FDContentTypes.CATEGORY.equals(viewAllSourceContentKey.getType())) {
-                    viewAllUrl = "/browse.jsp?id=" + viewAllSourceContentKey.getId();
-                }
-                if (FDContentTypes.BRAND.equals(viewAllSourceContentKey.getType())) {
-                    ContentNodeI brand = CmsManager.getInstance().getContentNode(viewAllSourceContentKey);
-                    viewAllUrl = "/srch.jsp?searchParams=" + ContentNodeUtil.getStringAttribute(brand, "FULL_NAME");
-                }
-            }
-        }
-
-        config.setViewAllButtonLink(viewAllUrl);
-
-        ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(sourceType);
+        ModuleSourceType moduleSourceType = convertAttributeValueToModuleSourceType(sourceType);
 
         // Editoral Module Config Data
         if (moduleSourceType != null && ModuleSourceType.EDITORIAL_MODULE.equals(moduleSourceType)) {
@@ -176,24 +96,28 @@ public class DatasourceService {
             ContentKey editorialContentKey = (ContentKey) module.getAttributeValue("editorialContent");
 
             if (headerGraphicContentKey != null) {
-                headerGraphic = MediaUtils.generateImageFromImageContentKey(module.getAttributeValue("headerGraphic"));
+                headerGraphic = ModuleContentService.getDefaultService().generateImageFromImageContentKey(module.getAttributeValue("headerGraphic"));
             }
 
             if (heroGraphicContentKey != null) {
-                heroGraphic = MediaUtils.generateImageFromImageContentKey(module.getAttributeValue("heroGraphic"));
+                heroGraphic = ModuleContentService.getDefaultService().generateImageFromImageContentKey(module.getAttributeValue("heroGraphic"));
             }
 
             if (editorialContentKey != null) {
-                editorialContainer.setEditorialContent(MediaUtils.generateStringFromHTMLContentKey(editorialContentKey, user));
+                editorialContainer.setEditorialContent(ModuleContentService.getDefaultService().generateStringFromHTMLContentKey(editorialContentKey, sessionUser));
             }
 
             editorialContainer.setHeaderTitle(ContentNodeUtil.getStringAttribute(module, "headerTitle"));
-            editorialContainer.setHeaderSubtitle(ContentNodeUtil.getStringAttribute(module, "headerSubtitle"));
+            editorialContainer.setHeaderSubtitle(ContentNodeUtil.getStringAttribute(module, "heroSubtitle"));
             editorialContainer.setHeroTitle(ContentNodeUtil.getStringAttribute(module, "heroTitle"));
-            editorialContainer.setHeroSubtitle(ContentNodeUtil.getStringAttribute(module, "heroSubtitle"));
+            editorialContainer.setHeroSubtitle(ContentNodeUtil.getStringAttribute(module, "headerSubtitle"));
             editorialContainer.setHeaderGraphic(headerGraphic.getPath());
             editorialContainer.setHeroGraphic(heroGraphic.getPath());
-
+            config.setShowHeaderGraphic(true);
+            config.setShowHeaderTitle(ContentNodeUtil.getBooleanAttribute(module, "showHeaderTitle"));
+            config.setShowHeaderSubtitle(ContentNodeUtil.getBooleanAttribute(module, "showHeaderSubtitle"));
+            config.setShowHeroTitle(ContentNodeUtil.getBooleanAttribute(module, "showHeroTitle"));
+            config.setShowHeroSubtitle(ContentNodeUtil.getBooleanAttribute(module, "showHeroSubtitle"));
             config.setEditorialContainer(editorialContainer);
         }
 
@@ -201,34 +125,40 @@ public class DatasourceService {
 
     }
 
-    private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts)
-            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
+    @SuppressWarnings("unchecked")
+    private ModuleData populateModuleData(ContentNodeI datasource, ContentNodeI module, FDUserI user, HttpSession session) throws FDResourceException,
+            InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ModuleData moduleData = new ModuleData();
-        DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
-        ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
-        String productListCarouselLineMax = ContentNodeUtil.getStringAttribute(module, "productListRowMax");
-        List<ProductData> products = new ArrayList<ProductData>();
-
-        SectionDataCointainer sectionDataContainer = null;
-
-        // LOAD PRODUCTS
+        DatasourceType datasourceEnum = convertAttributeValueToDatasourceType((String) datasource.getAttributeValue("datasourceType"));
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
-                products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
+                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE));
                 break;
             case TOP_ITEMS:
-                products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
+                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE));
                 break;
             case PRES_PICKS:
-                products = ModuleContentService.getDefaultService().loadPresidentPicksProducts(user);
+                moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user));
                 break;
             case GENERIC:
+                ModuleSourceType moduleSourceType = convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "sourceType"));
                 switch (moduleSourceType) {
                     case IMAGEGRID_MODULE:
-                        moduleData.setImageGridData(loadImageGridData(module));
+                        ContentNodeI imageGrid = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("imageGrid"), currentDraftContext);
+                        ImageGridData imageGridData = ModuleContentService.getDefaultService().populateImageGridData(imageGrid);
+                        moduleData.setImageGridData(imageGridData);
                         break;
                     case ICON_CAROUSEL_MODULE:
-                        moduleData.setIcons(loadIconData(module));
+                        List<IconData> icons = new ArrayList<IconData>();
+                        List<ContentKey> iconContentKeys = (List<ContentKey>) module.getAttributeValue("iconList");
+
+                        for (ContentKey contentKey : iconContentKeys) {
+                            ContentNodeI icon = CmsManager.getInstance().getContentNode(contentKey, currentDraftContext);
+                            IconData iconData = ModuleContentService.getDefaultService().populateIconData(icon);
+                            icons.add(iconData);
+                        }
+                        moduleData.setIcons(icons);
                         break;
                     case OPENHTML_MODULE:
                         moduleData.setOpenHTMLEditorial(ModuleContentService.getDefaultService().populateOpenHTML(module, user));
@@ -238,86 +168,35 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                // Special view all for browse data source with product lists.
-                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
-                    sectionDataContainer = generateBrowseProductsForViewAll(module, user);
-                } else {
-                    products = generateBrowseProducts(module, user);
-                }
+                ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) datasource.getAttributeValue("sourceNode"), currentDraftContext);
+                String categoryId = category.getKey().getId();
+                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user));
+
                 break;
             case FEATURED_RECOMMENDER:
-                products = generateFeaturedRecommenderProducts(module, user);
+                try {
+                    ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) datasource.getAttributeValue("sourceNode"), currentDraftContext);
+                    String departmentId = department.getKey().getId();
+                    moduleData.setProducts(ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId));
+                } catch (NullPointerException e) {
+                    LOGGER.error("Datasource sourceNode is not set for Datasource:" + datasource.getKey().getId());
+                } catch (ClassCastException e) {
+                    LOGGER.error("Datasource sourceNode is not a department for Datasource:" + datasource.getKey().getId());
+                }
                 break;
-            case BRAND_FEATURED_PRODUCTS:
-                products = generateBrandFeaturedProducts(module, user);
-                break;
-            case STAFF_PICKS:
-                products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
-                break;
-            case CRITEO:
-                if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user))
-                    CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
-                break;
+
             default:
                 break;
         }
-
-        final boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, ContentTypes.Module.randomizeProductOrder.getName());
-        if (randomizeProductOrder) {
-            java.util.Collections.shuffle(products);
-        }
-
-        // LIMIT PRODUCTS
-        if (!showAllProducts) {
-            String productMaxLimit = ContentNodeUtil.getStringAttribute(module, ContentTypes.Module.productMaxLimit.getName());
-            Integer maxLimit = (productMaxLimit != null) ? Integer.parseInt(productMaxLimit): FDStoreProperties.getHomepageRedesignProductLimitMax();
-            products = ModuleContentService.getDefaultService().limitProductList(products, maxLimit);
-        }
-
-        // LIMIT PRODUCTS ADDITIONALY IF PRODUCT LIST IS ENABLED
-        if (!showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType) && productListCarouselLineMax != null && products != null) {
-            products = ModuleContentService.getDefaultService().setMaxProductLinesForProductList(products, Integer.parseInt(productListCarouselLineMax));
-        }
-
-        moduleData.setSectionDataContainer(sectionDataContainer);
-        moduleData.setProducts(products);
-
         return moduleData;
     }
 
-    private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {
-        ModuleConfig config = new ModuleConfig();
-
-        String sourceType = MODULE_GROUP_SOURCE_TYPE;
-        config.setEventSource(INDEX_EVENT_SOURCE);
-
-        // General Module Config Data
-        config.setModuleGroupTitle(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitle"));
-        config.setModuleGroupTitleTextBanner(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitleTextBanner"));
-        config.setHideModuleGroupViewAllButton(ContentNodeUtil.getBooleanAttribute(moduleGroup, "hideViewAllButton"));
-
-        config.setSourceType(sourceType);
-        String viewAllUrl = ContentNodeUtil.getStringAttribute(moduleGroup, "viewAllButtonURL");
-
-        if (viewAllUrl == null) {
-            ContentKey viewAllSourceContentKey = (ContentKey) moduleGroup.getAttributeValue("viewAllSourceNode");
-            if (viewAllSourceContentKey != null) {
-                viewAllUrl = "/browse.jsp?id=" + viewAllSourceContentKey.getId();
-            }
-        }
-
-        config.setModuleGroupViewAllButtonLink(viewAllUrl);
-
-        return config;
+    private DatasourceType convertAttributeValueToDatasourceType(String datasourceTypeAttributeValue) {
+        return DatasourceType.forValue(datasourceTypeAttributeValue);
     }
 
-    private List<IconData> processImageBannerList(List<ContentKey> contentKeys, List<IconData> moduleImages) {
-        for (ContentKey contentKey : contentKeys) {
-            ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(contentKey);
-            IconData imageBannerData = ModuleContentService.getDefaultService().populateIconData(imageBanner);
-            moduleImages.add(imageBannerData);
-        }
-        return moduleImages;
+    private ModuleSourceType convertAttributeValueToModuleSourceType(String moduleSourceTypeAttributeValue) {
+        return ModuleSourceType.forValue(moduleSourceTypeAttributeValue);
     }
 
 }

@@ -1234,7 +1234,7 @@ public class BrowseUtil {
 	        if (productIds != null) {
 	            for (String productId : productIds) {
 	                try {
-	                    ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
+	                    ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + productId));
 	                    if (productModel != null && productModel.isTemporaryUnavailableOrAvailable()) {
 	                        com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder productBuilder = new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(
 	                                productModel.getContentName(), productModel.getFullName());
@@ -1327,9 +1327,9 @@ public class BrowseUtil {
 	    	CatalogInfo catalogInfo;
 	    	String plantId;
 	    	PricingContext pc;
-	    	boolean isFDX = false;
+	    	//boolean isFDX = false;
 	    	if(requestMessage.getCatalogKey() != null){
-	    		isFDX = requestMessage.getCatalogKey().geteStore().contains("FDX");
+	    		//isFDX = requestMessage.getCatalogKey().geteStore().contains("FDX");
 	    		catalogInfo = getCatalogInfo(requestMessage.getCatalogKey());
 	    		plantId = catalogInfo.getKey().getPlantId();
 	    		pc = new PricingContext(catalogInfo.getKey().getPricingZone());
@@ -1347,18 +1347,19 @@ public class BrowseUtil {
 	    	List<DepartmentModel> depts=sm.getDepartments();
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	Set<String> productSet=new HashSet<String>();
-	    	if(!isFDX)
-	    		isFDX = sm.getContentName().contains("FDX");
+	    	//if(!isFDX)
+	    		//isFDX = sm.getContentName().contains("FDX");
 	    	
-	    	if(!isFDX){
-		    	for(DepartmentModel d:depts) {
-		    		List<CategoryModel> cm=d.getCategories();
-		    		for(CategoryModel c:cm) {
-		    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
-		    		}
-		    		
-		    	}
-	    	} else {
+//	    	if(!isFDX){
+//		    	for(DepartmentModel d:depts) {
+//		    		List<CategoryModel> cm=d.getCategories();
+//		    		for(CategoryModel c:cm) {
+//		    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
+//		    		}
+//		    		
+//		    	}
+//	    	} else {
+	    	
 	    		ContentFactory.getInstance().setCurrentUserContext(user.getFDSessionUser().getUserContext());
 		    	for(DepartmentModel d:depts) {
 		    		
@@ -1379,7 +1380,8 @@ public class BrowseUtil {
 		    		}
 		    		
 		    	}
-	    	}
+	    	//}
+		    	
 	    	String val=requestMessage.getProductCount();
 	    	
 	    	try {
@@ -1462,15 +1464,23 @@ public class BrowseUtil {
 					tmp.setPlantId(1000);
 					tmp.setPricingZone(plantlic);
 					keyList.add(tmp);
+					
 					//Currently using stubs for sales and distribution
-					plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.SALE, plantlic);
+					if(FDStoreProperties.getPropPlantWDCPlantIndicator().equals("BASE"))
+						plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.BASE, plantlic);
+					else
+						plantwdc = new ZoneInfo(zoneId, "2000", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(2000);
 					tmp.setPricingZone(plantwdc);
 					keyList.add(tmp);
+					
 					//Currently using stubs for sales and distribution
-					plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plantlic);
+					if(FDStoreProperties.getPropPlant1300PlantIndicator().equals("BASE"))
+						plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plantlic);
+					else
+						plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1300);
@@ -1478,13 +1488,15 @@ public class BrowseUtil {
 					keyList.add(tmp);
 					
 					//Currently using stubs for sales and distribution
-					plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plantlic);
+					if(FDStoreProperties.getPropPlant1310PlantIndicator().equals("BASE"))
+						plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plantlic);
+					else
+						plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.SALE, plantlic);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1310);
 					tmp.setPricingZone(plant1310);
 					keyList.add(tmp);
-					
 				}
 				
 			} catch (FDResourceException e) {

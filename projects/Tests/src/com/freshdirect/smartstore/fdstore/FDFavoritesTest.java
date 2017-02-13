@@ -84,7 +84,7 @@ public class FDFavoritesTest extends TestCase {
 
     public void testRecommendationService() throws CompileException {
     	FavoriteList favorites = (FavoriteList) ContentFactory.getInstance().getContentNodeByKey(
-    			new ContentKey(FDContentTypes.FAVORITE_LIST, RecommendationServiceFactory.DEFAULT_FAVORITE_LIST_ID));
+    			ContentKey.getContentKey(FDContentTypes.FAVORITE_LIST, RecommendationServiceFactory.DEFAULT_FAVORITE_LIST_ID));
 
         assertNotNull("spe_cooki_cooki category", favorites);
 

@@ -186,7 +186,7 @@ public class QuickShopHelper {
 			// check if recipe is still alive
 			if (list.getRecipeId() != null) {
 				wrapper.setRecipeAlive(true);
-				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(ContentType.get("Recipe"), list.getRecipeId()));
+				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get("Recipe"), list.getRecipeId()));
 				if (recipe.isOrphan() || !recipe.isAvailable()) {
 					wrapper.setRecipeAlive(false);
 				}

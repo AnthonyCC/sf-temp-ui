@@ -3,96 +3,71 @@
 /**
  * @param moduleData
  * @param data
- * @param? abFeatures
- * @param? mobWeb
  */
-{template .editorialModule autoescape="false"}
-{if $data.products and length($data.products) > 2}
-  <div class="content-module editorial-module product-carousel" id="{$moduleData.moduleId}">
-  	{call common.moduleHeader}
-  		{param content: $moduleData /}
-  	{/call}
-  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
-      <div class="editorial-content {if $moduleData.moduleTitle} no-padding-top{/if}" tabindex="0">
-        <div class="left-side">
-        {if $moduleData.editorialContainer.heroGraphic}
-          <img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$moduleData.editorialContainer.heroGraphic}" role="presentation" alt="">
-          {if $moduleData.editorialContainer.heroTitle or $moduleData.editorialContainer.heroSubtitle}
-            <div class="hero-image-description">
-              {if $moduleData.editorialContainer.heroTitle}
-                <h1>{$moduleData.editorialContainer.heroTitle}</h1>
-              {/if}
-              {if $moduleData.editorialContainer.heroSubtitle}
-                <h2>{$moduleData.editorialContainer.heroSubtitle}</h2>
-              {/if}
-            </div>
+{template .editorialModule}
+<div class="content-module editorial-module product-carousel" id="{$moduleData.moduleInstanceId}">
+	{call common.moduleHeader}
+		{param content: $moduleData /}
+	{/call}
+	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
+		{call common.contentHeader}
+			{param content: $moduleData /}
+		{/call}
+    <div class="editorial-content" tabindex="0">
+      <div class="left-side">
+      {if $moduleData.editorialContainer.heroGraphic}
+        <img src="{$moduleData.editorialContainer.heroGraphic}" alt="{$moduleData.editorialContainer.heroTitle}">
+        <div>
+          {if $moduleData.editorialContainer.heroTitle}
+					  <h1>{$moduleData.editorialContainer.heroTitle}</h1>
+          {/if}
+          {if $moduleData.editorialContainer.heroSubtitle}
+					  <h2>{$moduleData.editorialContainer.heroSubtitle}</h2>
           {/if}
         </div>
         {/if}
-        <div class="right-side">
-        {if $moduleData.editorialContainer.headerGraphic or $moduleData.editorialContainer.headerTitle or $moduleData.editorialContainer.headerSubtitle}
-          <div class="editorial-header">
-            <div class="header-title">
-            {if $moduleData.editorialContainer.headerGraphic}
-              <div class="header-graphic">
-                <img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
-              </div>
-            {/if}
-            {if $moduleData.editorialContainer.headerTitle}
-              <h2 class="accessibleHeading">{$moduleData.editorialContainer.headerTitle}</h2>
-            {/if}
-            {if $moduleData.editorialContainer.headerSubtitle}
-              <h2>{$moduleData.editorialContainer.headerSubtitle}</h2>
-            {/if}
-            </div>
+      </div>
+      <div class="right-side">
+      {if $moduleData.editorialContainer.headerGraphic or $moduleData.editorialContainer.headerTitle or $moduleData.editorialContainer.headerSubtitle}
+        <div class="editorial-header">
+        {if $moduleData.editorialContainer.headerGraphic}
+          <div class="header-graphic">
+            <img src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
           </div>
         {/if}
-          <div class="editorial-body">
-            <div>
-            {if $moduleData.editorialContainer.editorialContent}
-            {$moduleData.editorialContainer.editorialContent}
-            {/if}
-            </div>
-          </div>
-          <div class="learn-more visible">
-            <div class="gradient-space"></div>
-            <button class="visible" type="button" learn-more>Read more
-            <span class="offscreen">about {sp}
-             {if $moduleData.editorialContainer.headerTitle}
-              {$moduleData.editorialContainer.headerTitle}
-            {/if}
-            {if $moduleData.editorialContainer.headerSubtitle}
-              {$moduleData.editorialContainer.headerSubtitle}
-            {/if}
-            </span>
-            </button>
-            <button type="button" show-less>Show less
-            <span class="offscreen">about {sp}
-             {if $moduleData.editorialContainer.headerTitle}
-              {$moduleData.editorialContainer.headerTitle}
-            {/if}
-            {if $moduleData.editorialContainer.headerSubtitle}
-              {$moduleData.editorialContainer.headerSubtitle}
-            {/if}
-            </span>
-            </button>
+          <div class="header-title">
+          {if $moduleData.editorialContainer.headerTitle}
+            <h1>{$moduleData.editorialContainer.headerTitle}</h1>
+          {/if}
+          {if $moduleData.editorialContainer.headerSubtitle}
+            <h2>{$moduleData.editorialContainer.headerSubtitle}</h2>
+          {/if}
           </div>
         </div>
+      {/if}
+        <div class="editorial-body">
+          {if $moduleData.editorialContainer.editorialContent}
+            {$moduleData.editorialContainer.editorialContent}
+          {/if}
+        </div>
       </div>
-      {call common.contentHeader}
-        {param content: $moduleData /}
-      {/call}
-      <div class="carousel">
-        {call common.simpleCarousel}
-          {param items: $data.products /}
-          {param moduleData: $moduleData /}
-          {param eventSource: $moduleData.eventSource /}
-          {param itemType:'grid' /}
-          {param mobWeb:$mobWeb /}
-          {param abFeatures:$abFeatures /}
-        {/call}
-      </div>
-  	</div>
-  </div>
-{/if}
+    </div>
+    {if $data.products and length($data.products) > 3}
+  		{call common.simpleCarousel}
+  			{param items: $data.products /}
+  			{param showViewAllButton: $moduleData.showViewAllButton /}
+  			{param viewAllLink: $moduleData.viewAllButtonLink /}
+        {param cmEventSource: $moduleData.cmEventSource /}
+  			{param accessibilityText}
+  				{if $moduleData.contentTitle}
+  					{$moduleData.contentTitle}
+  				{elseif $moduleData.moduleTitle}
+  					{$moduleData.moduleTitle}
+  				{/if}
+  			{/param}
+  			{param itemType:'grid' /}
+  		{/call}
+    {/if}
+	</div>
+</div>
 {/template}

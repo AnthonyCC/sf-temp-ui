@@ -59,6 +59,7 @@ public class SimpleCartLine implements FDCartLineI {
 	private double price = 10.0;
 	
 	private String atcItemId;
+	private ProductReference productRef;
 
 	@Override
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber)
@@ -393,7 +394,11 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public ProductReference getProductRef() {
-		return null;
+		return productRef;
+	}
+	
+	public void setProductRef(ProductReference productRef){
+		this.productRef = productRef;
 	}
 
 	@Override
@@ -864,5 +869,11 @@ public class SimpleCartLine implements FDCartLineI {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public String getMaterialGroup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

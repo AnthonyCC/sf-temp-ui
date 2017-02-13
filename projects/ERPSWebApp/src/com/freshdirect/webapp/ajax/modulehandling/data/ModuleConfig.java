@@ -6,53 +6,38 @@ public class ModuleConfig implements Serializable {
 
     private static final long serialVersionUID = 686703857540321909L;
 
-    private String eventSource;
-    private String moduleId;
+    private String moduleInstanceId;
     private String sourceType;
 
     private String moduleTitle;
     private String moduleTitleTextBanner;
     private String contentTitle;
-    private String contentTitleTextBanner;
     private String viewAllButtonLink;
 
-    private boolean hideViewAllButton;
+    private boolean showModuleTitleTextBanner;
+    private boolean showViewAllButton;
+    private boolean showModuleTitle;
+    private boolean showContentTitle;
+    private boolean showHeroTitle;
+    private boolean showHeroSubtitle;
+    private boolean showHeaderGraphic;
+    private boolean showHeaderTitle;
+    private boolean showHeaderSubtitle;
+
     private boolean hideProductName;
     private boolean hideProductPrice;
     private boolean hideProductBadge;
 
-    private String moduleGroupTitle;
-    private String moduleGroupTitleTextBanner;
-    private boolean hideModuleGroupViewAllButton;
-    private String moduleGroupViewAllButtonLink;
-    private boolean useViewAllPopup;
-    private String moduleVirtualCategory;
-    private boolean showViewAllOverlayOnImages;
+    private String cmEventSource;
+
     private ModuleEditorialContainer editorialContainer;
-    private boolean lazyloadImages;
 
-    public boolean isLazyloadImages() {
-        return lazyloadImages;
+    public String getModuleInstanceId() {
+        return moduleInstanceId;
     }
 
-    public String getEventSource() {
-        return eventSource;
-    }
-	
-    public void setLazyloadImages(boolean lazyloadImages) {
-	this.lazyloadImages = lazyloadImages;
-    }
-
-    public void setEventSource(String eventSource) {
-        this.eventSource = eventSource;
-    }
-
-    public String getModuleId() {
-        return moduleId;
-    }
-
-    public void setModuleId(String moduleId) {
-        this.moduleId = moduleId;
+    public void setModuleInstanceId(String moduleInstanceId) {
+        this.moduleInstanceId = moduleInstanceId;
     }
 
     public String getSourceType() {
@@ -79,20 +64,20 @@ public class ModuleConfig implements Serializable {
         this.moduleTitleTextBanner = moduleTitleTextBanner;
     }
 
-    public String getContentTitle() {
-        return contentTitle;
+    public boolean isShowModuleTitleTextBanner() {
+        return showModuleTitleTextBanner;
     }
 
-    public void setContentTitle(String contentTitle) {
-        this.contentTitle = contentTitle;
+    public void setShowModuleTitleTextBanner(boolean showModuleTitleTextBanner) {
+        this.showModuleTitleTextBanner = showModuleTitleTextBanner;
     }
 
-    public String getContentTitleTextBanner() {
-        return contentTitleTextBanner;
+    public boolean isShowViewAllButton() {
+        return showViewAllButton;
     }
 
-    public void setContentTitleTextBanner(String contentTitleTextBanner) {
-        this.contentTitleTextBanner = contentTitleTextBanner;
+    public void setShowViewAllButton(boolean showViewAllButton) {
+        this.showViewAllButton = showViewAllButton;
     }
 
     public String getViewAllButtonLink() {
@@ -103,12 +88,76 @@ public class ModuleConfig implements Serializable {
         this.viewAllButtonLink = viewAllButtonLink;
     }
 
-    public boolean isHideViewAllButton() {
-        return hideViewAllButton;
+    public boolean isShowHeroTitle() {
+        return showHeroTitle;
     }
 
-    public void setHideViewAllButton(boolean hideViewAllButton) {
-        this.hideViewAllButton = hideViewAllButton;
+    public void setShowHeroTitle(boolean showHeroTitle) {
+        this.showHeroTitle = showHeroTitle;
+    }
+
+    public boolean isShowHeroSubtitle() {
+        return showHeroSubtitle;
+    }
+
+    public void setShowHeroSubtitle(boolean showHeroSubtitle) {
+        this.showHeroSubtitle = showHeroSubtitle;
+    }
+
+    public boolean isShowHeaderGraphic() {
+        return showHeaderGraphic;
+    }
+
+    public void setShowHeaderGraphic(boolean showHeaderGraphic) {
+        this.showHeaderGraphic = showHeaderGraphic;
+    }
+
+    public boolean isShowHeaderTitle() {
+        return showHeaderTitle;
+    }
+
+    public void setShowHeaderTitle(boolean showHeaderTitle) {
+        this.showHeaderTitle = showHeaderTitle;
+    }
+
+    public boolean isShowHeaderSubtitle() {
+        return showHeaderSubtitle;
+    }
+
+    public void setShowHeaderSubtitle(boolean showHeaderSubtitle) {
+        this.showHeaderSubtitle = showHeaderSubtitle;
+    }
+
+    public ModuleEditorialContainer getEditorialContainer() {
+        return editorialContainer;
+    }
+
+    public void setEditorialContainer(ModuleEditorialContainer editorialContainer) {
+        this.editorialContainer = editorialContainer;
+    }
+
+    public String getContentTitle() {
+        return contentTitle;
+    }
+
+    public void setContentTitle(String contentTitle) {
+        this.contentTitle = contentTitle;
+    }
+
+    public boolean isShowModuleTitle() {
+        return showModuleTitle;
+    }
+
+    public void setShowModuleTitle(boolean showModuleTitle) {
+        this.showModuleTitle = showModuleTitle;
+    }
+
+    public boolean isShowContentTitle() {
+        return showContentTitle;
+    }
+
+    public void setShowContentTitle(boolean showContentTitle) {
+        this.showContentTitle = showContentTitle;
     }
 
     public boolean isHideProductName() {
@@ -135,68 +184,11 @@ public class ModuleConfig implements Serializable {
         this.hideProductBadge = hideProductBadge;
     }
 
-    public String getModuleGroupTitle() {
-        return moduleGroupTitle;
+    public String getCmEventSource() {
+        return cmEventSource;
     }
 
-    public void setModuleGroupTitle(String moduleGroupTitle) {
-        this.moduleGroupTitle = moduleGroupTitle;
+    public void setCmEventSource(String cmEventSource) {
+        this.cmEventSource = cmEventSource;
     }
-
-    public String getModuleGroupTitleTextBanner() {
-        return moduleGroupTitleTextBanner;
-    }
-
-    public void setModuleGroupTitleTextBanner(String moduleGroupTitleTextBanner) {
-        this.moduleGroupTitleTextBanner = moduleGroupTitleTextBanner;
-    }
-
-    public boolean getHideModuleGroupViewAllButton() {
-        return hideModuleGroupViewAllButton;
-    }
-
-    public void setHideModuleGroupViewAllButton(boolean hideModuleGroupViewAllButton) {
-        this.hideModuleGroupViewAllButton = hideModuleGroupViewAllButton;
-    }
-
-    public String getModuleGroupViewAllButtonLink() {
-        return moduleGroupViewAllButtonLink;
-    }
-
-    public void setModuleGroupViewAllButtonLink(String moduleGroupViewAllButtonLink) {
-        this.moduleGroupViewAllButtonLink = moduleGroupViewAllButtonLink;
-    }
-
-    public boolean isUseViewAllPopup() {
-        return useViewAllPopup;
-    }
-
-    public void setUseViewAllPopup(boolean useViewAllPopup) {
-        this.useViewAllPopup = useViewAllPopup;
-    }
-
-    public ModuleEditorialContainer getEditorialContainer() {
-        return editorialContainer;
-    }
-
-    public void setEditorialContainer(ModuleEditorialContainer editorialContainer) {
-        this.editorialContainer = editorialContainer;
-    }
-
-    public String getModuleVirtualCategory() {
-        return moduleVirtualCategory;
-    }
-
-    public void setModuleVirtualCategory(String moduleVirtualCategory) {
-        this.moduleVirtualCategory = moduleVirtualCategory;
-    }
-
-    public boolean isShowViewAllOverlayOnImages() {
-        return showViewAllOverlayOnImages;
-    }
-
-    public void setShowViewAllOverlayOnImages(boolean showViewAllOverlayOnImages) {
-        this.showViewAllOverlayOnImages = showViewAllOverlayOnImages;
-    }
-
 }

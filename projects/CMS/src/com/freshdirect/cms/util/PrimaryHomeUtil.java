@@ -19,40 +19,36 @@ import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.NodeWalker;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class PrimaryHomeUtil {
 	private static final Category LOGGER = LoggerFactory.getInstance(PrimaryHomeUtil.class);
 
 	/**
-	 * Setup a map of store key -> parent cats for a product
-	 * 
-	 * @param prdKey
-	 * @param svc
-	 * @return
+	 * Setup a map of store key -> parent categories for a product
 	 */
-	public static Map<ContentKey, Set<ContentKey>> collectParentsMap(ContentKey prdKey, ContentServiceI svc, DraftContext draftContext) {
-		if (prdKey == null || !FDContentTypes.PRODUCT.equals(prdKey.getType())) {
+	public static Map<ContentKey, Set<ContentKey>> collectParentsMap(ContentKey productKey, ContentServiceI service, DraftContext draftContext) {
+		if (productKey == null || !FDContentTypes.PRODUCT.equals(productKey.getType())) {
 			return Collections.emptyMap();
 		}
 
-		Set<ContentKey> _parents = svc.getParentKeys(prdKey, draftContext);
+		Set<ContentKey> parentKeys = service.getParentKeys(productKey, draftContext);
 
 		// the result map
 		Map<ContentKey, Set<ContentKey>> result = new HashMap<ContentKey, Set<ContentKey>>();
-		for (ContentKey pKey : _parents) {
-			Set<ContentKey> aSet = new HashSet<ContentKey>();
-			collectStoreKeys(aSet, pKey, svc, draftContext);
-			if (aSet.size() > 0) {
+		for (ContentKey parentKey : parentKeys) {
+			final Set<ContentKey> storeKeys = getStoreKeys(parentKey, service, draftContext);
+			if (storeKeys.size() > 0) {
 				// pick store key
-				ContentKey storeKey = aSet.iterator().next();
-				Set<ContentKey> parCats = result.get(storeKey);
-				if (parCats == null) {
-					parCats = new HashSet<ContentKey>();
-					result.put(storeKey, parCats);
+				ContentKey storeKey = storeKeys.iterator().next();
+				Set<ContentKey> parentCategories = result.get(storeKey);
+				if (parentCategories == null) {
+					parentCategories = new HashSet<ContentKey>();
+					result.put(storeKey, parentCategories);
 				}
 				// store parent cat in store bucket
-				parCats.add(pKey);
+				parentCategories.add(parentKey);
 			}
 		}
 		
@@ -62,40 +58,45 @@ public class PrimaryHomeUtil {
 	
 	/**
 	 * Collect all available store keys for the given content node
-	 * 
-	 * @param aKey content key of node
-	 * @param svc
-	 * @return
 	 */
-    public static Set<ContentKey> getStoreKeys(final ContentKey aKey, final ContentServiceI svc, DraftContext draftContext) {
-        Set<ContentKey> result = new HashSet<ContentKey>();
-
-        if (aKey != null) {
-            // singular case: test itself first
-            if (FDContentTypes.STORE.equals(aKey.getType())) {
-                result.add(aKey);
-            } else {
-                collectStoreKeys(result, aKey, svc, draftContext);
-            }
-        }
-
-        return result;
+    public static Set<ContentKey> getStoreKeys(final ContentKey key, final ContentServiceI service, final DraftContext draftContext) {
+    	Set<ContentKey> storeKeys = null;
+    	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(key.getId());
+    	if (!cacheKey.isEmpty()){
+    		storeKeys = EhCacheUtil.getObjectFromCache(EhCacheUtil.CMS_STORE_KEY_CACHE_NAME, cacheKey);
+    	}
+    	if (storeKeys == null){
+    		storeKeys = new HashSet<ContentKey>();
+    		
+    		if (key != null) {
+    			// singular case: test itself first
+    			if (FDContentTypes.STORE.equals(key.getType())) {
+    				storeKeys.add(key);
+    			} else {
+    				collectStoreKeys(storeKeys, key, service, draftContext);
+    			}
+    		}
+    		if (!cacheKey.isEmpty()){
+    			EhCacheUtil.putObjectToCache(EhCacheUtil.CMS_STORE_KEY_CACHE_NAME, cacheKey, storeKeys);
+    		}
+    	}
+        return storeKeys;
     }
 
 
-	protected static void collectStoreKeys(final Set<ContentKey> result, final ContentKey aKey, final ContentServiceI svc, DraftContext draftContext) {
-		if (aKey == null) {
+	private static void collectStoreKeys(final Set<ContentKey> storeKeys, final ContentKey key, final ContentServiceI service, final DraftContext draftContext) {
+		if (key == null) {
 			return;
 		}
 		
-		for (ContentKey k : svc.getParentKeys(aKey, draftContext)) {
-			if (FDContentTypes.STORE.equals(k.getType())) {
-				if (result != null) {
-					result.add(k);
+		for (ContentKey parentKey : service.getParentKeys(key, draftContext)) {
+			if (FDContentTypes.STORE.equals(parentKey.getType())) {
+				if (storeKeys != null) {
+					storeKeys.add(parentKey);
 				}
 				break;
 			} else {
-				collectStoreKeys(result, k, svc, draftContext);
+				collectStoreKeys(storeKeys, parentKey, service, draftContext);
 			}
 		}
 	}
@@ -229,15 +230,15 @@ public class PrimaryHomeUtil {
 	 *  
 	 * @param key product key
 	 * @param storeKey store key
-	 * @param svc content service
+	 * @param service content service
 	 * @return
 	 */
-	public static ContentKey pickPrimaryHomeForStore(ContentKey key, ContentKey storeKey, ContentServiceI svc, DraftContext draftContext) {
-		if (key == null || storeKey == null || svc == null) {
+	public static ContentKey pickPrimaryHomeForStore(ContentKey key, ContentKey storeKey, ContentServiceI service, DraftContext draftContext) {
+		if (key == null || storeKey == null || service == null) {
 			return null;
 		}
 
-		ContentNodeI prd = svc.getContentNode(key, draftContext);
+		ContentNodeI prd = service.getContentNode(key, draftContext);
 		if (prd == null) {
 			return null;
 		}
@@ -247,7 +248,7 @@ public class PrimaryHomeUtil {
 
 		if (_priHomes != null && !_priHomes.isEmpty()) {
 			// store to parent category keys mapping
-			Map<ContentKey, Set<ContentKey>> _s2p = PrimaryHomeUtil.collectParentsMap(key, svc, draftContext);
+			Map<ContentKey, Set<ContentKey>> _s2p = PrimaryHomeUtil.collectParentsMap(key, service, draftContext);
 
 			if (_s2p.get(storeKey) != null) {
 				Set<ContentKey> candidates = new HashSet<ContentKey>(_s2p.get(storeKey));

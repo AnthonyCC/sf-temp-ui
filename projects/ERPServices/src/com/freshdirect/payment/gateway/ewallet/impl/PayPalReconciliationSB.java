@@ -3,6 +3,7 @@ package com.freshdirect.payment.gateway.ewallet.impl;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBObject;
@@ -22,4 +23,6 @@ public interface PayPalReconciliationSB extends EJBObject {
 //	public int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) throws RemoteException;
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException;
 	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
+	
+	public Map<String,String> getPPSettlementNotProcessed() throws RemoteException;
 }

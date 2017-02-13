@@ -1866,7 +1866,7 @@ public class Product {
  //       productModel = ProductExtraDataPopulator.createExtraData(user, product, ctx, grpId, grpVersion);
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
-            productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
+            productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + id));
         }
         try {            
             result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);       

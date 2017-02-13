@@ -4,7 +4,7 @@ public enum PaymentFileType implements java.io.Serializable {
 	
 	DFR("Delimited file report",".dfr"),
 	BIN("Bank Identification Number",".actbin"),
-	SETTLEMENT_FAILURE("Settlement Failure",".csv"),
+	SETTLEMENT_FAILURE("Settlement Failure",".CSV"),
 	PAYPAL_SETTLEMENT("PayPal Settlement file", ".CSV");
 		
 	    private String name;

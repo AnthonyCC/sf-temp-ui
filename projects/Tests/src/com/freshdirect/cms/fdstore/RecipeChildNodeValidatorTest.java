@@ -51,7 +51,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		user        = new CmsUser("test_user");
 				
 		// create a new recipe, and add and insert it
-		key     = new ContentKey(FDContentTypes.RECIPE, "recipe_test");
+		key     = ContentKey.getContentKey(FDContentTypes.RECIPE, "recipe_test");
 		node    = service.createPrototypeContentNode(key, DraftContext.MAIN);
 		request = new CmsRequest(user);
 		
@@ -109,7 +109,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		variantNode = service.getContentNode((ContentKey) set.toArray()[0], DraftContext.MAIN);
 		
 		// add another section to the variant
-		key = new ContentKey(FDContentTypes.RECIPE_SECTION, variantNode.getKey().getId() + "_second");
+		key = ContentKey.getContentKey(FDContentTypes.RECIPE_SECTION, variantNode.getKey().getId() + "_second");
 		sectionNode = service.createPrototypeContentNode(key, DraftContext.MAIN);
 
 		// get (or create if needed) the section relation
@@ -168,7 +168,7 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		AttributeI		attr;
 		
 		// create a new variant node
-		key = new ContentKey(FDContentTypes.RECIPE_VARIANT, "second");
+		key = ContentKey.getContentKey(FDContentTypes.RECIPE_VARIANT, "second");
 		variantNode = service.createPrototypeContentNode(key, DraftContext.MAIN);
 
 		// get (or create if needed) the variants relation

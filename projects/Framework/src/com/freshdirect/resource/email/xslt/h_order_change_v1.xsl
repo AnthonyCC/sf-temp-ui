@@ -32,7 +32,7 @@
 				<td>
 					<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
 
-					<p>We've updated your order information. Please look over the details below. If you'd like to make further changes, <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>click here</xsl:element>.</p>
+					<p>We've updated your order information. You will receive your final invoice on the day of your delivery. Please look over the details below. If you'd like to make further changes, <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>click here</xsl:element>.</p>
 
 					<p>Enjoy,<br/>
 					<br/>

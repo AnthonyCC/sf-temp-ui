@@ -102,8 +102,7 @@ public class CompositeTypeService implements ContentTypeServiceI {
 	public ContentKey generateUniqueContentKey(ContentType type) {
 		String id = generateUniqueId(type);
 		
-		return id == null ? null
-				          : new ContentKey(type, id);
+		return id == null ? null : ContentKey.getContentKey(type, id);
 	}
 	
 	@Override

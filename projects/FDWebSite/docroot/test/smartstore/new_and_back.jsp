@@ -64,7 +64,7 @@ List<SkuEntry> calcSkuEntries(Map<String, Date> skus, Map<String, Date> overridd
 		} catch (Exception e1) {
 		}
 		e.unavailable = true;
-		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, entry.getKey()));
 		if (sku != null) {
 			e.unavailable = sku.isUnavailable();
 			e.product = sku.getProductModel() != null ? sku.getProductModel().getContentKey().getId() : null;

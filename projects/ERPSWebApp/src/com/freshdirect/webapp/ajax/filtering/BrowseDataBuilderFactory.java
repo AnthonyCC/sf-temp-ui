@@ -1038,7 +1038,7 @@ public class BrowseDataBuilderFactory {
 				if(section.getProducts()!=null){
 					for(ProductData data : section.getProducts()){
 						if (shownProductKeysForRecommender.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE){
-							shownProductKeysForRecommender.add(new ContentKey(FDContentTypes.PRODUCT, data.getProductId()));
+							shownProductKeysForRecommender.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, data.getProductId()));
 						} else {
 							return;
 						}

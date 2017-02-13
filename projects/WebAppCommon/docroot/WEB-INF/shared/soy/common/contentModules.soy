@@ -3,8 +3,6 @@
 /**
  * @param config
  * @param data
- * @param? abFeatures
- * @param? mobWeb
  */
 {template .contentModules}
 {if $config and $data}
@@ -12,9 +10,7 @@
   	{foreach $module in $config}
   		{call common.contentModuleSelector}
   			{param moduleConfig: $module /}
-  			{param data: $data[$module.moduleId] /}
-				{param mobWeb:$mobWeb /}
-				{param abFeatures:$abFeatures /}
+  			{param data: $data[$module.moduleInstanceId] /}
   		{/call}
   	{/foreach}
   </div>
@@ -24,14 +20,10 @@
 /**
  * @param moduleConfig
  * @param data
- * @param? abFeatures
- * @param? mobWeb
  */
 {template .contentModuleSelector}
   {delcall common.moduleSelector variant="$moduleConfig.sourceType"}
     {param moduleData: $moduleConfig /}
     {param data: $data /}
-		{param mobWeb:$mobWeb /}
-		{param abFeatures:$abFeatures /}
   {/delcall}
 {/template}

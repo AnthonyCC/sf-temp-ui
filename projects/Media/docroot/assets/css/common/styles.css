@@ -1,5 +1,5 @@
 .youraccount h2 {
-  border-bottom: 1px solid #ccc !important;
+  border-bottom: 1px solid #ccc;
   font-size: 14px;
   font-family: Verdana;
   font-weight:bold;
@@ -253,4 +253,118 @@ form {
     color: #00b600;
 }
 
-
+	.youraccount h2{
+		text-align: left;
+	}
+	.youraccount .youraccount_header{
+		padding: 0 0 7px 0;
+		margin: 0 0 18px;
+		border-bottom: solid 1px #ff9933;
+		text-align: left;
+	}
+	.youraccount input{
+		width: 150px;
+		padding: 1px;
+	}
+	.youraccount input.radio{
+		width: initial;
+	}
+	.youraccount_contact .youraccount_left_2 input:last-child {
+    	width: 45px;
+	}
+	.youraccount_contact .youraccount_phone_ext{
+		padding: 0 0 0 5px;
+	}
+	.youraccount_left_1{
+	    float: left;
+	    width: 145px;
+	    text-align: right;
+	    clear: left;
+		font-size: 11px;
+		padding: 0 5px 15px;
+	}
+	.youraccount_left_2{
+	    float: left;
+	}
+	.youraccount_left_2_space{
+		clear: left;
+		text-align: left;
+		padding: 0 0 0 155px;
+		max-width: 160px;
+		font-size: 9px;
+	}
+	.youraccount_left_3{
+		float: left;
+		padding: 0 0 0 5px;
+	}
+	.youraccount_right{
+		float: right;
+	}
+	.youraccount_password .container1{
+		float: left;
+	}
+	.youraccount_user_email,
+	.youraccount_user_password,
+	.youraccount_user_name,
+	.youraccount_user_contact,
+	.youraccount_user_email_pref,
+	.youraccount_user_social,
+	.youraccount_mobile_pref,
+	.youraccount_go_green{
+		padding: 0 0 20px;
+	}
+	.youraccount_user_email_pref .youraccount_left_1{
+		 width: 32px;
+	}
+	.youraccount_user_email_pref .youraccount_left_2{
+		text-align: left;
+	}
+	.youraccount_user_social .youraccount_left_1{
+		width: auto;
+	}
+	.youraccount_user_mobile_pref p{
+		text-align: left;
+	}
+	.youraccount_mobile_pref .youraccount_left_1:first-of-type{
+		width: 145px;
+	}
+	.youraccount_mobile_pref .youraccount_left_1,
+	.youraccount_go_green .youraccount_left_1{
+		width: 32px;
+	}
+	.youraccount_mobile_pref .youraccount_left_2{
+		font-size: 11px;
+		font-weight: bold;
+	}
+	.youraccount_mobile_pref .accordion{
+		clear: left;
+		text-align: left;
+		margin: 0 0 20px 54px;
+	}
+	.youraccount_mobile_pref .accordion #article p:first-of-type{
+		padding: 0;
+		margin: 0;
+	}
+	.youraccount_mobile_pref .accordion .text12 p,
+	.youraccount_mobile_pref .accordion #article p{
+		padding: 0;
+		margin: 0;
+	}
+	.youraccount_mobile_pref div:last-child{
+		text-align: left;
+	}
+	.youraccount_mobile_pref .accordion label div:last-child{
+		min-width: 500px;
+	}	
+	.youraccount_go_green .youraccount_go_green_icon{
+		padding: 0 0 10px;
+		text-align: left;
+	}
+	.youraccount_continue{
+		border-top: solid 1px #ff9933;
+		padding: 5px 0 0 0;
+		text-align: left;
+	}
+	.youraccount_continue a:first-child img{
+		padding: 0 8px 0 0;
+	}

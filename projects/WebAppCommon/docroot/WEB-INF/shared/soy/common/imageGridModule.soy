@@ -5,74 +5,72 @@
  * @param data
  */
 {template .imageGridModule}
-{if $data.imageGridData}
-  <div class="content-module image-grid-module {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
-  	{call common.moduleHeader}
-  		{param content: $moduleData /}
-  	{/call}
-  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
-  		{call common.contentHeader}
-  			{param content: $moduleData /}
-  		{/call}
-  		<div class="image-grid">
-  		  <div class="first-line">
-  				<div class="small-block">
-  					<div class="small-image" >
-  						<a href="{if $data.imageGridData[0].iconLink}{$data.imageGridData[0].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[0].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  							<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[0].iconImage}" alt="">
-  							{if $data.imageGridData[0].iconLinkText}
-                  <div><div class='text'>{$data.imageGridData[0].iconLinkText}</div></div>
-                {/if}
-              </a>
-  					</div>
-  					<div class="small-image" >
-  						<a href="{if $data.imageGridData[1].iconLink}{$data.imageGridData[1].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[1].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  							<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[1].iconImage}" alt="">
-  							{if $data.imageGridData[1].iconLinkText}
-                  <div><div class='text'>{$data.imageGridData[1].iconLinkText}</div></div>
-                {/if}
-  						</a>
-  					</div>
-  				</div>
-  				<div class="medium">
-  					<a href="{if $data.imageGridData[2].iconLink}{$data.imageGridData[2].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[2].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  						<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[2].iconImage}" alt="">
-  						{if $data.imageGridData[2].iconLinkText}
-                <div><div class='text'>{$data.imageGridData[2].iconLinkText}</div></div>
+<div class="content-module image-grid-module" id="{$moduleData.moduleInstanceId}">
+	{call common.moduleHeader}
+		{param content: $moduleData /}
+	{/call}
+	<div class="content">
+		{call common.contentHeader}
+			{param content: $moduleData /}
+		{/call}
+		<div class="image-grid">
+		  <div class="first-line">
+				<div class="small-block">
+					<div class="small" >
+						<a href="{$data.imageGridData.imageContainer1Target}">
+							<img src="{$data.imageGridData.imageContainer1Image}" alt="{$data.imageGridData.imageContainer1Text}">
+							{if $data.imageGridData.imageContainer1Text}
+                <div>{$data.imageGridData.imageContainer1Text}</div>
               {/if}
-  					</a>
-  				</div>
-  			</div>
-  			<div class="second-line">
-  				<div class="medium">
-  					<a href="{if $data.imageGridData[3].iconLink}{$data.imageGridData[3].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[3].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  						<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[3].iconImage}" alt="">
-  						{if $data.imageGridData[3].iconLinkText}
-                <div><div class='text'>{$data.imageGridData[3].iconLinkText}</div></div>
+            </a>
+					</div>
+					<div class="small" >
+						<a href="{$data.imageGridData.imageContainer2Target}">
+							<img src="{$data.imageGridData.imageContainer2Image}" alt="{$data.imageGridData.imageContainer2Text}">
+							{if $data.imageGridData.imageContainer2Text}
+                <div>{$data.imageGridData.imageContainer2Text}</div>
               {/if}
-  					</a>
-  				</div>
-  				<div class="small-block">
-  					<div class="small-image">
-  						<a href="{if $data.imageGridData[4].iconLink}{$data.imageGridData[4].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[4].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  							<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[4].iconImage}" alt="">
-  							{if $data.imageGridData[4].iconLinkText}
-                  <div><div class='text'>{$data.imageGridData[4].iconLinkText}</div></div>
-                {/if}
-  						</a>
-  					</div>
-  					<div class="small-image">
-  						<a href="{if $data.imageGridData[5].iconLink}{$data.imageGridData[5].iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$data.imageGridData[5].iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if} >
-  							<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$data.imageGridData[5].iconImage}" alt="">
-  							{if $data.imageGridData[5].iconLinkText}
-                  <div><div class='text'>{$data.imageGridData[5].iconLinkText}</div></div>
-                {/if}
-  						</a>
-  					</div>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-  </div>
-{/if}
+						</a>
+					</div>
+				</div>
+				<div class="medium">
+					<a href="{$data.imageGridData.imageContainer3Target}">
+						<img src="{$data.imageGridData.imageContainer3Image}" alt="{$data.imageGridData.imageContainer3Text}">
+						{if $data.imageGridData.imageContainer3Text}
+              <div>{$data.imageGridData.imageContainer3Text}</div>
+            {/if}
+					</a>
+				</div>
+			</div>
+			<div class="second-line">
+				<div class="medium">
+					<a href="{$data.imageGridData.imageContainer4Target}">
+						<img src="{$data.imageGridData.imageContainer4Image}" alt="{$data.imageGridData.imageContainer4Text}">
+						{if $data.imageGridData.imageContainer4Text}
+              <div>{$data.imageGridData.imageContainer4Text}</div>
+            {/if}
+					</a>
+				</div>
+				<div class="small-block">
+					<div class="small">
+						<a href="{$data.imageGridData.imageContainer5Target}">
+							<img src="{$data.imageGridData.imageContainer5Image}" alt="{$data.imageGridData.imageContainer5Text}">
+							{if $data.imageGridData.imageContainer5Text}
+                <div>{$data.imageGridData.imageContainer5Text}</div>
+              {/if}
+						</a>
+					</div>
+					<div class="small">
+						<a href="{$data.imageGridData.imageContainer6Target}">
+							<img src="{$data.imageGridData.imageContainer6Image}" alt="{$data.imageGridData.imageContainer6Text}">
+							{if $data.imageGridData.imageContainer6Text}
+                <div>{$data.imageGridData.imageContainer6Text}</div>
+              {/if}
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/template}

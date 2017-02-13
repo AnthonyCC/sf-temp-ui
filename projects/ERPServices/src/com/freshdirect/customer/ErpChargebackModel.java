@@ -27,7 +27,7 @@ public class ErpChargebackModel extends ErpPaymentModel {
 	private Date originalTxDate;
 	private String description;
 	private String merchantReferenceNumber;
-	
+	private boolean trxnComplete=false;
 	
 	/** 
 	 * Creates new ErpAuthorizeTransaction 
@@ -123,5 +123,21 @@ public class ErpChargebackModel extends ErpPaymentModel {
     public void setMerchantReferenceNumber(String merchantReferenceNumber){
     	this.merchantReferenceNumber = merchantReferenceNumber;
     }
+
+	/**
+	 * @return the trxnComplete
+	 */
+	public boolean isTrxnComplete() {
+		return trxnComplete;
+	}
+
+	/**
+	 * @param trxnComplete the trxnComplete to set
+	 */
+	public void setTrxnComplete(boolean trxnComplete) {
+		this.trxnComplete = trxnComplete;
+	}
+    
+    
 
 }

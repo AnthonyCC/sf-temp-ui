@@ -331,6 +331,8 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 						item.putMenuValue(STARTER_LISTS, menus);
 						item.putFilteringValue(STARTER_LISTS, item.getNode().getStarterList().getContentKey().getId());
 					}
+					
+					break;
 				}
 				
 				case YOUR_LISTS: {
@@ -348,6 +350,8 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 						item.putMenuValue(YOUR_LISTS, menus);
 						item.putFilteringValue(YOUR_LISTS, item.getNode().getCclId());
 					}
+					
+					break;
 				}
 				
 				case BRAND: {
@@ -356,7 +360,6 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
                         menu.setFilteringUrlValue(brand.getContentKey().getId());
                         menu.setFilter(filter);
                         menus.add(menu);
-                        menu = new FilteringMenuItem();
                     }
                     item.putMenuValue(BRAND, menus);
                     item.putFilteringValue(BRAND, BRAND.getName());

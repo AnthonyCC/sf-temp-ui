@@ -76,36 +76,12 @@ public class DbRelationshipDef extends RelationshipDef {
 		ResultSet rs = ps.executeQuery();
 		List keys = new ArrayList();
 		while (rs.next()) {
-			ContentKey destKey = new ContentKey(destinationType, rs.getString(1));
+			ContentKey destKey = ContentKey.getContentKey(destinationType, rs.getString(1));
 			keys.add(destKey);
 		}
 		rs.close();
 		ps.close();
 		return keys;
 	}
-
-	/*
-	 void loadValues(Connection conn, ContentType sourceType, Map nodeMap, String ids) throws SQLException {
-
-	 String q = StringUtils.replace("select SOURCE_ID, DESTINATION_ID from (" + query + ") where SOURCE_ID IN (?)", "?", ids);
-	 Statement stmt = conn.createStatement();
-	 ResultSet rs = stmt.executeQuery(q);
-	 while (rs.next()) {
-	 ContentKey sourceKey = new ContentKey(sourceType, rs.getString(1));
-	 ContentKey destKey = new ContentKey(destinationType, rs.getString(2));
-	 ContentNodeI node = (ContentNodeI) nodeMap.get(sourceKey);
-	 AttributeI a = node.getAttribute(this.getName());
-	 List l = (List) a.getValue();
-	 if (l == null) {
-	 l = new ArrayList();
-	 a.setValue(l);
-	 }
-	 l.add(destKey);
-	 }
-
-	 rs.close();
-	 stmt.close();
-	 }
-	 */
 
 }

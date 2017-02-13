@@ -1,23 +1,24 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes' %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@ page import="com.freshdirect.storeapi.content.StoreModel"%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
+<%@ page import="com.freshdirect.fdstore.content.StoreModel"%>
 <%@ page import="org.apache.commons.lang.StringUtils"%>
-<%@ page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@ page import="com.freshdirect.cms.application.CmsManager"%>
+<%@ page import="com.freshdirect.cms.ContentType"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import='java.text.*' %>
@@ -46,6 +47,7 @@ request.setAttribute("noyui", true);
 	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
 	int validOrderCount = user.getAdjustedValidOrderCount();
+	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
@@ -119,10 +121,10 @@ request.setAttribute("noyui", true);
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
 			   	if (FDStoreProperties.isAdServerEnabled()) {
-					%><div id="oas_HPMob01" class="home-page-banner">
+					%><div id="OAS_HPMob01" class="home-page-banner">
 			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
 			  		</div><%
-					%><div id="oas_HPMob02" class="home-page-banner">
+					%><div id="OAS_HPMob02" class="home-page-banner">
 		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
 		  			</div><%
 			  	}
@@ -201,6 +203,7 @@ request.setAttribute("noyui", true);
 			<%
 			} else if (!showAltHome && !location2Media) {
 				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+				  <comp:deliverySlotReserved user="<%= user %>" />
 			<%
 			}
 
@@ -413,7 +416,7 @@ request.setAttribute("noyui", true);
 			</script>
 
         <soy:render template="common.contentModules" data="${welcomepagePotato}" />
-						<div class="oas_home_bottom" id='oas_HPWideBottom'><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
+						<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>

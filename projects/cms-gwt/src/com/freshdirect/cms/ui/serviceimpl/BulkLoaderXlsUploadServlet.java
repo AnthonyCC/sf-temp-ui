@@ -263,7 +263,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								cell.getStatus().removeIndex();
 								break;
 							} else if (!foundKeys.contains(key)) {
-								ContentNodeI node = CmsManager.getInstance().getContentNode(ContentKey.decode(key));
+								ContentNodeI node = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(key));
 								if (node == null) {
 									notFoundKeys.add(key);
 									cell.getStatus().setStateWithMessage(ERROR_CELL, "#" + (k + 1) + ": no such content node");

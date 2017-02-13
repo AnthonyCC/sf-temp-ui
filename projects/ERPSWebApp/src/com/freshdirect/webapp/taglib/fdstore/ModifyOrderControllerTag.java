@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -410,8 +411,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.info("Unable to release the in_modify lock for orderId"+currentOrderId);
 		}
 		
+		FDCustomerManager.clearModifyCartlines(currentOrderId);
 		ShoppingCartUtil.restoreCart(session);
-	
+			
 		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
 		//Clear any hold amounts.
 		gcList.clearAllHoldAmount();
@@ -451,7 +453,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use dlvpassapplied flag for applying charge
 		FDUser fdUser =  currentUser.getUser();
 		ModifyOrderHelper.handleDlvPass(cart, fdUser);
-		
+				
 		if (mergePending) {
 			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
 			
@@ -498,6 +500,15 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
 		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
 		
+		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(cart.getOriginalOrder().getSale().getId(), fdUser.getUserContext());
+		
+		if(fdUser.getMasqueradeContext() == null && (null != modifiedCartlines && modifiedCartlines.size() > 0)){
+			cart.addOrderLines(modifiedCartlines);
+		}
+		
+		// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
+		ModifyOrderHelper.handleDeliveryPassPromotion(currentUser, currentStandingOrder, checkOutMode, order, cart);
+				
 		//Reload gift card balance.
 		ModifyOrderHelper.loadGiftCardsIntoCart(currentUser, order);
 		

@@ -65,7 +65,7 @@ public class LuceneSearchServiceTest extends TestCase {
 		assertResults(search, 1, "j k 's");
 
 		// update
-		ContentKey k = new ContentKey(ContentType.get("Foo"), "foo1");
+		ContentKey k = ContentKey.getContentKey(ContentType.get("Foo"), "foo1");
 		ContentNodeI foo1 = content.getContentNode(k, DraftContext.MAIN);
 		foo1.setAttributeValue("name", "mutatis mutandis");
 		List<ContentNodeI> nodes = new ArrayList<ContentNodeI>();

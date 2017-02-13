@@ -39,9 +39,4 @@ public enum ModuleSourceType {
         LOGGER.warn(MessageFormat.format("No datasource exists with value[{0}] in the DatasourceType Enum", moduleSourceValue));
         return null;
     }
-
-    public static ModuleSourceType convertAttributeValueToModuleSourceType(String moduleSourceTypeAttributeValue) {
-        return ModuleSourceType.forValue(moduleSourceTypeAttributeValue);
-    }
-
 }

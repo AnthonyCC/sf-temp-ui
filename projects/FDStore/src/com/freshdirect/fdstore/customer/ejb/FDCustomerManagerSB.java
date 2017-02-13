@@ -13,6 +13,8 @@ import java.util.SortedSet;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
@@ -67,6 +69,7 @@ import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -884,7 +887,16 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
 	
 	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
-	
+
+	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException, RemoteException;
+
+	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;
+
+	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException, RemoteException;
+
+	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException, RemoteException;
+
+	public void clearModifyCartlines(String currentOrderId) throws FDResourceException, RemoteException;
 
 }
 

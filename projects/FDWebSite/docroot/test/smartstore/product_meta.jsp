@@ -17,7 +17,7 @@ CustomerId: <input type="text" name="erpId"></br>
 <%
 } else {
    
-   ContentKey pkey = new ContentKey(FDContentTypes.PRODUCT,prodId);
+   ContentKey pkey = ContentKey.getContentKey(FDContentTypes.PRODUCT,prodId);
    Float f = (Float)ScoreProvider.getInstance().getUserProductScore(erpId,pkey);
    float cScore = f == null ? -1 : f.floatValue();
    float gScore = ProductStatisticsProvider.getInstance().getGlobalProductScore(pkey);

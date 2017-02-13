@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.util.Collection"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -246,8 +247,11 @@
 					</c:if>			
 					<c:if test="${not productPotato.available }">
 						<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
-					</c:if>		    
-							<soy:render template="pdp.productRequest"/>
+					</c:if>	
+					<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
+						<%-- show only if user is logged in (not RECOG) --%>	    
+						<soy:render template="pdp.productRequest"/>
+					<% } %>
 							
 			</div>
 		<% } %>

@@ -3,28 +3,32 @@
 /**
  * @param moduleData
  * @param data
- * @param? abFeatures
- * @param? mobWeb
  */
 {template .iconCarouselModule}
-{if $data.icons and length($data.icons) > 0}
-  <div class="content-module icon-carousel {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
-  	{call common.moduleHeader}
-  		{param content: $moduleData /}
-  	{/call}
-    {call common.contentHeader}
-      {param content: $moduleData /}
-    {/call}
-  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
+<div class="content-module icon-carousel" id="{$moduleData.moduleInstanceId}">
+	{call common.moduleHeader}
+		{param content: $moduleData /}
+	{/call}
+	<div class="content">
+		{call common.contentHeader}
+			{param content: $moduleData /}
+		{/call}
+    {if $data.icons and length($data.icons) > 0}
   		{call common.simpleCarousel}
-				{param isIconCarousel: true /}
-				{param items: $data.icons /}
-				{param moduleData: $moduleData /}
-				{param itemType:'grid' /}
-				{param mobWeb:$mobWeb /}
-				{param abFeatures:$abFeatures /}
+  			{param isIconCarousel: true /}
+  			{param items: $data.icons /}
+  			{param showViewAllButton: $moduleData.showViewAllButton /}
+  			{param viewAllLink: $moduleData.viewAllButtonLink /}
+  			{param accessibilityText}
+  				{if $moduleData.contentTitle}
+  					{$moduleData.contentTitle}
+  				{else}
+  					{$moduleData.moduleTitle}
+  				{/if}
+  			{/param}
+  			{param itemType:'grid' /}
   		{/call}
-  	</div>
-  </div>
-{/if}
+    {/if}
+	</div>
+</div>
 {/template}

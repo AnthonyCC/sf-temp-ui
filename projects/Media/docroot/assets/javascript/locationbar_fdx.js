@@ -356,3 +356,63 @@ $jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', fun
 $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function() {
 	window.location = '/registration/signup.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
 });
+
+$jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
+	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
+});
+
+$jq('#locabar_addresses_trigger').on('blur mouseleave', function(event) {
+	$jq('.locabar-addresses-section').css('background-color', '#6AAA6D');
+});
+
+$jq('#locabar_user_trigger').on('focus mouseover', function(event) {
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
+});
+
+$jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
+	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+});
+
+$jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
+});
+
+$jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', '#6AAA6D');
+});
+
+$jq('#locabar_modify_order_trigger').on('focus mouseover', function(event) {
+	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
+});
+
+$jq('#locabar_modify_order_trigger').on('blur mouseleave', function(event) {
+	console.log('blur on locabar_triggers ');
+	$jq('.locabar-modify-order-section').css('background-color', '#6AAA6D');
+});
+
+
+$jq('#locabar_messages_trigger').on('focus mouseover', function(event) {
+	$jq('.locabar-messages-section').css('background-color', '#4fa157');
+});
+
+$jq('#locabar_messages_trigger').on('blur mouseleave', function(event) {
+	$jq('.locabar-messages-section').css('background-color', '#6AAA6D');
+});
+
+$jq('.changeBGClr').on('focus mouseover', function(event) {
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
+});
+
+$jq('.changeBGClr').on('blur mouseleave', function(event) {
+	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+});
+//press enter key to display message
+$jq('#locabar_messages_trigger').keypress(function(event){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		$jq('#messages').messages('openMessages');
+		if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
+			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+		}
+	}
+});

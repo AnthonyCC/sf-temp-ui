@@ -43,6 +43,7 @@ if (mobWeb) {
 %>
 <unbxd:browseEvent/>
 
+
 <tmpl:insert template='<%=template %>'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
 
@@ -80,7 +81,6 @@ if (mobWeb) {
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-
     <div class="browse-breadcrumbs">
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
     </div>

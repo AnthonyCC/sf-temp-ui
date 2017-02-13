@@ -6,7 +6,7 @@
  */
 {template .openPreformettedHTML autoescape="false"}
 {if $preformettedHTML}
-  <div class="content-module open-preformetted-html {if $moduleData.moduleTitle}single-module{/if}" tabindex="0" id="{$moduleData.moduleId}">
+  <div class="content-module open-preformetted-html" tabindex="0" id="{$moduleData.moduleInstanceId}">
   	{$preformettedHTML}
   </div>
 {/if}

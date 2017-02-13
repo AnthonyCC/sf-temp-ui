@@ -401,7 +401,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
         
         Set cart = new HashSet();
-        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        cart.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
         fit.setShoppingCart(cart);
 
         try {
@@ -488,7 +488,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
         
         Set cart = new HashSet();
-        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        cart.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
         fit.setShoppingCart(cart);
 
         try {

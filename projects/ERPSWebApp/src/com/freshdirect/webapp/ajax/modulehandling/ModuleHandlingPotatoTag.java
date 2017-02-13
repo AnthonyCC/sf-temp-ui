@@ -11,8 +11,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
-import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
-import com.freshdirect.webapp.ajax.modulehandling.service.ModuleContainerIdentificationService;
+import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -42,28 +41,23 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException {
+
         LOGGER.info("Creating data potato: " + name);
 
         PageContext ctx = (PageContext) getJspContext();
         HttpSession session = ctx.getSession();
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
-        if (moduleContainerId == null || moduleContainerId == "") {
-            LOGGER.info("ModuleContainerId was empty, loading default moduleContainer based on user");
-            moduleContainerId = ModuleContainerIdentificationService.defaultService().getContainerIdByCustomerOrderCount(user);
-        }
-
-        LOGGER.info("Loading module container: " + moduleContainerId + " for user: " + user.getUserId() + " with cookie: " + user.getCookie());
-
+        WelcomePageData result = new WelcomePageData();
         try {
-            ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);
-            ctx.setAttribute("moduleContainerId", moduleContainerId);
-            ctx.setAttribute(name, SoyTemplateEngine.convertToMap(result));
+            result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);
         } catch (FDResourceException e) {
             throw new JspException(e);
         } catch (InvalidFilteringArgumentException e) {
             throw new JspException(e);
         }
+
+        ctx.setAttribute(name, SoyTemplateEngine.convertToMap(result));
 
     }
 

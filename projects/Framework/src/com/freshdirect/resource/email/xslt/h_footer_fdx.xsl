@@ -40,7 +40,7 @@
 			<div style="color: #888; padding: 20px;">
 				<xsl:if test="//fromEmail != ''">Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br /><br /></xsl:if>
 				<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
-				23-30 Borden Ave. Long Island City, NY 11101<br /><br />
+				FreshDirect, LLC. 23-30 Borden Ave. Long Island City, NY 11101<br /><br />
 				<!-- <a href="#">Customer Agreement</a><br /> -->
 				&#169;2002 - <xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.
 			</div>

@@ -282,8 +282,12 @@ var FreshDirect = FreshDirect || {};
                 	} else {
                 		$(e).data('hooklogic-beacon-click', 'true');
                 		$(e).on('click', function(event) {
+                			var id = $(this).closest('.portrait-item').attr('id') + '_hlClick';
+                			if ($('#'+popupId).find('img#'+id).length !== 0) {
+                				return; //stop multiple firings
+                			}
                         	var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
-                        	$('#'+popupId).append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+                        	$('#'+popupId).append('<img class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
                 		});
                 	}
         	  }

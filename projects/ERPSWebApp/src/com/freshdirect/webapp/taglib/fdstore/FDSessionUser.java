@@ -93,7 +93,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private long lastCartSaveTime;
 
-    private final static long SAVE_PERIOD = 2 * 60 * 1000; // 2 minutes
+    private final static long SAVE_PERIOD = FDStoreProperties.getUserCartSaveInterval(); // 0 minutes
 
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
@@ -145,6 +145,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean justSignedUp = false;
     private boolean rafFriendSignedUp = false;
     private boolean isAvalaraTaxed;
+    private boolean  isMobilePlatForm;
     
     private Set<ContentKey> checkoutUnavailableProductKeys; //set of items which failed the ATP test
     
@@ -1967,6 +1968,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setRefreshValidSO3(boolean isRefreshValidSO3) {
       this.user.setRefreshValidSO3(isRefreshValidSO3);
     
+	}
+	
+	public boolean isMobilePlatForm() {
+		return isMobilePlatForm;
+	}
+
+	public void setMobilePlatForm(boolean isMobilePlatForm) {
+		this.isMobilePlatForm = isMobilePlatForm;
 	}
 
 }

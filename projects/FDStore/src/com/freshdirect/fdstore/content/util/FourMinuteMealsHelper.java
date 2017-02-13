@@ -49,15 +49,15 @@ public class FourMinuteMealsHelper {
 	private static final Logger LOGGER = LoggerFactory.getInstance( FourMinuteMealsHelper.class );
 	
 	// === Constant ContentKey-s ===
-	public static final ContentKey departmentKey = new ContentKey( ContentType.get( "Department" ), "fdi" );
-	public static final ContentKey sidesInASnapKey = new ContentKey( ContentType.get( "Category" ), "hmr_fresh_sias" );
-	public static final ContentKey editorialKey = new ContentKey( ContentType.get( "Category" ), "4mm-editorial" );
-	public static final ContentKey filterPageKey = new ContentKey( ContentType.get( "Category" ), "4mm-view-all" );
-	public static final ContentKey aboutPageKey = new ContentKey( ContentType.get( "Category" ), "4mm-about" );
-	public static final ContentKey ingredientdomainKey = new ContentKey( ContentType.get( "Domain" ), "4mm-ingredients" );	
-	public static final ContentKey sideTypeDomainKey = new ContentKey( ContentType.get( "Domain" ), "4mm-sides" );
-	public static final ContentKey extraVeggieSideDVKey = new ContentKey( ContentType.get( "DomainValue" ), "4mm-sides-vegetable" );
-	public static final ContentKey extraStarchSideDVKey = new ContentKey( ContentType.get( "DomainValue" ), "4mm-sides-starch" );
+	public static final ContentKey departmentKey = ContentKey.getContentKey( ContentType.get( "Department" ), "fdi" );
+	public static final ContentKey sidesInASnapKey = ContentKey.getContentKey( ContentType.get( "Category" ), "hmr_fresh_sias" );
+	public static final ContentKey editorialKey = ContentKey.getContentKey( ContentType.get( "Category" ), "4mm-editorial" );
+	public static final ContentKey filterPageKey = ContentKey.getContentKey( ContentType.get( "Category" ), "4mm-view-all" );
+	public static final ContentKey aboutPageKey = ContentKey.getContentKey( ContentType.get( "Category" ), "4mm-about" );
+	public static final ContentKey ingredientdomainKey = ContentKey.getContentKey( ContentType.get( "Domain" ), "4mm-ingredients" );	
+	public static final ContentKey sideTypeDomainKey = ContentKey.getContentKey( ContentType.get( "Domain" ), "4mm-sides" );
+	public static final ContentKey extraVeggieSideDVKey = ContentKey.getContentKey( ContentType.get( "DomainValue" ), "4mm-sides-vegetable" );
+	public static final ContentKey extraStarchSideDVKey = ContentKey.getContentKey( ContentType.get( "DomainValue" ), "4mm-sides-starch" );
 			
 	// === Base url for all/filter page ===
 	public static final String allPageBaseUrl = "/4mm/all.jsp?deptId=fdi&trk=4mm-filter";

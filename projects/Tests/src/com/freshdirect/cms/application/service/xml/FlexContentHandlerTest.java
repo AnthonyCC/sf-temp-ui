@@ -90,7 +90,7 @@ public class FlexContentHandlerTest extends TestCase {
 	private final static com.freshdirect.cms.ContentType FOO_TYPE = ContentType.get("Foo");
 
 	private static ContentKey key(String id) {
-		return new ContentKey(FOO_TYPE, id);
+		return ContentKey.getContentKey(FOO_TYPE, id);
 	}
 
 }

@@ -76,7 +76,7 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 			Set<ContentKey> keys = new HashSet<ContentKey>( UNIQUE_TYPES.size() - 1 );
 			for ( ContentType t : UNIQUE_TYPES ) {
 				if ( !t.equals( type ) ) {
-					keys.add( new ContentKey( t, node.getKey().getId() ) );
+					keys.add( ContentKey.getContentKey( t, node.getKey().getId() ) );
 				}
 			}
 

@@ -1,86 +1,53 @@
-.content-module.image-grid-module .content .image-grid .first-line,
-.content-module.image-grid-module .content .image-grid .second-line,
-.content-module.image-grid-module .content .small-block {
+.contentModules .content-module.image-grid-module .content .image-grid .first-line,
+.contentModules .content-module.image-grid-module .content .image-grid .second-line,
+.contentModules .content-module.image-grid-module .content .small-block {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.content-module.image-grid-module .content {
-  border: none;
-}
-
-.content-module.image-grid-module .content .small-image,
-.content-module.image-grid-module .content .medium {
+.contentModules .content-module.image-grid-module .content .small,
+.contentModules .content-module.image-grid-module .content .medium {
   box-sizing: border-box;
-  max-height: 241px;
+  height: 241px;
   text-align: center;
   margin: .9px;
 }
 
-.content-module.image-grid-module .content .small-image {
-  max-width: 241px;
+.contentModules .content-module.image-grid-module .content .small {
+  width: 241px;
 }
 
-.content-module.image-grid-module .content .medium {
-  max-width: 484px;
+.contentModules .content-module.image-grid-module .content .medium {
+  width: 484px;
 }
 
-.content-module.image-grid-module .content img {
+.contentModules .content-module.image-grid-module .content img {
   height: 100%;
   object-fit: cover;
   overflow: hidden;
   width: 100%;
 }
 
-.content-module.image-grid-module .content .image-grid {
-  max-width: 970px;
-}
-
-.content-module.image-grid-module .content .image-grid div a {
-  text-decoration: none;
-}
-
-.content-module.image-grid-module .content .image-grid div div .small-image a > div,
-.content-module.image-grid-module .content .image-grid div .medium a > div {
-  align-items: center;
-  background-color: rgba(255,255,255,.90);
-  bottom: 38px;
+.contentModules .content-module.image-grid-module .content .image-grid div div .small a > div,
+.contentModules .content-module.image-grid-module .content .image-grid div .medium a > div {
+  background-color: rgba(255,255,255,.9);
+  bottom: 50px;
   color: black;
-  display: flex;
-  font-family: 'Brandon Text';
   font-size: 18px;
-  font-weight: 500;
-  height: 38px;
-  line-height: 18px;
+  height: 22px;
+  line-height: 22px;
   margin: 0;
   padding: 0;
-  padding-left: 10px;
-  padding-right: 20px;
+  padding-left: 5px;
   position: relative;
   text-align: left;
   text-transform: uppercase;
+  top: -30px;
 }
 
-.content-module.image-grid-module .content .image-grid div div .small-image a > div,
-.content-module.image-grid-module .content .image-grid div div .small-image a > div .text {
-  max-width: 231px;
-}
-
-.content-module.image-grid-module .content .image-grid div div .medium a > div,
-.content-module.image-grid-module .content .image-grid div .medium a > div .text {
-  max-width: 474px;
-}
-
-.content-module.image-grid-module .content .image-grid div div .small-image a > div .text,
-.content-module.image-grid-module .content .image-grid div .medium a > div .text {
-  text-overflow: ellipsis;
-  max-height: 2em;
-  overflow: hidden;
-}
-
-.content-module.image-grid-module .content .image-grid div div .small-image a > div:after,
-.content-module.image-grid-module .content .image-grid div .medium a > div:after {
+.contentModules .content-module.image-grid-module .content .image-grid div div .small a > div:after,
+.contentModules .content-module.image-grid-module .content .image-grid div .medium a > div:after {
   content: '\276F';
   position: relative;
   right: -5px;

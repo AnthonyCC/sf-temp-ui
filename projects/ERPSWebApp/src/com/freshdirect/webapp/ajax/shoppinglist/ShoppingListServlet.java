@@ -367,7 +367,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 
 	private static String collectRecipeIngredients(List<AddToCartItem> items, String recipeId, String recipeVariantId ) {
 		//Collect recipe ingredients
-		Recipe recipe = (Recipe)ContentFactory.getInstance().getContentNodeByKey( new ContentKey( ContentType.get( "Recipe" ), recipeId ) );
+		Recipe recipe = (Recipe)ContentFactory.getInstance().getContentNodeByKey( ContentKey.getContentKey( ContentType.get( "Recipe" ), recipeId ) );
 		RecipeVariant recipeVariant = null;
 		
 		if( recipeVariantId != null ) {

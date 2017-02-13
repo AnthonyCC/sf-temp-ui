@@ -42,202 +42,193 @@ import com.freshdirect.cms.meta.ContentTypeUtil;
  */
 public class ContentNodeUtil {
 
-	private final static ILabelProvider LABEL_PROVIDER = new CompositeLabelProvider(new ILabelProvider[] {
-		new DomainValueLabelProvider(),
-		new MediaLabelProvider(),
-		new SkuLabelProvider(),
-		new ConfiguredProductLabelProvider(),
-		new ErpMaterialLabelProvider(),
-		new SearchRelevancyLabelProvider(),
-		new TileLabelProvider(),
-		new HolidayGreetingLabelProvider(),
-		new MenuItemLabelProvider(),
-		new AttributeLabelProvider("FULL_NAME"),
-		new AttributeLabelProvider("NAV_NAME"),
-		new AttributeLabelProvider("GLANCE_NAME"),
-		new AttributeLabelProvider("name"),
-		new AttributeLabelProvider("title"),
-		new AttributeLabelProvider("attribute"),
-		new AttributeLabelProvider("Name"),
-		new AttributeLabelProvider("PAGE_TITLE"),
-		new AttributeLabelProvider("PAGE_TITLE_FDX")});
+    private final static ILabelProvider LABEL_PROVIDER = new CompositeLabelProvider(new ILabelProvider[] { new DomainValueLabelProvider(), new MediaLabelProvider(),
+            new SkuLabelProvider(), new ConfiguredProductLabelProvider(), new ErpMaterialLabelProvider(), new SearchRelevancyLabelProvider(), new TileLabelProvider(),
+            new HolidayGreetingLabelProvider(), new MenuItemLabelProvider(), new AttributeLabelProvider("FULL_NAME"), new AttributeLabelProvider("NAV_NAME"),
+            new AttributeLabelProvider("GLANCE_NAME"), new AttributeLabelProvider("name"), new AttributeLabelProvider("title"), new AttributeLabelProvider("attribute"),
+            new AttributeLabelProvider("Name"), new AttributeLabelProvider("PAGE_TITLE"), new AttributeLabelProvider("PAGE_TITLE_FDX") });
 
-	/**
-	 * Get a human-readable label for a content node.
-	 * 
-	 * @param node content node (never null)
-	 * @return human readable label
-	 */
-	public static String getLabel(ContentNodeI node, DraftContext draftContext) {
-	    ContentServiceI svc = CmsManager.getInstance();
-	    return ContentNodeUtil.getLabel(node, svc, draftContext);
-	}
+    /**
+     * Get a human-readable label for a content node.
+     * 
+     * @param node
+     *            content node (never null)
+     * @return human readable label
+     */
+    public static String getLabel(ContentNodeI node, DraftContext draftContext) {
+        ContentServiceI svc = CmsManager.getInstance();
+        return ContentNodeUtil.getLabel(node, svc, draftContext);
+    }
 
-	/**
-	 * This method variant is retained for label providers only
-	 * @param node
-	 * @param contentService
-	 * @param draftContext
-	 * @return
-	 */
+    /**
+     * This method variant is retained for label providers only
+     * 
+     * @param node
+     * @param contentService
+     * @param draftContext
+     * @return
+     */
     public static String getLabel(ContentNodeI node, ContentServiceI contentService, DraftContext draftContext) {
         return LABEL_PROVIDER.getLabel(node, contentService, draftContext);
     }
 
-	/**
-	 * Get all navigable keys of a node.
-	 * 
-	 * @param node content node, never null
-	 * @return Set of {@link ContentKey} (never null)
-	 */
-	public static Set<ContentKey> getChildKeys(ContentNodeI node) {
-		return collectRelatedKeys(node, true);
-	}
+    /**
+     * Get all navigable keys of a node.
+     * 
+     * @param node
+     *            content node, never null
+     * @return Set of {@link ContentKey} (never null)
+     */
+    public static Set<ContentKey> getChildKeys(ContentNodeI node) {
+        return collectRelatedKeys(node, true);
+    }
 
-	/**
-	 * Recursively collect all reachable keys of the specified type.
-	 * 
-	 * @param node root node, never null
-	 * @param type content type to search (null for all types)
-	 * @return Set of {@link ContentKey} (never null)
-	 */
-	public static Set<ContentKey> collectReachableKeys(ContentNodeI node, ContentType type, ContentServiceI contentService, DraftContext draftContext) {
-		Set<ContentKey> s = new HashSet<ContentKey>();
-		collectReachableKeys(s, type, node, contentService, draftContext);
-		return s;
-	}
+    /**
+     * Recursively collect all reachable keys of the specified type.
+     * 
+     * @param node
+     *            root node, never null
+     * @param type
+     *            content type to search (null for all types)
+     * @return Set of {@link ContentKey} (never null)
+     */
+    public static Set<ContentKey> collectReachableKeys(ContentNodeI node, ContentType type, ContentServiceI contentService, DraftContext draftContext) {
+        Set<ContentKey> s = new HashSet<ContentKey>();
+        collectReachableKeys(s, type, node, contentService, draftContext);
+        return s;
+    }
 
-	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root, ContentServiceI contentService, DraftContext draftContext) {
-		if (root == null)
-			return;
-		Set<ContentKey> children = root.getChildKeys();
-		ContentTypeServiceI ts = contentService.getTypeService();		
-		for ( ContentKey k : children ) {
-			if (targetType == null || targetType.equals(k.getType())) {
-				collectedKeys.add(k);
-			}
-			// recursion, if node may have reachable keys of targetType
-			ContentTypeDefI def = ts.getContentTypeDefinition(k.getType());
-			Set<ContentType> reachableTypes = ContentTypeUtil.getReachableContentTypes(ts, def);
-			if (reachableTypes.contains(targetType)) {
-				collectReachableKeys(collectedKeys, targetType, contentService.getContentNode(k, draftContext), contentService, draftContext);
-			}
-		}
-	}
+    private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root, ContentServiceI contentService, DraftContext draftContext) {
+        if (root == null)
+            return;
+        Set<ContentKey> children = root.getChildKeys();
+        ContentTypeServiceI ts = contentService.getTypeService();
+        for (ContentKey k : children) {
+            if (targetType == null || targetType.equals(k.getType())) {
+                collectedKeys.add(k);
+            }
+            // recursion, if node may have reachable keys of targetType
+            ContentTypeDefI def = ts.getContentTypeDefinition(k.getType());
+            Set<ContentType> reachableTypes = ContentTypeUtil.getReachableContentTypes(ts, def);
+            if (reachableTypes.contains(targetType)) {
+                collectReachableKeys(collectedKeys, targetType, contentService.getContentNode(k, draftContext), contentService, draftContext);
+            }
+        }
+    }
 
-	/**
-	 * Get all reachable keys of a node.
-	 * 
-	 * @param node content node, never null
-	 * @return Set of {@link ContentKey} (never null)
-	 */
-	public static Set<ContentKey> getAllRelatedContentKeys(ContentNodeI node) {
-		return collectRelatedKeys(node, false);
-	}
+    /**
+     * Get all reachable keys of a node.
+     * 
+     * @param node
+     *            content node, never null
+     * @return Set of {@link ContentKey} (never null)
+     */
+    public static Set<ContentKey> getAllRelatedContentKeys(ContentNodeI node) {
+        return collectRelatedKeys(node, false);
+    }
 
-	/**
-	 * Add a content key to a relationship. If it's cardinality ONE, set the key as the value.
-	 * For cardinality MANY, it ensures uniqueness of keys.
-	 * 
-	 * @param relationship
-	 * @param key
-	 * 
-	 * @return true if the key was added/set
-	 */
-	public static boolean addRelationshipKey(RelationshipI relationship, ContentKey key) {
-		if (EnumCardinality.MANY.equals(relationship.getDefinition().getCardinality())) {
-			List<ContentKey> value = (List<ContentKey>) relationship.getValue();
-			if (value == null) {
-				value = new ArrayList<ContentKey>();
-				relationship.setValue(value);
-			} else {
-				if (value.contains(key)) {
-					return false;
-				}
-			}
-			value.add(key);
-		} else {
-			relationship.setValue(key);
-		}
-		return true;
-	}
+    /**
+     * Add a content key to a relationship. If it's cardinality ONE, set the key as the value. For cardinality MANY, it ensures uniqueness of keys.
+     * 
+     * @param relationship
+     * @param key
+     * 
+     * @return true if the key was added/set
+     */
+    public static boolean addRelationshipKey(RelationshipI relationship, ContentKey key) {
+        if (EnumCardinality.MANY.equals(relationship.getDefinition().getCardinality())) {
+            List<ContentKey> value = (List<ContentKey>) relationship.getValue();
+            if (value == null) {
+                value = new ArrayList<ContentKey>();
+                relationship.setValue(value);
+            } else {
+                if (value.contains(key)) {
+                    return false;
+                }
+            }
+            value.add(key);
+        } else {
+            relationship.setValue(key);
+        }
+        return true;
+    }
 
-	private static Set<ContentKey> collectRelatedKeys(ContentNodeI node, boolean navigableOnly) {
-		Set<ContentKey> s = new HashSet<ContentKey>();
-		Map<String, AttributeI> attrs = node.getAttributes();
+    private static Set<ContentKey> collectRelatedKeys(ContentNodeI node, boolean navigableOnly) {
+        Set<ContentKey> s = new HashSet<ContentKey>();
+        Map<String, AttributeI> attrs = node.getAttributes();
 
-		for (AttributeI attr : attrs.values()) {
-			if (attr instanceof RelationshipI) {
-				RelationshipI rel = (RelationshipI) attr;
-				RelationshipDefI relDef = (RelationshipDefI) rel.getDefinition();
-				if (!navigableOnly || relDef.isNavigable()) {
-					if (EnumCardinality.ONE.equals(relDef.getCardinality())) {
-						if (rel.getValue() != null) {
-							s.add((ContentKey) rel.getValue());
-						}
-					} else {
-						if (rel.getValue() != null) {
-							s.addAll((List<ContentKey>) rel.getValue());
-						}
-					}
-				}
-			}
-		}
-		return s;
-	}
+        for (AttributeI attr : attrs.values()) {
+            if (attr instanceof RelationshipI) {
+                RelationshipI rel = (RelationshipI) attr;
+                RelationshipDefI relDef = (RelationshipDefI) rel.getDefinition();
+                if (!navigableOnly || relDef.isNavigable()) {
+                    if (EnumCardinality.ONE.equals(relDef.getCardinality())) {
+                        if (rel.getValue() != null) {
+                            s.add((ContentKey) rel.getValue());
+                        }
+                    } else {
+                        if (rel.getValue() != null) {
+                            s.addAll((List<ContentKey>) rel.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        return s;
+    }
 
-	/**
-	 * Get an index of inverse (ie. child -> parent) relationships.
-	 * 
-	 * @return Map of {@link ContentKey} (child) -> Set of {@link ContentKey} (parents)
-	 */
-	public static Map<ContentKey, Set<ContentKey>> getParentIndex(Collection<ContentNodeI> nodes) {
-		Map<ContentKey, Set<ContentKey>> parentsByKey = new HashMap<ContentKey,Set<ContentKey>> (nodes.size());
+    /**
+     * Get an index of inverse (ie. child -> parent) relationships.
+     * 
+     * @return Map of {@link ContentKey} (child) -> Set of {@link ContentKey} (parents)
+     */
+    public static Map<ContentKey, Set<ContentKey>> getParentIndex(Collection<ContentNodeI> nodes) {
+        Map<ContentKey, Set<ContentKey>> parentsByKey = new HashMap<ContentKey, Set<ContentKey>>(nodes.size());
 
-		for (ContentNodeI node : nodes) {
-			Set<ContentKey> childKeys = ContentNodeUtil.getChildKeys(node);
+        for (ContentNodeI node : nodes) {
+            Set<ContentKey> childKeys = ContentNodeUtil.getChildKeys(node);
 
-			for (ContentKey childKey : childKeys) {
-				Set<ContentKey> parentKeys = parentsByKey.get(childKey);
-				if (parentKeys == null) {
-					parentKeys = new HashSet<ContentKey>();
-				}
-				parentKeys.add(node.getKey());
-				parentsByKey.put(childKey, parentKeys);
-			}
+            for (ContentKey childKey : childKeys) {
+                Set<ContentKey> parentKeys = parentsByKey.get(childKey);
+                if (parentKeys == null) {
+                    parentKeys = new HashSet<ContentKey>();
+                }
+                parentKeys.add(node.getKey());
+                parentsByKey.put(childKey, parentKeys);
+            }
 
-		}
-		return parentsByKey;
-	}
+        }
+        return parentsByKey;
+    }
 
-	public static void createNode(ContentKey key, CmsRequest request, AttributeI attr, ContentServiceI contentService, DraftContext draftContext){
+    public static void createNode(ContentKey key, CmsRequest request, AttributeI attr, ContentServiceI contentService, DraftContext draftContext) {
         ContentNodeI node = contentService.getContentNode(key, draftContext);
-        if(node == null){
-        	node = contentService.createPrototypeContentNode(key, draftContext);
+        if (node == null) {
+            node = contentService.createPrototypeContentNode(key, draftContext);
             request.addNode(node);
         }
-        
+
         setRelationshipValue(key.getId(), attr);
-	}
+    }
 
-	public static void setRelationshipValue(String value, AttributeI attr) {
-		RelationshipI r = (RelationshipI) attr;
-		RelationshipDefI relDef = (RelationshipDefI) r.getDefinition();
-		if (relDef.getContentTypes().size() != 1) {
-			throw new IllegalArgumentException(relDef.toString());
-		}
-		ContentType t = (ContentType) relDef.getContentTypes().iterator().next();
+    public static void setRelationshipValue(String value, AttributeI attr) {
+        RelationshipI r = (RelationshipI) attr;
+        RelationshipDefI relDef = (RelationshipDefI) r.getDefinition();
+        if (relDef.getContentTypes().size() != 1) {
+            throw new IllegalArgumentException(relDef.toString());
+        }
+        ContentType t = relDef.getContentTypes().iterator().next();
 
-		ContentKey key = new ContentKey(t, value);
-		if (r.getDefinition().getCardinality().equals(EnumCardinality.MANY)) {
-			List<ContentKey> list = new ArrayList<ContentKey>();
-			list.add(key);
-			attr.setValue(list);
-		} else {
-			attr.setValue(key);
-		}
-	}
-	
+        ContentKey key = ContentKey.getContentKey(t, value);
+        if (r.getDefinition().getCardinality().equals(EnumCardinality.MANY)) {
+            List<ContentKey> list = new ArrayList<ContentKey>();
+            list.add(key);
+            attr.setValue(list);
+        } else {
+            attr.setValue(key);
+        }
+    }
+
     /**
      * Return a string attribute
      * 
@@ -256,6 +247,23 @@ public class ContentNodeUtil {
         return null;
     }
 
+    /**
+     * Return a boolean attribute
+     * 
+     * @param node
+     * @param name
+     * @return
+     */
+    public static boolean getBooleanAttribute(ContentNodeI node, String name) {
+        AttributeI attribute = node.getAttribute(name);
+        if (attribute != null) {
+            Object value = attribute.getValue();
+            if (value instanceof Boolean) {
+                return (Boolean) value;
+            }
+        }
+        return false;
+    }
 
     /**
      * Return an integer attribute
@@ -292,7 +300,5 @@ public class ContentNodeUtil {
         }
         return null;
     }
-    
-    
-    
+
 }

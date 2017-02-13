@@ -49,6 +49,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private static final String PAYMENTECH_RETURN_TX_CC_NEW = "RF";//Orbital reconciliation file uses RF for Credit card cashbacks.
 	private static final String PAYMENTECH_RETURN_TX_EC = "N";
 	private static final String PAYMENTECH_RETURN_TX_EC_NEW = "ER";//Orbital reconciliation file uses ER for Echeck cashbacks.
+	private static final String PAYPAL_TRANSACTION_STATUS="C";
 	
 	private static final String PAYPAL_FEE_TX= "Fee";
 	private List<String> settlementIds = null;
@@ -309,6 +310,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 			return null;
 		}
 		
+		StringBuffer missedTrasactionBufer=new StringBuffer();
+		
 		String gatewayOrderId = "";
 		String saleId = "";
 		int totalTrxns = processPPFee(ppStlmntTrxns, settlementInfos);
@@ -353,6 +356,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 					isTrxnExecuted = true;
 				} else {
 					LOGGER.info("Transaction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
+					missedTrasactionBufer.append(gatewayOrderId+",").append("\n");
 				}
 				
 				if(isTrxnExecuted){
@@ -373,11 +377,18 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 					settlementInfos.add(ppInfo);
 				} catch (Exception e) {
 					// Not expecting as of now
+					missedTrasactionBufer.append(gatewayOrderId+",").append("\n");
 					LOGGER.error("[PayPal Batch]", e);
 				}
 			}
 		}
 
+		// send email communication with list of paypal transaction was not processed  to APP support 
+		
+		if(!missedTrasactionBufer.toString().isEmpty()){
+			SettlementLoaderUtil.sendEmailNotification("List of Not Processed PayPal Transaction settlement  GatewayOrderId", missedTrasactionBufer.toString(),null);
+
+		}
 		return settlementInfos;
 	}
 	
@@ -409,6 +420,11 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		cbModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 		cbModel.setTransactionSource(EnumTransactionSource.SYSTEM);
 		cbModel.setOriginalTxDate(date);
+		// FIN-21
+		if(PAYPAL_TRANSACTION_STATUS.equalsIgnoreCase(trxn.getStatus())){
+			cbModel.setTrxnComplete(true);
+
+		}
 	}
 	
 	private ErpAffiliate getErpAffiliate(String accountId) {

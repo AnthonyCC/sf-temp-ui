@@ -58,7 +58,7 @@
 		if("true".equalsIgnoreCase(donStr)) {
 			
 			CmsManager manager = CmsManager.getInstance();	
-			ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
+			ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
 			ContentNodeI contentNode = manager.getContentNode(contentKey);
 			
 			if(null != contentNode){

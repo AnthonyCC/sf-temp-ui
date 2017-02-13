@@ -66,7 +66,7 @@ class DbContentUtil {
 		} else if (EnumAttributeType.DOUBLE.equals(type)) {
 			return Double.valueOf(value);
 		} else if (EnumAttributeType.RELATIONSHIP.equals(type)) {
-			return ContentKey.decode(value);
+			return ContentKey.getContentKey(value);
 		} else if (EnumAttributeType.DATE.equals(type)) {
 			try {
 				return dateFormat.parse(value);

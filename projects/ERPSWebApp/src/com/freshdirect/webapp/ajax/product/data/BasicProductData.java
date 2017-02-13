@@ -127,6 +127,16 @@ public abstract class BasicProductData implements Serializable {
 	 */
 	protected String grpPrice;
 	
+     /**
+     * identify for group
+     */
+    protected String grpId;
+    
+    /**
+     * version for group
+     */
+    protected Integer grpVersion;
+	
 	// ============================  Transient data - postprocess may be needed!  ============================
 	
 	/**
@@ -326,7 +336,19 @@ public abstract class BasicProductData implements Serializable {
 	}
 	public void setGrpPrice( String grpPrice ) {
 		this.grpPrice = grpPrice;
-	}	
+	}
+    public String getGrpId() {
+        return grpId;
+    }
+    public void setGrpId(String grpId) {
+        this.grpId = grpId;
+    }
+    public Integer getGrpVersion() {
+        return grpVersion;
+    }
+    public void setGrpVersion(Integer grpVersion) {
+        this.grpVersion = grpVersion;
+    }
 	public boolean isBazaarVoice() {
 		return bazaarVoice;
 	}	

@@ -1752,15 +1752,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			// START Pass the authorized amount for cash back with it's affiliates
 			
-			if (departmentLevel) {
+			if (departmentLevel && EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+					EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
 
 				Map<ErpAffiliate, Double> cashBackMap = getAuthorizedAffiliateAmount(fdAmount,
 						auths);
 				fdAmount = null != cashBackMap.get(FD) ? cashBackMap.get(FD) : 0.0;
-				fdxAmount = null != cashBackMap.get(FDX) ? cashBackMap.get(FDX) : 0.0;
-				fdwAmount = null != cashBackMap.get(FDW) ? cashBackMap.get(FDW) : 0.0;
-				usqAmount = null != cashBackMap.get(USQ) ? cashBackMap.get(USQ) : 0.0;
-				bcAmount = null != cashBackMap.get(BC) ? cashBackMap.get(BC) : 0.0;
+				fdwAmount = null != cashBackMap.get(FDW) ? cashBackMap.get(FDW) + fdwAmount : fdwAmount>0.0?fdwAmount:0.0;
+				fdxAmount = null != cashBackMap.get(FDX) ? cashBackMap.get(FDX) : fdxAmount;
+				usqAmount = null != cashBackMap.get(USQ) ? cashBackMap.get(USQ) : usqAmount;
+				bcAmount = null != cashBackMap.get(BC) ? cashBackMap.get(BC) : bcAmount;
 
 			}
 			// END Pass the authorized amount for cash back with it's affiliates
@@ -2669,15 +2670,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	public void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String accountNumber) {
-
-			EnumRestrictionReason restrictionReason = PaymentFraudManager.translateRestrictionReason(paymentResponse);
-			String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription();		
-			ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
-			if (paymentMethod != null) { 
-				PaymentFraudManager.addRestrictedPaymentMethod(paymentMethod, restrictionReason, note);
-				updateECheckAlertForSale(saleId);
-			}
+		
+		LOGGER.info("Marking payment method as BAD for sale : "+saleId+" for payment method type  of "+paymentMethodType);
+		EnumRestrictionReason restrictionReason = PaymentFraudManager.translateRestrictionReason(paymentResponse);
+		String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription()+" for order "+saleId;		
+		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
+		if (paymentMethod != null) { 
+			LOGGER.info("Found matching payment method to be marked as BAD for sale : "+saleId+" . The payment method id is "+paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"" );
+			PaymentFraudManager.addRestrictedPaymentMethod(paymentMethod, restrictionReason, note);
+			updateECheckAlertForSale(saleId);
 			
+		}
 	}
 	
 	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
@@ -2732,7 +2735,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					ErpCustomerAlertModel customerAlert = new ErpCustomerAlertModel();
 					if (setOnAlert) {
 						activityType = EnumAccountActivityType.PLACE_ALERT;
-						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure.";							
+						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure on order "+saleId;							
 						customerAlert.setCustomerId(pk.getId());
 						customerAlert.setAlertType(EnumAlertType.ECHECK.getName());
 						customerAlert.setCreateDate(new Date());

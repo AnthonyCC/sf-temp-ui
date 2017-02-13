@@ -17,7 +17,7 @@ public class PopulatorUtil {
 	public static final ProductModel getProduct( String productId, String categoryId ) {
 		if ( categoryId == null ) {
 			// get product in its primary home
-			return (ProductModel)ContentFactory.getInstance().getContentNodeByKey( new ContentKey(ContentType.get( "Product" ), productId) );
+			return (ProductModel)ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get( "Product" ), productId) );
 		} else {
 			// get product in specified category context
 			return ContentFactory.getInstance().getProductByName( categoryId, productId );
@@ -64,7 +64,7 @@ public class PopulatorUtil {
 			// usual business
 			return false;
 		}
-
+		
 		if (null == prd.getSkus() || prd.getSkus().isEmpty()) {
 			// No SKUs found. This is really bad.
 			// Let the execution go and break somewhere else

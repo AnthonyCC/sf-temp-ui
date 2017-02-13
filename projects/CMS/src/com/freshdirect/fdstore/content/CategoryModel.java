@@ -245,7 +245,7 @@ public class CategoryModel extends ProductContainer {
 				ProductModel productModel = null;
 				ProductModel prodModel = null;
 				try {
-					SkuModel skuModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, sku)));
+					SkuModel skuModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, sku)));
 					if(null !=skuModel){
 						prodModel = skuModel.getProductModel();
 						if(isPreview){

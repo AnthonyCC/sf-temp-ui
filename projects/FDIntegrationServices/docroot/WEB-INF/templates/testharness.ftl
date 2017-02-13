@@ -1156,6 +1156,12 @@ function loadStuff() {
 	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
   	$("#payload").val(postdata);
 
+  } else if (loaddata == "BrowseGroupContentsWeb") {
+  	$("#url").val("/browse/groupproducts/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
+	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
+  	$("#payload").val(postdata);
+
   } else if (loaddata == "BrowseCouponDepartment") {
   	$("#url").val("/coupon/browse/departments/");
   	$("#header").val('');
@@ -1615,7 +1621,8 @@ function doStuff() {
   <option value="BrowseCategoryWeb">BROWSE - CATEGORY Web</option>
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
-  <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
+  <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option>
+  <option value="BrowseGroupContentsWeb">BROWSE - GROUP CONTENTS Web</option>
   <option value="getAllProductsForCategory">BROWSE - ALL PRODUCTS FOR CATEGORY</option>
   <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH REFINE </option>
   <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>

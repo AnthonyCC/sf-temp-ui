@@ -1,23 +1,18 @@
 package com.freshdirect.webapp.ajax.modulehandling;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.freshdirect.fdstore.FDNotFoundException;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
-import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
-import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
+import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
 
 public class ModuleHandlingServlet extends BaseJsonServlet {
 
@@ -29,45 +24,45 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
     }
 
     @Override
-    protected int getRequiredUserLevel() {
-        return FDUserI.GUEST;
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-        try {
-            HttpSession session = request.getSession();
-            String moduleContentKey = null;
-            String moduleId = request.getParameter("moduleId");
-            boolean viewAll = Boolean.parseBoolean(request.getParameter("viewAll"));
-            String moduleVirtualCategory = request.getParameter("moduleVirtualCategory");
+        WelcomePageData result = new WelcomePageData();
+        ModuleData iconModuleData = new ModuleData();
+        ModuleConfig iconCarouselModuleConfig = new ModuleConfig();
+        List<IconData> icons = new ArrayList<IconData>();
+        List<ModuleConfig> moduleConfigs = new ArrayList<ModuleConfig>();
+        HashMap<String, ModuleData> moduleDatas = new HashMap<String, ModuleData>();
+        IconData icon = new IconData();
 
-            if (moduleId != null) {
-                moduleContentKey = FDContentTypes.MODULE + ":" + moduleId;
-            }
+        iconCarouselModuleConfig.setContentTitle("CarouselTitle");
+        iconCarouselModuleConfig.setModuleInstanceId("ic_vik");
+        iconCarouselModuleConfig.setModuleTitle("ModuleTitle");
+        iconCarouselModuleConfig.setModuleTitleTextBanner("ModuleTitleTextBanner");
+        iconCarouselModuleConfig.setShowContentTitle(false);
+        iconCarouselModuleConfig.setShowHeaderGraphic(false);
+        iconCarouselModuleConfig.setShowHeaderSubtitle(false);
+        iconCarouselModuleConfig.setShowHeaderTitle(false);
+        iconCarouselModuleConfig.setShowHeroSubtitle(false);
+        iconCarouselModuleConfig.setShowModuleTitleTextBanner(true);
+        iconCarouselModuleConfig.setShowModuleTitle(true);
+        iconCarouselModuleConfig.setShowViewAllButton(false);
+        iconCarouselModuleConfig.setSourceType("ICON_CAROUSEL_MODULE");
+        iconCarouselModuleConfig.setViewAllButtonLink("/browse.jsp?id=fru");
 
-            // Checklogin status is not applicable for AJAX calls so we need this.
-            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+        moduleConfigs.add(iconCarouselModuleConfig);
 
-            ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
-
-            if (viewAll) {
-                result.getConfig().get(0).setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
-            }
-
-            result.getConfig().get(0).setModuleVirtualCategory(moduleVirtualCategory);
-
-            Map<String, ModuleContainerData> moduleContent = new HashMap<String, ModuleContainerData>();
-
-            moduleContent.put("moduleContent", result);
-
-            writeResponseData(response, moduleContent);
-        } catch (InvalidFilteringArgumentException e) {
-            returnHttpError(500, "Unable to load Module", e);
-        } catch (FDResourceException e) {
-            returnHttpError(500, "Unable to load Module", e);
-        } catch (FDNotFoundException e) {
-            returnHttpError(404, "Unable to load Module", e);
+        icon.setIconImage("/media/images/product/bakery/cake/bak_cupcake_fd_c.jpg");
+        icon.setIconLink("/browse.jsp?id=fru");
+        icon.setIconLinkText("Trendy Fruits");
+        for (int i = 0; i < 12; i++) {
+            icons.add(icon);
         }
+        iconModuleData.setIcons(icons);
+        moduleDatas.put(iconCarouselModuleConfig.getModuleInstanceId(), iconModuleData);
+
+        result.setConfig(moduleConfigs);
+        result.setData(moduleDatas);
+
+        writeResponseData(response, result);
     }
+
 }

@@ -132,7 +132,7 @@ Threads started:
 							String skuCode = samplerRef.getRandomItem(R).toString();
 							FDEventUtil.logRecommendationImpression(
 								variants[R.nextInt(variants.length)],
-								new ContentKey(FDContentTypes.SKU,skuCode)
+								ContentKey.getContentKey(FDContentTypes.SKU,skuCode)
 							);
 						}
 					}

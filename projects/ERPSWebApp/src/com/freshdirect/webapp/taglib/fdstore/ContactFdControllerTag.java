@@ -137,9 +137,6 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			for (Iterator iterator = faqNodeIdList.iterator(); iterator
 					.hasNext();) {
 				String nodeId = (String) iterator.next();
-//				ContentKey key = new ContentKey(FDContentTypes.FAQ, nodeId);
-//				CmsManager          manager     = CmsManager.getInstance();	
-//				ContentNodeI contentNode = manager.getContentNode(key);	
 				ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(nodeId);
 				topFaqNodes.add(contentNode);
 			}

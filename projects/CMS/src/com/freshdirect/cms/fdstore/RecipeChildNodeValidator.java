@@ -32,7 +32,7 @@ public class RecipeChildNodeValidator implements ContentValidatorI {
 
 	private void addDefaultVariantToRecipe(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request) {
 		
-		ContentKey variantKey = new ContentKey(FDContentTypes.RECIPE_VARIANT, node.getKey().getId() + "_default");
+		ContentKey variantKey = ContentKey.getContentKey(FDContentTypes.RECIPE_VARIANT, node.getKey().getId() + "_default");
 		
 		ContentNodeI variantNode = checkForChild(delegate, service, draftContext, node, "variants", variantKey, request);
 		if (variantNode!=null) {
@@ -44,7 +44,7 @@ public class RecipeChildNodeValidator implements ContentValidatorI {
 	
 	private void addMainSectionToVariant(ContentValidationDelegate delegate, ContentServiceI service, DraftContext draftContext, ContentNodeI node, CmsRequestI request) {
 		
-		ContentKey sectionKey = new ContentKey(FDContentTypes.RECIPE_SECTION, node.getKey().getId() + "_main");
+		ContentKey sectionKey = ContentKey.getContentKey(FDContentTypes.RECIPE_SECTION, node.getKey().getId() + "_main");
 		
 		ContentNodeI sectionNode = checkForChild(delegate, service, draftContext, node, "sections", sectionKey, request);
 		if (sectionNode != null) {

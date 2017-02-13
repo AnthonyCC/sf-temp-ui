@@ -41,8 +41,6 @@
 	if (showProducts) {
 		String tagName = request.getParameter("tag");
 		
-		// request.setAttribute("selTag", ContentKey.decode(tagName));
-		
 		List<ProductModel> prds = (List<ProductModel>) obj.getTaggedProducts("Tag:"+tagName);
 		Collections.sort(prds, new Comparator<ProductModel>() {
 			public int compare(ProductModel p1, ProductModel p2) {

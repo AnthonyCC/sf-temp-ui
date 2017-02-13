@@ -2,20 +2,14 @@
 
 /**
  * @param item
- * @param? moduleData
- * @param? itemIndex
  */
 {template .iconCarouselItem}
-<li class="portrait-item" {if $itemIndex}data-itemindex="{$itemIndex}"{/if}>
+<li class="portrait-item">
   <div class="icon-image">
-    <a href="{if $item.iconLink}{$item.iconLink}{/if}" {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$item.iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}" {/if}>
-    
-
-		<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$item.iconImage}" alt="{if $item.iconLinkText}{else}icon{/if}" />
-
-     {if not $moduleData or not $moduleData.hideProductName}
-  {if $item.iconLinkText}{$item.iconLinkText}{/if}
-  {/if} </a>
+    <a href="{$item.iconLink}">
+      <img src="{$item.iconImage}" alt="icon">
+    </a>
   </div>
+  <a href="$item.iconLink">{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
 </li>
 {/template}

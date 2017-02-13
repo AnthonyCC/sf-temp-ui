@@ -220,7 +220,7 @@ public class CmsManager implements ContentServiceI {
             theKey = null;
         }
 
-        return theKey != null ? new ContentKey(FDContentTypes.STORE, theKey) : null;
+        return theKey != null ? ContentKey.getContentKey(FDContentTypes.STORE, theKey) : null;
     }
 
     /**

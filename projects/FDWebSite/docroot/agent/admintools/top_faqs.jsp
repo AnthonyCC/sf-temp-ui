@@ -36,7 +36,7 @@ CmsManager          manager     = CmsManager.getInstance();
 ContentTypeServiceI typeService = manager.getTypeService();
 // FIXME FDX version?
 final boolean isFd = "FreshDirect".equalsIgnoreCase( manager.getSingleStoreKey().getId() );
-final ContentKey key = isFd ? new ContentKey(FDContentTypes.FDFOLDER, "FAQ") : new ContentKey(FDContentTypes.FDFOLDER, "FAQ_fdx") ;
+final ContentKey key = isFd ? ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ") : ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ_fdx") ;
 ContentNodeI contentNode = manager.getContentNode(key);
 %><tmpl:insert template='/common/template/no_border_nonav.jsp'>
 

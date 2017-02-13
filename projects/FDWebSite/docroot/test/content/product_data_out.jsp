@@ -12,12 +12,12 @@
 		ProductModel pRef = null;
 		SkuModel sRef = null;
 		
-		pRef = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:"+pId));
+		pRef = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:"+pId));
 		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		//if not a product, check for a SKU instead
 		if (pRef == null) {
 			//get sku model
-			sRef = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Sku:"+pId));
+			sRef = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Sku:"+pId));
 		}
 
 		if (pRef instanceof ProductModel || sRef instanceof SkuModel) {

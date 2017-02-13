@@ -21,7 +21,7 @@
 <%
 	final String nodeKey = "CmsReport:scarabRules";
     final CmsManager contentService = CmsManager.getInstance();
-	if ( contentService.getContentNode( ContentKey.decode( nodeKey ) ) == null ) {
+	if ( contentService.getContentNode( ContentKey.getContentKey( nodeKey ) ) == null ) {
 		response.sendRedirect("test_notavail.jsp");
 	}
 %>
@@ -36,7 +36,7 @@
 	<body>
 		<%
 		
-			ITable attribute = (ITable)  contentService.getContentNode( ContentKey.decode( nodeKey ) ).getAttributeValue( "results" );
+			ITable attribute = (ITable)  contentService.getContentNode( ContentKey.getContentKey( nodeKey ) ).getAttributeValue( "results" );
 			
 			AttributeDefI[] columnDefs = attribute.getColumnDefinitions();
 			List<ITable.Row> rows = attribute.getRows();
@@ -58,17 +58,17 @@
 			
 				String type = (String)values[1];
 				if ( "SCARAB_YMAL_INCLUDE".equals( type ) ) {
-					listParentInclude.add( ContentKey.decode( (String)values[0] ) );				
-					listChildInclude.add( ContentKey.decode( (String)values[2] ) );				
+					listParentInclude.add( ContentKey.getContentKey( (String)values[0] ) );				
+					listChildInclude.add( ContentKey.getContentKey( (String)values[2] ) );				
 				} else if ( "SCARAB_YMAL_EXCLUDE".equals( type ) ) {
-					listParentExclude.add( ContentKey.decode( (String)values[0] ) );				
-					listChildExclude.add( ContentKey.decode( (String)values[2] ) );				
+					listParentExclude.add( ContentKey.getContentKey( (String)values[0] ) );				
+					listChildExclude.add( ContentKey.getContentKey( (String)values[2] ) );				
 				} else if ( "SCARAB_YMAL_PROMOTE".equals( type ) ) {
-					listParentPromote.add( ContentKey.decode( (String)values[0] ) );				
-					listChildPromote.add( ContentKey.decode( (String)values[2] ) );				
+					listParentPromote.add( ContentKey.getContentKey( (String)values[0] ) );				
+					listChildPromote.add( ContentKey.getContentKey( (String)values[2] ) );				
 				} else if ( "SCARAB_YMAL_DEMOTE".equals( type ) ) {
-					listParentDemote.add( ContentKey.decode( (String)values[0] ) );				
-					listChildDemote.add( ContentKey.decode( (String)values[2] ) );				
+					listParentDemote.add( ContentKey.getContentKey( (String)values[0] ) );				
+					listChildDemote.add( ContentKey.getContentKey( (String)values[2] ) );				
 				}			
 			}
 			

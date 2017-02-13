@@ -51,8 +51,8 @@ public class CompositeContentServiceTest extends TestCase {
     private final static ContentType BAR_TYPE = ContentType.get("Bar");
     private final static ContentType VOODOO_TYPE = ContentType.get("VooDoo");
 
-    private final static ContentKey  FOO_KEY  = new ContentKey(FOO_TYPE, "fooNode");
-    protected final static ContentKey  BAR_KEY  = new ContentKey(BAR_TYPE, "barNode");
+    private final static ContentKey  FOO_KEY  = ContentKey.getContentKey(FOO_TYPE, "fooNode");
+    protected final static ContentKey  BAR_KEY  = ContentKey.getContentKey(BAR_TYPE, "barNode");
 
     public void testGetAllContentKeys() {
         Set s = service.getContentKeys(DraftContext.MAIN);
@@ -90,11 +90,11 @@ public class CompositeContentServiceTest extends TestCase {
         assertEquals("barValue", barNode.getAttributeValue("BAR"));
         assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
 
-        assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent"), DraftContext.MAIN));
+        assertNull(service.getContentNode(ContentKey.getContentKey(FOO_TYPE, "nonexistent"), DraftContext.MAIN));
     }
 
     public void testEditing() throws ContentValidationException {
-        ContentKey zzzKey = new ContentKey(FOO_TYPE, "zzz");
+        ContentKey zzzKey = ContentKey.getContentKey(FOO_TYPE, "zzz");
         ContentNodeI node = service.createPrototypeContentNode(zzzKey, DraftContext.MAIN);
         node.getAttribute("FOO").setValue("zzz_foo");
         node.getAttribute("BAZ").setValue("zzz_baz");
@@ -108,7 +108,7 @@ public class CompositeContentServiceTest extends TestCase {
     }
 
     public void testEditing2() throws ContentValidationException {
-        ContentKey zzzKey = new ContentKey(FOO_TYPE, "zzz2");
+        ContentKey zzzKey = ContentKey.getContentKey(FOO_TYPE, "zzz2");
         ContentNodeI node = service.createPrototypeContentNode(zzzKey, DraftContext.MAIN);
         node.setAttributeValue("FOO", "zzz_foo");
         node.setAttributeValue("BAZ", "zzz_baz");

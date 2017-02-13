@@ -35,7 +35,8 @@ public class GlobalNavTag extends SimpleTagSupport {
                 // Current global nav decision logic... Might be changed in the future.
                 globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
                 ctx.setAttribute(name, DataPotatoField.digGlobalNav(CMSModelToSoyDataConverter.createGlobalNavData(globalNavigationModel, user)));
-            } catch (FDResourceException e) {
+            } catch (Exception e) {
+            	e.printStackTrace();
                 if (globalNavigationModel != null) {
                     LOGGER.error("Failed to load global navigation model " + globalNavigationModel.toString(), e);
                 } else {

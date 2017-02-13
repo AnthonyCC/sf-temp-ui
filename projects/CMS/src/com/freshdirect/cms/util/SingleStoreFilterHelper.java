@@ -41,7 +41,7 @@ public class SingleStoreFilterHelper {
 	public static List<ContentNodeI> filterContentNodes(final String storeId, Collection<ContentNodeI> nodes, ContentServiceI svc, DraftContext draftContext) {
 		Iterator<ContentNodeI> it = nodes.iterator();
 		
-		final ContentKey _storeKey = ContentKey.decode(FDContentTypes.STORE + ":" + storeId);
+		final ContentKey _storeKey = ContentKey.getContentKey(FDContentTypes.STORE + ":" + storeId);
 		
 		List<ContentNodeI> result = new ArrayList<ContentNodeI>(nodes.size());
 

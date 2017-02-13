@@ -35,6 +35,10 @@
 	 	<path>/WEB-INF/tags/home/OASFeature.tag</path>
 	</tag-file>
 	<tag-file>
+	 	<name>OAShomepageredesign</name>
+	 	<path>/WEB-INF/shared/tags/home/OAShomepage.tag</path>
+	</tag-file>
+	<tag-file>
 	 	<name>homePageLetter</name>
 	 	<path>/WEB-INF/tags/home/homePageLetter.tag</path>
 	</tag-file>

@@ -28,19 +28,16 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
-import com.freshdirect.ecomm.gateway.ReconciliationService;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
 
 public class SettlementFileProcessor {
 
 	private static final Category LOGGER = LoggerFactory
-			.getInstance(SettlementFileProcessor.class);
+			.getInstance(PaymentechSettlementLoader.class);
 	private static final String[] VALID_PDE_TOKENS = { "HPDE0017", "RPDE0017S", "HPDE0018",
 			"RPDE0018S", "RPDE0018D", "HPDE0020", "RPDE0022" };
 
@@ -177,14 +174,12 @@ public class SettlementFileProcessor {
 			isFin = new FileInputStream(finFile);
 
 			PaymentechFINParser finParser = new PaymentechFINParser();
-			
+			PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome()
+					.create();
 			List<String> ppSettlementIds = null;
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				Map<String, Object> lockInfo = null;
-				lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(null);
-				
-				ppSettlementIds = (List<String>) lockInfo.get("settlementIds");
-				finParser.setClient(new PaymentechFINParserClient(builder, reconSB,
+				ppSettlementIds = ppReconSB.acquirePPLock(null);
+				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB,
 						ppSettlementIds));
 			} else {
 				finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
@@ -193,9 +188,7 @@ public class SettlementFileProcessor {
 			finParser.parseFile(isFin);
 
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-					
-				PayPalReconciliationService.getInstance().releasePPLock(ppSettlementIds);
-				
+				ppReconSB.releasePPLock(ppSettlementIds);
 			}
 
 			LOGGER.info("Finished loading FIN File");
@@ -222,10 +215,6 @@ public class SettlementFileProcessor {
 			if (isPde != null)
 				isPde.close();
 			builder.writeTo(f);
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-				ReconciliationService.getInstance().sendFile(new FileInputStream(f), fileName);
-			}
 		}
 		return fileName;
 	}

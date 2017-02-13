@@ -9,6 +9,9 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 
 <%@ page import='java.text.*' %>
 
@@ -19,6 +22,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+
 <% //expanded page dimensions
 final int W_YA_MANAGE_TOTAL = 970;
 final int W_YA_CSICON = 40;
@@ -27,6 +31,11 @@ final int W_YA_CT = 328;
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean selectedAddressIsHome = (user != null && (EnumServiceType.HOME).equals(user.getSelectedServiceType())) ? true : false;
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+String pageTemplate = "/common/template/no_nav.jsp";
+if (mobWeb) {
+	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+}
 %>
 <%!
 private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
@@ -50,11 +59,8 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		sb.append(endTimeCal.get(Calendar.AM_PM)==1?" PM":" AM");
 		return sb.toString();
 	}
-    
-
-
 %>
-<tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="manage_account"></fd:SEOMetaTag>
@@ -104,14 +110,15 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	}
 %>
 </fd:OrderHistoryInfo>
+<div class="manage-account-container">
 <div class="manage-account-heading">
-    <h1 tabindex="0" class="title18 text-left no-margin">Welcome to Your Account</h1>
+    <h1 tabindex="0" class="title18 text-left no-margin"><%= mobWeb ? "" : "Welcome to " %>Your Account</h1>
     <p class="text13 text-left no-margin">If you need to make any changes or updates to your account information, this is the place to do it.</p>
 </div>
 
-<table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+<table width="<%= mobWeb ? "100%" : W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="<%= W_YA_MAIN %>" valign="top" >
+<td width="<%= mobWeb ? "100%" : W_YA_MAIN %>" valign="top" >
 <!-- ct user logo -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td valign="top" class="text13">
@@ -137,31 +144,30 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	</table>
 	<% } %>
     </td></tr><tr>
-	<td valign="top" class="text13"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
-		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.<br>
-		<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><b>Reorder</b> from Past Orders</div></a>
+	<td valign="top" class="text13 manage_account"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
+		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>"><%= mobWeb ? "Order History" : "Your Orders" %></a></font><br><span class="manage_account_desc">Check your order status and update open orders.</span><br>
+		<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><%= mobWeb ? "Last Order" : "<b>Reorder</b> from Past Orders" %></div></a>
 		<br>
 		
-		<% if ( user.isEligibleForStandingOrders() ) { %>					
+		<% if ( user.isEligibleForStandingOrders() &&  !mobWeb) { %>
 			<font class="text13bold">
 			<a href="<%=response.encodeURL("/quickshop/standing_orders.jsp")%>">Standing Orders</a>
-			</font><br>Review your recurring orders and make changes.
+			</font><br><span class="manage_account_desc">Review your recurring orders and make changes.</span>
 			<br><br>
 		<%}%>
 		<%if(user.isEligibleForPreReservation()){%>
 			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">
 				<% if (selectedAddressIsHome) { %><a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>"><% } %><span class="text13bold">Reserve a Delivery Time</span><% if (selectedAddressIsHome) { %></a><% } %>
-				<% if (!selectedAddressIsHome) { %><span>(Only available for Home Delivery)</span><% } %>
-				<div>Reserve your delivery timeslot before you place your order.</div>
+				<% if (!selectedAddressIsHome) { %><span class="manage_account_desc">(Only available for Home Delivery)</span><% } %>
+				<div class="manage_account_desc">Reserve your delivery timeslot before you place your order.</div>
 			</div>
 			<br />
 		<%}%>
-		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())){%>
-			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">
-				
+		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId()) && !mobWeb){%>
+			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">				
 				<% if (selectedAddressIsHome) { %><a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>"><% } %><span class="text13bold">FreshDirect DeliveryPass</span><% if (selectedAddressIsHome) { %></a><% } %>
-				<% if (!selectedAddressIsHome) { %><span>(Only available for Home Delivery)</span><% } %>
-				<div>See your membership and renewal details.</div>
+				<% if (!selectedAddressIsHome) { %><span class="manage_account_desc">(Only available for Home Delivery)</span><% } %>
+				<div class="manage_account_desc">See your membership and renewal details.</div>
 			</div>
 			<br />
 		<%}%>
@@ -169,17 +175,17 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery Addresses</a>
 		</font><br>
-		Update your delivery address information.
+		<span class="manage_account_desc">Update your delivery address information.</span>
 		<br><br>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a>
 		</font><br>
-		Update your payment information or add a new payment option.
+		<span class="manage_account_desc">Update your payment information or add a new payment option.</span>
 		<br><br>
 		<font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">Your Account Preferences</a>
+		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>"><%= mobWeb ? "" : "Your " %>Account Preferences</a>
 		</font><br>
-		Change your user name, password, and other account preferences.
+		<span class="manage_account_desc">Change your user name, password, and other account preferences.</span>
 		<br><br>
 		<% if (!FDStoreProperties.isEmailOptdownEnabled()) { %>
 			<%-- <a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>"><font class="text13bold">President's Picks Newsletter</a></font><br />
@@ -188,28 +194,30 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
 		</font><br>
-		Change your e-mail reminder preferences.
+		<span class="manage_account_desc">Change your e-mail reminder preferences.</span>
 		<br><br>
+		<% if (!mobWeb){ %>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>
 		<br>
-		Visit "Reorder" to view, edit and shop with your shopping lists.
+		<span class="manage_account_desc">Visit "Reorder" to view, edit and shop with your shopping lists.</span>
 		<br><br>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		Tell us your food preferences.
+		<span class="manage_account_desc">Tell us your food preferences.</span>
 		<br><br>
+		<% } %>
 		<% 
 			/*
 				Changing to site feature
 				if(FDStoreProperties.isGiftCardEnabled()) { 
 			*/
-			if(user.isGiftCardsEnabled()) {
+			if(user.isGiftCardsEnabled() && !mobWeb) {
 		%>
 				<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>" class="text13bold">Gift Cards</a>
 				<br>
-				View your history of received and purchased FreshDirect Gift Cards.
+				<span class="manage_account_desc">View your history of received and purchased FreshDirect Gift Cards.</span>
 				<br><br>
 		<% } %>
 		<% if(!FDStoreProperties.isExtoleRafEnabled() && user !=null && user.isReferralProgramAvailable()) { 
@@ -224,21 +232,21 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		Invite your friends and earn $$$ credits.
+		<span class="manage_account_desc">Invite your friends and earn $$$ credits.</span>
 		<br><br>
 		<% } }else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
 		 <font class="text13bold">
 		<a href="<%=response.encodeURL(FDStoreProperties.getPropExtoleMicrositeUrl())%>" target="_blank">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		Invite your friends and earn $$$ credits.
+		<span class="manage_account_desc">Invite your friends and earn $$$ credits.</span>
 		<br><br>
 		<% }  %>	<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
-		View your credit balance and credit history.
+		<span class="manage_account_desc">View your credit balance and credit history.</span>
 		<br><br>
 	</td>
-	<td width="30"><img src="/media_stat/images/layout/clear.gif" ALT="" width="30" height="1"></td>
+	<td width="30" class="NOMOBWEB"><img src="/media_stat/images/layout/clear.gif" ALT="" width="30" height="1"></td>
 	</tr>
 </table>
 </td>
@@ -247,7 +255,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 <TD width="1" bgcolor="#ff9900"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 <TD width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 <% } %>
-<td valign="top" width="<%= W_YA_CT %>">
+<td valign="top" width="<%= W_YA_CT %>" class="NOMOBWEB">
 	<!-- ct user logo -->
 	<% 
     if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
@@ -319,6 +327,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
       <p>from <strong>Home Page</strong></p>
     </div>
   </a>
+</div>
 </div>
  </tmpl:put>
 </tmpl:insert>

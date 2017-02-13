@@ -29,7 +29,7 @@ public class DraftApplicatorService {
 
         for (DraftChange draftChange : draftChanges) {
             boolean contentNodeFound = false;
-            ContentKey draftChangeKey = ContentKey.decode(draftChange.getContentKey());
+            ContentKey draftChangeKey = ContentKey.getContentKey(draftChange.getContentKey());
             ContentNodeI prevHandledNode = foundContentNodes.get(draftChangeKey);
 
             if (prevHandledNode != null) {
