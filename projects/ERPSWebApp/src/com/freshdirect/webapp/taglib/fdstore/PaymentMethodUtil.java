@@ -714,8 +714,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
                 return VISA;
             }
             
-            // for MASTERCARD prefix is between 51..55 and length must be 16
-        } else if (digit2.compareTo("51")>=0 && digit2.compareTo("55")<=0 && EnumCardType.MC.getFdName().equalsIgnoreCase(brand)) {
+            
+        } //else if (digit2.compareTo("51")>=0 && digit2.compareTo("55")<=0 && EnumCardType.MC.getFdName().equalsIgnoreCase(brand)) {
+        //https://github.com/thephpleague/omnipay-common/pull/88/files#diff-96ff2b6b860cf039a754070984b61486R122
+        else if(EnumCardType.MC.getFdName().equalsIgnoreCase(brand) && Pattern.compile("^(5[1-5]\\d{4}|677189)\\d{10}$|^(222[1-9]|2[3-6]\\d{2}|27[0-1]\\d|2720)\\d{12}").matcher(number).matches()) {
             if (number.length() == 16){
                 return MASTERCARD;
             }
@@ -728,6 +730,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             
             //Discover card numbers begin with 6011 or 65 and length is 16
         } else if(Pattern.compile("^6(?:011|5[0-9]{2})[0-9]{12}$").matcher(number).matches()) {
+        
         	return DISCOVER;
         } 
         return INVALID;
@@ -860,4 +863,5 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			return true;
 		}
     }
+    
 }
