@@ -44,6 +44,8 @@ public class ProductData extends BasicProductData implements SkuData {
      * Is product discontinued for sale?
      */
     protected boolean isDiscontinued;
+    
+    private boolean isOutOfSeason;
 
     /**
      * This flag signals that product data is rather incomplete Expect that most of them are not populated It might only be turned on when populating products / skus without
@@ -333,6 +335,14 @@ public class ProductData extends BasicProductData implements SkuData {
 
     public void setDiscontinued(boolean isDiscontinued) {
         this.isDiscontinued = isDiscontinued;
+    }
+
+    public boolean isOutOfSeason() {
+        return isOutOfSeason;
+    }
+
+    public void setOutOfSeason(boolean isOutOfSeason) {
+        this.isOutOfSeason = isOutOfSeason;
     }
 
     public String getDepartmentDesc() {

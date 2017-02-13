@@ -31,7 +31,7 @@ public class YoutubeVideoTag extends SimpleTagSupport {
 		YoutubeVideoModel ytvm = null;
 
 		ContentNodeModel model = ContentFactory.getInstance().getContentNodeByKey(
-				ContentKey.decode(YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER));
+				ContentKey.getContentKey(YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER));
 
 		if (model instanceof FDFolder) {
 			FDFolder folder = (FDFolder) model;

@@ -67,7 +67,7 @@ public class ContextService {
 		StringTokenizer stoke = new StringTokenizer(path, "/");
 		while (stoke.hasMoreTokens()) {
 			String token = stoke.nextToken();
-			ContentKey key = ContentKey.decode(token);
+			ContentKey key = ContentKey.getContentKey(token);
 			//
 			// this next chunk just attempts to validate paths as it builds them
 			//

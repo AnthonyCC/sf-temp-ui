@@ -67,14 +67,14 @@ public class GlobalCompilerTest extends TestCase {
                     return set;
                 }
                 if ("content".equals(name)) {
-                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1")));
-                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3")));
+                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a1")));
+                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a3")));
                     return set;
                 }
                 if ("content2".equals(name)) {
-                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
-                    set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "bbb")));
+                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "a2")));
+                    set.add(new ProductModelImpl(ContentKey.getContentKey(FDContentTypes.PRODUCT, "bbb")));
                     return set;
                 }
                 return null;

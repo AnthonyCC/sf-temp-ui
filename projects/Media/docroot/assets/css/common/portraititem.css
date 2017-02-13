@@ -1096,11 +1096,6 @@ a.portrait-item-header-name:link {
 	padding-bottom: 0px;
 }
 
-.portrait-item .portrait-item-header .product-name-no-brand .ellip {
-  display: block;
-  height: 100%;
-}
-
 .portrait-item .portrait-item-header .product-name-no-brand .ellip-line{
   display: inline-block;
   text-overflow: ellipsis;

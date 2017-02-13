@@ -6,6 +6,7 @@ package com.freshdirect.dataloader.payment;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -37,7 +38,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
@@ -76,9 +76,11 @@ private static FileContext getFileContext(String[] args) {
 						ctx.setOpenSSHPrivateKey(arg.substring("privateKey=".length()));  							
 					}else if(arg.startsWith("fetchFiles=")) {
 						ctx.setDownloadFiles(Boolean.valueOf(arg.substring("fetchFiles=".length())).booleanValue());  							
+					}else if(arg.startsWith("processFile=")) {
+						ctx.setFileToProcess(arg.substring("processFile=".length()))	;						
 					}
 				} catch (Exception e) {
-					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.ECheckSTFCronRunner  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value]");
+					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.ECheckSTFCronRunner  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value] [processFile=Value]");
 					System.exit(-1);
 				}
 			}
@@ -102,16 +104,34 @@ private static FileContext getFileContext(String[] args) {
 		FileContext filectx=getFileContext(args);
 		
 		Context ctx = null;
+		List<String> files=new ArrayList<String>(10);
 		try {
-			SFTPFileProcessor fp=new SFTPFileProcessor(filectx);
-			List<String> files=fp.getFiles();
-			if(files.isEmpty()) {
-				LOGGER.info("ECheckSTFCronRunner finished. No file to process");
-				return;
+			if(filectx.downloadFiles()) {
+				SFTPFileProcessor fp=new SFTPFileProcessor(filectx);
+				files=fp.getFiles();
+			} else {
+				if(StringUtil.isEmpty(filectx.getFileToProcess())) {
+					System.err.println("Must pass the file name to process when fetchFiles=true");
+					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.ECheckSTFCronRunner  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value] [processFile=Value]");
+					System.exit(-1);
+				} else {
+					files.add(filectx.getFileToProcess());
+				}
 			}
-			if(files.size()==0) {
-				LOGGER.info("ECheckSTFCronRunner finished. No file to process");
-				return;
+			
+			if(files!=null ) {
+				if(files.isEmpty())
+					LOGGER.info("No ECheck Settlement failure files to process ");
+				else {
+					LOGGER.info("Processing "+files.size()+" ECheck Settlement failure files ");
+					LOGGER.info(" ECheck Settlement failure -- files for processing are ..");
+					for(String fileName: files) {
+						LOGGER.info(fileName);
+					}
+				}
+				
+			} else  {
+				LOGGER.info("List containing ECheck Settlement failure file names is NULL or EMPTY ");
 			}
 			
 			
@@ -121,10 +141,13 @@ private static FileContext getFileContext(String[] args) {
 			
 			ReconciliationHome reconciliationCronHome = (ReconciliationHome) ctx.lookup("freshdirect.payment.Reconciliation");
 			ReconciliationSB reconciliationSB = reconciliationCronHome.create();
-			//ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			// process bad transactions
-			List<ECheckRejectedTxDetail> badTxnList = /*reconciliationSB.loadBadTransactions(startDate, endDate);*/new RejectedTxParser().parseFile(DataLoaderProperties.getWorkingDir() +files.get(0));
-			processBadTransactions(badTxnList, reconciliationSB,saleHome);
+			for(String fileName: files) {
+				LOGGER.info(" ECheck Settlement failure -- file being processed is .."+fileName);
+				List<ECheckRejectedTxDetail> badTxnList = new RejectedTxParser().parseFile(DataLoaderProperties.getWorkingDir() +fileName);
+				processBadTransactions(badTxnList, reconciliationSB,saleHome);
+				LOGGER.info(" ECheck Settlement failure -- finished processing file .."+fileName);
+			}
 			LOGGER.info("ECheckSTFCronRunner finished");
 
 		} catch (Exception e) {

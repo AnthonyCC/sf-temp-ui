@@ -61,7 +61,7 @@ public class CmsChangePropagatorService {
     private Set<ContentNodeI> decodeToContentNodes(Set<String> contentKeys, DraftContext draftContext) {
         Set<ContentNodeI> contentNodes = new HashSet<ContentNodeI>();
         for (String contentKeyText : contentKeys) {
-            ContentKey contentKey = ContentKey.decode(contentKeyText);
+            ContentKey contentKey = ContentKey.getContentKey(contentKeyText);
             ContentNodeI node = cmsManager.getContentNode(contentKey, draftContext);
             if (node != null) {
                 contentNodes.add(node);

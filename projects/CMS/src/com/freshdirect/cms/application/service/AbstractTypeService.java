@@ -114,7 +114,7 @@ public abstract class AbstractTypeService implements ContentTypeServiceI {
     public ContentKey generateUniqueContentKey(ContentType type) throws UnsupportedOperationException {
         String id = generateUniqueId(type);
 
-        return id == null ? null : new ContentKey(type, id);
+        return id == null ? null : ContentKey.getContentKey(type, id);
     }
 
     @Override

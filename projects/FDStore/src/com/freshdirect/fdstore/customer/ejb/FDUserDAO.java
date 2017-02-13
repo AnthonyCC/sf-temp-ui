@@ -562,7 +562,7 @@ public class FDUserDAO {
 		
 		// store children
 
-		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?");
+		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID is null");
 		ps.setString(1, user.getPK().getId());
 		ps.setString(2, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 		ps.executeUpdate();

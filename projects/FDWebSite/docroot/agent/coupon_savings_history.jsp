@@ -94,7 +94,7 @@
 	private List getProductsForAllDepartments(List<ProductModel> searchproducts,Map<String, String> departments,String searchTerm){
 		//***Iterate thru departments
 		for (String key : departments.keySet()) {
-			ContentKey deptKey = ContentKey.decode("Department:"+key);
+			ContentKey deptKey = ContentKey.getContentKey("Department:"+key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);					
 			if(null !=depContentNode) {
 				Set subNodes = depContentNode.getChildKeys();
@@ -363,7 +363,7 @@ color: #000000;
 				}
 				else {
 					//get all products for selected brand
-					ContentKey departmentKey = ContentKey.decode("Department:"+selectedDepartment);
+					ContentKey departmentKey = ContentKey.getContentKey("Department:"+selectedDepartment);
 					ContentNodeI deptContentNode = manager.getContentNode(departmentKey);
 					cList = new ArrayList<FDCouponInfo>();
 					if(null !=deptContentNode) {
@@ -375,7 +375,7 @@ color: #000000;
 							ContentNodeI subContentNode =null;
 							boolean proceed = false;
 							if(breakloop){
-								ContentKey categoryKey = ContentKey.decode("Category:"+selectedCategory);
+								ContentKey categoryKey = ContentKey.getContentKey("Category:"+selectedCategory);
 								subContentNode = manager.getContentNode(categoryKey);
 								proceed = true;
 								
@@ -451,7 +451,7 @@ color: #000000;
 			StringBuilder sb = new StringBuilder();
 			// String key = (String) enumer.nextElement();
 			String value = (String) departments.get(key);
-			ContentKey deptKey = ContentKey.decode("Department:"+key);
+			ContentKey deptKey = ContentKey.getContentKey("Department:"+key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);
 			if(null !=depContentNode) {
 				sb.append("{");
@@ -824,7 +824,7 @@ color: #000000;
 				p.name = coupon.getShortDescription();
 				
 				if("FILTER".equals(request.getParameter("so_filter_submit")) && (request.getParameter("brand") != null && !"-1".equals(request.getParameter("brand")))) {
-					ContentKey brandKey = ContentKey.decode("Brand:"+request.getParameter("brand"));
+					ContentKey brandKey = ContentKey.getContentKey("Brand:"+request.getParameter("brand"));
 					ContentNodeI brandContentNode = manager.getContentNode(brandKey);
 					BrandModel _bmodel = (BrandModel) ContentFactory.getInstance().getContentNodeByKey(brandKey);
 				

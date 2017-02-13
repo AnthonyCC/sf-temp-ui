@@ -1,0 +1,73 @@
+{namespace common}
+
+/**
+ * @param moduleData
+ * @param data
+ */
+{template .editorialModule}
+<div class="content-module editorial-module product-carousel" id="{$moduleData.moduleInstanceId}">
+	{call common.moduleHeader}
+		{param content: $moduleData /}
+	{/call}
+	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
+		{call common.contentHeader}
+			{param content: $moduleData /}
+		{/call}
+    <div class="editorial-content" tabindex="0">
+      <div class="left-side">
+      {if $moduleData.editorialContainer.heroGraphic}
+        <img src="{$moduleData.editorialContainer.heroGraphic}" alt="{$moduleData.editorialContainer.heroTitle}">
+        <div>
+          {if $moduleData.editorialContainer.heroTitle}
+					  <h1>{$moduleData.editorialContainer.heroTitle}</h1>
+          {/if}
+          {if $moduleData.editorialContainer.heroSubtitle}
+					  <h2>{$moduleData.editorialContainer.heroSubtitle}</h2>
+          {/if}
+        </div>
+        {/if}
+      </div>
+      <div class="right-side">
+      {if $moduleData.editorialContainer.headerGraphic or $moduleData.editorialContainer.headerTitle or $moduleData.editorialContainer.headerSubtitle}
+        <div class="editorial-header">
+        {if $moduleData.editorialContainer.headerGraphic}
+          <div class="header-graphic">
+            <img src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
+          </div>
+        {/if}
+          <div class="header-title">
+          {if $moduleData.editorialContainer.headerTitle}
+            <h1>{$moduleData.editorialContainer.headerTitle}</h1>
+          {/if}
+          {if $moduleData.editorialContainer.headerSubtitle}
+            <h2>{$moduleData.editorialContainer.headerSubtitle}</h2>
+          {/if}
+          </div>
+        </div>
+      {/if}
+        <div class="editorial-body">
+          {if $moduleData.editorialContainer.editorialContent}
+            {$moduleData.editorialContainer.editorialContent}
+          {/if}
+        </div>
+      </div>
+    </div>
+    {if $data.products and length($data.products) > 3}
+  		{call common.simpleCarousel}
+  			{param items: $data.products /}
+  			{param showViewAllButton: $moduleData.showViewAllButton /}
+  			{param viewAllLink: $moduleData.viewAllButtonLink /}
+        {param cmEventSource: $moduleData.cmEventSource /}
+  			{param accessibilityText}
+  				{if $moduleData.contentTitle}
+  					{$moduleData.contentTitle}
+  				{elseif $moduleData.moduleTitle}
+  					{$moduleData.moduleTitle}
+  				{/if}
+  			{/param}
+  			{param itemType:'grid' /}
+  		{/call}
+    {/if}
+	</div>
+</div>
+{/template}

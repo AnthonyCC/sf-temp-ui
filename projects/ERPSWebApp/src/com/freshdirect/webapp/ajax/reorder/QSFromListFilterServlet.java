@@ -65,7 +65,8 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		filters.add(EnumQuickShopFilteringValue.LOCAL);
 		filters.add(EnumQuickShopFilteringValue.ORGANIC);
 		filters.add(EnumQuickShopFilteringValue.ON_SALE);
-		filters.add(EnumQuickShopFilteringValue.YOUR_LISTS);		
+		filters.add(EnumQuickShopFilteringValue.YOUR_LISTS);
+		filters.add(EnumQuickShopFilteringValue.BRAND);
 	}
 	
 	@Override

@@ -62,10 +62,12 @@
 	
 	<div class="browseContent">
 		{foreach $cat in keys($cats)}
-			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">
-				<h2 class="staffpicks-cat-header last">{$cat}</h2>
-				
-				<div class="staffpicks-cat-content">
+			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">	
+	 {if $cat == ''}         
+        {else}
+    <h2 class="staffpicks-cat-header last">{$cat}</h2>
+    {/if}
+				<div class="sectionContent staffpicks-cat-content">
 					{call common.productList}
 						{param numProducts:$l /}
 						{param productList:$cats[$cat] /}

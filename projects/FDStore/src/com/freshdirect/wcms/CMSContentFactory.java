@@ -440,7 +440,7 @@ public class CMSContentFactory {
 	}
 
 	public CMSPickListItemModel createPickList(String pickListName, CMSPageRequest request){
-		ContentKey contentKey = new ContentKey(ContentType.get("CMSPickList"), pickListName);
+		ContentKey contentKey = ContentKey.getContentKey(ContentType.get("CMSPickList"), pickListName);
 		return createPickList(getContentNodeByKey(contentKey, request), request);
 	}
 	

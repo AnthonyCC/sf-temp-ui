@@ -49,15 +49,21 @@ public class OrderHistory {
     /**
      * Comparator used for sort by order delivery slot time
      */
-    private final static Comparator<FDOrderInfoI> HOME_ORDER_COMPARATOR = new Comparator<FDOrderInfoI>() {
+    private final static Comparator<FDOrderInfoI> FD_ORDER_INFO_DELIVERY_START_TIME_COMPARATOR = new Comparator<FDOrderInfoI>() {
         public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
             return o2.getDeliveryStartTime().compareTo(o1.getDeliveryStartTime());
         }
     };
 
-    private final static Comparator<OrderInfo> ORDER_INFO_COMPARATOR = new Comparator<OrderInfo>() {
+    private final static Comparator<OrderInfo> ORDER_INFO_REQUESTED_TIME_COMPARATOR = new Comparator<OrderInfo>() {
         public int compare(OrderInfo o1, OrderInfo o2) {
             return o2.getRequestedDate().compareTo(o1.getRequestedDate());
+        }
+    };
+
+    private final static Comparator<FDOrderInfoI> FD_ORDER_INFO_CUTOFF_TIME_COMPARATOR = new Comparator<FDOrderInfoI>() {
+        public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
+            return o2.getDeliveryCutoffTime().compareTo(o1.getDeliveryCutoffTime());
         }
     };
 
@@ -68,7 +74,7 @@ public class OrderHistory {
 
         //This should be returned in sorted order. Most recent delivery time to least recent (past)
         List<FDOrderInfoI> fDOrderInfos = getOrderInfos(EnumSaleType.REGULAR);
-        Collections.sort(fDOrderInfos, HOME_ORDER_COMPARATOR);
+        Collections.sort(fDOrderInfos, FD_ORDER_INFO_DELIVERY_START_TIME_COMPARATOR);
         OrderInfo closestPendingOrderInfo = null;
         for (FDOrderInfoI info : fDOrderInfos) {
             OrderInfo orderInfo = OrderInfo.wrap(info);
@@ -84,25 +90,20 @@ public class OrderHistory {
     }
 
     public static List<OrderInfo> getCompletedOrderInfos(List<OrderInfo> infos) {
-        List<OrderInfo> completedOrder = new ArrayList<OrderInfo>();
-
-        for (OrderInfo info : infos) {
-               completedOrder.add(info);
-        }
-        Collections.sort(completedOrder, ORDER_INFO_COMPARATOR);
-
+        List<OrderInfo> completedOrder = new ArrayList<OrderInfo>(infos);
+        Collections.sort(completedOrder, ORDER_INFO_REQUESTED_TIME_COMPARATOR);
         return completedOrder;
     }
 
     public List<OrderInfo> getModifiableOrders(Date date) {
         List<OrderInfo> orderInfos = new ArrayList<OrderInfo>();
         List<FDOrderInfoI> fdOrderInfos = getOrderInfos(EnumSaleType.REGULAR);
-        Collections.sort(fdOrderInfos, HOME_ORDER_COMPARATOR);
+        Collections.sort(fdOrderInfos, FD_ORDER_INFO_CUTOFF_TIME_COMPARATOR);
         for (FDOrderInfoI info : fdOrderInfos) {
             OrderInfo orderInfo = OrderInfo.wrap(info);
             if (orderInfo.isInPast(date)) {
                 break;
-            } else if (orderInfo.isFdxModifiable()) {
+            } else if (orderInfo.isModifiable()) {
                 orderInfos.add(orderInfo);
             }
         }

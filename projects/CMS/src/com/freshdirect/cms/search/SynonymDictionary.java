@@ -220,7 +220,7 @@ public class SynonymDictionary {
 	public static SynonymDictionary createFromCms(TermCoderFactory factory) {
 		SynonymDictionary dict = new SynonymDictionary();
 		CmsManager instance = CmsManager.getInstance();
-		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SYNONYM_LIST_KEY));
+		ContentNodeI synRootNode = instance.getContentNode(ContentKey.getContentKey(SynonymDictionary.SYNONYM_LIST_KEY));
 		if (synRootNode == null)
 			return dict;
 		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SYNONYM, instance, DraftContext.MAIN);
@@ -252,7 +252,7 @@ public class SynonymDictionary {
 		SynonymDictionary dict = new SynonymDictionary();
 		CmsManager instance = CmsManager.getInstance();
 
-		ContentNodeI synRootNode = instance.getContentNode(ContentKey.decode(SynonymDictionary.SPELLING_SYNONYM_LIST_KEY));
+		ContentNodeI synRootNode = instance.getContentNode(ContentKey.getContentKey(SynonymDictionary.SPELLING_SYNONYM_LIST_KEY));
 		if (synRootNode == null)
 			return dict;
 		Set<ContentKey> synonymKeys = ContentNodeUtil.collectReachableKeys(synRootNode, FDContentTypes.SPELLING_SYNONYM, instance, DraftContext.MAIN);

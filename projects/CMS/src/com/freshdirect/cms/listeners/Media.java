@@ -71,7 +71,7 @@ public class Media extends ModelSupport implements Serializable {
 	}
 
 	public ContentKey getContentKey() {
-		return new ContentKey(this.type, getPK().getId());
+		return ContentKey.getContentKey(this.type, getPK().getId());
 	}
 
 	public Date getLastModified() {

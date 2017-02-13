@@ -216,7 +216,7 @@
 		</li>
 		
 		<li class="hide-on-subopen no-divider">
-			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
+			<span><a href="/your_account/manage_account.jsp">Your Account</a></span>
 		</li>
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>

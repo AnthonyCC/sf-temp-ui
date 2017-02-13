@@ -137,7 +137,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null, "1000"));
     			};
     		};
     		;
@@ -160,7 +160,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null, "1000"));
     			};
     		};
             //productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null);
@@ -180,7 +180,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.DISCONTINUED.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.DISCONTINUED.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null, "1000"));
     			};
     		};
             

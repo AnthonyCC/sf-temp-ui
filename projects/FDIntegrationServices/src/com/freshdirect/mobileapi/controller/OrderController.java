@@ -21,9 +21,11 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -222,15 +224,13 @@ public class OrderController extends BaseController {
         return model;
     }
 
-    private Message checkModifyForOrders(SessionUser user, List<String> orderIds) throws FDException, JsonException {
-    	ModifiableOrders orders = new ModifiableOrders();
-    	ActionResult result = new ActionResult();
+    private Message checkModifyForOrders(SessionUser user, List<String> orderIds) throws FDException {
+    	ModifiableOrders modifiableOrders = new ModifiableOrders();
     	for(String orderId : orderIds){
-    		boolean isModifiable = OrderUtil.isModifiable(orderId, result);
-    		ModifiableOrder order = new ModifiableOrder(orderId, isModifiable);
-    		orders.addOrder(order);
+    	    boolean isModifiable = OrderUtil.isModifiable(orderId, new Date(System.currentTimeMillis() + DateUtil.DAY));
+    		modifiableOrders.addOrder(new ModifiableOrder(orderId, isModifiable));
     	}
-    	return orders;
+    	return modifiableOrders;
     }
 
     private Message cancelOrderModify(SessionUser user, HttpServletRequest request) throws FDException,
@@ -501,7 +501,7 @@ public class OrderController extends BaseController {
 	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
-	        	if(productModel != null) {
+	        	if(productModel != null && !productModel.isUnavailable()) {
 	                ProductConfiguration configuration = new ProductConfiguration();
 	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
 	                productsWithSkus.add(configuration);

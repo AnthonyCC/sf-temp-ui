@@ -52,7 +52,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 %>
 
 <!-- Adding Skip to Navigation : Start-->
-	<a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+	<a href="#skip_to_content" class="skipnav">Skip to Content</a>
 <!-- Adding Skip to Navigation : End-->
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
@@ -132,7 +132,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				</div>
 			</div>
 			
-			<%-- TEST messages
+			<%-- test messages
 			
 				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
 				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
@@ -547,8 +547,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
-		        <% if (!signedIn) { %>
-					<a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+		        <% if (!signedIn) {%>
+					<a class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
 		        <% } %>
 					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
@@ -659,7 +659,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<fd:GetCart id="cart">
 						<div id="sidecartbuttons">
 							<div class="buttons">
-								<a class="cart" href="/expressco/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" fd-login-required fd-login-successpage="/expressco/checkout.jsp" href="/expressco/checkout.jsp"><div class="vahidden">checkout</div></a>
+								<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
 							</div>
 							<div class="summary">
 								<span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
@@ -676,8 +676,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
 						   	<div class="footer-buttons">
 								<span class="close"></span><br />
-								<a class="cart cssbutton cssbutton-flat" href="/expressco/view_cart.jsp">View Cart</a>
-								<a class="checkout cssbutton orange cssbutton-flat" fd-login-required fd-login-successpage="/expressco/checkout.jsp" href="/expressco/checkout.jsp">Checkout</a>
+								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
 							</div>
 			    		</div>
 					</fd:GetCart>

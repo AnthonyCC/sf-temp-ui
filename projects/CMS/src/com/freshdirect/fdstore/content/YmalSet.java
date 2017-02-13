@@ -292,7 +292,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		// get the skus as ContentKey objects
 		skus = new HashSet<ContentKey>();
 		for ( String skuCode : product.getSkuCodes() ) {
-			ContentKey key = new ContentKey( FDContentTypes.SKU, skuCode );
+			ContentKey key = ContentKey.getContentKey( FDContentTypes.SKU, skuCode );
 			skus.add( key );
 		}
 		

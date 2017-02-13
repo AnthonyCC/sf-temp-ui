@@ -703,22 +703,6 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(rec_categories)){
 			List<String> invalidCats = new ArrayList<String>();
 			String[] rec_categoriesArr = rec_categories.split(",");
-			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
-			/*for (int i = 0; i < rec_categoriesArr.length; i++) {
-				if(null!=contentFactory.getContentNode(FDContentTypes.CATEGORY, rec_categoriesArr[i].toLowerCase())) {
-					ContentNodeModel cn = contentFactory.getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, rec_categoriesArr[i]));
-					if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
-						CategoryModel cm = (CategoryModel)cn;
-						if(cm.getRecommender() == null) {
-							invalidCats.add(rec_categoriesArr[i]);
-						}
-					} else {
-						invalidCats.add(rec_categoriesArr[i]);
-					}
-				} else {
-					invalidCats.add(rec_categoriesArr[i]);
-				}
-			}*/
 			if(!invalidCats.isEmpty()){
 				result.addError(true, "invalidRCats", invalidCats.toString()+" are invalid Recommended Categories." );
 			}

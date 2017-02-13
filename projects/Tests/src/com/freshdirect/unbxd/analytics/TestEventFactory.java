@@ -25,7 +25,7 @@ import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
 public class TestEventFactory {
     public static BrowseEvent createBrowseEvent(Visitor visitor, LocationInfo loc) {
-        CategoryModel cat = new CategoryModel(ContentKey.decode("Category:apl_apl"));
+        CategoryModel cat = new CategoryModel(ContentKey.getContentKey("Category:apl_apl"));
         BrowseEvent event = (BrowseEvent) AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, cat, null);
 
         return event;
@@ -37,7 +37,7 @@ public class TestEventFactory {
     }
 
     public static ClickThruEvent createClickEvent(Visitor visitor, LocationInfo loc) {
-        ProductModel prd = new ProductModelImpl(ContentKey.decode("Product:veg_fd_fgavcrdypk"));
+        ProductModel prd = new ProductModelImpl(ContentKey.getContentKey("Product:veg_fd_fgavcrdypk"));
         ClickThruEvent event = (ClickThruEvent) AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, prd, null);
         return event;
     }
@@ -45,7 +45,7 @@ public class TestEventFactory {
     public static AddToCartEvent createAddToCartEvent(Visitor visitor, LocationInfo loc) {
         UserContext uCtx = UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum());
         FDConfiguration conf = new FDConfiguration(1.0, "EA");
-        ProductModel prd = new ProductModelImpl(ContentKey.decode("Product:veg_fd_fgavcrdypk"));
+        ProductModel prd = new ProductModelImpl(ContentKey.getContentKey("Product:veg_fd_fgavcrdypk"));
         FDSku sku = new FDSku("VEG1075041", 1);
         FDCartLineI cartline = new FDCartLineModel(sku, prd, conf, "1", null, false, null, uCtx, Collections.<ErpClientCode> emptyList());
         AddToCartEvent event = (AddToCartEvent) AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartline);
@@ -55,7 +55,7 @@ public class TestEventFactory {
     public static OrderEvent createOrderEvent(Visitor visitor, LocationInfo loc) {
         UserContext uCtx = UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum());
         FDConfiguration conf = new FDConfiguration(1.0, "EA");
-        ProductModel prd = new ProductModelImpl(ContentKey.decode("Product:veg_fd_fgavcrdypk"));
+        ProductModel prd = new ProductModelImpl(ContentKey.getContentKey("Product:veg_fd_fgavcrdypk"));
         FDSku sku = new FDSku("VEG1075041", 1);
         FDCartLineI cartline = new FDCartLineModel(sku, prd, conf, "1", null, false, null, uCtx, Collections.<ErpClientCode> emptyList());
 

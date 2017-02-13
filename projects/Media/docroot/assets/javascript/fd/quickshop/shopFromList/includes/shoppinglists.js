@@ -12,13 +12,14 @@ var FreshDirect = FreshDirect || {};
   function findSelected(element) {
     var a = this[element],
         selected = null;
-
-    a.forEach(function (el) {
-      if(el.selected) {
-        selected = el;
-        DISPATCHER.signal('listheader',{title:el.name});
-      }
-    });
+    if (a && a.hasOwnProperty('forEach')) { /* check if a is usable */
+	    a.forEach(function (el) {
+	      if(el.selected) {
+	        selected = el;
+	        DISPATCHER.signal('listheader',{title:el.name});
+	      }
+	    });
+    }
 
     return selected;
   }

@@ -204,13 +204,13 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 
 		//check for a product model...
-		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
 			//...product model, return back a pricing context
 			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
 		}else{
 			//...not product model, do normal decode
-			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 		}
 	}
 	
@@ -537,13 +537,13 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 
 		//check for a product model...
-		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
 			//...product model, return back a pricing context
 			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
 		}else{
 			//...not product model, do normal decode
-			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 		}
 	}
 
@@ -844,7 +844,7 @@ public class TemplateContext extends BaseTemplateContext{
 		if (node == null) {
 			// fall back to primary home
 			LOGGER.warn("No Category '"+catId+"' for Product '"+prodId+"' (Freemarker)");
-			node = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(ContentType.get("Product"), prodId));
+			node = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get("Product"), prodId));
 		}
 		
 		return ProductPricingFactory.getInstance().getPricingAdapter(node, pricingContext);

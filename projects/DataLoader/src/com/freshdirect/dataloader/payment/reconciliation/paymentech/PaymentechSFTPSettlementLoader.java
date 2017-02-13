@@ -101,160 +101,28 @@ public class PaymentechSFTPSettlementLoader {
 		
 	}
 
+	/**
+	 *  Process list of settlement files and upload reconciliation file to SAP FTP
+	 * @param ctx
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws CreateException
+	 * @throws EJBException
+	 * @throws RemoteException
+	 * @throws SapException
+	 */
 	private void loadSettlement(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException {
-		String timestamp = SF.format(new Date());
-		//make the dfr file
-		File finFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_FIN_" + timestamp + ".dfr");
-		File pdeFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_PDE_" + timestamp + ".dfr");
-		
-		File tmpFileOne = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_tmp_1_" + timestamp + ".dfr");
-		File tmpFileTwo = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_tmp_2_" + timestamp + ".dfr"); 
-		
 		
 		if(ctx.downloadFiles()) {
-			this.downloadFile(ctx,finFile, pdeFile, tmpFileOne, tmpFileTwo);
-		}
-
-		String fileName = loadFile(finFile, pdeFile, false);
-		
-		
-		// now ftp the settlement File to SAP
-		SettlementLoaderUtil.uploadFileToSap(fileName);
-
-		//tell sap to the file is there
-		SettlementLoaderUtil.callSettlementBapi(fileName);
-
-	}
-	
-	private void downloadFile(FileContext ctx,File finFile, File pdeFile, File tmpFileOne, File tmpFileTwo) throws UnknownHostException, IOException {
-		//download PDE/A file from paymentech
-		
+			SettlementFileProcessor.processFiles(ctx);
 			
-			SFTPFileProcessor fp=new SFTPFileProcessor(ctx);
-			List<String> files=fp.getFiles();
-			if(files.size()<2) {
-				throw new FDRuntimeException("Paymentech Reconciliation file does not have any data");
-			}
-			File _tmpFileOne = new File(DataLoaderProperties.getWorkingDir() + files.get(0));
-			File _tmpFileTwo = new File(DataLoaderProperties.getWorkingDir() + files.get(1));
-			_tmpFileOne.renameTo(tmpFileOne);
-			_tmpFileTwo.renameTo(tmpFileTwo);
-			
-		
-		InputStream is = new FileInputStream(tmpFileOne);
-		BufferedReader lines = new BufferedReader(new InputStreamReader(is));
-		
-		String line = null;
-		if((line = lines.readLine()) != null){
-			if(line!= null && line.trim().startsWith("*DFRBEG")){
-				if((line = lines.readLine()) != null){
-					lines.close();
-					is.close();
-					if(line != null && !line.trim().startsWith("*DFREND")) {
-						String[] tokens = line.split("\\|", 2);
-						if(isValidPDEToken(tokens[0])){
-							tmpFileOne.renameTo(pdeFile);
-							tmpFileTwo.renameTo(finFile);
-						} else {
-							tmpFileOne.renameTo(finFile);
-							tmpFileTwo.renameTo(pdeFile);
-						}
-					}else {
-						tmpFileOne.renameTo(pdeFile);
-						tmpFileTwo.renameTo(finFile);
-					}
-				}else{
-					LOGGER.error("Incomplete reconciliation file");
-					throw new FDRuntimeException("Incomplete reconciliation file");
-				}
-			}else{
-				LOGGER.error("Got Paymentech file with unrecognized Data");
-				if(line!=null && line.indexOf(NO_DATA)!=-1) {
-					StringBuilder msg= new StringBuilder(300);
-					msg.append("Paymentech Reconciliation file does not have any data at this time.\n");
-					msg.append("Please verify that the settlement batch was submitted for the previous day.");
-					msg.append("If settlement batch was submitted the previous day, and it contained orders,\n");
-					msg.append("Please re-run the settlement loader job after 2 hours and if it still fails,");
-					msg.append("Please contact Paymentech Support at 6038968320.");
-					
-					throw new FDRuntimeException(msg.toString());
-				} else { 
-					throw new FDRuntimeException("Paymentech File contained unrecognized data: "+line);
-				}
-			}
-		} else {
-			LOGGER.error("Got Empty Files from Paymentech");
-			throw new FDRuntimeException("Paymentech Reconciliation file does not have any data");
+			// below implementation is moved to FileDownloader class 
+			//this.downloadFile(ctx,finFile, pdeFile, tmpFileOne, tmpFileTwo);
 		}
-		
+
+
+
 	}
 	
-	private boolean isValidPDEToken (String token) {
-		
-		for (String element : VALID_PDE_TOKENS) {
-			if(element.equalsIgnoreCase(token)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private String loadFile(File finFile, File pdeFile, boolean buildOldSapFileFormat) throws RemoteException, EJBException, CreateException, IOException {
-		
-		ReconciliationSB reconSB = SettlementLoaderUtil.lookupReconciliationHome().create();
-		
-		SapFileBuilder builder = new SapFileBuilder();
-		builder.setBuildOldSapFileFormat(buildOldSapFileFormat);
-		String fileName = DataLoaderProperties.getSapFileNamePrefix() + "_Paymentech_" + SF.format(new Date()) + ".txt";
-		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
-		InputStream isFin = null;
-		InputStream isPde = null;
-		try{
-		LOGGER.info("starting to load FIN File");
-		
-		isFin = new FileInputStream(finFile);
-		
-		PaymentechFINParser finParser = new PaymentechFINParser();
-		PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-		List<String> ppSettlementIds = null;
-		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-			ppSettlementIds = ppReconSB.acquirePPLock(null);
-			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, ppSettlementIds));
-		} else {
-			finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
-		}
-		
-		finParser.parseFile(isFin);
-		
-		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-			ppReconSB.releasePPLock(ppSettlementIds);
-		}
-		
-		LOGGER.info("Finished loading FIN File");
-		//mask CC number in the downloaded FIN file.
-		SettlementLoaderUtil.maskCCPaymentech(finFile);
-		LOGGER.info("Finished masking cc number for File "+finFile.getName());
-		
-		LOGGER.info("starting to load PDE File");
-		
-		isPde = new FileInputStream(pdeFile);
-		
-		PaymentechPDEParser pdeParser = new PaymentechPDEParser();
-		pdeParser.setClient(new PaymentechPDEParserClient(builder, reconSB));
-		pdeParser.parseFile(isPde);
-		
-		LOGGER.info("Finished loading PDE File");
-		//mask CC number in the downloaded PDE file.
-		SettlementLoaderUtil.maskCCPaymentech(pdeFile);
-		LOGGER.info("Finished masking cc number for File "+pdeFile.getName());
-		
-		}finally{
-			if(isFin != null) isFin.close();
-			if(isPde != null) isPde.close();
-			builder.writeTo(f);
-		}
-		return fileName;
-	}
 	
 }

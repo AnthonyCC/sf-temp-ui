@@ -203,6 +203,9 @@ public class PaymentFraudManager {
 	}
 
 	public static void addRestrictedPaymentMethod(ErpPaymentMethodI paymentMethod, EnumRestrictionReason restrictionReason, String note) {
+		if(paymentMethod==null)
+			return;
+		LOGGER.info("Attempting to add restricted payment method entry for customer with ID "+paymentMethod.getCustomerId()+" and name " +paymentMethod.getName()+" and payment method ID of "+paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"");
 		
 		try {
 			RestrictedPaymentMethodCriteria criteria = new RestrictedPaymentMethodCriteria();
@@ -216,8 +219,6 @@ public class PaymentFraudManager {
 			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 			List<RestrictedPaymentMethodModel> list =PaymentFraudManager.getRestrictedPaymentMethodsByCustomerId(paymentMethod.getCustomerId(), EnumRestrictedPaymentMethodStatus.BAD);
-			//PaymentFraudManager.getRestrictedPaymentMethods(criteria);
-
 			// add only if it's not already in there
 			if (list == null || list.size() == 0) {
 				RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
@@ -230,24 +231,14 @@ public class PaymentFraudManager {
 				}
 				model.setAccountNumber(paymentMethod.getAccountNumber().substring(paymentMethod.getAccountNumber().length()-4) );
 				model.setCustomerId(paymentMethod.getCustomerId());
-				//model.setProfileID(paymentMethod.getProfileID());
+				model.setPaymentMethodId(paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"");
+				String name = paymentMethod.getName();
+				int i = name.indexOf(" ");
+				String firstName = (i > -1) ? name.substring(0, i) : "";
+				String lastName = (i > -1) ? name.substring(i+1) : name;
+				model.setFirstName(firstName);
+				model.setLastName(lastName);
 				
-				// set the customer related information of the payment method
-				
-				ErpPaymentMethodModel pm = (ErpPaymentMethodModel)PaymentFraudManager.getPaymentMethodByAccountInfo(model);			
-				if (pm != null) { 					
-					if (pm.getPK() != null) {
-						model.setPaymentMethodId(pm.getPK().getId());
-					}
-					model.setCustomerId(pm.getCustomerId());					
-					// set the customer name
-					String name = pm.getName();
-					int i = name.indexOf(" ");
-					String firstName = (i > -1) ? name.substring(0, i) : "";
-					String lastName = (i > -1) ? name.substring(i+1) : name;
-					model.setFirstName(firstName);
-					model.setLastName(lastName);
-				}
 				model.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 				model.setSource(EnumTransactionSource.SYSTEM);
 				model.setCreateDate(new Date());
@@ -266,6 +257,11 @@ public class PaymentFraudManager {
 	}
 			
 	public static void removeRestrictedPaymentMethod(ErpPaymentMethodI paymentMethod, boolean removeOnlyIfSystemCreated) {
+		
+		if(paymentMethod==null)
+			return;
+		else if (StringUtil.isEmpty(paymentMethod.getCustomerId()))
+				return;
 		
 		try {
 			RestrictedPaymentMethodCriteria criteria = new RestrictedPaymentMethodCriteria();

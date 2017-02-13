@@ -39,6 +39,8 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
@@ -2815,6 +2817,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *            the customer's identity reference
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
+	 * @throws  
 	 */
 	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> usedPromotionCodes,
@@ -2911,6 +2914,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					true);
+			this.clearModifyCartlines(saleId);
 			
 			//APPDEV-5587 When the DP is applied on the order, set the charge line with DELIVERYPASS promotion information, if it's not already available
 			if(order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
@@ -8518,5 +8522,72 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("Shipping Info cron Truck *********** no sales id's to run ");
 		}
 		return erpShippingMap;
+	}
+	
+	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException{
+		Connection conn = null;
+		List<FDCartLineI> mCartlines = new ArrayList<FDCartLineI>();
+		try {
+			conn = getConnection();
+			mCartlines = FDCartLineDAO.getModifiedCartlines(conn, orderId, userContext);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+		return mCartlines;		
+	}
+	
+	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.saveModifiedCartlines(conn, userpk, storeContext, newLine, orderId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.removeModifiedCartline(conn, cartLine);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDCartline");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.updateModifiedCartlineQuantity(conn, cartLine);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to update FDCartline");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void clearModifyCartlines(String currentOrderId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCartLineDAO.clearModifyCartlines(conn, currentOrderId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to clear modified FDCartlines");
+		} finally {
+			close(conn);
+		}
 	}
 }

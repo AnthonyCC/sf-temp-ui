@@ -1,14 +1,10 @@
 package com.freshdirect.payment.gateway.impl;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.braintreegateway.PayPalAccount;
-import com.braintreegateway.Result;
-import com.braintreegateway.Transaction;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -23,7 +19,6 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -33,8 +28,6 @@ import com.freshdirect.payment.PayPalCaptureResponse;
 import com.freshdirect.payment.PayPalResponse;
 import com.freshdirect.payment.PaylinxResourceException;
 import com.freshdirect.payment.TransactionModel;
-import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
-import com.freshdirect.payment.ejb.PaymentSessionBean;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;

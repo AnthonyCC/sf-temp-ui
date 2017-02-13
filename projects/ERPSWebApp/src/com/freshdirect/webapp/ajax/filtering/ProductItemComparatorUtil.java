@@ -51,7 +51,7 @@ public class ProductItemComparatorUtil {
 	
 	/** based on FilteringComparatorUtil.reOrganizeFavourites()*/
 	public static void postProcess(BrowseDataContext data, SortStrategyType sortStrategy, FDUserI user){
-		if (sortStrategy == SortStrategyType.SEARCH_RELEVANCY && FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && data.getSectionContexts().size() > 0) { //APPDEV-2725
+		if ((sortStrategy == SortStrategyType.SEARCH_RELEVANCY || sortStrategy == SortStrategyType.FAVS_FIRST) && FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && data.getSectionContexts().size() > 0) { //APPDEV-2725
 				
 			FDIdentity identity = user.getIdentity();
 			String userId = identity == null ? null : identity.getErpCustomerPK();

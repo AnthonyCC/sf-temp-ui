@@ -203,13 +203,13 @@ if ( !"".equals(id)) {
 	id = "Product:"+request.getParameter("pId");
 
 	//get product model
-	ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+	ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 
 	//if not a product, check for a SKU instead
 	if (product == null) {
 		id = "Sku:"+request.getParameter("pId");
 		//get sku model
-		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(id));
 
 		if (sku != null) {
 			//found a valid SKU

@@ -3,11 +3,13 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
@@ -88,11 +90,17 @@ public class SearchResultsUtil {
 		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
 		CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(nav.getId());
 		
+		String picksId = nav.getPicksId();
 		boolean isPpPreview = (category==null ||null == category.getProductPromotionType() || null == nav.getPpPreviewId()) ? false : true;
 	    if(category!=null) {
 			if(!isPpPreview){
 				/* this needs to come from URL */
-				promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());  //category.getProducts();
+				//promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());  //category.getProducts();
+				//We are setting the picksId (The staff picks file upload id from SAP) here instead of passing the request parameter picksId along with its value
+				if(picksId==null || picksId.equals("")){
+			     	   nav.setPicksId(FDStoreProperties.getStaffPicksPickId());
+			        }
+				promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());
 			}else{
 				promotionProducts = category.getPromotionPageProductsForPreview(nav.getPpPreviewId());
 			}
@@ -115,6 +123,10 @@ public class SearchResultsUtil {
 		
 		SearchResults searchResults = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
 		searchResults.setDDPPProducts(featProds);
+	//	searchResults.setDDPPProducts(nonfeatProds);
+		Map<String,List<ProductModel>> assortProductMap=new HashMap<String, List<ProductModel>>();
+		assortProductMap.put("ASSORT_PRODUCTS", nonfeatProds);
+		searchResults.setAssortProducts(assortProductMap);
 		
 		return searchResults;
 	}
@@ -131,6 +143,12 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			
 			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
 			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
+					
+			if(user.isMobilePlatForm())
+				hLBrandProductAdRequest.setPlatformSource("mobile");	
+		 	  else
+			 	 hLBrandProductAdRequest.setPlatformSource("web");
+			
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();

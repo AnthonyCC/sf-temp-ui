@@ -39,7 +39,7 @@ public class CsvExportServlet extends HttpServlet {
 			nodeKey = request.getParameter( "nodeKey" );
 			attributeKey = request.getParameter( "attributeKey" );
 		
-			final ContentKey key = ContentKey.decode( nodeKey );
+			final ContentKey key = ContentKey.getContentKey( nodeKey );
             attribute = svc.getContentNode(key, DraftContext.MAIN).getAttribute( attributeKey );
 			EnumAttributeType type = attribute.getDefinition().getAttributeType();
 	        

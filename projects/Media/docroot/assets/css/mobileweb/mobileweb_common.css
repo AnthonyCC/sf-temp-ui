@@ -2107,3 +2107,208 @@ li.cleanli .gen-arrow {
 		background: #3d3d3d url('/assets/css/common/jquery-ui_base/images/ui-bg_diagonals-thick_20_666666_40x40.png');
 	}
 	
+	.mm-page .manage-account-container{
+		background: #F2F0EF;
+	}
+	.mm-page .manage_account a{
+		display: block;
+		background-color: #f7f7f6;
+		color: #575860;
+		font-size: 14px;
+		font-weight: normal;
+		padding: 22px 10px;
+		margin: 0 0 4px;
+	}
+	.mm-page .manage_account a .text13bold{
+		font-weight: normal;
+	}
+	.mm-page .manage_account font:last-child a{
+		margin: 0 0 24px;
+	}
+	.mm-page .manage-account-heading{
+		border: 0;
+		margin: 0;
+		padding: 25px 10px;
+	}
+	.mm-page .manage_account .manage_account_desc,
+	.mm-page .manage_account br,
+	.mm-page .manage-account-heading p,
+	.mm-page .manage_account .selectedAddressIsHome-false,
+	.mm-page .manage-account-container .continue-shopping,
+	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style #reorder-icon-big,
+	.mm-page .youraccount .youraccount_right a,
+	.mm-page .youraccount .youraccount_user_name{
+		display: none;
+	}
+	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style{
+		padding: 0;
+		margin: 0;
+		border: 0;
+		background: none;
+		color: #575860;
+	}
+	.mm-page .youraccount .youraccount_header{
+		padding: 25px 20px 0;
+		border: 0;
+	}
+	.mm-page .youraccount .youraccount_header h1{
+		font-size: 22px;
+		font-weight: bold;
+	}
+	.mm-page .youraccount h2{
+		font-size: 18px;
+		font-weight: bold;
+		background-color: #f4f4f3;
+		border: 0;
+		padding: 5px 20px;
+	}
+	.mm-page .youraccount h2 i{
+		display: block;
+		font-size: 12px;
+		font-weight: normal;
+	}
+	.mm-page .youraccount .youraccount_left_1,
+	.mm-page .youraccount .youraccount_left_2,
+	.mm-page .youraccount .youraccount_left_3,
+	.mm-page .youraccount .youraccount_phone_ext,
+	.mm-page .youraccount .youraccount_right,
+	.mm-page .youraccount .youraccount_contact .youraccount_left_2 input:last-child{
+		width: 100%;
+		box-sizing: border-box;
+	}
+	.mm-page .youraccount .youraccount_left_2.youraccount_left_2_space{
+		padding: 5px 20px 0;
+		max-width: none;
+	}
+	.mm-page .youraccount .youraccount_password #password1{
+		border-top: 2px solid #ffffff;
+		border-right: 2px solid #ffffff;
+		border-bottom: 2px solid #d4d4d4;
+		border-left: 2px solid #ffffff;
+		padding: 15px 5px 6px 5px;
+		box-shadow: none;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+	.mm-page .youraccount .youraccount_password .password-hinter{
+		top: -122px;
+	}
+	.mm-page .youraccount .youraccount_left_1,
+	.mm-page .youraccount .youraccount_phone_ext{
+		display: block;
+		padding: 20px 20px 0;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: left;
+	}
+	.mm-page .youraccount .youraccount_left_2,
+	.mm-page .youraccount .youraccount_left_3{
+		padding: 0 20px;
+	}
+	.mm-page .youraccount .youraccount_left_2 input[type="text"],
+	.mm-page .youraccount .youraccount_left_2 input[type="email"],
+	.mm-page .youraccount .youraccount_left_2 input[type="password"]{
+		padding: 8px 5px 6px 5px;
+		font-size: 14px;
+	}
+	.mm-page .youraccount .youraccount_left_2 select{
+		font-size: 14px;
+		margin: 5px 10px;
+	}
+	.mm-page .youraccount .youraccount_left_3{
+	
+	}
+	.mm-page .youraccount .youraccount_right{
+		padding: 20px 20px 10px;
+	}
+	.mm-page .youraccount .youraccount_right button{
+		width: 100%;
+		margin: 0;
+		padding: 14px;
+		font-size: 16px;
+	}
+	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_1,
+	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_1{
+		float: left;
+		width: auto;
+	}
+	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_1 input,
+	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_1 input{
+		width: auto;
+	}
+	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_1 input::first-child{
+		width: 150px;
+	}
+	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_2,
+	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_2{
+		float: left;
+		width: 80%;
+		padding: 22px 5px 0;
+	}
+	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_full_width{
+	    float: none;
+		width: 100%;
+		padding: 0 20px;		
+	}
+	.mm-page .youraccount .youraccount_error{
+	
+	}
+	.mm-page .youraccount .youraccount_error table:first-of-type tr:nth-child(-n+2),
+	.mm-page .youraccount .youraccount_error table:first-of-type tr:nth-child(n+4){
+		display: none;
+	}
+	.mm-page .youraccount .youraccount_error table:first-of-type tr table tr{
+		display: block;
+	}
+	.mm-page .youraccount .youraccount_mobile_pref p{
+		padding: 0 20px;
+	}
+	.mm-page .youraccount .youraccount_mobile_pref .accordion label div:last-child{
+		min-width: 210px;
+	}
+	.mm-page .youraccount .youraccount_mobile_pref .text9{
+		padding: 0 20px;
+	}
+	.mm-page .youraccount .youraccount_go_green .youraccount_go_green_icon{
+		padding: 0 20px 10px;
+	}
+	.mm-page .youraccount .youraccount_user_go_green .youraccount_left_1{
+		width: auto;
+	}
+	.mm-page .youraccount .youraccount_user_go_green .youraccount_left_2{
+		width: 80%;
+		padding: 0 20px 0 0;
+	}
+	.mm-page .youraccount .youraccount_continue{
+		display: none;
+	}
+	.mm-page table.order_history_table tr td{
+		padding: 10px 0;
+		text-align: left;
+		font-size: 12px;
+	}
+	.mm-page table.order_history_table tr td:last-child{
+		max-width: 60px;
+	}
+	.mm-page .order_history_table .order_history_table_id{
+		padding: 0 0 0 10px;
+	}
+	.mm-page .order_history_table .order_history_table_id_header{
+		padding: 0 0 0 10px;
+	}
+	.mm-page .order_history_table .order_history_table_date .order_history_table_date_display{
+		max-width: 65px;
+	    height: 17px;
+	    overflow: hidden;
+	    text-align: left;
+    }
+	.mm-page .order_history_header{
+		padding: 15px 10px 5px;
+		box-sizing: border-box;
+	}
+	.mm-page .order_history_header_h{
+		font-size: 22px;
+	}
+	.mm-page .order_history_header_desc{
+		font-size: 12px;
+	}

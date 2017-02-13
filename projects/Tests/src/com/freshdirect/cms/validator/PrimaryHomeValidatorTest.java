@@ -84,7 +84,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
      * has parent cats in both stores, has two primary homes --> PASSED
      */
     public void testWellConfiguredProduct() {
-    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd1");
+    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd1");
     	
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
     	
@@ -99,7 +99,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
      * Prd2 has parent categories in both stores but misses one primary homes
      */
     public void testPartiallyGoodProduct() {
-    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd2");
+    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd2");
     	
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
     	
@@ -115,13 +115,13 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain two members", 2, homes.size());
 
-    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat11") ));
-    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat22") ));
+    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat11") ));
+    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat22") ));
     }
     
     
     public void testProductWithNoPrimaryHomes() {
-    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "Prd3");
+    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "Prd3");
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
 
     	ContentNodeI node = mgr.getContentNode(prdKey);
@@ -135,13 +135,13 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain two members", 2, homes.size());
 
-    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat12") ));
-    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat21") ));
+    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat12") ));
+    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat21") ));
     }
     
     
     public void testHalfOrphanProduct() {
-    	ContentKey prdKey = new ContentKey(FDContentTypes.PRODUCT, "HalfOrphanPrd");
+    	ContentKey prdKey = ContentKey.getContentKey(FDContentTypes.PRODUCT, "HalfOrphanPrd");
     	PrimaryHomeValidator v = new PrimaryHomeValidator();
 
     	ContentNodeI node = mgr.getContentNode(prdKey);
@@ -150,8 +150,8 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	
     	Set<ContentKey> parentKeys = mgr.getParentKeys(prdKey);
     	assertEquals("Product must have two parents", 2, parentKeys.size());
-    	assertTrue("Product must have an orphan parent cat", parentKeys.contains(new ContentKey(FDContentTypes.CATEGORY, "OrphanCat") ));
-    	final Set<ContentKey> _parKeys = mgr.getParentKeys(new ContentKey(FDContentTypes.CATEGORY, "OrphanCat"));
+    	assertTrue("Product must have an orphan parent cat", parentKeys.contains(ContentKey.getContentKey(FDContentTypes.CATEGORY, "OrphanCat") ));
+    	final Set<ContentKey> _parKeys = mgr.getParentKeys(ContentKey.getContentKey(FDContentTypes.CATEGORY, "OrphanCat"));
 		assertEquals("Orphan category should not be a member of any parent node", 0, _parKeys.size());
     	
     	v.validate(delegate, contentService, draftContext, node, request, null);
@@ -163,7 +163,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
     	List<ContentKey> homes = (List<ContentKey>) fixedNode.getAttributeValue("PRIMARY_HOME");
     	assertEquals("Primary homes must contain exactly one primary home", 1, homes.size());
 
-    	assertTrue(homes.contains( new ContentKey(FDContentTypes.CATEGORY, "Cat11") ));
+    	assertTrue(homes.contains( ContentKey.getContentKey(FDContentTypes.CATEGORY, "Cat11") ));
     }
 }
 

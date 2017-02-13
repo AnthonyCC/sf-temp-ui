@@ -330,7 +330,7 @@ public class QuickShopHelper {
 			if (list.getRecipeId() != null) {
 				wrapper.setRecipeAlive(true);
 				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(
-						new ContentKey(ContentType.get("Recipe"), list.getRecipeId()));
+				        ContentKey.getContentKey(ContentType.get("Recipe"), list.getRecipeId()));
 				if (recipe.isOrphan() || !recipe.isAvailable()) {
 					wrapper.setRecipeAlive(false);
 				}

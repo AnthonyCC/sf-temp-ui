@@ -228,7 +228,7 @@ public class ContentTreeTest extends TestCase {
 		ArrayList<ProductModel> result = new ArrayList<ProductModel>(strings.length);
 		for (int i = 0; i < strings.length; i++) {
 			ProductModel node = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(
-					new ContentKey(FDContentTypes.PRODUCT, strings[i].trim()));
+					ContentKey.getContentKey(FDContentTypes.PRODUCT, strings[i].trim()));
 			if (node != null) {
 				result.add(node);
 			}

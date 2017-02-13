@@ -2326,6 +2326,184 @@
 				</CmsPage>
               </pages>
 	</CmsEditor>	
+	
+	<CmsEditor id="Icon">
+		<contentType>Icon</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CONTENT</title>
+						<fields>
+						    <CmsField><attribute>link</attribute></CmsField>
+							<CmsField><attribute>linkText</attribute></CmsField>
+							<CmsField><attribute>image</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
+	<CmsEditor id="ImageGrid">
+		<contentType>ImageGrid</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Display</title>
+						<fields>
+						    <CmsField><attribute>imageContainer1Text</attribute></CmsField>							
+							<CmsField><attribute>imageContainer2Text</attribute></CmsField>							
+							<CmsField><attribute>imageContainer3Text</attribute></CmsField>							
+							<CmsField><attribute>imageContainer4Text</attribute></CmsField>							
+							<CmsField><attribute>imageContainer5Text</attribute></CmsField>							
+							<CmsField><attribute>imageContainer6Text</attribute></CmsField>							
+						</fields>
+						</CmsSection>
+						<CmsSection>
+						<title>Target</title>
+						<fields>
+						    <CmsField><attribute>imageContainer1Target</attribute></CmsField>							
+							<CmsField><attribute>imageContainer2Target</attribute></CmsField>							
+							<CmsField><attribute>imageContainer3Target</attribute></CmsField>							
+							<CmsField><attribute>imageContainer4Target</attribute></CmsField>							
+						    <CmsField><attribute>imageContainer5Target</attribute></CmsField>							
+							<CmsField><attribute>imageContainer6Target</attribute></CmsField>
+						</fields>
+						</CmsSection>
+						<CmsSection>
+						<title>IMAGE</title>
+						<fields>
+							<CmsField><attribute>imageContainer1Image</attribute></CmsField>
+							<CmsField><attribute>imageContainer2Image</attribute></CmsField>
+							<CmsField><attribute>imageContainer3Image</attribute></CmsField>
+							<CmsField><attribute>imageContainer4Image</attribute></CmsField>
+							<CmsField><attribute>imageContainer5Image</attribute></CmsField>
+							<CmsField><attribute>imageContainer6Image</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
+	<CmsEditor id="ModuleContainer">
+		<contentType>ModuleContainer</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+						    <CmsField><attribute>name</attribute></CmsField>
+						    <CmsField><attribute>moduleInstances</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
+	<CmsEditor id="ModuleInstance">
+		<contentType>ModuleInstance</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+						    <CmsField><attribute>name</attribute></CmsField>
+						    <CmsField><attribute>module</attribute></CmsField>
+						    <CmsField><attribute>datasource</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
+	<CmsEditor id="Datasource">
+		<contentType>Datasource</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+						    <CmsField><attribute>name</attribute></CmsField>
+						    <CmsField><attribute>datasourceType</attribute></CmsField>
+						    <CmsField><attribute>sourceNode</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
+	<CmsEditor id="Module">
+		<contentType>Module</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+						    <CmsField><attribute>name</attribute></CmsField>
+						    <CmsField><attribute>moduleTitle</attribute></CmsField>
+						    <CmsField><attribute>showModuleTitle</attribute></CmsField>
+						    <CmsField><attribute>moduleTitleTextBanner</attribute></CmsField>
+						    <CmsField><attribute>showModuleTitleTextBanner</attribute></CmsField>
+						    <CmsField><attribute>viewAllButtonLink</attribute></CmsField>
+						    <CmsField><attribute>showViewAllButton</attribute></CmsField>
+						    <CmsField><attribute>contentTitle</attribute></CmsField>
+						    <CmsField><attribute>showContentTitle</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>EDITORIAL SECTION</title>
+						<fields>
+							<CmsField><attribute>heroGraphic</attribute></CmsField>
+							<CmsField><attribute>headerGraphic</attribute></CmsField>
+							<CmsField><attribute>editorialContent</attribute></CmsField>
+						    <CmsField><attribute>heroTitle</attribute></CmsField>
+						    <CmsField><attribute>showHeroTitle</attribute></CmsField>
+						    <CmsField><attribute>heroSubtitle</attribute></CmsField>
+						    <CmsField><attribute>showHeroSubtitle</attribute></CmsField>
+						    <CmsField><attribute>headerTitle</attribute></CmsField>
+						    <CmsField><attribute>showHeaderTitle</attribute></CmsField>
+						    <CmsField><attribute>headerSubtitle</attribute></CmsField>
+						    <CmsField><attribute>showHeaderSubtitle</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CONTENT</title>
+						<fields>
+						    <CmsField><attribute>sourceType</attribute></CmsField>
+						    <CmsField><attribute>imageGrid</attribute></CmsField>
+						    <CmsField><attribute>openHTML</attribute></CmsField>
+						    <CmsField><attribute>iconList</attribute></CmsField>
+						    <CmsField><attribute>productListRowMax</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>PRODUCT CONFIG</title>
+						<fields>
+						    <CmsField><attribute>hideProductName</attribute></CmsField>
+						    <CmsField><attribute>hideProductPrice</attribute></CmsField>
+						    <CmsField><attribute>hideProductBadge</attribute></CmsField>
+						</fields>
+					</CmsSection>							
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
 						
 	
 </Content>

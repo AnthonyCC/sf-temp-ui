@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.python.modules.synchronize;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.MasqueradeContext;
@@ -357,6 +358,10 @@ public class CartOperations {
 				// Normal cart
 				
 				cartLine.setQuantity( newQ );
+				if(null == user.getMasqueradeContext() && (cart instanceof FDModifyCartModel)){
+				cartLine.setOrderId(((FDModifyCartModel)cart).getOriginalOrder().getSale().getId());
+				updateModifiedCartlineQuantity(cartLine);
+				}
 				logEditCart( user, cartLine, product, serverName );
 				
 			} else {			
@@ -394,6 +399,8 @@ public class CartOperations {
 //						newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
 						newLine.setUserContext(user.getUserContext() );
 						newLine.setQuantity( deltaQty );
+						saveNewCartline(user, newLine, deltaQty, ((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
+						
 						
 						try {
 							OrderLineUtil.cleanup( newLine );
@@ -416,6 +423,40 @@ public class CartOperations {
 	}
 	
 	
+	private static void updateModifiedCartlineQuantity(FDCartLineI cartLine) {
+		synchronized(cartLine){
+			try {
+				FDCustomerManager.updateModifiedCartlineQuantity(cartLine);
+			} catch (FDResourceException e) {
+				LOG.error( "could not save Modified", e );
+			}
+		}
+	}
+
+	private static void saveNewCartline(FDUserI user, FDCartLineI newLine, double deltaQty, String orderId) {
+		if(null == user.getMasqueradeContext()){
+		synchronized(newLine){
+			try {
+				newLine.setQuantity(deltaQty);
+				FDCustomerManager.storeModifiedCartline(((FDSessionUser)user).getUser(), newLine, orderId);
+			} catch (FDResourceException e) {
+				LOG.error( "could not save Modified", e );
+			}
+		  }
+		}	
+	}
+	
+	private static void removeModifiedCartline(FDCartLineI cartLine) {
+		synchronized(cartLine){
+			try {
+				FDCustomerManager.removeModifiedCartline(cartLine);
+			} catch (FDResourceException e) {
+				LOG.error( "could not save Modified", e );
+			}
+		}			
+	}
+
+
 	public static void changeSalesUnit( FDUserI user, FDCartModel cart, FDCartLineI cartLine, String newSalesUnit, String serverName ) {
 		
 		// parameter validation
@@ -496,15 +537,19 @@ public class CartOperations {
 
 		synchronized ( cart ) {
 			
-			cart.removeOrderLine( cartLine );
+			if(cartLine instanceof FDCartLineModel){
+				removeModifiedCartline(cartLine);
+			}
 			
+			cart.removeOrderLine( cartLine );
+									
 			logRemoveFromCart( user, cartLine, product, serverName );
 	
 			saveUserAndCart( user, cart );
 		}
 	}
 
-	
+		
 	public static void saveUserAndCart( FDUserI user, FDCartModel cart ) {
 		
 		synchronized ( cart ) {			

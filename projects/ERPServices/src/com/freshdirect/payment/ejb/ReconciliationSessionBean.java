@@ -248,11 +248,15 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpPaymentMethodI paymentMethod = eb.getCurrentOrder().getPaymentMethod();
 			model.setPaymentMethodType(paymentMethod.getPaymentMethodType());
-			eb.addChargeback(model);
-			String customerId = eb.getCustomerPk().getId();
 			
-			this.createCase(saleId, customerId, CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Chargeback was issued");
+			// no need to charge back if PayPal transaction completed
+			//FIN-21
+			if(!model.isTrxnComplete()){
+				eb.addChargeback(model);
+			    String customerId = eb.getCustomerPk().getId();
 			
+			    this.createCase(saleId, customerId, CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Chargeback was issued");
+			}
 			LOGGER.info("Add chargeback - done. saleId="+saleId);
 			ErpSettlementInfo info = this.getSettlementInfo(saleId, model.getAffiliate(), model.getAmount(), "", false, false, false, true, false); 
 			info.setCardType(paymentMethod.getCardType());
@@ -273,14 +277,16 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 			String saleId = model.getMerchantReferenceNumber();
 			
 			LOGGER.info("Add chargeback reversal - start. saleId="+saleId);
-			
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.addChargebackReversal(model);
 			ErpPaymentMethodI paymentMethod = eb.getCurrentOrder().getPaymentMethod();
-			String customerId = eb.getCustomerPk().getId();
-			
-			this.createCase(saleId, customerId, CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Chargeback Reversal was issued");
-			
+
+			// no need to charge back if PayPal transaction completed
+			//FIN-21
+			if(!model.isTrxnComplete()){
+				eb.addChargebackReversal(model);
+				String customerId = eb.getCustomerPk().getId();
+				this.createCase(saleId, customerId, CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Chargeback Reversal was issued");
+			}
 			LOGGER.info("Add chargeback reversal - done. saleId="+saleId);
 			ErpSettlementInfo info = this.getSettlementInfo(saleId, model.getAffiliate(), model.getAmount(), "", false, false, false, false, true); 
 			info.setCardType(paymentMethod.getCardType());
@@ -407,7 +413,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 			info = addFailedSettlement((ErpFailedSettlementModel)model, saleId, affiliate);			
 		}
 
-		updateBadCustomerPaymentMethod(saleId, EnumPaymentMethodType.ECHECK, model.getResponseCode(), accountNumber);
+		updateBadCustomerPaymentMethod(saleId, EnumPaymentMethodType.ECHECK, model.getResponseCode(), model.getCcNumLast4());
 		
 		return info;
 		

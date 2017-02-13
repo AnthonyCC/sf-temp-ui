@@ -58,7 +58,7 @@ public class RecommendationPaginationTest extends TestCase {
 		List<ContentNodeModel> l = new ArrayList<ContentNodeModel>();
 		for (String[] namez : prdNames) {
 			for (String pname : namez) {
-				l.add(ContentNodeModelUtil.constructModel(ContentKey.decode("Product:"+pname), false));
+				l.add(ContentNodeModelUtil.constructModel(ContentKey.getContentKey("Product:"+pname), false));
 			}
 		}
 		return l;

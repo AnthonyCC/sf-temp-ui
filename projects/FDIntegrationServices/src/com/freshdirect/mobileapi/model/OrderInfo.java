@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -106,24 +105,8 @@ public class OrderInfo {
         return isPendingDeliveryOrder;
     }
 
-    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType, boolean isMakeGood) {
-    	
-    	if(isMakeGood) return false;
-        Date now = new Date(); // now
-        boolean beforeCutoffTime = now.before(deliveryCutoffTime);
-
-        return (EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION
-                .equals(orderStatus))
-                && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
-    }
-
     public boolean isModifiable() {
-    	if(target.isMakeGood()) return false;
-        return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType(), target.isMakeGood()) ;
-    }
-    
-    public boolean isFdxModifiable(){
-        return OrderUtil.isModifiable(CmsManager.getInstance().getEStoreEnum(), target.getOrderStatus(), target.getDeliveryCutoffTime());
+        return OrderUtil.isModifiable(target.getErpSalesId(), target.getDeliveryCutoffTime());
     }
 
     public boolean isShoppable() {

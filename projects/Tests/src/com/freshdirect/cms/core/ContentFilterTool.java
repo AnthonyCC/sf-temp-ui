@@ -178,7 +178,7 @@ public class ContentFilterTool {
     private static void addContentKeys(Set contentKeys, ContentType ctype, String keys) {
         String[] strings = StringUtils.split(keys, ',');
         for (int i = 0; i < strings.length; i++) {
-            ContentKey ck = new ContentKey(ctype, strings[i].trim());
+            ContentKey ck = ContentKey.getContentKey(ctype, strings[i].trim());
             //contentKeys.add();
             addContentKeys(contentKeys, ContentFactory.getInstance().getContentNodeByKey(ck) );
         }

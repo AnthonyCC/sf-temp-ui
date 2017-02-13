@@ -43,8 +43,8 @@
 		// disable the submit button on page load
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
-		$jq('#fd_login input').on('change keyup', function() {
-		    if($jq('#fd_login').validate().checkForm()) { // form is valid
+		$jq('#fd_login').bind('change keyup', function() {
+		    if($jq(this).validate().checkForm()) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
 		    } else { // form is invalid
@@ -139,7 +139,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	                        </td>
                                 <%-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  --%>
                             <td>
-	                            <input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
+	                            <input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail" autocomplete="email">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -148,7 +148,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	                            <span class="error_img" id="password_img"></span>
 	                        </td>
 	                        <td style="padding-top: 15px;">
-	                            <input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
+	                            <input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password" autocomplete="email">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -193,7 +193,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 			             customemail:true
 			            },		            
 		            password:{
-		            	required: false, /* don't try to validate password, autofill will foil it. */
+		            	required:true,
 		            	//password:true,
 		            }
 		 		},
@@ -231,7 +231,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		     }, 
 		 	}
 		 );
-		 		 
+	 
 </script> <!-- front end validations end here -->
 					
 					

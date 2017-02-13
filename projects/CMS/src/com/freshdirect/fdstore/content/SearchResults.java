@@ -52,7 +52,7 @@ public class SearchResults implements Serializable, Cloneable {
 	
 	private final List<FilteringSortingItem<ProductModel>> products;
 	private List<ProductModel> ddppProducts = new ArrayList<ProductModel>(); //ddpp products on 'search like' pages
-	private Map<String, ArrayList<ProductModel>> assortProducts = new HashMap<String, ArrayList<ProductModel>>(); //staff picks
+	private Map<String, List<ProductModel>> assortProducts = new HashMap<String, List<ProductModel>>(); //staff picks
 
 	private List<FilteringSortingItem<ProductModel>> adProducts = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private String pageBeacon;
@@ -191,10 +191,10 @@ public class SearchResults implements Serializable, Cloneable {
 		this.ddppProducts = ddppProducts;
 	}
 	
-	public Map<String, ArrayList<ProductModel>> getAssortProducts() {
+	public Map<String, List<ProductModel>> getAssortProducts() {
 		return assortProducts;
 	}
-	public void setAssortProducts(Map<String, ArrayList<ProductModel>> assortProducts) {
+	public void setAssortProducts(Map<String, List<ProductModel>> assortProducts) {
 		this.assortProducts = assortProducts;
 	}
 	public List<FilteringSortingItem<ProductModel>> getAdProducts() {

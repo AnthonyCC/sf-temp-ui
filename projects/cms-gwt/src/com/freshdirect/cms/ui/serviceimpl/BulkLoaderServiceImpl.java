@@ -97,12 +97,12 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
                 if ("_K".equals(cell.getAttributeType())) {
                     ContentNodeI node = null;
                     if (cell.getStatus().getState() == BulkLoadPreviewState.CREATE) {
-                        ContentKey key = ContentKey.decode(cell.getParsedValue().toString());
+                        ContentKey key = ContentKey.getContentKey(cell.getParsedValue().toString());
                         ContentNodeI prototype = contentService.createPrototypeContentNode(key, getDraftContext());
                         node = new ChangedContentNode(prototype);
                         nodes.put(node.getKey(), node);
                     } else if (cell.getStatus().getState() == BulkLoadPreviewState.UPDATE) {
-                        ContentKey key = ContentKey.decode(cell.getParsedValue().toString());
+                        ContentKey key = ContentKey.getContentKey(cell.getParsedValue().toString());
                         ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
                         node = new ChangedContentNode(clone);
                         nodes.put(node.getKey(), node);
@@ -119,7 +119,7 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
                             if ("R".equals(cell.getAttributeType())) {
                                 if (node.getDefinition().getAttributeDef(cell.getAttributeName()).getCardinality() == EnumCardinality.ONE) {
                                     @SuppressWarnings("unchecked")
-                                    ContentKey key = cell.getParsedValue() != null ? ContentKey.decode(((Collection<String>) cell.getParsedValue()).iterator().next()) : null;
+                                    ContentKey key = cell.getParsedValue() != null ? ContentKey.getContentKey(((Collection<String>) cell.getParsedValue()).iterator().next()) : null;
                                     node.setAttributeValue(cell.getAttributeName(), key);
                                 } else /* EnumCardinality.MANY */ {
                                     @SuppressWarnings("unchecked")
@@ -129,7 +129,7 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
                                     } else {
                                         ArrayList<ContentKey> nodeKeys = new ArrayList<ContentKey>(keys.size());
                                         for (String key : keys) {
-                                            ContentKey nodeKey = ContentKey.decode(key);
+                                            ContentKey nodeKey = ContentKey.getContentKey(key);
                                             nodeKeys.add(nodeKey);
                                         }
                                         node.setAttributeValue(cell.getAttributeName(), nodeKeys);
@@ -142,7 +142,7 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
                                 if (rrNode == null) {
                                     int dotIndex = attributeName.indexOf('.');
                                     String keyPart = attributeName.substring(0, dotIndex);
-                                    ContentKey key = ContentKey.decode(keyPart);
+                                    ContentKey key = ContentKey.getContentKey(keyPart);
                                     rrNode = nodes.get(key);
                                     if (rrNode == null) {
                                         ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();

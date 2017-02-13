@@ -27,6 +27,12 @@
 		<filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
 	</filter>
 	<filter>
+		<description>This filter creates random request id to identify requests and store as threadlocal</description>
+		<display-name>RequestIdFilter</display-name>
+		<filter-name>RequestIdFilter</filter-name>
+		<filter-class>com.freshdirect.webapp.filters.RequestIdFilter</filter-class>
+	</filter>
+	<filter>
 		<description>This filter adds the "Access-Control-Allow-Origin" header to the response, enabling CORS</description>
 		<display-name>CORSFilter</display-name>
 		<filter-name>CORSFilter</filter-name>
@@ -46,6 +52,10 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>OncePerRequestDateFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>RequestIdFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
@@ -98,6 +108,16 @@
 		<servlet-name>CartDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>BackOfficeServlet</servlet-name>
+		<url-pattern>/api/backoffice/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>BackOfficeServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.backoffice.servlet.BackOfficeServicesServlet</servlet-class>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>CartDataServlet</servlet-name>
 		<url-pattern>/api/cartdata/*</url-pattern>
@@ -435,6 +455,15 @@
     <servlet-name>CouponServlet</servlet-name>
     <url-pattern>/api/expressco/coupon</url-pattern>
   </servlet-mapping>
+  
+  	<servlet>
+		<servlet-name>ModuleHandlingServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ModuleHandlingServlet</servlet-name>
+		<url-pattern>/api/modulehandling/load</url-pattern>
+	</servlet-mapping>
   
   
   <!-- Dev Tools -->

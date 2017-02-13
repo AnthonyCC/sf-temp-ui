@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.freshdirect.webapp.unbxdanalytics.visitor.VisitType;
 import com.freshdirect.webapp.unbxdanalytics.visitor.VisitTypeCache;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
@@ -13,46 +14,23 @@ import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 public class VisitTypeTest {
 
     @Test
-    public void testNewVisitor() {
-        Visitor visitor = new Visitor("1234");
-        visitor.setRepeat(false);
+    public void testFirstVisitor() {
+    	final Visitor visitor = new Visitor("test", new VisitType(false, false));
         
-        final boolean sendEvent = VisitTypeCache.doUpdateVisitType(visitor, System.currentTimeMillis(), null);
+        final VisitType visitType = VisitTypeCache.getInstance().createVisitType("test");
         
-        assertTrue(sendEvent);
         assertFalse(visitor.isRepeat());
-        assertEquals(visitor.getVisitType(), Visitor.VISITOR_TYPE_VALUE_FIRST );
+        assertEquals(visitor.getVisitType(), VisitType.VISITOR_TYPE_VALUE_FIRST.toString());
+        assertEquals(visitType.toString(), VisitType.VISITOR_TYPE_VALUE_FIRST.toString());
     }
 
 
     @Test
-    public void testVisitorFirstCheck() {
-        Visitor visitor = new Visitor("1234");
-        visitor.setRepeat(false);
-        
-        final long lastCheck = 0L;
-        final long now = lastCheck+(VisitTypeCache.TIMEOUT/2);
-        
-        final boolean sendEvent = VisitTypeCache.doUpdateVisitType(visitor, now, Long.valueOf(lastCheck));
-        
-        assertFalse(sendEvent);
-        assertTrue(visitor.isRepeat());
-        assertEquals(visitor.getVisitType(), Visitor.VISITOR_TYPE_VALUE_REPEAT );
+    public void testRepeatVisitor() {
+    	final Visitor visitor = new Visitor("test", new VisitType(true, false));
+    	
+    	assertTrue(visitor.isRepeat());
+        assertEquals(visitor.getVisitType(), VisitType.VISITOR_TYPE_VALUE_REPEAT.toString());
     }
 
-
-    @Test
-    public void testVisitorTimeoutExpired() {
-        Visitor visitor = new Visitor("1234");
-        visitor.setRepeat(false);
-        
-        final long lastCheck = 0L;
-        final long now = lastCheck+VisitTypeCache.TIMEOUT;
-        
-        final boolean sendEvent = VisitTypeCache.doUpdateVisitType(visitor, now, Long.valueOf(lastCheck));
-
-        assertTrue(sendEvent);
-        assertTrue(visitor.isRepeat());
-        assertEquals(visitor.getVisitType(), Visitor.VISITOR_TYPE_VALUE_REPEAT );
-    }
 }

@@ -235,7 +235,6 @@ public class FDStoreProperties {
     // Refresh delay in seconds for Runtime Promotion cache.
     private final static String PROP_PROMOTION_RT_REFRESH_PERIOD = "promotion.rt.refresh.period";
 
-
     // Handle Advanced Order date
     private final static String ADVANCE_ORDER_START = "fdstore.advance.order.start";
     private final static String ADVANCE_ORDER_END = "fdstore.advance.order.end";
@@ -279,8 +278,8 @@ public class FDStoreProperties {
     private static final String TEMP_DIR = "tmpdir";
 
     private static final String PROP_UPS_BLACKHOLE_ENABLED = "fdstore.ups.blackhole.enabled";
-    
-    private static final String PROP_MEAL_KIT_MATERIAL_GROUP =  "fdstore.meal.kit.material.group";
+
+    private static final String PROP_MEAL_KIT_MATERIAL_GROUP = "fdstore.meal.kit.material.group";
 
     // CORS domain settings
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
@@ -479,8 +478,10 @@ public class FDStoreProperties {
     private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
     private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
 
-/*    private final static String PROP_STANDING_ORDER_SOFT_LIMIT = "fdstore.standingorder.softlimit";
-    private final static String PROP_STANDING_ORDER_HARD_LIMIT = "fdstore.standingorder.hardlimit";*/
+    /*
+     * private final static String PROP_STANDING_ORDER_SOFT_LIMIT = "fdstore.standingorder.softlimit"; private final static String PROP_STANDING_ORDER_HARD_LIMIT =
+     * "fdstore.standingorder.hardlimit";
+     */
 
     private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED = "fdstore.mktadmin.auto.upload.report.email.enabled";
     private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO = "fdstore.mktadmin.auto.upload.report.email.to";
@@ -658,6 +659,7 @@ public class FDStoreProperties {
     private final static String PROP_SOY_DEBUG = "soy.debug";
 
     private final static String PROP_EH_CACHE_ENABLED = "ehcache.enabled";
+    private final static String PROP_EH_CACHE_MANAGEMENT_ENABLED = "ehcache.management.enabled";
     private final static String PROP_FD_TC_ENABLED = "terms.condition.enabled";
 
     private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
@@ -685,6 +687,7 @@ public class FDStoreProperties {
     private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
     private static final String PROP_PRES_PICKS_PAGESIZE = "fdstore.prespicks.pagesize";
     private static final String PROP_STAFF_PICKS_PAGESIZE = "fdstore.staffpicks.pagesize";
+    private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid";
     private static final String PROP_STAFF_PICKS_FEATLIMIT = "fdstore.staffpicks.featlimit";
     private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
@@ -842,7 +845,7 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_LICENSE_KEY = "fdstore.tax.avalara.license.key";
     private final static String PROP_AVALARA_ACCOUNT_NUMBER = "fdstore.tax.avalara.account.number";
     private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";
-    
+
     private final static String PROP_AVALARA_CRON_THREAD_COUNT = "fdstore.tax.avalara.cron.threads.count";
 
     private final static String PROP_HOOK_LOGIC_BLACKHOLE_ENABLE = "fdstore.hooklogic.blackhole.enabled";
@@ -865,12 +868,12 @@ public class FDStoreProperties {
     private static final String PROP_ADDRESS_MISMATCH_ENABLED = "fdstore.address.mismatch.enabled";
 
     private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
-    
-    private static final String PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED ="fdstore.group.scale.perf.improve.enabled";
-    
+
+    private static final String PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED = "fdstore.group.scale.perf.improve.enabled";
+
     private static final String PROP_PRICE_CONFIG_CONVERSION_LIMIT = "fdstore.price.config.conversion.limit";
     private static final String PROP_PRICE_CONFIG_DEPARTMENTS = "fdstore.price.config.deparments.cms.ids";
-    
+
     private final static String PROP_DEFAULT_FDX_PLANTID = "fdstore.default.fdx.plantid";
     private final static String PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL = "fdstore.default.fdx.distribution.channel";
     private final static String PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT = "fdstore.default.fdx.distribution.channel.parent";
@@ -879,10 +882,9 @@ public class FDStoreProperties {
     private final static String PROP_DEFAULT_FD_PLANTID = "fdstore.default.fd.plantid";
     private final static String PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL = "fdstore.default.fd.distribution.channel";
     private final static String PROP_DEFAULT_FD_SALESORG = "fdstore.default.fd.salesorg";
-    
+
     private static final String PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED = "fdstore.dev.productfeedgeneration.enabled";
-    
-    
+
     // UNBXD integration
     private static final String PROP_UNBXD_API_KEY = "fdstore.unbxd.apikey";
     private static final String PROP_UNBXD_SITE_KEY = "fdstore.unbxd.sitekey";
@@ -893,7 +895,17 @@ public class FDStoreProperties {
     // APPDEV -5516 :Cart Carousel - Grand Giving Donation Technology
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
-    
+
+    // APPDEV-5893
+    private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
+    private static final String PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentUserModuleContainerContentKey";
+    private static final String PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newUserModuleContainerContentKey";
+
+    // APPDEV-5927
+    private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
+    private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
+    private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
+
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1378,8 +1390,9 @@ public class FDStoreProperties {
         defaults.put(PROP_PHONE_STANDING_ORDER_CS, "");
         defaults.put(PROP_PRODUCTPROMO_INFO_HOME, "freshdirect.fdstore.ProductPromotionInfoManager");
         // APPDEV-2252 Standing Order - Order Minimum Failure Threshold
-       /* defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
-        defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");*/
+        /*
+         * defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0"); defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
+         */
 
         defaults.put(PROP_WEBPURIFY_URL, "https://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
         defaults.put(PROP_WEBPURIFY_KEY, "1c7d26c10e564e6629234974ff556aa0");
@@ -1465,6 +1478,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 
         defaults.put(PROP_EH_CACHE_ENABLED, "true");
+        defaults.put(PROP_EH_CACHE_MANAGEMENT_ENABLED, "false");
 
         defaults.put(PROP_FD_TC_ENABLED, "false");
         defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");
@@ -1491,6 +1505,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
@@ -1509,6 +1524,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
         defaults.put(PROP_PRES_PICKS_PAGESIZE, "30");
         defaults.put(PROP_STAFF_PICKS_PAGESIZE, "30");
+        defaults.put(PROP_STAFF_PICKS_PICKID, "3000000060");
         defaults.put(PROP_STAFF_PICKS_FEATLIMIT, "4");
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
@@ -1657,7 +1673,7 @@ public class FDStoreProperties {
         defaults.put(PROP_HOOK_LOGIC_BLACKHOLE_ENABLE, "false");
         defaults.put(PROP_HOOK_LOGIC_CATEGORY_ENABLE, "true");
         defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
-        defaults.put(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS, "true"); //can HL items be on a row by themselves?
+        defaults.put(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS, "true"); // can HL items be on a row by themselves?
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev06.nj01:7001");
@@ -1667,7 +1683,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
         defaults.put(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED, "true");
         defaults.put(PROP_PRICE_CONFIG_CONVERSION_LIMIT, "1.00");
-        
+
         defaults.put(PROP_DEFAULT_FDX_PLANTID, "1300");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT, "01");
@@ -1676,7 +1692,6 @@ public class FDStoreProperties {
         defaults.put(PROP_DEFAULT_FD_PLANTID, "1000");
         defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FD_SALESORG, "0001");
-        
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
@@ -1685,12 +1700,21 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
 
         defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
-        
+
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
 
         // APPDEV - 5516 Cart Carousel - Grand Giving Donation Technology
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
+
+        defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
+
+        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentUserModuleContainer");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newUserModuleContainer");
+
+        defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
+        defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
+        defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
 
         refresh();
     }
@@ -3234,7 +3258,6 @@ public class FDStoreProperties {
     public static boolean isSessionLoggingEnabled() {
         return (Boolean.valueOf(get(SESSION_LOGGING_ENABLED))).booleanValue();
     }
-    
 
     public static int getCountryInfoRefreshInterval() {
         return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
@@ -3313,18 +3336,18 @@ public class FDStoreProperties {
      * 
      * @return Soft limit. Default is $50.
      */
-  /*  public static double getStandingOrderSoftLimit() {
-        return Double.parseDouble(get(PROP_STANDING_ORDER_SOFT_LIMIT));
-    }*/
+    /*
+     * public static double getStandingOrderSoftLimit() { return Double.parseDouble(get(PROP_STANDING_ORDER_SOFT_LIMIT)); }
+     */
 
     /**
      * Used at processing Standing Orders. After removing discontinued products from the cart, sum must be higher than this value.
      * 
      * @return Hard limit. Default is $50.
      */
-   /* public static double getStandingOrderHardLimit() {
-        return Double.parseDouble(get(PROP_STANDING_ORDER_HARD_LIMIT));
-    }*/
+    /*
+     * public static double getStandingOrderHardLimit() { return Double.parseDouble(get(PROP_STANDING_ORDER_HARD_LIMIT)); }
+     */
 
     public static String getProductPromotionInfoHome() {
         return get(PROP_PRODUCTPROMO_INFO_HOME);
@@ -3645,6 +3668,10 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_EH_CACHE_ENABLED))).booleanValue();
     }
 
+    public static boolean isEhCacheManagementEnabled() {
+        return (Boolean.valueOf(get(PROP_EH_CACHE_MANAGEMENT_ENABLED))).booleanValue();
+    }
+
     public static boolean isQuickshopIgnorePartialRollout() {
         return (Boolean.valueOf(get(PROP_QS_IGNORE_PARTIAL_ROLLOUT))).booleanValue();
     }
@@ -3707,6 +3734,10 @@ public class FDStoreProperties {
 
     public static int getStaffPicksPageSize() {
         return Integer.parseInt(get(PROP_STAFF_PICKS_PAGESIZE));
+    }
+
+    public static String getStaffPicksPickId() {
+        return get(PROP_STAFF_PICKS_PICKID);
     }
 
     public static int getStaffPicksPageFeatLimit() {
@@ -3852,6 +3883,7 @@ public class FDStoreProperties {
     public static String getLogisticsAPIUrl() {
         return get(PROP_LOGISTICS_API_URL);
     }
+
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
@@ -4200,11 +4232,11 @@ public class FDStoreProperties {
     public static String getAvalaraCompanyCode() {
         return StringUtils.defaultString(get(PROP_AVALARA_COMPANY_CODE), "0011");
     }
-    
+
     public static int getAvalaraCronThreadCount() {
-        return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT)!=null?get(PROP_AVALARA_CRON_THREAD_COUNT):"10");
+        return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT) != null ? get(PROP_AVALARA_CRON_THREAD_COUNT) : "10");
     }
-    
+
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }
@@ -4247,7 +4279,7 @@ public class FDStoreProperties {
     }
 
     public static boolean getHookLogicAllowOwnRows() {
-       return (Boolean.valueOf(get(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS))).booleanValue();
+        return (Boolean.valueOf(get(PROP_HOOK_LOGIC_ALLOW_OWN_ROWS))).booleanValue();
     }
 
     public static int getHlProductsCount() {
@@ -4257,35 +4289,35 @@ public class FDStoreProperties {
     public static int getHlOrderFeedMins() {
         return Integer.parseInt(get(PROP_HOOK_LOGIC_ORDER_FEED_MINS));
     }
-    
+
     public static String getDefaultFdxPlantID() {
         return get(PROP_DEFAULT_FDX_PLANTID);
     }
-    
+
     public static String getDefaultFdxDistributionChannel() {
         return get(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL);
     }
-    
+
     public static String getDefaultFdxDistributionChannelParent() {
         return get(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT);
     }
-    
+
     public static String getDefaultFdxSalesOrg() {
         return get(PROP_DEFAULT_FDX_SALESORG);
     }
-    
+
     public static String getDefaultFdxSalesOrgParent() {
         return get(PROP_DEFAULT_FDX_SALESORG_PARENT);
     }
-    
+
     public static String getDefaultFdPlantID() {
         return get(PROP_DEFAULT_FD_PLANTID);
     }
-    
+
     public static String getDefaultFdDistributionChannel() {
         return get(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL);
     }
-    
+
     public static String getDefaultFdSalesOrg() {
         return get(PROP_DEFAULT_FD_SALESORG);
     }
@@ -4309,13 +4341,13 @@ public class FDStoreProperties {
     public static boolean isGroupScalePerfImproveEnabled() {
         return (Boolean.valueOf(get(PROP_GROUP_SCALE_PERF_IMPROVE_ENABLED))).booleanValue();
     }
-    
+
     public static double getPriceConfigConversionLimit() {
         return Double.parseDouble(get(PROP_PRICE_CONFIG_CONVERSION_LIMIT));
     }
-    
-    public static String getPriceConfigDepartments(){
-    	return get(PROP_PRICE_CONFIG_DEPARTMENTS);
+
+    public static String getPriceConfigDepartments() {
+        return get(PROP_PRICE_CONFIG_DEPARTMENTS);
     }
 
     public static String getUnbxdApiKey() {
@@ -4342,31 +4374,56 @@ public class FDStoreProperties {
         return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED)).booleanValue();
     }
 
-	public static boolean isPropDonationProductSamplesEnabled() {
-		return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
-	}
+    public static boolean isPropDonationProductSamplesEnabled() {
+        return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
+    }
 
-	public static String getPropDonationProductSamplesId() {
-		return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
-	}
-	
-	public static List<String> getMealKitMaterialGroup(){
-		String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);
-		List<String> materialKitsList = new ArrayList<String>();
-		if(materialKits !=null){
-			materialKitsList = Arrays.asList(materialKits.split(","));
-		}
-		
-		return materialKitsList;
-	}	
-	
-	public static List<String> getHookLogicExcludedDepOrCatIds(){
-		String excludedDeptOrCatIds = get(PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS);
-		List<String> excludedDeptOrCatIdsList = new ArrayList<String>();
-		if(excludedDeptOrCatIds !=null){
-			excludedDeptOrCatIdsList = Arrays.asList(excludedDeptOrCatIds.toLowerCase().split(","));
-		}
-		
-		return excludedDeptOrCatIdsList;
-	}
+    public static String getPropDonationProductSamplesId() {
+        return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
+    }
+
+    public static int getUserCartSaveInterval() {
+        return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
+    }
+
+    public static String getHomepageRedesignCurrentUserContainerContentKey() {
+        return get(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY);
+    }
+
+    public static String getHomepageRedesignNewUserContainerContentKey() {
+        return get(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY);
+    }
+
+    public static String getPropPlant1300PlantIndicator() {
+        return get(PROP_PLANT1300_PRICE_INDICATOR);
+    }
+
+    public static String getPropPlant1310PlantIndicator() {
+        return get(PROP_PLANT1310_PRICE_INDICATOR);
+    }
+
+    public static String getPropPlantWDCPlantIndicator() {
+        return get(PROP_PLANTWDC_PRICE_INDICATOR);
+    }
+
+    public static List<String> getMealKitMaterialGroup() {
+        String materialKits = get(PROP_MEAL_KIT_MATERIAL_GROUP);
+        List<String> materialKitsList = new ArrayList<String>();
+        if (materialKits != null) {
+            materialKitsList = Arrays.asList(materialKits.split(","));
+        }
+
+        return materialKitsList;
+    }
+
+    public static List<String> getHookLogicExcludedDepOrCatIds() {
+        String excludedDeptOrCatIds = get(PROP_HOOK_LOGIC_CATEGORY_EXCLUDE_DEP_CAT_IDS);
+        List<String> excludedDeptOrCatIdsList = new ArrayList<String>();
+        if (excludedDeptOrCatIds != null) {
+            excludedDeptOrCatIdsList = Arrays.asList(excludedDeptOrCatIds.toLowerCase().split(","));
+        }
+
+        return excludedDeptOrCatIdsList;
+    }
+
 }

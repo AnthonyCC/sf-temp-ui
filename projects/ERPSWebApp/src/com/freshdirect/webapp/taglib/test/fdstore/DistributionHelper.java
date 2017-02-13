@@ -120,7 +120,7 @@ public class DistributionHelper {
 	
 	
 	private boolean checkExists(ContentType type, String id) {
-		return cms.getContentNode(new ContentKey(type,id)) != null;
+		return cms.getContentNode(ContentKey.getContentKey(type,id)) != null;
 	}
 
 	/**

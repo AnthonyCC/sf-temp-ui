@@ -21,9 +21,8 @@ import com.freshdirect.cmsadmin.domain.DraftChange;
 
 public class DraftApplicatorServiceTest {
 
-    List<ContentNodeI> nodes = new ArrayList<ContentNodeI>();
-
-    private static ContentServiceI service;
+    private List<ContentNodeI> nodes = new ArrayList<ContentNodeI>();
+    private ContentServiceI service;
 
     @Before
     public void setUp() throws Exception {
@@ -34,8 +33,8 @@ public class DraftApplicatorServiceTest {
 
         CmsManager.setInstance(new CmsManager(service, null));
 
-        nodes.add(service.getContentNode(ContentKey.decode("Product:prod1"), DraftContext.MAIN));
-        nodes.add(service.getContentNode(ContentKey.decode("Product:r1_prod1_1"), DraftContext.MAIN));
+        nodes.add(service.getContentNode(ContentKey.getContentKey("Product:prod1"), DraftContext.MAIN));
+        nodes.add(service.getContentNode(ContentKey.getContentKey("Product:r1_prod1_1"), DraftContext.MAIN));
     }
 
     @Test

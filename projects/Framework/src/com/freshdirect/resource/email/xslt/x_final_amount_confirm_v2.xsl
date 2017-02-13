@@ -82,8 +82,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:otherwise>
-</xsl:choose> <xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods.</xsl:if>
-
+</xsl:choose>
 <xsl:text>View order details online: </xsl:text>
 
 <xsl:text>http://www.freshdirect.com/your_account/order_history.jsp

@@ -544,7 +544,8 @@ public class CmsFilteringFlow {
 
                 String curCat = ((ProductModelPromotionAdapter) product).getErpCategory();
                 if (curCat == null || curCat.trim() == "") {
-                    curCat = "ERROR"; // lump all the bad products together
+                    //curCat = "ERROR"; // lump all the bad products together
+                    curCat = "";
                 }
                 productData.setErpCategory(curCat);
                 productData.setErpCatPosition(((ProductModelPromotionAdapter) product).getErpCatPosition());
@@ -554,6 +555,7 @@ public class CmsFilteringFlow {
                     productData.setPageType(nav.getPageType().toString());
                 }
                 browseDataContext.getDDPPProducts().getProducts().add(productData);
+            //    browseDataContext.getAssortProducts().addProdDataToCat(curCat, productData)
             } catch (FDResourceException e) {
                 LOG.warn("Getting DDPP products failed!", e);
             } catch (FDSkuNotFoundException e) {
@@ -563,6 +565,48 @@ public class CmsFilteringFlow {
             }
         }
 
+       // for staff picks: group the products based on the erp_category column value in product_promotion_group table
+        for (Map.Entry<String, List<ProductModel>> entry : searchResults.getAssortProducts().entrySet()) {
+            for(ProductModel product:entry.getValue()){
+                        
+        	try {
+            	
+                ProductData productData = ProductDetailPopulator.createProductData(user, product);
+                productData.setFeatured(((ProductModelPromotionAdapter) product).isFeatured());
+                productData.setFeaturedHeader(((ProductModelPromotionAdapter) product).getFeaturedHeader());
+
+                String curCat = ((ProductModelPromotionAdapter) product).getErpCategory();
+                if (curCat == null || curCat.trim() == "") {
+                    //curCat = "ERROR"; // lump all the bad products together
+                    curCat = "";
+                }
+                productData.setErpCategory(curCat);
+                productData.setErpCatPosition(((ProductModelPromotionAdapter) product).getErpCatPosition());
+                productData.setPriority(((ProductModelPromotionAdapter) product).getPriority());
+
+                if (nav.getPageType() != null) {
+                    productData.setPageType(nav.getPageType().toString());
+                }
+                /*if(assortMap.containsKey(curCat)){
+                	List<ProductData> productDataList=assortMap.get(curCat);
+                	productDataList.add(productData);
+                	assortMap.put(curCat, productDataList);
+                } else {
+                	List<ProductData> productDataList=new ArrayList<ProductData>();
+                	productDataList.add(productData);
+                	assortMap.put(curCat, productDataList);
+                }*/
+                
+                browseDataContext.getAssortProducts().addProdDataToCat(curCat, productData);
+            } catch (FDResourceException e) {
+                LOG.warn("Getting DDPP products failed!", e);
+            } catch (FDSkuNotFoundException e) {
+                LOG.warn("Getting DDPP products failed!", e);
+            } catch (HttpErrorResponse e) {
+                LOG.warn("Getting DDPP products failed!", e);
+            }
+        }
+        }
         // set HookLogic adProducts for 'search like' pages.
         if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){   //if(FDStoreProperties.isHookLogicEnabled()){
             StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
@@ -930,6 +974,12 @@ public class CmsFilteringFlow {
         hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCustomerId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCategoryId(catId);
+      
+        if(user.isMobilePlatForm())
+			hLBrandProductAdRequest.setPlatformSource("mobile");	
+	 	  else
+		 	 hLBrandProductAdRequest.setPlatformSource("web");
+        
         try {
             HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
             List<HLBrandProductAdInfo> hlBrandAdProductsMeta = hlBrandProductAdResponse.getProductAd();

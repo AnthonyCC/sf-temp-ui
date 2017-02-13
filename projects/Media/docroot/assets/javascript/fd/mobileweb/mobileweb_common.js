@@ -207,7 +207,7 @@ var API;
 								var $parent = $(e).closest('[data-hooklogic-beacon-click]');
 								var url = $parent.data('hooklogic-beacon-click');
 								if ($parent.find('img.hl-beacon-click').length === 0) { /* prevent multiple calls */
-									$parent.append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'&platform=mobile" style="display: none;" />');
+									$parent.append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
 								}
 							});
 						}

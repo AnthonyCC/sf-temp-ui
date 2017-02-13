@@ -44,7 +44,7 @@
 							<p>If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
 							</xsl:if>
 							
-							<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
+							<p>As soon as we select and weigh your items, You will receive your final invoice on the day of your delivery . We'll also include an itemized, printed receipt with your delivery.</p>
 
 							<p>We hope you enjoy everything in your order. Please <a href="http://www.freshdirect.com/">shop again soon</a>.</p>
 

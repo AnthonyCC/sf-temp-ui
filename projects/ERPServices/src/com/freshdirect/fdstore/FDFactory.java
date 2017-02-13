@@ -360,7 +360,8 @@ public class FDFactory {
             	Set foundSkus = new HashSet();
                 LinkedList newPinfos = new LinkedList();
                 for (Iterator piIter = pinfos.iterator(); piIter.hasNext(); ) {
-                	FDProductInfo pi = getPreviewProductInfo( (FDProductInfo) piIter.next() );
+                	//FDProductInfo pi = getPreviewProductInfo( (FDProductInfo) piIter.next() );
+                	FDProductInfo pi = (FDProductInfo) piIter.next();
                     newPinfos.add( pi );
                     foundSkus.add( pi.getSkuCode() );
                 }
