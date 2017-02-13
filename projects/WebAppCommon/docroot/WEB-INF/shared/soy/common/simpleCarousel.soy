@@ -6,6 +6,10 @@
  * @param? title optional title string
  * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
+ * @param? showViewAllButton
+ * @param? viewAllLink
+ * @param? accessibilityText
+ * @param? isIconCarousel
  */
 {template .simpleCarousel autoescape="false"}
 <div data-component="carousel" class="first">
@@ -13,17 +17,29 @@
 	<div data-component="carousel-mask" class="transactional">
 		<ul data-component="carousel-list" data-carousel-page="0">
 			{foreach $item in $items}
-			{delcall common.carouselItem variant="$itemType"}
-				{param item:$item /}
-				{param cmEventSource:$cmEventSource /}
-				{param mobWeb:$mobWeb /}
-			{/delcall}
+			{if $isIconCarousel}
+				{call common.iconCarouselItem}
+					{param item:$item /}
+				{/call}
+			{else}
+				{delcall common.carouselItem variant="$itemType"}
+					{param item:$item /}
+					{param cmEventSource:$cmEventSource /}
+					{param mobWeb:$mobWeb /}
+				{/delcall}
+			{/if}
 			{/foreach}
 		</ul>
 	</div>
 	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
-	<button data-component="carousel-next" data-carousel-nav="next">next</button>
+	<button data-component="carousel-next" data-carousel-nav="next"
+	{if $showViewAllButton}data-carousel-view-all="{$showViewAllButton}"{/if}>next</button>
+	{if $showViewAllButton and $accessibilityText}
+		<div data-component="carousel-view-all">
+			<a href="{$viewAllLink}"  class="cssbutton cssbutton-flat green transparent arrowbutton">view all
+				<div class="offscreen">{$accessibilityText}</div>
+			</a>
+		</div>
+	{/if}
 </div>
 {/template}
-
-              

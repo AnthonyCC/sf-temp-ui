@@ -1,0 +1,29 @@
+{namespace common}
+
+/**
+ * @param config
+ * @param data
+ */
+{template .contentModules}
+{if $config and $data}
+  <div class="contentModules">
+  	{foreach $module in $config}
+  		{call common.contentModuleSelector}
+  			{param moduleConfig: $module /}
+  			{param data: $data[$module.moduleInstanceId] /}
+  		{/call}
+  	{/foreach}
+  </div>
+{/if}
+{/template}
+
+/**
+ * @param moduleConfig
+ * @param data
+ */
+{template .contentModuleSelector}
+  {delcall common.moduleSelector variant="$moduleConfig.sourceType"}
+    {param moduleData: $moduleConfig /}
+    {param data: $data /}
+  {/delcall}
+{/template}

@@ -1,0 +1,17 @@
+{namespace common}
+
+/**
+ * @param content
+ */
+{template .moduleHeader autoescape="false"}
+{if $content.moduleTitle or $content.moduleTitleTextBanner}
+  <div class="module-header" tabindex="0">
+    {if $content.moduleTitle}
+      <h1 class="module-title {if not $content.showModuleTitle} offscreen{/if}">{$content.moduleTitle}</h1>
+    {/if}
+    {if $content.moduleTitleTextBanner}
+      <h3 class="module-text-banner {if not $content.showModuleTitleTextBanner} offscreen{/if}">{$content.moduleTitleTextBanner}</h3>
+    {/if}
+  </div>
+{/if}
+{/template}

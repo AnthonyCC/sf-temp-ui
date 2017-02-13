@@ -45,11 +45,11 @@ html,body {
     font-weight: bold;
     color: #FF9933;
 	background-color: white;
-   
+
 }
 
 #most-popular .grid-carousel {
-	overflow:hidden;	
+	overflow:hidden;
 }
 
 #top-items .ymalCarousel .portrait-item,
@@ -149,4 +149,20 @@ html,body {
 }
 #welcome-section-container .clear {
 	clear: both;
+}
+
+/*homepage redesign*/
+.oas-homepageredesign,
+.oas-homepageredesign .full {
+  width: 100%;
+}
+
+.oas-homepageredesign .half {
+  margin: 0;
+  width: 50%;
+}
+
+.oas-homepageredesign .oas-container {
+  display: flex;
+  justify-content: space-between;
 }

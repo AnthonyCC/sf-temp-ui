@@ -128,7 +128,7 @@ var FreshDirect = FreshDirect || {};
                   return;
                 }
 
-            	if ($jq('.mm-page').length) {
+            	if ($('.mm-page').length) {
             		data = data || {};
             		data.mobWeb = true;
             	}
@@ -148,13 +148,13 @@ var FreshDirect = FreshDirect || {};
                 }else{
                     $popupBody.html(bt({data: data || {}}));
                 }
-                
+
                 setTimeout(function () {
                   fd.modules.common.Elements.decorate($popupBody);
                   fd.modules.common.Select.selectize($popupBody);
                   fd.modules.common.aria.decorate();
                 }, 10);
-                
+
                 // reposition the popups
                 if (this.popup && !this.popup.placeholderActive && this.popup.shown) {
                   this.popup.reposition();
@@ -163,10 +163,10 @@ var FreshDirect = FreshDirect || {};
         },
         refreshBody:{
             value:function(data,template,header){
-            	if ($jq('.mm-page').length) {
-            		$jq('#'+this.popupId).addClass('mm-page-ifr');
+            	if ($('.mm-page').length) {
+            		$('#'+this.popupId).addClass('mm-page-ifr');
             	} else {
-            		$jq('#'+this.popupId).removeClass('mm-page-ifr');
+            		$('#'+this.popupId).removeClass('mm-page-ifr');
             	}
                 if(template){
                     this.bodyTemplate=template;

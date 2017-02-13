@@ -16,13 +16,13 @@ public enum EnumRolloutFeature {
     gridlayoutcolumn5_0(gridlayoutcolumn4_0, "gridlayoutcolumn", "5_0"),
     standingorder3_0("standingorder", "3_0"),
     browseaggregatedcategories1_0("browseaggregatedcategories", "1_0"), // browse category page with aggregated sub-categories
-    hooklogic2016("hooklogic","2016"),
+    hooklogic2016("hooklogic", "2016"),
     priceconfigdisplay2016("priceconfigdisplay", "2016"),
     unbxdintegrationblackhole2016("unbxdintegrationblackhole", "2016"),
     unbxdanalytics2016("unbxdanalytics", "2016"),
-    mobweb("mobweb","2016"),
-    printinvoice("printinvoice","2016") //has print invoice button
-    ;
+    mobweb("mobweb", "2016"),
+    printinvoice("printinvoice", "2016"), // has print invoice button
+    homepageredesign("homepageredesign", "2017");
 
     private final EnumRolloutFeature child;
     private final String cookieName;

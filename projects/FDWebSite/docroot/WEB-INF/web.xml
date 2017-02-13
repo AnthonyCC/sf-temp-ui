@@ -456,6 +456,15 @@
     <url-pattern>/api/expressco/coupon</url-pattern>
   </servlet-mapping>
   
+  	<servlet>
+		<servlet-name>ModuleHandlingServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ModuleHandlingServlet</servlet-name>
+		<url-pattern>/api/modulehandling/load</url-pattern>
+	</servlet-mapping>
+  
   
   <!-- Dev Tools -->
   <servlet>

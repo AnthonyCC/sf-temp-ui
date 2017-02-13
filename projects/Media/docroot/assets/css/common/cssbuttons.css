@@ -27,7 +27,7 @@ a.cssbutton:link,
   transition: background-color 0.12s ease-in-out 0s;
 	text-indent:0;
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .cssbutton + .cssbutton {
@@ -401,6 +401,12 @@ span.cssbutton.notext[class*=" icon-"] {
   border-radius: 50%;
 }
 
+.cssbutton.arrowbutton:after {
+  content: '\276F';
+  position: relative;;
+  right: -15px;
+}
+
 .cssbutton.disabled,
 .cssbutton[disabled],
 .cssbutton.disabled:hover,
@@ -409,7 +415,7 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton[disabled]:active,
 .cssbutton.disabled:focus,
 .cssbutton[disabled]:focus {
-  color: #858585;  
+  color: #858585;
   background-color: #e8e8ea;
   border-color: #e8e8ea;
   cursor: not-allowed;

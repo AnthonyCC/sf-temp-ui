@@ -5,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $ = fd.libs.$;
-    
+
   function updatePager(carousel) {
     var currentPage = +carousel.data('carousel-page'),
         nrPages = +carousel.data('carousel-nrpages'),
@@ -29,7 +29,7 @@ var FreshDirect = FreshDirect || {};
     var $mask = $('[data-component="carousel-mask"]', carousel ),
         $list = $('[data-component="carousel-list"]', carousel ),
         elements = $list.children(),
-        itemsize = elements.first().outerWidth(true),
+        itemsize = elements[0].getBoundingClientRect().width,
         currentPage = carousel.data('carousel-page') || 0,
         itemPerPage = Math.floor($mask.width() / itemsize) || 1,
         nrPages = Math.ceil($list.children().size() / itemPerPage),
@@ -44,19 +44,22 @@ var FreshDirect = FreshDirect || {};
     } else {
       newPage = toPage || toPage === 0 ? toPage : currentPage;
     }
+    if ( toPage === -1) {
+      newPage = currentPage;
+    }
     // str/int => int
     newPage = +newPage;
 
     try {
       targetElem = $(elements[newPage * itemPerPage]);
-      result = $list.offset().left - targetElem.offset().left + parseInt(targetElem.css('margin-left'), 10);
+      result = $list.offset().left - targetElem.offset().left + parseInt(targetElem.css('margin-left'), 10) + $mask.offset().left;
     } catch (e) {}
 
     if (newPage === 0) {
-      carousel.addClass('first');             
+      carousel.addClass('first');
     }
 
-    if (newPage >= nrPages - 1) {
+    if (newPage >= nrPages - 1 ) {
       carousel.addClass('last');
     }
 
@@ -68,7 +71,7 @@ var FreshDirect = FreshDirect || {};
       carousel.addClass('stepping');
 
       if (result || result === 0) {
-        $('[data-component="carousel-list"]', carousel).css("left", result + "px");
+        $('[data-component="carousel-list"]', carousel).offset({left :result});
       }
 
       setTimeout(function () {
@@ -79,11 +82,11 @@ var FreshDirect = FreshDirect || {};
     return result;
   }
 
-  
+
   var carousel = {
       changePage: changePage,
       handleClick:function(event){
-        var carousel = $(event.currentTarget), 
+        var carousel = $(event.currentTarget),
             direction;
 
         direction = $(event.target).data('carousel-nav');
@@ -98,8 +101,23 @@ var FreshDirect = FreshDirect || {};
         });
       }
   };
-  
-  $(document).on('click','[data-component="carousel"]',carousel.handleClick.bind(carousel));  
+
+  $(document).on('click','[data-component="carousel"]',carousel.handleClick.bind(carousel));
+  $(document).on('keyup','[data-component="carousel"]', function (e) {
+    if ((e.keyCode || e.which) === 9) {
+      var carousel = $(e.currentTarget),
+          $list = $('[data-component="carousel-list"]', carousel ),
+          $mask = $('[data-component="carousel-mask"]', carousel ),
+          elements = $list.children(),
+          itemsize = elements[0].getBoundingClientRect().width,
+          itemPerPage = Math.floor($mask.width() / itemsize) || 1,
+          focusedElem = $(':focus').closest('li'),
+          focusedElemIndex = elements.index(focusedElem),
+          page = Math.floor(focusedElemIndex / itemPerPage);
+
+      changePage(carousel, null, page);
+    }
+  });
   $(document).on('click','[data-component="carousel"] .pager [data-page]', function (e) {
     var el = $(e.currentTarget),
         page = el.attr('data-page');

@@ -7,7 +7,7 @@
 	list-style-type:none;
 }
 [data-component="carousel-mask"] {
-	overflow:hidden;	
+	overflow:hidden;
   margin: 0 2px 36px;
 }
 
@@ -70,15 +70,20 @@
 
 [data-component="carousel-prev"],
 [data-component="carousel-next"] {
-	position:absolute;
 	height:38px;
+	width:36px;
+	text-indent:40px;
+	border:none;
+}
+
+[data-component="carousel-prev"],
+[data-component="carousel-next"],
+[data-component="carousel-view-all"] {
+	position:absolute;
 	top:0;
 	bottom:0;
 	margin:auto 0;
-	width:36px;
 	overflow:hidden;
-	text-indent:40px;
-	border:none;
 	padding:0;
 	cursor:pointer;
 }
@@ -89,10 +94,14 @@
 .browse .carousels 	[data-component="carousel-next"] {
 	margin-top: 82px;
 }
+[data-component="carousel-next"],
+[data-component="carousel"].last [data-component="carousel-next"]:hover,
+[data-component="carousel-view-all"] {
+	right: 0;
+}
 
 [data-component="carousel-next"],
 [data-component="carousel"].last [data-component="carousel-next"]:hover {
-	right:0;
 	background: url('/media_stat/carousel/carousel-sprite.png') no-repeat -40px -97px;
 }
 
@@ -113,6 +122,22 @@
 [data-component="carousel"].last [data-component="carousel-next"]{
 	cursor: default;
 	background-position: -40px -177px;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all="true"] {
+	visibility: hidden;
+}
+
+[data-component="carousel"] [data-component="carousel-view-all"] {
+	visibility: hidden;
+}
+
+[data-component="carousel"].last [data-component="carousel-view-all"] {
+	height: 50px;
+	margin: auto 0;
+	width: auto;
+	text-transform: uppercase;
+	visibility: visible;
 }
 
 [data-component="carousel"].first [data-component="carousel-prev"]{
