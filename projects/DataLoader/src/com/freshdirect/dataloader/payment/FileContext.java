@@ -18,7 +18,16 @@ public class FileContext implements java.io.Serializable {
 	private boolean downloadFiles;
 	
 	private String paypalFileDate;
+	
+	private String fileToProcess;
 
+	public String getFileToProcess() {
+		return fileToProcess;
+	}
+
+	public void setFileToProcess(String fileToProcess) {
+		this.fileToProcess = fileToProcess;
+	}
 	public boolean downloadFiles() {
 		return downloadFiles;
 	}
@@ -26,6 +35,8 @@ public class FileContext implements java.io.Serializable {
 	public void setDownloadFiles(boolean downloadFiles) {
 		this.downloadFiles= downloadFiles;
 	}
+	
+
 	public String getUserName() {
 		return userName;
 	}
@@ -140,6 +151,8 @@ public class FileContext implements java.io.Serializable {
 				return false;
 		} else if (!userName.equals(other.userName))
 			return false;
+		else if (!fileToProcess.equals(other.fileToProcess))
+			return false;
 		return true;
 	}
 
@@ -148,7 +161,9 @@ public class FileContext implements java.io.Serializable {
 		return "FileContext [localHost=" + localHost + ", remoteHost="
 				+ remoteHost + ", fileType=" + fileType + ", key=" + key
 				+ ", userName=" + userName + ", password=" + password
-				+ ", downloadFiles=" + downloadFiles + "]";
+				+ ", downloadFiles=" + downloadFiles  
+				+ ", fileToProcess=" + fileToProcess + 
+				"]";
 	}
 
 	
