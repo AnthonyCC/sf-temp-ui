@@ -3774,6 +3774,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			re.printStackTrace();
 			throw new FDResourceException(re);
 		}
 	}
