@@ -509,11 +509,14 @@ $jq(".locabar-modify-order-section").hover(function(){
 });
 
 $jq("#locabar_addresses_trigger").hover(function(){
-	$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
-	$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
-$jq(this).removeClass("hover");
-$jq("#locabar_addresses").css("display","");
-});
+		if (!$jq('#nodeliver-form:visible').length) {
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
+			$jq(this).removeClass("hover");
+			$jq("#locabar_addresses").css("display","");
+		}
+	}); 
+
 
 //check if the alert box is present or not during tab press...
 
