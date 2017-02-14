@@ -131,6 +131,10 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		try {
 			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FD);
 			Set<EnumServiceType> availServices = result.getAvailableServices();
+
+			//remove pickup for this check - APPDEV-5901
+			availServices.remove(EnumServiceType.PICKUP);
+			
 			if (!availServices.isEmpty()) { return true; }
 		} catch (FDResourceException e) {
 			//LOGGER.debug(e);
@@ -170,9 +174,14 @@ public class LocationHandlerTag extends SimpleTagSupport {
 				address.setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
 			}
 			//no error check needed here, front end will display no delivery error if needed
-			handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, 
-					(user.getUserContext()!=null 
-					&& user.getUserContext().getStoreContext()!=null)?user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD));
+			handleNewServiceResult(
+				FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(
+					zipCode, 
+					(user.getUserContext()!=null && user.getUserContext().getStoreContext()!=null)
+						? user.getUserContext().getStoreContext().getEStoreId()
+						: EnumEStoreId.FD
+				)
+			);
 			user.setAddress(address);
 			handleNewAddressSet();
 			user.updateUserState(); //based on DeliveryAddressManipulator.performSetDeliveryAddress()
