@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 
@@ -43,7 +44,7 @@ public class OrderHistory {
     }
 
     private List<FDOrderInfoI> getOrderInfos(EnumSaleType type) {
-        return new ArrayList<FDOrderInfoI>(((FDOrderHistory) orderHistory).getFDOrderInfos(type));
+        return new ArrayList<FDOrderInfoI>(((FDOrderHistory) orderHistory).getFDOrderInfos(type, EnumEStoreId.FDX));
     }
 
     /**
