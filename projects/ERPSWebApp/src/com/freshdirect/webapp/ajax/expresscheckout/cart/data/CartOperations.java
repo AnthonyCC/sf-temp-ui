@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.python.modules.synchronize;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.MasqueradeContext;
