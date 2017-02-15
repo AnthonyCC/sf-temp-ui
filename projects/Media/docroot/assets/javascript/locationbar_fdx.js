@@ -341,12 +341,12 @@ $jq(document).ready(function() {
 	function messagesOpened() {
 		$jq('#locabar-messages-open').parent('.locabar_triggers').addClass('alertOpen');
 		$jq('#locabar-messages-open').closest('.locabar-section').addClass('alertOpen');
-		if($jq("#newziptext").val()=="" || $jq("#newziptext").val().length >=5){
+		if($jq("#newziptext").length && ($jq("#newziptext").val()=="" || $jq("#newziptext").val().length >=5)){
 			$jq('#messages').removeClass("open");
 		}
 		
 		
-	}
+	} 
 	if ($jq('#messages').hasClass('open')) { /* doc ready will miss the initial messagesOpen trigger */
 		messagesOpened();
 
