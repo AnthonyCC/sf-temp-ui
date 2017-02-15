@@ -36,7 +36,7 @@
 	</tag-file>
 	<tag-file>
 	 	<name>OAShomepageredesign</name>
-	 	<path>/WEB-INF/shared/tags/home/OAShomepage.tag</path>
+	 	<path>/WEB-INF/tags/home/OAShomepage.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>homePageLetter</name>
