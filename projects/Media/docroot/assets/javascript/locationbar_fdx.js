@@ -580,6 +580,8 @@ $jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
 			$jq(".changeBGClr").focus();
 			$jq(".locabar-user-section mouse").css('background-color', '#4fa157');
+			$jq("#locabar_addresses_trigger").removeClass("hover");
+			$jq("#locabar_addresses").hide();
 		}
 		e.preventDefault();
 	}
