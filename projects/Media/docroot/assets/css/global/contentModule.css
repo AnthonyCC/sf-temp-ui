@@ -1,5 +1,6 @@
-.contentModules .content-module:nth-child(n + 2) {
+.contentModules .content-module {
   margin-top: 35px;
+  font-family: 'Brandon Text';
 }
 
 .contentModules .content-module [data-component="carousel"] [data-component="carousel-mask"] {
@@ -24,14 +25,16 @@
 }
 
 .contentModules .content-module h1 {
-  font-family: sans-serif;
+  font-family: 'Brandon Text';
   font-size: 25px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 25px;
   margin: 0;
 }
 
 .contentModules .content-module h3 {
+  font-family: 'Brandon Text';
+  font-weight: 500;
   font-size: 16px;
   height: 26px;
   line-height: 26px;
@@ -40,10 +43,12 @@
 
 .contentModules .content-module .module-header {
   align-items: center;
+  background: #F2F3F4;
   font-size: 25px;
-  font-family: Verdana, Arial, sans-serif;
+  font-family: 'Brandon Text';
   text-transform: uppercase;
   padding: 10px;
+  margin-bottom: 2px;
 }
 
 .contentModules .content-module .module-header .module-text-banner {
@@ -69,9 +74,9 @@
 
 .contentModules .content-module .content .content-header h2 {
   margin: 0;
-  font-family: Verdana, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 22px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
+  font-size: 25px;
   text-transform: uppercase;
 }
 

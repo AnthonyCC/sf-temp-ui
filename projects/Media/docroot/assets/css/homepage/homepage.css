@@ -162,7 +162,73 @@ html,body {
   width: 50%;
 }
 
-.oas-homepageredesign .oas-container {
+.oas-homepageredesign .oas-container,
+.oas-homepageredesign .oas-container .right-side,
+.oas-homepageredesign .oas-container .right-side .line {
   display: flex;
   justify-content: space-between;
 }
+
+/*demo preparation*/
+.oas-homepageredesign .oas-container .right-side {
+  flex-direction: column;
+}
+
+.oas-homepageredesign .oas-container {
+  min-height: 480px;
+  margin-top: 15px;
+}
+
+.oas-homepageredesign .oas-container .main {
+  background-image: url('/media/fakeOAS/main-image.jpg');
+  background-repeat: no-repeat;
+  background-size: 480px 480px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line,
+.oas-homepageredesign .oas-container .right-side .line > div{
+  min-height: 154px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(1) > .half{
+  background-image: url('/media/fakeOAS/top-1-left.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(1) .half.right {
+  background-image: url('/media/fakeOAS/top-4-right.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(2) > .half{
+  background-image: url('/media/fakeOAS/top-2-left.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(2) .half.right {
+  background-image: url('/media/fakeOAS/top-5-right.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(3) > .half{
+  background-image: url('/media/fakeOAS/top-3-left.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+
+.oas-homepageredesign .oas-container .right-side .line:nth-child(3) .half.right {
+  background-image: url('/media/fakeOAS/top-6-right.jpg');
+  background-repeat: no-repeat;
+  background-size: 240px 154px;
+  max-width: 240px;
+}
+/*demo preparation end*/

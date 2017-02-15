@@ -42,6 +42,13 @@
 .contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
   height: 82px;
   width: 82px;
+  display: flex;
+  align-items: center;
+}
+
+.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic img {
+  max-height: 82px;
+  max-width: 82px;
 }
 
 .contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-title {
@@ -78,6 +85,8 @@
 
 .contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
   font-size: 17px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
   margin: 0;
 }
 
@@ -87,4 +96,6 @@
 
 .contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h1 {
   font-size: 25px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
 }

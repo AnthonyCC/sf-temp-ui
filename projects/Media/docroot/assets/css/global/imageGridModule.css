@@ -31,10 +31,12 @@
 
 .contentModules .content-module.image-grid-module .content .image-grid div div .small a > div,
 .contentModules .content-module.image-grid-module .content .image-grid div .medium a > div {
-  background-color: rgba(255,255,255,.9);
+  background-color: rgba(255,255,255,.75);
   bottom: 50px;
   color: black;
+  font-family: 'Brandon Text';
   font-size: 18px;
+  font-weight: 500;
   height: 22px;
   line-height: 22px;
   margin: 0;
