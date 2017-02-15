@@ -348,9 +348,15 @@
 	<tag>
 		<name>modulehandling</name>
 		<tagclass>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingPotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>moduleContainerId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
