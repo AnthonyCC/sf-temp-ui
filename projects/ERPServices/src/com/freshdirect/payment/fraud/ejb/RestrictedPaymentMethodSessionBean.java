@@ -50,6 +50,8 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 	}
 
 	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel model) {
+		
+		LOGGER.info("Restricting eCheck for customer "+model.getCustomerId());
 		Connection conn = null;
 		PrimaryKey pk = null;
 		RestrictedPaymentMethodModel existingModel = null;
@@ -65,6 +67,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 				if (model.getAbaRouteNumber() != null) {
 					criteria.setAbaRouteNumber(model.getAbaRouteNumber());
 				}
+				criteria.setCustomerID(model.getCustomerId());
 				criteria.setAccountNumber(model.getAccountNumber());
 				List<RestrictedPaymentMethodModel> list = findRestrictedPaymentMethods(criteria);
 				if (list != null && list.size() > 0) {
