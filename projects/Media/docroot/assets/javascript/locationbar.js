@@ -53,6 +53,7 @@
 			});
 		}
 	};
+	window['sendZip']=sendZip;
 
 	function updateMessagesCount() {
 		var $messages_count = $('.messages-count');
@@ -102,7 +103,13 @@
 
 	$document.on('click', '#newzipgo', sendZip);
 
-	$document.on('keyup', '#newziptext', function (e) {
+	$document.on('keydown', '#newziptext', function (e) {
+		// send form on enter
+		if (e.keyCode === 13) {
+			sendZip();
+		}
+	});
+	$('#newzipgo').on('keydown', function (e) {
 		// send form on enter
 		if (e.keyCode === 13) {
 			sendZip();
@@ -116,6 +123,16 @@
 			e.preventDefault();
 		}
 	});
+	$document.on('keydown', '#location-email', function (e) {
+		if (e.keyCode === 13) {
+			$('#location-submit').click();
+		}
+	}); 
+	$document.on('keydown', '#location-submit', function (e) {
+		if (e.keyCode === 13) {
+			$(this).click();
+		}
+	}); 
 
 
 	$document.on('click','.delivery-popuplink',function(e){
@@ -431,6 +448,7 @@ function goButtonFocus(e) {
 	if(keycode == '13'){
 		if($jq("#newziptext").val()!="" && $jq("#newziptext").val().length == 5){
 			$jq('#messages').removeClass("open");
+			sendZip();
 		}
 		else{
 			$jq("#newziptext").focus();

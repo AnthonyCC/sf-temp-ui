@@ -464,7 +464,7 @@ $jq('.changeBGClr').on('blur mouseleave', function(event) {
 
 
 //press enter key to display message
-$jq('#locabar_messages_trigger').keypress(function(event){
+$jq('#locabar_messages_trigger').keydown(function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq('#messages').messages('openMessages');
@@ -479,7 +479,7 @@ $jq('#locabar_messages_trigger').keypress(function(event){
 
 
 //enter key to modify button order
-$jq('#locabar_modify_order_trigger').keypress(function(event){
+$jq('#locabar_modify_order_trigger').keydown(function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","1");
@@ -491,7 +491,7 @@ $jq('#locabar_modify_order_trigger').keypress(function(event){
 
 //enter key for orders
 
-$jq('#locabar_addresses_trigger').keypress(function(event){
+$jq('#locabar_addresses_trigger').keydown(function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
@@ -649,6 +649,15 @@ $jq(window).load(function(){
 		//return true;*/
 	});
   	
+  	$jq(document).on('focusin',"#popupcart .cartline select",function(e){
+		var TABKEY = 9;			
+		$jq(".cartline").css("background","#fff");
+		//$jq(this).children().addClass("ss");
+		$jq(this).parent().parent().parent().css("background","#f1f1f1");
+		e.preventDefault();
+		//return true;*/
+	});
+  	
   	$jq(document).on("focusout","#locabar_addresses",function(){
   		//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
   		//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
@@ -708,7 +717,7 @@ $jq(window).load(function(){
 
 
 
-  	$jq(".locabar-addresses-section").keypress(function(event){
+  	$jq(".locabar-addresses-section").keydown(function(event){
   		var keycode = (event.keyCode ? event.keyCode : event.which);
   		if(keycode == '13'){
   			if($jq("#location-alerts #sitemessage").css("display")=="block"){
@@ -741,8 +750,9 @@ $jq("#locabar-messages-close").keypress(function(event){
 //escape to hide for 
 //change button
 //enter key for change zip code in delivery information
-$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keypress(function(event){
+$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
+	FreshDirect.locabar.lastFocusElemId = '';
 	if(keycode == '13'){
 		$jq(this).hide();
 		$jq(".locabar_addresses locabar_triggers_menu").css("visibility","visible");
