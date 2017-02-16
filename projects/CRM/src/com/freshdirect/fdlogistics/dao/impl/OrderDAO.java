@@ -1121,7 +1121,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	}
 
 	
-	private static final String SAVE_ROUTESTOPINFO = "UPDATE CUST.SALE SET TRUCK_NUMBER =LPAD(?, 6, '0'), STOP_SEQUENCE = LPAD(?, 5, '0') WHERE ID = ?";
+	private static final String SAVE_ROUTESTOPINFO = "UPDATE CUST.SALE SET TRUCK_NUMBER =?, STOP_SEQUENCE = LPAD(?, 5, '0') WHERE ID = ?";
 	
 	@Override
 	public void saveRouteStopInfo(final List<RouteStop> data) {
