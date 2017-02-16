@@ -211,14 +211,14 @@ public class ContentNodeModelUtil {
 
     public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent, boolean inheritedAttrs) {
         boolean isRefreshed = false;
-        List cachedChildModels = null;
+        List updatedChildModels = null;
     	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(refModel.getContentKey().getId(), refNodeAttr);
     	if (!cacheKey.isEmpty()){
-    		cachedChildModels = EhCacheUtil.getListFromCache(EhCacheUtil.CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey);
+    		updatedChildModels = EhCacheUtil.getListFromCache(EhCacheUtil.CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey);
     	}
-    	if (cachedChildModels == null){
-    		
-    			Object value;
+    	if (updatedChildModels == null){
+    		updatedChildModels = new ArrayList<ContentNodeModelImpl>();	
+    		Object value;
     			
     			if (!inheritedAttrs) {
     				value = (refModel.getCMSNode() != null) ? refModel.getCMSNode().getAttributeValue(refNodeAttr) : null;
@@ -235,27 +235,31 @@ public class ContentNodeModelUtil {
     			isRefreshed = !compareKeys(newKeys, childModels);
     			
     			if (isRefreshed) {
-    				List<ContentNodeModelImpl> refreshChildModels = new ArrayList<ContentNodeModelImpl>();
     				for (int i = 0; i < newKeys.size(); i++) {
     					ContentKey key = newKeys.get(i);
     					ContentNodeModelImpl newModel = buildChildContentNode(refModel, key, setParent, i);
     					if (newModel != null) {
-    						refreshChildModels.add(newModel);
+    						updatedChildModels.add(newModel);
     					}
     				}
-    				synchronized (childModels) {
-    					childModels.clear();
-    					childModels.addAll(refreshChildModels);
+    				refreshChildModels(childModels, updatedChildModels);
+    				if (!cacheKey.isEmpty()){
+    					EhCacheUtil.putListToCache(EhCacheUtil.CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey, updatedChildModels);
     				}
     			}
-
-    			if (!cacheKey.isEmpty()){
-    				EhCacheUtil.putListToCache(EhCacheUtil.CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, cacheKey, childModels);
-    			}
+    	} else {
+    		refreshChildModels(childModels, updatedChildModels);
     	}
     	
         return isRefreshed;
     }
+
+	private static void refreshChildModels(List childModels, List cachedChildModels) {
+		synchronized (childModels) {
+			childModels.clear();
+			childModels.addAll(cachedChildModels);
+		}
+	}
 
     private static ContentNodeModelImpl buildChildContentNode(ContentNodeModelImpl refModel, ContentKey key, boolean setParent, int i) {
         // cache instances in navigable relationships
