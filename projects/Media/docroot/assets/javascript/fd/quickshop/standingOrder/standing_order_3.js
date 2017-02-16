@@ -416,7 +416,8 @@ function updateSOItem(id, data){
 
 function hideShopNowButtuns(){
 	$jq(".standing-orders-3 #cartcontent.show").removeClass("show");
-	$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container.show").removeClass("show");
+	$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").attr('disabled','disabled');
+	//$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container.show").removeClass("show");
 }
 
 function showShopNowButtuns(){
@@ -424,6 +425,7 @@ function showShopNowButtuns(){
 	if(FreshDirect.standingorder.currentPage === "manage"){
 		$jq(".standing-orders-3 #cartcontent").addClass("show");
 	} else {
-		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container").addClass("show");
+		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").removeAttr('disabled');
+		//$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container").addClass("show");
 	}
 }
