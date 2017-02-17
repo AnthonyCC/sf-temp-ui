@@ -26,13 +26,12 @@ import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class DatasourceService {
 
     private static DatasourceService INSTANCE = new DatasourceService();
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceService.class);
-
-    private static final int MAX_ITEMS = 12;;
 
     private static final String INDEX_CM_EVENT_SOURCE = "BROWSE";
 
@@ -96,15 +95,15 @@ public class DatasourceService {
             ContentKey editorialContentKey = (ContentKey) module.getAttributeValue("editorialContent");
 
             if (headerGraphicContentKey != null) {
-                headerGraphic = ModuleContentService.getDefaultService().generateImageFromImageContentKey(module.getAttributeValue("headerGraphic"));
+                headerGraphic = MediaUtils.generateImageFromImageContentKey(module.getAttributeValue("headerGraphic"));
             }
 
             if (heroGraphicContentKey != null) {
-                heroGraphic = ModuleContentService.getDefaultService().generateImageFromImageContentKey(module.getAttributeValue("heroGraphic"));
+                heroGraphic = MediaUtils.generateImageFromImageContentKey(module.getAttributeValue("heroGraphic"));
             }
 
             if (editorialContentKey != null) {
-                editorialContainer.setEditorialContent(ModuleContentService.getDefaultService().generateStringFromHTMLContentKey(editorialContentKey, sessionUser));
+                editorialContainer.setEditorialContent(MediaUtils.generateStringFromHTMLContentKey(editorialContentKey, user));
             }
 
             editorialContainer.setHeaderTitle(ContentNodeUtil.getStringAttribute(module, "headerTitle"));

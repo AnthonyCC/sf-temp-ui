@@ -898,8 +898,10 @@ public class FDStoreProperties {
 
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
+
     private static final String PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentUserModuleContainerContentKey";
     private static final String PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newUserModuleContainerContentKey";
+    private static final String PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX = "fdstore.homepageredesign.moduleProductLimitMax";
 
     // APPDEV-5927
     private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
@@ -1711,6 +1713,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentUserModuleContainer");
         defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newUserModuleContainer");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
 
         defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
@@ -4392,6 +4395,10 @@ public class FDStoreProperties {
 
     public static String getHomepageRedesignNewUserContainerContentKey() {
         return get(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY);
+    }
+
+    public static String getHomepageRedesignProductLimitMax() {
+        return get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX);
     }
 
     public static String getPropPlant1300PlantIndicator() {
