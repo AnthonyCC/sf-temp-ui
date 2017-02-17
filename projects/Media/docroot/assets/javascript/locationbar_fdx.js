@@ -484,8 +484,9 @@ $jq('#locabar_modify_order_trigger').keydown(function(event){
 	if(keycode == '13'){
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","1");
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","visible");
+		
 		$jq(".locabar-modify-order-dropdown-container-delails a").focus();
-		//event.preventDefault();
+		event.preventDefault();
 	}
 });
 
@@ -587,6 +588,8 @@ $jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
 	}
 });
 
+
+
 //loginbutton
 $jq(".changeBGClr").keydown(function(e){
 	var TABKEY = 9;
@@ -631,7 +634,7 @@ $jq(window).load(function(){
 	}
 	
 	if($jq("#locabar_user_trigger .changeBGClr").length >0){
-		$jq('.locabar-modify-order-section').hide();
+		//$jq('.locabar-modify-order-section').hide();
 	}
 	
 	if($jq("#messages").hasClass("open")){
@@ -726,6 +729,16 @@ $jq(window).load(function(){
   			event.preventDefault();
   		}
   	});
+  	
+  	
+  	//enter press event for see details button
+  	$jq(".locabar-modify-order-dropdown-container-delails  a.locabar-modify-order-dropdown-container-modify").keydown(function(event){
+  		var keycode = (event.keyCode ? event.keyCode : event.which);
+  		if(keycode == '13'){
+  		//	$jq(this).click();
+  		}
+  	});
+  	
 });
 
 

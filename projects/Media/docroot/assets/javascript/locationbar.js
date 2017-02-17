@@ -133,7 +133,38 @@
 			$(this).click();
 		}
 	}); 
+	//enter key press to add delivery address button
 
+	$document.on('keydown', '.locabar_addresses-anon-deliverable-add-address-btn', function (e) {
+		if (e.keyCode === 13) {
+			$(this).click();
+		}
+	});
+
+	$document.on('keydown', '.locabar-modify-order-dropdown-container-delails a', function (e) {
+		if (e.keyCode === 13) {
+			//$(this).click();
+			srcpath=$(this).attr("href");
+			//window.open(location.protocol+"//"+location.host+srcpath);
+			window.location.href= srcpath;
+		}
+	});
+	$document.on('keydown', '.locabar-modify-order-dropdown-container-modify button', function (e) {
+		if (e.keyCode === 13) {
+			$(this).trigger("onclick");
+			//e.preventDefault();
+			//srcPath=$(this).attr("onclick");
+			//window.location.href="";
+			//$(this).trigger("onclick");
+			
+			// url_path=srcPath.split(".href='/");
+			//window.location.href="";
+			//window.location.href= url_path[1];
+			//console.log(url_path[1])
+			//location.replace("");
+			//window.location=url_path[1];
+		}
+	});
 
 	$document.on('click','.delivery-popuplink',function(e){
 		popup('/help/delivery_zones.jsp','large');
