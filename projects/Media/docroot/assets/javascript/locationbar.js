@@ -141,7 +141,7 @@
 		}
 	});
 
-	$document.on('keydown', '.locabar-modify-order-dropdown-container-delails a', function (e) {
+	$document.on('keydown', '.locabar-modify-order-dropdown-container-delails a,.locabar_triggers_menu a', function (e) {
 		if (e.keyCode === 13) {
 			//$(this).click();
 			srcpath=$(this).attr("href");
