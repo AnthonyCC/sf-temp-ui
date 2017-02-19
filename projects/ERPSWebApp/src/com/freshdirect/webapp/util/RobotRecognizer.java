@@ -187,6 +187,10 @@ public class RobotRecognizer {
 		friendlyRobotPatternSet.add(Pattern.compile("^.*maxpointcrawler.*$")); // MaxPointCrawler/Nutch-1.10 (maxpoint.crawler at maxpointinteractive dot com)
 		friendlyRobotPatternSet.add(Pattern.compile("^.*alertbot.*$")); // Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; AlertBot)
 		//END : OCT 2016 Start Blocking more bots and crawlers
+		
+		//START : Feb 2017 Start Blocking Movable Ink email campaign web crop module 
+		friendlyRobotPatternSet.add(Pattern.compile("^.*movableink.*$")); // Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.3 with MovableInk
+		//END : Feb 2017 Start Blocking Movable Ink email campaign web crop module 
     }
     
     public static void main(String a[]) {
