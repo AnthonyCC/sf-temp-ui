@@ -195,9 +195,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 					}
 	
-				}else if("onloadFistStandingOrder".equalsIgnoreCase(action)){
+				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
-					errorMessage=onloadFistStandingOrder(soName,u,pageContext);
+					errorMessage= onloadNewStandingOrder(soName,u,pageContext);
 					writeResponseData( response, errorMessage );
 	
 				} else if("create".equalsIgnoreCase(action)){
@@ -329,7 +329,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		return returnMessage;
 	}
 
-	protected String onloadFistStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
+	protected String onloadNewStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
 		soName = soName != null ? soName.trim() : "";
 		String returnMessage = null;
 		try {
