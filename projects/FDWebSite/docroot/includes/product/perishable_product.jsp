@@ -32,7 +32,8 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
-<%
+<%	
+	
 	List shelfLifeList = null;
 	String leastShelfDays = null; // least number of shelf life days for multiple skus
 
@@ -234,7 +235,10 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 					boolean hasNutriOrIngrd = ( fdprod.hasNutritionFacts() || fdprod.hasNutritionPanel() || fdprod.hasIngredients() );
 					%>
 					
-					<% if (!mobWeb) { /* at the top if mobWeb */ %>
+					<% if (!mobWeb) { /* at the top if mobWeb */ 
+						java.lang.Integer productImageWidth = null;
+				  		java.lang.Integer productImageHeight = null;
+					%>
 						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 					<% } %>
 					 
