@@ -195,6 +195,11 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 					}
 	
+				}else if("onloadFistStandingOrder".equalsIgnoreCase(action)){
+					u.setRefreshValidSO3(true);
+					errorMessage=onloadFistStandingOrder(soName,u,pageContext);
+					writeResponseData( response, errorMessage );
+	
 				} else if("create".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
@@ -324,6 +329,28 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		return returnMessage;
 	}
 
+	protected String onloadFistStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
+		soName = soName != null ? soName.trim() : "";
+		String returnMessage = null;
+		try {
+			returnMessage = validateStandingOrderName(soName, u);
+			if(null == returnMessage){
+				FDStandingOrder so = null!=u.getCurrentStandingOrder()? u.getCurrentStandingOrder():new FDStandingOrder();
+				so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
+				so.setCustomerListName(soName);
+				so.setCustomerId(u.getIdentity().getErpCustomerPK());
+				so.setNewSo(true);
+				//StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
+				u.setCurrentStandingOrder(so);
+				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
+				returnMessage = so.getId();
+			}
+		} catch (FDResourceException e2) {
+			throw new JspException(e2);
+		}
+		return returnMessage;
+	}
+	
 	/**
 	 * @param soName
 	 * @param u
