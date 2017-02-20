@@ -1509,6 +1509,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
