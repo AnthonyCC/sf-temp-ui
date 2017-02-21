@@ -33,8 +33,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PublishMessages extends LayoutContainer {
 
-	private BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader;
-	
 	public PublishMessages(ChangeSetQuery query) {
 		super();
 		setLayout(new BorderLayout());
@@ -54,26 +52,23 @@ public class PublishMessages extends LayoutContainer {
 	public void init(ChangeSetQueryResponse changeHistory) {
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-		loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>(
+		final BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>(
                 new PublishMessageLoader(changeHistory));
         loader.setRemoteSort(true);
 
         ListStore<GwtPublishMessage> store = new ListStore<GwtPublishMessage>(loader);
 		
 		// ============ SEVERITY ============
-		{
-			ColumnConfig c = new ColumnConfig("severity", "Severity", 80);
-			c.setRenderer(new GridCellRenderer<GwtPublishMessage>() {
+		ColumnConfig severityColumn = new ColumnConfig("severity", "Severity", 80);
+		severityColumn.setRenderer(new GridCellRenderer<GwtPublishMessage>() {
 
 				@Override
-				public Object render(GwtPublishMessage model, String property,
-						ColumnData config, int rowIndex, int colIndex,
-						ListStore<GwtPublishMessage> store,
-						Grid<GwtPublishMessage> grid) {
+				public Object render(GwtPublishMessage model, String property, ColumnData config, int rowIndex, int colIndex, 
+						ListStore<GwtPublishMessage> store,	Grid<GwtPublishMessage> grid) {
 
 					final Level severity = model.getSeverity();
 
-					Text severityLabel = new Text(model.getSeverity().name());
+					Text severityLabel = new Text(severity.toString());
 					severityLabel.setTagName("span");
 
 					switch (severity) {
@@ -97,25 +92,22 @@ public class PublishMessages extends LayoutContainer {
 					return severityLabel;
 				}
 			});
-			columns.add(c);
-		}
+		columns.add(severityColumn);
 
 		// ============ TIMESTAMP ============
-		{
-			ColumnConfig cc = new ColumnConfig("timestamp", "Timestamp", 120);
-			cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
-			columns.add(cc);
-		}
+		ColumnConfig timeStampColumn = new ColumnConfig("timestamp", "Timestamp", 120);
+		timeStampColumn.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+		columns.add(timeStampColumn);
 
 		// ============ CONTENTNODE ============
-		ColumnConfig cc = new ColumnConfig("key", "Content Node", 150);
-		cc.setRenderer(Renderers.GRID_LINK_RENDERER);
-		columns.add(cc);
+		ColumnConfig contentKeyColumn = new ColumnConfig("key", "Content Node", 150);
+		contentKeyColumn.setRenderer(Renderers.GRID_LINK_RENDERER);
+		columns.add(contentKeyColumn);
 
 		// ============ MESSAGE ============
-		ColumnConfig c = new ColumnConfig("message", "Message", 150);
-		c.setId("message");
-		columns.add(c);
+		ColumnConfig messageColumn = new ColumnConfig("message", "Message", 150);
+		messageColumn.setId("message");
+		columns.add(messageColumn);
 
 		final PagingToolBar toolBar = new PagingToolBar(20);
 		toolBar.bind(loader);		

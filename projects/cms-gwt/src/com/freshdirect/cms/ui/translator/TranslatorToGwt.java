@@ -661,6 +661,10 @@ public class TranslatorToGwt {
 
     public static GwtPublishMessage getPublishMessage(PublishMessage publishMessage) {
     	GwtPublishMessage gwtPublishMessage = new GwtPublishMessage();
+    	ContentKey contentKey = publishMessage.getContentKey();
+    	if (contentKey != null){
+    		gwtPublishMessage.setKey(contentKey.getEncoded());
+    	}
         gwtPublishMessage.setMessage(publishMessage.getMessage());
         gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
         gwtPublishMessage.setSeverity(publishMessage.getSeverity());
