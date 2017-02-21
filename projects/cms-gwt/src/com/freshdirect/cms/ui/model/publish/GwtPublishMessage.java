@@ -7,12 +7,6 @@ import com.freshdirect.cms.ui.model.ContentNodeModel;
 public class GwtPublishMessage extends ContentNodeModel {
 	private static final long serialVersionUID = 8040793784936726437L;
 
-	// the ordinals are important, check the constants in PublishMessage. 
-    public enum Level {
-        FAILURE, ERROR, WARNING, INFO, DEBUG
-    }
-
-    
 	public GwtPublishMessage() {
 		super();
 	}
@@ -21,11 +15,11 @@ public class GwtPublishMessage extends ContentNodeModel {
     	super( type, "", key );
     }
 
-    public void setSeverity( int severity ) {
-    	set( "severity", Level.values()[severity] );
+    public void setSeverity( String severity ) {
+    	set( "severity", severity );
     }
     
-    public Level getSeverity() {
+    public String getSeverity() {
 		return get( "severity" );    	
     }
     

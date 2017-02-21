@@ -27,7 +27,6 @@ import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
-import com.freshdirect.cms.ui.model.publish.GwtPublishMessage.Level;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -66,27 +65,23 @@ public class PublishMessages extends LayoutContainer {
 				public Object render(GwtPublishMessage model, String property, ColumnData config, int rowIndex, int colIndex, 
 						ListStore<GwtPublishMessage> store,	Grid<GwtPublishMessage> grid) {
 
-					final Level severity = model.getSeverity();
+					final String severity = model.getSeverity();
 
-					Text severityLabel = new Text(severity.toString());
+					Text severityLabel = new Text(severity);
 					severityLabel.setTagName("span");
 
-					switch (severity) {
-					case FAILURE:
+					if ("FAILURE".equals(severity)){
 						severityLabel.addStyleName("publish-failure");
-						break;
-					case ERROR:
+					} else if ("ERROR".equals(severity)){
 						severityLabel.addStyleName("publish-error");
-						break;
-					case WARNING:
+					} else if ("WARNING".equals(severity)){
 						severityLabel.addStyleName("publish-warning");
-						break;
-					case INFO:
+					} else if ("INFO".equals(severity)){
 						severityLabel.addStyleName("publish-info");
-						break;
-					case DEBUG:
+					} else if ("DEBUG".equals(severity)){
 						severityLabel.addStyleName("publish-debug");
-						break;
+					} else {
+						severityLabel.addStyleName("publish-info");
 					}
 
 					return severityLabel;

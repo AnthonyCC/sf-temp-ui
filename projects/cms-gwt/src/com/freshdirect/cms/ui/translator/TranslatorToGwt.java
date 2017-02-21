@@ -667,7 +667,7 @@ public class TranslatorToGwt {
     	}
         gwtPublishMessage.setMessage(publishMessage.getMessage());
         gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
-        gwtPublishMessage.setSeverity(publishMessage.getSeverity());
+        gwtPublishMessage.setSeverity(publishMessage.getSeverityString());
         return gwtPublishMessage;
     }
 
