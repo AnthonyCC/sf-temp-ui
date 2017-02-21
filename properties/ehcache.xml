@@ -134,4 +134,13 @@
 	    memoryStoreEvictionPolicy="LFU"
 	    transactionalMode="off">
      </cache>
+     
+     <cache name="topItemsCache"
+                maxEntriesLocalHeap="100"
+                eternal="false"
+                timeToIdleSeconds="300"
+                timeToLiveSeconds="3600"
+                memoryStoreEvictionPolicy="LFU"
+                transactionalMode="off">
+     </cache>
 </ehcache>
