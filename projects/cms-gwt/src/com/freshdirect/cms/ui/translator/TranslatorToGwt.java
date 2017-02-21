@@ -199,7 +199,6 @@ public class TranslatorToGwt {
                             // we have to figure out, what type .. it must be a Relationship ...
                             CustomFieldDefinition cfd = new CustomFieldDefinition(CustomFieldDefinition.Type.CmsMultiColumnField);
                             List<ContentKey> values = (List<ContentKey>) attr.getAttributeValue("columns");
-                            int position = 0;
                             for (ContentKey k : values) {
                                 cfd.addColumn((String) contentService.getContentNode(k, draftContext).getAttributeValue("attribute"));
                             }
@@ -231,7 +230,6 @@ public class TranslatorToGwt {
      * 
      * @throws ServerException
      */
-    @SuppressWarnings("unchecked")
     public static GwtNodeContext gwtNodeContext(ContentKey key, TabDefinition tabs, ContentServiceI contentService, DraftContext draftContext) throws ServerException {
 
         GwtNodeContext nodeContext = new GwtNodeContext();
@@ -662,10 +660,7 @@ public class TranslatorToGwt {
     }
 
     public static GwtPublishMessage getPublishMessage(PublishMessage publishMessage) {
-    	if (publishMessage == null || publishMessage.getContentKey() == null){
-    		return null;
-    	}
-        GwtPublishMessage gwtPublishMessage = new GwtPublishMessage(publishMessage.getContentType(), publishMessage.getContentKey().getEncoded());
+    	GwtPublishMessage gwtPublishMessage = new GwtPublishMessage();
         gwtPublishMessage.setMessage(publishMessage.getMessage());
         gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
         gwtPublishMessage.setSeverity(publishMessage.getSeverity());
