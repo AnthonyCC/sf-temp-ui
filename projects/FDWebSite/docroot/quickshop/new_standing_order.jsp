@@ -151,9 +151,9 @@ if (true) {
 		<script>
       // potato loading
       window.FreshDirect.expressco = {};
-      window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
+      window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>;
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
-      window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+      window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>;
     </script>
 
 	</tmpl:put>

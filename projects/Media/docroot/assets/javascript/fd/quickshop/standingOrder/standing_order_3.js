@@ -32,6 +32,11 @@ $jq( document ).ready(function() {
 			});
 			$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
 		}
+		submitFormNewSO("onloadNewStandingOrder", "", soName);
+	    FreshDirect.common.dispatcher.signal('drawer', FreshDirect.expressco.data.drawer);
+	  	FreshDirect.common.dispatcher.signal('payment', FreshDirect.expressco.data.payment);
+	  	FreshDirect.common.dispatcher.signal('address', FreshDirect.expressco.data.address);
+	  	FreshDirect.common.dispatcher.signal('timeslot', FreshDirect.expressco.data.timeslot);
 	}
 
 	// manage_standing_orders
@@ -289,13 +294,15 @@ function populateDrawer(id){
 	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='address'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
 	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
 	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='payment'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
-	getSOData( id, "displayShopNow");
-	$jq("#ec-drawer").on( "drawer-reset", function(){
-		if(isActiveDrawerOpen){
-			isActiveDrawerOpen = false;
-			getSOData( id, "displayShopNow");
-		}
-	});
+	if(id!=0){
+		getSOData( id, "displayShopNow");
+		$jq("#ec-drawer").on( "drawer-reset", function(){
+			if(isActiveDrawerOpen){
+				isActiveDrawerOpen = false;
+				getSOData( id, "displayShopNow");
+			}
+		});
+	}
 }
 
 function soItemTriggerUpdate(id, data, isCartUpdate){
@@ -333,7 +340,6 @@ function getSOData(id, action){
         		if(data.frequencyDesc !== null && data.dayOfWeek !== null){
         			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-frequency").html(data.frequencyDesc + " " + data.dayOfWeek + " /");
             		updateSOItem(id, data);
-
         		}
         	}
         	if('activate'==action){
