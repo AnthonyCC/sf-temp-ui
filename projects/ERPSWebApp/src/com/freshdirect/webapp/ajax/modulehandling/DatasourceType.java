@@ -12,7 +12,8 @@ public enum DatasourceType {
     TOP_ITEMS("TOP_ITEMS"),
     PRES_PICKS("PRES_PICKS"),
     FEATURED_RECOMMENDER("FEATURED_RECOMMENDER"),
-    MOST_POPULAR_PRODUCTS("MOST_POPULAR_PRODUCTS");
+    MOST_POPULAR_PRODUCTS("MOST_POPULAR_PRODUCTS"),
+    BRAND("BRAND");
 
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceType.class);
 

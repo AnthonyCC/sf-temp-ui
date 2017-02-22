@@ -75,6 +75,8 @@ public class FDContentTypes {
     public final static ContentType DARKSTORE = ContentType.get("DarkStore");
     public final static ContentType STOPWORDS = ContentType.get("Stopwords");
     public final static ContentType MODULECONTAINER = ContentType.get("ModuleContainer");
+    public final static ContentType MODULE_GROUP = ContentType.get("ModuleGroup");
+    public final static ContentType MODULE = ContentType.get("Module");
 
     private FDContentTypes() {
     }

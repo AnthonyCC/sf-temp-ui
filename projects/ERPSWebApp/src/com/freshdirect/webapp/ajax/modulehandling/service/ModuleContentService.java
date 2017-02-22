@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.util.ProductPromotionUtil;
@@ -33,7 +34,6 @@ import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
-import com.freshdirect.webapp.ajax.modulehandling.data.ImageGridData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -210,53 +210,60 @@ public class ModuleContentService {
 
     }
 
-    public IconData populateIconData(ContentNodeI icon) {
+    public IconData populateIconData(ContentNodeI imageBanner) {
         IconData iconData = new IconData();
-        Image iconImage = MediaUtils.generateImageFromImageContentKey(icon.getAttributeValue("image"));
+        Image iconImage = MediaUtils.generateImageFromImageContentKey(imageBanner.getAttributeValue("ImageBannerImage"));
 
         iconData.setIconImage(iconImage.getPath());
-        iconData.setIconLink(ContentNodeUtil.getStringAttribute(icon, "link"));
-        iconData.setIconLinkText(ContentNodeUtil.getStringAttribute(icon, "linkText"));
+        iconData.setIconLinkText(ContentNodeUtil.getStringAttribute(imageBanner, "Description"));
+
+        String linkUrl = ContentNodeUtil.getStringAttribute(imageBanner, "bannerURL");
+
+        if (linkUrl == null) {
+            ContentKey targetContentKey = (ContentKey) imageBanner.getAttributeValue("Target");
+            linkUrl = "/browse.jsp?id=" + targetContentKey.getId();
+        }
+
+        iconData.setIconLink(linkUrl);
 
         return iconData;
     }
 
-    public ImageGridData populateImageGridData(ContentNodeI imageGrid) {
-        ImageGridData imageGridData = new ImageGridData();
-
-        imageGridData.setImageContainer1Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer1Text"));
-        imageGridData.setImageContainer2Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer2Text"));
-        imageGridData.setImageContainer3Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer3Text"));
-        imageGridData.setImageContainer4Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer4Text"));
-        imageGridData.setImageContainer5Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer5Text"));
-        imageGridData.setImageContainer6Text(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer6Text"));
-
-        imageGridData.setImageContainer1Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer1Target"));
-        imageGridData.setImageContainer2Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer2Target"));
-        imageGridData.setImageContainer3Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer3Target"));
-        imageGridData.setImageContainer4Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer4Target"));
-        imageGridData.setImageContainer5Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer5Target"));
-        imageGridData.setImageContainer6Target(ContentNodeUtil.getStringAttribute(imageGrid, "imageContainer6Target"));
-
-        Image imageContainer1Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer1Image"));
-        Image imageContainer2Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer2Image"));
-        Image imageContainer3Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer3Image"));
-        Image imageContainer4Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer4Image"));
-        Image imageContainer5Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer5Image"));
-        Image imageContainer6Image = MediaUtils.generateImageFromImageContentKey(imageGrid.getAttributeValue("imageContainer6Image"));
-
-        imageGridData.setImageContainer1Image(imageContainer1Image.getPath());
-        imageGridData.setImageContainer2Image(imageContainer2Image.getPath());
-        imageGridData.setImageContainer3Image(imageContainer3Image.getPath());
-        imageGridData.setImageContainer4Image(imageContainer4Image.getPath());
-        imageGridData.setImageContainer5Image(imageContainer5Image.getPath());
-        imageGridData.setImageContainer6Image(imageContainer6Image.getPath());
-
-        return imageGridData;
-    }
-
     public String populateOpenHTML(ContentNodeI module, FDUserI user) {
         return MediaUtils.generateStringFromHTMLContentKey(module.getAttributeValue("openHTML"), user);
+    }
+
+    public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user) {
+        List<ContentKey> featuredProductsContentKeys = (List<ContentKey>) brand.getAttributeValue("FEATURED_PRODUCTS");
+        List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
+        FDSessionUser sessionUser = (FDSessionUser) user;
+
+        for (ContentKey contentKey : featuredProductsContentKeys) {
+            featuredProducts.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(contentKey));
+        }
+
+        List<ProductData> productDatas = new ArrayList<ProductData>();
+
+        for (ProductModel product : featuredProducts) {
+            try {
+                ProductData productData = ProductDetailPopulator.createProductData(sessionUser, product);
+                productData = ProductDetailPopulator.populateBrowseRecommendation(sessionUser, productData, product);
+                productData.setVariantId(null);
+                productData.setProductPageUrl(FDURLUtil.getNewProductURI(product, null));
+                productDatas.add(productData);
+            } catch (FDResourceException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (FDSkuNotFoundException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (HttpErrorResponse e) {
+                LOGGER.error("failed to create ProductData", e);
+            }
+        }
+
+        productDatas = limitProductList(productDatas);
+
+        return productDatas;
+
     }
 
 }
