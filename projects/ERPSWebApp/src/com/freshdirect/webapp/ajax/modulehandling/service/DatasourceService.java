@@ -68,6 +68,7 @@ public class DatasourceService {
         config.setModuleGroupTitleTextBanner(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitleTextBanner"));
         config.setHideModuleGroupViewAllButton(ContentNodeUtil.getBooleanAttribute(moduleGroup, "hideViewAllButton"));
 
+        config.setSourceType(sourceType);
         String viewAllUrl = ContentNodeUtil.getStringAttribute(moduleGroup, "viewAllButtonURL");
 
         if (viewAllUrl == null) {
