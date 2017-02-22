@@ -64,7 +64,7 @@ public class ModuleHandlingService {
                             for (ContentKey moduleContentKey : modules) {
                                 ModuleData moduleData = new ModuleData();
                                 ModuleConfig moduleConfig = new ModuleConfig();
-                                moduleData = loadModuleData(moduleContentKey, user, session);
+                                moduleData = loadModuleData(moduleContentKey, user, session, false);
 
                                 if (moduleData != null) {
                                     moduleConfig = loadModuleConfig(moduleContentKey, user);
@@ -77,7 +77,7 @@ public class ModuleHandlingService {
                     } else if (FDContentTypes.MODULE.equals(moduleContainerChildContentKey.getType())) {
                         ModuleData moduleData = new ModuleData();
                         ModuleConfig moduleConfig = new ModuleConfig();
-                        moduleData = loadModuleData(moduleContainerChildContentKey, user, session);
+                        moduleData = loadModuleData(moduleContainerChildContentKey, user, session, false);
 
                         if (moduleData != null) {
                             moduleConfig = loadModuleConfig(moduleContainerChildContentKey, user);
@@ -96,6 +96,28 @@ public class ModuleHandlingService {
         return result;
     }
 
+    public WelcomePageData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+        WelcomePageData result = new WelcomePageData();
+        List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
+        Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
+
+        ModuleData moduleData = new ModuleData();
+        ModuleConfig moduleConfig = new ModuleConfig();
+        moduleData = loadModuleData(ContentKey.getContentKey(moduleId), user, session, true);
+
+        if (moduleData != null) {
+            moduleConfig = loadModuleConfig(ContentKey.getContentKey(moduleId), user);
+        }
+
+        datas.put(moduleConfig.getModuleId(), moduleData);
+        configs.add(moduleConfig);
+
+        result.setConfig(configs);
+        result.setData(datas);
+
+        return result;
+    }
+
     private ModuleConfig loadModuleConfig(ContentKey moduleContentKey, FDUserI user) {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
@@ -108,10 +130,11 @@ public class ModuleHandlingService {
         return DatasourceService.getDefaultService().loadModuleGroupConfiguration(moduleGroup, user);
     }
 
-    private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
+            InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
-        return DatasourceService.getDefaultService().loadModuleData(module, user, session);
+        return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
     }
 
 }

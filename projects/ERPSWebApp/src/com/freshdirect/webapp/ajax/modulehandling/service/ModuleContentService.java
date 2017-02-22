@@ -82,7 +82,7 @@ public class ModuleContentService {
         return products;
     }
 
-    public List<ProductData> generateRecommendationProducts(HttpSession session, FDUserI user, String siteFeature) {
+    public List<ProductData> generateRecommendationProducts(HttpSession session, FDUserI user, String siteFeature, boolean showAllProducts) {
         List<ProductModel> products = new ArrayList<ProductModel>();
         Recommendations results = null;
         String variantId = null;
@@ -115,12 +115,14 @@ public class ModuleContentService {
             }
         }
 
-        productDatas = limitProductList(productDatas);
+        if (!showAllProducts) {
+            productDatas = limitProductList(productDatas);
+        }
 
         return productDatas;
     }
 
-    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
         CmsFilteringNavigator nav = new CmsFilteringNavigator();
 
         // Set special layout false to skip content loading from HMB and RecipeKits.
@@ -131,12 +133,13 @@ public class ModuleContentService {
 
         List<ProductData> products = generateBrowseProductData(nav, user);
 
-        products = limitProductList(products);
-
+        if (!showAllProducts) {
+            products = limitProductList(products);
+        }
         return products;
     }
 
-    public List<ProductData> loadFeaturedItems(FDUserI user, String departmentId) throws ClassCastException {
+    public List<ProductData> loadFeaturedItems(FDUserI user, String departmentId, boolean showAllProducts) throws ClassCastException {
         FDSessionUser sessionUser = (FDSessionUser) user;
         DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode(departmentId);
         ValueHolder<Variant> out = new ValueHolder<Variant>();
@@ -163,11 +166,14 @@ public class ModuleContentService {
             LOGGER.error("failed to create ProductData", e);
         }
 
-        products = limitProductList(products);
+        if (!showAllProducts) {
+            products = limitProductList(products);
+        }
+
         return products;
     }
 
-    public List<ProductData> loadPresidentPicksProducts(FDUserI user) {
+    public List<ProductData> loadPresidentPicksProducts(FDUserI user, boolean showAllProducts) {
         List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
         CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("picks_love");
         FDSessionUser sessionUser = (FDSessionUser) user;
@@ -204,7 +210,9 @@ public class ModuleContentService {
             }
         }
 
-        productDatas = limitProductList(productDatas);
+        if (!showAllProducts) {
+            productDatas = limitProductList(productDatas);
+        }
 
         return productDatas;
 
@@ -233,7 +241,7 @@ public class ModuleContentService {
         return MediaUtils.generateStringFromHTMLContentKey(module.getAttributeValue("openHTML"), user);
     }
 
-    public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user) {
+    public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user, boolean showAllProducts) {
         List<ContentKey> featuredProductsContentKeys = (List<ContentKey>) brand.getAttributeValue("FEATURED_PRODUCTS");
         List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
         FDSessionUser sessionUser = (FDSessionUser) user;
@@ -260,7 +268,9 @@ public class ModuleContentService {
             }
         }
 
-        productDatas = limitProductList(productDatas);
+        if (!showAllProducts) {
+            productDatas = limitProductList(productDatas);
+        }
 
         return productDatas;
 

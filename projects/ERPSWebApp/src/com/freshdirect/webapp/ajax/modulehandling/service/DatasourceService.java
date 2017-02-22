@@ -53,8 +53,8 @@ public class DatasourceService {
         return populateModuleGroupConfig(moduleGroup);
     }
 
-    public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
-        return populateModuleData(module, user, session);
+    public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
+        return populateModuleData(module, user, session, showAllProducts);
     }
 
     private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {
@@ -160,20 +160,21 @@ public class DatasourceService {
     }
 
     @SuppressWarnings("unchecked")
-    private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
+            InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ModuleData moduleData = new ModuleData();
         DatasourceType datasourceEnum = convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
 
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE));
+                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE, showAllProducts));
                 break;
             case TOP_ITEMS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE));
+                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE, showAllProducts));
                 break;
             case PRES_PICKS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user));
+                moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user, showAllProducts));
                 break;
             case GENERIC:
                 ModuleSourceType moduleSourceType = convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
@@ -215,14 +216,14 @@ public class DatasourceService {
             case BROWSE:
                 ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
                 String categoryId = category.getKey().getId();
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user));
+                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user, showAllProducts));
 
                 break;
             case FEATURED_RECOMMENDER:
                 try {
                     ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
                     String departmentId = department.getKey().getId();
-                    moduleData.setProducts(ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId));
+                    moduleData.setProducts(ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId, showAllProducts));
                 } catch (NullPointerException e) {
                     LOGGER.error("Datasource sourceNode is not set for Module:" + module.getKey().getId());
                 } catch (ClassCastException e) {
@@ -232,7 +233,7 @@ public class DatasourceService {
 
             case BRAND:
                 ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user));
+                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user, showAllProducts));
                 break;
             default:
                 break;
