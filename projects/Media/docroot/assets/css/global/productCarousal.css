@@ -1,9 +1,9 @@
-.contentModules .content-module.product-carousel [data-component="carousel-view-all"] a {
+.content-module.product-carousel [data-component="carousel-view-all"] a {
   text-decoration: none;
   text-transform: uppercase;
 }
 
-.contentModules .content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
+.content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
   box-sizing: border-box;
   width: 25%;
 }

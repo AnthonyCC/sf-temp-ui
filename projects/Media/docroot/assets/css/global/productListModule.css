@@ -1,10 +1,10 @@
-.contentModules .content-module.product-list .content .transactional ul {
+.content-module.product-list .content .transactional ul {
   margin: 0;
   padding: 0;
   width: 100%
 }
 
-.contentModules .content-module.product-list .content .transactional li {
+.content-module.product-list .content .transactional li {
   box-sizing: border-box;
   width: 25%;
 }

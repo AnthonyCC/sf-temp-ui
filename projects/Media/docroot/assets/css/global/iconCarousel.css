@@ -1,9 +1,9 @@
-.contentModules .content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li {
+.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li {
   box-sizing: border-box;
   text-align: center;
   width: 25%;
 }
 
-.contentModules .content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a{
+.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a{
   display: inline-block;
 }

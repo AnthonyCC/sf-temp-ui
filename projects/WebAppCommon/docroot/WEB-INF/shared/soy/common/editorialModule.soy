@@ -4,8 +4,8 @@
  * @param moduleData
  * @param data
  */
-{template .editorialModule}
-<div class="content-module editorial-module product-carousel" id="{$moduleData.moduleInstanceId}">
+{template .editorialModule autoescape="false"}
+<div class="content-module editorial-module product-carousel" id="{$moduleData.moduleId}">
 	{call common.moduleHeader}
 		{param content: $moduleData /}
 	{/call}
@@ -56,6 +56,7 @@
   		{call common.simpleCarousel}
   			{param items: $data.products /}
   			{param showViewAllButton: $moduleData.showViewAllButton /}
+        {param useViewAllPopup: $moduleData.useViewAllPopup /}
   			{param viewAllLink: $moduleData.viewAllButtonLink /}
         {param cmEventSource: $moduleData.cmEventSource /}
   			{param accessibilityText}
@@ -70,4 +71,7 @@
     {/if}
 	</div>
 </div>
+{if $moduleData.useViewAllPopup}
+  <button class="qs-popup-close cssbutton cssbutton-flat green transparent" data-close-viewall-popup>close</button>
+{/if}
 {/template}
