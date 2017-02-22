@@ -103,6 +103,16 @@ public class PublishMessages extends LayoutContainer {
 		ColumnConfig messageColumn = new ColumnConfig("message", "Message", 150);
 		messageColumn.setId("message");
 		columns.add(messageColumn);
+		
+		// ============ STORE ID ============
+		ColumnConfig storeIdColumnConfig = new ColumnConfig("storeId", "Store", 150);
+		storeIdColumnConfig.setId("storeId");
+		columns.add(storeIdColumnConfig);
+		
+		// ============ TASK ===============
+		ColumnConfig taskColumnConfig = new ColumnConfig("task", "Task", 150);
+		taskColumnConfig.setId("task");
+		columns.add(taskColumnConfig);
 
 		final PagingToolBar toolBar = new PagingToolBar(20);
 		toolBar.bind(loader);		

@@ -4,6 +4,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.Context;
@@ -18,6 +19,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -59,7 +62,9 @@ public class FDFavoritesTest extends TestCase {
 
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml,classpath:/com/freshdirect/smartstore/fdstore/FDFavorites.xml");
 
-        CmsManager.setInstance(new CmsManager(service, null));
+        CmsManager.setInstance(new CmsManager(service,
+                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+
 
         Context context = TestUtils.createContext();
         

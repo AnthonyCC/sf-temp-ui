@@ -30,6 +30,8 @@
 				           type mapping to ContentType -->
 				<property name="contentId"   column="CONTENT_ID"/>
 				<property name="contentType" column="CONTENT_TYPE"/>
+				<property name="storeId" column="STORE_ID" />
+				<property name="task" column="TASK" />
 			</composite-element>
 		</list>
 				
@@ -57,6 +59,8 @@
 				           type mapping to ContentType -->
 				<property name="contentId"   column="CONTENT_ID"/>
 				<property name="contentType" column="CONTENT_TYPE"/>
+				<property name="storeId" column="STORE_ID" />
+                <property name="task" column="TASK" />
 			</composite-element>
 		</list>
 	</class>

@@ -34,34 +34,29 @@ public class ContentNode implements ContentNodeI {
 
 	private static final long	serialVersionUID	= -2807267115367900617L;
 
-	/** originating content service */
-	private final ContentServiceI contentService;
+	private final ContentTypeServiceI typeService;
 	
-	/** */
 	private final DraftContext draftContext;
-
+	
 	/** content key of the node */ 
 	private final ContentKey key;
 
 	/** Map of String (name) -> Object (value) */
 	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
-	/**
-	 * @param contentService the {@link ContentServiceI} originating this node (never null)
-	 * @param key content key of this node (never null)
-	 */
-	public ContentNode(ContentServiceI contentService, DraftContext draftContext, ContentKey key) {
-		if (key == null) {
-			throw new IllegalArgumentException("ContentKey cannot be null");
-		}
-		this.key = key;
-		this.contentService = contentService;
-		this.draftContext = draftContext;
-		this.initializeAttributes(contentService.getTypeService());
-	}
+    public ContentNode(ContentTypeServiceI typeService, DraftContext draftContext, ContentKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("ContentKey cannot be null");
+        }
+        this.key = key;
+        this.typeService = typeService;
+        this.draftContext = draftContext;
+        this.initializeAttributes(this.typeService);
+    }
 
+    @Deprecated
     public ContentNode(ContentServiceI contentService, ContentKey key) {
-        this(contentService, DraftContext.MAIN, key);
+        this(contentService.getTypeService(), DraftContext.MAIN, key);
     }
 
     private void initializeAttributes(ContentTypeServiceI typeService) {
@@ -99,7 +94,7 @@ public class ContentNode implements ContentNodeI {
 
 	@Override
     public ContentTypeDefI getDefinition() {
-		return contentService.getTypeService().getContentTypeDefinition(getKey().getType());
+		return typeService.getContentTypeDefinition(getKey().getType());
 	}
 
 	//

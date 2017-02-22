@@ -28,7 +28,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
-import com.freshdirect.cms.util.SingleStoreFilterHelper;
+import com.freshdirect.cms.publish.service.StoreFilterService;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -72,7 +72,8 @@ public class PublishXmlDBTask implements PublishTask {
 		publishContentTypeId = Arrays.asList("WebPage","PickList","PickListItem", "Anchor", "ImageBanner","TextComponent","Section","Schedule", "DarkStore");
 	}
 	
-	public void execute(Publish publish) {
+	@Override
+    public void execute(Publish publish) {
 		
 		Map<ContentKey, ContentNodeI> publishNodes = new LinkedHashMap<ContentKey, ContentNodeI>();
 		for(String contentTypeId : getPublishContentTypeId()){
@@ -86,9 +87,9 @@ public class PublishXmlDBTask implements PublishTask {
 		if (publish.getStoreId() != null) {
 			final int n0 = l.size();
 			LOG.info("Filtering " + l.size() + " nodes ..");
-			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l, contentService, draftContext);
+			l = StoreFilterService.defaultService().filterContentNodes(publish.getStoreId(), l, contentService, draftContext);
 			final int n1 = l.size();
-			final double perc = ((double)(n0-n1)*100)/((double)n0);
+			final double perc = ((double)(n0-n1)*100)/(n0);
 			LOG.info("  dropped " + (n0-n1) + " nodes ("+(Math.round(perc))+" %)");
 		} else {
 			LOG.warn("No store ID specified, skip filtering nodes");

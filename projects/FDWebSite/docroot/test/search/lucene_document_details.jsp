@@ -1,10 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
+<%@page import="com.freshdirect.cms.index.IndexingConstants"%>
 <%@page import="org.apache.hivemind.Registry"%>
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
+<%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
 <%@page import="org.apache.lucene.analysis.Analyzer"%>
 <%@page import="org.apache.lucene.index.IndexReader"%>
 <%@page import="org.apache.lucene.search.IndexSearcher"%>
@@ -38,12 +41,13 @@ String contentKey = request.getParameter("contentKey");
 			contentKey = null;
 
 		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-		Analyzer analyzer = search.getAnalyzer();
-		IndexReader reader = search.getReader();
+		//ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+		FullIndexerService indexer = FullIndexerService.getInstance();
+		Analyzer analyzer = IndexingConstants.ANALYZER;
+		IndexReader reader = indexer.createReader(false, SearchServiceConfiguration.getInstance().getCmsIndexLocation());
 		IndexSearcher searcher = new IndexSearcher(reader);
-		QueryParser parser = new QueryParser(Version.LUCENE_30, ContentSearchServiceI.FIELD_CONTENT_KEY, analyzer);
-		Query query = parser.parse(ContentSearchServiceI.FIELD_CONTENT_KEY + ":\"" + contentKey + "\"");
+		QueryParser parser = new QueryParser(Version.LUCENE_30, IndexingConstants.FIELD_CONTENT_KEY, analyzer);
+		Query query = parser.parse(IndexingConstants.FIELD_CONTENT_KEY + ":\"" + contentKey + "\"");
 		TopDocs hits = searcher.search(query, 1000);
 		Document document = null;
 		if (hits.totalHits > 0)
@@ -57,7 +61,7 @@ String contentKey = request.getParameter("contentKey");
 					StringBuilder tokens = new StringBuilder();
 					if (field.isTokenized()) {
 						// try to reconstruct
-						TokenStream tokenStream = search.getAnalyzer().tokenStream(field.name(), new StringReader(field.stringValue()));
+						TokenStream tokenStream = analyzer.tokenStream(field.name(), new StringReader(field.stringValue()));
 						TermAttribute termAttr = tokenStream.getAttribute(TermAttribute.class);
 						if (tokenStream.incrementToken())
 							tokens.append(termAttr.term());

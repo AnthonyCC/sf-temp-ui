@@ -39,7 +39,6 @@ import com.freshdirect.cms.changecontrol.ContentNodeChange;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextualContentNodeI;
-import com.freshdirect.cms.fdstore.ConfiguredProductValidator;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
@@ -74,6 +73,7 @@ import com.freshdirect.cms.ui.model.draft.GwtDraftChange;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
+import com.freshdirect.cms.util.ProductConfigurationUtil;
 import com.freshdirect.cmsadmin.domain.DraftChange;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -147,6 +147,7 @@ public class TranslatorToGwt {
         return def;
     }
 
+    @SuppressWarnings("unchecked")
     public static TabDefinition gwtTabDefinition(ContentTypeDefI typeDef, ContentServiceI contentService, DraftContext draftContext) throws ServerException {
         TabDefinition tabDef = new TabDefinition();
 
@@ -668,6 +669,8 @@ public class TranslatorToGwt {
         gwtPublishMessage.setMessage(publishMessage.getMessage());
         gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
         gwtPublishMessage.setSeverity(publishMessage.getSeverityString());
+        gwtPublishMessage.setStoreId(publishMessage.getStoreId());
+        gwtPublishMessage.setTask(publishMessage.getTask());
         return gwtPublishMessage;
     }
 
@@ -771,7 +774,8 @@ public class TranslatorToGwt {
         ContentNodeI sku = contentService.getContentNode(skuKey, draftContext);
         Map<String, String> salesUnitsMap = new TreeMap<String, String>();
         List<EnumModel> salesUnits = new ArrayList<EnumModel>();
-        for (ContentNodeI su : ConfiguredProductValidator.getSalesUnits(sku, contentService, draftContext).values()) {
+        
+        for (ContentNodeI su : ProductConfigurationUtil.getSalesUnits(sku, contentService, draftContext).values()) {
             String id = su.getKey().getId();
             String label = ContentNodeUtil.getLabel(su, draftContext);
             salesUnitsMap.put(id, label);
@@ -781,7 +785,7 @@ public class TranslatorToGwt {
         }
         Collections.sort(salesUnits);
 
-        Map<String, EnumDef> enumDefMap = ConfiguredProductValidator.getDefinitionMap(sku, contentService, draftContext);
+        Map<String, EnumDef> enumDefMap = ProductConfigurationUtil.getDefinitionMap(sku, contentService, draftContext);
         List<EnumAttribute> enumAttrs = new ArrayList<EnumAttribute>(enumDefMap.size());
 
         for (Map.Entry<String, EnumDef> def : enumDefMap.entrySet()) {

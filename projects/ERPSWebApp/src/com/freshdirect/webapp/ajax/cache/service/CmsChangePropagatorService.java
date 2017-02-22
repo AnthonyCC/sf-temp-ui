@@ -10,8 +10,8 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.cache.ContentCacheService;
-import com.freshdirect.cms.search.ContentSearchServiceI;
-import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.cms.index.IndexerService;
+import com.freshdirect.cms.index.PartialIndexerService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CmsChangePropagatorService {
@@ -21,11 +21,10 @@ public class CmsChangePropagatorService {
     private static final CmsChangePropagatorService INSTANCE = new CmsChangePropagatorService();
 
     private final CmsManager cmsManager;
-    private final ContentSearchServiceI searchService;
+    private final IndexerService indexerService = PartialIndexerService.getInstance();
 
     private CmsChangePropagatorService() {
         cmsManager = CmsManager.getInstance();
-        searchService = (ContentSearchServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.search.SearchService", ContentSearchServiceI.class);
     }
 
     public static CmsChangePropagatorService defaultService() {
@@ -45,8 +44,7 @@ public class CmsChangePropagatorService {
 
             // reindex search service
             // @see ContentIndexerService
-            searchService.index(contentNodes, false);
-            searchService.indexSpelling(contentNodes);
+            indexerService.index(contentNodes);
 
             try {
                 cmsManager.rebuildIndices(contentNodes);

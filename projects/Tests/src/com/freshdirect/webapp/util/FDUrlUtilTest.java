@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
@@ -48,7 +51,9 @@ public class FDUrlUtilTest extends TestCase {
         list.add( new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml") );
         CompositeTypeService typeService = new CompositeTypeService( list ); 
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml");
-        CmsManager.setInstance( new CmsManager(service, null) );        
+        CmsManager.setInstance(new CmsManager(service,
+                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+        
 	}
 	
 	protected void tearDown() throws Exception {

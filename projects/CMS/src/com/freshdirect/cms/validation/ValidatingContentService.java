@@ -16,6 +16,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.MaskContentService;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.application.service.SimpleContentService;
+import com.freshdirect.cms.config.ContentValidatorConfiguration;
 import com.freshdirect.cms.node.ContentNodeUtil;
 
 /**
@@ -32,10 +33,17 @@ public class ValidatingContentService extends ProxyContentService {
 
 	private final List<ContentValidatorI> validators;
 
-	public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
+	public ValidatingContentService(ContentServiceI service) {
 		super(service);
-		this.validators = validators;
+
+		this.validators = ContentValidatorConfiguration.getValidatorList();
 	}
+
+    public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
+        super(service);
+        
+        this.validators = validators;
+    }
 
 	/**
 	 * @throws ContentValidationException

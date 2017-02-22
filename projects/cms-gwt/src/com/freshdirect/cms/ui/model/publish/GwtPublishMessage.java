@@ -38,5 +38,20 @@ public class GwtPublishMessage extends ContentNodeModel {
     public Date getTimestamp() {
 		return get( "timestamp" );    	
     }
-
+    
+    public String getTask(){
+        return get("task");
+    }
+    
+    public void setTask(String task){
+        set("task", task);
+    }
+    
+    public String getStoreId(){
+        return get("storeId");
+    }
+    
+    public void setStoreId(String storeId){
+        set("storeId", storeId);
+    }
 }

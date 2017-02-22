@@ -5,12 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
-
-import junit.framework.TestCase;
 
 import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
@@ -23,12 +19,12 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -37,12 +33,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductAspect;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.framework.util.DateUtil;
@@ -70,7 +61,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/cms/fdstore/ConfiguredProducts.xml");
 
-		CmsManager.setInstance(new CmsManager(service, null));
+		CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 		
 		Context            context            = null;
 		Hashtable          env                = new Hashtable();

@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -49,7 +52,9 @@ public class GlobalCompilerTest extends TestCase {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/GlobalCompilerTest.xml");
 
-        CmsManager.setInstance(new CmsManager(service, null));
+        CmsManager.setInstance(new CmsManager(service,
+                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+
     	
         input = new MockDataAccess() {
             public List fetchContentNodes(SessionInput input,  String name) {

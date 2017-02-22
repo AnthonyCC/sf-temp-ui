@@ -45,8 +45,10 @@ import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.ActionBar;
 import com.freshdirect.cms.ui.client.CmsGwt;
+import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.action.BasicAction;
 import com.freshdirect.cms.ui.client.changehistory.ChangeHistory;
+import com.freshdirect.cms.ui.client.publish.PublishProgressListener;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadHeader;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadHeaderCell;
@@ -57,7 +59,7 @@ import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class BulkLoaderView extends LayoutContainer {
+public class BulkLoaderView extends LayoutContainer implements PublishProgressListener {
 
     private static final int PAGE_SIZE = 50;
 
@@ -148,6 +150,7 @@ public class BulkLoaderView extends LayoutContainer {
 
     private ContentPanel previewPanel;
     private ContentPanel resultsPanel;
+    private Button uploadButton;
 
     private static BulkLoaderView instance = new BulkLoaderView();
 
@@ -166,6 +169,7 @@ public class BulkLoaderView extends LayoutContainer {
         add(new ActionBar());
         add(createUploadForm(), new MarginData(10));
         setScrollMode(Scroll.AUTO);
+        MainLayout.getInstance().registerPublishProgressListener(this);
     }
 
     protected void showResultsPanel(GwtSaveResponse response) {
@@ -238,7 +242,7 @@ public class BulkLoaderView extends LayoutContainer {
         uploadField.setName("xlsFile");
         form.add(uploadField, new FormData("100%"));
 
-        form.addButton(new Button("Upload", new SelectionListener<ButtonEvent>() {
+        uploadButton = new Button("Upload", new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -246,7 +250,11 @@ public class BulkLoaderView extends LayoutContainer {
                     form.submit();
                 }
             }
-        }));
+        });
+        if(MainLayout.getInstance().isPublishInProgress() && !CmsGwt.getCurrentUser().isDraftActive()){
+            uploadButton.disable();
+        }
+        form.addButton(uploadButton);
 
         form.addListener(Events.Submit, new FormUploadListener());
 
@@ -369,5 +377,19 @@ public class BulkLoaderView extends LayoutContainer {
                 + "<dt class=\"bulk-loader-state-update\"></dt><dd>update</dd>" + "<dt class=\"bulk-loader-state-error_cell\"></dt><dd>error</dd>"
                 + "<dt class=\"bulk-loader-state-warning\"></dt><dd>warning</dd>" + "<dt class=\"bulk-loader-state-ignore_cell\"></dt><dd>ignore</dd>"
                 + "<dt class=\"bulk-loader-state-no_change\" style=\"border: 1px solid gray;\"></dt><dd>no change</dd></dl>");
+    }
+
+    @Override
+    public void onPublishStarted() {
+        if( uploadButton != null && !CmsGwt.getCurrentUser().isDraftActive() ){
+            uploadButton.disable();
+        }
+    }
+
+    @Override
+    public void onPublishFinished() {
+        if( uploadButton != null ){
+            uploadButton.enable();
+        }
     }
 }

@@ -19,7 +19,7 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.meta.ContentTypeUtil;
-import com.freshdirect.cms.publish.PublishXmlTask;
+import com.freshdirect.cms.publish.flow.tasks.PublisherTask;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -86,7 +86,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 		} else if (last == null) {
 			// expect a node or meta
 			// process meta-data
-			if (PublishXmlTask.NS_DC.equals(namespaceURI)) {
+			if (PublisherTask.DC_NAMESPACE.equals(namespaceURI)) {
 				stack.push(new Metadata(localName));
 				return;
 			}

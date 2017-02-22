@@ -19,8 +19,9 @@ import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.draft.DraftChangeHistory;
 import com.freshdirect.cms.ui.client.draft.LoaderMode;
+import com.freshdirect.cms.ui.client.publish.PublishProgressListener;
 
-public class DraftOverviewView extends LayoutContainer {
+public class DraftOverviewView extends LayoutContainer implements PublishProgressListener {
 
     private static DraftOverviewView instance = new DraftOverviewView();
 
@@ -37,6 +38,7 @@ public class DraftOverviewView extends LayoutContainer {
     private DraftOverviewView() {
         super();
         setupLayout();
+        MainLayout.getInstance().registerPublishProgressListener(this);
     }
 
     private void setupLayout() {
@@ -109,6 +111,10 @@ public class DraftOverviewView extends LayoutContainer {
             }
         });
 
+        if (MainLayout.getInstance().isPublishInProgress()) {
+            mergeButton.disable();
+        }
+
         ActionBar actionBar = new ActionBar();
 
         actionBar.addButton(showChangesButton, new Margins(0, 10, 0, 10));
@@ -142,5 +148,19 @@ public class DraftOverviewView extends LayoutContainer {
         lastMode = mode;
         startProgress();
         draftChangeHistory.getLoader(mode).load();
+    }
+
+    @Override
+    public void onPublishStarted() {
+        if (mergeButton != null) {
+            mergeButton.disable();
+        }
+    }
+
+    @Override
+    public void onPublishFinished() {
+        if (mergeButton != null) {
+            mergeButton.enable();
+        }
     }
 }

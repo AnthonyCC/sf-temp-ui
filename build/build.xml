@@ -2064,12 +2064,12 @@
 	
 	</target>
 	
-	<target name="tools" description="Build Tools" depends="framework,cms,fdstore">
+	<target name="tools" description="Build Tools" depends="framework,cms,fdstore,erpservices">
 		<path id="tools.classpath">
             <pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
-
+			<pathelement location="${work.dir}/ERPServices.jar" />
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
@@ -2508,9 +2508,6 @@
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
-			<extra>	 
-				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
-			</extra>
 		</makeEar>
 	</target>
 

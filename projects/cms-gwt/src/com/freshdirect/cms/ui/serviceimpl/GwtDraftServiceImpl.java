@@ -106,49 +106,53 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
     public List<GwtDraftChange> mergeDraft() throws ServerException {
         final HttpServletRequest request = getThreadLocalRequest();
         final CmsUser user = getCmsUserFromRequest(request);
+        if (isNodeModificationEnabled(DraftContext.MAIN)) { // we want to save to the main
 
-        if (!user.isHasAccessToDraftBranches()) {
-            throw new GwtSecurityException("User " + user.getName() + " is not allowed to validate branch!");
-        }
+            if (!user.isHasAccessToDraftBranches()) {
+                throw new GwtSecurityException("User " + user.getName() + " is not allowed to validate branch!");
+            }
 
-        validateUserActionForDraft(user);
+            validateUserActionForDraft(user);
 
-        List<GwtDraftChange> draftChanges = loadDraftChanges();
+            List<GwtDraftChange> draftChanges = loadDraftChanges();
 
-        // setup validation task
-        CmsRequestI cmsRequest = new CmsRequest(user, Source.MERGE, user.getDraftContext());
-        MergeResult context = new MergeResult(cmsRequest);
-        Future<MergeResult> promise = backgroundProcessor.mergeDraft(context);
+            // setup validation task
+            CmsRequestI cmsRequest = new CmsRequest(user, Source.MERGE, user.getDraftContext());
+            MergeResult context = new MergeResult(cmsRequest);
+            Future<MergeResult> promise = backgroundProcessor.mergeDraft(context);
 
-        while (!promise.isDone()) {
+            while (!promise.isDone()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new ServerException(e);
+                }
+            }
+
             try {
-                Thread.sleep(1000);
+                // update context
+                context = promise.get();
             } catch (InterruptedException e) {
                 throw new ServerException(e);
+            } catch (ExecutionException e) {
+                throw new ServerException(e);
             }
-        }
 
-        try {
-            // update context
-            context = promise.get();
-        } catch (InterruptedException e) {
-            throw new ServerException(e);
-        } catch (ExecutionException e) {
-            throw new ServerException(e);
-        }
+            // process merge result
+            final List<GwtDraftChange> payload;
+            if (!context.isSuccess()) {
+                payload = processMergeResult(draftChanges, context);
+            } else {
+                payload = draftChanges;
 
-        // process merge result
-        final List<GwtDraftChange> payload;
-        if (!context.isSuccess()) {
-            payload = processMergeResult(draftChanges, context);
+                // success - drop session before returning ...
+                PersonaService.defaultService().invalidatePersona(request.getUserPrincipal().getName());
+            }
+
+            return payload;
         } else {
-            payload = draftChanges;
-
-            // success - drop session before returning ...
-            PersonaService.defaultService().invalidatePersona(request.getUserPrincipal().getName());
+            throw new ServerException("Can't merge draft as a store publish is in progress!");
         }
-
-        return payload;
     }
 
     private void validateUserActionForDraft(CmsUser user) {
