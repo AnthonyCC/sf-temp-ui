@@ -86,6 +86,7 @@ public class FDStoreProperties {
     private final static String PROP_EMAIL_FDX_ORDER = "fdstore.email.fdx.order";
     private final static String PROP_EMAIL_FDX_ACTSERVICE = "fdstore.email.fdx.actservice";
     private final static String PROP_EMAIL_FDX_SIDEKICKS = "fdstore.email.fdx.sidekicks";
+    private final static String PROP_EMAIL_FDX_PRODUCT_REQUEST = "fdstore.email.fdx.productrequest";
 
     private final static String PROP_HOLIDAY_LOOKAHEAD_DAYS = "fdstore.holidayLookaheadDays";
     private final static String PROP_DLV_PROMO_EXP_DATE = "fdstore.dlvPromo.expDate";
@@ -963,6 +964,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EMAIL_FDX_ORDER, "order@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_ACTSERVICE, "accountservices@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_SIDEKICKS, "sidekicks@foodkick.com");
+        defaults.put(PROP_EMAIL_FDX_PRODUCT_REQUEST, "FK_Merchants@freshdirect.onmicrosoft.com");
 
         defaults.put(PROP_CONTENTMANAGER_HOME, "freshdirect.content.ContentManager");
         defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
@@ -4065,6 +4067,10 @@ public class FDStoreProperties {
 
     public static String getSidekicksEmailFDX() {
         return get(PROP_EMAIL_FDX_SIDEKICKS);
+    }
+    
+    public static String getProductRequestEmailFDX() {
+        return get(PROP_EMAIL_FDX_PRODUCT_REQUEST);
     }
 
     public static String getMiddleTierProviderURL() {
