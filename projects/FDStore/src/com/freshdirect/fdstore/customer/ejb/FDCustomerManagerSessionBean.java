@@ -3903,7 +3903,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			{
 				LOGGER.info("Fetching trip and stop from logistics for fdx order "+saleId);
 				RouteStopInfo info=FDDeliveryManager.getInstance().getRouteStopInfo(saleId);
-				if(info!=null && saleModel.getShippingInfo()!=null){
+				if(info!=null && info.getRoute()!=null && info.getStop()!=null &&  saleModel.getShippingInfo()!=null){
 				saleModel.getShippingInfo().setTruckNumber(info.getRoute());
 				saleModel.getShippingInfo().setStopSequence(info.getStop());
 				LOGGER.info("Fetched trip "+info.getRoute()+" and stop "+info.getStop()+ "from logistics for fdx order "+saleId);
