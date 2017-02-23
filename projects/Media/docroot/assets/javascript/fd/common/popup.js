@@ -150,9 +150,15 @@ var FreshDirect = FreshDirect || {};
                 }
 
                 setTimeout(function () {
-                  fd.modules.common.Elements.decorate($popupBody);
-                  fd.modules.common.Select.selectize($popupBody);
-                  fd.modules.common.aria.decorate();
+                  if (fd.modules.common.Elements) {
+                    fd.modules.common.Elements.decorate($popupBody);
+                  }
+                  if (fd.modules.common.Select) {
+                    fd.modules.common.Select.selectize($popupBody);
+                  }
+                  if (fd.modules.common.Select) {
+                    fd.modules.common.aria.decorate();
+                  }
                 }, 10);
 
                 // reposition the popups

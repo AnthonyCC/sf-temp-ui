@@ -57,6 +57,7 @@
   			{param items: $data.products /}
   			{param showViewAllButton: $moduleData.showViewAllButton /}
         {param useViewAllPopup: $moduleData.useViewAllPopup /}
+        {param moduleId: $moduleData.moduleId /}
   			{param viewAllLink: $moduleData.viewAllButtonLink /}
         {param cmEventSource: $moduleData.cmEventSource /}
   			{param accessibilityText}
@@ -71,7 +72,4 @@
     {/if}
 	</div>
 </div>
-{if $moduleData.useViewAllPopup}
-  <button class="qs-popup-close cssbutton cssbutton-flat green transparent" data-close-viewall-popup>close</button>
-{/if}
 {/template}

@@ -8,6 +8,7 @@
  * @param? mobWeb
  * @param? hideViewAllButton
  * @param? useViewAllPopup
+ * @param? moduleId
  * @param? viewAllLink
  * @param? accessibilityText
  * @param? isIconCarousel
@@ -37,7 +38,7 @@
 	{if not $hideViewAllButton}data-carousel-view-all="{not $hideViewAllButton}"{/if}>next</button>
 	{if not $hideViewAllButton and $accessibilityText}
 		<div data-component="carousel-view-all">
-			<a {if $useViewAllPopup}data-view-all-popup{else}href="{$viewAllLink}"{/if} class="cssbutton cssbutton-flat green transparent arrowbutton">view all
+			<a {if $useViewAllPopup}data-view-all-popup data-moduleId={if $moduleId}{$moduleId}{/if}{else}href="{$viewAllLink}"{/if} class="cssbutton cssbutton-flat green transparent arrowbutton">view all
 				<div class="offscreen">{$accessibilityText}</div>
 			</a>
 		</div>

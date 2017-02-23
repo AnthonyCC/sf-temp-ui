@@ -1,0 +1,26 @@
+#viewallPopup.fixedpopup {
+  z-index: 500;
+}
+
+.white-popup-overlay {
+  z-index: 499;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-content .content-module {
+  margin: 0;
+}
+
+#viewallPopup .fixedPopupContent {
+  text-align: center;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-close {
+  margin: 20px;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-close button {
+  text-transform: uppercase;
+}
+#viewallPopup .fixedPopupContent .view-all {
+  display: none;
+}
