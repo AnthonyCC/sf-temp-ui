@@ -111,7 +111,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),deliveryAddressResponse.getSubmitForm().getResult());
                     user.setRefreshValidSO3(true);
 
-					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
+					StandingOrderUtil.loadStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
 
 				} catch (FDResourceException e) {
 					BaseJsonServlet.returnHttpError(500, "Error while selecting delivery address for user " + user.getUserId(), e);  				}

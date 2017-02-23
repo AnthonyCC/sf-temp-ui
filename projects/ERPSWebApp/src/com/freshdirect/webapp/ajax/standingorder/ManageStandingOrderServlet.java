@@ -211,7 +211,10 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
-							StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
+						    if (soId != null && !"".equals(soId))
+						    	StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
+						    else
+						    	StandingOrderUtil.loadStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
 					 if("selectFreq2".equalsIgnoreCase(action)){
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
@@ -334,17 +337,26 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		String returnMessage = null;
 		try {
 			returnMessage = validateStandingOrderName(soName, u);
-			if(null == returnMessage){
+			//if(null == returnMessage){
 				FDStandingOrder so = null!=u.getCurrentStandingOrder()? u.getCurrentStandingOrder():new FDStandingOrder();
 				so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
 				so.setCustomerListName(soName);
 				so.setCustomerId(u.getIdentity().getErpCustomerPK());
 				so.setNewSo(true);
-				//StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
+				try {
+					so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
+				} catch (FDResourceException e1) {
+				}
+
+				try {
+					so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
+				} catch (FDResourceException e) {
+				}
+				StandingOrderUtil.loadStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
 				returnMessage = so.getId();
-			}
+		//	}
 		} catch (FDResourceException e2) {
 			throw new JspException(e2);
 		}

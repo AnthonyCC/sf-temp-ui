@@ -362,6 +362,53 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	}
 	
 	
+	public FDStandingOrder loadstandingorderdetails(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			
+			try {
+				FDStandingOrderList customerList = so.getCustomerList();
+				if (customerList != null)
+					customerList.setModificationDate( new Date() );
+			} catch (FDResourceException e) {
+				LOGGER.warn( "FDResourceException catched", e );
+			}
+			if (so.getId() == null ||  so.getId().isEmpty()) {
+				// create object
+				//LOGGER.debug( "Creating new standing order." );
+				if (so.getAddressId() != null && so.getTimeSlotId() != null
+						&& so.getReservedDayOfweek() != 0) {
+					
+				ErpAddressModel address=getShipToAddress(so.getAddressId());
+				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
+						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
+						so.getUser().getHistoricOrderSize(),
+						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+				}
+			} else {
+				LOGGER.debug( "loading the timeslots for standing order." );
+				if(so.getAddressId()!=null 	&& so.getTimeSlotId()!=null && so.getReservedDayOfweek()!=0	)
+				{
+				ErpAddressModel address=getShipToAddress(so.getAddressId());
+				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),	so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),	so.getUser().getHistoricOrderSize(),
+																						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+				}
+			}
+							
+			return so;
+			
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadstandingorderdetails() : " + e.getMessage(), e );
+			throw new FDResourceException(e);
+		} catch(FDAuthenticationException fae){
+			LOGGER.error( "FDAuthenticationException in loadstandingorderdetails() : " + fae.getMessage(), fae );
+			throw new FDResourceException(fae);
+		}
+		finally {
+			close(conn);
+		}
+	}
+	
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
 
 	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {
