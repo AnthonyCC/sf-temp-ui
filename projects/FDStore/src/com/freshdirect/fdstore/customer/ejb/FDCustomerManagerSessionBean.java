@@ -233,6 +233,7 @@ import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
@@ -3898,7 +3899,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
-
+			if(saleModel!=null && saleModel.geteStoreId()!=null && saleModel.geteStoreId().equals(EnumEStoreId.FDX))
+			{
+				LOGGER.info("Fetching trip and stop from logistics for fdx order "+saleId);
+				RouteStopInfo info=FDDeliveryManager.getInstance().getRouteStopInfo(saleId);
+				if(info!=null && saleModel.getShippingInfo()!=null){
+				saleModel.getShippingInfo().setTruckNumber(info.getRoute());
+				saleModel.getShippingInfo().setStopSequence(info.getStop());
+				LOGGER.info("Fetched trip "+info.getRoute()+" and stop "+info.getStop()+ "from logistics for fdx order "+saleId);
+				}
+			}
 			LOGGER.debug(new String("ordernum: "
 					+ saleId
 					+ "   rsrvID: "
