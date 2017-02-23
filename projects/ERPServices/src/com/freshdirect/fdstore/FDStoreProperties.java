@@ -4404,8 +4404,8 @@ public class FDStoreProperties {
         return get(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY);
     }
 
-    public static String getHomepageRedesignProductLimitMax() {
-        return get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX);
+    public static int getHomepageRedesignProductLimitMax() {
+        return Integer.parseInt(get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX));
     }
 
     public static String getPropPlant1300PlantIndicator() {

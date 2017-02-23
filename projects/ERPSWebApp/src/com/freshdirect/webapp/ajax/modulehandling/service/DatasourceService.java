@@ -120,7 +120,7 @@ public class DatasourceService {
 
         config.setViewAllButtonLink(viewAllUrl);
 
-        ModuleSourceType moduleSourceType = convertAttributeValueToModuleSourceType(sourceType);
+        ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(sourceType);
 
         // Editoral Module Config Data
         if (moduleSourceType != null && ModuleSourceType.EDITORIAL_MODULE.equals(moduleSourceType)) {
@@ -164,7 +164,7 @@ public class DatasourceService {
             InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ModuleData moduleData = new ModuleData();
-        DatasourceType datasourceEnum = convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
+        DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
 
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
@@ -177,7 +177,7 @@ public class DatasourceService {
                 moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user, showAllProducts));
                 break;
             case GENERIC:
-                ModuleSourceType moduleSourceType = convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
+                ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
                 switch (moduleSourceType) {
                     case IMAGEGRID_MODULE:
                         List<IconData> imageGridData = new ArrayList<IconData>();
@@ -239,14 +239,6 @@ public class DatasourceService {
                 break;
         }
         return moduleData;
-    }
-
-    private DatasourceType convertAttributeValueToDatasourceType(String datasourceTypeAttributeValue) {
-        return DatasourceType.forValue(datasourceTypeAttributeValue);
-    }
-
-    private ModuleSourceType convertAttributeValueToModuleSourceType(String moduleSourceTypeAttributeValue) {
-        return ModuleSourceType.forValue(moduleSourceTypeAttributeValue);
     }
 
 }

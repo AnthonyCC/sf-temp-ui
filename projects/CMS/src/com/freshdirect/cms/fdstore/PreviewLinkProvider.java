@@ -120,7 +120,7 @@ public class PreviewLinkProvider {
                 }
             }
         } else if (FDContentTypes.MODULECONTAINER.equals(type)) {
-            uri = "/test/homepage_redesign/homepagetester.jsp?moduleContainerId=" + key.getId();
+            uri = "/test/module_content/modulecontainer.jsp?moduleContainerId=" + key.getId();
         }
 
         if (uri != null && isAbsoluteUrl) {

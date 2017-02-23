@@ -40,4 +40,8 @@ public enum DatasourceType {
         LOGGER.warn(MessageFormat.format("No datasource exists with value[{0}] in the DatasourceType Enum", datasourceValue));
         return null;
     }
+
+    public static DatasourceType convertAttributeValueToDatasourceType(String datasourceTypeAttributeValue) {
+        return DatasourceType.forValue(datasourceTypeAttributeValue);
+    }
 }

@@ -46,7 +46,7 @@ public class ModuleContentService {
     private static ModuleContentService INSTANCE = new ModuleContentService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleContentService.class);
 
-    private static final int MAX_ITEMS = Integer.parseInt(FDStoreProperties.getHomepageRedesignProductLimitMax());
+    private int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
 
     public static ModuleContentService getDefaultService() {
         return INSTANCE;
