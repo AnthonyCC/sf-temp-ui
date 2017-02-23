@@ -1,5 +1,8 @@
 package com.freshdirect.webapp.ajax.modulehandling;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,12 +32,22 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         try {
             HttpSession session = request.getSession();
-            String moduleId = "Module:" + request.getParameter("moduleId");
-            WelcomePageData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleId, user, session);
+            String moduleContentKey = null;
+            String moduleId = request.getParameter("moduleId");
 
-            writeResponseData(response, result);
+            if (moduleId != null) {
+                moduleContentKey = "Module:" + moduleId;
+            }
+
+            WelcomePageData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
+
+            Map<String, WelcomePageData> moduleContent = new HashMap<String, WelcomePageData>();
+
+            moduleContent.put("moduleContent", result);
+
+            writeResponseData(response, moduleContent);
         } catch (InvalidFilteringArgumentException e) {
-            returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
+            returnHttpError(500, "Unable to load Module", e);
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Module", e);
         }

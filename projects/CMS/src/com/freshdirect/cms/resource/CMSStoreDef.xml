@@ -2784,7 +2784,7 @@
 				<EnumValue value="PRES_PICKS" label="PRES_PICKS"/>
 				<EnumValue value="FEATURED_RECOMMENDER" label="FEATURED_RECOMMENDER"/>
 				<EnumValue value="MOST_POPULAR_PRODUCTS" label="MOST_POPULAR_PRODUCTS"/>
-				<EnumValue value="BRAND" label="BRAND"/>
+				<EnumValue value="BRAND_FEATURED_PRODUCTS" label="BRAND_FEATURED_PRODUCTS"/>
 			</EnumDef>			
 			<EnumDef type="S" name="displayType"  label="Display Type" required="true">
 				<EnumValue value="PRODUCT_CAROUSEL_MODULE" label="PRODUCT_CAROUSEL_MODULE"/>

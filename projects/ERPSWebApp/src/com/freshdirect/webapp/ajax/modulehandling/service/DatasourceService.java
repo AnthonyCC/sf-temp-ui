@@ -25,6 +25,7 @@ import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class DatasourceService {
@@ -45,42 +46,66 @@ public class DatasourceService {
     private DatasourceService() {
     }
 
-    public ModuleConfig loadModuleConfiguration(ContentNodeI module, FDUserI user) {
-        return populateModuleConfig(module, user);
+    private List<ProductData> generateBrandFeaturedProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user, showAllProducts);
     }
 
-    public ModuleConfig loadModuleGroupConfiguration(ContentNodeI moduleGroup, FDUserI user) {
-        return populateModuleGroupConfig(moduleGroup);
+    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        String categoryId = category.getKey().getId();
+        return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user, showAllProducts);
+    }
+
+    private List<ProductData> generateFeaturedRecommenderProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        List<ProductData> products = new ArrayList<ProductData>();
+        try {
+            ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+            String departmentId = department.getKey().getId();
+            products = ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId, showAllProducts);
+        } catch (NullPointerException e) {
+            LOGGER.error("Datasource sourceNode is not set for Module:" + module.getKey().getId());
+        } catch (ClassCastException e) {
+            LOGGER.error("Datasource sourceNode is not a department for Module:" + module.getKey().getId());
+        }
+        return products;
+    }
+
+    private List<IconData> loadIconData(ContentNodeI module) {
+        List<IconData> icons = new ArrayList<IconData>();
+        List<ContentKey> iconContentKeys = (List<ContentKey>) module.getAttributeValue("iconList");
+
+        icons = processImageBannerList(iconContentKeys, icons);
+
+        return icons;
+    }
+
+    private List<IconData> loadImageGridData(ContentNodeI module) {
+        List<IconData> imageGridData = new ArrayList<IconData>();
+        List<ContentKey> imageGridContentKeys = (List<ContentKey>) module.getAttributeValue("imageGrid");
+
+        imageGridData = processImageBannerList(imageGridContentKeys, imageGridData);
+
+        if (imageGridData.size() > 6) {
+            imageGridData = imageGridData.subList(0, 6);
+        }
+
+        return imageGridData;
+    }
+
+    public ModuleConfig loadModuleConfiguration(ContentNodeI module, FDUserI user) {
+        return populateModuleConfig(module, user);
     }
 
     public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
         return populateModuleData(module, user, session, showAllProducts);
     }
 
-    private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {
-        ModuleConfig config = new ModuleConfig();
-
-        String sourceType = MODULE_GROUP_SOURCE_TYPE;
-        config.setCmEventSource(INDEX_CM_EVENT_SOURCE);
-
-        // General Module Config Data
-        config.setModuleGroupTitle(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitle"));
-        config.setModuleGroupTitleTextBanner(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitleTextBanner"));
-        config.setHideModuleGroupViewAllButton(ContentNodeUtil.getBooleanAttribute(moduleGroup, "hideViewAllButton"));
-
-        config.setSourceType(sourceType);
-        String viewAllUrl = ContentNodeUtil.getStringAttribute(moduleGroup, "viewAllButtonURL");
-
-        if (viewAllUrl == null) {
-            ContentKey viewAllSourceContentKey = (ContentKey) moduleGroup.getAttributeValue("viewAllSourceNode");
-            if (viewAllSourceContentKey != null) {
-                viewAllUrl = "/browse.jsp?id=" + viewAllSourceContentKey.getId();
-            }
-        }
-
-        config.setModuleGroupViewAllButtonLink(viewAllUrl);
-
-        return config;
+    public ModuleConfig loadModuleGroupConfiguration(ContentNodeI moduleGroup, FDUserI user) {
+        return populateModuleGroupConfig(moduleGroup);
     }
 
     private ModuleConfig populateModuleConfig(ContentNodeI module, FDUserI user) {
@@ -162,7 +187,6 @@ public class DatasourceService {
     @SuppressWarnings("unchecked")
     private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
             InvalidFilteringArgumentException {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ModuleData moduleData = new ModuleData();
         DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
 
@@ -180,31 +204,10 @@ public class DatasourceService {
                 ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
                 switch (moduleSourceType) {
                     case IMAGEGRID_MODULE:
-                        List<IconData> imageGridData = new ArrayList<IconData>();
-                        List<ContentKey> imageGridContentKeys = (List<ContentKey>) module.getAttributeValue("imageGrid");
-
-                        for (ContentKey contentKey : imageGridContentKeys) {
-                            ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(contentKey, currentDraftContext);
-                            IconData imageData = ModuleContentService.getDefaultService().populateIconData(imageBanner);
-                            imageGridData.add(imageData);
-                        }
-
-                        if (imageGridData.size() > 6) {
-                            imageGridData = imageGridData.subList(0, 6);
-                        }
-
-                        moduleData.setImageGridData(imageGridData);
+                        moduleData.setImageGridData(loadImageGridData(module));
                         break;
                     case ICON_CAROUSEL_MODULE:
-                        List<IconData> icons = new ArrayList<IconData>();
-                        List<ContentKey> iconContentKeys = (List<ContentKey>) module.getAttributeValue("iconList");
-
-                        for (ContentKey contentKey : iconContentKeys) {
-                            ContentNodeI icon = CmsManager.getInstance().getContentNode(contentKey, currentDraftContext);
-                            IconData iconData = ModuleContentService.getDefaultService().populateIconData(icon);
-                            icons.add(iconData);
-                        }
-                        moduleData.setIcons(icons);
+                        moduleData.setIcons(loadIconData(module));
                         break;
                     case OPENHTML_MODULE:
                         moduleData.setOpenHTMLEditorial(ModuleContentService.getDefaultService().populateOpenHTML(module, user));
@@ -214,31 +217,54 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-                String categoryId = category.getKey().getId();
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user, showAllProducts));
-
+                moduleData.setProducts(generateBrowseProducts(module, user, showAllProducts));
                 break;
             case FEATURED_RECOMMENDER:
-                try {
-                    ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-                    String departmentId = department.getKey().getId();
-                    moduleData.setProducts(ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId, showAllProducts));
-                } catch (NullPointerException e) {
-                    LOGGER.error("Datasource sourceNode is not set for Module:" + module.getKey().getId());
-                } catch (ClassCastException e) {
-                    LOGGER.error("Datasource sourceNode is not a department for Module:" + module.getKey().getId());
-                }
+                moduleData.setProducts(generateFeaturedRecommenderProducts(module, user, showAllProducts));
                 break;
-
-            case BRAND:
-                ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user, showAllProducts));
+            case BRAND_FEATURED_PRODUCTS:
+                moduleData.setProducts(generateBrandFeaturedProducts(module, user, showAllProducts));
                 break;
             default:
                 break;
         }
         return moduleData;
+    }
+
+    private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {
+        ModuleConfig config = new ModuleConfig();
+
+        String sourceType = MODULE_GROUP_SOURCE_TYPE;
+        config.setCmEventSource(INDEX_CM_EVENT_SOURCE);
+
+        // General Module Config Data
+        config.setModuleGroupTitle(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitle"));
+        config.setModuleGroupTitleTextBanner(ContentNodeUtil.getStringAttribute(moduleGroup, "moduleGroupTitleTextBanner"));
+        config.setHideModuleGroupViewAllButton(ContentNodeUtil.getBooleanAttribute(moduleGroup, "hideViewAllButton"));
+
+        config.setSourceType(sourceType);
+        String viewAllUrl = ContentNodeUtil.getStringAttribute(moduleGroup, "viewAllButtonURL");
+
+        if (viewAllUrl == null) {
+            ContentKey viewAllSourceContentKey = (ContentKey) moduleGroup.getAttributeValue("viewAllSourceNode");
+            if (viewAllSourceContentKey != null) {
+                viewAllUrl = "/browse.jsp?id=" + viewAllSourceContentKey.getId();
+            }
+        }
+
+        config.setModuleGroupViewAllButtonLink(viewAllUrl);
+
+        return config;
+    }
+
+    private List<IconData> processImageBannerList(List<ContentKey> contentKeys, List<IconData> moduleImages) {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        for (ContentKey contentKey : contentKeys) {
+            ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(contentKey, currentDraftContext);
+            IconData imageBannerData = ModuleContentService.getDefaultService().populateIconData(imageBanner);
+            moduleImages.add(imageBannerData);
+        }
+        return moduleImages;
     }
 
 }

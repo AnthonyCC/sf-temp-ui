@@ -23,16 +23,22 @@ import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
 
-public class ModuleHandlingService {
+/**
+ * Used to load a moduleContainer for a User.
+ * 
+ * @author dviktor
+ *
+ */
+public final class ModuleHandlingService {
 
     private static ModuleHandlingService INSTANCE = new ModuleHandlingService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleHandlingService.class);
 
-    public static ModuleHandlingService getDefaultService() {
-        return INSTANCE;
+    private ModuleHandlingService() {
     }
 
-    private ModuleHandlingService() {
+    public static ModuleHandlingService getDefaultService() {
+        return INSTANCE;
     }
 
     @SuppressWarnings("unchecked")
