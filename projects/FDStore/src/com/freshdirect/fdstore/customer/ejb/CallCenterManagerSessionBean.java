@@ -1371,7 +1371,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	//private static final String ROUTE_STOP_QRY_WHERE_WAVE = " and s.wave_number=LPAD(?, 6, '0')";
 
-	private static final String ROUTE_STOP_QRY_WHERE_ROUTE = " and s.truck_number=?";
+	private static final String ROUTE_STOP_QRY_WHERE_ROUTE = " and s.truck_number=LPAD(?, 6, '0')";
 
 	private static final String ROUTE_STOP_QRY_WHERE_STOP = " and (s.stop_sequence between LPAD(?, 5, '0') and LPAD(?, 5, '0'))";
 
