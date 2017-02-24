@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # @provides calc_response_and_latency <awk-dir> <match> <stem> <outdir>  [ reads data from inputstream ]
 # @provides calc_total <match> <data>

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #
 # @author segabor
@@ -37,7 +37,7 @@ CSVFILE="$WORKDIR"/"dyf.csv";
 rm -f "$CSVFILE";
 
 # -- run test
-sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
+bash -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
       -Jhostname="$HOST" -Jport="$PORT" \
       -Jdyf_threads="$DYF_THREADS" -Jcounter="$LOOP_COUNTER" \
       -Jdyf_data="$CSVFILE" -Jdyf_output="$CSVFILE" \

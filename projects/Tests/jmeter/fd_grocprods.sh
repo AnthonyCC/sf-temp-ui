@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Retrieve grocery product data from server.
 # Command line options:
