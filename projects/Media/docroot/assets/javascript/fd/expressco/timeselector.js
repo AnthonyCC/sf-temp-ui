@@ -109,11 +109,6 @@ var FreshDirect = FreshDirect || {};
         timeslot.renderContent(value);
         timeslot.renderPreview(value);
         timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
-        if($("#soFreq").length > 0){
-        	$("#soFreq").select2({
-				minimumResultsForSearch: Infinity 
-        	});
-        };
         if($("#soFreq2").length > 0){
         	$("#soFreq2").select2({
 				minimumResultsForSearch: Infinity 

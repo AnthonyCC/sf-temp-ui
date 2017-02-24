@@ -104,7 +104,7 @@ if (true) {
 
 			<div class="standing-orders-3-create-header">
 				Create a New Standing Order
-				<a class="standing-orders-3-new-start-shop cssbutton cssbutton-flat orange" disabled href="/">Start Shopping</a>
+				<button class="standing-orders-3-new-start-shop cssbutton cssbutton-flat orange" disabled onclick="submitFormNewSO('create');">Start Shopping</a>
 				<button class="standing-orders-3-new-cancel-button cssbutton cssbutton-flat green transparent" type="button" onclick="standingOrderNewCancel()">Cancel</button>
 				<hr>
 				<!-- 
@@ -123,7 +123,9 @@ if (true) {
 					<%} %>
 					<div class="standing-orders-3-name-input-change">
 						<div class="standing-orders-3-char-count"></div>
-						<button class="standing-orders-3-name-input-ok-button" type="button" onmousedown="newStandingOrderNameInputChangeOK()">OK</button>
+						<!-- 
+							<button class="standing-orders-3-name-input-ok-button" type="button" onmousedown="newStandingOrderNameInputChangeOK()">OK</button>
+						 -->
 					</div>						
 			</div>
 			<div style="position: relative;">
