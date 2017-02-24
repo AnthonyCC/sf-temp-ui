@@ -1,7 +1,3 @@
-/*
- * Created on Feb 8, 2005
- *
- */
 package com.freshdirect.cms.search;
 
 import java.io.File;
@@ -21,6 +17,8 @@ import org.apache.log4j.Category;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -67,39 +65,44 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class LuceneSearchService implements ContentSearchServiceI, IndexingSubscriber {
 
-    private final Category LOGGER = LoggerFactory.getInstance(LuceneSearchService.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(LuceneSearchService.class);
 
-    private final static FreshdirectAnalyzer ANALYZER = new FreshdirectAnalyzer();
-    
+    private static final FreshdirectAnalyzer ANALYZER = new FreshdirectAnalyzer();
+
     private IndexConfiguration indexConfiguration = IndexConfiguration.getInstance();
+
     private SearchServiceConfiguration searchServiceConfiguration = SearchServiceConfiguration.getInstance();
+
+    private Map<ContentType, List<AttributeIndex>> contentIndexes = new HashMap<ContentType, List<AttributeIndex>>();
+
+    private String indexLocation;
+
+    private FSDirectory indexDirectory;
+
+    private IndexReader reader;
+
+    private SpellingSuggestionsServiceI spellService;
 
     public LuceneSearchService() {
         setIndexes(indexConfiguration.getIndexConfiguration());
-
+        
         this.indexLocation = searchServiceConfiguration.getCmsIndexLocation();
-
+        
         try {
             boolean exists = IndexReader.indexExists(getIndexDirectory());
-
+            
             if (!exists) {
-                throw new IllegalStateException("Trying to open an index searcher over a directory which does not contain index files!");
+                LOGGER.info("Creating index at " + getIndexLocation());
+                IndexWriter writer = new IndexWriter(getIndexDirectory(), ANALYZER, true, new MaxFieldLength(1024));
+                writer.optimize();
+                writer.close();
+                LOGGER.info("Created index at " + getIndexLocation());
             }
         } catch (IOException ioe) {
             throw new CmsRuntimeException(ioe);
         }
         IndexingNotifier.getInstance().subscribe(this);
     }
-
-    private Map<ContentType, List<AttributeIndex>> contentIndexes = new HashMap<ContentType, List<AttributeIndex>>();
-
-    private String indexLocation = null;
-
-    private FSDirectory indexDirectory = null;
-
-    private IndexReader reader;
-
-    SpellingSuggestionsServiceI spellService;
 
     /**
      * @return path to index directory
