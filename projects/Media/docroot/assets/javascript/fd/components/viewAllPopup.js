@@ -11,7 +11,8 @@ var FreshDirect = FreshDirect || {};
     },
     bodyTemplate: {
       value: function (data) {
-        return common.contentModules({config: data.data.config, data: data.data.data});
+        var spinner = '<div class="spinner"></div>';
+        return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
       }
     },
     trigger: {
@@ -41,7 +42,6 @@ var FreshDirect = FreshDirect || {};
         fd.common.dispatcher.signal('server',{
     			url:'/api/modulehandling/load?moduleId=' + moduleId
     		});
-        console.log('OPEN POPUP');
         var $t = e && $(e.currentTarget) || $(document.body);
 
         this.refreshBody();
