@@ -9,13 +9,6 @@
   max-width: 480px;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .left-side {
-  min-height: 480px;
-  min-width: 480px;
-  max-height: 480px;
-  max-width: 480px;
-}
-
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
   overflow-y: auto;
 }
