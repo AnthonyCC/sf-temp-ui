@@ -74,5 +74,4 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public FDStandingOrder loadSOCron(PrimaryKey pk) throws FDResourceException,RemoteException;
 	
-	public FDStandingOrder loadstandingorderdetails(FDActionInfo info, FDStandingOrder so, String saleId)throws FDResourceException, RemoteException;
 }

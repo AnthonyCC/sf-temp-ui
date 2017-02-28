@@ -203,7 +203,14 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				} else if("create".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
-					writeResponseData( response, errorMessage );
+					if(null == errorMessage){
+						SuccessPageData successData=new SuccessPageData();
+						successData.setSoId(u.getCurrentStandingOrder().getId());
+						writeResponseData( response, successData );
+					}
+					else{
+						writeResponseData( response, errorMessage );
+					}
 	
 				} else if("selectFreq".equalsIgnoreCase(action) || "selectFreq2".equalsIgnoreCase(action)){
 					 if(freq!=null){
@@ -213,8 +220,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
 						    if (soId != null && !"".equals(soId))
 						    	StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
-						    else
-						    	StandingOrderUtil.loadStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
 					 if("selectFreq2".equalsIgnoreCase(action)){
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
@@ -337,7 +342,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		String returnMessage = null;
 		try {
 			returnMessage = validateStandingOrderName(soName, u);
-			//if(null == returnMessage){
 				FDStandingOrder so = null!=u.getCurrentStandingOrder()? u.getCurrentStandingOrder():new FDStandingOrder();
 				so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
 				so.setCustomerListName(soName);
@@ -346,17 +350,17 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				try {
 					so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
 				} catch (FDResourceException e1) {
+					LOG.error("SO:Unable to set PaymentMethodId:"+ e1);
 				}
 
 				try {
 					so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
 				} catch (FDResourceException e) {
+					LOG.error("SO:Unable to set AddressId:"+ e);
 				}
-				StandingOrderUtil.loadStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
 				returnMessage = so.getId();
-		//	}
 		} catch (FDResourceException e2) {
 			throw new JspException(e2);
 		}

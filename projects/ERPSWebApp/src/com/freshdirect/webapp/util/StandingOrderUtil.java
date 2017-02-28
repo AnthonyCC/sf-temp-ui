@@ -1108,17 +1108,6 @@ public class StandingOrderUtil {
 		
 	}
 
-	
-	public static void loadStandingOrder(HttpSession session, FDCartModel cart, FDStandingOrder so, String saleId) throws FDResourceException {
-		FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-
-		info.setNote("loadStandingOrder");
-		 so = FDStandingOrdersManager.getInstance().loadStandingOrder(info, cart, so, saleId);
-
-		
-	}
-
-
 	/**
 	 * Update an existing standing order template with the corresponding shopping list
 	 * according to the input

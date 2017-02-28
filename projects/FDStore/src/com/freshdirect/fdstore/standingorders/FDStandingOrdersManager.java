@@ -220,27 +220,6 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	};
-
-	
-	public FDStandingOrder loadstandingorderdetails(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
-		return loadstandingorderdetails(info, so, null);
-	}
-	
-	public FDStandingOrder loadstandingorderdetails(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			return sb.loadstandingorderdetails(info, so, saleId);
-		
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	};
-	
 	
 	public FDOrderInfoI getLastOrder(FDUserI user, FDStandingOrder so) throws FDResourceException {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
@@ -487,43 +466,6 @@ public class FDStandingOrdersManager {
 			rec.setChangeOrderId(saleId);
 			rec.setStandingOrderId(standingOrder.getId());
 			this.logActivity(rec);
-			throw e;
-		}
-	}
-
-	
-	public FDStandingOrder loadStandingOrder(FDActionInfo info, FDCartModel cart, FDStandingOrder standingOrder, String saleId) throws FDResourceException {
-		
-		LOGGER.debug( "loadStandingOrder() starting." );
-		
-		try {
-			FDIdentity ident = standingOrder.getCustomerIdentity(); 
-				
-			LOGGER.debug( "identity =" + ident );
-			
-				LOGGER.debug( "loading content." );
-				
-				FDStandingOrderList l = (FDStandingOrderList) FDListManager.getCustomerList(ident, EnumCustomerListType.SO, standingOrder.getCustomerListName());
-				// clean list
-				if(l!=null){
-				l.removeAllLineItems();
-				}
-				// copy items from cart to list
-				Collection<FDCartLineI> cl = cart.getOrderLines();
-				for (FDCartLineI s : cl) {
-					l.mergeSelection(s, false, true);
-				}
-				
-				if(l!=null){
-				FDListManager.storeCustomerList(l);
-				}
-				
-				if(!standingOrder.isNewSo()){
-					standingOrder.clearLastError();
-				}
-			loadstandingorderdetails(info, standingOrder, saleId);
-			return standingOrder;
-		} catch (FDResourceException e) {
 			throw e;
 		}
 	}
