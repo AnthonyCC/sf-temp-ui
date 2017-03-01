@@ -268,9 +268,11 @@ public class SearchController extends BaseController {
         if(!products.isEmpty()){
         	for(String product : products){
         		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + product)); 
-        		boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
-        		if(isYourFave){
-        			favProducts.add(product);
+        		if(productModel!=null && productModel.getContentKey()!=null){
+        			boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
+        			if(isYourFave){
+        				favProducts.add(product);
+        			}
         		}
         	}
         }
