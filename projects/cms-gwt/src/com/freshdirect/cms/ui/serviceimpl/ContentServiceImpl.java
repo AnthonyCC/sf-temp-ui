@@ -540,8 +540,9 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         }
         if (query.isPublishInfoQuery()) {
             LOG.info("publish info:" + query.getPublishId() + " -> " + publish.getId() + ':' + publish.getStatus().getName() + " (" + publish.getDescription() + ')');
+            List<PublishMessage> filteredMessages = TranslatorToGwt.getSeverityFilteredPublishMessages(publish.getMessages(), query.getMessageSeverity());
             return new ChangeSetQueryResponse(publish.getStatus().getName(), publish.getTimestamp(), System.currentTimeMillis() - publish.getTimestamp().getTime(),
-                    TranslatorToGwt.getPublishMessages(publish, query), getLastInfo(publish));
+                    TranslatorToGwt.getPublishMessages(filteredMessages, query.getPublishMessageStart(), query.getPublishMessageEnd()), getLastInfo(publish));
         } else {
 
             LOG.info("collecting changes from " + prevTimestamp + " to " + timestamp + ", query:" + query);
@@ -592,8 +593,9 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         int publishMessageCount = 0;
 
         if (publish != null) {
-            publishMessageCount = publish.getMessages().size();
-            publishMessages = TranslatorToGwt.getPublishMessages(publish, query);
+            List<PublishMessage> filteredMessages = TranslatorToGwt.getSeverityFilteredPublishMessages(publish.getMessages(), query.getMessageSeverity());
+            publishMessages = TranslatorToGwt.getPublishMessages(filteredMessages, query.getPublishMessageStart(), query.getPublishMessageEnd());
+            publishMessageCount = filteredMessages.size();
         }
 
         return new ChangeSetQueryResponse(clientChanges, changeHistory.size(), changeCount, query, publishMessages, publishMessageCount);

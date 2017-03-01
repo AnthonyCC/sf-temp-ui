@@ -687,17 +687,19 @@ public class TranslatorToGwt {
         return result;
     }
 
-    public static List<GwtPublishMessage> getPublishMessages(Publish publish, ChangeSetQuery query) {
-        if (query.getMessageSeverity() == -1) {
-            return getPublishMessages(publish.getMessages(), query.getPublishMessageStart(), query.getPublishMessageEnd());
-        }
-        List<PublishMessage> filteredList = new ArrayList<PublishMessage>();
-        for (PublishMessage message : publish.getMessages()) {
-            if (message.getSeverity() == query.getMessageSeverity()) {
-                filteredList.add(message);
+    public static List<PublishMessage> getSeverityFilteredPublishMessages(List<PublishMessage> messages, int severity) {
+        List<PublishMessage> filteredMessages = null;
+        if (severity == -1) {
+            filteredMessages = messages;
+        } else {
+            filteredMessages = new ArrayList<PublishMessage>();
+            for (PublishMessage message : messages) {
+                if (message.getSeverity() == severity) {
+                    filteredMessages.add(message);
+                }
             }
         }
-        return getPublishMessages(filteredList, query.getPublishMessageStart(), query.getPublishMessageEnd());
+        return filteredMessages;
     }
 
     // =========================== CHANGE SETS ===========================

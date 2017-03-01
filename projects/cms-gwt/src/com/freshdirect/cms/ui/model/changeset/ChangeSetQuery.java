@@ -9,40 +9,39 @@ public class ChangeSetQuery implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-    protected String contentKey;
-    protected String publishId;
-    
-    protected String	user;
-    protected Date		startDate;
-    protected Date		endDate;
-    
-    protected String publishType;
-    
-    int start = 0;    
-    int limit = 0;
-    
-    boolean publishInfoQuery = false;
-    boolean changeSetQuery = false;
-    
-    int publishMessageStart = 0;
-    int publishMessageEnd = 100;
+	private String contentKey;
+	private String publishId;
 
-    int messageSeverity = -1;
-    
-    String sortType;
-    
-    SortDir direction = SortDir.NONE;
-    
-    String publishSortType;
-    SortDir publishDirection = SortDir.NONE;
-    
-    String contentType = null;
-    String contributor = null;
-    
-    
+	private String user;
+	private Date startDate;
+	private Date endDate;
+
+	private String publishType;
+
+	private int start = 0;
+	private int limit = 0;
+
+	private boolean publishInfoQuery = false;
+	private boolean changeSetQuery = false;
+
+	private int publishMessageStart = 0;
+	private int publishMessageEnd = 100;
+
+	private int messageSeverity = -1;
+
+	private String sortType;
+
+	private SortDir direction = SortDir.NONE;
+
+	private String publishSortType;
+	private SortDir publishDirection = SortDir.NONE;
+
+	private String contentType;
+	private String contributor;
+
 	public ChangeSetQuery() {
     }
-    
+
     public ChangeSetQuery(ChangeSetQuery copy) {
         this.contentKey = copy.contentKey;
         this.publishId = copy.publishId;
