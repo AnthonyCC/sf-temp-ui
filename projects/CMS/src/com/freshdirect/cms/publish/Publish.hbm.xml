@@ -40,7 +40,7 @@
 	<class name="PublishX" table="PublishX" lazy="false">
 		<id name="id" length="16">
 			<generator class="sequence">
-				<param name="sequence">publishx_seq</param>
+				<param name="sequence">publish_seq</param>
 			</generator>
 		</id>
 		<property name="timestamp" column="cro_mod_date"/>
