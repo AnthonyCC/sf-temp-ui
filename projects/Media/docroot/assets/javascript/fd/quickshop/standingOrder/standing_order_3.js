@@ -369,7 +369,7 @@ function selectFrequency(item){
 		$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
 	}
 	freq = item.value;
-	if(FreshDirect.standingorder.currentPage != "new"){
+	if(FreshDirect.standingorder.currentPage == "new"){
 		submitFormManageSO("","selectFreq2",null,freq);
 	}
 }
