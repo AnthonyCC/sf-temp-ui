@@ -369,8 +369,16 @@ function selectFrequency(item){
 		$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
 	}
 	freq = item.value;
+	
+	var soId = '', soName = '';
+	soId = $jq(item).closest('.standing-orders-3-so-settings-container.open').find('.standing-orders-3-so-settings-id-value').val();
+	soName = $jq(item).closest('.standing-orders-3-so-settings-container.open').find('.standing-orders-3-so-settings-name-value').val();
+	
 	if(FreshDirect.standingorder.currentPage == "new"){
 		submitFormManageSO("","selectFreq2",null,freq);
+	}
+	if(FreshDirect.standingorder.currentPage == "manage"){
+		submitFormManageSO(soId,"selectFreq2",soName,freq);
 	}
 }
 

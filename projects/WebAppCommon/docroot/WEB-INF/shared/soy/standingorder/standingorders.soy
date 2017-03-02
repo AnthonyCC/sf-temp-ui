@@ -104,6 +104,8 @@
 				<div class="standing-orders-3-so-settings-item-name-change-container">
 					<div class="standing-orders-3-so-settings-item-name-header">{$item.soName}</div>
 					<button class="standing-orders-3-so-settings-item-name-change" onclick="changeSOName({$item.id})">Rename</button>
+					<input type="hidden" class="standing-orders-3-so-settings-id-value" value="{$item.id}" />
+					<input type="hidden" class="standing-orders-3-so-settings-name-value" value="{$item.soName}" />
 				</div>
 				<div style="position: relative;">
 					<div class="standing-orders-3-so-settings-item-name-change-input-container">

@@ -218,8 +218,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
-						    if (soId != null && !"".equals(soId))
-						    	StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
 					 if("selectFreq2".equalsIgnoreCase(action)){
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
