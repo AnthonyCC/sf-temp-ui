@@ -40,7 +40,7 @@
 	<class name="PublishX" table="PublishX" lazy="false">
 		<id name="id" length="16">
 			<generator class="sequence">
-				<param name="sequence">publish_seq</param>
+				<param name="sequence">publishx_seq</param>
 			</generator>
 		</id>
 		<property name="timestamp" column="cro_mod_date"/>
@@ -48,7 +48,7 @@
 		<property name="description"/>
 		<property name="lastModified" column="last_modified"/>
 		<property name="status" type="EnumPublishStatus"	/>
-		<list name="messages" table="PublishMessages">
+		<list name="messages" table="PublishXMessages">
 			<key column="publish_id"/>
 			<list-index column="sort_order"/>
 			<composite-element class="PublishMessage">

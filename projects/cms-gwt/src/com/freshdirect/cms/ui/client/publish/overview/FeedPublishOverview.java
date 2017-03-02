@@ -132,7 +132,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			public void handleEvent(BaseEvent be) {
 				ChangeSetQuery query = new ChangeSetQuery();
 				query.setPublishId(publishId);
-				query.setContentType("X");
+				query.setPublishType("X");
 				overview.show();
 				allChanges.hide();
 				startPublish.hide();
@@ -149,7 +149,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			public void handleEvent(BaseEvent be) {
 				ChangeSetQuery query = new ChangeSetQuery();
 				query.setPublishId(publishId);
-				query.setContentType("X");
+				query.setPublishType("X");
 				overview.show();
 				allMessages.hide();
 				allChanges.show();
@@ -260,7 +260,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 				
 				query = new ChangeSetQuery();
 				query.setMessageSeverity(Integer.valueOf(message.getKey()));		
-				query.setContentType("X");
+				query.setPublishType("X");
 				PublishOverviewField field = new PublishOverviewField(value, 150);		
 				field.setChangeSetQuery(query);
 				field.addStyleName(key);
@@ -278,7 +278,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			int value = contributor.getValue();
 			query = new ChangeSetQuery();
 			query.setContributor(contributor.getKey());
-			query.setContentType("X");
+			query.setPublishType("X");
 			PublishOverviewField field = new PublishOverviewField(value, 150);
 			field.setChangeSetQuery(query);
 			field.setValue((float) value / (float) data.getChangeCount());
@@ -293,7 +293,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			int value = type.getValue();
 			query = new ChangeSetQuery();
 			query.setContentType(type.getKey());
-			query.setContentType("X");
+			query.setPublishType("X");
 			PublishOverviewField field = new PublishOverviewField(value, 150);
 			field.setChangeSetQuery(query);
 			field.setValue((float) value / (float) data.getChangeCount());

@@ -44,6 +44,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class BackgroundProcessorImpl implements IBackgroundProcessor {
 
+    private static final String FEED_PUBLISH_START_MESSAGE = "Starting feed publish";
+    private static final String FEED_PUBLISH_STOP_MESSAGE = "Finished feed publish";
+    private static final String FEED_PUBLISH_NO_TASKS_DEFINED_MESSAGE = "There are no feed publish tasks defined";
+    private static final String FEED_PUBLISH_START_MESSAGE_FOR_STORE = "Starting feed publish for store: {0} ({1}/{2})";
+    private static final String FEED_PUBLISH_STOP_MESSAGE_FOR_STORE = "Finished feed publish for store: {0} ({1}/{2})";
+
     private static abstract class CallableWithNotifications<X> implements Callable<X> {
     	private final static Logger LOG = LoggerFactory.getInstance(CallableWithNotifications.class);
 
@@ -284,6 +290,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 try {
 
                     if (publishTasks != null) {
+                        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, FEED_PUBLISH_START_MESSAGE));
                         // Go through each Stores
                         Collection<ContentKey> storeKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE);
                         final int n = storeKeys.size();
@@ -292,30 +299,32 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                             k++;
                             publish.setStoreId(storeKey.getId());
                             publish.setPath(publish.getBasePath() + "/" + publish.getStoreId());
-                            LOG.info("=== Start publish for store: " + publish.getStoreId() + "  ("+k+"/"+n+") ===");
+                            String startPublishMessage = MessageFormat.format(FEED_PUBLISH_START_MESSAGE_FOR_STORE, publish.getStoreId(), k, n);
+                            LOG.info(startPublishMessage);
+                            publish.getMessages().add(new PublishMessage(PublishMessage.INFO, startPublishMessage));
                             for (PublishTask task : publishTasks) {
                                 status.setStatus("Publish step :" + task.getComment());
                                 publishDao.beginTransaction();
-                                /**
-                                if(publish instanceof PublishX){
-                                    //No messages for feed publish now.
-                                    //publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
-                                } else {
-                                    publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
-                                }
-                                **/
+                                publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
                                 publish.setLastModified(new Date());
                                 publishDao.savePublish(publish);
                                 publishDao.commitTransaction();
                                 task.execute(publish);
                             }
+                            String stopPublishMessage = MessageFormat.format(FEED_PUBLISH_STOP_MESSAGE_FOR_STORE, publish.getStoreId(), k, n);
+                            LOG.info(stopPublishMessage);
+                            publish.getMessages().add(new PublishMessage(PublishMessage.INFO, stopPublishMessage));
                         }
+                        status.setStatus(FEED_PUBLISH_STOP_MESSAGE);
+                        publish.setStatus(EnumPublishStatus.COMPLETE);
+                        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, FEED_PUBLISH_STOP_MESSAGE));
                     } else {
-                        LOG.warn("NOTE, that there are no publish tasks defined. Publish may become CORRUPT !!!!!");
+                        LOG.warn(FEED_PUBLISH_NO_TASKS_DEFINED_MESSAGE);
+                        status.setStatus(FEED_PUBLISH_NO_TASKS_DEFINED_MESSAGE);
+                        publish.setStatus(EnumPublishStatus.FAILED);
+                        publish.getMessages().add(new PublishMessage(PublishMessage.ERROR, FEED_PUBLISH_NO_TASKS_DEFINED_MESSAGE));
                     }
-                    status.setStatus("Finalizing publish");
                     publishDao.beginTransaction();
-                    publish.setStatus(EnumPublishStatus.COMPLETE);
                     publish.setLastModified(new Date());
                     publishDao.savePublish(publish);
 
@@ -349,8 +358,6 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
             }
         });
     }
-
-
 
     @Override
     public BackgroundStatus getStatus() {
