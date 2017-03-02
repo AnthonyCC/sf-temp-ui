@@ -558,7 +558,7 @@ public class CartDataService {
                     cartData.setUserCorporate(true);
 
                 }
-                cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
+                cartData.setGoGreen(("Y".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)))?true:false);
             }
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);

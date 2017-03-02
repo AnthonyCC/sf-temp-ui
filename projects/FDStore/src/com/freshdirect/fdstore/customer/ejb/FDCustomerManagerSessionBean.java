@@ -7439,23 +7439,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public boolean loadGoGreenPreference(String customerId) throws FDResourceException {
+	public String loadGoGreenPreference(String customerId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			return FDUserDAO.loadGoGreenPreferences(conn, customerId);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-	}
-	
-	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDUserDAO.overLayGoGreenPreferences(conn, customerId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

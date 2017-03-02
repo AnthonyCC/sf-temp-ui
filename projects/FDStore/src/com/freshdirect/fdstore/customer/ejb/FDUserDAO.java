@@ -849,44 +849,16 @@ public class FDUserDAO {
 		}
 	}
 	
-	public static boolean loadGoGreenPreferences(Connection conn, String customerId) {
+	public static String loadGoGreenPreferences(Connection conn, String customerId) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		boolean goGreen = false;
+		String goGreen = null;
 		try {
 			ps = conn.prepareStatement("select go_green from CUST.CUSTOMERINFO where customer_id=?");
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				goGreen = "Y".equals(rs.getString(1));
-			}
-		} catch (Exception e) {
-			LOGGER.error("Error updating mobile preferences", e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-			} catch (Exception e1) {}
-			try {
-				if(ps != null) {
-					ps.close();
-				}
-			} catch (Exception e1) {}
-		}
-		return goGreen;
-	}
-	
-	public static boolean overLayGoGreenPreferences(Connection conn, String customerId) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		boolean goGreen = false;
-		try {
-			ps = conn.prepareStatement("select go_green from CUST.CUSTOMERINFO where customer_id=?");
-			ps.setString(1, customerId);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				goGreen = "I".equals(rs.getString(1));
+				goGreen = rs.getString(1);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
