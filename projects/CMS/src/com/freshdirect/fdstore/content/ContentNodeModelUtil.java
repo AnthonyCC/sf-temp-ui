@@ -136,9 +136,9 @@ public class ContentNodeModelUtil {
     
     static {
         if (ContentNodeModelUtil.isRequestCacheEnabled()) {
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_PARENT_KEY_CACHE_NAME, 5000, 60l));
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_CACHE_NAME, 5000, 60l));
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, 10000, 60l));
+            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_PARENT_KEY_CACHE_NAME, 5000, 30l));
+            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_CACHE_NAME, 10000, 30l));
+            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, 20000, 30l));
         }
     }
 
