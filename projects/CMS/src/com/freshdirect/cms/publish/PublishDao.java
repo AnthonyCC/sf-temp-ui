@@ -246,7 +246,7 @@ public class PublishDao extends HibernateDaoSupport {
 	}
 
     public Publish getPreviousFeedPublish(Publish publish) {
-        List<Publish> list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISHX p where p.id = " + publish.getId() + ") ", "timestamp desc");
+        List<Publish> list = fetchPublishesX("cro_mod_date < (select p.cro_mod_date from CMS.PUBLISHX p where p.id = " + publish.getId() + ") ", "cro_mod_date desc");
         return list.size() > 0 ? list.get(0) : null;
     }
 	
