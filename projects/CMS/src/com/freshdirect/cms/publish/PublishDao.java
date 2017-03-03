@@ -242,9 +242,13 @@ public class PublishDao extends HibernateDaoSupport {
 	 */
 	public Publish getPreviousPublish(Publish publish) {
 		List<Publish> list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISH p where p.id = " + publish.getId() + ") ", "timestamp desc");
-		
 		return list.size() > 0 ? list.get(0) : null;
 	}
+
+    public Publish getPreviousFeedPublish(Publish publish) {
+        List<Publish> list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISHX p where p.id = " + publish.getId() + ") ", "timestamp desc");
+        return list.size() > 0 ? list.get(0) : null;
+    }
 	
 	public void savePublish(Publish publish) {
 		saveOrUpdate(publish);
@@ -260,4 +264,5 @@ public class PublishDao extends HibernateDaoSupport {
             return null;
 		}	
 	}
+
 }

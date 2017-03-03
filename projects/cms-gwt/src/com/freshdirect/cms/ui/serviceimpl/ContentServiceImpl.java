@@ -530,12 +530,14 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         } else {
             if (query.getPublishType() == null) {
                 publish = service.getPublish(query.getPublishId(), Publish.class);
+                Publish prevPublish = service.getPreviousPublish(publish);
+                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             } else {
                 publish = service.getPublish(query.getPublishId(), PublishX.class);
+                Publish prevPublish = service.getPreviousFeedPublish(publish);
+                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             }
 
-            Publish prevPublish = service.getPreviousPublish(publish);
-            prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             timestamp = publish.getTimestamp();
         }
         if (query.isPublishInfoQuery()) {
