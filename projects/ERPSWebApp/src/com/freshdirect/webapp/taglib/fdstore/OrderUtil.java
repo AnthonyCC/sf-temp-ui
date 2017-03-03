@@ -35,9 +35,8 @@ public class OrderUtil {
         }
         Date now = new Date(); // now
         boolean beforeCutoffTime = now.before(deliveryCutoffTime);
-        return (EnumSaleStatus.NEW.equals(orderStatus) || EnumSaleStatus.SUBMITTED.equals(orderStatus) || 
-        		EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION.equals(orderStatus) ||
-        		EnumSaleStatus.MODIFIED.equals(orderStatus) || EnumSaleStatus.MODIFIED_CANCELED.equals(orderStatus))
+
+        return (EnumSaleStatus.NEW.equals(orderStatus) || EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION.equals(orderStatus))
                 && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
     }
     
