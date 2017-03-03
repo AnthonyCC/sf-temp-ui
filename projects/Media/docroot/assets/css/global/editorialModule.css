@@ -5,8 +5,7 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
-  max-width: 480px;
-  min-width: 480px;
+  width: 480px;
 }
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
   position: absolute;
@@ -116,11 +115,7 @@
 }
 
 #viewallPopup .content-module.editorial-module.product-carousel .editorial-content .left-side,
-#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .right-side {
-  max-width: 400px;
-  min-width: 400px;
-}
-
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .right-side,
 #viewallPopup .content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
   width: 50%;
 }
