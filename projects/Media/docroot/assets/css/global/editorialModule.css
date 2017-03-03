@@ -12,7 +12,8 @@
   position: absolute;
   bottom: 0;
   top: 0;
-  left: 490px;
+  left: 50%;
+  margin-left: 5px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
@@ -112,4 +113,14 @@
   font-size: 25px;
   font-family: 'Brandon Text';
   font-weight: 500;
+}
+
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .left-side,
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .right-side {
+  max-width: 400px;
+  min-width: 400px;
+}
+
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
+  width: 50%;
 }
