@@ -108,6 +108,7 @@ public final class PublishFlow {
         if (storePublishResult) {
             // Run Script
             if (runScriptPath != null) {
+            	LOGGER.info("  Publish About to execute PostScript: " + runScriptPath);
                 executeRunScript();
             }
 

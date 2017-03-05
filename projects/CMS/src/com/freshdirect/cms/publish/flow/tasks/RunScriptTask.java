@@ -38,7 +38,7 @@ public final class RunScriptTask extends PublishTask implements Runnable {
 
         if (scriptPath != null) {
             Process child = Runtime.getRuntime().exec(scriptPath + " " + publishPath);
-
+            LOGGER.info("  Publish Runtime execute PostScript: " + scriptPath + " " + publishPath);
             BufferedReader buff = new BufferedReader(new InputStreamReader(child.getInputStream()));
             String line;
 
