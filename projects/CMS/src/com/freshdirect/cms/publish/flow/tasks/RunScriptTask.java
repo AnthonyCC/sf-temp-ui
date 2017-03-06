@@ -35,10 +35,11 @@ public final class RunScriptTask extends PublishTask implements Runnable {
     }
 
     private void executeScript(String scriptPath, String publishPath) throws IOException, InterruptedException {
-
+    	
+    	LOGGER.info("  Publish Runtime execute PostScript: " + scriptPath + " " + publishPath);
         if (scriptPath != null) {
             Process child = Runtime.getRuntime().exec(scriptPath + " " + publishPath);
-            LOGGER.info("  Publish Runtime execute PostScript: " + scriptPath + " " + publishPath);
+            
             BufferedReader buff = new BufferedReader(new InputStreamReader(child.getInputStream()));
             String line;
 
@@ -60,11 +61,8 @@ public final class RunScriptTask extends PublishTask implements Runnable {
     public void run() {
         try {
             executeScript(scriptPath, publishPath);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("System error occurred while executing script " + scriptPath, e);
-            throw new CmsRuntimeException(e);
-        } catch (InterruptedException e) {
-            LOGGER.error("Script execution was interrupted: " + scriptPath, e);
             throw new CmsRuntimeException(e);
         }
     }

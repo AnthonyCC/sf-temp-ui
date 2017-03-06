@@ -136,7 +136,8 @@ public final class PublishFlow {
 
     private void executeRunScript() throws CmsRuntimeException {
         try {
-            RunScriptTask runScriptTask = new RunScriptTask(publishId, Phase.POST_OP, runScriptPath, null);
+        	//BasePath harcoded to /FDX to handle the "# begin awkward hack so that CMS code doesn't run this script twice" in postPublish.sh
+            RunScriptTask runScriptTask = new RunScriptTask(publishId, Phase.POST_OP, basePath + "/FDX" , runScriptPath);
             runScriptTask.run();
         } catch (Exception exc) {
             handleException(exc, Phase.POST_OP, "Run Script task crashed");
