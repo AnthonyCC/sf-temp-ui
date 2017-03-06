@@ -122,7 +122,7 @@ public class FDEmailFactory {
 				email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
 						+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
 			} else {
-				email.setSubject("Your receipt from FreshDirect-Your order for " + df.format(order.getRequestedDate()) + " is on its way");
+				email.setSubject("Your FreshDirect order is on its way! Receipt inside");
 			}
 		}
 
