@@ -5,15 +5,15 @@
  * @param data
  */
 {template .iconCarouselModule}
-<div class="content-module icon-carousel" id="{$moduleData.moduleId}">
-	{call common.moduleHeader}
-		{param content: $moduleData /}
-	{/call}
-	<div class="content">
-		{call common.contentHeader}
-			{param content: $moduleData /}
-		{/call}
-    {if $data.icons and length($data.icons) > 0}
+{if $data.icons and length($data.icons) > 0}
+  <div class="content-module icon-carousel" id="{$moduleData.moduleId}">
+  	{call common.moduleHeader}
+  		{param content: $moduleData /}
+  	{/call}
+  	<div class="content">
+  		{call common.contentHeader}
+  			{param content: $moduleData /}
+  		{/call}
   		{call common.simpleCarousel}
   			{param isIconCarousel: true /}
   			{param items: $data.icons /}
@@ -30,7 +30,7 @@
   			{/param}
   			{param itemType:'grid' /}
   		{/call}
-    {/if}
-	</div>
-</div>
+  	</div>
+  </div>
+{/if}
 {/template}
