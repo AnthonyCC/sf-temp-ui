@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 
@@ -50,8 +51,12 @@ public class ProductItemComparatorUtil {
 	}
 	
 	/** based on FilteringComparatorUtil.reOrganizeFavourites()*/
-	public static void postProcess(BrowseDataContext data, SortStrategyType sortStrategy, FDUserI user){
-		if ((sortStrategy == SortStrategyType.SEARCH_RELEVANCY || sortStrategy == SortStrategyType.FAVS_FIRST) && FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && data.getSectionContexts().size() > 0) { //APPDEV-2725
+	public static void postProcess(BrowseDataContext data, CmsFilteringNavigator nav, SortStrategyType sortStrategy, FDUserI user){
+		if (
+			(sortStrategy == SortStrategyType.SEARCH_RELEVANCY || sortStrategy == SortStrategyType.FAVS_FIRST) 
+			&& FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() 
+			&& data.getSectionContexts().size() > 0
+		) { //APPDEV-2725
 				
 			FDIdentity identity = user.getIdentity();
 			String userId = identity == null ? null : identity.getErpCustomerPK();
@@ -70,7 +75,17 @@ public class ProductItemComparatorUtil {
 				}
 				
 				Collections.sort(favourites, ProductItemSorterFactory.createSearchRelevancyComparatorForFavorites(user)); //sort favorites
-				List<FilteringProductItem> favouritesToMove = favourites.subList(0, Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size())); //get top favorites that will be moved
+				int favouritesToMoveNumb = 0;
+				
+				if ( (nav.getPageType()).equals(FilteringFlowType.PRES_PICKS) ) {
+					favouritesToMoveNumb = FDStoreProperties.getPresPicksPageTopFavouritesNumber();
+				} else if ( (nav.getPageType()).equals(FilteringFlowType.SEARCH) ) {
+					favouritesToMoveNumb = FDStoreProperties.getSearchPageTopFavouritesNumber();
+				} else {
+					favouritesToMoveNumb = FDStoreProperties.getBrowsePageTopFavouritesNumber();
+				}
+				
+				List<FilteringProductItem> favouritesToMove = favourites.subList(0, Math.min(favouritesToMoveNumb, favourites.size())); //get top favorites that will be moved
 				allProductItems.removeAll(favouritesToMove); //remove top favorites from original place
 				
 				for (int index = favouritesToMove.size() - 1; index >= 0 ; index --) { //place top favorites to the beginning of the products

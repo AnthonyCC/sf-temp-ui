@@ -623,6 +623,8 @@ public class FDStoreProperties {
     private final static String PROP_SHOW_AUTO_LATE_CREDIT_BUTTON = "fdstore.crm.show.autolatedelivery.button";
     private final static String NUMBER_OF_TOP_FAVOURITES = "fdstore.search.favourites.top.number";
     private final static String FAVOURITES_NUMBER_SWITCH = "fdstore.search.favourites.switch";
+    private final static String NUMBER_OF_PRESPICKS_TOP_FAVOURITES = "fdstore.prespicks.favourites.top.number";
+    private final static String NUMBER_OF_BROWSE_TOP_FAVOURITES = "fdstore.browse.favourites.top.number";
 
     /* APPDEV-2723 */
     private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
@@ -1460,6 +1462,8 @@ public class FDStoreProperties {
 
         defaults.put(NUMBER_OF_TOP_FAVOURITES, "3");
         defaults.put(FAVOURITES_NUMBER_SWITCH, "true");
+        defaults.put(NUMBER_OF_PRESPICKS_TOP_FAVOURITES, "5");
+        defaults.put(NUMBER_OF_BROWSE_TOP_FAVOURITES, "3");
         defaults.put(PROP_COHORT_MATCHER, "");
         defaults.put(PROP_USQ_LEGAL_WARNING, "true");
         defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
@@ -3596,6 +3600,14 @@ public class FDStoreProperties {
 
     public static int getSearchPageTopFavouritesNumber() {
         return Integer.parseInt(get(NUMBER_OF_TOP_FAVOURITES));
+    }
+    
+    public static int getPresPicksPageTopFavouritesNumber() {
+        return Integer.parseInt(get(NUMBER_OF_PRESPICKS_TOP_FAVOURITES));
+    }
+    
+    public static int getBrowsePageTopFavouritesNumber() {
+        return Integer.parseInt(get(NUMBER_OF_BROWSE_TOP_FAVOURITES));
     }
 
     public static boolean isFavouritesTopNumberFilterSwitchedOn() {
