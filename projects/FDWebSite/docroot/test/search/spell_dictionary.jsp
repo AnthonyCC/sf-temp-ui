@@ -8,6 +8,10 @@
 <%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
 <%@page import="com.freshdirect.cms.index.FullIndexerService"%>
 <%@page import="org.apache.lucene.index.IndexReader"%>
+<%@page import="org.apache.lucene.store.FSDirectory"%>
+<%@page import="org.apache.lucene.search.IndexSearcher"%>
+<%@page import="java.io.File"%>
+<%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
 <%@page import="org.apache.lucene.index.Term"%>
 <%@page import="org.apache.lucene.index.TermPositions"%>
 <%@page import="org.apache.lucene.document.Document"%>
@@ -35,7 +39,9 @@
 				<%
 					Registry registry = FDRegistry.getInstance();
 			        FullIndexerService indexer = FullIndexerService.getInstance();
-					IndexReader reader = indexer.createReader(false, SearchServiceConfiguration.getInstance().getCmsIndexLocation());
+					String indexDirectoryPath = SearchServiceConfiguration.getInstance().getCmsIndexLocation();
+                    FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
+                    IndexReader reader = IndexReader.open(indexDirectory, false);
 					TermEnum terms = reader.terms(new Term("spelling_term"));
 					while (terms.next()) {
 						Term term = terms.term();
