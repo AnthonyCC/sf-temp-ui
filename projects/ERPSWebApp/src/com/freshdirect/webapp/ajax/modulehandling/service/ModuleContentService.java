@@ -132,11 +132,18 @@ public class ModuleContentService {
         nav.setId(categoryId);
 
         List<ProductData> products = generateBrowseProductData(nav, user);
+        List<ProductData> availableProducts = new ArrayList<ProductData>();
+
+        for (ProductData productData : products) {
+            if (productData.isAvailable() && !productData.isDiscontinued()) {
+                availableProducts.add(productData);
+            }
+        }
 
         if (!showAllProducts) {
-            products = limitProductList(products);
+            availableProducts = limitProductList(availableProducts);
         }
-        return products;
+        return availableProducts;
     }
 
     public List<ProductData> loadFeaturedItems(FDUserI user, String departmentId, boolean showAllProducts) throws ClassCastException {
@@ -248,6 +255,12 @@ public class ModuleContentService {
 
         for (ContentKey contentKey : featuredProductsContentKeys) {
             featuredProducts.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(contentKey));
+        }
+
+        for (ProductModel productModel : featuredProducts) {
+            if (!productModel.isFullyAvailable() && productModel.isDiscontinued()) {
+                featuredProducts.remove(productModel);
+            }
         }
 
         List<ProductData> productDatas = new ArrayList<ProductData>();
