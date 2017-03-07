@@ -342,7 +342,6 @@
 			</div>
 		{/if}
 	</div>
-  {if false}
 	<div class="portrait-item-header">
 	{if $brandName and $productNameNoBrand}
 		{if $discontinued}
@@ -457,7 +456,6 @@
 			<div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
 		</div>
 	{/if}
-  {/if}
 	<form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
 		{call common.potatoTransactionalGridItemControls}
 			{param customizePopup:$customizePopup /}
