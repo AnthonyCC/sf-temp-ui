@@ -189,6 +189,8 @@ public class DatasourceService {
             InvalidFilteringArgumentException {
         ModuleData moduleData = new ModuleData();
         DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
+        ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
+        String productListCarouselLineMax = ContentNodeUtil.getStringAttribute(module, "productListRowMax");
 
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
@@ -201,7 +203,6 @@ public class DatasourceService {
                 moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user, showAllProducts));
                 break;
             case GENERIC:
-                ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
                 switch (moduleSourceType) {
                     case IMAGEGRID_MODULE:
                         moduleData.setImageGridData(loadImageGridData(module));
@@ -228,7 +229,16 @@ public class DatasourceService {
             default:
                 break;
         }
+
+        if (!showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType) && productListCarouselLineMax != null && moduleData.getProducts() != null) {
+            moduleData.setProducts(setMaxProductLinesForProductList(moduleData.getProducts(), Integer.parseInt(productListCarouselLineMax)));
+        }
+
         return moduleData;
+    }
+
+    private List<ProductData> setMaxProductLinesForProductList(List<ProductData> productDatas, int productListCarouselLineCount) {
+        return productDatas.subList(0, Math.min(productDatas.size(), productListCarouselLineCount * 4));
     }
 
     private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {
