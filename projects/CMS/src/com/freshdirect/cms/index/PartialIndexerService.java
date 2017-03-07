@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.Directory;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentNodeI;
@@ -33,13 +34,12 @@ public class PartialIndexerService extends IndexerService {
      *            collection of contentNodes which indexes should be deleted
      */
     @Override
-    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, String indexDirectoryPath) {
+    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory) {
         IndexReader localReader = null;
         try {
-
-            localReader = createReader(false, indexDirectoryPath);
             int count = 0;
-            if (IndexReader.indexExists(openIndexDirectory(indexDirectoryPath))) {
+            if (IndexReader.indexExists(indexDirectory)) {
+                localReader = IndexReader.open(indexDirectory, false);
                 for (ContentNodeI node : contentNodes) {
                     count += localReader.deleteDocuments(new org.apache.lucene.index.Term(IndexingConstants.FIELD_CONTENT_KEY, node.getKey().getEncoded()));
                 }

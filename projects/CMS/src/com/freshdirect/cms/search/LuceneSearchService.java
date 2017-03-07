@@ -18,7 +18,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -85,21 +84,23 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
     public LuceneSearchService() {
         setIndexes(indexConfiguration.getIndexConfiguration());
-        
+
         this.indexLocation = searchServiceConfiguration.getCmsIndexLocation();
-        
+
+        IndexWriter writer = null;
         try {
             boolean exists = IndexReader.indexExists(getIndexDirectory());
             
             if (!exists) {
                 LOGGER.info("Creating index at " + getIndexLocation());
-                IndexWriter writer = new IndexWriter(getIndexDirectory(), ANALYZER, true, new MaxFieldLength(1024));
+                writer = new IndexWriter(getIndexDirectory(), IndexingConstants.ANALYZER, true, IndexingConstants.MAX_FIELD_LENGTH_1024);
                 writer.optimize();
-                writer.close();
                 LOGGER.info("Created index at " + getIndexLocation());
             }
         } catch (IOException ioe) {
             throw new CmsRuntimeException(ioe);
+        } finally {
+            closeIndexWriter(writer);
         }
         IndexingNotifier.getInstance().subscribe(this);
     }
@@ -493,6 +494,16 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
             getSpellService();
         } catch (IOException e) {
             throw new CmsRuntimeException(e);
+        }
+    }
+    
+    private void closeIndexWriter(IndexWriter writer) {
+        try {
+            if (writer != null) {
+                writer.close();
+            }
+        } catch (IOException e) {
+            LOGGER.error("Exception while closing index writer", e);
         }
     }
 

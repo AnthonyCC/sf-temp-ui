@@ -42,20 +42,6 @@ public abstract class IndexerService {
     private final IndexerUtil indexerUtil = IndexerUtil.getInstance();
 
     /**
-     * Creates an index reader
-     * 
-     * @param readOnly
-     *            decides if the reader can modify the indexes or not
-     * @param indexDirectoryPath
-     *            where to open the indexReader
-     * @return the IndexReader instance
-     * @throws IOException
-     */
-    public IndexReader createReader(boolean readOnly, String indexDirectoryPath) throws IOException {
-        return IndexReader.open(openIndexDirectory(indexDirectoryPath), readOnly);
-    }
-
-    /**
      * Gives a set of contentTypes which are indexed by this indexer
      * 
      * @return set of contentTypes
@@ -92,26 +78,37 @@ public abstract class IndexerService {
      *            the {@link IndexerConfiguration} object to use while creating the indexes
      */
     public void index(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration) {
+        String indexDirectoryPath = indexerConfiguration.getIndexDirectoryPath();
+        Directory indexDirectory = null;
 
-        indexNodes(contentNodes, indexerConfiguration);
-        indexSpelling(contentNodes, indexerConfiguration);
-        optimize(indexerConfiguration.getIndexDirectoryPath());
+        try {
+            indexDirectory = openIndexDirectory(indexDirectoryPath);
+            indexNodes(contentNodes, indexerConfiguration, indexDirectory);
+            indexSpelling(contentNodes, indexerConfiguration, indexDirectory);
+            optimize(indexDirectory);
 
-        IndexingNotifier.getInstance().sendIndexingFinishedNotification();
+            IndexingNotifier.getInstance().sendIndexingFinishedNotification();
+        } catch (IOException e) {
+            LOGGER.error("Exception while deleting old indexes", e);
+            throw new CmsRuntimeException(e);
+        } finally {
+            closeIndexDirectory(indexDirectory);
+        }
+
     }
 
     /**
      * Optimizes the indexes that can be found at the given location
      * 
-     * @param indexDirectoryPath
-     *            path to the index files
+     * @param indexDirectory
+     *            directory to the index files
      */
-    public void optimize(String indexDirectoryPath) {
+    public void optimize(Directory indexDirectory) {
         IndexWriter writer = null;
         try {
             LOGGER.debug("Starting optimization process");
 
-            writer = new IndexWriter(openIndexDirectory(indexDirectoryPath), IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
+            writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
             writer.optimize();
 
             LOGGER.debug("Finished optimization process");
@@ -142,13 +139,23 @@ public abstract class IndexerService {
         }
     }
 
+    protected void closeIndexDirectory(Directory directory) {
+        try {
+            if (directory != null) {
+                directory.close();
+            }
+        } catch (IOException e) {
+            LOGGER.error("Exception while closing index directory", e);
+        }
+    }
+
     /**
      * Delete the old index documents at the given path
      * 
      * @param contentNodes
      * @param indexDirectoryPath
      */
-    protected abstract void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, String indexDirectoryPath);
+    protected abstract void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory);
 
     /**
      * Opens a {@link FSDirectory} at the specified path
@@ -159,9 +166,8 @@ public abstract class IndexerService {
      * @throws IOException
      *             if something goes wrong when opening the FSDirectory
      */
-    protected FSDirectory openIndexDirectory(String indexDirectoryPath) throws IOException {
-        FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
-        return indexDirectory;
+    protected Directory openIndexDirectory(String indexDirectoryPath) throws IOException {
+        return FSDirectory.open(new File(indexDirectoryPath));
     }
 
     /**
@@ -172,11 +178,10 @@ public abstract class IndexerService {
      * @param indexDirectoryPath
      *            where to create the indexes
      */
-    private void indexDictionary(Dictionary dictionary, String indexDirectoryPath, int dictionaryWriteoutBatchSize) {
+    private void indexDictionary(Dictionary dictionary, Directory indexDirectory, IndexerConfiguration indexerConfiguration) {
         IndexWriter writer = null;
         try {
-            final Directory dir = openIndexDirectory(indexDirectoryPath);
-            writer = new IndexWriter(dir, new WhitespaceAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
+            writer = new IndexWriter(indexDirectory, new WhitespaceAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
             writer.setMergeFactor(DICTIONARY_WRITER_MERGE_FACTOR);
             writer.setRAMBufferSizeMB(DICTIONARY_WRITER_RAM_BUFFER_SIZE);
 
@@ -192,8 +197,8 @@ public abstract class IndexerService {
 
                 Document document = indexDocumentCreator.createDocumentForSpelling(searchTerm, spellingTerm, item.isSynonym());
                 documents.add(document);
-                if (count % dictionaryWriteoutBatchSize == 0 || !iter.hasNext()) {
-                    LOGGER.debug("Writing out " + documents.size() + " dictionary items for " + indexDirectoryPath);
+                if (count % indexerConfiguration.getDictionaryWriteoutBatchSize() == 0 || !iter.hasNext()) {
+                    LOGGER.debug("Writing out " + documents.size() + " dictionary items for " + indexerConfiguration.getIndexDirectoryPath());
                     writeOutDocuments(documents, writer);
                     writer.commit();
                     documents.clear();
@@ -216,17 +221,15 @@ public abstract class IndexerService {
         }
     }
 
-    private void indexNodes(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration) {
-        deleteOldNodeIndexDocuments(contentNodes, indexerConfiguration.getIndexDirectoryPath());
-
+    private void indexNodes(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration, Directory indexDirectory) {
+        deleteOldNodeIndexDocuments(contentNodes, indexDirectory);
         List<Document> documents = indexDocumentCreator.createDocumentsFromNodes(contentNodes, indexerConfiguration);
-
-        writeOutDocuments(documents, indexerConfiguration.getIndexDirectoryPath());
+        writeOutDocuments(documents, indexDirectory);
     }
 
-    private void indexSpelling(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration) {
+    private void indexSpelling(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration, Directory indexDirectory) {
         Dictionary dictionary = indexerUtil.createDictionaryForIndexing(contentNodes, indexerConfiguration);
-        indexDictionary(dictionary, indexerConfiguration.getIndexDirectoryPath(), indexerConfiguration.getDictionaryWriteoutBatchSize());
+        indexDictionary(dictionary, indexDirectory, indexerConfiguration);
     }
 
     private void writeOutDocuments(List<Document> documents, IndexWriter writer) {
@@ -240,11 +243,11 @@ public abstract class IndexerService {
         }
     }
 
-    private void writeOutDocuments(List<Document> documents, String indexDirectoryPath) {
+    private void writeOutDocuments(List<Document> documents, Directory indexDirectory) {
         IndexWriter writer = null;
-        try {
-            writer = new IndexWriter(openIndexDirectory(indexDirectoryPath), IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
 
+        try {
+            writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
             writeOutDocuments(documents, writer);
 
         } catch (IOException e) {

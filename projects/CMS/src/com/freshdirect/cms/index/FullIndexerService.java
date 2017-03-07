@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.Directory;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentNodeI;
@@ -31,11 +32,11 @@ public class FullIndexerService extends IndexerService {
      * Deletes all the previous index documents
      */
     @Override
-    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, String indexDirectoryPath) {
+    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory) {
         IndexWriter writer = null;
         try {
-            if (IndexReader.indexExists(openIndexDirectory(indexDirectoryPath))) {
-                writer = new IndexWriter(openIndexDirectory(indexDirectoryPath), IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
+            if (IndexReader.indexExists(indexDirectory)) {
+                writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
                 writer.deleteAll();
                 writer.commit();
             }
