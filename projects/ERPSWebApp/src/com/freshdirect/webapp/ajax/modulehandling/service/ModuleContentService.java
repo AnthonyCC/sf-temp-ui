@@ -75,14 +75,18 @@ public class ModuleContentService {
         return products;
     }
 
-    private List<ProductData> limitProductList(List<ProductData> products) {
+    public List<ProductData> limitProductList(List<ProductData> products) {
         if (products.size() > MAX_ITEMS) {
             products = products.subList(0, MAX_ITEMS);
         }
         return products;
     }
 
-    public List<ProductData> generateRecommendationProducts(HttpSession session, FDUserI user, String siteFeature, boolean showAllProducts) {
+    public List<ProductData> setMaxProductLinesForProductList(List<ProductData> productDatas, int productListCarouselLineCount) {
+        return productDatas.subList(0, Math.min(productDatas.size(), productListCarouselLineCount * 4));
+    }
+
+    public List<ProductData> generateRecommendationProducts(HttpSession session, FDUserI user, String siteFeature) {
         List<ProductModel> products = new ArrayList<ProductModel>();
         Recommendations results = null;
         String variantId = null;
@@ -115,14 +119,10 @@ public class ModuleContentService {
             }
         }
 
-        if (!showAllProducts) {
-            productDatas = limitProductList(productDatas);
-        }
-
         return productDatas;
     }
 
-    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
         CmsFilteringNavigator nav = new CmsFilteringNavigator();
 
         // Set special layout false to skip content loading from HMB and RecipeKits.
@@ -140,13 +140,10 @@ public class ModuleContentService {
             }
         }
 
-        if (!showAllProducts) {
-            availableProducts = limitProductList(availableProducts);
-        }
         return availableProducts;
     }
 
-    public List<ProductData> loadFeaturedItems(FDUserI user, String departmentId, boolean showAllProducts) throws ClassCastException {
+    public List<ProductData> loadFeaturedItems(FDUserI user, String departmentId) throws ClassCastException {
         FDSessionUser sessionUser = (FDSessionUser) user;
         DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode(departmentId);
         ValueHolder<Variant> out = new ValueHolder<Variant>();
@@ -173,14 +170,10 @@ public class ModuleContentService {
             LOGGER.error("failed to create ProductData", e);
         }
 
-        if (!showAllProducts) {
-            products = limitProductList(products);
-        }
-
         return products;
     }
 
-    public List<ProductData> loadPresidentPicksProducts(FDUserI user, boolean showAllProducts) {
+    public List<ProductData> loadPresidentPicksProducts(FDUserI user) {
         List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
         CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("picks_love");
         FDSessionUser sessionUser = (FDSessionUser) user;
@@ -217,10 +210,6 @@ public class ModuleContentService {
             }
         }
 
-        if (!showAllProducts) {
-            productDatas = limitProductList(productDatas);
-        }
-
         return productDatas;
 
     }
@@ -248,7 +237,7 @@ public class ModuleContentService {
         return MediaUtils.generateStringFromHTMLContentKey(module.getAttributeValue("openHTML"), user);
     }
 
-    public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user, boolean showAllProducts) {
+    public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user) {
         List<ContentKey> featuredProductsContentKeys = (List<ContentKey>) brand.getAttributeValue("FEATURED_PRODUCTS");
         List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
         FDSessionUser sessionUser = (FDSessionUser) user;
@@ -279,10 +268,6 @@ public class ModuleContentService {
             } catch (HttpErrorResponse e) {
                 LOGGER.error("failed to create ProductData", e);
             }
-        }
-
-        if (!showAllProducts) {
-            productDatas = limitProductList(productDatas);
         }
 
         return productDatas;

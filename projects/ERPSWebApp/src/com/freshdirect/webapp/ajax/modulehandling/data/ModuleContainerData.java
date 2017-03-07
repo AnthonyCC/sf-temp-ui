@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class WelcomePageData implements Serializable {
+public class ModuleContainerData implements Serializable {
 
     private static final long serialVersionUID = -6067484315686608240L;
 

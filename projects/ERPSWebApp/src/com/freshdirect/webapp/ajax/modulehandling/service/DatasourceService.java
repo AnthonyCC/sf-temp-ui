@@ -14,6 +14,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -38,6 +39,7 @@ public class DatasourceService {
     private static final String TOP_ITEMS_SITE_FEATURE = "TOP_ITEMS_QS";
     private static final String MOST_POPULAR_PRODUCTS_SITE_FEATURE = "FAVORITES";
     private static final String MODULE_GROUP_SOURCE_TYPE = "MODULE_GROUP";
+    private int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
 
     public static DatasourceService getDefaultService() {
         return INSTANCE;
@@ -46,26 +48,26 @@ public class DatasourceService {
     private DatasourceService() {
     }
 
-    private List<ProductData> generateBrandFeaturedProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) {
+    private List<ProductData> generateBrandFeaturedProducts(ContentNodeI module, FDUserI user) {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-        return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user, showAllProducts);
+        return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
     }
 
-    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
+    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         String categoryId = category.getKey().getId();
-        return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user, showAllProducts);
+        return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
     }
 
-    private List<ProductData> generateFeaturedRecommenderProducts(ContentNodeI module, FDUserI user, boolean showAllProducts) {
+    private List<ProductData> generateFeaturedRecommenderProducts(ContentNodeI module, FDUserI user) {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         List<ProductData> products = new ArrayList<ProductData>();
         try {
             ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
             String departmentId = department.getKey().getId();
-            products = ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId, showAllProducts);
+            products = ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId);
         } catch (NullPointerException e) {
             LOGGER.error("Datasource sourceNode is not set for Module:" + module.getKey().getId());
         } catch (ClassCastException e) {
@@ -191,16 +193,18 @@ public class DatasourceService {
         DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
         ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
         String productListCarouselLineMax = ContentNodeUtil.getStringAttribute(module, "productListRowMax");
+        List<ProductData> products = new ArrayList<ProductData>();
 
+        // LOAD PRODUCTS
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE, showAllProducts));
+                products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
                 break;
             case TOP_ITEMS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE, showAllProducts));
+                products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
                 break;
             case PRES_PICKS:
-                moduleData.setProducts(ModuleContentService.getDefaultService().loadPresidentPicksProducts(user, showAllProducts));
+                products = ModuleContentService.getDefaultService().loadPresidentPicksProducts(user);
                 break;
             case GENERIC:
                 switch (moduleSourceType) {
@@ -218,27 +222,30 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                moduleData.setProducts(generateBrowseProducts(module, user, showAllProducts));
+                products = generateBrowseProducts(module, user);
                 break;
             case FEATURED_RECOMMENDER:
-                moduleData.setProducts(generateFeaturedRecommenderProducts(module, user, showAllProducts));
+                products = generateFeaturedRecommenderProducts(module, user);
                 break;
             case BRAND_FEATURED_PRODUCTS:
-                moduleData.setProducts(generateBrandFeaturedProducts(module, user, showAllProducts));
+                products = generateBrandFeaturedProducts(module, user);
                 break;
             default:
                 break;
         }
 
-        if (!showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType) && productListCarouselLineMax != null && moduleData.getProducts() != null) {
-            moduleData.setProducts(setMaxProductLinesForProductList(moduleData.getProducts(), Integer.parseInt(productListCarouselLineMax)));
+        // LIMIT PRODUCTS
+        if (!showAllProducts) {
+            products = ModuleContentService.getDefaultService().limitProductList(products);
         }
 
-        return moduleData;
-    }
+        // LIMIT PRODUCTS ADDITIONALY IF PRODUCT LIST IS ENABLED
+        if (!showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType) && productListCarouselLineMax != null && products != null) {
+            products = ModuleContentService.getDefaultService().setMaxProductLinesForProductList(products, Integer.parseInt(productListCarouselLineMax));
+        }
 
-    private List<ProductData> setMaxProductLinesForProductList(List<ProductData> productDatas, int productListCarouselLineCount) {
-        return productDatas.subList(0, Math.min(productDatas.size(), productListCarouselLineCount * 4));
+        moduleData.setProducts(products);
+        return moduleData;
     }
 
     private ModuleConfig populateModuleGroupConfig(ContentNodeI moduleGroup) {

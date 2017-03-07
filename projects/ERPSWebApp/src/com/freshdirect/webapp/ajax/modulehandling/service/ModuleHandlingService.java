@@ -21,8 +21,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
-import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 /**
@@ -44,9 +44,9 @@ public final class ModuleHandlingService {
     }
 
     @SuppressWarnings("unchecked")
-    public WelcomePageData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    public ModuleContainerData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
 
-        WelcomePageData result = new WelcomePageData();
+        ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 
@@ -104,8 +104,8 @@ public final class ModuleHandlingService {
         return result;
     }
 
-    public WelcomePageData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
-        WelcomePageData result = new WelcomePageData();
+    public ModuleContainerData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+        ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 

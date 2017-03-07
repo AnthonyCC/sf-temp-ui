@@ -13,7 +13,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
-import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
@@ -44,9 +44,9 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
 
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
 
-            WelcomePageData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
+            ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
 
-            Map<String, WelcomePageData> moduleContent = new HashMap<String, WelcomePageData>();
+            Map<String, ModuleContainerData> moduleContent = new HashMap<String, ModuleContainerData>();
 
             moduleContent.put("moduleContent", result);
 
