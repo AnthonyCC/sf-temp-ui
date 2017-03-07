@@ -81,6 +81,19 @@
 		}
 	}
 %>
+<%
+	List dcCounties = stateCounties.get("DC");
+	if(dcCounties != null && dcCounties.size() > 0) {
+	%>
+		dcCounties = new Array(<%= dcCounties.size() %>);
+	<%
+		for(int i = 0; i< dcCounties.size();i++) {
+	%>
+		dcCounties[<%=i %>] = '<%= dcCounties.get(i) %>';
+	<%
+		}
+	}
+%>
 function getCounties(state) {
 	if(document.forms[0].county.options == undefined)
 		return;
@@ -135,6 +148,16 @@ function getCounties(state) {
 				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(deCounties[i],deCounties[i],false,false);
 		}
 	}
+	if(state == 'DC') {
+		document.forms[0].county.options.length=1;
+		for(var i=0;i<dcCounties.length;i++)
+		{
+			if(dcCounties[i] == '<%= county %>')
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],true,true);
+			else
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],false,false);
+		}
+	}
 }
 
 </script>
@@ -156,6 +179,7 @@ function getCounties(state) {
 					<option value="CT" <%= state.equals("CT") ? "SELECTED" : "" %>>CT</option>
 					<option value="PA" <%= state.equals("PA") ? "SELECTED" : "" %>>PA</option>
 					<option value="DE" <%= state.equals("DE") ? "SELECTED" : "" %>>DE</option>
+					<option value="DC" <%= state.equals("DC") ? "SELECTED" : "" %>>DC</option>
 				</select>
 		 	</td>
 		 <% } %>
