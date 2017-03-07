@@ -24,7 +24,9 @@ import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -198,7 +200,11 @@ public class FDCOOLJcoServer extends FdSapServer {
 			}
 
 			if (erpCOOLInfoList.size() > 0) {
-				storeCOOLInfo(erpCOOLInfoList);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
+				}else{
+					storeCOOLInfo(erpCOOLInfoList);
+				}
 			}
 		} catch (final Exception e) {
 			throw new LoaderException("Saving cool info failed. No update will happen. Exception is " + e);

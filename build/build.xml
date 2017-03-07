@@ -112,6 +112,9 @@
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 		<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 		<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
+		<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -139,6 +142,7 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/objenesis-1.0.jar"/>
@@ -1286,6 +1290,7 @@
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+					<include name="fdcommerce-data.jar"/>
 					<include name="opencsv-1.8.jar"/>
 						
 					<lib/>
@@ -1414,6 +1419,7 @@
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+					<include name="fdcommerce-data.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1573,6 +1579,7 @@
 				<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 				<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
 				<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
 				<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
@@ -2167,6 +2174,7 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2206,7 +2214,7 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2252,6 +2260,7 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2311,6 +2320,7 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2387,6 +2397,7 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2424,6 +2435,7 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2504,6 +2516,7 @@
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2574,7 +2587,8 @@
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
-						
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+			
 			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
@@ -2655,6 +2669,8 @@
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+			
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/920/ojdbc14.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
@@ -2701,6 +2717,8 @@
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+			
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
 			<!-- FD classes -->
@@ -3005,7 +3023,8 @@
 				
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-
+				<include name="fdcommerce-data.jar"/>
+				
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
