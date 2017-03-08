@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 
 import com.freshdirect.cms.CmsRuntimeException;
@@ -35,21 +36,21 @@ public class PartialIndexerService extends IndexerService {
      */
     @Override
     protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory) {
-        IndexReader localReader = null;
+        IndexWriter writer = null;
         try {
-            int count = 0;
             if (IndexReader.indexExists(indexDirectory)) {
-                localReader = IndexReader.open(indexDirectory, false);
+                writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
                 for (ContentNodeI node : contentNodes) {
-                    count += localReader.deleteDocuments(new org.apache.lucene.index.Term(IndexingConstants.FIELD_CONTENT_KEY, node.getKey().getEncoded()));
+                    writer.deleteDocuments(new org.apache.lucene.index.Term(IndexingConstants.FIELD_CONTENT_KEY, node.getKey().getEncoded()));
                 }
+                writer.commit();
             }
-            LOGGER.debug("Deleted " + count + " content nodes");
+            LOGGER.debug("Deleted " + contentNodes.size() + " content nodes");
         } catch (IOException e) {
             LOGGER.error("Exception while deleting old indexes", e);
             throw new CmsRuntimeException(e);
         } finally {
-            closeIndexReader(localReader);
+            closeIndexWriter(writer);
         }
     }
 

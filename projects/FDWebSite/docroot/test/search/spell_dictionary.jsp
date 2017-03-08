@@ -62,6 +62,8 @@
 						pos.close();
 					}
 					terms.close();
+					reader.close();
+                    indexDirectory.close();
 				%>
 			</tbody>
 		</table>

@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.store.Directory;
@@ -116,16 +115,6 @@ public abstract class IndexerService {
             throw new CmsRuntimeException("Exception while optimizing indexes", e);
         } finally {
             closeIndexWriter(writer);
-        }
-    }
-
-    protected void closeIndexReader(IndexReader reader) {
-        try {
-            if (reader != null) {
-                reader.close();
-            }
-        } catch (IOException e) {
-            LOGGER.error("Exception while closing index reader!", e);
         }
     }
 

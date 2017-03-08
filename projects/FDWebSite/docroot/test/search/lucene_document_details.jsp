@@ -85,6 +85,8 @@ String contentKey = request.getParameter("contentKey");
 	</div>
 	<%
 		searcher.close();
+		reader.close();
+		indexDirectory.close();
 	%>
 </div>
 </div><!--  left -->
