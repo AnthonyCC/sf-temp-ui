@@ -132,7 +132,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
-			if (freq == null || "".equalsIgnoreCase(freq))
+			if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
 				freq = "1";
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
