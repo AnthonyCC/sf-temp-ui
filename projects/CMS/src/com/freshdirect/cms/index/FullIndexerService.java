@@ -32,9 +32,11 @@ public class FullIndexerService extends IndexerService {
      * Deletes all the previous index documents
      */
     @Override
-    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory) {
+    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, String indexDirectoryPath) {
         IndexWriter writer = null;
+        Directory indexDirectory = null;
         try {
+            indexDirectory = openIndexDirectory(indexDirectoryPath);
             if (IndexReader.indexExists(indexDirectory)) {
                 writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
                 writer.deleteAll();
@@ -45,6 +47,7 @@ public class FullIndexerService extends IndexerService {
             throw new CmsRuntimeException(e);
         } finally {
             closeIndexWriter(writer);
+            closeIndexDirectory(indexDirectory);
         }
     }
 }

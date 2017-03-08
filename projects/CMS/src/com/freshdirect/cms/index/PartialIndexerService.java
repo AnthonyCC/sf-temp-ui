@@ -35,9 +35,12 @@ public class PartialIndexerService extends IndexerService {
      *            collection of contentNodes which indexes should be deleted
      */
     @Override
-    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, Directory indexDirectory) {
+    protected void deleteOldNodeIndexDocuments(Collection<ContentNodeI> contentNodes, String indexDirectoryPath) {
         IndexWriter writer = null;
+        Directory indexDirectory = null;
+
         try {
+            indexDirectory = openIndexDirectory(indexDirectoryPath);
             if (IndexReader.indexExists(indexDirectory)) {
                 writer = new IndexWriter(indexDirectory, IndexingConstants.ANALYZER, IndexingConstants.MAX_FIELD_LENGTH_1024);
                 for (ContentNodeI node : contentNodes) {
@@ -51,6 +54,7 @@ public class PartialIndexerService extends IndexerService {
             throw new CmsRuntimeException(e);
         } finally {
             closeIndexWriter(writer);
+            closeIndexDirectory(indexDirectory);
         }
     }
 
