@@ -98,7 +98,7 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		if (!getTypeService().getContentTypes().contains(key.getType())) {
 			return null;
 		}
-		return new ContentNode(typeService, draftContext, key);
+		return new ContentNode(this, draftContext, key);
 	}
 
 	@Override

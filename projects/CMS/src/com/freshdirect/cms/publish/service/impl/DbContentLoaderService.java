@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.SimpleContentService;
 import com.freshdirect.cms.application.service.db.DbTypeService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.publish.config.DatabaseConfig;
@@ -53,7 +55,8 @@ public final class DbContentLoaderService implements ContentLoaderService {
         this.contentNodeRepository = new DbContentNodeRepository(typeService, generatorService);
 
         final ContentTypeServiceI mediaTypeService = new XmlTypeService("classpath:/com/freshdirect/cms/resource/MediaDef.xml");
-        final ContentNodeGeneratorService mediaGeneratorService = new PlainContentNodeGeneratorService(mediaTypeService);
+        final ContentServiceI dummyContentService = new SimpleContentService(mediaTypeService);
+        final ContentNodeGeneratorService mediaGeneratorService = new PlainContentNodeGeneratorService(dummyContentService);
 
         this.mediaNodeRepository = new MediaContentNodeRepository(mediaGeneratorService);
 
